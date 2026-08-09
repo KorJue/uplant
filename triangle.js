@@ -224,14 +224,31 @@
     return n.toLocaleString("de-DE", { maximumFractionDigits: digits });
   }
 
+  function circumcenter(A, B, C) {
+    const D = 2 * (A.x * (B.y - C.y) + B.x * (C.y - A.y) + C.x * (A.y - B.y));
+    const A2 = A.x * A.x + A.y * A.y;
+    const B2 = B.x * B.x + B.y * B.y;
+    const C2 = C.x * C.x + C.y * C.y;
+    return {
+      x: (A2 * (B.y - C.y) + B2 * (C.y - A.y) + C2 * (A.y - B.y)) / D,
+      y: (A2 * (C.x - B.x) + B2 * (A.x - C.x) + C2 * (B.x - A.x)) / D,
+    };
+  }
+
   function buildTriangleSVG(t) {
     const alphaRad = toRad(t.alpha);
     const A = { x: 0, y: 0 };
     const B = { x: t.c, y: 0 };
     const C = { x: t.b * Math.cos(alphaRad), y: t.b * Math.sin(alphaRad) };
 
-    const xs = [A.x, B.x, C.x];
-    const ys = [A.y, B.y, C.y];
+    const U = circumcenter(A, B, C);
+    const I = {
+      x: (t.a * A.x + t.b * B.x + t.c * C.x) / t.perimeter,
+      y: (t.a * A.y + t.b * B.y + t.c * C.y) / t.perimeter,
+    };
+
+    const xs = [A.x, B.x, C.x, U.x - t.circumradius, U.x + t.circumradius];
+    const ys = [A.y, B.y, C.y, U.y - t.circumradius, U.y + t.circumradius];
     const minX = Math.min(...xs), maxX = Math.max(...xs);
     const minY = Math.min(...ys), maxY = Math.max(...ys);
     const dx = maxX - minX || 1;
@@ -266,9 +283,20 @@
     const midAC = outward(mid(pA, pC), 12);
     const midBC = outward(mid(pB, pC), 12);
 
+    const pU = project(U);
+    const pI = project(I);
+    const rCircum = t.circumradius * scale;
+    const rIn = t.inradius * scale;
+
     return `
       <svg class="triangle-drawing" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
         <polygon class="edge" points="${pA.x},${pA.y} ${pB.x},${pB.y} ${pC.x},${pC.y}" />
+        <circle class="circumcircle" cx="${pU.x}" cy="${pU.y}" r="${rCircum}" />
+        <circle class="incircle" cx="${pI.x}" cy="${pI.y}" r="${rIn}" />
+        <circle class="center-dot" cx="${pU.x}" cy="${pU.y}" r="2.5" />
+        <circle class="center-dot" cx="${pI.x}" cy="${pI.y}" r="2.5" />
+        <text class="circle-label circumcircle-label" x="${pU.x}" y="${pU.y - 6}" text-anchor="middle">U</text>
+        <text class="circle-label incircle-label" x="${pI.x}" y="${pI.y - 6}" text-anchor="middle">I</text>
         <text class="vertex-label" x="${labelA.x}" y="${labelA.y}" text-anchor="middle">A</text>
         <text class="vertex-label" x="${labelB.x}" y="${labelB.y}" text-anchor="middle">B</text>
         <text class="vertex-label" x="${labelC.x}" y="${labelC.y}" text-anchor="middle">C</text>
@@ -319,7 +347,10 @@
             <tr><th>w<sub>β</sub></th><td>${fmt(t.wb)} LE</td></tr>
             <tr><th>w<sub>γ</sub></th><td>${fmt(t.wc)} LE</td></tr>
           </table>
-          ${buildTriangleSVG(t)}
+          <div>
+            ${buildTriangleSVG(t)}
+            <p class="note">U = Umkreismittelpunkt (orange), I = Inkreismittelpunkt (grün)</p>
+          </div>
         </div>
         ${sizeNote}
       </div>`;
