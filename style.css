@@ -211,6 +211,13 @@ table.values th {
   width: 40%;
 }
 
+table.values th.subhead {
+  color: var(--text);
+  font-weight: 700;
+  padding-top: 0.9rem;
+  border-bottom-color: var(--text);
+}
+
 .note {
   font-size: 0.9rem;
   color: var(--muted);

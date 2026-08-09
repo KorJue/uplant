@@ -29,7 +29,20 @@
     const area = Math.sqrt(Math.max(0, s * (s - a) * (s - b) * (s - c)));
     const circumradius = a / (2 * Math.sin(toRad(alpha)));
     const inradius = area / s;
-    return { ...values, perimeter, area, circumradius, inradius };
+
+    const ha = (2 * area) / a;
+    const hb = (2 * area) / b;
+    const hc = (2 * area) / c;
+
+    const sa = 0.5 * Math.sqrt(2 * b * b + 2 * c * c - a * a);
+    const sb = 0.5 * Math.sqrt(2 * a * a + 2 * c * c - b * b);
+    const sc = 0.5 * Math.sqrt(2 * a * a + 2 * b * b - c * c);
+
+    const wa = (2 * b * c * Math.cos(toRad(alpha) / 2)) / (b + c);
+    const wb = (2 * a * c * Math.cos(toRad(beta) / 2)) / (a + c);
+    const wc = (2 * a * b * Math.cos(toRad(gamma) / 2)) / (a + b);
+
+    return { ...values, perimeter, area, circumradius, inradius, ha, hb, hc, sa, sb, sc, wa, wb, wc };
   }
 
   function solveSSS(a, b, c) {
@@ -293,6 +306,18 @@
             <tr><th>Fläche</th><td>${fmt(t.area)} LE²</td></tr>
             <tr><th>Umkreisradius</th><td>${fmt(t.circumradius)} LE</td></tr>
             <tr><th>Inkreisradius</th><td>${fmt(t.inradius)} LE</td></tr>
+            <tr><th colspan="2" class="subhead">Höhen</th></tr>
+            <tr><th>h<sub>a</sub></th><td>${fmt(t.ha)} LE</td></tr>
+            <tr><th>h<sub>b</sub></th><td>${fmt(t.hb)} LE</td></tr>
+            <tr><th>h<sub>c</sub></th><td>${fmt(t.hc)} LE</td></tr>
+            <tr><th colspan="2" class="subhead">Seitenhalbierende</th></tr>
+            <tr><th>s<sub>a</sub></th><td>${fmt(t.sa)} LE</td></tr>
+            <tr><th>s<sub>b</sub></th><td>${fmt(t.sb)} LE</td></tr>
+            <tr><th>s<sub>c</sub></th><td>${fmt(t.sc)} LE</td></tr>
+            <tr><th colspan="2" class="subhead">Winkelhalbierende</th></tr>
+            <tr><th>w<sub>α</sub></th><td>${fmt(t.wa)} LE</td></tr>
+            <tr><th>w<sub>β</sub></th><td>${fmt(t.wb)} LE</td></tr>
+            <tr><th>w<sub>γ</sub></th><td>${fmt(t.wc)} LE</td></tr>
           </table>
           ${buildTriangleSVG(t)}
         </div>
