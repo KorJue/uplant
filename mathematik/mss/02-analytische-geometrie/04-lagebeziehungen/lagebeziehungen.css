@@ -1,0 +1,304 @@
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  margin-bottom: 1.5rem;
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 1.2rem;
+}
+
+.card h3 {
+  font-size: 1.05rem;
+  margin: 1.25rem 0 0.5rem;
+}
+
+/* ---------- mathematische Notation ---------- */
+
+.vecarrow {
+  position: relative;
+  font-style: italic;
+  padding-top: 0.55em;
+  display: inline-block;
+}
+.vecarrow::before {
+  content: "\2192";
+  position: absolute;
+  top: -0.15em;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.62em;
+  font-style: normal;
+  line-height: 1;
+}
+
+.vec3 {
+  display: inline-flex;
+  flex-direction: column;
+  vertical-align: middle;
+  line-height: 1.05;
+  margin: 0 0.15em;
+}
+.vec3-row {
+  display: flex;
+  align-items: center;
+}
+.vec3-b {
+  font-size: 1.05em;
+  color: var(--muted);
+  width: 0.55em;
+}
+.vec3-num {
+  min-width: 1.7em;
+  text-align: center;
+  padding: 0 0.2em;
+  font-variant-numeric: tabular-nums;
+}
+
+.formula-block,
+.step-eq {
+  font-family: "Cambria Math", Cambria, "STIX Two Math", serif;
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  margin: 0.5rem 0;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* ---------- Kombinations-Auswahl ---------- */
+
+.combo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
+}
+
+.combo-btn {
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 0.9rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+  font-family: inherit;
+  color: var(--text);
+}
+.combo-btn:hover {
+  border-color: var(--accent);
+}
+.combo-btn.active {
+  border-color: var(--accent);
+  background: #eef2ff;
+  color: var(--accent-dark);
+}
+
+/* ---------- Eingabeformulare ---------- */
+
+.forms-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.vec-input {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.9rem;
+  min-width: 160px;
+}
+.vec-input-label {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--accent-dark);
+}
+.vec-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+.vec-input-idx {
+  width: 2.6em;
+  color: var(--muted);
+  font-family: "Cambria Math", Cambria, serif;
+}
+.vec-input-row input,
+.coord-fields input {
+  width: 5.5rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.line-input,
+.plane-input {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  flex: 1 1 320px;
+}
+.line-input > .group-label,
+.plane-input > .group-label {
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 0.75rem;
+  color: var(--accent-dark);
+}
+.line-input .vec-input,
+.plane-input .vec-input {
+  border: none;
+  padding: 0;
+  display: inline-block;
+  margin-right: 1.25rem;
+  min-width: 140px;
+  vertical-align: top;
+}
+
+.plane-mode-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+}
+.plane-mode-tabs label {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+}
+
+.coord-fields {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.coord-fields label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+}
+
+.actions {
+  margin-top: 1.25rem;
+}
+
+button {
+  padding: 0.6rem 1.4rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+#calc-btn {
+  background: var(--accent);
+  color: #fff;
+}
+#calc-btn:hover {
+  background: var(--accent-dark);
+}
+
+.error {
+  background: #fdecec;
+  color: #b3261e;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-top: 1rem;
+  font-weight: 600;
+}
+
+/* ---------- Ergebnis ---------- */
+
+.given-objects {
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  margin-bottom: 1rem;
+}
+.given-objects .formula-block {
+  background: transparent;
+  padding: 0.15rem 0;
+  margin: 0.15rem 0;
+}
+.given-objects .form-note {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin: 0.5rem 0 0.75rem;
+}
+
+.relation-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  background: #eef2ff;
+  color: var(--accent-dark);
+}
+.relation-badge.relation-windschief,
+.relation-badge.relation-liegt_nicht_auf,
+.relation-badge.relation-liegt_nicht_in,
+.relation-badge.relation-verschieden {
+  background: #fdecec;
+  color: #b3261e;
+}
+.relation-badge.relation-identisch,
+.relation-badge.relation-liegt_auf,
+.relation-badge.relation-liegt_in {
+  background: #e7f6ec;
+  color: #157347;
+}
+
+.extras-list {
+  margin: 0 0 1.25rem;
+  padding-left: 1.2rem;
+}
+.extras-list li {
+  margin-bottom: 0.25rem;
+}
+
+.method-block {
+  border-top: 1px dashed var(--border);
+  padding-top: 0.75rem;
+  margin-top: 0.75rem;
+}
+.step-text {
+  margin: 0.4rem 0;
+}
+
+/* ---------- Theorie ---------- */
+
+.theory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin: 1rem 0;
+}
+.theory-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+}
+.theory-card h3 {
+  margin-top: 0;
+  color: var(--accent-dark);
+}
+.theory-card p {
+  font-size: 0.92rem;
+  margin: 0.4rem 0;
+}

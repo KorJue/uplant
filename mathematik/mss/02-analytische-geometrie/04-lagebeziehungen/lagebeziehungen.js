@@ -1,0 +1,261 @@
+import { F, vec3 } from "./vectors.js";
+import { planeFromParam, planeFromCoord, planeFromNormal, pointPoint, pointLine, pointPlane, lineLine, planePlane, linePlane } from "./geometry.js";
+import * as N from "./notation.js";
+
+const els = {
+  comboGrid: document.getElementById("combo-grid"),
+  inputCard: document.getElementById("input-card"),
+  inputForms: document.getElementById("input-forms"),
+  calcBtn: document.getElementById("calc-btn"),
+  errorBox: document.getElementById("error-box"),
+  resultCard: document.getElementById("result-card"),
+  resultContent: document.getElementById("result-content"),
+};
+
+// ---------- Eingabe-Widget-Bausteine ----------
+
+function vecInputHTML(prefix, labelHtml, idxLabels, defaults) {
+  const rows = [0, 1, 2]
+    .map(
+      (i) => `
+      <div class="vec-input-row">
+        <span class="vec-input-idx">${idxLabels[i]} =</span>
+        <input type="text" inputmode="decimal" data-var="${prefix}${i + 1}" value="${defaults[i]}">
+      </div>`
+    )
+    .join("");
+  return `<div class="vec-input"><div class="vec-input-label">${labelHtml}</div>${rows}</div>`;
+}
+
+function pointInputHTML(prefix, label, defaults) {
+  return vecInputHTML(prefix, `Punkt ${label}`, [`x${N.sub(1)}`, `x${N.sub(2)}`, `x${N.sub(3)}`], defaults);
+}
+
+function vectorInputHTML(prefix, labelText, letter, defaults) {
+  return vecInputHTML(prefix, labelText, [`${letter}${N.sub(1)}`, `${letter}${N.sub(2)}`, `${letter}${N.sub(3)}`], defaults);
+}
+
+function lineInputHTML(prefix, label, sD, uD) {
+  return `<div class="line-input"><div class="group-label">Gerade ${label}</div>
+    ${vectorInputHTML(prefix + "s", "Stützvektor s", "s", sD)}
+    ${vectorInputHTML(prefix + "u", "Richtungsvektor u", "u", uD)}
+  </div>`;
+}
+
+function planeInputHTML(prefix, label, def) {
+  return `<div class="plane-input" data-plane="${prefix}">
+    <div class="group-label">Ebene ${label}</div>
+    <div class="plane-mode-tabs">
+      <label><input type="radio" name="${prefix}-mode" value="param" checked> Parameterform</label>
+      <label><input type="radio" name="${prefix}-mode" value="coord"> Koordinatenform</label>
+      <label><input type="radio" name="${prefix}-mode" value="normal"> Normalenform</label>
+    </div>
+    <div class="plane-mode-body" data-mode-body="param">
+      ${vectorInputHTML(prefix + "Ps", "Stützvektor s", "s", def.s)}
+      ${vectorInputHTML(prefix + "Pu", "Richtungsvektor u", "u", def.u)}
+      ${vectorInputHTML(prefix + "Pv", "Richtungsvektor v", "v", def.v)}
+    </div>
+    <div class="plane-mode-body" data-mode-body="coord" hidden>
+      <div class="coord-fields">
+        <label>a <input type="text" inputmode="decimal" data-var="${prefix}Ca" value="${def.coord[0]}"></label>
+        <label>b <input type="text" inputmode="decimal" data-var="${prefix}Cb" value="${def.coord[1]}"></label>
+        <label>c <input type="text" inputmode="decimal" data-var="${prefix}Cc" value="${def.coord[2]}"></label>
+        <label>= d <input type="text" inputmode="decimal" data-var="${prefix}Cd" value="${def.coord[3]}"></label>
+      </div>
+    </div>
+    <div class="plane-mode-body" data-mode-body="normal" hidden>
+      ${vectorInputHTML(prefix + "Ns", "Stützvektor s", "s", def.s)}
+      ${vectorInputHTML(prefix + "Nn", "Normalenvektor n", "n", def.n)}
+    </div>
+  </div>`;
+}
+
+// ---------- Werte auslesen ----------
+
+function readVal(container, varName) {
+  const el = container.querySelector(`[data-var="${varName}"]`);
+  if (!el) throw new Error(`Feld "${varName}" nicht gefunden.`);
+  try {
+    return F(el.value);
+  } catch (e) {
+    throw new Error(`Ungültiger Wert bei "${varName}": "${el.value}"`);
+  }
+}
+function readVec(container, prefix) {
+  return vec3(readVal(container, prefix + "1"), readVal(container, prefix + "2"), readVal(container, prefix + "3"));
+}
+function readLine(container, prefix) {
+  return { s: readVec(container, prefix + "s"), u: readVec(container, prefix + "u") };
+}
+function readPlane(container, prefix) {
+  const planeEl = container.querySelector(`.plane-input[data-plane="${prefix}"]`);
+  const mode = planeEl.querySelector(`input[name="${prefix}-mode"]:checked`).value;
+  let plane;
+  if (mode === "param") {
+    plane = planeFromParam(readVec(planeEl, prefix + "Ps"), readVec(planeEl, prefix + "Pu"), readVec(planeEl, prefix + "Pv"));
+  } else if (mode === "coord") {
+    plane = planeFromCoord(readVal(planeEl, prefix + "Ca"), readVal(planeEl, prefix + "Cb"), readVal(planeEl, prefix + "Cc"), readVal(planeEl, prefix + "Cd"));
+  } else {
+    plane = planeFromNormal(readVec(planeEl, prefix + "Ns"), readVec(planeEl, prefix + "Nn"));
+  }
+  return { plane, mode };
+}
+
+// ---------- Darstellung gegebener Objekte ----------
+
+function describePointHTML(label, p) {
+  return `<div class="formula-block">${N.pointHTML(label, p)}</div>`;
+}
+function describeLineHTML(label, s, u) {
+  return `<div class="formula-block">${N.lineHTML(label, s, u)}</div>`;
+}
+function describePlaneHTML(label, plane, givenMode) {
+  const modeNote = { param: "Parameterform", coord: "Koordinatenform", normal: "Normalenform" }[givenMode];
+  return `
+    <p class="form-note">Ebene ${label} — gegeben in ${modeNote}, automatisch in die beiden anderen Formen umgerechnet:</p>
+    <div class="formula-block">${N.planeParamHTML(label, plane.s, plane.u, plane.v)}</div>
+    <div class="formula-block">${N.planeCoordHTML(label, plane.a, plane.b, plane.c, plane.d)}</div>
+    <div class="formula-block">${N.planeNormalHTML(label, plane.s, plane.n)}</div>
+  `;
+}
+
+// ---------- Kombinationen ----------
+
+const COMBOS = {
+  "punkt-punkt": {
+    label: "Punkt – Punkt",
+    build: () => `<div class="forms-row">${pointInputHTML("P", "P", [1, 2, 3])}${pointInputHTML("Q", "Q", [4, 5, 6])}</div>`,
+    compute: (c) => {
+      const P = readVec(c, "P");
+      const Q = readVec(c, "Q");
+      return { given: describePointHTML("P", P) + describePointHTML("Q", Q), result: pointPoint(P, Q) };
+    },
+  },
+  "punkt-gerade": {
+    label: "Punkt – Gerade",
+    build: () => `<div class="forms-row">${pointInputHTML("P", "P", [2, 1, 1])}${lineInputHTML("g", "g", [1, 0, 0], [1, 1, 1])}</div>`,
+    compute: (c) => {
+      const P = readVec(c, "P");
+      const { s, u } = readLine(c, "g");
+      return { given: describePointHTML("P", P) + describeLineHTML("g", s, u), result: pointLine(P, s, u) };
+    },
+  },
+  "punkt-ebene": {
+    label: "Punkt – Ebene",
+    build: () =>
+      `<div class="forms-row">${pointInputHTML("P", "P", [5, 5, 1])}${planeInputHTML("E", "E", {
+        s: [0, 0, 0],
+        u: [1, 0, 0],
+        v: [0, 1, 0],
+        coord: [0, 0, 1, 0],
+        n: [0, 0, 1],
+      })}</div>`,
+    compute: (c) => {
+      const P = readVec(c, "P");
+      const { plane, mode } = readPlane(c, "E");
+      return { given: describePointHTML("P", P) + describePlaneHTML("E", plane, mode), result: pointPlane(P, plane) };
+    },
+  },
+  "gerade-gerade": {
+    label: "Gerade – Gerade",
+    build: () => `<div class="forms-row">${lineInputHTML("g", "g", [0, 0, 0], [1, 0, 0])}${lineInputHTML("h", "h", [0, 1, 1], [0, 1, 0])}</div>`,
+    compute: (c) => {
+      const g = readLine(c, "g");
+      const h = readLine(c, "h");
+      return { given: describeLineHTML("g", g.s, g.u) + describeLineHTML("h", h.s, h.u), result: lineLine(g.s, g.u, h.s, h.u) };
+    },
+  },
+  "gerade-ebene": {
+    label: "Gerade – Ebene",
+    build: () =>
+      `<div class="forms-row">${lineInputHTML("g", "g", [0, 0, 5], [0, 0, -1])}${planeInputHTML("E", "E", {
+        s: [0, 0, 0],
+        u: [1, 0, 0],
+        v: [0, 1, 0],
+        coord: [0, 0, 1, 0],
+        n: [0, 0, 1],
+      })}</div>`,
+    compute: (c) => {
+      const g = readLine(c, "g");
+      const { plane, mode } = readPlane(c, "E");
+      return { given: describeLineHTML("g", g.s, g.u) + describePlaneHTML("E", plane, mode), result: linePlane(g.s, g.u, plane) };
+    },
+  },
+  "ebene-ebene": {
+    label: "Ebene – Ebene",
+    build: () =>
+      `<div class="forms-row">${planeInputHTML("E1", "E1", { s: [0, 0, 0], u: [1, -1, 0], v: [1, 0, -1], coord: [1, 1, 1, 0], n: [1, 1, 1] })}${planeInputHTML(
+        "E2",
+        "E2",
+        { s: [0, 0, 0], u: [1, 1, 0], v: [0, 0, 1], coord: [1, -1, 0, 0], n: [1, -1, 0] }
+      )}</div>`,
+    compute: (c) => {
+      const { plane: E1, mode: m1 } = readPlane(c, "E1");
+      const { plane: E2, mode: m2 } = readPlane(c, "E2");
+      return { given: describePlaneHTML("E1", E1, m1) + describePlaneHTML("E2", E2, m2), result: planePlane(E1, E2) };
+    },
+  },
+};
+
+let currentCombo = null;
+
+function selectCombo(key) {
+  currentCombo = key;
+  [...els.comboGrid.children].forEach((btn) => btn.classList.toggle("active", btn.dataset.combo === key));
+  els.inputForms.innerHTML = COMBOS[key].build();
+  els.inputCard.hidden = false;
+  els.resultCard.hidden = true;
+  els.errorBox.hidden = true;
+}
+
+els.comboGrid.innerHTML = Object.entries(COMBOS)
+  .map(([key, c]) => `<button type="button" class="combo-btn" data-combo="${key}">${c.label}</button>`)
+  .join("");
+[...els.comboGrid.children].forEach((btn) => btn.addEventListener("click", () => selectCombo(btn.dataset.combo)));
+
+// Umschalten der Ebenen-Eingabeform (Parameter-/Koordinaten-/Normalenform)
+els.inputForms.addEventListener("change", (e) => {
+  const radio = e.target.closest('input[type="radio"][name$="-mode"]');
+  if (!radio) return;
+  const planeEl = radio.closest(".plane-input");
+  planeEl.querySelectorAll(".plane-mode-body").forEach((body) => {
+    body.hidden = body.dataset.modeBody !== radio.value;
+  });
+});
+
+// ---------- Ergebnis rendern ----------
+
+function renderStep(s) {
+  return s.kind === "eq" ? `<div class="step-eq">${s.html}</div>` : `<p class="step-text">${s.html}</p>`;
+}
+function renderMethod(m) {
+  return `<h3>${m.title}</h3>${m.steps.map(renderStep).join("")}`;
+}
+
+function renderResult(given, result) {
+  let html = `<div class="given-objects">${given}</div>`;
+  html += `<div class="relation-badge relation-${result.relation}">${result.relationLabel}</div>`;
+  if (result.extras.length) {
+    html += `<ul class="extras-list">${result.extras.map((e) => `<li><strong>${e.label}:</strong> ${e.value}</li>`).join("")}</ul>`;
+  }
+  html += `<div class="method-block">${renderMethod(result.methodA)}</div>`;
+  html += `<div class="method-block">${renderMethod(result.methodB)}</div>`;
+  els.resultContent.innerHTML = html;
+}
+
+els.calcBtn.addEventListener("click", () => {
+  els.errorBox.hidden = true;
+  if (!currentCombo) return;
+  try {
+    const { given, result } = COMBOS[currentCombo].compute(els.inputForms);
+    renderResult(given, result);
+    els.resultCard.hidden = false;
+  } catch (err) {
+    console.error(err);
+    els.errorBox.textContent = err && err.message ? err.message : String(err);
+    els.errorBox.hidden = false;
+    els.resultCard.hidden = true;
+  }
+});
+
+selectCombo("gerade-gerade");

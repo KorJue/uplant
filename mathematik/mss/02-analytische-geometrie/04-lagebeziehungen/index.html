@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lagebeziehungen</title>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lagebeziehungen.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">MSS</a><span class="sep">/</span>
+  <a href="../index.html">02 Analytische Geometrie / Lineare Algebra</a><span class="sep">/</span>
+  04 Lagebeziehungen
+</nav>
+<header class="page-header">
+  <h1>Lagebeziehungen</h1>
+  <p>Bestimmt die Lagebeziehung zweier Punkte, Geraden und/oder Ebenen — mit vollständigem Lösungsweg über ein lineares Gleichungssystem <em>und</em> über einen Vektorvergleich. Läuft vollständig lokal im Browser, exakte Bruchrechnung, keine externen Dienste.</p>
+</header>
+
+<main class="menu-main">
+  <section class="card">
+    <h2>1. Objekte auswählen</h2>
+    <div class="combo-grid" id="combo-grid"></div>
+  </section>
+
+  <section class="card" id="input-card" hidden>
+    <h2>2. Eingabe</h2>
+    <div id="input-forms"></div>
+    <div class="actions">
+      <button type="button" id="calc-btn">Berechnen</button>
+    </div>
+    <p class="error" id="error-box" hidden></p>
+  </section>
+
+  <section class="card" id="result-card" hidden>
+    <h2>3. Ergebnis</h2>
+    <div id="result-content"></div>
+  </section>
+
+  <section class="card">
+    <h2>Welche Darstellung wann?</h2>
+    <p>Eine Ebene lässt sich immer in allen drei Formen angeben — je nach Aufgabe ist aber eine Form deutlich schneller. Der Rechner rechnet automatisch in alle drei Formen um und nutzt für die beiden Lösungswege gezielt die jeweils günstigste.</p>
+    <div class="theory-grid">
+      <div class="theory-card">
+        <h3>Parameterform</h3>
+        <p>Günstig, um Punkte der Ebene zu erzeugen und für Punkt- bzw. Geradenproben per linearem Gleichungssystem — man setzt die gegebenen Koordinaten direkt ein und löst nach den Parametern auf.</p>
+      </div>
+      <div class="theory-card">
+        <h3>Koordinatenform</h3>
+        <p>Am schnellsten für Punktproben (einfaches Einsetzen, kein LGS nötig), für Lagebeziehungen mit anderen Ebenen (LGS aus wenigen Gleichungen) und für Abstandsberechnungen, da der Normalenvektor direkt als (a, b, c) abzulesen ist.</p>
+      </div>
+      <div class="theory-card">
+        <h3>Normalenform</h3>
+        <p>Didaktisch die Brücke zwischen Parameter- und Koordinatenform: Sie macht anschaulich, warum der Normalenvektor senkrecht auf jedem Verbindungsvektor innerhalb der Ebene steht. Rechnerisch ist sie durch Ausmultiplizieren des Skalarprodukts direkt in die Koordinatenform überführbar — in Rechnungen daher meist nur ein Zwischenschritt.</p>
+      </div>
+    </div>
+    <p><strong>Faustregeln je Fall:</strong></p>
+    <ul>
+      <li><strong>Punkt–Ebene:</strong> Koordinatenform für den schnellen Weg (Einsetzen), Parameterform für den Kontrollweg über ein LGS.</li>
+      <li><strong>Gerade–Ebene:</strong> Die Gerade liegt ohnehin nur in Parameterform vor; die Koordinatenform der Ebene macht das Einsetzverfahren zu einer einzigen Gleichung mit einer Unbekannten.</li>
+      <li><strong>Ebene–Ebene:</strong> Koordinatenform für das Gleichungssystem (Verfahren 1); die Normalenvektoren für das schnelle Kreuzprodukt-Verfahren (Verfahren 2) — ganz ohne Gleichungssystem.</li>
+      <li><strong>Gerade–Gerade:</strong> Hier existiert nur die Parameterform. Das Spatprodukt aus den Richtungsvektoren und dem Verbindungsvektor der Stützpunkte entscheidet blitzschnell "windschief oder nicht", das Gleichsetzungsverfahren liefert zusätzlich den Schnittpunkt.</li>
+    </ul>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 02 Analytische Geometrie / Lineare Algebra</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lagebeziehungen.js"></script>
+</body>
+</html>
