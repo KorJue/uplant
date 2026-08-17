@@ -15,8 +15,8 @@ import {
   scalarTriple,
   isParallel,
   squaredLength,
-} from "./vectors.js?v=8";
-import * as N from "./notation.js?v=8";
+} from "./vectors.js?v=9";
+import * as N from "./notation.js?v=9";
 
 function T(html) {
   return { kind: "text", html };
@@ -313,7 +313,8 @@ export function lineLine(s1, u1, s2, u2) {
     if (ok) {
       relation = "schneidend";
       intersection = vAdd(s1, vScale(u1, r));
-      stepsA.push(T("Die Probe stimmt — die Geraden schneiden sich in genau einem Punkt."));
+      stepsA.push(T("Die Probe stimmt — die Geraden schneiden sich in genau einem Punkt. Einsetzen von r in die Geradengleichung von g liefert den Schnittpunkt:"));
+      stepsA.push(E(`S = ${N.vecColFromFractions(s1)} + ${N.fmt(r)}·${N.vecColFromFractions(u1)} = ${N.vecColFromFractions(intersection)}`));
     } else {
       relation = "windschief";
       stepsA.push(T("Die Probe stimmt nicht — es gibt kein gemeinsames Paar (r,t). Die Geraden sind windschief."));
