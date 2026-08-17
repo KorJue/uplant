@@ -1,6 +1,16 @@
-import { F, vec3 } from "./vectors.js?v=7";
-import { planeFromParam, planeFromCoord, planeFromNormal, pointPoint, pointLine, pointPlane, lineLine, planePlane, linePlane } from "./geometry.js?v=7";
-import * as N from "./notation.js?v=7";
+import { F, vec3 } from "./vectors.js?v=8";
+import { planeFromParam, planeFromCoord, planeFromNormal, pointPoint, pointLine, pointPlane, lineLine, planePlane, linePlane } from "./geometry.js?v=8";
+import * as N from "./notation.js?v=8";
+import {
+  toNum3,
+  toNumPlane,
+  scenePointPoint,
+  scenePointLine,
+  scenePointPlane,
+  sceneLineLine,
+  sceneLinePlane,
+  scenePlanePlane,
+} from "./viz.js?v=8";
 
 const els = {
   typeGrid1: document.getElementById("type-grid-1"),
@@ -156,7 +166,12 @@ const COMBOS = {
     compute: (c) => {
       const P = readVec(c, "P");
       const Q = readVec(c, "Q");
-      return { given: describePointHTML("P", P) + describePointHTML("Q", Q), result: pointPoint(P, Q) };
+      const result = pointPoint(P, Q);
+      return {
+        given: describePointHTML("P", P) + describePointHTML("Q", Q),
+        result,
+        scene: scenePointPoint(toNum3(P), toNum3(Q), result),
+      };
     },
   },
   "punkt-gerade": {
@@ -165,7 +180,12 @@ const COMBOS = {
     compute: (c) => {
       const P = readVec(c, "P");
       const { s, u } = readLine(c, "g");
-      return { given: describePointHTML("P", P) + describeLineHTML("g", s, u), result: pointLine(P, s, u) };
+      const result = pointLine(P, s, u);
+      return {
+        given: describePointHTML("P", P) + describeLineHTML("g", s, u),
+        result,
+        scene: scenePointLine(toNum3(P), toNum3(s), toNum3(u), result),
+      };
     },
   },
   "punkt-ebene": {
@@ -181,7 +201,12 @@ const COMBOS = {
     compute: (c) => {
       const P = readVec(c, "P");
       const { plane, mode } = readPlane(c, "E");
-      return { given: describePointHTML("P", P) + describePlaneHTML("E", plane, mode), result: pointPlane(P, plane) };
+      const result = pointPlane(P, plane);
+      return {
+        given: describePointHTML("P", P) + describePlaneHTML("E", plane, mode),
+        result,
+        scene: scenePointPlane(toNum3(P), toNumPlane(plane), result),
+      };
     },
   },
   "gerade-gerade": {
@@ -190,9 +215,11 @@ const COMBOS = {
     compute: (c) => {
       const g = readLine(c, "g");
       const h = readLine(c, "h");
+      const result = lineLine(g.s, g.u, h.s, h.u);
       return {
         given: describeLineHTML("g", g.s, g.u, "r") + describeLineHTML("h", h.s, h.u, "t"),
-        result: lineLine(g.s, g.u, h.s, h.u),
+        result,
+        scene: sceneLineLine(toNum3(g.s), toNum3(g.u), toNum3(h.s), toNum3(h.u), result),
       };
     },
   },
@@ -209,9 +236,11 @@ const COMBOS = {
     compute: (c) => {
       const g = readLine(c, "g");
       const { plane, mode } = readPlane(c, "E");
+      const result = linePlane(g.s, g.u, plane);
       return {
         given: describeLineHTML("g", g.s, g.u) + describePlaneHTML("E", plane, mode, "t", "u"),
-        result: linePlane(g.s, g.u, plane),
+        result,
+        scene: sceneLinePlane(toNum3(g.s), toNum3(g.u), toNumPlane(plane), result),
       };
     },
   },
@@ -232,9 +261,11 @@ const COMBOS = {
     compute: (c) => {
       const { plane: E1, mode: m1 } = readPlane(c, "E1");
       const { plane: E2, mode: m2 } = readPlane(c, "E2");
+      const result = planePlane(E1, E2, m1, m2);
       return {
         given: describePlaneGivenHTML("E1", E1, m1, "r", "s") + describePlaneGivenHTML("E2", E2, m2, "t", "u"),
-        result: planePlane(E1, E2, m1, m2),
+        result,
+        scene: scenePlanePlane(toNumPlane(E1), toNumPlane(E2), result),
       };
     },
   },
@@ -315,8 +346,9 @@ function renderMethod(m) {
   return `<h3>${m.title}</h3>${m.steps.map(renderStep).join("")}`;
 }
 
-function renderResult(given, result) {
+function renderResult(given, result, scene) {
   let html = `<div class="given-objects">${given}</div>`;
+  if (scene) html += scene;
   html += `<div class="relation-badge relation-${result.relation}">${result.relationLabel}</div>`;
   if (result.extras.length) {
     html += `<ul class="extras-list">${result.extras.map((e) => `<li><strong>${e.label}:</strong> ${e.value}</li>`).join("")}</ul>`;
@@ -329,8 +361,8 @@ els.calcBtn.addEventListener("click", () => {
   els.errorBox.hidden = true;
   if (!currentCombo) return;
   try {
-    const { given, result } = COMBOS[currentCombo].compute(els.inputForms);
-    renderResult(given, result);
+    const { given, result, scene } = COMBOS[currentCombo].compute(els.inputForms);
+    renderResult(given, result, scene);
     els.resultCard.hidden = false;
   } catch (err) {
     console.error(err);
