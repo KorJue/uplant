@@ -302,3 +302,27 @@ button {
   font-size: 0.92rem;
   margin: 0.4rem 0;
 }
+
+:root[data-theme="dark"] .combo-btn.active {
+  background: #1e2a4a;
+}
+:root[data-theme="dark"] .error {
+  background: #3a1f1f;
+  color: #ff8a8a;
+}
+:root[data-theme="dark"] .relation-badge {
+  background: #1e2a4a;
+}
+:root[data-theme="dark"] .relation-badge.relation-windschief,
+:root[data-theme="dark"] .relation-badge.relation-liegt_nicht_auf,
+:root[data-theme="dark"] .relation-badge.relation-liegt_nicht_in,
+:root[data-theme="dark"] .relation-badge.relation-verschieden {
+  background: #3a1f1f;
+  color: #ff8a8a;
+}
+:root[data-theme="dark"] .relation-badge.relation-identisch,
+:root[data-theme="dark"] .relation-badge.relation-liegt_auf,
+:root[data-theme="dark"] .relation-badge.relation-liegt_in {
+  background: #17321f;
+  color: #6fd68f;
+}
