@@ -77,9 +77,9 @@
 <main class="menu-main">
   <section class="card" id="access-card">
     <h2>Zugang</h2>
-    <p>Gib deinen Code ein, um die passenden Bereiche freizuschalten.</p>
+    <p>Gib deinen 4-stelligen Code ein, um den passenden Bereich freizuschalten.</p>
     <form class="access-form" id="access-form">
-      <input type="text" id="access-code" placeholder="Code eingeben" autocomplete="off" autocapitalize="characters">
+      <input type="text" id="access-code" placeholder="Code" autocomplete="off" autocapitalize="characters" maxlength="4">
       <button type="submit">Freischalten</button>
     </form>
     <p class="access-error" id="access-error" hidden>Unbekannter Code.</p>
@@ -92,10 +92,15 @@
   </div>
 
   <div class="menu-grid" id="menu-grid">
-    <a class="menu-card" data-section="mathematik" href="mathematik/index.html" hidden>
-      <span class="menu-icon">📐</span>
-      <h2>Mathematik</h2>
-      <p>Rechner und Werkzeuge für den Mathematikunterricht, nach Klassenstufe sortiert.</p>
+    <a class="menu-card" data-section="klasse-10" href="mathematik/klasse-10/index.html" hidden>
+      <span class="menu-icon">🔟</span>
+      <h2>Klasse 10</h2>
+      <p>Themen und Rechner für die 10. Klasse.</p>
+    </a>
+    <a class="menu-card" data-section="mss" href="mathematik/mss/index.html" hidden>
+      <span class="menu-icon">🎓</span>
+      <h2>MSS</h2>
+      <p>Themen und Rechner für die Mainzer Studienstufe (Oberstufe).</p>
     </a>
     <a class="menu-card" data-section="office-tools" href="office-tools/index.html" hidden>
       <span class="menu-icon">🗂️</span>
@@ -115,12 +120,14 @@
   "use strict";
   var STORAGE_KEY = "uplant-access";
 
-  // Zugangscodes → welche Bereiche sie freischalten. Hier anpassen/ergänzen.
-  // Achtung: nur eine Navigationshilfe, keine echte Zugriffskontrolle (siehe Hinweis im Text).
+  // Zugangscodes (jeweils 4-stellig, alphanumerisch) → welche Bereiche sie freischalten.
+  // Hier anpassen/ergänzen. Achtung: nur eine Navigationshilfe, keine echte
+  // Zugriffskontrolle (siehe Hinweis im Text).
   var CODES = {
-    MATHE: ["mathematik"],
-    OFFICE: ["office-tools"],
-    ALLE: ["mathematik", "office-tools"],
+    KL10: ["klasse-10"],
+    MSS1: ["mss"],
+    OFF1: ["office-tools"],
+    ALLE: ["klasse-10", "mss", "office-tools"],
   };
 
   var form = document.getElementById("access-form");
@@ -131,7 +138,7 @@
   var lockAgainBtn = document.getElementById("lock-again");
   var cards = document.querySelectorAll(".menu-card[data-section]");
 
-  var LABELS = { mathematik: "Mathematik", "office-tools": "Office-Tools" };
+  var LABELS = { "klasse-10": "Klasse 10", mss: "MSS", "office-tools": "Office-Tools" };
 
   function getUnlocked() {
     try {
