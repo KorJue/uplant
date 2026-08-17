@@ -14,8 +14,8 @@ import {
   scalarTriple,
   isParallel,
   squaredLength,
-} from "./vectors.js?v=4";
-import * as N from "./notation.js?v=4";
+} from "./vectors.js?v=5";
+import * as N from "./notation.js?v=5";
 
 function T(html) {
   return { kind: "text", html };
