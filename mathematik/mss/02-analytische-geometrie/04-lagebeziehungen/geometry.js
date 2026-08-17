@@ -1,5 +1,6 @@
 // Lagebeziehungen zwischen Punkten, Geraden und Ebenen im R^3 — Klassifikation, Kennwerte
-// (Schnittpunkt/-gerade, Abstand) und zwei vollständig ausformulierte Lösungswege je Fall.
+// (Schnittpunkt/-gerade, Schnittwinkel, Abstand) und zwei bis drei vollständig ausformulierte
+// Lösungswege je Fall.
 
 import {
   F,
@@ -14,14 +15,30 @@ import {
   scalarTriple,
   isParallel,
   squaredLength,
-} from "./vectors.js?v=5";
-import * as N from "./notation.js?v=5";
+} from "./vectors.js?v=6";
+import * as N from "./notation.js?v=6";
 
 function T(html) {
   return { kind: "text", html };
 }
 function E(html) {
   return { kind: "eq", html };
+}
+
+// Schnittwinkel zwischen zwei Vektoren über cos φ = |a·b| / (|a||b|) — der Betrag im Zähler
+// sorgt dafür, dass immer der spitze Winkel (0°–90°) zwischen den Geraden/Ebenen herauskommt,
+// unabhängig von der zufälligen Orientierung der Richtungs-/Normalenvektoren. Da Wurzel und
+// Arkuskosinus algebraisch nicht exakt sind, wird hier (anders als sonst auf der Seite) mit
+// Fließkommazahlen gerechnet, wie auch schon bei Abstandsangaben.
+function angleDegCos(a, b) {
+  const cosPhi = Math.abs(dot(a, b).toNumber()) / (Math.sqrt(squaredLength(a).toNumber()) * Math.sqrt(squaredLength(b).toNumber()));
+  return (Math.acos(Math.max(-1, Math.min(1, cosPhi))) * 180) / Math.PI;
+}
+// Schnittwinkel zwischen Gerade und Ebene über sin φ = |u·n| / (|u||n|) (Winkel zwischen
+// Richtungs- und Normalenvektor ist der Komplementwinkel zum eigentlichen Schnittwinkel).
+function angleDegSin(a, b) {
+  const sinPhi = Math.abs(dot(a, b).toNumber()) / (Math.sqrt(squaredLength(a).toNumber()) * Math.sqrt(squaredLength(b).toNumber()));
+  return (Math.asin(Math.max(-1, Math.min(1, sinPhi))) * 180) / Math.PI;
 }
 
 // ---------- Ebene: Formumwandlungen ----------
@@ -326,7 +343,14 @@ export function lineLine(s1, u1, s2, u2) {
   }
 
   const extras = [];
-  if (relation === "schneidend" && intersection) extras.push({ label: "Schnittpunkt", value: N.pointHTML("S", intersection) });
+  if (relation === "schneidend" && intersection) {
+    extras.push({ label: "Schnittpunkt", value: N.pointHTML("S", intersection) });
+    const angleDeg = angleDegCos(u1, u2);
+    extras.push({
+      label: "Schnittwinkel",
+      value: `cos(φ) = |${N.vecArrow(`v${N.sub(1)}`)} · ${N.vecArrow(`v${N.sub(2)}`)}| / (|${N.vecArrow(`v${N.sub(1)}`)}| · |${N.vecArrow(`v${N.sub(2)}`)}|) ⇒ φ ≈ ${N.fmtApprox(angleDeg)}°`,
+    });
+  }
   if (relation === "parallel") {
     const distSq = squaredLength(cross(w, u1)).div(squaredLength(u1));
     extras.push({ label: "Abstand", value: `d(g,h) ≈ ${N.fmtApprox(Math.sqrt(distSq.toNumber()))} LE` });
@@ -527,6 +551,11 @@ export function planePlane(E1, E2) {
   const extras = [];
   if (relation === "schneidend" && schnittgerade) {
     extras.push({ label: "Schnittgerade", value: N.lineHTML("h", schnittgerade.s, schnittgerade.u, "k") });
+    const angleDeg = angleDegCos(E1.n, E2.n);
+    extras.push({
+      label: "Schnittwinkel",
+      value: `cos(φ) = |${N.vecArrow(`n${N.sub(1)}`)} · ${N.vecArrow(`n${N.sub(2)}`)}| / (|${N.vecArrow(`n${N.sub(1)}`)}| · |${N.vecArrow(`n${N.sub(2)}`)}|) ⇒ φ ≈ ${N.fmtApprox(angleDeg)}°`,
+    });
   }
   if (relation === "parallel") {
     const distNum = Math.abs(E1.a.mul(E2.s[0]).add(E1.b.mul(E2.s[1])).add(E1.c.mul(E2.s[2])).sub(E1.d).toNumber()) / Math.sqrt(squaredLength(E1.n).toNumber());
@@ -597,7 +626,14 @@ export function linePlane(s, u, plane) {
   }
 
   const extras = [];
-  if (relation === "schneidend") extras.push({ label: "Schnittpunkt", value: N.pointHTML("S", point) });
+  if (relation === "schneidend") {
+    extras.push({ label: "Schnittpunkt", value: N.pointHTML("S", point) });
+    const angleDeg = angleDegSin(u, plane.n);
+    extras.push({
+      label: "Schnittwinkel",
+      value: `sin(φ) = |${N.vecArrow("v")} · ${N.vecArrow("n")}| / (|${N.vecArrow("v")}| · |${N.vecArrow("n")}|) ⇒ φ ≈ ${N.fmtApprox(angleDeg)}°`,
+    });
+  }
   if (relation === "parallel") {
     const distNum = Math.abs(plane.d.sub(nDotS).toNumber()) / Math.sqrt(squaredLength(plane.n).toNumber());
     extras.push({ label: "Abstand", value: `d(g,E) ≈ ${N.fmtApprox(distNum)} LE` });
