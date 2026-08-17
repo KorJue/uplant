@@ -15,8 +15,8 @@ import {
   scalarTriple,
   isParallel,
   squaredLength,
-} from "./vectors.js?v=10";
-import * as N from "./notation.js?v=10";
+} from "./vectors.js?v=11";
+import * as N from "./notation.js?v=11";
 
 function T(html) {
   return { kind: "text", html };
@@ -294,29 +294,55 @@ export function pointPlane(P, plane) {
 // ---------- 4. Gerade – Gerade ----------
 
 export function lineLine(s1, u1, s2, u2) {
-  const parU = isParallel(u1, u2);
   const w = vSub(s2, s1);
   const spat = scalarTriple(u1, u2, w);
 
-  const stepsA = [
-    T(`<strong>Verfahren 1 (Gleichsetzungsverfahren):</strong> Gleichsetzen der beiden Geradengleichungen liefert ein LGS für r und t.`),
-    E([0, 1, 2].map((i) => `${["I", "II", "III"][i]}: ${N.fmt(s1[i])} + r·${N.fmt(u1[i])} = ${N.fmt(s2[i])} + t·${N.fmt(u2[i])}`).join("<br>")),
-  ];
+  const v1D = N.vecArrow(`v${N.sub(1)}`);
+  const v2D = N.vecArrow(`v${N.sub(2)}`);
+  const s1s2D = N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`);
 
+  // ---- Verfahren 1, Schritt 1: Richtungsvektoren auf lineare Unabhängigkeit bzw. Kollinearität
+  // vergleichen — der Faktor k wird aus einer Komponente von v1 bestimmt und mit den beiden
+  // anderen Komponenten von v2 überprüft.
+  const stepsA = [
+    T(
+      `<strong>Verfahren 1 (Gleichsetzungsverfahren):</strong> Zunächst werden die Richtungsvektoren ${v1D} und ${v2D} auf lineare Unabhängigkeit bzw. Kollinearität untersucht.`
+    ),
+  ];
+  const idx0u = [0, 1, 2].find((i) => !u1[i].isZero());
+  const kDir = u2[idx0u].div(u1[idx0u]);
+  stepsA.push(E(`${VN[idx0u]}: ${N.fmt(u2[idx0u])} = k·${N.fmt(u1[idx0u])} ⇒ k = ${N.fmt(kDir)}`));
+  const dirChecks = [];
+  let parU = true;
+  for (const i of [0, 1, 2]) {
+    if (i === idx0u) continue;
+    const lhs = u1[i].mul(kDir);
+    const ok = lhs.equals(u2[i]);
+    dirChecks.push(`${VN[i]}: k·${N.fmt(u1[i])} = ${N.fmt(lhs)} ${ok ? "=" : "≠"} ${N.fmt(u2[i])} ${ok ? "✓" : "✗"}`);
+    if (!ok) parU = false;
+  }
+  stepsA.push(E(dirChecks.join("<br>")));
+  stepsA.push(
+    T(
+      parU
+        ? `Beide Kontrollen stimmen — ${v1D} und ${v2D} sind kollinear (linear abhängig).`
+        : `Mindestens eine Kontrolle stimmt nicht — ${v1D} und ${v2D} sind linear unabhängig.`
+    )
+  );
+
+  // ---- Verfahren 1, Schritt 2: je nach Ergebnis von Schritt 1 wird der Verbindungsvektor der
+  // Stützpunkte s1s2 mit v1 (kollinearer Fall) bzw. mit v1 und v2 (linear unabhängiger Fall)
+  // verglichen.
   let relation,
     intersection = null;
   if (parU) {
-    // Grundkurs-geeigneter Ersatz für den früheren Kreuzprodukt-Check: der Faktor k, mit dem der
-    // Verbindungsvektor der Stützpunkte ein Vielfaches von v1 sein müsste, wird aus einer
-    // Komponente von v1 bestimmt und mit den beiden anderen Komponenten überprüft — genau das
-    // Vorgehen, das auch schon beim Lösen des LGS oben verwendet wird.
-    const idx0 = [0, 1, 2].find((i) => !u1[i].isZero());
-    const kVal = w[idx0].div(u1[idx0]);
     stepsA.push(
       T(
-        `Die Richtungsvektoren ${N.vecArrow(`v${N.sub(1)}`)} und ${N.vecArrow(`v${N.sub(2)}`)} sind parallel (linear abhängig) — zwei der drei Gleichungen legen r und t nicht mehr eindeutig fest. Stattdessen wird geprüft, ob der Verbindungsvektor der Stützpunkte ${N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`)} ebenfalls ein Vielfaches von ${N.vecArrow(`v${N.sub(1)}`)} ist: Aus einer Komponente ergibt sich der Faktor k, die beiden anderen Komponenten müssen dazu passen:`
+        `Da die Richtungsvektoren kollinear sind, wird geprüft, ob der Verbindungsvektor der Stützpunkte ${s1s2D} ebenfalls ein Vielfaches von ${v1D} ist: Aus einer Komponente ergibt sich der Faktor k, die beiden anderen Komponenten müssen dazu passen:`
       )
     );
+    const idx0 = idx0u;
+    const kVal = w[idx0].div(u1[idx0]);
     stepsA.push(E(`${VN[idx0]}: ${N.fmt(w[idx0])} = k·${N.fmt(u1[idx0])} ⇒ k = ${N.fmt(kVal)}`));
     let identical = true;
     const checkLines = [];
@@ -332,11 +358,19 @@ export function lineLine(s1, u1, s2, u2) {
     stepsA.push(
       T(
         identical
-          ? `Beide Kontrollen stimmen — der Verbindungsvektor ist ein Vielfaches von ${N.vecArrow(`v${N.sub(1)}`)}, die Stützpunkte liegen auf derselben Geraden.`
-          : `Mindestens eine Kontrolle stimmt nicht — der Verbindungsvektor ist kein Vielfaches von ${N.vecArrow(`v${N.sub(1)}`)}, die Geraden sind echt parallel, aber verschieden.`
+          ? `Beide Kontrollen stimmen — der Verbindungsvektor ist ein Vielfaches von ${v1D}, die Stützpunkte liegen auf derselben Geraden.`
+          : `Mindestens eine Kontrolle stimmt nicht — der Verbindungsvektor ist kein Vielfaches von ${v1D}, die Geraden sind echt parallel, aber verschieden.`
       )
     );
   } else {
+    stepsA.push(
+      T(
+        `Da die Richtungsvektoren linear unabhängig sind, wird geprüft, ob sich der Verbindungsvektor ${s1s2D} als Linearkombination von ${v1D} und ${v2D} schreiben lässt. Gleichsetzen der beiden Geradengleichungen liefert dafür ein LGS für r und t:`
+      )
+    );
+    stepsA.push(
+      E([0, 1, 2].map((i) => `${["I", "II", "III"][i]}: ${N.fmt(s1[i])} + r·${N.fmt(u1[i])} = ${N.fmt(s2[i])} + t·${N.fmt(u2[i])}`).join("<br>"))
+    );
     const solved = solveLinear2x2(u1, vScale(u2, -1), w);
     const { x: r, y: t, i, j } = solved;
     const k = [0, 1, 2].find((x) => x !== i && x !== j);
@@ -365,20 +399,18 @@ export function lineLine(s1, u1, s2, u2) {
     T(
       `<strong>Verfahren 2 (Lotfußpunkte über Skalarprodukt):</strong> Die Punkte F${N.sub(1)} = ${N.vecArrow(
         `s${N.sub(1)}`
-      )} + t·${N.vecArrow(`v${N.sub(1)}`)} auf g und F${N.sub(2)} = ${N.vecArrow(`s${N.sub(2)}`)} + r·${N.vecArrow(
-        `v${N.sub(2)}`
-      )} auf h mit dem kleinsten Abstand zueinander sind die, bei denen der Verbindungsvektor F${N.sub(1)}F${N.sub(
+      )} + t·${v1D} auf g und F${N.sub(2)} = ${N.vecArrow(`s${N.sub(2)}`)} + r·${v2D} auf h mit dem kleinsten Abstand zueinander sind die, bei denen der Verbindungsvektor F${N.sub(1)}F${N.sub(
         2
       )} senkrecht auf beiden Richtungsvektoren steht:`
     ),
-    E(`(F${N.sub(1)} − F${N.sub(2)}) · ${N.vecArrow(`v${N.sub(1)}`)} = 0<br>(F${N.sub(1)} − F${N.sub(2)}) · ${N.vecArrow(`v${N.sub(2)}`)} = 0`),
+    E(`(F${N.sub(1)} − F${N.sub(2)}) · ${v1D} = 0<br>(F${N.sub(1)} − F${N.sub(2)}) · ${v2D} = 0`),
   ];
   let F1 = null,
     F2 = null;
   if (parU) {
     stepsOrth.push(
       T(
-        `Da ${N.vecArrow(`v${N.sub(1)}`)} und ${N.vecArrow(`v${N.sub(2)}`)} parallel sind, ist F${N.sub(1)} hier nicht eindeutig bestimmt — dieses Verfahren wird nur für nicht parallele Geraden verwendet, siehe Verfahren 1.`
+        `Da ${v1D} und ${v2D} parallel sind, ist F${N.sub(1)} hier nicht eindeutig bestimmt — dieses Verfahren wird nur für nicht parallele Geraden verwendet, siehe Verfahren 1.`
       )
     );
   } else {
@@ -410,17 +442,17 @@ export function lineLine(s1, u1, s2, u2) {
   // ---- Verfahren 3: Spatprodukt (Leistungskurs) ----
   const stepsB = [
     T(
-      `<strong>Verfahren 3 (Spatprodukt):</strong> Sind ${N.vecArrow(`v${N.sub(1)}`)}, ${N.vecArrow(`v${N.sub(2)}`)} und der Verbindungsvektor ${N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`)} = ${N.vecArrow(`s${N.sub(2)}`)} − ${N.vecArrow(`s${N.sub(1)}`)} linear abhängig (Spatprodukt = 0), liegen die Geraden in einer gemeinsamen Ebene.`
+      `<strong>Verfahren 3 (Spatprodukt):</strong> Sind ${v1D}, ${v2D} und der Verbindungsvektor ${s1s2D} = ${N.vecArrow(`s${N.sub(2)}`)} − ${N.vecArrow(`s${N.sub(1)}`)} linear abhängig (Spatprodukt = 0), liegen die Geraden in einer gemeinsamen Ebene.`
     ),
-    E(`${N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`)} = ${N.vecColFromFractions(w)}`),
-    E(`[${N.vecArrow(`v${N.sub(1)}`)}, ${N.vecArrow(`v${N.sub(2)}`)}, ${N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`)}] = ${N.vecArrow(`v${N.sub(1)}`)} · (${N.vecArrow(`v${N.sub(2)}`)} × ${N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`)}) = ${N.fmt(spat)}`),
+    E(`${s1s2D} = ${N.vecColFromFractions(w)}`),
+    E(`[${v1D}, ${v2D}, ${s1s2D}] = ${v1D} · (${v2D} × ${s1s2D}) = ${N.fmt(spat)}`),
   ];
   if (!spat.isZero()) {
     stepsB.push(T("Das Spatprodukt ist ungleich 0 — die drei Vektoren sind linear unabhängig. Die Geraden sind windschief."));
   } else {
     stepsB.push(T("Das Spatprodukt ist 0 — die drei Vektoren sind linear abhängig, die Geraden liegen also in einer gemeinsamen Ebene (parallel, identisch oder schneidend)."));
     const crossU = cross(u1, u2);
-    stepsB.push(E(`${N.vecArrow(`v${N.sub(1)}`)} × ${N.vecArrow(`v${N.sub(2)}`)} = ${N.vecColFromFractions(crossU)}`));
+    stepsB.push(E(`${v1D} × ${v2D} = ${N.vecColFromFractions(crossU)}`));
     stepsB.push(
       T(
         parU
@@ -436,7 +468,7 @@ export function lineLine(s1, u1, s2, u2) {
     const angleDeg = angleDegCos(u1, u2);
     extras.push({
       label: "Schnittwinkel",
-      value: `cos(φ) = |${N.vecArrow(`v${N.sub(1)}`)} · ${N.vecArrow(`v${N.sub(2)}`)}| / (|${N.vecArrow(`v${N.sub(1)}`)}| · |${N.vecArrow(`v${N.sub(2)}`)}|) ⇒ φ ≈ ${N.fmtApprox(angleDeg)}°`,
+      value: `cos(φ) = |${v1D} · ${v2D}| / (|${v1D}| · |${v2D}|) ⇒ φ ≈ ${N.fmtApprox(angleDeg)}°`,
     });
   }
   if (relation === "parallel") {
