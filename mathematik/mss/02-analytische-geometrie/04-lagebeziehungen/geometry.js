@@ -14,8 +14,8 @@ import {
   scalarTriple,
   isParallel,
   squaredLength,
-} from "./vectors.js?v=2";
-import * as N from "./notation.js?v=2";
+} from "./vectors.js?v=3";
+import * as N from "./notation.js?v=3";
 
 function T(html) {
   return { kind: "text", html };
@@ -391,6 +391,63 @@ export function planePlane(E1, E2) {
   } else {
     relation = "schneidend";
     steps1.push(T("Gleichung III verknüpft die beiden verbliebenen Variablen linear — es gibt unendlich viele Lösungen. Die Ebenen schneiden sich in einer Geraden."));
+
+    // Schnittgerade explizit aus dem LGS gewinnen: eine der beiden verbliebenen Variablen als
+    // freien Parameter t setzen, die andere aus III damit ausdrücken, und beides in eine der
+    // Ausgangsgleichungen einsetzen, um auch die eliminierte Variable durch t auszudrücken.
+    const depIdx = remainIdx.find((i) => !elim.coeffs[i].isZero());
+    const freeIdx = remainIdx.find((i) => i !== depIdx);
+    const depConst = elim.d.div(elim.coeffs[depIdx]);
+    const depSlope = elim.coeffs[freeIdx].div(elim.coeffs[depIdx]).neg();
+
+    steps1.push(
+      T(
+        `Um die Schnittgerade explizit zu erhalten, wird eine der beiden Variablen aus III frei als Parameter t gewählt und die andere damit ausgedrückt:`
+      )
+    );
+    steps1.push(
+      E(
+        `${VN[freeIdx]} = t,   ${VN[depIdx]} = ${N.fmtLinearCombo([
+          { coeff: depConst, varHtml: "" },
+          { coeff: depSlope, varHtml: " t" },
+        ])}`
+      )
+    );
+
+    const coeffsE1 = [E1.a, E1.b, E1.c];
+    const coeffsE2 = [E2.a, E2.b, E2.c];
+    const useE1 = !coeffsE1[elim.idx].isZero();
+    const usedLabel = useE1 ? "I" : "II";
+    const usedCoeffs = useE1 ? coeffsE1 : coeffsE2;
+    const usedD = useE1 ? E1.d : E2.d;
+    const cElim = usedCoeffs[elim.idx];
+    const cDep = usedCoeffs[depIdx];
+    const cFree = usedCoeffs[freeIdx];
+    const elimConst = usedD.sub(cDep.mul(depConst)).div(cElim);
+    const elimSlope = cDep.mul(depSlope).add(cFree).neg().div(cElim);
+
+    steps1.push(
+      T(`Einsetzen in Gleichung ${usedLabel} und Auflösen nach ${VN[elim.idx]} liefert auch diese Koordinate in Abhängigkeit von t:`)
+    );
+    steps1.push(
+      E(
+        `${VN[elim.idx]} = ${N.fmtLinearCombo([
+          { coeff: elimConst, varHtml: "" },
+          { coeff: elimSlope, varHtml: " t" },
+        ])}`
+      )
+    );
+
+    const sLGS = [null, null, null];
+    const dirLGS = [null, null, null];
+    sLGS[elim.idx] = elimConst;
+    dirLGS[elim.idx] = elimSlope;
+    sLGS[depIdx] = depConst;
+    dirLGS[depIdx] = depSlope;
+    sLGS[freeIdx] = F(0);
+    dirLGS[freeIdx] = F(1);
+    steps1.push(T("Zusammengefasst als Vektorgleichung ist das genau die Schnittgerade:"));
+    steps1.push(E(N.lineHTML("h", sLGS, dirLGS, "t")));
   }
 
   // ---- Verfahren 2: Parameterform von E1 in die Koordinatenform von E2 einsetzen ----
