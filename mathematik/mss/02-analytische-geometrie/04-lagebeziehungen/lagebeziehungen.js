@@ -1,9 +1,11 @@
-import { F, vec3 } from "./vectors.js?v=4";
-import { planeFromParam, planeFromCoord, planeFromNormal, pointPoint, pointLine, pointPlane, lineLine, planePlane, linePlane } from "./geometry.js?v=4";
-import * as N from "./notation.js?v=4";
+import { F, vec3 } from "./vectors.js?v=5";
+import { planeFromParam, planeFromCoord, planeFromNormal, pointPoint, pointLine, pointPlane, lineLine, planePlane, linePlane } from "./geometry.js?v=5";
+import * as N from "./notation.js?v=5";
 
 const els = {
-  comboGrid: document.getElementById("combo-grid"),
+  typeGrid1: document.getElementById("type-grid-1"),
+  typeGrid2: document.getElementById("type-grid-2"),
+  typeGrid2Wrap: document.getElementById("type-grid-2-wrap"),
   inputCard: document.getElementById("input-card"),
   inputForms: document.getElementById("input-forms"),
   calcBtn: document.getElementById("calc-btn"),
@@ -228,17 +230,57 @@ let currentCombo = null;
 
 function selectCombo(key) {
   currentCombo = key;
-  [...els.comboGrid.children].forEach((btn) => btn.classList.toggle("active", btn.dataset.combo === key));
   els.inputForms.innerHTML = COMBOS[key].build();
   els.inputCard.hidden = false;
   els.resultCard.hidden = true;
   els.errorBox.hidden = true;
 }
 
-els.comboGrid.innerHTML = Object.entries(COMBOS)
-  .map(([key, c]) => `<button type="button" class="combo-btn" data-combo="${key}">${c.label}</button>`)
-  .join("");
-[...els.comboGrid.children].forEach((btn) => btn.addEventListener("click", () => selectCombo(btn.dataset.combo)));
+// ---------- Zweistufige Objektauswahl: erst der Typ des ersten, dann des zweiten Objekts ----------
+// Die Reihenfolge der Auswahl ist egal — "Ebene" zuerst, dann "Punkt" führt auf denselben
+// Rechner wie umgekehrt. Der COMBOS-Schlüssel ist immer nach TYPE_ORDER sortiert (z. B. immer
+// "punkt-ebene", nie "ebene-punkt").
+const TYPES = [
+  { key: "punkt", label: "Punkt" },
+  { key: "gerade", label: "Gerade" },
+  { key: "ebene", label: "Ebene" },
+];
+const TYPE_ORDER = TYPES.map((t) => t.key);
+
+function comboKeyFor(a, b) {
+  const [x, y] = [a, b].sort((p, q) => TYPE_ORDER.indexOf(p) - TYPE_ORDER.indexOf(q));
+  return `${x}-${y}`;
+}
+
+let firstType = null;
+let secondType = null;
+
+function renderTypeGrid(container, selected, onPick) {
+  container.innerHTML = TYPES.map(
+    (t) => `<button type="button" class="combo-btn${selected === t.key ? " active" : ""}" data-type="${t.key}">${t.label}</button>`
+  ).join("");
+  [...container.children].forEach((btn) => btn.addEventListener("click", () => onPick(btn.dataset.type)));
+}
+
+function pickFirst(type) {
+  firstType = type;
+  secondType = null;
+  renderTypeGrid(els.typeGrid1, firstType, pickFirst);
+  els.typeGrid2Wrap.hidden = false;
+  renderTypeGrid(els.typeGrid2, secondType, pickSecond);
+  currentCombo = null;
+  els.inputCard.hidden = true;
+  els.resultCard.hidden = true;
+  els.errorBox.hidden = true;
+}
+
+function pickSecond(type) {
+  secondType = type;
+  renderTypeGrid(els.typeGrid2, secondType, pickSecond);
+  selectCombo(comboKeyFor(firstType, secondType));
+}
+
+renderTypeGrid(els.typeGrid1, firstType, pickFirst);
 
 // Umschalten der Ebenen-Eingabeform (Parameter-/Koordinaten-/Normalenform)
 els.inputForms.addEventListener("change", (e) => {
@@ -283,5 +325,3 @@ els.calcBtn.addEventListener("click", () => {
     els.resultCard.hidden = true;
   }
 });
-
-selectCombo("gerade-gerade");
