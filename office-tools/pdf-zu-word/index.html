@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF zu Word</title>
+<link rel="stylesheet" href="../../assets/site.css">
+<link rel="stylesheet" href="pdf-zu-word.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../index.html">Start</a><span class="sep">/</span>
+  <a href="../index.html">Office-Tools</a><span class="sep">/</span>
+  PDF zu Word
+</nav>
+<header class="page-header">
+  <h1>PDF zu Word</h1>
+  <p>PDF hochladen, in Kapitel/Abschnitte und längere Listen gliedern lassen, gewünschte Teile als .docx exportieren.</p>
+</header>
+
+<main class="menu-main">
+  <section class="card">
+    <p class="disclaimer">
+      <strong>Wichtig zur Genauigkeit:</strong> Die Verarbeitung läuft komplett lokal im Browser (pdf.js zur
+      PDF-Analyse, ein selbst geschriebener DOCX-Export) – es werden keine Dateien hochgeladen, keine externen
+      Umwandlungsdienste oder KI-APIs genutzt. Erhalten bleiben: Text, erkannte Kapitel-/Abschnittsstruktur,
+      Listen und die relative Größe von Überschriften. <strong>Nicht</strong> erhalten bleiben: exakte Schriftarten,
+      Spaltenlayouts, Tabellen, Bilder, Kopf-/Fußzeilen sowie exaktes Seitenlayout – bei einfachen, textlastigen
+      PDFs mit klarer Kapitelstruktur ist die inhaltliche Übereinstimmung sehr hoch, bei komplexen Layouts nicht.
+      Gescannte PDFs ohne Texterkennung (OCR) können nicht verarbeitet werden.
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>1. PDF auswählen</h2>
+    <div id="dropzone" class="dropzone" tabindex="0">
+      <p>PDF hierher ziehen oder klicken zum Auswählen</p>
+      <input type="file" id="file-input" accept="application/pdf" hidden>
+    </div>
+    <p id="status" class="status"></p>
+    <div id="progress-wrap" class="progress-wrap" hidden>
+      <div id="progress-bar" class="progress-bar"></div>
+    </div>
+    <p class="error" id="error-box" hidden></p>
+  </section>
+
+  <section class="card" id="result-card" hidden>
+    <h2>2. Abschnitte auswählen</h2>
+    <label class="title-field">Dateiname für Export
+      <input type="text" id="doc-title" placeholder="Titel">
+    </label>
+    <div class="tree-actions">
+      <button type="button" id="select-all" class="secondary">Alle auswählen</button>
+      <button type="button" id="select-none" class="secondary">Alle abwählen</button>
+    </div>
+    <div id="unit-tree" class="unit-tree"></div>
+    <div class="actions">
+      <button type="button" id="export-one">Auswahl als eine .docx-Datei</button>
+      <button type="button" id="export-zip" class="secondary">Auswahl als einzelne Dateien (.zip)</button>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu Office-Tools</a></p>
+</footer>
+
+<script type="module" src="pdf-zu-word.js"></script>
+</body>
+</html>
