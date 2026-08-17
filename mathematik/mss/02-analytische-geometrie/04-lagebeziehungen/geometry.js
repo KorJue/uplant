@@ -15,8 +15,8 @@ import {
   scalarTriple,
   isParallel,
   squaredLength,
-} from "./vectors.js?v=6";
-import * as N from "./notation.js?v=6";
+} from "./vectors.js?v=7";
+import * as N from "./notation.js?v=7";
 
 function T(html) {
   return { kind: "text", html };
@@ -379,11 +379,176 @@ export function lineLine(s1, u1, s2, u2) {
 
 // ---------- 5. Ebene – Ebene ----------
 
-export function planePlane(E1, E2) {
+// Richtungsvektoren, die senkrecht zu einem gegebenen Normalenvektor stehen — dieselbe
+// Konstruktion, die planeFromCoord/planeFromNormal beim Umrechnen intern verwenden, hier aber
+// Schritt für Schritt erklärt: Vertauschen zweier Normalenvektor-Komponenten mit Vorzeichenwechsel
+// liefert garantiert einen Vektor senkrecht zum Normalenvektor (das Skalarprodukt hebt sich weg),
+// das Kreuzprodukt mit dem Normalenvektor liefert automatisch einen zweiten, dazu senkrechten und
+// linear unabhängigen Vektor.
+function richtungsvektorenAusNormaleSteps(plane, label, disp) {
+  const n = plane.n;
+  const steps = [];
+  if (!n[0].isZero() || !n[1].isZero()) {
+    steps.push(
+      T(
+        `Für die Richtungsvektoren von ${label} werden zwei linear unabhängige Vektoren gesucht, die senkrecht zum Normalenvektor ${disp.n} = ${N.vecColFromFractions(
+          n
+        )} stehen (nur dann liegen sie in der Ebene). Vertauscht man die ersten beiden Komponenten von ${disp.n} und dreht bei einer davon das Vorzeichen um, steht das Ergebnis automatisch senkrecht auf ${disp.n} — im Skalarprodukt heben sich die beiden vertauschten Terme gegenseitig auf:`
+      )
+    );
+  } else {
+    steps.push(
+      T(
+        `Für die Richtungsvektoren von ${label} werden zwei linear unabhängige Vektoren gesucht, die senkrecht zum Normalenvektor ${disp.n} = ${N.vecColFromFractions(
+          n
+        )} stehen. Da ${disp.n} nur in ${N.X3}-Richtung zeigt, steht z. B. (1|0|0) automatisch senkrecht darauf:`
+      )
+    );
+  }
+  steps.push(E(`${disp.v} = ${N.vecColFromFractions(plane.u)}`));
+  steps.push(
+    T(
+      `Der zweite Richtungsvektor ergibt sich als Kreuzprodukt aus Normalenvektor und erstem Richtungsvektor — ein Kreuzprodukt steht immer senkrecht auf beiden Faktoren, also auch auf ${disp.n}, und ist von ${disp.v} linear unabhängig:`
+    )
+  );
+  steps.push(E(`${disp.w} = ${disp.n} × ${disp.v} = ${N.vecColFromFractions(plane.v)}`));
+  return steps;
+}
+
+// Bringt eine Ebene in Parameterform — mit Zwischenschritten, aber nur, wenn sie nicht schon so
+// gegeben ist (sonst nur eine kurze Bestätigung, damit klar bleibt, welche Form gerade verwendet
+// wird).
+function ensureParamSteps(plane, mode, label, disp) {
+  if (mode === "param") {
+    return [T(`Ebene ${label} liegt bereits in Parameterform vor — keine Umrechnung nötig.`)];
+  }
+  const steps = [];
+  if (mode === "coord") {
+    const coords = [plane.a, plane.b, plane.c];
+    const idx = coords.findIndex((c) => !c.isZero());
+    const names = [N.X1, N.X2, N.X3];
+    const zeroIdx = [0, 1, 2].filter((i) => i !== idx);
+    steps.push(
+      T(
+        `Ebene ${label} ist in Koordinatenform gegeben und wird in Parameterform umgerechnet. Zuerst ein Stützpunkt: Zwei der drei Koordinaten werden auf 0 gesetzt — hier ${names[zeroIdx[0]]} = 0 und ${names[zeroIdx[1]]} = 0 — und die Koordinatengleichung von ${label} nach der verbleibenden Koordinate ${names[idx]} aufgelöst:`
+      )
+    );
+    steps.push(E(`${N.fmt(coords[idx])}·${names[idx]} = ${N.fmt(plane.d)} ⇒ ${names[idx]} = ${N.fmt(plane.d.div(coords[idx]))}`));
+    steps.push(E(`${disp.s} = ${N.vecColFromFractions(plane.s)}`));
+  } else {
+    steps.push(
+      T(`Ebene ${label} ist in Normalenform gegeben und wird in Parameterform umgerechnet; der Stützpunkt ist darin bereits direkt enthalten:`)
+    );
+    steps.push(E(`${disp.s} = ${N.vecColFromFractions(plane.s)}`));
+  }
+  steps.push(...richtungsvektorenAusNormaleSteps(plane, label, disp));
+  return steps;
+}
+
+// Bringt eine Ebene in Koordinatenform — mit Zwischenschritten, aber nur, wenn sie nicht schon so
+// gegeben ist.
+function ensureCoordSteps(plane, mode, label, disp) {
+  if (mode === "coord") {
+    return [T(`Ebene ${label} liegt bereits in Koordinatenform vor — keine Umrechnung nötig.`)];
+  }
+  const steps = [];
+  if (mode === "param") {
+    steps.push(
+      T(
+        `Ebene ${label} ist in Parameterform gegeben und wird in Koordinatenform umgerechnet. Der Normalenvektor ergibt sich als Kreuzprodukt der beiden Richtungsvektoren:`
+      )
+    );
+    steps.push(E(`${disp.n} = ${disp.v} × ${disp.w} = ${N.vecColFromFractions(plane.n)}`));
+  } else {
+    steps.push(T(`Ebene ${label} ist in Normalenform gegeben; der Normalenvektor ist darin bereits direkt enthalten:`));
+    steps.push(E(`${disp.n} = ${N.vecColFromFractions(plane.n)}`));
+  }
+  steps.push(T(`Die rechte Seite d der Koordinatenform ergibt sich aus dem Skalarprodukt von Normalenvektor und Stützpunkt:`));
+  steps.push(
+    E(`d = ${disp.n} · ${disp.s} = ${N.vecColFromFractions(plane.n)} · ${N.vecColFromFractions(plane.s)} = ${N.fmt(plane.d)}`)
+  );
+  return steps;
+}
+
+// Normalenvektor für Verfahren 3 — eine echte Umrechnung ist nur nötig, wenn die Ebene in
+// Parameterform vorliegt; sonst ist er direkt ablesbar bzw. schon gegeben.
+function ensureNormalSteps(plane, mode, label, disp) {
+  if (mode === "param") {
+    return [
+      T(`${label} liegt in Parameterform vor — der Normalenvektor ${disp.n} ergibt sich als Kreuzprodukt der Richtungsvektoren:`),
+      E(`${disp.n} = ${disp.v} × ${disp.w} = ${N.vecColFromFractions(plane.n)}`),
+    ];
+  }
+  const note = mode === "coord" ? "direkt als Koeffiziententripel der Koordinatenform ablesbar" : "in der Normalenform bereits direkt gegeben";
+  return [T(`Normalenvektor ${disp.n} von ${label} ist ${note}: ${disp.n} = ${N.vecColFromFractions(plane.n)}`)];
+}
+
+// BigInt-ggT (nicht-negativ).
+function gcdBigInt(a, b) {
+  a = a < 0n ? -a : a;
+  b = b < 0n ? -b : b;
+  while (b) [a, b] = [b, a % b];
+  return a;
+}
+
+// Skaliert einen Richtungsvektor (Fraction-Komponenten) auf den "primitiven" ganzzahligen Vektor
+// derselben Richtung: zunächst mit dem kgV aller Nenner multiplizieren, um Brüche zu beseitigen,
+// danach durch den ggT der entstandenen ganzen Zahlen teilen ("kürzen"). Gibt zusätzlich den
+// verwendeten Skalierungsfaktor zurück.
+function toIntegerDirection(v) {
+  const lcm = v.reduce((acc, f) => (acc * f.d) / gcdBigInt(acc, f.d), 1n);
+  const scaledInts = v.map((f) => f.mul(F(lcm)).n);
+  let g = scaledInts.reduce((acc, n) => gcdBigInt(acc, n), 0n);
+  if (g === 0n) g = 1n;
+  const factor = F(lcm).div(F(g));
+  const vec = scaledInts.map((n) => F(n / g));
+  return { vec, factor };
+}
+
+// Ersetzt einen Richtungsvektor durch seine ganzzahlige, gekürzte Variante und liefert bei Bedarf
+// einen erklärenden Zwischenschritt dazu (nur wenn tatsächlich skaliert wurde — ein bereits
+// ganzzahliger, gekürzter Vektor bleibt unverändert und ohne zusätzlichen Kommentar).
+function integerizeDirection(dirVec, paramLetter) {
+  const { vec, factor } = toIntegerDirection(dirVec);
+  if (factor.equals(1)) return { vec: dirVec, steps: [] };
+  return {
+    vec,
+    steps: [
+      T(
+        `Damit der Richtungsvektor ganzzahlige (und möglichst einfache) Komponenten hat, wird er mit dem Faktor ${N.fmt(
+          factor
+        )} skaliert — das ändert nur die "Schrittweite" von ${paramLetter} entlang der Geraden, nicht die Gerade selbst:`
+      ),
+    ],
+  };
+}
+
+export function planePlane(E1, E2, m1 = "coord", m2 = "coord") {
   const parN = isParallel(E1.n, E2.n);
   const dir = cross(E1.n, E2.n);
 
+  const disp1 = {
+    s: N.vecArrow(`s${N.sub(1)}`),
+    v: N.vecArrow(`v${N.sub(1)}`),
+    w: N.vecArrow(`w${N.sub(1)}`),
+    n: N.vecArrow(`n${N.sub(1)}`),
+  };
+  const disp2 = {
+    s: N.vecArrow(`s${N.sub(2)}`),
+    v: N.vecArrow(`v${N.sub(2)}`),
+    w: N.vecArrow(`w${N.sub(2)}`),
+    n: N.vecArrow(`n${N.sub(2)}`),
+  };
+
   // ---- Verfahren 2: LGS aus beiden Koordinatenformen ----
+  const stepsLGS = [
+    T(
+      `<strong>Verfahren 2 (LGS aus beiden Koordinatenformen):</strong> Für dieses Verfahren müssen beide Ebenen in Koordinatenform vorliegen.`
+    ),
+  ];
+  stepsLGS.push(...ensureCoordSteps(E1, m1, "E1", disp1));
+  stepsLGS.push(...ensureCoordSteps(E2, m2, "E2", disp2));
+
   const eqI = `I: ${N.fmtLinearCombo([
     { coeff: E1.a, varHtml: N.X1 },
     { coeff: E1.b, varHtml: N.X2 },
@@ -394,27 +559,28 @@ export function planePlane(E1, E2) {
     { coeff: E2.b, varHtml: N.X2 },
     { coeff: E2.c, varHtml: N.X3 },
   ])} = ${N.fmt(E2.d)}`;
-  const steps1 = [T(`<strong>Verfahren 2 (LGS aus beiden Koordinatenformen):</strong>`), E(`${eqI}<br>${eqII}`)];
+  stepsLGS.push(T("Damit lauten die beiden Koordinatengleichungen:"));
+  stepsLGS.push(E(`${eqI}<br>${eqII}`));
 
   const elim = eliminateVariable(E1, E2);
   const remainIdx = [0, 1, 2].filter((i) => i !== elim.idx);
-  steps1.push(T(`Kombination ${N.fmt(elim.lambda)}·I + (${N.fmt(elim.mu)})·II eliminiert ${VN[elim.idx]}:`));
+  stepsLGS.push(T(`Kombination ${N.fmt(elim.lambda)}·I + (${N.fmt(elim.mu)})·II eliminiert ${VN[elim.idx]}:`));
   const comboStr = N.fmtLinearCombo(remainIdx.map((i) => ({ coeff: elim.coeffs[i], varHtml: VN[i] })));
-  steps1.push(E(`III: ${comboStr} = ${N.fmt(elim.d)}`));
+  stepsLGS.push(E(`III: ${comboStr} = ${N.fmt(elim.d)}`));
 
   let relation;
   const allZero = remainIdx.every((i) => elim.coeffs[i].isZero());
   if (allZero) {
     if (elim.d.isZero()) {
       relation = "identisch";
-      steps1.push(T("Gleichung III wird zu 0 = 0 — für alle x wahr. Gleichung II ist ein Vielfaches von I. Die Ebenen sind identisch."));
+      stepsLGS.push(T("Gleichung III wird zu 0 = 0 — für alle x wahr. Gleichung II ist ein Vielfaches von I. Die Ebenen sind identisch."));
     } else {
       relation = "parallel";
-      steps1.push(T(`Gleichung III wird zu 0 = ${N.fmt(elim.d)} — ein Widerspruch. Das LGS ist unlösbar, die Ebenen sind parallel und verschieden.`));
+      stepsLGS.push(T(`Gleichung III wird zu 0 = ${N.fmt(elim.d)} — ein Widerspruch. Das LGS ist unlösbar, die Ebenen sind parallel und verschieden.`));
     }
   } else {
     relation = "schneidend";
-    steps1.push(T("Gleichung III verknüpft die beiden verbliebenen Variablen linear — es gibt unendlich viele Lösungen. Die Ebenen schneiden sich in einer Geraden."));
+    stepsLGS.push(T("Gleichung III verknüpft die beiden verbliebenen Variablen linear — es gibt unendlich viele Lösungen. Die Ebenen schneiden sich in einer Geraden."));
 
     // Schnittgerade explizit aus dem LGS gewinnen: eine der beiden verbliebenen Variablen als
     // freien Parameter k setzen (k, weil r/s/t/u bereits die Parameter von E1 und E2 sind), die
@@ -425,12 +591,12 @@ export function planePlane(E1, E2) {
     const depConst = elim.d.div(elim.coeffs[depIdx]);
     const depSlope = elim.coeffs[freeIdx].div(elim.coeffs[depIdx]).neg();
 
-    steps1.push(
+    stepsLGS.push(
       T(
         `Um die Schnittgerade explizit zu erhalten, wird eine der beiden Variablen aus III frei als Parameter k gewählt und die andere damit ausgedrückt:`
       )
     );
-    steps1.push(
+    stepsLGS.push(
       E(
         `${VN[freeIdx]} = k,   ${VN[depIdx]} = ${N.fmtLinearCombo([
           { coeff: depConst, varHtml: "" },
@@ -451,10 +617,10 @@ export function planePlane(E1, E2) {
     const elimConst = usedD.sub(cDep.mul(depConst)).div(cElim);
     const elimSlope = cDep.mul(depSlope).add(cFree).neg().div(cElim);
 
-    steps1.push(
+    stepsLGS.push(
       T(`Einsetzen in Gleichung ${usedLabel} und Auflösen nach ${VN[elim.idx]} liefert auch diese Koordinate in Abhängigkeit von k:`)
     );
-    steps1.push(
+    stepsLGS.push(
       E(
         `${VN[elim.idx]} = ${N.fmtLinearCombo([
           { coeff: elimConst, varHtml: "" },
@@ -471,44 +637,55 @@ export function planePlane(E1, E2) {
     dirLGS[depIdx] = depSlope;
     sLGS[freeIdx] = F(0);
     dirLGS[freeIdx] = F(1);
-    steps1.push(T("Zusammengefasst als Vektorgleichung ist das genau die Schnittgerade:"));
-    steps1.push(E(N.lineHTML("h", sLGS, dirLGS, "k")));
+
+    const { vec: dirLGSInt, steps: scaleStepsLGS } = integerizeDirection(dirLGS, "k");
+    stepsLGS.push(...scaleStepsLGS);
+    stepsLGS.push(T("Zusammengefasst als Vektorgleichung ist das genau die Schnittgerade:"));
+    stepsLGS.push(E(N.lineHTML("h", sLGS, dirLGSInt, "k")));
   }
 
   // ---- Verfahren 1: Parameterform von E1 in die Koordinatenform von E2 einsetzen ----
   const l1 = "r";
-  const m1 = "s";
+  const m1p = "s";
+  const stepsParamSubst = [
+    T(
+      `<strong>Verfahren 1 (Parameterform von E1 in die Koordinatenform von E2 einsetzen):</strong> Für dieses Verfahren muss E1 in Parameterform und E2 in Koordinatenform vorliegen.`
+    ),
+  ];
+  stepsParamSubst.push(...ensureParamSteps(E1, m1, "E1", disp1));
+  stepsParamSubst.push(...ensureCoordSteps(E2, m2, "E2", disp2));
+
   const A = dot(E2.n, E1.u);
   const B = dot(E2.n, E1.v);
   const Cconst = dot(E2.n, E1.s);
   const rhs2 = E2.d.sub(Cconst);
   const n2 = [E2.a, E2.b, E2.c];
-  const substTerm = (i) => `${N.fmt(n2[i])}·(${N.fmt(E1.s[i])} + ${l1}·${N.fmt(E1.u[i])} + ${m1}·${N.fmt(E1.v[i])})`;
+  const substTerm = (i) => `${N.fmt(n2[i])}·(${N.fmt(E1.s[i])} + ${l1}·${N.fmt(E1.u[i])} + ${m1p}·${N.fmt(E1.v[i])})`;
 
-  const steps2 = [
+  stepsParamSubst.push(
     T(
-      `<strong>Verfahren 1 (Parameterform von E1 in die Koordinatenform von E2 einsetzen):</strong> Jeder Punkt von E1 hat die Form ${N.vecArrow("x")} = ${N.vecArrow("s")} + ${l1}·${N.vecArrow("v")} + ${m1}·${N.vecArrow("w")} (die Parameter von E1). Eingesetzt in die Koordinatenform von E2 entscheidet sich, für welche ${l1}, ${m1} dieser Punkt auch auf E2 liegt.`
-    ),
-    E(`${substTerm(0)} + ${substTerm(1)} + ${substTerm(2)} = ${N.fmt(E2.d)}`),
-    E(`${N.fmt(A)}·${l1} + ${N.fmt(B)}·${m1} = ${N.fmt(rhs2)}`),
-  ];
+      `Jeder Punkt von E1 hat damit die Form ${N.vecArrow("x")} = ${disp1.s} + ${l1}·${disp1.v} + ${m1p}·${disp1.w}. Eingesetzt in die Koordinatenform von E2 entscheidet sich, für welche ${l1}, ${m1p} dieser Punkt auch auf E2 liegt.`
+    )
+  );
+  stepsParamSubst.push(E(`${substTerm(0)} + ${substTerm(1)} + ${substTerm(2)} = ${N.fmt(E2.d)}`));
+  stepsParamSubst.push(E(`${N.fmt(A)}·${l1} + ${N.fmt(B)}·${m1p} = ${N.fmt(rhs2)}`));
 
   let schnittgeradeM2 = null;
   if (A.isZero() && B.isZero()) {
-    steps2.push(
+    stepsParamSubst.push(
       T(
-        `Die Koeffizienten von ${l1} und ${m1} sind beide 0 — das Ergebnis hängt gar nicht von ${l1}, ${m1} ab. Das bedeutet: Alle Richtungsvektoren von E1 stehen senkrecht auf ${N.vecArrow("n")}${N.sub(2)}, E1 und E2 sind also parallel.`
+        `Die Koeffizienten von ${l1} und ${m1p} sind beide 0 — das Ergebnis hängt gar nicht von ${l1}, ${m1p} ab. Das bedeutet: Alle Richtungsvektoren von E1 stehen senkrecht auf ${disp2.n}, E1 und E2 sind also parallel.`
       )
     );
     if (rhs2.isZero()) {
-      steps2.push(T(`Die Gleichung wird zu 0 = 0 — jeder Punkt von E1 erfüllt auch die Gleichung von E2. Die Ebenen sind identisch.`));
+      stepsParamSubst.push(T(`Die Gleichung wird zu 0 = 0 — jeder Punkt von E1 erfüllt auch die Gleichung von E2. Die Ebenen sind identisch.`));
     } else {
-      steps2.push(T(`Die Gleichung wird zu 0 = ${N.fmt(rhs2)} — ein Widerspruch. Kein Punkt von E1 liegt auf E2, die Ebenen sind echt parallel.`));
+      stepsParamSubst.push(T(`Die Gleichung wird zu 0 = ${N.fmt(rhs2)} — ein Widerspruch. Kein Punkt von E1 liegt auf E2, die Ebenen sind echt parallel.`));
     }
   } else {
-    steps2.push(
+    stepsParamSubst.push(
       T(
-        `Das ist eine lineare Gleichung in ${l1} und ${m1} mit unendlich vielen Lösungen (${l1}, ${m1}) — geometrisch eine Gerade im Parameterbereich von E1. Eingesetzt in die Parameterform von E1 ergibt das genau die Schnittgerade.`
+        `Das ist eine lineare Gleichung in ${l1} und ${m1p} mit unendlich vielen Lösungen (${l1}, ${m1p}) — geometrisch eine Gerade im Parameterbereich von E1. Eingesetzt in die Parameterform von E1 ergibt das genau die Schnittgerade.`
       )
     );
     let point0, dirVec;
@@ -516,36 +693,63 @@ export function planePlane(E1, E2) {
       const lam0 = rhs2.div(A);
       point0 = vAdd(E1.s, vScale(E1.u, lam0));
       dirVec = vAdd(vScale(E1.u, B.neg().div(A)), E1.v);
-      steps2.push(T(`Mit ${m1} = 0 folgt ${l1} = ${N.fmt(lam0)}; das liefert einen Punkt. Erhöht man ${m1} um 1, ändert sich ${l1} um ${N.fmt(B.neg().div(A))} — das liefert die Richtung:`));
+      stepsParamSubst.push(
+        T(
+          `Mit ${m1p} = 0 folgt ${l1} = ${N.fmt(lam0)}; das liefert einen Punkt. Erhöht man ${m1p} um 1, ändert sich ${l1} um ${N.fmt(
+            B.neg().div(A)
+          )} — das liefert die Richtung:`
+        )
+      );
     } else {
       const mu0 = rhs2.div(B);
       point0 = vAdd(E1.s, vScale(E1.v, mu0));
       dirVec = vAdd(E1.u, vScale(E1.v, A.neg().div(B)));
-      steps2.push(T(`Mit ${l1} = 0 folgt ${m1} = ${N.fmt(mu0)}; das liefert einen Punkt. Erhöht man ${l1} um 1, ändert sich ${m1} um ${N.fmt(A.neg().div(B))} — das liefert die Richtung:`));
+      stepsParamSubst.push(
+        T(
+          `Mit ${l1} = 0 folgt ${m1p} = ${N.fmt(mu0)}; das liefert einen Punkt. Erhöht man ${l1} um 1, ändert sich ${m1p} um ${N.fmt(
+            A.neg().div(B)
+          )} — das liefert die Richtung:`
+        )
+      );
     }
-    schnittgeradeM2 = { s: point0, u: dirVec };
-    steps2.push(E(N.lineHTML("h", point0, dirVec, "k")));
+    const { vec: dirVecInt, steps: scaleStepsPS } = integerizeDirection(dirVec, "k");
+    stepsParamSubst.push(...scaleStepsPS);
+    schnittgeradeM2 = { s: point0, u: dirVecInt };
+    stepsParamSubst.push(E(N.lineHTML("h", point0, dirVecInt, "k")));
   }
 
   // ---- Verfahren 3: Normalenvektoren (Vektorprodukt) ----
-  const steps3 = [
-    T(`<strong>Verfahren 3 (Normalenvektoren, Vektorprodukt):</strong> Sind die Normalenvektoren ${N.vecArrow(`n${N.sub(1)}`)} und ${N.vecArrow(`n${N.sub(2)}`)} linear abhängig (Kreuzprodukt = Nullvektor), sind die Ebenen parallel oder identisch.`),
-    E(`${N.vecArrow(`n${N.sub(1)}`)} × ${N.vecArrow(`n${N.sub(2)}`)} = ${N.vecColFromFractions(dir)}`),
+  const stepsCross = [
+    T(`<strong>Verfahren 3 (Normalenvektoren, Vektorprodukt):</strong> Für dieses Verfahren werden nur die Normalenvektoren benötigt.`),
   ];
+  stepsCross.push(...ensureNormalSteps(E1, m1, "E1", disp1));
+  stepsCross.push(...ensureNormalSteps(E2, m2, "E2", disp2));
+  stepsCross.push(
+    T(`Sind ${disp1.n} und ${disp2.n} linear abhängig (Kreuzprodukt = Nullvektor), sind die Ebenen parallel oder identisch.`)
+  );
+  stepsCross.push(E(`${disp1.n} × ${disp2.n} = ${N.vecColFromFractions(dir)}`));
   let schnittgerade = null;
   if (parN) {
     const sOk = dot(E2.n, E1.s).equals(E2.d);
-    steps3.push(
+    stepsCross.push(
       T(
-        `Das Kreuzprodukt ist der Nullvektor — die Normalenvektoren sind linear abhängig. Ein Stützpunkt von E1 in E2 eingesetzt: ${sOk ? "erfüllt die Gleichung → die Ebenen sind identisch." : "erfüllt die Gleichung nicht → die Ebenen sind echt parallel."}`
+        `Das Kreuzprodukt ist der Nullvektor — die Normalenvektoren sind linear abhängig. Ein Stützpunkt von E1 in E2 eingesetzt: ${
+          sOk ? "erfüllt die Gleichung → die Ebenen sind identisch." : "erfüllt die Gleichung nicht → die Ebenen sind echt parallel."
+        }`
       )
     );
   } else {
-    steps3.push(T(`Das Kreuzprodukt ist nicht der Nullvektor — die Normalenvektoren sind linear unabhängig, die Ebenen schneiden sich in einer Geraden mit Richtungsvektor ${N.vecArrow(`n${N.sub(1)}`)} × ${N.vecArrow(`n${N.sub(2)}`)}.`));
+    stepsCross.push(
+      T(
+        `Das Kreuzprodukt ist nicht der Nullvektor — die Normalenvektoren sind linear unabhängig, die Ebenen schneiden sich in einer Geraden mit Richtungsvektor ${disp1.n} × ${disp2.n}.`
+      )
+    );
     const pt = intersectionPointOfPlanes(E1, E2, dir);
-    schnittgerade = { s: pt, u: dir };
-    steps3.push(T("Ein Punkt der Schnittgeraden ergibt sich, indem man die Koordinate, deren Richtungsvektor-Komponente ungleich 0 ist, auf 0 setzt und das verbleibende 2×2-System löst:"));
-    steps3.push(E(N.lineHTML("h", pt, dir, "k")));
+    const { vec: dirInt, steps: scaleStepsCross } = integerizeDirection(dir, "k");
+    stepsCross.push(...scaleStepsCross);
+    schnittgerade = { s: pt, u: dirInt };
+    stepsCross.push(T("Ein Punkt der Schnittgeraden ergibt sich, indem man die Koordinate, deren Richtungsvektor-Komponente ungleich 0 ist, auf 0 setzt und das verbleibende 2×2-System löst:"));
+    stepsCross.push(E(N.lineHTML("h", pt, dirInt, "k")));
   }
 
   const extras = [];
@@ -554,7 +758,7 @@ export function planePlane(E1, E2) {
     const angleDeg = angleDegCos(E1.n, E2.n);
     extras.push({
       label: "Schnittwinkel",
-      value: `cos(φ) = |${N.vecArrow(`n${N.sub(1)}`)} · ${N.vecArrow(`n${N.sub(2)}`)}| / (|${N.vecArrow(`n${N.sub(1)}`)}| · |${N.vecArrow(`n${N.sub(2)}`)}|) ⇒ φ ≈ ${N.fmtApprox(angleDeg)}°`,
+      value: `cos(φ) = |${disp1.n} · ${disp2.n}| / (|${disp1.n}| · |${disp2.n}|) ⇒ φ ≈ ${N.fmtApprox(angleDeg)}°`,
     });
   }
   if (relation === "parallel") {
@@ -571,9 +775,9 @@ export function planePlane(E1, E2) {
     relation,
     relationLabel: labelMap[relation],
     methods: [
-      { title: "Verfahren 1: Parameterform in Koordinatenform einsetzen", steps: steps2 },
-      { title: "Verfahren 2: LGS aus den Koordinatenformen", steps: steps1 },
-      { title: "Verfahren 3: Normalenvektoren (Vektorprodukt)", steps: steps3 },
+      { title: "Verfahren 1: Parameterform in Koordinatenform einsetzen", steps: stepsParamSubst },
+      { title: "Verfahren 2: LGS aus den Koordinatenformen", steps: stepsLGS },
+      { title: "Verfahren 3: Normalenvektoren (Vektorprodukt)", steps: stepsCross },
     ],
     extras,
   };

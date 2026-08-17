@@ -1,6 +1,6 @@
-import { F, vec3 } from "./vectors.js?v=6";
-import { planeFromParam, planeFromCoord, planeFromNormal, pointPoint, pointLine, pointPlane, lineLine, planePlane, linePlane } from "./geometry.js?v=6";
-import * as N from "./notation.js?v=6";
+import { F, vec3 } from "./vectors.js?v=7";
+import { planeFromParam, planeFromCoord, planeFromNormal, pointPoint, pointLine, pointPlane, lineLine, planePlane, linePlane } from "./geometry.js?v=7";
+import * as N from "./notation.js?v=7";
 
 const els = {
   typeGrid1: document.getElementById("type-grid-1"),
@@ -132,6 +132,20 @@ function describePlaneHTML(label, plane, givenMode, p1 = "r", p2 = "s") {
     <div class="formula-block">${N.planeNormalHTML(label, plane.s, plane.n)}</div>
   `;
 }
+// Zeigt nur die tatsächlich eingegebene Form — keine automatische Umrechnung in die beiden
+// anderen Formen. Bei zwei Ebenen mit drei Rechenwegen (Ebene-Ebene) rechnet stattdessen jedes
+// Verfahren selbst nur in die Form um, die es wirklich braucht, mit sichtbaren Zwischenschritten.
+function describePlaneGivenHTML(label, plane, givenMode, p1 = "r", p2 = "s") {
+  const modeNote = { param: "Parameterform", coord: "Koordinatenform", normal: "Normalenform" }[givenMode];
+  let eq;
+  if (givenMode === "param") eq = N.planeParamHTML(label, plane.s, plane.u, plane.v, p1, p2);
+  else if (givenMode === "coord") eq = N.planeCoordHTML(label, plane.a, plane.b, plane.c, plane.d);
+  else eq = N.planeNormalHTML(label, plane.s, plane.n);
+  return `
+    <p class="form-note">Ebene ${label} — gegeben in ${modeNote}:</p>
+    <div class="formula-block">${eq}</div>
+  `;
+}
 
 // ---------- Kombinationen ----------
 
@@ -219,8 +233,8 @@ const COMBOS = {
       const { plane: E1, mode: m1 } = readPlane(c, "E1");
       const { plane: E2, mode: m2 } = readPlane(c, "E2");
       return {
-        given: describePlaneHTML("E1", E1, m1, "r", "s") + describePlaneHTML("E2", E2, m2, "t", "u"),
-        result: planePlane(E1, E2),
+        given: describePlaneGivenHTML("E1", E1, m1, "r", "s") + describePlaneGivenHTML("E2", E2, m2, "t", "u"),
+        result: planePlane(E1, E2, m1, m2),
       };
     },
   },
