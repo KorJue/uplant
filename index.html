@@ -3,92 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dreiecksrechner</title>
-<link rel="stylesheet" href="style.css">
+<title>Unterrichts-Werkzeuge</title>
+<link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-<header>
-  <h1>Dreiecksrechner</h1>
-  <p>Gib genau drei Größen eines Dreiecks ein (Seiten und/oder Winkel) – der Rechner ermittelt alle übrigen Seiten, Winkel, Fläche und Umfang und zeichnet das Dreieck maßstabsgetreu.</p>
+<header class="page-header">
+  <h1>Unterrichts-Werkzeuge</h1>
+  <p>Sammlung kleiner Tools für den Unterricht.</p>
 </header>
 
-<main>
-  <section class="card" id="input-card">
-    <h2>Eingabe</h2>
-    <form id="triangle-form">
-      <div class="input-grid">
-        <div class="field-group">
-          <h3>Seiten</h3>
-          <label>a <input type="number" step="any" min="0" id="in-a" placeholder="z. B. 5"></label>
-          <label>b <input type="number" step="any" min="0" id="in-b" placeholder="z. B. 6"></label>
-          <label>c <input type="number" step="any" min="0" id="in-c" placeholder="z. B. 7"></label>
-        </div>
-        <div class="field-group">
-          <h3>Winkel (in Grad)</h3>
-          <label>α (bei A) <input type="number" step="any" min="0" max="179.999" id="in-alpha" placeholder="z. B. 45"></label>
-          <label>β (bei B) <input type="number" step="any" min="0" max="179.999" id="in-beta" placeholder="z. B. 60"></label>
-          <label>γ (bei C) <input type="number" step="any" min="0" max="179.999" id="in-gamma" placeholder="z. B. 75"></label>
-        </div>
-      </div>
-      <p class="hint" id="input-count-hint">Bisher 0 von 3 Werten eingegeben.</p>
-      <div class="actions">
-        <button type="submit" id="calc-btn">Berechnen</button>
-        <button type="button" id="reset-btn" class="secondary">Zurücksetzen</button>
-      </div>
-    </form>
-    <p class="error" id="error-box" hidden></p>
-  </section>
-
-  <section class="card" id="results-card" hidden>
-    <h2>Ergebnis</h2>
-    <div id="solutions"></div>
-  </section>
-
-  <section class="card" id="theory-card">
-    <h2>Kongruenzsätze für Dreiecke</h2>
-    <p>Ein Dreieck ist eindeutig (bis auf Kongruenz) bestimmt, wenn eine der folgenden Kombinationen von Angaben bekannt ist:</p>
-    <div class="theorem-grid">
-      <div class="theorem">
-        <svg class="theorem-icon" viewBox="0 0 120 60"><polygon points="10,54 110,54 60,6" fill="none" stroke="#94a3b8" stroke-width="2"/>
-          <line x1="10" y1="54" x2="110" y2="54" stroke="#2563eb" stroke-width="3"/>
-          <line x1="110" y1="54" x2="60" y2="6" stroke="#2563eb" stroke-width="3"/>
-          <line x1="60" y1="6" x2="10" y2="54" stroke="#2563eb" stroke-width="3"/></svg>
-        <h3>SSS</h3>
-        <p><strong>Seite-Seite-Seite</strong><br>Alle drei Seiten sind bekannt. Die Winkel ergeben sich eindeutig aus dem Kosinussatz.</p>
-      </div>
-      <div class="theorem">
-        <svg class="theorem-icon" viewBox="0 0 120 60"><polygon points="10,54 110,54 60,6" fill="none" stroke="#94a3b8" stroke-width="2"/>
-          <line x1="10" y1="54" x2="110" y2="54" stroke="#2563eb" stroke-width="3"/>
-          <line x1="110" y1="54" x2="60" y2="6" stroke="#2563eb" stroke-width="3"/>
-          <path d="M 95,54 A 15,15 0 0 0 88,41" fill="none" stroke="#dc2626" stroke-width="2.5"/></svg>
-        <h3>SWS</h3>
-        <p><strong>Seite-Winkel-Seite</strong><br>Zwei Seiten und der von ihnen eingeschlossene Winkel sind bekannt.</p>
-      </div>
-      <div class="theorem">
-        <svg class="theorem-icon" viewBox="0 0 120 60"><polygon points="10,54 110,54 60,6" fill="none" stroke="#94a3b8" stroke-width="2"/>
-          <line x1="10" y1="54" x2="110" y2="54" stroke="#2563eb" stroke-width="3"/>
-          <path d="M 26,54 A 16,16 0 0 1 40,42" fill="none" stroke="#dc2626" stroke-width="2.5"/>
-          <path d="M 95,54 A 15,15 0 0 0 88,41" fill="none" stroke="#dc2626" stroke-width="2.5"/></svg>
-        <h3>WSW</h3>
-        <p><strong>Winkel-Seite-Winkel</strong><br>Zwei Winkel und die zwischen ihnen liegende Seite sind bekannt (bzw. zwei Winkel und irgendeine Seite – der dritte Winkel folgt aus dem Winkelsummensatz).</p>
-      </div>
-      <div class="theorem">
-        <svg class="theorem-icon" viewBox="0 0 120 60"><polygon points="10,54 110,54 60,6" fill="none" stroke="#94a3b8" stroke-width="2"/>
-          <line x1="10" y1="54" x2="110" y2="54" stroke="#2563eb" stroke-width="3"/>
-          <line x1="60" y1="6" x2="10" y2="54" stroke="#2563eb" stroke-width="3"/>
-          <path d="M 95,54 A 15,15 0 0 0 88,41" fill="none" stroke="#dc2626" stroke-width="2.5"/></svg>
-        <h3>SsW</h3>
-        <p><strong>Seite-Seite-Winkel</strong><br>Zwei Seiten und der Winkel, der der <em>längeren</em> Seite gegenüberliegt, sind bekannt. Liegt der Winkel der kürzeren Seite gegenüber, kann der Fall mehrdeutig sein (0, 1 oder 2 Lösungen).</p>
-      </div>
-    </div>
-    <p class="hint">Sind nur die drei Winkel (WWW) bekannt, ist lediglich die <em>Form</em> des Dreiecks festgelegt (ähnliche Dreiecke) – die Größe bleibt beliebig.</p>
-  </section>
+<main class="menu-main">
+  <div class="menu-grid">
+    <a class="menu-card" href="mathematik/index.html">
+      <span class="menu-icon">📐</span>
+      <h2>Mathematik</h2>
+      <p>Rechner und Werkzeuge für den Mathematikunterricht, nach Klassenstufe sortiert.</p>
+    </a>
+    <a class="menu-card" href="office-tools/index.html">
+      <span class="menu-icon">🗂️</span>
+      <h2>Office-Tools</h2>
+      <p>Hilfsmittel für Dokumente, z. B. Konvertierungen zwischen Dateiformaten.</p>
+    </a>
+  </div>
 </main>
 
-<footer>
-  <p>Alle Winkel in Grad, alle Längen in derselben, frei wählbaren Längeneinheit (LE).</p>
+<footer class="site-footer">
+  <p>Unterrichts Planer für Teacher</p>
 </footer>
-
-<script src="triangle.js"></script>
 </body>
 </html>
