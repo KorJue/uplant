@@ -1,6 +1,6 @@
-import { F, vec3 } from "./vectors.js?v=3";
-import { planeFromParam, planeFromCoord, planeFromNormal, pointPoint, pointLine, pointPlane, lineLine, planePlane, linePlane } from "./geometry.js?v=3";
-import * as N from "./notation.js?v=3";
+import { F, vec3 } from "./vectors.js?v=4";
+import { planeFromParam, planeFromCoord, planeFromNormal, pointPoint, pointLine, pointPlane, lineLine, planePlane, linePlane } from "./geometry.js?v=4";
+import * as N from "./notation.js?v=4";
 
 const els = {
   comboGrid: document.getElementById("combo-grid"),
@@ -38,24 +38,29 @@ function vectorInputHTML(prefix, labelText, letter, defaults) {
 function lineInputHTML(prefix, label, sD, uD) {
   return `<div class="line-input"><div class="group-label">Gerade ${label}</div>
     ${vectorInputHTML(prefix + "s", "Stützvektor s", "s", sD)}
-    ${vectorInputHTML(prefix + "u", "Richtungsvektor u", "u", uD)}
+    ${vectorInputHTML(prefix + "u", "Richtungsvektor v", "v", uD)}
   </div>`;
 }
 
-function planeInputHTML(prefix, label, def) {
+// defaultMode: welche Eingabeform beim ersten Anzeigen aktiv ist ("param"/"coord"/"normal") —
+// Standard "param", außer bei zwei Ebenen gleichzeitig, wo die zweite standardmäßig in
+// Koordinatenform vorgegeben wird (passend zum Standard-Rechenweg "Parameterform einsetzen").
+function planeInputHTML(prefix, label, def, defaultMode = "param") {
+  const isMode = (m) => (defaultMode === m ? "checked" : "");
+  const hiddenUnless = (m) => (defaultMode === m ? "" : "hidden");
   return `<div class="plane-input" data-plane="${prefix}">
     <div class="group-label">Ebene ${label}</div>
     <div class="plane-mode-tabs">
-      <label><input type="radio" name="${prefix}-mode" value="param" checked> Parameterform</label>
-      <label><input type="radio" name="${prefix}-mode" value="coord"> Koordinatenform</label>
-      <label><input type="radio" name="${prefix}-mode" value="normal"> Normalenform</label>
+      <label><input type="radio" name="${prefix}-mode" value="param" ${isMode("param")}> Parameterform</label>
+      <label><input type="radio" name="${prefix}-mode" value="coord" ${isMode("coord")}> Koordinatenform</label>
+      <label><input type="radio" name="${prefix}-mode" value="normal" ${isMode("normal")}> Normalenform</label>
     </div>
-    <div class="plane-mode-body" data-mode-body="param">
+    <div class="plane-mode-body" data-mode-body="param" ${hiddenUnless("param")}>
       ${vectorInputHTML(prefix + "Ps", "Stützvektor s", "s", def.s)}
-      ${vectorInputHTML(prefix + "Pu", "Richtungsvektor u", "u", def.u)}
-      ${vectorInputHTML(prefix + "Pv", "Richtungsvektor v", "v", def.v)}
+      ${vectorInputHTML(prefix + "Pu", "Richtungsvektor v", "v", def.u)}
+      ${vectorInputHTML(prefix + "Pv", "Richtungsvektor w", "w", def.v)}
     </div>
-    <div class="plane-mode-body" data-mode-body="coord" hidden>
+    <div class="plane-mode-body" data-mode-body="coord" ${hiddenUnless("coord")}>
       <div class="coord-fields">
         <label>a <input type="text" inputmode="decimal" data-var="${prefix}Ca" value="${def.coord[0]}"></label>
         <label>b <input type="text" inputmode="decimal" data-var="${prefix}Cb" value="${def.coord[1]}"></label>
@@ -63,7 +68,7 @@ function planeInputHTML(prefix, label, def) {
         <label>= d <input type="text" inputmode="decimal" data-var="${prefix}Cd" value="${def.coord[3]}"></label>
       </div>
     </div>
-    <div class="plane-mode-body" data-mode-body="normal" hidden>
+    <div class="plane-mode-body" data-mode-body="normal" ${hiddenUnless("normal")}>
       ${vectorInputHTML(prefix + "Ns", "Stützvektor s", "s", def.s)}
       ${vectorInputHTML(prefix + "Nn", "Normalenvektor n", "n", def.n)}
     </div>
@@ -112,9 +117,11 @@ function describePointHTML(label, p) {
 function describeLineHTML(label, s, u, param = "r") {
   return `<div class="formula-block">${N.lineHTML(label, s, u, param)}</div>`;
 }
-// p1/p2: Parameterbuchstaben der Ebene — Standard "λ"/"μ"; bei zwei Ebenen gleichzeitig (E1, E2)
-// werden sie unterschiedlich indiziert (λ1/μ1 bzw. λ2/μ2) übergeben.
-function describePlaneHTML(label, plane, givenMode, p1 = "λ", p2 = "μ") {
+// p1/p2: Parameterbuchstaben der Ebene — Standard "r"/"s" für eine einzelne Ebene (passend zur
+// Geraden, die "r" verwendet). Sind zwei Objekte mit eigenem Parameter gleichzeitig sichtbar,
+// bekommt das zweite andere Buchstaben: bei zwei Ebenen (E1, E2) verwendet E1 r/s und E2 t/u;
+// bei Gerade + Ebene belegt die Gerade bereits r, die Ebene bekommt dort t/u.
+function describePlaneHTML(label, plane, givenMode, p1 = "r", p2 = "s") {
   const modeNote = { param: "Parameterform", coord: "Koordinatenform", normal: "Normalenform" }[givenMode];
   return `
     <p class="form-note">Ebene ${label} — gegeben in ${modeNote}, automatisch in die beiden anderen Formen umgerechnet:</p>
@@ -186,23 +193,31 @@ const COMBOS = {
     compute: (c) => {
       const g = readLine(c, "g");
       const { plane, mode } = readPlane(c, "E");
-      return { given: describeLineHTML("g", g.s, g.u) + describePlaneHTML("E", plane, mode), result: linePlane(g.s, g.u, plane) };
+      return {
+        given: describeLineHTML("g", g.s, g.u) + describePlaneHTML("E", plane, mode, "t", "u"),
+        result: linePlane(g.s, g.u, plane),
+      };
     },
   },
   "ebene-ebene": {
     label: "Ebene – Ebene",
     build: () =>
-      `<div class="forms-row">${planeInputHTML("E1", "E1", { s: [0, 0, 0], u: [1, -1, 0], v: [1, 0, -1], coord: [1, 1, 1, 0], n: [1, 1, 1] })}${planeInputHTML(
+      `<div class="forms-row">${planeInputHTML(
+        "E1",
+        "E1",
+        { s: [0, 0, 0], u: [1, -1, 0], v: [1, 0, -1], coord: [1, 1, 1, 0], n: [1, 1, 1] },
+        "param"
+      )}${planeInputHTML(
         "E2",
         "E2",
-        { s: [0, 0, 0], u: [1, 1, 0], v: [0, 0, 1], coord: [1, -1, 0, 0], n: [1, -1, 0] }
+        { s: [0, 0, 0], u: [1, 1, 0], v: [0, 0, 1], coord: [1, -1, 0, 0], n: [1, -1, 0] },
+        "coord"
       )}</div>`,
     compute: (c) => {
       const { plane: E1, mode: m1 } = readPlane(c, "E1");
       const { plane: E2, mode: m2 } = readPlane(c, "E2");
       return {
-        given:
-          describePlaneHTML("E1", E1, m1, `λ${N.sub(1)}`, `μ${N.sub(1)}`) + describePlaneHTML("E2", E2, m2, `λ${N.sub(2)}`, `μ${N.sub(2)}`),
+        given: describePlaneHTML("E1", E1, m1, "r", "s") + describePlaneHTML("E2", E2, m2, "t", "u"),
         result: planePlane(E1, E2),
       };
     },

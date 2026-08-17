@@ -14,8 +14,8 @@ import {
   scalarTriple,
   isParallel,
   squaredLength,
-} from "./vectors.js?v=3";
-import * as N from "./notation.js?v=3";
+} from "./vectors.js?v=4";
+import * as N from "./notation.js?v=4";
 
 function T(html) {
   return { kind: "text", html };
@@ -169,7 +169,7 @@ export function pointPoint(P, Q) {
 export function pointLine(P, s, u) {
   const w = vSub(P, s);
   const idx0 = [0, 1, 2].find((i) => !u[i].isZero());
-  const stepsA = [T(`<strong>Verfahren 1 (LGS über die Koordinatengleichungen):</strong> Liegt P auf g, muss es ein r geben mit P = ${N.vecArrow("s")} + r·${N.vecArrow("u")}.`)];
+  const stepsA = [T(`<strong>Verfahren 1 (LGS über die Koordinatengleichungen):</strong> Liegt P auf g, muss es ein r geben mit P = ${N.vecArrow("s")} + r·${N.vecArrow("v")}.`)];
   stepsA.push(E([0, 1, 2].map((i) => `${["I", "II", "III"][i]}: ${N.fmt(P[i])} = ${N.fmt(s[i])} + r·${N.fmt(u[i])}`).join("<br>")));
   let r = w[idx0].div(u[idx0]);
   stepsA.push(T(`Aus Gleichung ${["I", "II", "III"][idx0]} folgt r = ${N.fmt(r)}. Einsetzen in die übrigen Gleichungen zur Kontrolle:`));
@@ -185,16 +185,16 @@ export function pointLine(P, s, u) {
   const cr = cross(w, u);
   const onLine = isZeroVec(cr);
   const stepsB = [
-    T(`<strong>Verfahren 2 (Kreuzprodukt):</strong> P liegt genau dann auf g, wenn der Verbindungsvektor ${N.vecArrow("sP")} = P − ${N.vecArrow("s")} parallel zu ${N.vecArrow("u")} ist, d. h. wenn ${N.vecArrow("sP")} × ${N.vecArrow("u")} = ${N.vecArrow("0")} ist.`),
+    T(`<strong>Verfahren 2 (Kreuzprodukt):</strong> P liegt genau dann auf g, wenn der Verbindungsvektor ${N.vecArrow("sP")} = P − ${N.vecArrow("s")} parallel zu ${N.vecArrow("v")} ist, d. h. wenn ${N.vecArrow("sP")} × ${N.vecArrow("v")} = ${N.vecArrow("0")} ist.`),
     E(`${N.vecArrow("sP")} = ${N.vecColFromFractions(w)}`),
-    E(`${N.vecArrow("sP")} × ${N.vecArrow("u")} = ${N.vecColFromFractions(cr)}`),
+    E(`${N.vecArrow("sP")} × ${N.vecArrow("v")} = ${N.vecColFromFractions(cr)}`),
     T(onLine ? "Das Kreuzprodukt ist der Nullvektor — die Vektoren sind parallel." : "Das Kreuzprodukt ist nicht der Nullvektor."),
   ];
 
   const extras = [];
   if (!onLine) {
     const distSq = squaredLength(cr).div(squaredLength(u));
-    extras.push({ label: "Abstand", value: `d(P,g) = |${N.vecArrow("sP")} × ${N.vecArrow("u")}| / |${N.vecArrow("u")}| ≈ ${N.fmtApprox(Math.sqrt(distSq.toNumber()))} LE` });
+    extras.push({ label: "Abstand", value: `d(P,g) = |${N.vecArrow("sP")} × ${N.vecArrow("v")}| / |${N.vecArrow("v")}| ≈ ${N.fmtApprox(Math.sqrt(distSq.toNumber()))} LE` });
   }
 
   return {
@@ -213,19 +213,19 @@ export function pointLine(P, s, u) {
 export function pointPlane(P, plane) {
   const w = vSub(P, plane.s);
   const solved = solveLinear2x2(plane.u, plane.v, w);
-  const stepsA = [T(`<strong>Verfahren 1 (LGS in Parameterform):</strong> Liegt P in E, gibt es λ, μ mit P = ${N.vecArrow("s")} + λ·${N.vecArrow("u")} + μ·${N.vecArrow("v")}.`)];
+  const stepsA = [T(`<strong>Verfahren 1 (LGS in Parameterform):</strong> Liegt P in E, gibt es r, s mit P = ${N.vecArrow("s")} + r·${N.vecArrow("v")} + s·${N.vecArrow("w")}.`)];
   stepsA.push(
-    E([0, 1, 2].map((i) => `${["I", "II", "III"][i]}: ${N.fmt(P[i])} = ${N.fmt(plane.s[i])} + λ·${N.fmt(plane.u[i])} + μ·${N.fmt(plane.v[i])}`).join("<br>"))
+    E([0, 1, 2].map((i) => `${["I", "II", "III"][i]}: ${N.fmt(P[i])} = ${N.fmt(plane.s[i])} + r·${N.fmt(plane.u[i])} + s·${N.fmt(plane.v[i])}`).join("<br>"))
   );
   let consistentA = false;
   if (solved) {
-    const { x: lam, y: mu, i, j } = solved;
+    const { x: rVal, y: sVal, i, j } = solved;
     const k = [0, 1, 2].find((x) => x !== i && x !== j);
-    stepsA.push(T(`Aus ${["I", "II", "III"][i]} und ${["I", "II", "III"][j]} folgt λ = ${N.fmt(lam)}, μ = ${N.fmt(mu)}. Einsetzen in ${["I", "II", "III"][k]} zur Kontrolle:`));
-    const lhs = plane.s[k].add(plane.u[k].mul(lam)).add(plane.v[k].mul(mu));
+    stepsA.push(T(`Aus ${["I", "II", "III"][i]} und ${["I", "II", "III"][j]} folgt r = ${N.fmt(rVal)}, s = ${N.fmt(sVal)}. Einsetzen in ${["I", "II", "III"][k]} zur Kontrolle:`));
+    const lhs = plane.s[k].add(plane.u[k].mul(rVal)).add(plane.v[k].mul(sVal));
     const ok = lhs.equals(P[k]);
     stepsA.push(
-      E(`${["I", "II", "III"][k]}: ${N.fmt(plane.s[k])} + ${N.fmt(lam)}·${N.fmt(plane.u[k])} + ${N.fmt(mu)}·${N.fmt(plane.v[k])} = ${N.fmt(lhs)} ${ok ? "=" : "≠"} ${N.fmt(P[k])} ${ok ? "✓" : "✗"}`)
+      E(`${["I", "II", "III"][k]}: ${N.fmt(plane.s[k])} + ${N.fmt(rVal)}·${N.fmt(plane.u[k])} + ${N.fmt(sVal)}·${N.fmt(plane.v[k])} = ${N.fmt(lhs)} ${ok ? "=" : "≠"} ${N.fmt(P[k])} ${ok ? "✓" : "✗"}`)
     );
     consistentA = ok;
   }
@@ -272,16 +272,16 @@ export function lineLine(s1, u1, s2, u2) {
     const identical = isZeroVec(crossCheck);
     stepsA.push(
       T(
-        `Die Richtungsvektoren ${N.vecArrow(`u${N.sub(1)}`)} und ${N.vecArrow(`u${N.sub(2)}`)} sind parallel (linear abhängig) — zwei der drei Gleichungen legen r und t nicht mehr eindeutig fest. Stattdessen wird geprüft, ob der Verbindungsvektor der Stützpunkte ebenfalls parallel zu ${N.vecArrow(`u${N.sub(1)}`)} ist:`
+        `Die Richtungsvektoren ${N.vecArrow(`v${N.sub(1)}`)} und ${N.vecArrow(`v${N.sub(2)}`)} sind parallel (linear abhängig) — zwei der drei Gleichungen legen r und t nicht mehr eindeutig fest. Stattdessen wird geprüft, ob der Verbindungsvektor der Stützpunkte ebenfalls parallel zu ${N.vecArrow(`v${N.sub(1)}`)} ist:`
       )
     );
-    stepsA.push(E(`(${N.vecArrow(`s${N.sub(2)}`)} − ${N.vecArrow(`s${N.sub(1)}`)}) × ${N.vecArrow(`u${N.sub(1)}`)} = ${N.vecColFromFractions(crossCheck)}`));
+    stepsA.push(E(`(${N.vecArrow(`s${N.sub(2)}`)} − ${N.vecArrow(`s${N.sub(1)}`)}) × ${N.vecArrow(`v${N.sub(1)}`)} = ${N.vecColFromFractions(crossCheck)}`));
     relation = identical ? "identisch" : "parallel";
     stepsA.push(
       T(
         identical
-          ? "Der Verbindungsvektor ist ebenfalls parallel zu u1 — die Stützpunkte liegen auf derselben Geraden."
-          : "Der Verbindungsvektor ist nicht parallel zu u1 — die Geraden sind echt parallel, aber verschieden."
+          ? `Der Verbindungsvektor ist ebenfalls parallel zu ${N.vecArrow(`v${N.sub(1)}`)} — die Stützpunkte liegen auf derselben Geraden.`
+          : `Der Verbindungsvektor ist nicht parallel zu ${N.vecArrow(`v${N.sub(1)}`)} — die Geraden sind echt parallel, aber verschieden.`
       )
     );
   } else {
@@ -305,17 +305,17 @@ export function lineLine(s1, u1, s2, u2) {
 
   const stepsB = [
     T(
-      `<strong>Verfahren 2 (Spatprodukt):</strong> Sind ${N.vecArrow(`u${N.sub(1)}`)}, ${N.vecArrow(`u${N.sub(2)}`)} und der Verbindungsvektor ${N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`)} = ${N.vecArrow(`s${N.sub(2)}`)} − ${N.vecArrow(`s${N.sub(1)}`)} linear abhängig (Spatprodukt = 0), liegen die Geraden in einer gemeinsamen Ebene.`
+      `<strong>Verfahren 2 (Spatprodukt):</strong> Sind ${N.vecArrow(`v${N.sub(1)}`)}, ${N.vecArrow(`v${N.sub(2)}`)} und der Verbindungsvektor ${N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`)} = ${N.vecArrow(`s${N.sub(2)}`)} − ${N.vecArrow(`s${N.sub(1)}`)} linear abhängig (Spatprodukt = 0), liegen die Geraden in einer gemeinsamen Ebene.`
     ),
     E(`${N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`)} = ${N.vecColFromFractions(w)}`),
-    E(`[${N.vecArrow(`u${N.sub(1)}`)}, ${N.vecArrow(`u${N.sub(2)}`)}, ${N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`)}] = ${N.vecArrow(`u${N.sub(1)}`)} · (${N.vecArrow(`u${N.sub(2)}`)} × ${N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`)}) = ${N.fmt(spat)}`),
+    E(`[${N.vecArrow(`v${N.sub(1)}`)}, ${N.vecArrow(`v${N.sub(2)}`)}, ${N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`)}] = ${N.vecArrow(`v${N.sub(1)}`)} · (${N.vecArrow(`v${N.sub(2)}`)} × ${N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`)}) = ${N.fmt(spat)}`),
   ];
   if (!spat.isZero()) {
     stepsB.push(T("Das Spatprodukt ist ungleich 0 — die drei Vektoren sind linear unabhängig. Die Geraden sind windschief."));
   } else {
     stepsB.push(T("Das Spatprodukt ist 0 — die drei Vektoren sind linear abhängig, die Geraden liegen also in einer gemeinsamen Ebene (parallel, identisch oder schneidend)."));
     const crossU = cross(u1, u2);
-    stepsB.push(E(`${N.vecArrow(`u${N.sub(1)}`)} × ${N.vecArrow(`u${N.sub(2)}`)} = ${N.vecColFromFractions(crossU)}`));
+    stepsB.push(E(`${N.vecArrow(`v${N.sub(1)}`)} × ${N.vecArrow(`v${N.sub(2)}`)} = ${N.vecColFromFractions(crossU)}`));
     stepsB.push(
       T(
         parU
@@ -333,7 +333,7 @@ export function lineLine(s1, u1, s2, u2) {
   }
   if (relation === "windschief") {
     const distSq = spat.mul(spat).div(squaredLength(cross(u1, u2)));
-    extras.push({ label: "Abstand", value: `d(g,h) = |[${N.vecArrow(`u${N.sub(1)}`)},${N.vecArrow(`u${N.sub(2)}`)},${N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`)}]| / |${N.vecArrow(`u${N.sub(1)}`)}×${N.vecArrow(`u${N.sub(2)}`)}| ≈ ${N.fmtApprox(Math.sqrt(distSq.toNumber()))} LE` });
+    extras.push({ label: "Abstand", value: `d(g,h) = |[${N.vecArrow(`v${N.sub(1)}`)},${N.vecArrow(`v${N.sub(2)}`)},${N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`)}]| / |${N.vecArrow(`v${N.sub(1)}`)}×${N.vecArrow(`v${N.sub(2)}`)}| ≈ ${N.fmtApprox(Math.sqrt(distSq.toNumber()))} LE` });
   }
 
   const labelMap = {
@@ -359,7 +359,7 @@ export function planePlane(E1, E2) {
   const parN = isParallel(E1.n, E2.n);
   const dir = cross(E1.n, E2.n);
 
-  // ---- Verfahren 1: LGS aus beiden Koordinatenformen ----
+  // ---- Verfahren 2: LGS aus beiden Koordinatenformen ----
   const eqI = `I: ${N.fmtLinearCombo([
     { coeff: E1.a, varHtml: N.X1 },
     { coeff: E1.b, varHtml: N.X2 },
@@ -370,7 +370,7 @@ export function planePlane(E1, E2) {
     { coeff: E2.b, varHtml: N.X2 },
     { coeff: E2.c, varHtml: N.X3 },
   ])} = ${N.fmt(E2.d)}`;
-  const steps1 = [T(`<strong>Verfahren 1 (LGS aus beiden Koordinatenformen):</strong>`), E(`${eqI}<br>${eqII}`)];
+  const steps1 = [T(`<strong>Verfahren 2 (LGS aus beiden Koordinatenformen):</strong>`), E(`${eqI}<br>${eqII}`)];
 
   const elim = eliminateVariable(E1, E2);
   const remainIdx = [0, 1, 2].filter((i) => i !== elim.idx);
@@ -393,8 +393,9 @@ export function planePlane(E1, E2) {
     steps1.push(T("Gleichung III verknüpft die beiden verbliebenen Variablen linear — es gibt unendlich viele Lösungen. Die Ebenen schneiden sich in einer Geraden."));
 
     // Schnittgerade explizit aus dem LGS gewinnen: eine der beiden verbliebenen Variablen als
-    // freien Parameter t setzen, die andere aus III damit ausdrücken, und beides in eine der
-    // Ausgangsgleichungen einsetzen, um auch die eliminierte Variable durch t auszudrücken.
+    // freien Parameter k setzen (k, weil r/s/t/u bereits die Parameter von E1 und E2 sind), die
+    // andere aus III damit ausdrücken, und beides in eine der Ausgangsgleichungen einsetzen, um
+    // auch die eliminierte Variable durch k auszudrücken.
     const depIdx = remainIdx.find((i) => !elim.coeffs[i].isZero());
     const freeIdx = remainIdx.find((i) => i !== depIdx);
     const depConst = elim.d.div(elim.coeffs[depIdx]);
@@ -402,14 +403,14 @@ export function planePlane(E1, E2) {
 
     steps1.push(
       T(
-        `Um die Schnittgerade explizit zu erhalten, wird eine der beiden Variablen aus III frei als Parameter t gewählt und die andere damit ausgedrückt:`
+        `Um die Schnittgerade explizit zu erhalten, wird eine der beiden Variablen aus III frei als Parameter k gewählt und die andere damit ausgedrückt:`
       )
     );
     steps1.push(
       E(
-        `${VN[freeIdx]} = t,   ${VN[depIdx]} = ${N.fmtLinearCombo([
+        `${VN[freeIdx]} = k,   ${VN[depIdx]} = ${N.fmtLinearCombo([
           { coeff: depConst, varHtml: "" },
-          { coeff: depSlope, varHtml: " t" },
+          { coeff: depSlope, varHtml: " k" },
         ])}`
       )
     );
@@ -427,13 +428,13 @@ export function planePlane(E1, E2) {
     const elimSlope = cDep.mul(depSlope).add(cFree).neg().div(cElim);
 
     steps1.push(
-      T(`Einsetzen in Gleichung ${usedLabel} und Auflösen nach ${VN[elim.idx]} liefert auch diese Koordinate in Abhängigkeit von t:`)
+      T(`Einsetzen in Gleichung ${usedLabel} und Auflösen nach ${VN[elim.idx]} liefert auch diese Koordinate in Abhängigkeit von k:`)
     );
     steps1.push(
       E(
         `${VN[elim.idx]} = ${N.fmtLinearCombo([
           { coeff: elimConst, varHtml: "" },
-          { coeff: elimSlope, varHtml: " t" },
+          { coeff: elimSlope, varHtml: " k" },
         ])}`
       )
     );
@@ -447,12 +448,12 @@ export function planePlane(E1, E2) {
     sLGS[freeIdx] = F(0);
     dirLGS[freeIdx] = F(1);
     steps1.push(T("Zusammengefasst als Vektorgleichung ist das genau die Schnittgerade:"));
-    steps1.push(E(N.lineHTML("h", sLGS, dirLGS, "t")));
+    steps1.push(E(N.lineHTML("h", sLGS, dirLGS, "k")));
   }
 
-  // ---- Verfahren 2: Parameterform von E1 in die Koordinatenform von E2 einsetzen ----
-  const l1 = `λ${N.sub(1)}`;
-  const m1 = `μ${N.sub(1)}`;
+  // ---- Verfahren 1: Parameterform von E1 in die Koordinatenform von E2 einsetzen ----
+  const l1 = "r";
+  const m1 = "s";
   const A = dot(E2.n, E1.u);
   const B = dot(E2.n, E1.v);
   const Cconst = dot(E2.n, E1.s);
@@ -462,7 +463,7 @@ export function planePlane(E1, E2) {
 
   const steps2 = [
     T(
-      `<strong>Verfahren 2 (Parameterform von E1 in die Koordinatenform von E2 einsetzen):</strong> Jeder Punkt von E1 hat die Form ${N.vecArrow("x")} = ${N.vecArrow("s")}${N.sub(1)} + ${l1}·${N.vecArrow("u")}${N.sub(1)} + ${m1}·${N.vecArrow("v")}${N.sub(1)}. Eingesetzt in die Koordinatenform von E2 entscheidet sich, für welche ${l1}, ${m1} dieser Punkt auch auf E2 liegt.`
+      `<strong>Verfahren 1 (Parameterform von E1 in die Koordinatenform von E2 einsetzen):</strong> Jeder Punkt von E1 hat die Form ${N.vecArrow("x")} = ${N.vecArrow("s")} + ${l1}·${N.vecArrow("v")} + ${m1}·${N.vecArrow("w")} (die Parameter von E1). Eingesetzt in die Koordinatenform von E2 entscheidet sich, für welche ${l1}, ${m1} dieser Punkt auch auf E2 liegt.`
     ),
     E(`${substTerm(0)} + ${substTerm(1)} + ${substTerm(2)} = ${N.fmt(E2.d)}`),
     E(`${N.fmt(A)}·${l1} + ${N.fmt(B)}·${m1} = ${N.fmt(rhs2)}`),
@@ -499,7 +500,7 @@ export function planePlane(E1, E2) {
       steps2.push(T(`Mit ${l1} = 0 folgt ${m1} = ${N.fmt(mu0)}; das liefert einen Punkt. Erhöht man ${l1} um 1, ändert sich ${m1} um ${N.fmt(A.neg().div(B))} — das liefert die Richtung:`));
     }
     schnittgeradeM2 = { s: point0, u: dirVec };
-    steps2.push(E(N.lineHTML("h", point0, dirVec)));
+    steps2.push(E(N.lineHTML("h", point0, dirVec, "k")));
   }
 
   // ---- Verfahren 3: Normalenvektoren (Vektorprodukt) ----
@@ -520,12 +521,12 @@ export function planePlane(E1, E2) {
     const pt = intersectionPointOfPlanes(E1, E2, dir);
     schnittgerade = { s: pt, u: dir };
     steps3.push(T("Ein Punkt der Schnittgeraden ergibt sich, indem man die Koordinate, deren Richtungsvektor-Komponente ungleich 0 ist, auf 0 setzt und das verbleibende 2×2-System löst:"));
-    steps3.push(E(N.lineHTML("h", pt, dir)));
+    steps3.push(E(N.lineHTML("h", pt, dir, "k")));
   }
 
   const extras = [];
   if (relation === "schneidend" && schnittgerade) {
-    extras.push({ label: "Schnittgerade", value: N.lineHTML("h", schnittgerade.s, schnittgerade.u) });
+    extras.push({ label: "Schnittgerade", value: N.lineHTML("h", schnittgerade.s, schnittgerade.u, "k") });
   }
   if (relation === "parallel") {
     const distNum = Math.abs(E1.a.mul(E2.s[0]).add(E1.b.mul(E2.s[1])).add(E1.c.mul(E2.s[2])).sub(E1.d).toNumber()) / Math.sqrt(squaredLength(E1.n).toNumber());
@@ -541,8 +542,8 @@ export function planePlane(E1, E2) {
     relation,
     relationLabel: labelMap[relation],
     methods: [
-      { title: "Verfahren 1: LGS aus den Koordinatenformen", steps: steps1 },
-      { title: "Verfahren 2: Parameterform in Koordinatenform einsetzen", steps: steps2 },
+      { title: "Verfahren 1: Parameterform in Koordinatenform einsetzen", steps: steps2 },
+      { title: "Verfahren 2: LGS aus den Koordinatenformen", steps: steps1 },
       { title: "Verfahren 3: Normalenvektoren (Vektorprodukt)", steps: steps3 },
     ],
     extras,
@@ -581,14 +582,14 @@ export function linePlane(s, u, plane) {
   }
 
   const stepsB = [
-    T(`<strong>Verfahren 2 (Skalarprodukt aus Richtungs- und Normalenvektor):</strong> g ist parallel zu E (oder liegt in E), wenn ${N.vecArrow("u")} senkrecht zu ${N.vecArrow("n")} steht, d. h. wenn ${N.vecArrow("u")} · ${N.vecArrow("n")} = 0 ist.`),
-    E(`${N.vecArrow("u")} · ${N.vecArrow("n")} = ${N.vecColFromFractions(u)} · ${N.vecColFromFractions(plane.n)} = ${N.fmt(nDotU)}`),
+    T(`<strong>Verfahren 2 (Skalarprodukt aus Richtungs- und Normalenvektor):</strong> g ist parallel zu E (oder liegt in E), wenn ${N.vecArrow("v")} senkrecht zu ${N.vecArrow("n")} steht, d. h. wenn ${N.vecArrow("v")} · ${N.vecArrow("n")} = 0 ist.`),
+    E(`${N.vecArrow("v")} · ${N.vecArrow("n")} = ${N.vecColFromFractions(u)} · ${N.vecColFromFractions(plane.n)} = ${N.fmt(nDotU)}`),
   ];
   if (nDotU.isZero()) {
     const sOk = nDotS.equals(plane.d);
     stepsB.push(
       T(
-        `Das Skalarprodukt ist 0 — ${N.vecArrow("u")} steht senkrecht auf ${N.vecArrow("n")}, verläuft also in Richtung der Ebene. Stützpunkt ${N.vecArrow("s")} in die Ebenengleichung eingesetzt: ${sOk ? "erfüllt — g liegt in E." : "nicht erfüllt — g ist parallel zu E."}`
+        `Das Skalarprodukt ist 0 — ${N.vecArrow("v")} steht senkrecht auf ${N.vecArrow("n")}, verläuft also in Richtung der Ebene. Stützpunkt ${N.vecArrow("s")} in die Ebenengleichung eingesetzt: ${sOk ? "erfüllt — g liegt in E." : "nicht erfüllt — g ist parallel zu E."}`
       )
     );
   } else {
