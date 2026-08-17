@@ -12,6 +12,20 @@
   --triangle-stroke: #2563eb;
 }
 
+:root[data-theme="dark"] {
+  --bg: #14181d;
+  --card-bg: #1c2128;
+  --text: #e6e8eb;
+  --muted: #9aa4b1;
+  --accent: #5b8def;
+  --accent-dark: #8ab4f8;
+  --border: #2d333b;
+  --error-bg: #3a1f1f;
+  --error-text: #ff8a8a;
+  --triangle-fill: #1e3a5f;
+  --triangle-stroke: #5b8def;
+}
+
 * { box-sizing: border-box; }
 
 body {
@@ -315,4 +329,15 @@ footer {
   color: var(--muted);
   font-size: 0.85rem;
   padding-bottom: 2rem;
+}
+footer a {
+  color: var(--accent);
+}
+
+:root[data-theme="dark"] .badge {
+  background: #1e2a4a;
+}
+
+:root[data-theme="dark"] svg.triangle-drawing {
+  background: #10141a;
 }

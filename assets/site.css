@@ -8,6 +8,16 @@
   --border: #e2e8f0;
 }
 
+:root[data-theme="dark"] {
+  --bg: #14181d;
+  --card-bg: #1c2128;
+  --text: #e6e8eb;
+  --muted: #9aa4b1;
+  --accent: #5b8def;
+  --accent-dark: #8ab4f8;
+  --border: #2d333b;
+}
+
 * { box-sizing: border-box; }
 
 body {
@@ -16,6 +26,38 @@ body {
   background: var(--bg);
   color: var(--text);
   line-height: 1.5;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="search"] {
+  background: var(--card-bg);
+  color: var(--text);
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 100;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.theme-toggle:hover {
+  border-color: var(--accent);
 }
 
 .breadcrumb {
@@ -109,4 +151,7 @@ body {
   color: var(--muted);
   font-size: 0.85rem;
   padding: 1rem 1.5rem 2rem;
+}
+.site-footer a {
+  color: var(--accent);
 }

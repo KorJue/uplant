@@ -157,3 +157,8 @@ button.secondary {
 button.secondary:hover {
   background: var(--bg);
 }
+
+:root[data-theme="dark"] .error {
+  background: #3a1f1f;
+  color: #ff8a8a;
+}
