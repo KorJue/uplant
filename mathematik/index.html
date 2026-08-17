@@ -19,12 +19,12 @@
 
 <main class="menu-main">
   <div class="menu-grid">
-    <a class="menu-card" href="klasse-10/index.html">
+    <a class="menu-card" data-section="klasse-10" href="klasse-10/index.html" hidden>
       <span class="menu-icon">🔟</span>
       <h2>Klasse 10</h2>
       <p>Themen und Rechner für die 10. Klasse.</p>
     </a>
-    <a class="menu-card" href="mss/index.html">
+    <a class="menu-card" data-section="mss" href="mss/index.html" hidden>
       <span class="menu-icon">🎓</span>
       <h2>MSS</h2>
       <p>Themen und Rechner für die Mainzer Studienstufe (Oberstufe).</p>
@@ -36,5 +36,7 @@
   <p><a href="../index.html">Zurück zur Startseite</a></p>
   <p><a href="../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
+<script src="../assets/access-gate.js"></script>
+<script>uplantAccessGate("../index.html");</script>
 </body>
 </html>
