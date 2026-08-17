@@ -5,6 +5,12 @@ export function fmt(f) {
   return f.toString().replace("-", "−");
 }
 
+// Wie fmt(), aber in Klammern, wenn negativ — für Werte, die direkt hinter einem
+// Multiplikationspunkt stehen (z. B. "λ·(−2)" statt des missverständlichen "λ·−2").
+export function fmtParen(f) {
+  return f.isNegative() ? `(${fmt(f)})` : fmt(f);
+}
+
 export function sub(n) {
   return `<sub>${n}</sub>`;
 }
@@ -65,7 +71,7 @@ export function lineTemplateHTML(label, param = "r") {
   return `${label}: ${vecArrow("x")} = ${vecColHTML(["s1", "s2", "s3"])} + ${param}·${vecColHTML(["u1", "u2", "u3"])}`;
 }
 
-export function planeParamHTML(label, s, u, v, p1 = "r", p2 = "t") {
+export function planeParamHTML(label, s, u, v, p1 = "λ", p2 = "μ") {
   return `${label}: ${vecArrow("x")} = ${vecColFromFractions(s)} + ${p1}·${vecColFromFractions(u)} + ${p2}·${vecColFromFractions(v)}`;
 }
 

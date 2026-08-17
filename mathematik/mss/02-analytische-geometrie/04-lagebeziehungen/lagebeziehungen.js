@@ -106,14 +106,19 @@ function readPlane(container, prefix) {
 function describePointHTML(label, p) {
   return `<div class="formula-block">${N.pointHTML(label, p)}</div>`;
 }
-function describeLineHTML(label, s, u) {
-  return `<div class="formula-block">${N.lineHTML(label, s, u)}</div>`;
+// param: Parameterbuchstabe der Geraden — Standard "r" für eine einzelne Gerade; bei zwei
+// Geraden gleichzeitig (g und h) muss h ein anderes Symbol als g verwenden, damit die beiden
+// Parameter nicht wie ein und dieselbe Unbekannte aussehen.
+function describeLineHTML(label, s, u, param = "r") {
+  return `<div class="formula-block">${N.lineHTML(label, s, u, param)}</div>`;
 }
-function describePlaneHTML(label, plane, givenMode) {
+// p1/p2: Parameterbuchstaben der Ebene — Standard "λ"/"μ"; bei zwei Ebenen gleichzeitig (E1, E2)
+// werden sie unterschiedlich indiziert (λ1/μ1 bzw. λ2/μ2) übergeben.
+function describePlaneHTML(label, plane, givenMode, p1 = "λ", p2 = "μ") {
   const modeNote = { param: "Parameterform", coord: "Koordinatenform", normal: "Normalenform" }[givenMode];
   return `
     <p class="form-note">Ebene ${label} — gegeben in ${modeNote}, automatisch in die beiden anderen Formen umgerechnet:</p>
-    <div class="formula-block">${N.planeParamHTML(label, plane.s, plane.u, plane.v)}</div>
+    <div class="formula-block">${N.planeParamHTML(label, plane.s, plane.u, plane.v, p1, p2)}</div>
     <div class="formula-block">${N.planeCoordHTML(label, plane.a, plane.b, plane.c, plane.d)}</div>
     <div class="formula-block">${N.planeNormalHTML(label, plane.s, plane.n)}</div>
   `;
@@ -162,7 +167,10 @@ const COMBOS = {
     compute: (c) => {
       const g = readLine(c, "g");
       const h = readLine(c, "h");
-      return { given: describeLineHTML("g", g.s, g.u) + describeLineHTML("h", h.s, h.u), result: lineLine(g.s, g.u, h.s, h.u) };
+      return {
+        given: describeLineHTML("g", g.s, g.u, "r") + describeLineHTML("h", h.s, h.u, "t"),
+        result: lineLine(g.s, g.u, h.s, h.u),
+      };
     },
   },
   "gerade-ebene": {
@@ -192,7 +200,11 @@ const COMBOS = {
     compute: (c) => {
       const { plane: E1, mode: m1 } = readPlane(c, "E1");
       const { plane: E2, mode: m2 } = readPlane(c, "E2");
-      return { given: describePlaneHTML("E1", E1, m1) + describePlaneHTML("E2", E2, m2), result: planePlane(E1, E2) };
+      return {
+        given:
+          describePlaneHTML("E1", E1, m1, `λ${N.sub(1)}`, `μ${N.sub(1)}`) + describePlaneHTML("E2", E2, m2, `λ${N.sub(2)}`, `μ${N.sub(2)}`),
+        result: planePlane(E1, E2),
+      };
     },
   },
 };
@@ -238,8 +250,7 @@ function renderResult(given, result) {
   if (result.extras.length) {
     html += `<ul class="extras-list">${result.extras.map((e) => `<li><strong>${e.label}:</strong> ${e.value}</li>`).join("")}</ul>`;
   }
-  html += `<div class="method-block">${renderMethod(result.methodA)}</div>`;
-  html += `<div class="method-block">${renderMethod(result.methodB)}</div>`;
+  html += result.methods.map((m) => `<div class="method-block">${renderMethod(m)}</div>`).join("");
   els.resultContent.innerHTML = html;
 }
 

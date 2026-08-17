@@ -132,7 +132,7 @@ export function isZeroVec(v) {
 export function vEquals(u, v) {
   return u[0].equals(v[0]) && u[1].equals(v[1]) && u[2].equals(v[2]);
 }
-// Spatprodukt (Determinante aus drei Vektoren) — 0 genau dann, wenn u, v, w komplanar sind.
+// Spatprodukt (Determinante aus drei Vektoren) — 0 genau dann, wenn u, v, w linear abhängig sind.
 export function scalarTriple(u, v, w) {
   return dot(u, cross(v, w));
 }
