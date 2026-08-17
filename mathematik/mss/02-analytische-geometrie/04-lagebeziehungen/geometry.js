@@ -15,8 +15,8 @@ import {
   scalarTriple,
   isParallel,
   squaredLength,
-} from "./vectors.js?v=9";
-import * as N from "./notation.js?v=9";
+} from "./vectors.js?v=10";
+import * as N from "./notation.js?v=10";
 
 function T(html) {
   return { kind: "text", html };
@@ -199,10 +199,29 @@ export function pointLine(P, s, u) {
     if (!ok) consistentA = false;
   }
 
+  // ---- Verfahren 2: Lotfußpunktverfahren (Skalarprodukt) — Grundkurs-geeignet, da nur
+  // Skalarprodukte statt Kreuzprodukt benötigt werden. Der Lotfußpunkt F ist der Punkt auf g mit
+  // dem kleinsten Abstand zu P; dort steht der Verbindungsvektor PF senkrecht auf v.
+  const rF = dot(w, u).div(dot(u, u));
+  const foot = vAdd(s, vScale(u, rF));
+  const onLine = vEquals(foot, P);
+  const stepsC = [
+    T(
+      `<strong>Verfahren 2 (Lotfußpunktverfahren):</strong> Der Punkt F auf g mit dem kleinsten Abstand zu P ist der Lotfußpunkt — dort steht der Verbindungsvektor ${N.vecArrow(
+        "PF"
+      )} senkrecht auf ${N.vecArrow("v")}, d. h. (F − P) · ${N.vecArrow("v")} = 0. Mit F = ${N.vecArrow("s")} + r·${N.vecArrow(
+        "v"
+      )} liefert das direkt den Parameter r:`
+    ),
+    E(`r = (P − ${N.vecArrow("s")}) · ${N.vecArrow("v")} / (${N.vecArrow("v")} · ${N.vecArrow("v")}) = ${N.fmt(dot(w, u))} / ${N.fmt(dot(u, u))} = ${N.fmt(rF)}`),
+    E(`F = ${N.vecColFromFractions(s)} + ${N.fmt(rF)}·${N.vecColFromFractions(u)} = ${N.vecColFromFractions(foot)}`),
+    T(onLine ? "F = P — der Lotfußpunkt ist P selbst, also liegt P auf g." : "F ≠ P — P liegt nicht auf g."),
+  ];
+
+  // ---- Verfahren 3: Kreuzprodukt (Leistungskurs) ----
   const cr = cross(w, u);
-  const onLine = isZeroVec(cr);
   const stepsB = [
-    T(`<strong>Verfahren 2 (Kreuzprodukt):</strong> P liegt genau dann auf g, wenn der Verbindungsvektor ${N.vecArrow("sP")} = P − ${N.vecArrow("s")} parallel zu ${N.vecArrow("v")} ist, d. h. wenn ${N.vecArrow("sP")} × ${N.vecArrow("v")} = ${N.vecArrow("0")} ist.`),
+    T(`<strong>Verfahren 3 (Kreuzprodukt):</strong> P liegt genau dann auf g, wenn der Verbindungsvektor ${N.vecArrow("sP")} = P − ${N.vecArrow("s")} parallel zu ${N.vecArrow("v")} ist, d. h. wenn ${N.vecArrow("sP")} × ${N.vecArrow("v")} = ${N.vecArrow("0")} ist.`),
     E(`${N.vecArrow("sP")} = ${N.vecColFromFractions(w)}`),
     E(`${N.vecArrow("sP")} × ${N.vecArrow("v")} = ${N.vecColFromFractions(cr)}`),
     T(onLine ? "Das Kreuzprodukt ist der Nullvektor — die Vektoren sind parallel." : "Das Kreuzprodukt ist nicht der Nullvektor."),
@@ -210,8 +229,8 @@ export function pointLine(P, s, u) {
 
   const extras = [];
   if (!onLine) {
-    const distSq = squaredLength(cr).div(squaredLength(u));
-    extras.push({ label: "Abstand", value: `d(P,g) = |${N.vecArrow("sP")} × ${N.vecArrow("v")}| / |${N.vecArrow("v")}| ≈ ${N.fmtApprox(Math.sqrt(distSq.toNumber()))} LE` });
+    const distSq = squaredLength(vSub(P, foot));
+    extras.push({ label: "Abstand", value: `d(P,g) = |${N.vecArrow("PF")}| = √${distSq.toString()} ≈ ${N.fmtApprox(Math.sqrt(distSq.toNumber()))} LE` });
   }
 
   return {
@@ -219,7 +238,8 @@ export function pointLine(P, s, u) {
     relationLabel: onLine ? "Der Punkt P liegt auf der Geraden g." : "Der Punkt P liegt nicht auf der Geraden g.",
     methods: [
       { title: "Verfahren 1: Lineares Gleichungssystem", steps: stepsA },
-      { title: "Verfahren 2: Kreuzprodukt", steps: stepsB },
+      { title: "Verfahren 2: Lotfußpunktverfahren", steps: stepsC },
+      { title: "Verfahren 3: Kreuzprodukt", steps: stepsB },
     ],
     extras,
   };
@@ -283,22 +303,37 @@ export function lineLine(s1, u1, s2, u2) {
     E([0, 1, 2].map((i) => `${["I", "II", "III"][i]}: ${N.fmt(s1[i])} + r·${N.fmt(u1[i])} = ${N.fmt(s2[i])} + t·${N.fmt(u2[i])}`).join("<br>")),
   ];
 
-  let relation, intersection = null;
+  let relation,
+    intersection = null;
   if (parU) {
-    const crossCheck = cross(w, u1);
-    const identical = isZeroVec(crossCheck);
+    // Grundkurs-geeigneter Ersatz für den früheren Kreuzprodukt-Check: der Faktor k, mit dem der
+    // Verbindungsvektor der Stützpunkte ein Vielfaches von v1 sein müsste, wird aus einer
+    // Komponente von v1 bestimmt und mit den beiden anderen Komponenten überprüft — genau das
+    // Vorgehen, das auch schon beim Lösen des LGS oben verwendet wird.
+    const idx0 = [0, 1, 2].find((i) => !u1[i].isZero());
+    const kVal = w[idx0].div(u1[idx0]);
     stepsA.push(
       T(
-        `Die Richtungsvektoren ${N.vecArrow(`v${N.sub(1)}`)} und ${N.vecArrow(`v${N.sub(2)}`)} sind parallel (linear abhängig) — zwei der drei Gleichungen legen r und t nicht mehr eindeutig fest. Stattdessen wird geprüft, ob der Verbindungsvektor der Stützpunkte ebenfalls parallel zu ${N.vecArrow(`v${N.sub(1)}`)} ist:`
+        `Die Richtungsvektoren ${N.vecArrow(`v${N.sub(1)}`)} und ${N.vecArrow(`v${N.sub(2)}`)} sind parallel (linear abhängig) — zwei der drei Gleichungen legen r und t nicht mehr eindeutig fest. Stattdessen wird geprüft, ob der Verbindungsvektor der Stützpunkte ${N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`)} ebenfalls ein Vielfaches von ${N.vecArrow(`v${N.sub(1)}`)} ist: Aus einer Komponente ergibt sich der Faktor k, die beiden anderen Komponenten müssen dazu passen:`
       )
     );
-    stepsA.push(E(`(${N.vecArrow(`s${N.sub(2)}`)} − ${N.vecArrow(`s${N.sub(1)}`)}) × ${N.vecArrow(`v${N.sub(1)}`)} = ${N.vecColFromFractions(crossCheck)}`));
+    stepsA.push(E(`${VN[idx0]}: ${N.fmt(w[idx0])} = k·${N.fmt(u1[idx0])} ⇒ k = ${N.fmt(kVal)}`));
+    let identical = true;
+    const checkLines = [];
+    for (const i of [0, 1, 2]) {
+      if (i === idx0) continue;
+      const lhs = u1[i].mul(kVal);
+      const ok = lhs.equals(w[i]);
+      checkLines.push(`${VN[i]}: k·${N.fmt(u1[i])} = ${N.fmt(lhs)} ${ok ? "=" : "≠"} ${N.fmt(w[i])} ${ok ? "✓" : "✗"}`);
+      if (!ok) identical = false;
+    }
+    stepsA.push(E(checkLines.join("<br>")));
     relation = identical ? "identisch" : "parallel";
     stepsA.push(
       T(
         identical
-          ? `Der Verbindungsvektor ist ebenfalls parallel zu ${N.vecArrow(`v${N.sub(1)}`)} — die Stützpunkte liegen auf derselben Geraden.`
-          : `Der Verbindungsvektor ist nicht parallel zu ${N.vecArrow(`v${N.sub(1)}`)} — die Geraden sind echt parallel, aber verschieden.`
+          ? `Beide Kontrollen stimmen — der Verbindungsvektor ist ein Vielfaches von ${N.vecArrow(`v${N.sub(1)}`)}, die Stützpunkte liegen auf derselben Geraden.`
+          : `Mindestens eine Kontrolle stimmt nicht — der Verbindungsvektor ist kein Vielfaches von ${N.vecArrow(`v${N.sub(1)}`)}, die Geraden sind echt parallel, aber verschieden.`
       )
     );
   } else {
@@ -309,7 +344,7 @@ export function lineLine(s1, u1, s2, u2) {
     const lhs = s1[k].add(u1[k].mul(r));
     const rhs = s2[k].add(u2[k].mul(t));
     const ok = lhs.equals(rhs);
-    stepsA.push(E(`${["I", "II", "III"][k]}: ${N.fmt(s1[k])} + ${N.fmt(r)}·${N.fmt(u1[k])} = ${N.fmt(lhs)}   |   ${N.fmt(s2[k])} + ${N.fmt(t)}·${N.fmt(u2[k])} = ${N.fmt(rhs)}   ${ok ? "✓" : "✗"}`));
+    stepsA.push(E(`${["I", "II", "III"][k]}: ${N.fmt(s1[k])} + ${N.fmt(r)}·${N.fmt(u1[k])} = ${N.fmt(lhs)}   |   ${N.fmt(s2[k])} + ${N.fmt(t)}·${N.fmt(u2[k])} = ${N.fmt(rhs)}   ${ok ? "✓" : "✗"}`));
     if (ok) {
       relation = "schneidend";
       intersection = vAdd(s1, vScale(u1, r));
@@ -321,9 +356,61 @@ export function lineLine(s1, u1, s2, u2) {
     }
   }
 
+  // ---- Verfahren 2: Lotfußpunkte über Skalarprodukt (Grundkurs) ----
+  // Die Punkte F1 auf g und F2 auf h mit dem kleinsten Abstand zueinander sind genau die, bei
+  // denen der Verbindungsvektor F1F2 senkrecht auf beiden Richtungsvektoren steht — das liefert
+  // ein LGS für t und r, ganz ohne Kreuzprodukt. Fallen F1 und F2 zusammen, schneiden sich die
+  // Geraden dort; sonst ist ihr Abstand genau die kürzeste Verbindungsstrecke.
+  const stepsOrth = [
+    T(
+      `<strong>Verfahren 2 (Lotfußpunkte über Skalarprodukt):</strong> Die Punkte F${N.sub(1)} = ${N.vecArrow(
+        `s${N.sub(1)}`
+      )} + t·${N.vecArrow(`v${N.sub(1)}`)} auf g und F${N.sub(2)} = ${N.vecArrow(`s${N.sub(2)}`)} + r·${N.vecArrow(
+        `v${N.sub(2)}`
+      )} auf h mit dem kleinsten Abstand zueinander sind die, bei denen der Verbindungsvektor F${N.sub(1)}F${N.sub(
+        2
+      )} senkrecht auf beiden Richtungsvektoren steht:`
+    ),
+    E(`(F${N.sub(1)} − F${N.sub(2)}) · ${N.vecArrow(`v${N.sub(1)}`)} = 0<br>(F${N.sub(1)} − F${N.sub(2)}) · ${N.vecArrow(`v${N.sub(2)}`)} = 0`),
+  ];
+  let F1 = null,
+    F2 = null;
+  if (parU) {
+    stepsOrth.push(
+      T(
+        `Da ${N.vecArrow(`v${N.sub(1)}`)} und ${N.vecArrow(`v${N.sub(2)}`)} parallel sind, ist F${N.sub(1)} hier nicht eindeutig bestimmt — dieses Verfahren wird nur für nicht parallele Geraden verwendet, siehe Verfahren 1.`
+      )
+    );
+  } else {
+    const a = dot(u1, u1),
+      b = dot(u1, u2),
+      c = dot(u2, u2);
+    const p = dot(w, u1),
+      q = dot(w, u2);
+    stepsOrth.push(T("Ausmultipliziert ergibt das ein lineares Gleichungssystem für t und r:"));
+    stepsOrth.push(E(`${N.fmt(a)}·t − ${N.fmt(b)}·r = ${N.fmt(p)}<br>${N.fmt(b)}·t − ${N.fmt(c)}·r = ${N.fmt(q)}`));
+    const { x: t, y: r } = solve2x2Raw(a, b.neg(), p, b, c.neg(), q);
+    F1 = vAdd(s1, vScale(u1, t));
+    F2 = vAdd(s2, vScale(u2, r));
+    stepsOrth.push(T(`Auflösen liefert t = ${N.fmt(t)}, r = ${N.fmt(r)}. Damit ergeben sich die beiden Lotfußpunkte:`));
+    stepsOrth.push(E(`F${N.sub(1)} = ${N.vecColFromFractions(s1)} + ${N.fmt(t)}·${N.vecColFromFractions(u1)} = ${N.vecColFromFractions(F1)}`));
+    stepsOrth.push(E(`F${N.sub(2)} = ${N.vecColFromFractions(s2)} + ${N.fmt(r)}·${N.vecColFromFractions(u2)} = ${N.vecColFromFractions(F2)}`));
+    const same = vEquals(F1, F2);
+    stepsOrth.push(
+      T(
+        same
+          ? `F${N.sub(1)} = F${N.sub(2)} — die Lotfußpunkte fallen zusammen, die Geraden schneiden sich dort (Kontrolle zu Verfahren 1).`
+          : `F${N.sub(1)} ≠ F${N.sub(2)} — die Geraden haben keinen gemeinsamen Punkt und sind windschief; ihr Abstand ist die Länge der Strecke F${N.sub(
+              1
+            )}F${N.sub(2)}.`
+      )
+    );
+  }
+
+  // ---- Verfahren 3: Spatprodukt (Leistungskurs) ----
   const stepsB = [
     T(
-      `<strong>Verfahren 2 (Spatprodukt):</strong> Sind ${N.vecArrow(`v${N.sub(1)}`)}, ${N.vecArrow(`v${N.sub(2)}`)} und der Verbindungsvektor ${N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`)} = ${N.vecArrow(`s${N.sub(2)}`)} − ${N.vecArrow(`s${N.sub(1)}`)} linear abhängig (Spatprodukt = 0), liegen die Geraden in einer gemeinsamen Ebene.`
+      `<strong>Verfahren 3 (Spatprodukt):</strong> Sind ${N.vecArrow(`v${N.sub(1)}`)}, ${N.vecArrow(`v${N.sub(2)}`)} und der Verbindungsvektor ${N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`)} = ${N.vecArrow(`s${N.sub(2)}`)} − ${N.vecArrow(`s${N.sub(1)}`)} linear abhängig (Spatprodukt = 0), liegen die Geraden in einer gemeinsamen Ebene.`
     ),
     E(`${N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`)} = ${N.vecColFromFractions(w)}`),
     E(`[${N.vecArrow(`v${N.sub(1)}`)}, ${N.vecArrow(`v${N.sub(2)}`)}, ${N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`)}] = ${N.vecArrow(`v${N.sub(1)}`)} · (${N.vecArrow(`v${N.sub(2)}`)} × ${N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`)}) = ${N.fmt(spat)}`),
@@ -353,12 +440,19 @@ export function lineLine(s1, u1, s2, u2) {
     });
   }
   if (relation === "parallel") {
-    const distSq = squaredLength(cross(w, u1)).div(squaredLength(u1));
+    // Abstand über das Lotfußpunktverfahren (Skalarprodukt, Grundkurs) statt über das Kreuzprodukt:
+    // Abstand von s2 (Punkt auf h) zur Geraden g.
+    const tFoot = dot(vSub(s2, s1), u1).div(dot(u1, u1));
+    const footPar = vAdd(s1, vScale(u1, tFoot));
+    const distSq = squaredLength(vSub(s2, footPar));
     extras.push({ label: "Abstand", value: `d(g,h) ≈ ${N.fmtApprox(Math.sqrt(distSq.toNumber()))} LE` });
   }
-  if (relation === "windschief") {
-    const distSq = spat.mul(spat).div(squaredLength(cross(u1, u2)));
-    extras.push({ label: "Abstand", value: `d(g,h) = |[${N.vecArrow(`v${N.sub(1)}`)},${N.vecArrow(`v${N.sub(2)}`)},${N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`)}]| / |${N.vecArrow(`v${N.sub(1)}`)}×${N.vecArrow(`v${N.sub(2)}`)}| ≈ ${N.fmtApprox(Math.sqrt(distSq.toNumber()))} LE` });
+  if (relation === "windschief" && F1 && F2) {
+    const distSq = squaredLength(vSub(F1, F2));
+    extras.push({
+      label: "Abstand",
+      value: `d(g,h) = |F${N.sub(1)}F${N.sub(2)}| = √${distSq.toString()} ≈ ${N.fmtApprox(Math.sqrt(distSq.toNumber()))} LE`,
+    });
   }
 
   const labelMap = {
@@ -372,7 +466,8 @@ export function lineLine(s1, u1, s2, u2) {
     relationLabel: labelMap[relation],
     methods: [
       { title: "Verfahren 1: Gleichsetzungsverfahren (LGS)", steps: stepsA },
-      { title: "Verfahren 2: Spatprodukt", steps: stepsB },
+      { title: "Verfahren 2: Lotfußpunkte (Skalarprodukt)", steps: stepsOrth },
+      { title: "Verfahren 3: Spatprodukt", steps: stepsB },
     ],
     extras,
   };
