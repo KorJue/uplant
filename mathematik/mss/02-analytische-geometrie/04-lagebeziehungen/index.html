@@ -48,7 +48,7 @@
 
   <section class="card">
     <h2>Welche Darstellung wann?</h2>
-    <p>Eine Ebene lässt sich immer in allen drei Formen angeben — je nach Aufgabe ist aber eine Form deutlich schneller. Der Rechner rechnet automatisch in alle drei Formen um und nutzt für die beiden Lösungswege gezielt die jeweils günstigste.</p>
+    <p>Eine Ebene lässt sich immer in allen drei Formen angeben — je nach Aufgabe ist aber eine Form deutlich schneller. Jeder Lösungsweg rechnet nur dann in eine andere Form um, wenn er sie tatsächlich braucht, und zeigt diese Umrechnung dann als eigenen Zwischenschritt.</p>
     <div class="theory-grid">
       <div class="theory-card">
         <h3>Parameterform</h3>
@@ -66,7 +66,7 @@
     <p><strong>Faustregeln je Fall:</strong></p>
     <ul>
       <li><strong>Punkt–Ebene:</strong> Koordinatenform für den schnellen Weg (Einsetzen), Parameterform für den Kontrollweg über ein LGS.</li>
-      <li><strong>Gerade–Ebene:</strong> Die Gerade liegt ohnehin nur in Parameterform vor; die Koordinatenform der Ebene macht das Einsetzverfahren zu einer einzigen Gleichung mit einer Unbekannten.</li>
+      <li><strong>Gerade–Ebene:</strong> Liegt die Ebene in Parameterform vor, liefert das Gleichsetzen mit der Geradengleichung (Verfahren 1) direkt ein LGS mit drei Gleichungen für r, t und u. Liegt die Ebene in Koordinatenform vor, macht das Einsetzverfahren (Verfahren 2) daraus nur eine einzige Gleichung mit der Unbekannten r — dann meist der schnellere Weg.</li>
       <li><strong>Ebene–Ebene:</strong> Standardmäßig liegt die eine Ebene in Parameterform, die andere in Koordinatenform vor — Einsetzen der Parameterform in die Koordinatenform (Verfahren 1) liefert die Schnittgerade dann direkt aus den eigenen Parametern der ersten Ebene, ganz ohne Umwandlung. Liegen beide in Koordinatenform vor, führt das Gleichungssystem aus beiden Koordinatengleichungen (Verfahren 2) zum Ziel. Die Normalenvektoren liefern über das Kreuzprodukt (Verfahren 3) die Richtung der Schnittgeraden ganz ohne Gleichungssystem.</li>
       <li><strong>Gerade–Gerade:</strong> Hier existiert nur die Parameterform. Das Gleichsetzungsverfahren (Verfahren 1) liefert direkt den Schnittpunkt, die Lotfußpunkte über das Skalarprodukt (Verfahren 2) bestätigen das unabhängig und liefern bei windschiefen Geraden zusätzlich den Abstand — beides ohne Kreuzprodukt, also auch im Grundkurs nutzbar. Das Spatprodukt (Verfahren 3, Leistungskurs) entscheidet zusätzlich blitzschnell "windschief oder nicht".</li>
     </ul>
@@ -78,6 +78,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lagebeziehungen.js?v=13"></script>
+<script type="module" src="lagebeziehungen.js?v=14"></script>
 </body>
 </html>

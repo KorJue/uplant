@@ -15,8 +15,8 @@ import {
   scalarTriple,
   isParallel,
   squaredLength,
-} from "./vectors.js?v=13";
-import * as N from "./notation.js?v=13";
+} from "./vectors.js?v=14";
+import * as N from "./notation.js?v=14";
 
 function T(html) {
   return { kind: "text", html };
@@ -114,6 +114,18 @@ function solve2x2Raw(a1, b1, c1, a2, b2, c2) {
   const x = c1.mul(b2).sub(c2.mul(b1)).div(det);
   const y = a1.mul(c2).sub(a2.mul(c1)).div(det);
   return { x, y };
+}
+
+// Löst x·colA + y·colB + z·colC = rhs (3 Gleichungen, 3 Unbekannte) über die Cramersche Regel.
+// Die Koeffizientendeterminante ist genau das Spatprodukt der drei Spalten; ist sie 0, gibt es
+// keine eindeutige Lösung (die drei Spalten sind dann linear abhängig).
+function solve3x3(colA, colB, colC, rhs) {
+  const D = scalarTriple(colA, colB, colC);
+  if (D.isZero()) return null;
+  const Dx = scalarTriple(rhs, colB, colC);
+  const Dy = scalarTriple(colA, rhs, colC);
+  const Dz = scalarTriple(colA, colB, rhs);
+  return { x: Dx.div(D), y: Dy.div(D), z: Dz.div(D) };
 }
 
 // Findet einen Punkt auf der Schnittgeraden zweier Ebenen, gegeben deren (bereits bekannten,
@@ -252,10 +264,19 @@ export function pointLine(P, s, u) {
 
 // ---------- 3. Punkt – Ebene ----------
 
-export function pointPlane(P, plane) {
+export function pointPlane(P, plane, mode = "param") {
+  const disp = {
+    s: N.vecArrow("s"),
+    v: N.vecArrow("v"),
+    w: N.vecArrow("w"),
+    n: N.vecArrow("n"),
+  };
+
+  // ---- Verfahren 1: LGS in Parameterform ----
+  const stepsA = [T(`<strong>Verfahren 1 (LGS in Parameterform):</strong> Liegt P in E, gibt es r, s mit P = ${disp.s} + r·${disp.v} + s·${disp.w}.`)];
+  stepsA.push(...ensureParamSteps(plane, mode, "E", disp));
   const w = vSub(P, plane.s);
   const solved = solveLinear2x2(plane.u, plane.v, w);
-  const stepsA = [T(`<strong>Verfahren 1 (LGS in Parameterform):</strong> Liegt P in E, gibt es r, s mit P = ${N.vecArrow("s")} + r·${N.vecArrow("v")} + s·${N.vecArrow("w")}.`)];
   stepsA.push(
     E([0, 1, 2].map((i) => `${["I", "II", "III"][i]}: ${N.fmt(P[i])} = ${N.fmt(plane.s[i])} + r·${N.fmt(plane.u[i])} + s·${N.fmt(plane.v[i])}`).join("<br>"))
   );
@@ -272,17 +293,17 @@ export function pointPlane(P, plane) {
     consistentA = ok;
   }
 
+  // ---- Verfahren 2: Einsetzen in die Koordinatenform ----
+  const stepsB = [T(`<strong>Verfahren 2 (Einsetzen in die Koordinatenform):</strong> P liegt in E, wenn seine Koordinaten die Koordinatengleichung erfüllen.`)];
+  stepsB.push(...ensureCoordSteps(plane, mode, "E", disp));
   const lhsCoord = plane.a.mul(P[0]).add(plane.b.mul(P[1])).add(plane.c.mul(P[2]));
   const onPlane = lhsCoord.equals(plane.d);
-  const stepsB = [
-    T(`<strong>Verfahren 2 (Einsetzen in die Koordinatenform):</strong> P liegt in E, wenn seine Koordinaten die Koordinatengleichung erfüllen.`),
-    E(`${N.fmt(plane.a)}·${N.fmt(P[0])} + ${N.fmt(plane.b)}·${N.fmt(P[1])} + ${N.fmt(plane.c)}·${N.fmt(P[2])} = ${N.fmt(lhsCoord)} ${onPlane ? "=" : "≠"} ${N.fmt(plane.d)}`),
-  ];
+  stepsB.push(E(`${N.fmt(plane.a)}·${N.fmt(P[0])} + ${N.fmt(plane.b)}·${N.fmt(P[1])} + ${N.fmt(plane.c)}·${N.fmt(P[2])} = ${N.fmt(lhsCoord)} ${onPlane ? "=" : "≠"} ${N.fmt(plane.d)}`));
 
   const extras = [];
   if (!onPlane) {
     const distNum = Math.abs(lhsCoord.sub(plane.d).toNumber()) / Math.sqrt(squaredLength(plane.n).toNumber());
-    extras.push({ label: "Abstand", value: `d(P,E) = |${N.fmt(plane.a)}·${N.fmt(P[0])} ${plane.b.isNegative() ? "−" : "+"} ${N.fmt(plane.b.abs())}·${N.fmt(P[1])} ${plane.c.isNegative() ? "−" : "+"} ${N.fmt(plane.c.abs())}·${N.fmt(P[2])} − ${N.fmt(plane.d)}| / |${N.vecArrow("n")}| ≈ ${N.fmtApprox(distNum)} LE` });
+    extras.push({ label: "Abstand", value: `d(P,E) = |${N.fmt(plane.a)}·${N.fmt(P[0])} ${plane.b.isNegative() ? "−" : "+"} ${N.fmt(plane.b.abs())}·${N.fmt(P[1])} ${plane.c.isNegative() ? "−" : "+"} ${N.fmt(plane.c.abs())}·${N.fmt(P[2])} − ${N.fmt(plane.d)}| / |${disp.n}| ≈ ${N.fmtApprox(distNum)} LE` });
   }
 
   return {
@@ -938,57 +959,132 @@ export function planePlane(E1, E2, m1 = "coord", m2 = "coord") {
 
 // ---------- 6. Gerade – Ebene ----------
 
-export function linePlane(s, u, plane) {
+export function linePlane(s, u, plane, mode = "coord") {
+  const disp = {
+    s: N.vecArrow(`s${N.sub("E")}`),
+    v: N.vecArrow(`v${N.sub("E")}`),
+    w: N.vecArrow(`w${N.sub("E")}`),
+    n: N.vecArrow("n"),
+  };
   const nDotU = dot(plane.n, u);
   const nDotS = dot(plane.n, s);
-  const stepsA = [
-    T(`<strong>Verfahren 1 (Einsetzverfahren in die Koordinatenform):</strong> Die Geradenpunkte werden in die Koordinatengleichung von E eingesetzt.`),
+
+  // ---- Verfahren 1: Gleichsetzungsverfahren (Parameterform, bevorzugt) ----
+  // Geraden- und Ebenengleichung gleichgesetzt liefert ein LGS mit drei Gleichungen für die drei
+  // Unbekannten r, t, u — anders als bei zwei Geraden ist dieses System bei linear unabhängigen
+  // Richtungsvektoren immer eindeutig lösbar (die Koeffizientendeterminante ist gerade das
+  // Spatprodukt [v, w, u] = u·n, also 0 genau dann, wenn der Richtungsvektor der Geraden in der
+  // Ebene liegt).
+  const stepsA = [T(`<strong>Verfahren 1 (Gleichsetzungsverfahren):</strong> Gleichsetzen der Geraden- und der Ebenengleichung liefert ein LGS für r, t und u.`)];
+  stepsA.push(...ensureParamSteps(plane, mode, "E", disp));
+  stepsA.push(
     E(
-      `${N.fmt(plane.a)}·(${N.fmt(s[0])}+r·${N.fmt(u[0])}) + ${N.fmt(plane.b)}·(${N.fmt(s[1])}+r·${N.fmt(u[1])}) + ${N.fmt(plane.c)}·(${N.fmt(s[2])}+r·${N.fmt(u[2])}) = ${N.fmt(plane.d)}`
-    ),
-    E(`${N.fmt(nDotU)}·r + ${N.fmt(nDotS)} = ${N.fmt(plane.d)}`),
-  ];
+      [0, 1, 2]
+        .map((i) => `${["I", "II", "III"][i]}: ${N.fmt(s[i])} + r·${N.fmt(u[i])} = ${N.fmt(plane.s[i])} + t·${N.fmt(plane.u[i])} + u·${N.fmt(plane.v[i])}`)
+        .join("<br>")
+    )
+  );
+
+  const rhs1 = vSub(plane.s, s);
+  const solved3 = solve3x3(u, vScale(plane.u, -1), vScale(plane.v, -1), rhs1);
 
   let relation,
     point = null;
-  if (nDotU.isZero()) {
-    if (nDotS.equals(plane.d)) {
+  if (solved3) {
+    relation = "schneidend";
+    point = vAdd(s, vScale(u, solved3.x));
+    stepsA.push(
+      T(
+        `Die Koeffizientendeterminante des LGS ist ungleich 0 — es gibt eine eindeutige Lösung r = ${N.fmt(solved3.x)}, t = ${N.fmt(solved3.y)}, u = ${N.fmt(
+          solved3.z
+        )}. Einsetzen von r in die Geradengleichung liefert den Schnittpunkt:`
+      )
+    );
+    stepsA.push(E(`S = ${N.vecColFromFractions(s)} + ${N.fmt(solved3.x)}·${N.vecColFromFractions(u)} = ${N.vecColFromFractions(point)}`));
+  } else {
+    stepsA.push(
+      T(
+        `Die Koeffizientendeterminante des LGS ist 0 — es gibt keine eindeutige Lösung. Der Richtungsvektor der Geraden liegt dann in der von ${disp.v} und ${disp.w} aufgespannten Richtungsebene, g ist also parallel zu E (oder liegt in E). Es wird geprüft, ob der Stützpunkt der Geraden ebenfalls in E liegt:`
+      )
+    );
+    const wPt = vSub(s, plane.s);
+    const solvedPt = solveLinear2x2(plane.u, plane.v, wPt);
+    let sInPlane = false;
+    if (solvedPt) {
+      const { x: tVal, y: uVal, i, j } = solvedPt;
+      const k = [0, 1, 2].find((x) => x !== i && x !== j);
+      const lhs = plane.s[k].add(plane.u[k].mul(tVal)).add(plane.v[k].mul(uVal));
+      const ok = lhs.equals(s[k]);
+      stepsA.push(
+        E(
+          `Aus ${["I", "II", "III"][i]} und ${["I", "II", "III"][j]} folgt t = ${N.fmt(tVal)}, u = ${N.fmt(uVal)}. Probe in ${["I", "II", "III"][k]}: ${N.fmt(
+            plane.s[k]
+          )} + ${N.fmt(tVal)}·${N.fmt(plane.u[k])} + ${N.fmt(uVal)}·${N.fmt(plane.v[k])} = ${N.fmt(lhs)} ${ok ? "=" : "≠"} ${N.fmt(s[k])} ${ok ? "✓" : "✗"}`
+        )
+      );
+      sInPlane = ok;
+    }
+    if (sInPlane) {
       relation = "liegt_in";
-      stepsA.push(T("Der Koeffizient von r ist 0, und 0 = 0 ist immer wahr — jeder Punkt von g erfüllt die Ebenengleichung. Die Gerade liegt vollständig in E."));
+      stepsA.push(T("Die Probe stimmt — der Stützpunkt der Geraden liegt in E. Da auch die Richtung von g in E verläuft, liegt g vollständig in E."));
     } else {
       relation = "parallel";
-      stepsA.push(T(`Der Koeffizient von r ist 0, aber ${N.fmt(nDotS)} ≠ ${N.fmt(plane.d)} — ein Widerspruch. g ist echt parallel zu E (kein gemeinsamer Punkt).`));
+      stepsA.push(T("Die Probe stimmt nicht — der Stützpunkt der Geraden liegt nicht in E. g ist echt parallel zu E."));
     }
-  } else {
-    relation = "schneidend";
-    const rVal = plane.d.sub(nDotS).div(nDotU);
-    point = vAdd(s, vScale(u, rVal));
-    stepsA.push(T(`Auflösen nach r ergibt r = ${N.fmt(rVal)}. Einsetzen in die Geradengleichung liefert den Schnittpunkt.`));
-    stepsA.push(E(`S = ${N.vecColFromFractions(s)} + ${N.fmt(rVal)}·${N.vecColFromFractions(u)} = ${N.vecColFromFractions(point)}`));
   }
 
-  const stepsB = [
-    T(`<strong>Verfahren 2 (Skalarprodukt aus Richtungs- und Normalenvektor):</strong> g ist parallel zu E (oder liegt in E), wenn ${N.vecArrow("v")} senkrecht zu ${N.vecArrow("n")} steht, d. h. wenn ${N.vecArrow("v")} · ${N.vecArrow("n")} = 0 ist.`),
-    E(`${N.vecArrow("v")} · ${N.vecArrow("n")} = ${N.vecColFromFractions(u)} · ${N.vecColFromFractions(plane.n)} = ${N.fmt(nDotU)}`),
+  // ---- Verfahren 2: Einsetzverfahren in die Koordinatenform ----
+  const stepsB = [T(`<strong>Verfahren 2 (Einsetzverfahren in die Koordinatenform):</strong> Die Geradenpunkte werden in die Koordinatengleichung von E eingesetzt.`)];
+  stepsB.push(...ensureCoordSteps(plane, mode, "E", disp));
+  stepsB.push(
+    E(
+      `${N.fmt(plane.a)}·(${N.fmt(s[0])}+r·${N.fmt(u[0])}) + ${N.fmt(plane.b)}·(${N.fmt(s[1])}+r·${N.fmt(u[1])}) + ${N.fmt(plane.c)}·(${N.fmt(s[2])}+r·${N.fmt(u[2])}) = ${N.fmt(plane.d)}`
+    )
+  );
+  stepsB.push(E(`${N.fmt(nDotU)}·r + ${N.fmt(nDotS)} = ${N.fmt(plane.d)}`));
+  if (nDotU.isZero()) {
+    if (nDotS.equals(plane.d)) {
+      stepsB.push(T("Der Koeffizient von r ist 0, und 0 = 0 ist immer wahr — jeder Punkt von g erfüllt die Ebenengleichung. Die Gerade liegt vollständig in E (Kontrolle zu Verfahren 1)."));
+    } else {
+      stepsB.push(T(`Der Koeffizient von r ist 0, aber ${N.fmt(nDotS)} ≠ ${N.fmt(plane.d)} — ein Widerspruch. g ist echt parallel zu E (Kontrolle zu Verfahren 1).`));
+    }
+  } else {
+    const rVal = plane.d.sub(nDotS).div(nDotU);
+    const point2 = vAdd(s, vScale(u, rVal));
+    stepsB.push(T(`Auflösen nach r ergibt r = ${N.fmt(rVal)}. Einsetzen in die Geradengleichung liefert den Schnittpunkt (Kontrolle zu Verfahren 1):`));
+    stepsB.push(E(`S = ${N.vecColFromFractions(s)} + ${N.fmt(rVal)}·${N.vecColFromFractions(u)} = ${N.vecColFromFractions(point2)}`));
+  }
+
+  // ---- Verfahren 3: Skalarprodukt aus Richtungs- und Normalenvektor ----
+  const stepsC = [
+    T(
+      `<strong>Verfahren 3 (Skalarprodukt aus Richtungs- und Normalenvektor):</strong> g ist parallel zu E (oder liegt in E), wenn ${N.vecArrow(
+        "v"
+      )} senkrecht zu ${disp.n} steht, d. h. wenn ${N.vecArrow("v")} · ${disp.n} = 0 ist.`
+    ),
   ];
+  stepsC.push(...ensureNormalSteps(plane, mode, "E", disp));
+  stepsC.push(E(`${N.vecArrow("v")} · ${disp.n} = ${N.vecColFromFractions(u)} · ${N.vecColFromFractions(plane.n)} = ${N.fmt(nDotU)}`));
   if (nDotU.isZero()) {
     const sOk = nDotS.equals(plane.d);
-    stepsB.push(
+    stepsC.push(
       T(
-        `Das Skalarprodukt ist 0 — ${N.vecArrow("v")} steht senkrecht auf ${N.vecArrow("n")}, verläuft also in Richtung der Ebene. Stützpunkt ${N.vecArrow("s")} in die Ebenengleichung eingesetzt: ${sOk ? "erfüllt — g liegt in E." : "nicht erfüllt — g ist parallel zu E."}`
+        `Das Skalarprodukt ist 0 — ${N.vecArrow("v")} steht senkrecht auf ${disp.n}, verläuft also in Richtung der Ebene. Stützpunkt ${N.vecArrow(
+          "s"
+        )} in die Ebenengleichung eingesetzt: ${sOk ? "erfüllt — g liegt in E." : "nicht erfüllt — g ist parallel zu E."}`
       )
     );
   } else {
-    stepsB.push(T("Das Skalarprodukt ist ungleich 0 — Richtungs- und Normalenvektor stehen nicht senkrecht aufeinander, die Gerade schneidet die Ebene in genau einem Punkt."));
+    stepsC.push(T("Das Skalarprodukt ist ungleich 0 — Richtungs- und Normalenvektor stehen nicht senkrecht aufeinander, die Gerade schneidet die Ebene in genau einem Punkt."));
   }
 
   const extras = [];
-  if (relation === "schneidend") {
+  if (relation === "schneidend" && point) {
     extras.push({ label: "Schnittpunkt", value: N.pointHTML("S", point) });
     const angleDeg = angleDegSin(u, plane.n);
     extras.push({
       label: "Schnittwinkel",
-      value: `sin(φ) = |${N.vecArrow("v")} · ${N.vecArrow("n")}| / (|${N.vecArrow("v")}| · |${N.vecArrow("n")}|) ⇒ φ ≈ ${N.fmtApprox(angleDeg)}°`,
+      value: `sin(φ) = |${N.vecArrow("v")} · ${disp.n}| / (|${N.vecArrow("v")}| · |${disp.n}|) ⇒ φ ≈ ${N.fmtApprox(angleDeg)}°`,
     });
   }
   if (relation === "parallel") {
@@ -1005,8 +1101,9 @@ export function linePlane(s, u, plane) {
     relation,
     relationLabel: labelMap[relation],
     methods: [
-      { title: "Verfahren 1: Einsetzverfahren (LGS)", steps: stepsA },
-      { title: "Verfahren 2: Skalarprodukt", steps: stepsB },
+      { title: "Verfahren 1: Gleichsetzungsverfahren (LGS)", steps: stepsA },
+      { title: "Verfahren 2: Einsetzverfahren (Koordinatenform)", steps: stepsB },
+      { title: "Verfahren 3: Skalarprodukt", steps: stepsC },
     ],
     extras,
   };
