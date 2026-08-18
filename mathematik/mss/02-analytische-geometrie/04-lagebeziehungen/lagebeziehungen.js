@@ -1,6 +1,6 @@
-import { F, vec3 } from "./vectors.js?v=12";
-import { planeFromParam, planeFromCoord, planeFromNormal, pointPoint, pointLine, pointPlane, lineLine, planePlane, linePlane } from "./geometry.js?v=12";
-import * as N from "./notation.js?v=12";
+import { F, vec3 } from "./vectors.js?v=13";
+import { planeFromParam, planeFromCoord, planeFromNormal, pointPoint, pointLine, pointPlane, lineLine, planePlane, linePlane } from "./geometry.js?v=13";
+import * as N from "./notation.js?v=13";
 import {
   toNum3,
   toNumPlane,
@@ -10,7 +10,7 @@ import {
   sceneLineLine,
   sceneLinePlane,
   scenePlanePlane,
-} from "./viz.js?v=12";
+} from "./viz.js?v=13";
 
 const els = {
   typeGrid1: document.getElementById("type-grid-1"),
@@ -340,7 +340,9 @@ els.inputForms.addEventListener("change", (e) => {
 // ---------- Ergebnis rendern ----------
 
 function renderStep(s) {
-  return s.kind === "eq" ? `<div class="step-eq">${s.html}</div>` : `<p class="step-text">${s.html}</p>`;
+  if (s.kind === "eq") return `<div class="step-eq">${s.html}</div>`;
+  if (s.kind === "html") return `<div class="step-html">${s.html}</div>`;
+  return `<p class="step-text">${s.html}</p>`;
 }
 function renderMethod(m) {
   return `<h3>${m.title}</h3>${m.steps.map(renderStep).join("")}`;

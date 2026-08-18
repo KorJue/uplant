@@ -15,14 +15,19 @@ import {
   scalarTriple,
   isParallel,
   squaredLength,
-} from "./vectors.js?v=12";
-import * as N from "./notation.js?v=12";
+} from "./vectors.js?v=13";
+import * as N from "./notation.js?v=13";
 
 function T(html) {
   return { kind: "text", html };
 }
 function E(html) {
   return { kind: "eq", html };
+}
+// Freier HTML-Block (z. B. aufklappbare <details>-Ergänzungen) — anders als T()/E() ohne
+// erzwungenen <p>-Wrapper mit weißraumempfindlichem Formel-Styling.
+function D(html) {
+  return { kind: "html", html };
 }
 
 // Schnittwinkel zwischen zwei Vektoren über cos φ = |a·b| / (|a||b|) — der Betrag im Zähler
@@ -301,47 +306,48 @@ export function lineLine(s1, u1, s2, u2) {
   const v2D = N.vecArrow(`v${N.sub(2)}`);
   const s1s2D = N.vecArrow(`s${N.sub(1)}s${N.sub(2)}`);
 
-  // ---- Verfahren 1, Schritt 1: Richtungsvektoren auf lineare Unabhängigkeit bzw. Kollinearität
-  // vergleichen — der Faktor k wird aus einer Komponente von v1 bestimmt und mit den beiden
-  // anderen Komponenten von v2 überprüft.
+  // ---- Verfahren 1: Gleichsetzungsverfahren ----
+  // Direkt die beiden Geradengleichungen gleichgesetzt und das entstehende LGS für r und t zu
+  // lösen versucht (zwei der drei Gleichungen, Probe an der dritten). Lässt sich KEINES der drei
+  // möglichen Gleichungspaare eindeutig lösen (solveLinear2x2 liefert null), sind die
+  // Richtungsvektoren zwangsläufig parallel — das ergibt sich hier als Konsequenz des
+  // Lösungsversuchs, ohne vorgeschaltete separate Untersuchung der Richtungsvektoren.
   const stepsA = [
-    T(
-      `<strong>Verfahren 1 (Gleichsetzungsverfahren):</strong> Zunächst werden die Richtungsvektoren ${v1D} und ${v2D} auf lineare Unabhängigkeit bzw. Kollinearität untersucht.`
-    ),
+    T(`<strong>Verfahren 1 (Gleichsetzungsverfahren):</strong> Gleichsetzen der beiden Geradengleichungen liefert ein LGS für r und t.`),
+    E([0, 1, 2].map((i) => `${["I", "II", "III"][i]}: ${N.fmt(s1[i])} + r·${N.fmt(u1[i])} = ${N.fmt(s2[i])} + t·${N.fmt(u2[i])}`).join("<br>")),
   ];
-  const idx0u = [0, 1, 2].find((i) => !u1[i].isZero());
-  const kDir = u2[idx0u].div(u1[idx0u]);
-  stepsA.push(E(`${VN[idx0u]}: ${N.fmt(u2[idx0u])} = k·${N.fmt(u1[idx0u])} ⇒ k = ${N.fmt(kDir)}`));
-  const dirChecks = [];
-  let parU = true;
-  for (const i of [0, 1, 2]) {
-    if (i === idx0u) continue;
-    const lhs = u1[i].mul(kDir);
-    const ok = lhs.equals(u2[i]);
-    dirChecks.push(`${VN[i]}: k·${N.fmt(u1[i])} = ${N.fmt(lhs)} ${ok ? "=" : "≠"} ${N.fmt(u2[i])} ${ok ? "✓" : "✗"}`);
-    if (!ok) parU = false;
-  }
-  stepsA.push(E(dirChecks.join("<br>")));
-  stepsA.push(
-    T(
-      parU
-        ? `Beide Kontrollen stimmen — ${v1D} und ${v2D} sind kollinear (linear abhängig).`
-        : `Mindestens eine Kontrolle stimmt nicht — ${v1D} und ${v2D} sind linear unabhängig.`
-    )
-  );
 
-  // ---- Verfahren 1, Schritt 2: je nach Ergebnis von Schritt 1 wird der Verbindungsvektor der
-  // Stützpunkte s1s2 mit v1 (kollinearer Fall) bzw. mit v1 und v2 (linear unabhängiger Fall)
-  // verglichen.
+  const solved = solveLinear2x2(u1, vScale(u2, -1), w);
   let relation,
-    intersection = null;
-  if (parU) {
+    intersection = null,
+    parU;
+
+  if (solved) {
+    parU = false;
+    const { x: r, y: t, i, j } = solved;
+    const k = [0, 1, 2].find((x) => x !== i && x !== j);
+    stepsA.push(T(`Aus ${["I", "II", "III"][i]} und ${["I", "II", "III"][j]} folgt r = ${N.fmt(r)}, t = ${N.fmt(t)}. Probe in ${["I", "II", "III"][k]}:`));
+    const lhs = s1[k].add(u1[k].mul(r));
+    const rhs = s2[k].add(u2[k].mul(t));
+    const ok = lhs.equals(rhs);
+    stepsA.push(E(`${["I", "II", "III"][k]}: ${N.fmt(s1[k])} + ${N.fmt(r)}·${N.fmt(u1[k])} = ${N.fmt(lhs)}   |   ${N.fmt(s2[k])} + ${N.fmt(t)}·${N.fmt(u2[k])} = ${N.fmt(rhs)}   ${ok ? "✓" : "✗"}`));
+    if (ok) {
+      relation = "schneidend";
+      intersection = vAdd(s1, vScale(u1, r));
+      stepsA.push(T("Die Probe stimmt — die Geraden schneiden sich in genau einem Punkt. Einsetzen von r in die Geradengleichung von g liefert den Schnittpunkt:"));
+      stepsA.push(E(`S = ${N.vecColFromFractions(s1)} + ${N.fmt(r)}·${N.vecColFromFractions(u1)} = ${N.vecColFromFractions(intersection)}`));
+    } else {
+      relation = "windschief";
+      stepsA.push(T("Die Probe stimmt nicht — es gibt kein gemeinsames Paar (r,t). Die Geraden sind windschief."));
+    }
+  } else {
+    parU = true;
     stepsA.push(
       T(
-        `Da die Richtungsvektoren kollinear sind, wird geprüft, ob der Verbindungsvektor der Stützpunkte ${s1s2D} ebenfalls ein Vielfaches von ${v1D} ist: Aus einer Komponente ergibt sich der Faktor k, die beiden anderen Komponenten müssen dazu passen:`
+        `Keines der drei möglichen Gleichungspaare lässt sich eindeutig nach r und t auflösen — die Richtungsvektoren ${v1D} und ${v2D} sind also parallel (linear abhängig). Stattdessen wird geprüft, ob der Verbindungsvektor der Stützpunkte ${s1s2D} ebenfalls ein Vielfaches von ${v1D} ist: Aus einer Komponente ergibt sich der Faktor k, die beiden anderen Komponenten müssen dazu passen:`
       )
     );
-    const idx0 = idx0u;
+    const idx0 = [0, 1, 2].find((i) => !u1[i].isZero());
     const kVal = w[idx0].div(u1[idx0]);
     stepsA.push(E(`${VN[idx0]}: ${N.fmt(w[idx0])} = k·${N.fmt(u1[idx0])} ⇒ k = ${N.fmt(kVal)}`));
     let identical = true;
@@ -362,32 +368,6 @@ export function lineLine(s1, u1, s2, u2) {
           : `Mindestens eine Kontrolle stimmt nicht — der Verbindungsvektor ist kein Vielfaches von ${v1D}, die Geraden sind echt parallel, aber verschieden.`
       )
     );
-  } else {
-    stepsA.push(
-      T(
-        `Da die Richtungsvektoren linear unabhängig sind, wird geprüft, ob sich der Verbindungsvektor ${s1s2D} als Linearkombination von ${v1D} und ${v2D} schreiben lässt. Gleichsetzen der beiden Geradengleichungen liefert dafür ein LGS für r und t:`
-      )
-    );
-    stepsA.push(
-      E([0, 1, 2].map((i) => `${["I", "II", "III"][i]}: ${N.fmt(s1[i])} + r·${N.fmt(u1[i])} = ${N.fmt(s2[i])} + t·${N.fmt(u2[i])}`).join("<br>"))
-    );
-    const solved = solveLinear2x2(u1, vScale(u2, -1), w);
-    const { x: r, y: t, i, j } = solved;
-    const k = [0, 1, 2].find((x) => x !== i && x !== j);
-    stepsA.push(T(`Aus ${["I", "II", "III"][i]} und ${["I", "II", "III"][j]} folgt r = ${N.fmt(r)}, t = ${N.fmt(t)}. Probe in ${["I", "II", "III"][k]}:`));
-    const lhs = s1[k].add(u1[k].mul(r));
-    const rhs = s2[k].add(u2[k].mul(t));
-    const ok = lhs.equals(rhs);
-    stepsA.push(E(`${["I", "II", "III"][k]}: ${N.fmt(s1[k])} + ${N.fmt(r)}·${N.fmt(u1[k])} = ${N.fmt(lhs)}   |   ${N.fmt(s2[k])} + ${N.fmt(t)}·${N.fmt(u2[k])} = ${N.fmt(rhs)}   ${ok ? "✓" : "✗"}`));
-    if (ok) {
-      relation = "schneidend";
-      intersection = vAdd(s1, vScale(u1, r));
-      stepsA.push(T("Die Probe stimmt — die Geraden schneiden sich in genau einem Punkt. Einsetzen von r in die Geradengleichung von g liefert den Schnittpunkt:"));
-      stepsA.push(E(`S = ${N.vecColFromFractions(s1)} + ${N.fmt(r)}·${N.vecColFromFractions(u1)} = ${N.vecColFromFractions(intersection)}`));
-    } else {
-      relation = "windschief";
-      stepsA.push(T("Die Probe stimmt nicht — es gibt kein gemeinsames Paar (r,t). Die Geraden sind windschief."));
-    }
   }
 
   // ---- Verfahren 2: Lotfußpunkte über Skalarprodukt (Grundkurs) ----
@@ -546,6 +526,13 @@ function normalVectorSteps(v, w, n, disp) {
   );
   steps.push(T(`Auflösen liefert ${names[i]} = ${N.fmt(n[i])} und ${names[j]} = ${N.fmt(n[j])}:`));
   steps.push(E(`${disp.n} = ${N.vecColFromFractions(n)}`));
+  steps.push(
+    D(
+      `<details class="lk-detail"><summary>Leistungskurs: alternativ über das Kreuzprodukt</summary><p>Ohne die beiden Gleichungen einzeln aufzustellen, liefert das Kreuzprodukt der beiden Richtungsvektoren direkt denselben Normalenvektor:</p><div class="formula-block">${disp.n} = ${disp.v} × ${disp.w} = ${N.vecColFromFractions(
+        cross(v, w)
+      )}</div></details>`
+    )
+  );
   return steps;
 }
 
