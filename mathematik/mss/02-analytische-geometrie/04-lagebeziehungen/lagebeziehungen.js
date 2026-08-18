@@ -1,6 +1,6 @@
-import { F, vec3 } from "./vectors.js?v=12";
-import { planeFromParam, planeFromCoord, planeFromNormal, pointPoint, pointLine, pointPlane, lineLine, planePlane, linePlane } from "./geometry.js?v=12";
-import * as N from "./notation.js?v=12";
+import { F, vec3 } from "./vectors.js?v=14";
+import { planeFromParam, planeFromCoord, planeFromNormal, pointPoint, pointLine, pointPlane, lineLine, planePlane, linePlane } from "./geometry.js?v=14";
+import * as N from "./notation.js?v=14";
 import {
   toNum3,
   toNumPlane,
@@ -10,7 +10,7 @@ import {
   sceneLineLine,
   sceneLinePlane,
   scenePlanePlane,
-} from "./viz.js?v=12";
+} from "./viz.js?v=14";
 
 const els = {
   typeGrid1: document.getElementById("type-grid-1"),
@@ -129,22 +129,13 @@ function describePointHTML(label, p) {
 function describeLineHTML(label, s, u, param = "r") {
   return `<div class="formula-block">${N.lineHTML(label, s, u, param)}</div>`;
 }
+// Zeigt nur die tatsächlich eingegebene Form — keine automatische Umrechnung in die beiden
+// anderen Formen. Jedes Verfahren rechnet stattdessen selbst nur in die Form um, die es
+// wirklich braucht, mit sichtbaren Zwischenschritten.
 // p1/p2: Parameterbuchstaben der Ebene — Standard "r"/"s" für eine einzelne Ebene (passend zur
 // Geraden, die "r" verwendet). Sind zwei Objekte mit eigenem Parameter gleichzeitig sichtbar,
 // bekommt das zweite andere Buchstaben: bei zwei Ebenen (E1, E2) verwendet E1 r/s und E2 t/u;
 // bei Gerade + Ebene belegt die Gerade bereits r, die Ebene bekommt dort t/u.
-function describePlaneHTML(label, plane, givenMode, p1 = "r", p2 = "s") {
-  const modeNote = { param: "Parameterform", coord: "Koordinatenform", normal: "Normalenform" }[givenMode];
-  return `
-    <p class="form-note">Ebene ${label} — gegeben in ${modeNote}, automatisch in die beiden anderen Formen umgerechnet:</p>
-    <div class="formula-block">${N.planeParamHTML(label, plane.s, plane.u, plane.v, p1, p2)}</div>
-    <div class="formula-block">${N.planeCoordHTML(label, plane.a, plane.b, plane.c, plane.d)}</div>
-    <div class="formula-block">${N.planeNormalHTML(label, plane.s, plane.n)}</div>
-  `;
-}
-// Zeigt nur die tatsächlich eingegebene Form — keine automatische Umrechnung in die beiden
-// anderen Formen. Bei zwei Ebenen mit drei Rechenwegen (Ebene-Ebene) rechnet stattdessen jedes
-// Verfahren selbst nur in die Form um, die es wirklich braucht, mit sichtbaren Zwischenschritten.
 function describePlaneGivenHTML(label, plane, givenMode, p1 = "r", p2 = "s") {
   const modeNote = { param: "Parameterform", coord: "Koordinatenform", normal: "Normalenform" }[givenMode];
   let eq;
@@ -201,9 +192,9 @@ const COMBOS = {
     compute: (c) => {
       const P = readVec(c, "P");
       const { plane, mode } = readPlane(c, "E");
-      const result = pointPlane(P, plane);
+      const result = pointPlane(P, plane, mode);
       return {
-        given: describePointHTML("P", P) + describePlaneHTML("E", plane, mode),
+        given: describePointHTML("P", P) + describePlaneGivenHTML("E", plane, mode),
         result,
         scene: scenePointPlane(toNum3(P), toNumPlane(plane), result),
       };
@@ -236,9 +227,9 @@ const COMBOS = {
     compute: (c) => {
       const g = readLine(c, "g");
       const { plane, mode } = readPlane(c, "E");
-      const result = linePlane(g.s, g.u, plane);
+      const result = linePlane(g.s, g.u, plane, mode);
       return {
-        given: describeLineHTML("g", g.s, g.u) + describePlaneHTML("E", plane, mode, "t", "u"),
+        given: describeLineHTML("g", g.s, g.u) + describePlaneGivenHTML("E", plane, mode, "t", "u"),
         result,
         scene: sceneLinePlane(toNum3(g.s), toNum3(g.u), toNumPlane(plane), result),
       };
@@ -340,7 +331,9 @@ els.inputForms.addEventListener("change", (e) => {
 // ---------- Ergebnis rendern ----------
 
 function renderStep(s) {
-  return s.kind === "eq" ? `<div class="step-eq">${s.html}</div>` : `<p class="step-text">${s.html}</p>`;
+  if (s.kind === "eq") return `<div class="step-eq">${s.html}</div>`;
+  if (s.kind === "html") return `<div class="step-html">${s.html}</div>`;
+  return `<p class="step-text">${s.html}</p>`;
 }
 function renderMethod(m) {
   return `<h3>${m.title}</h3>${m.steps.map(renderStep).join("")}`;
