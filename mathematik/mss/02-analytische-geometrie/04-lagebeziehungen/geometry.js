@@ -15,8 +15,8 @@ import {
   scalarTriple,
   isParallel,
   squaredLength,
-} from "./vectors.js?v=11";
-import * as N from "./notation.js?v=11";
+} from "./vectors.js?v=12";
+import * as N from "./notation.js?v=12";
 
 function T(html) {
   return { kind: "text", html };
@@ -507,6 +507,48 @@ export function lineLine(s1, u1, s2, u2) {
 
 // ---------- 5. Ebene – Ebene ----------
 
+// Normalenvektor über zwei Orthogonalitätsbedingungen bestimmen (Grundkurs, ohne Kreuzprodukt):
+// n muss senkrecht zu v und zu w stehen, das liefert die beiden Gleichungen v·n=0 und w·n=0 für
+// die drei Komponenten von n. Da die Lösungsmenge ohnehin nur eine Gerade ist (jeder von 0
+// verschiedene Vielfache funktioniert), wird eine Komponente frei auf ihren tatsächlichen Wert
+// gesetzt — die beiden anderen ergeben sich dann aus dem verbleibenden 2×2-Gleichungssystem.
+function normalVectorSteps(v, w, n, disp) {
+  const steps = [
+    T(`${disp.n} muss senkrecht zu ${disp.v} und zu ${disp.w} stehen — das liefert zwei Gleichungen für die drei Komponenten von ${disp.n}:`),
+    E(`${disp.v} · ${disp.n} = 0<br>${disp.w} · ${disp.n} = 0`),
+  ];
+  let freeIdx = 2,
+    i = 0,
+    j = 1;
+  for (const fi of [2, 1, 0]) {
+    const others = [0, 1, 2].filter((x) => x !== fi);
+    const det = v[others[0]].mul(w[others[1]]).sub(v[others[1]].mul(w[others[0]]));
+    if (!det.isZero()) {
+      freeIdx = fi;
+      [i, j] = others;
+      break;
+    }
+  }
+  const names = [`n${N.sub(1)}`, `n${N.sub(2)}`, `n${N.sub(3)}`];
+  steps.push(
+    T(
+      `Da die Lösung ohnehin nur bis auf einen gemeinsamen Faktor bestimmt ist, wird eine Komponente frei gewählt: ${names[freeIdx]} = ${N.fmt(
+        n[freeIdx]
+      )}. Eingesetzt ergibt sich ein lineares Gleichungssystem für die beiden anderen Komponenten:`
+    )
+  );
+  steps.push(
+    E(
+      `${N.fmt(v[i])}·${names[i]} + ${N.fmt(v[j])}·${names[j]} = ${N.fmt(v[freeIdx].mul(n[freeIdx]).neg())}<br>${N.fmt(w[i])}·${names[i]} + ${N.fmt(
+        w[j]
+      )}·${names[j]} = ${N.fmt(w[freeIdx].mul(n[freeIdx]).neg())}`
+    )
+  );
+  steps.push(T(`Auflösen liefert ${names[i]} = ${N.fmt(n[i])} und ${names[j]} = ${N.fmt(n[j])}:`));
+  steps.push(E(`${disp.n} = ${N.vecColFromFractions(n)}`));
+  return steps;
+}
+
 // Richtungsvektoren, die senkrecht zu einem gegebenen Normalenvektor stehen — dieselbe
 // Konstruktion, die planeFromCoord/planeFromNormal beim Umrechnen intern verwenden, hier aber
 // Schritt für Schritt erklärt: Vertauschen zweier Normalenvektor-Komponenten mit Vorzeichenwechsel
@@ -581,12 +623,8 @@ function ensureCoordSteps(plane, mode, label, disp) {
   }
   const steps = [];
   if (mode === "param") {
-    steps.push(
-      T(
-        `Ebene ${label} ist in Parameterform gegeben und wird in Koordinatenform umgerechnet. Der Normalenvektor ergibt sich als Kreuzprodukt der beiden Richtungsvektoren:`
-      )
-    );
-    steps.push(E(`${disp.n} = ${disp.v} × ${disp.w} = ${N.vecColFromFractions(plane.n)}`));
+    steps.push(T(`Ebene ${label} ist in Parameterform gegeben und wird in Koordinatenform umgerechnet. Zuerst wird der Normalenvektor bestimmt:`));
+    steps.push(...normalVectorSteps(plane.u, plane.v, plane.n, disp));
   } else {
     steps.push(T(`Ebene ${label} ist in Normalenform gegeben; der Normalenvektor ist darin bereits direkt enthalten:`));
     steps.push(E(`${disp.n} = ${N.vecColFromFractions(plane.n)}`));
@@ -603,8 +641,8 @@ function ensureCoordSteps(plane, mode, label, disp) {
 function ensureNormalSteps(plane, mode, label, disp) {
   if (mode === "param") {
     return [
-      T(`${label} liegt in Parameterform vor — der Normalenvektor ${disp.n} ergibt sich als Kreuzprodukt der Richtungsvektoren:`),
-      E(`${disp.n} = ${disp.v} × ${disp.w} = ${N.vecColFromFractions(plane.n)}`),
+      T(`${label} liegt in Parameterform vor — der Normalenvektor ${disp.n} wird über zwei Orthogonalitätsbedingungen bestimmt (ohne Kreuzprodukt):`),
+      ...normalVectorSteps(plane.u, plane.v, plane.n, disp),
     ];
   }
   const note = mode === "coord" ? "direkt als Koeffiziententripel der Koordinatenform ablesbar" : "in der Normalenform bereits direkt gegeben";

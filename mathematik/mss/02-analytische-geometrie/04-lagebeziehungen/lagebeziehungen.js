@@ -1,6 +1,6 @@
-import { F, vec3 } from "./vectors.js?v=11";
-import { planeFromParam, planeFromCoord, planeFromNormal, pointPoint, pointLine, pointPlane, lineLine, planePlane, linePlane } from "./geometry.js?v=11";
-import * as N from "./notation.js?v=11";
+import { F, vec3 } from "./vectors.js?v=12";
+import { planeFromParam, planeFromCoord, planeFromNormal, pointPoint, pointLine, pointPlane, lineLine, planePlane, linePlane } from "./geometry.js?v=12";
+import * as N from "./notation.js?v=12";
 import {
   toNum3,
   toNumPlane,
@@ -10,7 +10,7 @@ import {
   sceneLineLine,
   sceneLinePlane,
   scenePlanePlane,
-} from "./viz.js?v=11";
+} from "./viz.js?v=12";
 
 const els = {
   typeGrid1: document.getElementById("type-grid-1"),
