@@ -92,6 +92,11 @@
   </div>
 
   <div class="menu-grid" id="menu-grid">
+    <a class="menu-card" data-section="klasse-8" href="mathematik/klasse-8/index.html" hidden>
+      <span class="menu-icon">8️⃣</span>
+      <h2>Klasse 8</h2>
+      <p>Themen und Werkzeuge für die 8. Klasse.</p>
+    </a>
     <a class="menu-card" data-section="klasse-10" href="mathematik/klasse-10/index.html" hidden>
       <span class="menu-icon">🔟</span>
       <h2>Klasse 10</h2>
@@ -124,10 +129,11 @@
   // Hier anpassen/ergänzen. Achtung: nur eine Navigationshilfe, keine echte
   // Zugriffskontrolle (siehe Hinweis im Text).
   var CODES = {
+    KLA8: ["klasse-8"],
     KL10: ["klasse-10"],
     MSS1: ["mss"],
     OFF1: ["office-tools"],
-    ALLE: ["klasse-10", "mss", "office-tools"],
+    ALLE: ["klasse-8", "klasse-10", "mss", "office-tools"],
   };
 
   var form = document.getElementById("access-form");
@@ -138,7 +144,7 @@
   var lockAgainBtn = document.getElementById("lock-again");
   var cards = document.querySelectorAll(".menu-card[data-section]");
 
-  var LABELS = { "klasse-10": "Klasse 10", mss: "MSS", "office-tools": "Office-Tools" };
+  var LABELS = { "klasse-8": "Klasse 8", "klasse-10": "Klasse 10", mss: "MSS", "office-tools": "Office-Tools" };
 
   function getUnlocked() {
     try {

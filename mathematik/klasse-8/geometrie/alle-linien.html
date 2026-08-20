@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alle besonderen Linien &amp; Kreise</title>
+<script src="../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../assets/site.css">
+<link rel="stylesheet" href="geometrie.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../index.html">Mathematik</a><span class="sep">/</span>
+  <a href="../index.html">Klasse 8</a><span class="sep">/</span>
+  <a href="index.html">Geometrie</a><span class="sep">/</span>
+  Alle besonderen Linien &amp; Kreise
+</nav>
+<header class="page-header">
+  <h1>Alle besonderen Linien &amp; Kreise</h1>
+  <p>Mittelsenkrechte, Winkelhalbierende, Seitenhalbierende und Höhen zusammen in einem Dreieck, mitsamt Um- und Inkreis. Blende einzelne Linien über die Kästchen aus, um Überschneidungen besser zu erkennen. Ziehe an A, B oder C.</p>
+</header>
+
+<main class="menu-main">
+  <section class="card">
+    <div class="geo-layout">
+      <div class="geo-canvas-col">
+        <div class="geo-canvas-wrap">
+          <svg id="geo-svg" class="geo-svg" viewBox="0 0 600 460">
+            <g id="layer-construct"></g>
+            <g id="layer-triangle"></g>
+            <g id="layer-centers"></g>
+            <g id="layer-vertices"></g>
+          </svg>
+        </div>
+        <div class="geo-toggle-row" id="line-toggles">
+          <label><input type="checkbox" id="chk-mittelsenkrechte" checked> Mittelsenkrechte</label>
+          <label><input type="checkbox" id="chk-winkelhalbierende" checked> Winkelhalbierende</label>
+          <label><input type="checkbox" id="chk-seitenhalbierende" checked> Seitenhalbierende</label>
+          <label><input type="checkbox" id="chk-hoehen" checked> Höhen</label>
+        </div>
+        <div class="geo-toggle-row">
+          <label><input type="checkbox" id="chk-umkreis" checked> Umkreis</label>
+          <label><input type="checkbox" id="chk-inkreis" checked> Inkreis</label>
+          <label><input type="checkbox" id="toggle-arcs"> Zirkelbögen (Konstruktion) anzeigen</label>
+        </div>
+        <div class="geo-toolbar">
+          <button type="button" class="geo-btn" id="btn-new-triangle">🎲 Neues Dreieck</button>
+        </div>
+        <div class="geo-legend">
+          <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#d64545"></span>Mittelsenkrechte (M)</span>
+          <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#1a9e7a"></span>Winkelhalbierende (I)</span>
+          <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#8a5cf6"></span>Seitenhalbierende (S)</span>
+          <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#e08a1e"></span>Höhen (H)</span>
+        </div>
+      </div>
+
+      <div class="geo-side-col">
+        <div class="geo-instruction-box">
+          <p>Vier besondere Punkte in einem Dreieck: Umkreismittelpunkt M, Inkreismittelpunkt I, Schwerpunkt S und Höhenschnittpunkt H. Sie fallen im Allgemeinen nicht zusammen — nur beim gleichseitigen Dreieck liegen alle vier exakt an derselben Stelle.</p>
+        </div>
+        <ol class="geo-steps">
+          <li><strong>Mittelsenkrechte</strong> (Seitenmitte, rechtwinklig zur Seite) → Umkreismittelpunkt M, gleich weit von A, B, C entfernt → Umkreis.</li>
+          <li><strong>Winkelhalbierende</strong> (halbiert den Innenwinkel) → Inkreismittelpunkt I, gleich weit von allen drei Seiten entfernt → Inkreis (Radius über das Lot auf eine Seite).</li>
+          <li><strong>Seitenhalbierende</strong> (Eckpunkt–Seitenmitte) → Schwerpunkt S, teilt jede Seitenhalbierende im Verhältnis 2:1.</li>
+          <li><strong>Höhe</strong> (senkrecht auf die Gegenseite, ggf. verlängert) → Höhenschnittpunkt H, liegt bei stumpfwinkligen Dreiecken außerhalb.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="index.html">Zurück zu Geometrie</a></p>
+  <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+<script type="module" src="alle-linien.js?v=1"></script>
+</body>
+</html>
