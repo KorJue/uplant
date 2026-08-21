@@ -1,0 +1,354 @@
+/* Gemeinsame Styles für alle interaktiven Geometrie-Konstruktionen (Klasse 8). */
+
+.geo-layout {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.geo-canvas-col {
+  flex: 1 1 480px;
+  min-width: 280px;
+}
+.geo-side-col {
+  flex: 1 1 300px;
+  min-width: 260px;
+}
+
+.geo-canvas-wrap {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+.geo-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  touch-action: none;
+  border-radius: 8px;
+  background: var(--geo-canvas-bg, #fbfcfe);
+}
+:root[data-theme="dark"] .geo-svg {
+  --geo-canvas-bg: #10141a;
+}
+
+/* ---------- Zeichenprimitive ---------- */
+
+.geo-point-dot {
+  fill: var(--accent-dark);
+  stroke: var(--card-bg);
+  stroke-width: 1.5;
+  pointer-events: none;
+}
+.geo-point-hit {
+  fill: transparent;
+  pointer-events: all;
+  cursor: grab;
+}
+.geo-point-draggable .geo-point-hit {
+  cursor: grab;
+}
+.geo-dragging {
+  cursor: grabbing !important;
+}
+.geo-point-label {
+  font-size: 15px;
+  font-weight: 700;
+  fill: var(--text);
+  font-family: "Cambria Math", Cambria, serif;
+  transform: translate(10px, -8px);
+  pointer-events: none;
+}
+
+.geo-segment {
+  stroke: var(--text);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+.geo-line {
+  stroke: var(--text);
+  stroke-width: 2;
+}
+
+/* Konstruktionslinien (Mittelsenkrechte, Winkelhalbierende, Seitenhalbierende, Höhen) */
+.geo-construct {
+  stroke: #d64545;
+  stroke-width: 2;
+  stroke-dasharray: 7 5;
+  fill: none;
+}
+.geo-construct.geo-mittelsenkrechte {
+  stroke: #d64545;
+}
+.geo-construct.geo-winkelhalbierende {
+  stroke: #1a9e7a;
+}
+.geo-construct.geo-seitenhalbierende {
+  stroke: #8a5cf6;
+}
+.geo-construct.geo-hoehe {
+  stroke: #e08a1e;
+}
+
+.geo-arc {
+  stroke: var(--muted);
+  stroke-width: 1.6;
+  opacity: 0.85;
+}
+.geo-arc.geo-arc-a {
+  stroke: #2563eb;
+}
+.geo-arc.geo-arc-b {
+  stroke: #d64545;
+}
+.geo-arc.geo-arc-c {
+  stroke: #1a9e7a;
+}
+
+.geo-circle {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.6;
+}
+.geo-circle.geo-umkreis {
+  stroke: #2563eb;
+  stroke-width: 2;
+}
+.geo-circle.geo-inkreis {
+  stroke: #1a9e7a;
+  stroke-width: 2;
+}
+.geo-circle.geo-user-circle {
+  stroke: #e08a1e;
+  stroke-width: 1.8;
+}
+.geo-line.geo-user-line {
+  stroke: #e08a1e;
+  stroke-width: 2;
+}
+.geo-preview {
+  opacity: 0.55;
+  stroke-dasharray: 4 4;
+}
+
+.geo-cross line {
+  stroke: var(--muted);
+  stroke-width: 1.6;
+}
+
+.geo-rightangle {
+  stroke: var(--muted);
+  stroke-width: 1.6;
+}
+
+.geo-pending-point circle {
+  fill: #e08a1e;
+}
+
+.geo-side-extension {
+  stroke: var(--muted);
+  stroke-width: 1.4;
+  stroke-dasharray: 3 4;
+}
+
+.geo-tangent {
+  stroke: #1a9e7a;
+  stroke-width: 1.8;
+  stroke-dasharray: 4 4;
+}
+
+/* ---------- Steuerung / Toolbar ---------- */
+
+.geo-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0.9rem 0;
+}
+.geo-btn {
+  padding: 0.55rem 1.1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+.geo-btn:hover {
+  border-color: var(--accent);
+}
+.geo-btn.geo-btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.geo-btn.geo-btn-primary:hover {
+  background: var(--accent-dark);
+}
+.geo-btn.geo-btn-active {
+  background: var(--accent-dark);
+  border-color: var(--accent-dark);
+  color: #fff;
+}
+.geo-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ---------- Anleitung / Schritte ---------- */
+
+.geo-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: geo-step;
+}
+.geo-steps li {
+  counter-increment: geo-step;
+  position: relative;
+  padding: 0.55rem 0 0.55rem 2.4rem;
+  border-bottom: 1px dashed var(--border);
+  color: var(--muted);
+}
+.geo-steps li:last-child {
+  border-bottom: none;
+}
+.geo-steps li::before {
+  content: counter(geo-step);
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.geo-steps li.geo-step-active {
+  color: var(--text);
+  font-weight: 600;
+}
+.geo-steps li.geo-step-active::before {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.geo-steps li.geo-step-done::before {
+  content: "✓";
+  background: #1a9e7a;
+  border-color: #1a9e7a;
+  color: #fff;
+}
+.geo-steps li.geo-step-done {
+  color: var(--text);
+}
+
+.geo-instruction-box {
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  margin-bottom: 1rem;
+  min-height: 3rem;
+}
+.geo-instruction-box p {
+  margin: 0;
+}
+
+.geo-feedback {
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  margin-top: 0.8rem;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+.geo-feedback.geo-feedback-ok {
+  background: #e7f6ec;
+  color: #157347;
+}
+.geo-feedback.geo-feedback-error {
+  background: #fdecec;
+  color: #b3261e;
+}
+.geo-feedback.geo-feedback-hint {
+  background: #eef2ff;
+  color: var(--accent-dark);
+}
+:root[data-theme="dark"] .geo-feedback.geo-feedback-ok {
+  background: #17321f;
+  color: #6fd68f;
+}
+:root[data-theme="dark"] .geo-feedback.geo-feedback-error {
+  background: #3a1f1f;
+  color: #ff8a8a;
+}
+:root[data-theme="dark"] .geo-feedback.geo-feedback-hint {
+  background: #1e2a4a;
+  color: #8ab4f8;
+}
+
+.geo-mode-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.geo-mode-tab {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+.geo-mode-tab.geo-mode-tab-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.geo-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.75rem;
+}
+.geo-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.geo-legend-swatch {
+  width: 1.4rem;
+  height: 0;
+  border-top: 3px solid;
+  display: inline-block;
+}
+
+.geo-toggle-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin: 0.75rem 0;
+  font-size: 0.9rem;
+}
+.geo-toggle-row label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+}

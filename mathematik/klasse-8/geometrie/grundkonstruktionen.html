@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grundkonstruktionen</title>
+<script src="../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../assets/site.css">
+<link rel="stylesheet" href="geometrie.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../index.html">Mathematik</a><span class="sep">/</span>
+  <a href="../index.html">Klasse 8</a><span class="sep">/</span>
+  <a href="index.html">Geometrie</a><span class="sep">/</span>
+  Grundkonstruktionen
+</nav>
+<header class="page-header">
+  <h1>Grundkonstruktionen: Mittelsenkrechte &amp; Winkelhalbierende</h1>
+  <p>Bei jedem Laden der Seite erscheint eine neue, zufällige Aufgabe. Schau dir die Konstruktion zuerst Schritt für Schritt an — und übe sie danach selbst mit Zirkel und Lineal am Bildschirm.</p>
+</header>
+
+<main class="menu-main">
+  <section class="card">
+    <div class="geo-mode-tabs" id="exercise-tabs">
+      <button type="button" class="geo-mode-tab geo-mode-tab-active" data-exercise="mittelsenkrechte">Mittelsenkrechte</button>
+      <button type="button" class="geo-mode-tab" data-exercise="winkelhalbierende">Winkelhalbierende</button>
+    </div>
+
+    <div class="geo-mode-tabs" id="phase-tabs">
+      <button type="button" class="geo-mode-tab geo-mode-tab-active" data-phase="guided">1. Geführte Animation ansehen</button>
+      <button type="button" class="geo-mode-tab" data-phase="free">2. Selbst konstruieren</button>
+    </div>
+
+    <div class="geo-layout">
+      <div class="geo-canvas-col">
+        <div class="geo-canvas-wrap">
+          <svg id="geo-svg" class="geo-svg" viewBox="0 0 600 420">
+            <g id="layer-given"></g>
+            <g id="layer-construct"></g>
+            <g id="layer-user"></g>
+            <g id="layer-points"></g>
+          </svg>
+        </div>
+        <div class="geo-toolbar" id="guided-controls">
+          <button type="button" class="geo-btn" id="btn-back" disabled>← Zurück</button>
+          <button type="button" class="geo-btn geo-btn-primary" id="btn-next">Weiter →</button>
+          <button type="button" class="geo-btn" id="btn-new-task">🎲 Neue Aufgabe</button>
+        </div>
+        <div class="geo-toolbar" id="free-controls" hidden>
+          <button type="button" class="geo-btn" id="btn-tool-circle">◯ Kreis (Zirkel)</button>
+          <button type="button" class="geo-btn" id="btn-tool-line">／ Gerade (Lineal)</button>
+          <button type="button" class="geo-btn" id="btn-undo">↩ Rückgängig</button>
+          <button type="button" class="geo-btn" id="btn-clear">🗑 Zurücksetzen</button>
+          <button type="button" class="geo-btn geo-btn-primary" id="btn-check">✓ Prüfen</button>
+          <button type="button" class="geo-btn" id="btn-hint">💡 Tipp</button>
+          <button type="button" class="geo-btn" id="btn-new-task-free">🎲 Neue Aufgabe</button>
+        </div>
+        <div class="geo-feedback" id="feedback-box" hidden></div>
+      </div>
+
+      <div class="geo-side-col">
+        <div class="geo-instruction-box" id="instruction-box"></div>
+        <ol class="geo-steps" id="steps-list"></ol>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="index.html">Zurück zu Geometrie</a></p>
+  <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+<script type="module" src="grundkonstruktionen.js?v=1"></script>
+</body>
+</html>

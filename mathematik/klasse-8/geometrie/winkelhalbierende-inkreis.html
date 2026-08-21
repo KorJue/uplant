@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Winkelhalbierende &amp; Inkreis</title>
+<script src="../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../assets/site.css">
+<link rel="stylesheet" href="geometrie.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../index.html">Mathematik</a><span class="sep">/</span>
+  <a href="../index.html">Klasse 8</a><span class="sep">/</span>
+  <a href="index.html">Geometrie</a><span class="sep">/</span>
+  Winkelhalbierende &amp; Inkreis
+</nav>
+<header class="page-header">
+  <h1>Winkelhalbierende &amp; Inkreis</h1>
+  <p>Ziehe an den Eckpunkten A, B oder C. Die drei Winkelhalbierenden schneiden sich immer in einem Punkt: dem Inkreismittelpunkt I. Von dort aus wird der Radius über das Lot auf eine Seite konstruiert — genau dort berührt der Inkreis die Seite (Tangente).</p>
+</header>
+
+<main class="menu-main">
+  <section class="card">
+    <div class="geo-layout">
+      <div class="geo-canvas-col">
+        <div class="geo-canvas-wrap">
+          <svg id="geo-svg" class="geo-svg" viewBox="0 0 600 440">
+            <g id="layer-construct"></g>
+            <g id="layer-triangle"></g>
+            <g id="layer-centers"></g>
+            <g id="layer-vertices"></g>
+          </svg>
+        </div>
+        <div class="geo-toggle-row">
+          <label><input type="checkbox" id="toggle-arcs" checked> Zirkelbögen (Konstruktion) anzeigen</label>
+        </div>
+        <div class="geo-toolbar">
+          <button type="button" class="geo-btn" id="btn-new-triangle">🎲 Neues Dreieck</button>
+        </div>
+        <div class="geo-legend">
+          <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#1a9e7a"></span>Winkelhalbierende</span>
+          <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#1a9e7a;border-top-style:dashed"></span>Inkreis</span>
+          <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#1a9e7a;border-top-style:dotted"></span>Lot (Radius/Tangentenpunkt)</span>
+        </div>
+      </div>
+
+      <div class="geo-side-col">
+        <div class="geo-instruction-box">
+          <p>Der Inkreis liegt vollständig im Dreieck und berührt alle drei Seiten von innen (tangential). Sein Mittelpunkt I hat von allen drei Seiten denselben Abstand.</p>
+        </div>
+        <ol class="geo-steps">
+          <li>Konstruiere für zwei der drei Innenwinkel die Winkelhalbierende: Zirkel in den Scheitelpunkt einstechen, Bogen über beide Schenkel zeichnen, dann von den beiden neuen Schnittpunkten aus mit gleichem Radius zwei Bögen zeichnen, die sich kreuzen, und den Scheitelpunkt mit diesem Kreuzungspunkt verbinden.</li>
+          <li>Die Winkelhalbierenden schneiden sich in einem Punkt — dem Inkreismittelpunkt I.</li>
+          <li>Fälle von I aus das Lot auf eine der drei Seiten (rechter Winkel am Fußpunkt). Die Strecke von I bis zum Fußpunkt ist der Radius — an diesem Fußpunkt berührt der Kreis die Seite (Tangentenpunkt).</li>
+          <li>Zeichne mit diesem Radius um I den Inkreis. Er berührt automatisch auch die beiden anderen Seiten.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="index.html">Zurück zu Geometrie</a></p>
+  <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+<script type="module" src="winkelhalbierende-inkreis.js?v=1"></script>
+</body>
+</html>

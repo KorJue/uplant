@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mittelsenkrechte &amp; Umkreis</title>
+<script src="../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../assets/site.css">
+<link rel="stylesheet" href="geometrie.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../index.html">Mathematik</a><span class="sep">/</span>
+  <a href="../index.html">Klasse 8</a><span class="sep">/</span>
+  <a href="index.html">Geometrie</a><span class="sep">/</span>
+  Mittelsenkrechte &amp; Umkreis
+</nav>
+<header class="page-header">
+  <h1>Mittelsenkrechte &amp; Umkreis</h1>
+  <p>Ziehe an den Eckpunkten A, B oder C — das Dreieck, die drei Mittelsenkrechten und der Umkreis passen sich sofort an. Alle drei Mittelsenkrechten schneiden sich immer in einem einzigen Punkt: dem Umkreismittelpunkt M.</p>
+</header>
+
+<main class="menu-main">
+  <section class="card">
+    <div class="geo-layout">
+      <div class="geo-canvas-col">
+        <div class="geo-canvas-wrap">
+          <svg id="geo-svg" class="geo-svg" viewBox="0 0 600 440">
+            <g id="layer-construct"></g>
+            <g id="layer-triangle"></g>
+            <g id="layer-centers"></g>
+            <g id="layer-vertices"></g>
+          </svg>
+        </div>
+        <div class="geo-toggle-row">
+          <label><input type="checkbox" id="toggle-arcs" checked> Zirkelbögen (Konstruktion) anzeigen</label>
+        </div>
+        <div class="geo-toolbar">
+          <button type="button" class="geo-btn" id="btn-new-triangle">🎲 Neues Dreieck</button>
+        </div>
+        <div class="geo-legend">
+          <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#d64545"></span>Mittelsenkrechte</span>
+          <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#2563eb"></span>Umkreis</span>
+        </div>
+      </div>
+
+      <div class="geo-side-col">
+        <div class="geo-instruction-box">
+          <p>Der Umkreis ist der Kreis, der durch alle drei Eckpunkte A, B und C verläuft. Sein Mittelpunkt M hat von allen drei Ecken denselben Abstand — das ist genau der Radius des Umkreises.</p>
+        </div>
+        <ol class="geo-steps">
+          <li>Konstruiere für jede der drei Seiten die Mittelsenkrechte: Zirkel in beide Endpunkte der Seite einstechen (Radius größer als die halbe Seitenlänge) und die beiden Schnittpunkte der Bögen verbinden.</li>
+          <li>Alle drei Mittelsenkrechten schneiden sich in einem Punkt — dem Umkreismittelpunkt M. (Das muss man nur für zwei der drei Seiten wirklich konstruieren, die dritte geht automatisch durch M.)</li>
+          <li>Zirkel in M einstechen, Radius bis zu einem der Eckpunkte einstellen, und den Umkreis durch A, B und C zeichnen.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="index.html">Zurück zu Geometrie</a></p>
+  <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+<script type="module" src="mittelsenkrechte-umkreis.js?v=1"></script>
+</body>
+</html>
