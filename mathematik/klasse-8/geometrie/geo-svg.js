@@ -3,7 +3,7 @@
 // Gerade, Kreis, Zirkelbogen, rechter-Winkel-Marke) sowie ein klick-basiertes Werkzeug
 // ("Kreis"/"Gerade") für das freie Konstruieren mit anschließender Prüfung.
 
-import { add, scale, sub, len, dist, norm, angleOf } from "./geo-core.js?v=8";
+import { add, scale, sub, len, dist, norm, angleOf } from "./geo-core.js?v=9";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 

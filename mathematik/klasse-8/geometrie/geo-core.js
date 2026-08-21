@@ -148,17 +148,6 @@ export function orthocenter(A, B, C) {
   return sub(add(add(A, B), C), scale(O, 2));
 }
 
-// Feuerbachkreis (Neunpunktekreis): Mittelpunkt ist der Mittelpunkt der Strecke zwischen
-// Umkreismittelpunkt und Höhenschnittpunkt, sein Radius die Hälfte des Umkreisradius. Er verläuft
-// durch die drei Seitenmitten, die drei Höhenfußpunkte und die drei Mittelpunkte der oberen
-// Höhenabschnitte.
-export function ninePointCircle(A, B, C) {
-  const O = circumcenter(A, B, C);
-  if (!O) return null;
-  const Hp = orthocenter(A, B, C);
-  return { center: mid(O, Hp), radius: circumradius(A, B, C) / 2 };
-}
-
 // ---------- Zufällige Dreiecke/Strecken/Winkel für Aufgaben ----------
 
 function randIn(min, max) {

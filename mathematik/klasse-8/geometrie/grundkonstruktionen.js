@@ -2,9 +2,9 @@
 // und Höhe — je eine geführte, anklickbare Anleitung und ein freies Konstruieren mit Prüfung.
 // Bei jedem Laden (und über "Neue Aufgabe") wird eine neue Zufallsaufgabe erzeugt.
 
-import * as GC from "./geo-core.js?v=8";
-import * as GS from "./geo-svg.js?v=8";
-import { setupCanvasZoom } from "./canvas-zoom.js?v=8";
+import * as GC from "./geo-core.js?v=9";
+import * as GS from "./geo-svg.js?v=9";
+import { setupCanvasZoom } from "./canvas-zoom.js?v=9";
 
 const W = 600,
   H = 420;
