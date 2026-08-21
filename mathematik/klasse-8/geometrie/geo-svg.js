@@ -3,9 +3,14 @@
 // Gerade, Kreis, Zirkelbogen, rechter-Winkel-Marke) sowie ein klick-basiertes Werkzeug
 // ("Kreis"/"Gerade") für das freie Konstruieren mit anschließender Prüfung.
 
-import { add, scale, sub, len, dist, norm, angleOf } from "./geo-core.js?v=4";
+import { add, scale, sub, len, dist, norm, angleOf } from "./geo-core.js?v=8";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
+
+// Auf Geräten, die per Finger bedient werden, brauchen Ziehpunkte und das Einrasten von Klicks
+// deutlich größere Trefferflächen als unter der Maus.
+export const COARSE_POINTER = typeof window !== "undefined" && window.matchMedia ? window.matchMedia("(pointer: coarse)").matches : false;
+const HANDLE_HIT_RADIUS = COARSE_POINTER ? 26 : 16;
 
 export function svgEl(tag, attrs = {}) {
   const el = document.createElementNS(SVG_NS, tag);
@@ -170,7 +175,7 @@ export function makeDraggable(svg, handle, onDrag, opts = {}) {
 // werden muss (das würde sonst bei jedem Redraw neue Pointer-Listener anhängen).
 export function drawDraggablePoint(svg, layer, p, label, onMove, opts = {}) {
   const g = svgEl("g", { class: "geo-point geo-point-draggable" });
-  const hit = svgEl("circle", { cx: p.x, cy: p.y, r: 16, class: "geo-point-hit" });
+  const hit = svgEl("circle", { cx: p.x, cy: p.y, r: HANDLE_HIT_RADIUS, class: "geo-point-hit" });
   const dot = svgEl("circle", { cx: p.x, cy: p.y, r: 5.5, class: "geo-point-dot" });
   g.appendChild(hit);
   g.appendChild(dot);
@@ -232,6 +237,9 @@ export class ConstructionTool {
     this.mode = mode;
     this.pending = null;
     this._previewPoint = null;
+    // Sichtbares Zeichen-Fadenkreuz — und zugleich der Grund, warum iOS auf der Fläche überhaupt
+    // click-Ereignisse auslöst (Safari erzeugt sie nur für "anklickbar" wirkende Elemente).
+    this.svg.classList.toggle("geo-drawing", !!mode);
     this._render();
   }
   // Bricht einen halb gesetzten Kreis/eine halb gesetzte Gerade ab (erster Klick schon erfolgt,

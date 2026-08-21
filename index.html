@@ -77,9 +77,9 @@
 <main class="menu-main">
   <section class="card" id="access-card">
     <h2>Zugang</h2>
-    <p>Gib deinen 4-stelligen Code ein, um den passenden Bereich freizuschalten.</p>
+    <p>Gib deinen 5-stelligen Code ein, um den passenden Bereich freizuschalten.</p>
     <form class="access-form" id="access-form">
-      <input type="text" id="access-code" placeholder="Code" autocomplete="off" autocapitalize="characters" maxlength="4">
+      <input type="text" id="access-code" placeholder="Code" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" maxlength="5">
       <button type="submit">Freischalten</button>
     </form>
     <p class="access-error" id="access-error" hidden>Unbekannter Code.</p>
@@ -125,15 +125,16 @@
   "use strict";
   var STORAGE_KEY = "uplant-access";
 
-  // Zugangscodes (jeweils 4-stellig, alphanumerisch) → welche Bereiche sie freischalten.
+  // Zugangscodes (jeweils 5-stellig, zufällig aus einem Alphabet ohne verwechselbare Zeichen
+  // wie 0/O oder 1/I/l) → welche Bereiche sie freischalten.
   // Hier anpassen/ergänzen. Achtung: nur eine Navigationshilfe, keine echte
   // Zugriffskontrolle (siehe Hinweis im Text).
   var CODES = {
-    KLA8: ["klasse-8"],
-    KL10: ["klasse-10"],
-    MSS1: ["mss"],
-    OFF1: ["office-tools"],
-    ALLE: ["klasse-8", "klasse-10", "mss", "office-tools"],
+    Q3X4P: ["klasse-8"],
+    "78PTT": ["klasse-10"],
+    H2H82: ["mss"],
+    RXFE3: ["office-tools"],
+    NEEF9: ["klasse-8", "klasse-10", "mss", "office-tools"],
   };
 
   var form = document.getElementById("access-form");

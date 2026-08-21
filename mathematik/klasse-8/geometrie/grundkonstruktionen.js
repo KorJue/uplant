@@ -2,8 +2,9 @@
 // und Höhe — je eine geführte, anklickbare Anleitung und ein freies Konstruieren mit Prüfung.
 // Bei jedem Laden (und über "Neue Aufgabe") wird eine neue Zufallsaufgabe erzeugt.
 
-import * as GC from "./geo-core.js?v=4";
-import * as GS from "./geo-svg.js?v=4";
+import * as GC from "./geo-core.js?v=8";
+import * as GS from "./geo-svg.js?v=8";
+import { setupCanvasZoom } from "./canvas-zoom.js?v=8";
 
 const W = 600,
   H = 420;
@@ -48,7 +49,9 @@ const state = {
 };
 let steps = [];
 
-const TOL_PT = 16; // Klick-/Prüftoleranz für "dieser Punkt ist gemeint" (SVG-Einheiten)
+// Klick-/Prüftoleranz für "dieser Punkt ist gemeint" (SVG-Einheiten). Per Finger wird ungenauer
+// getroffen als mit der Maus, deshalb dort ein größerer Radius.
+const TOL_PT = GS.COARSE_POINTER ? 24 : 16;
 
 // Prüft, ob eine vom Nutzer gezogene Gerade durch zwei vorgegebene Punkte verläuft. Verglichen wird
 // der senkrechte Abstand beider Punkte zur Geraden (Kreuzprodukt mit normierter Richtung).
@@ -699,3 +702,5 @@ state.tool.extraRender = renderUserMarkers;
 state.tool.onChange = updateStatus;
 state.task = current().newTask();
 refreshAll();
+
+setupCanvasZoom(document.querySelector(".geo-layout").closest(".card"), document.getElementById("btn-zoom"));

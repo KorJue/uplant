@@ -26,12 +26,105 @@
   width: 100%;
   height: auto;
   display: block;
-  touch-action: none;
+  /* "manipulation" statt "none": Wischen über die Zeichenfläche scrollt weiterhin die Seite
+     (wichtig auf dem iPad), nur der Doppeltipp-Zoom entfällt. Das Ziehen einzelner Punkte wird
+     gezielt an den Ziehpunkten selbst freigeschaltet (.geo-point-hit). */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
   border-radius: 8px;
   background: var(--geo-canvas-bg, #fbfcfe);
 }
 :root[data-theme="dark"] .geo-svg {
   --geo-canvas-bg: #10141a;
+}
+/* Aktives Zeichenwerkzeug: Fadenkreuz statt Pfeil (und auf iOS die Voraussetzung dafür, dass
+   Safari auf der Fläche überhaupt click-Ereignisse erzeugt). */
+.geo-svg.geo-drawing {
+  cursor: crosshair;
+}
+
+/* ---------- Vollbild für die Zeichenfläche ---------- */
+/* Vergrößert wird der gesamte Arbeitsbereich, nicht nur die Zeichenfläche: Werkzeuge, Kästchen
+   und die Anleitung müssen erreichbar bleiben, sonst ließe sich im Vollbild nichts konstruieren. */
+
+.card.geo-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  padding: 0.6rem;
+  /* Die Karte ist im normalen Fluss durchsichtig; im Vollbild braucht sie eine eigene Fläche,
+     sonst scheinen Seitenkopf und Navigation dahinter durch. */
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  overflow: hidden;
+}
+/* Die Auswahl-Reiter (Aufgabe, Anleitung/Selbst konstruieren, 1/2/3 Linien) müssen im Vollbild
+   erreichbar bleiben — sie liegen oberhalb des Layouts und behalten ihre natürliche Höhe. */
+.card.geo-fullscreen .geo-mode-tabs {
+  flex: 0 0 auto;
+  margin-bottom: 0;
+}
+.card.geo-fullscreen .geo-layout {
+  flex: 1 1 auto;
+  min-height: 0;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  gap: 0.5rem;
+  /* Ohne stretch würde das Basis-Layout (align-items: flex-start) die Spalten im Vollbild auf
+     Inhaltsbreite schrumpfen lassen — die Zeichenfläche würde dadurch kleiner statt größer. */
+  align-items: stretch;
+}
+.card.geo-fullscreen .geo-canvas-col {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  overflow: auto;
+}
+.card.geo-fullscreen .geo-canvas-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Mit width/height 100 % skaliert die viewBox von selbst mittig hinein (preserveAspectRatio). */
+.card.geo-fullscreen .geo-svg {
+  width: 100%;
+  height: 100%;
+}
+.card.geo-fullscreen .geo-side-col {
+  flex: 0 0 auto;
+  min-width: 0;
+  max-height: 26vh;
+  overflow: auto;
+}
+/* Im Querformat (iPad quer, Beamer) steht die Anleitung neben der Zeichenfläche. */
+@media (orientation: landscape) and (min-width: 900px) {
+  .card.geo-fullscreen .geo-layout {
+    flex-direction: row;
+  }
+  .card.geo-fullscreen .geo-side-col {
+    flex: 0 0 320px;
+    max-height: none;
+  }
+}
+
+.geo-zoom-row {
+  margin: 0.6rem 0 0;
+}
+
+body.geo-fullscreen-active {
+  overflow: hidden;
 }
 
 /* ---------- Zeichenprimitive ---------- */
@@ -46,6 +139,9 @@
   fill: transparent;
   pointer-events: all;
   cursor: grab;
+  /* Nur hier wird das Browser-Scrollen unterdrückt, damit das Ziehen eines Eckpunkts per Finger
+     nicht als Seiten-Wischen interpretiert wird. */
+  touch-action: none;
 }
 .geo-point-draggable .geo-point-hit {
   cursor: grab;
@@ -428,4 +524,48 @@
   align-items: center;
   gap: 0.4rem;
   cursor: pointer;
+}
+
+/* ---------- Bedienung per Finger (iPad & Co.) ---------- */
+/* Greift nur auf Geräten ohne feinen Zeiger — am Rechner bleibt alles kompakt wie bisher. */
+@media (pointer: coarse) {
+  .geo-btn,
+  .geo-mode-tab {
+    min-height: 44px; /* Apples empfohlene Mindestgröße für Tippziele */
+    padding-left: 1.1rem;
+    padding-right: 1.1rem;
+    font-size: 1rem;
+  }
+  .geo-btn.geo-btn-small {
+    min-height: 38px;
+  }
+  .geo-toolbar {
+    gap: 0.7rem;
+  }
+  /* Kästchen und ihre Beschriftung als ein großes Tippziel */
+  .geo-toggle-row {
+    gap: 0.4rem 1.1rem;
+  }
+  .geo-toggle-row label {
+    min-height: 44px;
+    padding: 0.2rem 0;
+  }
+  .geo-toggle-row input[type="checkbox"] {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+  .geo-steps li {
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
+  }
+  /* Konstruierte Punkte etwas kräftiger, damit sie unter dem Finger sichtbar bleiben */
+  .geo-cross.geo-schnitt-stark line {
+    stroke-width: 3.2;
+  }
+  .geo-point-dot {
+    r: 6.5;
+  }
+  .geo-point-label {
+    font-size: 17px;
+  }
 }

@@ -1,7 +1,8 @@
-import * as GC from "./geo-core.js?v=4";
-import * as GS from "./geo-svg.js?v=4";
-import { setupDraggableTriangle } from "./triangle-common.js?v=4";
-import { drawWinkelhalbierende, drawInkreis } from "./constructions.js?v=4";
+import * as GC from "./geo-core.js?v=8";
+import * as GS from "./geo-svg.js?v=8";
+import { setupDraggableTriangle } from "./triangle-common.js?v=8";
+import { drawWinkelhalbierende, drawInkreis } from "./constructions.js?v=8";
+import { setupCanvasZoom } from "./canvas-zoom.js?v=8";
 
 const W = 600,
   H = 440;
@@ -66,3 +67,5 @@ countTabs.addEventListener("click", (e) => {
   render(tri.pts);
   renderNote();
 });
+
+setupCanvasZoom(document.querySelector(".geo-layout").closest(".card"), document.getElementById("btn-zoom"));
