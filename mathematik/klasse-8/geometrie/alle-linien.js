@@ -1,7 +1,8 @@
-import * as GC from "./geo-core.js?v=2";
-import * as GS from "./geo-svg.js?v=2";
-import { setupDraggableTriangle } from "./triangle-common.js?v=2";
-import { drawMittelsenkrechte, drawUmkreis, drawWinkelhalbierende, drawInkreis, drawSeitenhalbierende, drawHoehe } from "./constructions.js?v=2";
+import * as GC from "./geo-core.js?v=8";
+import * as GS from "./geo-svg.js?v=8";
+import { setupDraggableTriangle } from "./triangle-common.js?v=8";
+import { drawMittelsenkrechte, drawUmkreis, drawWinkelhalbierende, drawInkreis, drawSeitenhalbierende, drawHoehe } from "./constructions.js?v=8";
+import { setupCanvasZoom } from "./canvas-zoom.js?v=8";
 
 const W = 600,
   H = 460;
@@ -131,3 +132,5 @@ btnClearTraces.addEventListener("click", () => {
   render(tri.pts);
 });
 document.getElementById("btn-new-triangle").addEventListener("click", () => tri.randomize());
+
+setupCanvasZoom(document.querySelector(".geo-layout").closest(".card"), document.getElementById("btn-zoom"));

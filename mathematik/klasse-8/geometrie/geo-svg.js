@@ -3,9 +3,14 @@
 // Gerade, Kreis, Zirkelbogen, rechter-Winkel-Marke) sowie ein klick-basiertes Werkzeug
 // ("Kreis"/"Gerade") für das freie Konstruieren mit anschließender Prüfung.
 
-import { add, scale, sub, len, dist, norm, angleOf } from "./geo-core.js?v=2";
+import { add, scale, sub, len, dist, norm, angleOf } from "./geo-core.js?v=8";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
+
+// Auf Geräten, die per Finger bedient werden, brauchen Ziehpunkte und das Einrasten von Klicks
+// deutlich größere Trefferflächen als unter der Maus.
+export const COARSE_POINTER = typeof window !== "undefined" && window.matchMedia ? window.matchMedia("(pointer: coarse)").matches : false;
+const HANDLE_HIT_RADIUS = COARSE_POINTER ? 26 : 16;
 
 export function svgEl(tag, attrs = {}) {
   const el = document.createElementNS(SVG_NS, tag);
@@ -97,6 +102,17 @@ export function drawArcSpan(layer, center, r, aDeg, bDeg, cls = "") {
   return el;
 }
 
+// Markierung für einen erst halb gesetzten Kreis/eine halb gesetzte Gerade: bewusst ein offener,
+// gestrichelter Ring statt eines gefüllten Punktes, damit er nicht wie ein fertig konstruierter
+// Punkt aussieht.
+export function drawPendingMarker(layer, p) {
+  const g = svgEl("g", { class: "geo-pending-marker" });
+  g.appendChild(svgEl("circle", { cx: p.x, cy: p.y, r: 7, class: "geo-pending-ring" }));
+  g.appendChild(svgEl("circle", { cx: p.x, cy: p.y, r: 1.8, class: "geo-pending-dot" }));
+  layer.appendChild(g);
+  return g;
+}
+
 export function drawCross(layer, p, cls = "") {
   const s = 6;
   const g = svgEl("g", { class: "geo-cross " + cls });
@@ -159,7 +175,7 @@ export function makeDraggable(svg, handle, onDrag, opts = {}) {
 // werden muss (das würde sonst bei jedem Redraw neue Pointer-Listener anhängen).
 export function drawDraggablePoint(svg, layer, p, label, onMove, opts = {}) {
   const g = svgEl("g", { class: "geo-point geo-point-draggable" });
-  const hit = svgEl("circle", { cx: p.x, cy: p.y, r: 16, class: "geo-point-hit" });
+  const hit = svgEl("circle", { cx: p.x, cy: p.y, r: HANDLE_HIT_RADIUS, class: "geo-point-hit" });
   const dot = svgEl("circle", { cx: p.x, cy: p.y, r: 5.5, class: "geo-point-dot" });
   g.appendChild(hit);
   g.appendChild(dot);
@@ -208,11 +224,32 @@ export class ConstructionTool {
     this.onChange = null;
     svg.addEventListener("click", (e) => this._onClick(e));
     svg.addEventListener("pointermove", (e) => this._onMove(e));
+    // Verlässt der Zeiger die Zeichenfläche, verschwindet die Vorschau. Sonst bliebe der
+    // gestrichelte Vorschaukreis an der letzten Mausposition stehen und sähe aus wie ein
+    // fertig gezeichneter Kreis.
+    svg.addEventListener("pointerleave", () => {
+      if (!this._previewPoint) return;
+      this._previewPoint = null;
+      this._render();
+    });
   }
   setMode(mode) {
     this.mode = mode;
     this.pending = null;
+    this._previewPoint = null;
+    // Sichtbares Zeichen-Fadenkreuz — und zugleich der Grund, warum iOS auf der Fläche überhaupt
+    // click-Ereignisse auslöst (Safari erzeugt sie nur für "anklickbar" wirkende Elemente).
+    this.svg.classList.toggle("geo-drawing", !!mode);
     this._render();
+  }
+  // Bricht einen halb gesetzten Kreis/eine halb gesetzte Gerade ab (erster Klick schon erfolgt,
+  // zweiter noch nicht). Gibt zurück, ob es überhaupt etwas abzubrechen gab.
+  cancelPending() {
+    if (!this.pending) return false;
+    this.pending = null;
+    this._previewPoint = null;
+    this._render();
+    return true;
   }
   // Radius-Sperre umschalten. Beim Einschalten wird der Radius des zuletzt gezeichneten Kreises
   // übernommen (falls vorhanden) — sonst rastet der nächste gezeichnete Kreis den Radius ein.
@@ -232,11 +269,13 @@ export class ConstructionTool {
   clearLockedRadius() {
     this.lockedRadius = null;
     this.pending = null;
+    this._previewPoint = null;
     this._render();
   }
   undo() {
     if (this.pending) {
       this.pending = null;
+      this._previewPoint = null;
     } else if (this.lines.length) {
       this.lines.pop();
     } else if (this.circles.length) {
@@ -248,6 +287,7 @@ export class ConstructionTool {
     this.circles = [];
     this.lines = [];
     this.pending = null;
+    this._previewPoint = null;
     // Der eingerastete Radius gehört zur weggeworfenen Zeichnung; die Einstellung selbst
     // ("Zirkel nicht verstellen") bleibt aktiv und rastet beim nächsten Kreis neu ein.
     this.lockedRadius = null;
@@ -301,15 +341,15 @@ export class ConstructionTool {
     });
     if (this.mode === "circle" && this.radiusLocked && this.lockedRadius && this._previewPoint) {
       drawCircle(this.layer, this._previewPoint, this.lockedRadius, "geo-user-circle geo-preview");
-      drawPoint(this.layer, this._previewPoint, "", "geo-pending-point");
+      drawPendingMarker(this.layer, this._previewPoint);
     } else if (this.pending && this.pending.type === "circle") {
-      drawPoint(this.layer, this.pending.center, "", "geo-pending-point");
+      drawPendingMarker(this.layer, this.pending.center);
       if (this._previewPoint) {
         const r = dist(this.pending.center, this._previewPoint);
         drawCircle(this.layer, this.pending.center, r, "geo-user-circle geo-preview");
       }
     } else if (this.pending && this.pending.type === "line") {
-      drawPoint(this.layer, this.pending.a, "", "geo-pending-point");
+      drawPendingMarker(this.layer, this.pending.a);
       if (this._previewPoint) {
         const d = sub(this._previewPoint, this.pending.a);
         if (len(d) > 1) drawLine(this.layer, this.pending.a, d, { w: 2000, h: 2000 }, "geo-user-line geo-preview");

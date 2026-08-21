@@ -45,6 +45,9 @@
             <g id="layer-points"></g>
           </svg>
         </div>
+        <div class="geo-zoom-row">
+          <button type="button" class="geo-btn geo-zoom-btn" id="btn-zoom">⛶ Zeichenfläche vergrößern</button>
+        </div>
         <div class="geo-toolbar" id="guided-controls">
           <button type="button" class="geo-btn" id="btn-back" disabled>← Zurück</button>
           <button type="button" class="geo-btn geo-btn-primary" id="btn-next">Weiter →</button>
@@ -66,6 +69,7 @@
             </label>
             <button type="button" class="geo-btn geo-btn-small" id="btn-reset-radius" hidden>🔄 Radius neu einstellen</button>
           </div>
+          <p class="geo-pending-status" id="pending-status" hidden></p>
           <p class="geo-radius-status" id="radius-status" hidden></p>
         </div>
         <div class="geo-feedback" id="feedback-box" hidden></div>
@@ -83,6 +87,6 @@
   <p><a href="index.html">Zurück zu Geometrie</a></p>
   <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
-<script type="module" src="grundkonstruktionen.js?v=2"></script>
+<script type="module" src="grundkonstruktionen.js?v=8"></script>
 </body>
 </html>
