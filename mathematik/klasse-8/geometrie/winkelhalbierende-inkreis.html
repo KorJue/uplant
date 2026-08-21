@@ -23,10 +23,17 @@
 
 <main class="menu-main">
   <section class="card">
-    <div class="geo-mode-tabs" id="count-tabs">
-      <button type="button" class="geo-mode-tab geo-mode-tab-active" data-count="1">1. Winkelhalbierende bei A</button>
-      <button type="button" class="geo-mode-tab" data-count="2">2. dazu die bei B</button>
-      <button type="button" class="geo-mode-tab" data-count="3">3. alle drei + Inkreis</button>
+    <div class="geo-mode-tabs" id="phase-tabs">
+      <button type="button" class="geo-mode-tab geo-mode-tab-active" data-phase="guided">1. Anleitung ansehen</button>
+      <button type="button" class="geo-mode-tab" data-phase="free">2. Selbst konstruieren</button>
+    </div>
+
+    <div id="guided-controls">
+      <div class="geo-mode-tabs" id="count-tabs">
+        <button type="button" class="geo-mode-tab geo-mode-tab-active" data-count="1">1. Winkelhalbierende bei A</button>
+        <button type="button" class="geo-mode-tab" data-count="2">2. dazu die bei B</button>
+        <button type="button" class="geo-mode-tab" data-count="3">3. alle drei + Inkreis</button>
+      </div>
     </div>
 
     <div class="geo-layout">
@@ -36,18 +43,39 @@
             <g id="layer-construct"></g>
             <g id="layer-triangle"></g>
             <g id="layer-centers"></g>
+            <g id="layer-user"></g>
             <g id="layer-vertices"></g>
           </svg>
         </div>
         <div class="geo-zoom-row">
           <button type="button" class="geo-btn geo-zoom-btn" id="btn-zoom">⛶ Zeichenfläche vergrößern</button>
         </div>
-        <div class="geo-toggle-row">
+        <div class="geo-toggle-row" id="guided-toggle-row">
           <label><input type="checkbox" id="toggle-arcs" checked> Zirkelbögen (Konstruktion) anzeigen</label>
         </div>
-        <div class="geo-toolbar">
+        <div class="geo-toolbar" id="guided-toolbar">
           <button type="button" class="geo-btn" id="btn-new-triangle">🎲 Neues Dreieck</button>
         </div>
+        <div id="free-controls" hidden>
+          <div class="geo-toolbar">
+            <button type="button" class="geo-btn" id="btn-tool-circle">◯ Zirkel</button>
+            <button type="button" class="geo-btn" id="btn-tool-line">／ Lineal</button>
+            <button type="button" class="geo-btn" id="btn-undo">↩ Rückgängig</button>
+            <button type="button" class="geo-btn" id="btn-clear">🗑 Zurücksetzen</button>
+            <button type="button" class="geo-btn geo-btn-primary" id="btn-check">✓ Prüfen</button>
+            <button type="button" class="geo-btn" id="btn-hint">💡 Tipp</button>
+            <button type="button" class="geo-btn" id="btn-new-triangle-free">🎲 Neues Dreieck</button>
+          </div>
+          <div class="geo-toggle-row">
+            <label title="Wie beim echten Zirkel: einmal eingestellt, bleibt der Radius gleich — du klickst dann nur noch den Einstichpunkt an.">
+              <input type="checkbox" id="chk-lock-radius"> 🔒 Zirkel-Radius beibehalten (nicht verstellen)
+            </label>
+            <button type="button" class="geo-btn geo-btn-small" id="btn-reset-radius" hidden>🔄 Radius neu einstellen</button>
+          </div>
+          <p class="geo-pending-status" id="pending-status" hidden></p>
+          <p class="geo-radius-status" id="radius-status" hidden></p>
+        </div>
+        <div class="geo-feedback" id="feedback-box" hidden></div>
         <div class="geo-legend">
           <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#1a9e7a"></span>Winkelhalbierende</span>
           <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#1a9e7a;border-top-style:dashed"></span>Inkreis</span>
@@ -57,12 +85,7 @@
 
       <div class="geo-side-col">
         <div class="geo-instruction-box" id="instruction-box"></div>
-        <ol class="geo-steps">
-          <li>Konstruiere für zwei der drei Innenwinkel die Winkelhalbierende: Zirkel in den Scheitelpunkt einstechen, Bogen über beide Schenkel zeichnen, dann von den beiden neuen Schnittpunkten aus mit gleichem Radius zwei Bögen zeichnen, die sich kreuzen, und den Scheitelpunkt mit diesem Kreuzungspunkt verbinden.</li>
-          <li>Die Winkelhalbierenden schneiden sich in einem Punkt — dem Inkreismittelpunkt I.</li>
-          <li>Fälle von I aus das Lot auf eine der drei Seiten (rechter Winkel am Fußpunkt). Die Strecke von I bis zum Fußpunkt ist der Radius — an diesem Fußpunkt berührt der Kreis die Seite (Tangentenpunkt).</li>
-          <li>Zeichne mit diesem Radius um I den Inkreis. Er berührt automatisch auch die beiden anderen Seiten.</li>
-        </ol>
+        <ol class="geo-steps" id="steps-list"></ol>
       </div>
     </div>
   </section>
@@ -72,6 +95,6 @@
   <p><a href="index.html">Zurück zu Geometrie</a></p>
   <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
-<script type="module" src="winkelhalbierende-inkreis.js?v=8"></script>
+<script type="module" src="winkelhalbierende-inkreis.js?v=9"></script>
 </body>
 </html>

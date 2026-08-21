@@ -18,7 +18,7 @@
 </nav>
 <header class="page-header">
   <h1>Alle besonderen Linien am Dreieck</h1>
-  <p>Alle vier besonderen Linien zusammen in einem Dreieck, mitsamt Um-, In- und Feuerbachkreis. Blende einzelne Linien über die Kästchen aus, um Überschneidungen besser zu erkennen. Ziehe an A, B oder C — mit eingeschalteten Spuren hinterlassen die besonderen Punkte dabei ihre Bahn.</p>
+  <p>Alle vier besonderen Linien zusammen in einem Dreieck, mitsamt Um- und Inkreis. Blende einzelne Linien über die Kästchen aus, um Überschneidungen besser zu erkennen. Ziehe an A, B oder C — mit eingeschalteten Spuren hinterlassen die besonderen Punkte dabei ihre Bahn (nur für Linien, die gerade eingeblendet sind).</p>
 </header>
 
 <main class="menu-main">
@@ -46,7 +46,6 @@
         <div class="geo-toggle-row">
           <label><input type="checkbox" id="chk-umkreis" checked> Umkreis</label>
           <label><input type="checkbox" id="chk-inkreis" checked> Inkreis</label>
-          <label title="Der Feuerbachkreis (Neunpunktekreis) verläuft durch die drei Seitenmitten, die drei Höhenfußpunkte und die drei Mittelpunkte zwischen Höhenschnittpunkt und den Ecken."><input type="checkbox" id="chk-feuerbach"> Feuerbachkreis</label>
           <label><input type="checkbox" id="toggle-arcs"> Zirkelbögen anzeigen</label>
         </div>
         <div class="geo-toggle-row">
@@ -61,7 +60,6 @@
           <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#1a9e7a"></span>Winkelhalbierende (I)</span>
           <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#8a5cf6"></span>Seitenhalbierende (S)</span>
           <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#e08a1e"></span>Höhen (H)</span>
-          <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#c026a3"></span>Feuerbachkreis</span>
         </div>
       </div>
 
@@ -74,8 +72,7 @@
           <li><strong>Winkelhalbierende</strong> (halbiert den Innenwinkel) → Inkreismittelpunkt I, gleich weit von allen drei Seiten entfernt → Inkreis (Radius über das Lot auf eine Seite).</li>
           <li><strong>Seitenhalbierende</strong> (Eckpunkt–Seitenmitte) → Schwerpunkt S, teilt jede Seitenhalbierende im Verhältnis 2:1.</li>
           <li><strong>Höhe</strong> (senkrecht auf die Gegenseite, ggf. verlängert) → Höhenschnittpunkt H, liegt bei stumpfwinkligen Dreiecken außerhalb.</li>
-          <li><strong>Feuerbachkreis</strong>: Sein Mittelpunkt liegt genau in der Mitte zwischen M und H, sein Radius ist halb so groß wie der Umkreisradius. Er verläuft durch neun besondere Punkte — daher auch „Neunpunktekreis“.</li>
-          <li><strong>Spuren</strong>: Schalte die Spuren ein und ziehe langsam an einem Eckpunkt. M, I, S und H hinterlassen dann eine Bahn. Beobachte: M, S und H bleiben immer auf einer gemeinsamen Geraden — der <em>Eulerschen Geraden</em>.</li>
+          <li><strong>Spuren</strong>: Schalte die Spuren ein und ziehe langsam an einem Eckpunkt. Die Schnittpunkte der gerade eingeblendeten Linien hinterlassen dann eine Bahn (z. B. nur M, wenn nur die Mittelsenkrechten aktiv sind). Sind Mittelsenkrechte, Winkelhalbierende, Seitenhalbierende und Höhen alle gleichzeitig eingeblendet, zeigt sich: M, S und H bleiben immer auf einer gemeinsamen Geraden — der <em>Eulerschen Geraden</em>.</li>
         </ol>
       </div>
     </div>
@@ -86,6 +83,6 @@
   <p><a href="index.html">Zurück zu Geometrie</a></p>
   <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
-<script type="module" src="alle-linien.js?v=8"></script>
+<script type="module" src="alle-linien.js?v=9"></script>
 </body>
 </html>

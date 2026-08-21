@@ -149,6 +149,12 @@ body.geo-fullscreen-active {
 .geo-dragging {
   cursor: grabbing !important;
 }
+/* Während des freien Konstruierens sind die Eckpunkte absichtlich nicht ziehbar (siehe
+   triangle-common.js) — das zeigt sich auch am Mauszeiger. */
+.geo-point-locked .geo-point-hit {
+  cursor: default;
+  touch-action: manipulation;
+}
 .geo-point-label {
   font-size: 15px;
   font-weight: 700;
@@ -215,11 +221,6 @@ body.geo-fullscreen-active {
 .geo-circle.geo-inkreis {
   stroke: #1a9e7a;
   stroke-width: 2;
-}
-.geo-circle.geo-feuerbach {
-  stroke: #c026a3;
-  stroke-width: 2;
-  stroke-dasharray: 6 4;
 }
 .geo-trace-dot {
   opacity: 0.55;

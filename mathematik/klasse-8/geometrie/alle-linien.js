@@ -1,8 +1,8 @@
-import * as GC from "./geo-core.js?v=8";
-import * as GS from "./geo-svg.js?v=8";
-import { setupDraggableTriangle } from "./triangle-common.js?v=8";
-import { drawMittelsenkrechte, drawUmkreis, drawWinkelhalbierende, drawInkreis, drawSeitenhalbierende, drawHoehe } from "./constructions.js?v=8";
-import { setupCanvasZoom } from "./canvas-zoom.js?v=8";
+import * as GC from "./geo-core.js?v=9";
+import * as GS from "./geo-svg.js?v=9";
+import { setupDraggableTriangle } from "./triangle-common.js?v=9";
+import { drawMittelsenkrechte, drawUmkreis, drawWinkelhalbierende, drawInkreis, drawSeitenhalbierende, drawHoehe } from "./constructions.js?v=9";
+import { setupCanvasZoom } from "./canvas-zoom.js?v=9";
 
 const W = 600,
   H = 460;
@@ -21,15 +21,18 @@ const chk = {
   hoehen: document.getElementById("chk-hoehen"),
   umkreis: document.getElementById("chk-umkreis"),
   inkreis: document.getElementById("chk-inkreis"),
-  feuerbach: document.getElementById("chk-feuerbach"),
   arcs: document.getElementById("toggle-arcs"),
 };
 const chkSpuren = document.getElementById("chk-spuren");
 
 // Aufgezeichnete Bahnen der vier besonderen Punkte. Solange die Spuren eingeschaltet sind, wird bei
 // jeder Änderung des Dreiecks die aktuelle Position angehängt; beim Ausschalten werden sie gelöscht.
+// Angezeigt wird eine Spur aber nur, solange die Linien, deren Schnittpunkt sie ist, auch selbst
+// eingeblendet sind (M nur mit Mittelsenkrechten, I nur mit Winkelhalbierenden usw.) — sonst würde
+// z. B. eine H-Spur auftauchen, obwohl die Höhen gar nicht zu sehen sind.
 const traces = { M: [], I: [], S: [], H: [] };
 const TRACE_COLORS = { M: "#d64545", I: "#1a9e7a", S: "#8a5cf6", H: "#e08a1e" };
+const TRACE_LINE_CHK = { M: "mittelsenkrechte", I: "winkelhalbierende", S: "seitenhalbierende", H: "hoehen" };
 const TRACE_MAX = 400;
 
 function recordTrace(pts) {
@@ -57,6 +60,7 @@ function renderTraces() {
   GS.clearEl(layerTraces);
   if (!chkSpuren.checked) return;
   for (const key of Object.keys(traces)) {
+    if (!chk[TRACE_LINE_CHK[key]].checked) continue;
     for (const p of traces[key]) {
       const dot = GS.svgEl("circle", { cx: p.x, cy: p.y, r: 1.8, class: "geo-trace-dot" });
       dot.setAttribute("fill", TRACE_COLORS[key]);
@@ -108,13 +112,6 @@ function render(pts, record = false) {
     drawHoehe(layerConstruct, B, A, C, showArcs);
     drawHoehe(layerConstruct, C, A, B, showArcs);
     GS.drawPoint(layerCenters, GC.orthocenter(A, B, C), "H");
-  }
-  if (chk.feuerbach.checked) {
-    const fb = GC.ninePointCircle(A, B, C);
-    if (fb) {
-      GS.drawCircle(layerConstruct, fb.center, fb.radius, "geo-circle geo-feuerbach");
-      GS.drawPoint(layerCenters, fb.center, "N");
-    }
   }
 }
 
