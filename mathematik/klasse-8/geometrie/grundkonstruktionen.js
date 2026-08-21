@@ -2,8 +2,8 @@
 // und Höhe — je eine geführte, anklickbare Anleitung und ein freies Konstruieren mit Prüfung.
 // Bei jedem Laden (und über "Neue Aufgabe") wird eine neue Zufallsaufgabe erzeugt.
 
-import * as GC from "./geo-core.js?v=2";
-import * as GS from "./geo-svg.js?v=2";
+import * as GC from "./geo-core.js?v=3";
+import * as GS from "./geo-svg.js?v=3";
 
 const W = 600,
   H = 420;
@@ -142,12 +142,12 @@ const EXERCISES = {
   winkelhalbierende: {
     newTask: () => GC.randomAngle(W, H),
     drawGiven(task) {
+      // Nur der Scheitelpunkt und die beiden Schenkel sind gegeben — auf den Schenkeln liegen
+      // bewusst keine markierten Punkte, denn die entstehen erst durch den ersten Zirkelschlag.
       const { S, P, Q } = task;
       GS.drawSegment(layerGiven, S, GC.add(S, GC.scale(GC.sub(P, S), 1.15)));
       GS.drawSegment(layerGiven, S, GC.add(S, GC.scale(GC.sub(Q, S), 1.15)));
       GS.drawPoint(layerPoints, S, "S");
-      GS.drawPoint(layerPoints, P, "P");
-      GS.drawPoint(layerPoints, Q, "Q");
     },
     guided(task) {
       const { S: V, P, Q } = task;
@@ -189,16 +189,13 @@ const EXERCISES = {
     freeText:
       "Konstruiere die Winkelhalbierende selbst: Zeichne zunächst einen Kreis um S, der beide Schenkel schneidet. Zeichne dann zwei gleich große Kreise um diese beiden Schnittpunkte und verbinde S mit ihrem Schnittpunkt.",
     snapPoints(task, tool) {
-      // Der erste Kreis um S schneidet die beiden Schenkel — diese Punkte werden zwar als Kreuz
-      // angezeigt, entstehen aber nicht als Kreis-Kreis-Schnitt und brauchen daher eigene Snap-Ziele.
+      // Einrasten nur auf den Scheitelpunkt und auf die Punkte, die die Konstruktion selbst
+      // erzeugt hat — die (unsichtbaren) Hilfspunkte P und Q auf den Schenkeln sind keine
+      // Konstruktionspunkte und wären als Klickziel irreführend.
       const { S, P, Q } = task;
-      const base = [S, P, Q];
       const c0 = tool.circles.find((c) => GC.dist(c.center, S) < TOL_PT);
-      if (!c0) return base;
-      return base.concat([
-        GC.add(S, GC.scale(GC.norm(GC.sub(P, S)), c0.radius)),
-        GC.add(S, GC.scale(GC.norm(GC.sub(Q, S)), c0.radius)),
-      ]);
+      if (!c0) return [S];
+      return [S, GC.add(S, GC.scale(GC.norm(GC.sub(P, S)), c0.radius)), GC.add(S, GC.scale(GC.norm(GC.sub(Q, S)), c0.radius))];
     },
     markPoints(task, tool) {
       const { S, P, Q } = task;
@@ -321,7 +318,13 @@ const EXERCISES = {
       const { A, B, C } = task;
       const foot = GC.footOfPerpendicular(C, A, B);
       const height = GC.dist(C, foot);
-      const r0 = height * 1.4;
+      // Der Radius wird bewusst so gewählt, dass beide Schnittpunkte auf der *gezeichneten* Seite
+      // AB liegen: Der Abstand vom Fußpunkt zum näheren Endpunkt begrenzt, wie weit die Bögen
+      // reichen dürfen. Sonst würden Bögen entstehen, die die Seite gar nicht treffen.
+      const s = GC.footParam(foot, A, B);
+      const abLen = GC.dist(A, B);
+      const half = Math.min(s, 1 - s) * abLen * 0.72;
+      const r0 = Math.hypot(height, half);
       const [X1, X2] = GC.circleLineIntersections(C, r0, A, B);
       const r1 = GC.dist(X1, X2) * 0.62;
       const cand = GC.circleCircleIntersections(X1, r1, X2, r1);
@@ -365,6 +368,11 @@ const EXERCISES = {
     markPoints(task, tool) {
       return heightHelperPoints(task, tool);
     },
+    extraDraw(task, tool, layer) {
+      // Wählt der Schüler einen größeren Radius, treffen die Bögen die Gerade AB außerhalb der
+      // gezeichneten Seite — dann wird sie gestrichelt verlängert.
+      drawSideExtension(layer, task.A, task.B, heightHelperPoints(task, tool));
+    },
     check(task, tool) {
       const { A, B, C } = task;
       const cC = tool.circles.find((c) => GC.dist(c.center, C) < TOL_PT);
@@ -402,6 +410,23 @@ function heightHelperPoints(task, tool) {
   return GC.circleLineIntersections(task.C, cC.radius, task.A, task.B);
 }
 
+// Liegen konstruierte Punkte außerhalb der gezeichneten Strecke AB, wird die Seite gestrichelt so
+// weit verlängert, dass sie diese Punkte erreicht — sonst schwebten Schnittpunkte scheinbar neben
+// der Seite, ohne sie zu berühren.
+function drawSideExtension(layer, A, B, points) {
+  let tMin = 0,
+    tMax = 1;
+  for (const p of points) {
+    const t = GC.footParam(p, A, B);
+    tMin = Math.min(tMin, t);
+    tMax = Math.max(tMax, t);
+  }
+  if (tMin > -0.02 && tMax < 1.02) return;
+  const d = GC.sub(B, A);
+  const pad = 0.05;
+  GS.drawSegment(layer, GC.add(A, GC.scale(d, tMin - pad)), GC.add(A, GC.scale(d, tMax + pad)), "geo-side-extension");
+}
+
 // true, sobald zwei gleich große, ausreichend große Kreise um A und B gezeichnet sind — dann gilt
 // der Mittelpunkt von AB als konstruiert.
 function midpointIfConstructed(task, tool) {
@@ -436,6 +461,12 @@ function renderGiven() {
 // ---------- Phase 1: geführte Anleitung ----------
 
 function renderGuided() {
+  // In der Anleitung darf nichts aus dem freien Konstruieren stehen bleiben, und das Zeichen-
+  // werkzeug wird abgeschaltet, damit Klicks auf die Zeichenfläche hier nichts zeichnen.
+  state.tool.setMode(null);
+  state.tool.reset();
+  setActiveToolBtn(null);
+  GS.clearEl(layerUser);
   GS.clearEl(layerConstruct);
   for (let i = 0; i <= state.stepIndex; i++) steps[i].render();
   const isLast = state.stepIndex === steps.length - 1;
@@ -483,8 +514,10 @@ function userCircleIntersections() {
 // Alle Punkte, die durch die eigene Konstruktion entstanden sind, sichtbar markieren — sie sind
 // gleichzeitig die Punkte, auf die das Anklicken einrastet.
 function renderUserMarkers() {
+  const ex = current();
+  if (ex.extraDraw) ex.extraDraw(state.task, state.tool, layerUser);
   userCircleIntersections().forEach((p) => GS.drawCross(layerUser, p, "geo-schnitt-stark"));
-  const extra = current().markPoints ? current().markPoints(state.task, state.tool) : [];
+  const extra = ex.markPoints ? ex.markPoints(state.task, state.tool) : [];
   extra.forEach((p) => GS.drawCross(layerUser, p, "geo-schnitt-stark"));
 }
 
@@ -523,6 +556,9 @@ function setActiveToolBtn(active) {
 
 function renderFreeSetup() {
   GS.clearEl(layerConstruct);
+  // Werkzeugmodus ebenfalls zurücksetzen — sonst wäre kein Werkzeug hervorgehoben, ein Klick auf
+  // die Zeichenfläche würde aber trotzdem noch zeichnen.
+  state.tool.setMode(null);
   state.tool.reset();
   setActiveToolBtn(null);
   updateFreeInstruction();
@@ -608,6 +644,7 @@ els.btnUndo.addEventListener("click", () => {
   updateRadiusStatus();
 });
 els.btnClear.addEventListener("click", () => {
+  GS.clearEl(layerConstruct);
   state.tool.reset();
   updateRadiusStatus();
   els.feedbackBox.hidden = true;

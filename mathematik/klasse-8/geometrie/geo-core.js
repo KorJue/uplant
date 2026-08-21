@@ -181,20 +181,29 @@ export function randomTriangle(w, h, margin = 60) {
   return { A: pt(w * 0.2, h * 0.75), B: pt(w * 0.8, h * 0.75), C: pt(w * 0.5, h * 0.2) };
 }
 
-// Dreieck für die Höhen-Aufgabe: zusätzlich zur allgemeinen "Gutartigkeit" müssen die Winkel bei A
-// und B spitz genug sein, damit der Höhenfußpunkt von C deutlich innerhalb der Strecke AB liegt —
-// sonst müsste die Seite verlängert werden, was in der Grundkonstruktion unnötig verwirrt.
+// Dreieck für die Höhen-Aufgabe. Der Höhenfußpunkt von C muss deutlich innerhalb der Strecke AB
+// liegen (nicht nur auf der Geraden AB): Nur dann lässt sich ein Zirkelradius wählen, dessen Bögen
+// die *gezeichnete* Seite schneiden, ohne sie verlängern zu müssen.
 export function randomTriangleForHeight(w, h, margin = 70) {
-  for (let tries = 0; tries < 300; tries++) {
+  for (let tries = 0; tries < 400; tries++) {
     const t = randomTriangle(w, h, margin);
     const { A, B, C } = t;
-    if (angleAtDeg(A, B, C) > 80 || angleAtDeg(B, A, C) > 80) continue;
-    if (dist(A, B) < 150) continue;
+    const abLen = dist(A, B);
+    if (abLen < 190) continue;
     const foot = footOfPerpendicular(C, A, B);
-    if (dist(C, foot) < 70) continue;
+    const s = footParam(foot, A, B);
+    if (s < 0.3 || s > 0.7) continue;
+    const height = dist(C, foot);
+    if (height < 70 || height > 260) continue;
     return t;
   }
-  return { A: pt(w * 0.2, h * 0.78), B: pt(w * 0.8, h * 0.78), C: pt(w * 0.5, h * 0.22) };
+  return { A: pt(w * 0.15, h * 0.78), B: pt(w * 0.85, h * 0.78), C: pt(w * 0.5, h * 0.24) };
+}
+
+// Position des Lotfußpunkts auf der Strecke AB als Parameter in [0,1] (0 = A, 1 = B).
+export function footParam(foot, A, B) {
+  const d = sub(B, A);
+  return dot(sub(foot, A), d) / dot(d, d);
 }
 
 // Dreieck für die Seitenhalbierenden-Aufgabe: die Seite AB soll lang genug sein, damit sich ihr
