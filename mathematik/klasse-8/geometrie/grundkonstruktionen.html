@@ -18,7 +18,7 @@
 </nav>
 <header class="page-header">
   <h1>Grundkonstruktionen mit Zirkel und Lineal</h1>
-  <p>Mittelsenkrechte, Winkelhalbierende, Seitenhalbierende und Höhe. Bei jedem Laden der Seite erscheint eine neue, zufällige Aufgabe. Schau dir die Konstruktion zuerst Schritt für Schritt an — und übe sie danach selbst am Bildschirm.</p>
+  <p>Mittelsenkrechte, Winkelhalbierende, Seitenhalbierende und Höhe. Bei jedem Laden der Seite erscheint eine neue, zufällige Aufgabe. Schau dir die Konstruktion zuerst Schritt für Schritt an — und übe sie danach selbst am Bildschirm. Bei Mittelsenkrechte und Winkelhalbierende gibt es zusätzlich die Möglichkeit, alle drei Linien plus Um- bzw. Inkreis an einem ziehbaren Dreieck selbst zu konstruieren.</p>
 </header>
 
 <main class="menu-main">
@@ -30,19 +30,18 @@
       <button type="button" class="geo-mode-tab" data-exercise="hoehe">Höhe</button>
     </div>
 
-    <div class="geo-mode-tabs" id="phase-tabs">
-      <button type="button" class="geo-mode-tab geo-mode-tab-active" data-phase="guided">1. Geführte Anleitung ansehen</button>
-      <button type="button" class="geo-mode-tab" data-phase="free">2. Selbst konstruieren</button>
-    </div>
+    <div class="geo-mode-tabs" id="phase-tabs"></div>
 
     <div class="geo-layout">
       <div class="geo-canvas-col">
         <div class="geo-canvas-wrap">
           <svg id="geo-svg" class="geo-svg" viewBox="0 0 600 420">
             <g id="layer-given"></g>
+            <g id="layer-tri-triangle"></g>
             <g id="layer-construct"></g>
             <g id="layer-user"></g>
             <g id="layer-points"></g>
+            <g id="layer-tri-vertices"></g>
           </svg>
         </div>
         <div class="geo-zoom-row">
@@ -87,6 +86,6 @@
   <p><a href="index.html">Zurück zu Geometrie</a></p>
   <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
-<script type="module" src="grundkonstruktionen.js?v=9"></script>
+<script type="module" src="grundkonstruktionen.js?v=10"></script>
 </body>
 </html>

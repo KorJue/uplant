@@ -5,6 +5,7 @@
 import * as GC from "./geo-core.js?v=9";
 import * as GS from "./geo-svg.js?v=9";
 import { setupCanvasZoom } from "./canvas-zoom.js?v=9";
+import { setupDraggableTriangle } from "./triangle-common.js?v=9";
 
 const W = 600,
   H = 420;
@@ -12,9 +13,11 @@ const BOX = { w: W, h: H };
 
 const svg = document.getElementById("geo-svg");
 const layerGiven = document.getElementById("layer-given");
+const layerTriTriangle = document.getElementById("layer-tri-triangle");
 const layerConstruct = document.getElementById("layer-construct");
 const layerUser = document.getElementById("layer-user");
 const layerPoints = document.getElementById("layer-points");
+const layerTriVertices = document.getElementById("layer-tri-vertices");
 
 const els = {
   exerciseTabs: document.getElementById("exercise-tabs"),
@@ -42,12 +45,19 @@ const els = {
 
 const state = {
   exercise: "mittelsenkrechte",
-  phase: "guided", // "guided" | "free"
+  phase: "guided", // "guided" | "free" | "free-tri"
   stepIndex: 0,
   task: null,
   tool: null,
 };
 let steps = [];
+
+// Bei Mittelsenkrechte und Winkelhalbierende gibt es eine dritte Phase: die volle Konstruktion aller
+// drei Linien plus Kreis an einem ziehbaren Dreieck (wie auf den eigenen Seiten "Mittelsenkrechte &
+// Umkreis" / "Winkelhalbierende & Inkreis"). Seitenhalbierende und Höhe konstruieren schon in ihrer
+// normalen "Selbst konstruieren"-Phase an einem Dreieck (nur eine einzelne Linie) — deren zweite
+// Phase heißt deshalb zur Konsistenz ebenfalls "... am Dreieck".
+const HAS_FREE_TRI = { mittelsenkrechte: true, winkelhalbierende: true, seitenhalbierende: false, hoehe: false };
 
 // Klick-/Prüftoleranz für "dieser Punkt ist gemeint" (SVG-Einheiten). Per Finger wird ungenauer
 // getroffen als mit der Maus, deshalb dort ein größerer Radius.
@@ -407,6 +417,282 @@ const EXERCISES = {
   },
 };
 
+// ---------- Phase 3 (nur Mittelsenkrechte/Winkelhalbierende): Selbst konstruieren am Dreieck ----------
+// Volle Konstruktion aller drei Mittelsenkrechten + Umkreis bzw. aller drei Winkelhalbierenden +
+// Inkreis an einem ziehbaren Dreieck — dieselbe Prüflogik wie auf den eigenen Seiten
+// "Mittelsenkrechte & Umkreis" / "Winkelhalbierende & Inkreis".
+
+function sidesOfTri(pts) {
+  const { A, B, C } = pts;
+  return [
+    [A, B, "AB"],
+    [B, C, "BC"],
+    [C, A, "CA"],
+  ];
+}
+
+// true, sobald zwei gleich große, ausreichend große Kreise um P und Q sowie die Verbindungsgerade
+// ihrer Schnittpunkte gezeichnet sind. Da jeder Eckpunkt zu zwei Seiten gehört, kann es dort mehrere
+// Kreise geben — deshalb werden alle Kombinationen durchprobiert statt nur der ersten gefundenen.
+function mediatriceOkTri(P, Q) {
+  const candP = state.tool.circles.filter((c) => GC.dist(c.center, P) < TOL_PT);
+  const candQ = state.tool.circles.filter((c) => GC.dist(c.center, Q) < TOL_PT);
+  for (const cP of candP) {
+    for (const cQ of candQ) {
+      if (cP === cQ || !sameRadius(cP, cQ)) continue;
+      if (Math.min(cP.radius, cQ.radius) < (GC.dist(P, Q) / 2) * 1.02) continue;
+      const inter = twoArcIntersections(P, Q, cP, cQ);
+      if (inter.length < 2) continue;
+      if (state.tool.lines.some((l) => lineThroughBoth(l, inter[0], inter[1]))) return true;
+    }
+  }
+  return false;
+}
+
+function doneSidesCountTri() {
+  return sidesOfTri(triFree.pts).filter(([P, Q]) => mediatriceOkTri(P, Q)).length;
+}
+
+function freeSnapPointsMS() {
+  const { A, B, C } = triFree.pts;
+  const base = [A, B, C];
+  if (doneSidesCountTri() >= 2) base.push(GC.circumcenter(A, B, C));
+  return base;
+}
+
+function renderUserMarkersMS() {
+  if (doneSidesCountTri() >= 2) {
+    GS.drawCross(layerUser, GC.circumcenter(triFree.pts.A, triFree.pts.B, triFree.pts.C), "geo-schnitt-stark");
+  }
+}
+
+function checkFreeMS() {
+  const { A, B, C } = triFree.pts;
+  for (const [P, Q, label] of sidesOfTri(triFree.pts)) {
+    if (!mediatriceOkTri(P, Q)) {
+      return {
+        ok: false,
+        msg: `Es fehlt noch die Mittelsenkrechte von ${label}: zwei gleich große Kreise um ${label[0]} und ${label[1]} zeichnen (Radius größer als die halbe Seitenlänge) und ihre beiden Schnittpunkte mit dem Lineal verbinden.`,
+      };
+    }
+  }
+  const O = GC.circumcenter(A, B, C);
+  const rTarget = GC.dist(O, A);
+  const cO = state.tool.circles.find((c) => GC.dist(c.center, O) < TOL_PT && Math.abs(c.radius - rTarget) / rTarget < 0.05);
+  const anyAtO = state.tool.circles.some((c) => GC.dist(c.center, O) < TOL_PT);
+  if (!cO) {
+    return anyAtO
+      ? { ok: false, msg: "Der Kreis um M hat nicht den richtigen Radius — er muss genau durch die drei Eckpunkte A, B und C gehen." }
+      : {
+          ok: false,
+          msg: "Es fehlt noch der Umkreis: Zirkel in den Umkreismittelpunkt M (Schnittpunkt der drei Mittelsenkrechten) einstechen und den Radius bis zu einem Eckpunkt einstellen.",
+        };
+  }
+  return { ok: true, msg: "Richtig konstruiert! Alle drei Mittelsenkrechten schneiden sich in M, und der Kreis um M durch die Eckpunkte ist der Umkreis." };
+}
+
+function verticesOfTri(pts) {
+  const { A, B, C } = pts;
+  return [
+    [A, B, C, "A"],
+    [B, A, C, "B"],
+    [C, A, B, "C"],
+  ];
+}
+
+// Die beiden Schnittpunkte des ersten Bogens um V mit den Schenkeln VP und VQ, sobald dieser Bogen
+// gezeichnet ist — Hilfspunkte für die Winkelhalbierende bei V.
+function vertexHelperPointsTri(V, P, Q) {
+  const c0 = state.tool.circles.find((c) => GC.dist(c.center, V) < TOL_PT);
+  if (!c0) return [];
+  return [GC.add(V, GC.scale(GC.norm(GC.sub(P, V)), c0.radius)), GC.add(V, GC.scale(GC.norm(GC.sub(Q, V)), c0.radius))];
+}
+
+// true, sobald die Winkelhalbierende bei V (mit Schenkeln nach P und Q) vollständig konstruiert ist.
+// Am Ende der Konstruktion liegen alle Kreise aller drei Ecken plus die des Lots und des Inkreises
+// gleichzeitig in state.tool.circles — deshalb werden für jeden Schritt alle passenden Kandidaten
+// durchprobiert statt nur des jeweils ersten gefundenen Kreises.
+function bisectorOkTri(V, P, Q) {
+  const maxR0 = Math.min(GC.dist(V, P), GC.dist(V, Q));
+  const c0Candidates = state.tool.circles.filter((c) => GC.dist(c.center, V) < TOL_PT && c.radius >= 20 && c.radius <= maxR0 * 1.05);
+  for (const c0 of c0Candidates) {
+    const P1 = GC.add(V, GC.scale(GC.norm(GC.sub(P, V)), c0.radius));
+    const Q1 = GC.add(V, GC.scale(GC.norm(GC.sub(Q, V)), c0.radius));
+    const cand1 = state.tool.circles.filter((c) => c !== c0 && GC.dist(c.center, P1) < TOL_PT);
+    const cand2 = state.tool.circles.filter((c) => c !== c0 && GC.dist(c.center, Q1) < TOL_PT);
+    for (const c1 of cand1) {
+      for (const c2 of cand2) {
+        if (c1 === c2 || !sameRadius(c1, c2)) continue;
+        if (Math.min(c1.radius, c2.radius) < (GC.dist(P1, Q1) / 2) * 1.02) continue;
+        const inter = twoArcIntersections(P1, Q1, c1, c2);
+        if (inter.length < 2) continue;
+        const bisDir = GC.angleBisectorDir(V, P, Q);
+        const M = GC.dot(GC.sub(inter[0], V), bisDir) >= GC.dot(GC.sub(inter[1], V), bisDir) ? inter[0] : inter[1];
+        if (state.tool.lines.some((l) => lineThroughBoth(l, V, M))) return true;
+      }
+    }
+  }
+  return false;
+}
+
+function doneBisectorsCountTri() {
+  return verticesOfTri(triFree.pts).filter(([V, P, Q]) => bisectorOkTri(V, P, Q)).length;
+}
+
+// Sucht unter den Kreisen um I einen, der eine der drei Seiten an zwei Stellen schneidet, und prüft,
+// ob von dort aus (über zwei gleich große Kreise) das Lot zu I gezogen wurde. Gibt den Lotfußpunkt
+// zurück, sobald eine Seite so vollständig konstruiert ist — sonst null.
+function lotFootOkTri(I) {
+  const sides = sidesOfTri(triFree.pts);
+  for (const cI of state.tool.circles.filter((c) => GC.dist(c.center, I) < TOL_PT)) {
+    for (const [sA, sB] of sides) {
+      const hits = GC.circleLineIntersections(I, cI.radius, sA, sB);
+      if (hits.length < 2) continue;
+      const [X1, X2] = hits;
+      const cand1 = state.tool.circles.filter((c) => c !== cI && GC.dist(c.center, X1) < TOL_PT);
+      const cand2 = state.tool.circles.filter((c) => c !== cI && GC.dist(c.center, X2) < TOL_PT);
+      for (const c1 of cand1) {
+        for (const c2 of cand2) {
+          if (c1 === c2 || !sameRadius(c1, c2)) continue;
+          if (Math.min(c1.radius, c2.radius) < (GC.dist(X1, X2) / 2) * 1.02) continue;
+          const foot = GC.footOfPerpendicular(I, sA, sB);
+          if (state.tool.lines.some((l) => lineThroughBoth(l, I, foot))) return foot;
+        }
+      }
+    }
+  }
+  return null;
+}
+
+// Nur zur Anzeige: die Schnittpunkte irgendeines (noch nicht notwendig fertigen) Kreises um I mit
+// einer der drei Seiten, damit sie beim Konstruieren als Kreuz sichtbar und anklickbar sind.
+function lotHelperPointsTri(I) {
+  const sides = sidesOfTri(triFree.pts);
+  for (const c of state.tool.circles.filter((c) => GC.dist(c.center, I) < TOL_PT)) {
+    for (const [sA, sB] of sides) {
+      const hits = GC.circleLineIntersections(c.center, c.radius, sA, sB);
+      if (hits.length === 2) return hits;
+    }
+  }
+  return [];
+}
+
+function freeSnapPointsWH() {
+  const { A, B, C } = triFree.pts;
+  let base = [A, B, C];
+  for (const [V, P, Q] of verticesOfTri(triFree.pts)) base = base.concat(vertexHelperPointsTri(V, P, Q));
+  if (doneBisectorsCountTri() >= 2) {
+    const I = GC.incenter(A, B, C);
+    base.push(I);
+    base = base.concat(lotHelperPointsTri(I));
+  }
+  return base;
+}
+
+function renderUserMarkersWH() {
+  for (const [V, P, Q] of verticesOfTri(triFree.pts)) {
+    vertexHelperPointsTri(V, P, Q).forEach((p) => GS.drawCross(layerUser, p, "geo-schnitt-stark"));
+  }
+  if (doneBisectorsCountTri() >= 2) {
+    const I = GC.incenter(triFree.pts.A, triFree.pts.B, triFree.pts.C);
+    GS.drawCross(layerUser, I, "geo-schnitt-stark");
+    lotHelperPointsTri(I).forEach((p) => GS.drawCross(layerUser, p, "geo-schnitt-stark"));
+  }
+}
+
+function checkFreeWH() {
+  const { A, B, C } = triFree.pts;
+  for (const [V, P, Q, label] of verticesOfTri(triFree.pts)) {
+    if (!bisectorOkTri(V, P, Q)) {
+      return {
+        ok: false,
+        msg: `Es fehlt noch die Winkelhalbierende bei ${label}: Kreis um ${label} zeichnen, der beide anliegenden Seiten schneidet, dann zwei gleich große Kreise um die neuen Schnittpunkte zeichnen und ${label} mit deren Schnittpunkt verbinden.`,
+      };
+    }
+  }
+  const I = GC.incenter(A, B, C);
+  const foot = lotFootOkTri(I);
+  if (!foot) {
+    return {
+      ok: false,
+      msg: "Es fehlt noch das Lot von I auf eine der drei Seiten: Kreis um I zeichnen, der eine Seite an zwei Stellen schneidet, dann zwei gleich große Kreise um diese Schnittpunkte zeichnen und I mit deren Schnittpunkt verbinden.",
+    };
+  }
+  const r = GC.dist(I, foot);
+  const cI = state.tool.circles.find((c) => GC.dist(c.center, I) < TOL_PT && Math.abs(c.radius - r) / r < 0.05);
+  if (!cI) {
+    return { ok: false, msg: "Es fehlt noch der Inkreis: Zirkel in I einstechen und den Radius auf den eben konstruierten Lotfußpunkt einstellen." };
+  }
+  return { ok: true, msg: "Richtig konstruiert! Alle drei Winkelhalbierenden schneiden sich in I, und der Kreis um I mit dem Lotabstand als Radius ist der Inkreis — er berührt alle drei Seiten." };
+}
+
+function freeTriSnapPoints() {
+  return state.exercise === "mittelsenkrechte" ? freeSnapPointsMS() : freeSnapPointsWH();
+}
+function renderTriUserMarkers() {
+  if (state.exercise === "mittelsenkrechte") renderUserMarkersMS();
+  else renderUserMarkersWH();
+}
+function checkFreeTri() {
+  return state.exercise === "mittelsenkrechte" ? checkFreeMS() : checkFreeWH();
+}
+
+const MS_TRI_STEPS = `
+  <li>Zirkel wählen, in einen Eckpunkt einstechen und auf einen Punkt am gewünschten Radius klicken (größer als die halbe Seitenlänge). Dasselbe am anderen Endpunkt derselben Seite wiederholen.</li>
+  <li>Mit „🔒 Zirkel-Radius beibehalten“ bleibt der Radius zwischen beiden Kreisen gleich.</li>
+  <li>Lineal wählen und die beiden Schnittpunkte der Bögen verbinden — das ist die Mittelsenkrechte dieser Seite. Für alle drei Seiten wiederholen.</li>
+  <li>Sobald zwei Mittelsenkrechten stehen, rastet ihr Schnittpunkt M (der Umkreismittelpunkt) beim Anklicken ein. Zirkel in M einstechen und den Radius bis zu einem Eckpunkt einstellen, um den Umkreis zu zeichnen.</li>
+  <li>Mit „Prüfen“ kontrollieren, mit „Tipp“ einen Hinweis bekommen.</li>
+`;
+const WH_TRI_STEPS = `
+  <li>Zirkel wählen, in einen Eckpunkt einstechen und einen Bogen zeichnen, der beide anliegenden Seiten schneidet.</li>
+  <li>Von den beiden neuen Schnittpunkten aus mit gleichem Radius zwei Bögen zeichnen, die sich kreuzen (Häkchen „Zirkel-Radius beibehalten“ hilft dabei), und den Eckpunkt mit dem Kreuzungspunkt verbinden. Für zwei der drei Ecken wiederholen — die dritte trifft automatisch denselben Punkt I.</li>
+  <li>Sobald zwei Winkelhalbierende stehen, rastet ihr Schnittpunkt I beim Anklicken ein. Zirkel in I einstechen und einen Bogen zeichnen, der eine der drei Seiten schneidet.</li>
+  <li>Wie beim Lot: von den beiden neuen Schnittpunkten auf der Seite zwei gleich große Kreise zeichnen und I mit ihrem Kreuzungspunkt verbinden — das ist der Lotfußpunkt.</li>
+  <li>Zirkel in I einstechen, Radius bis zum Lotfußpunkt einstellen und den Inkreis zeichnen.</li>
+  <li>Mit „Prüfen“ kontrollieren, mit „Tipp“ einen Hinweis bekommen.</li>
+`;
+
+function updateFreeTriInstruction() {
+  const text =
+    state.exercise === "mittelsenkrechte"
+      ? "Konstruiere jetzt alle drei Mittelsenkrechten des Dreiecks und daraus den Umkreis."
+      : "Konstruiere jetzt alle drei Winkelhalbierenden des Dreiecks und daraus den Inkreis.";
+  els.instructionBox.innerHTML = `<p>${text}</p>`;
+  els.stepsList.innerHTML = state.exercise === "mittelsenkrechte" ? MS_TRI_STEPS : WH_TRI_STEPS;
+}
+
+function showTriVertices(show) {
+  layerTriVertices.style.display = show ? "" : "none";
+}
+
+function renderTriSides(pts) {
+  GS.clearEl(layerTriTriangle);
+  const { A, B, C } = pts;
+  GS.drawSegment(layerTriTriangle, A, B);
+  GS.drawSegment(layerTriTriangle, B, C);
+  GS.drawSegment(layerTriTriangle, C, A);
+}
+
+function onTriUpdate(pts) {
+  if (state.phase === "free-tri") renderTriSides(pts);
+}
+
+function enterFreeTri() {
+  GS.clearEl(layerGiven);
+  GS.clearEl(layerPoints);
+  GS.clearEl(layerConstruct);
+  showTriVertices(true);
+  triFree.setLocked(true);
+  renderTriSides(triFree.pts);
+  state.tool.setMode(null);
+  state.tool.reset();
+  setActiveToolBtn(null);
+  updateFreeTriInstruction();
+  updateStatus();
+  els.feedbackBox.hidden = true;
+}
+
 // Die beiden Schnittpunkte des Nutzerkreises um C mit der Geraden AB (Hilfspunkte der Höhe).
 function heightHelperPoints(task, tool) {
   const cC = tool.circles.find((c) => GC.dist(c.center, task.C) < TOL_PT);
@@ -470,6 +756,8 @@ function renderGuided() {
   state.tool.setMode(null);
   state.tool.reset();
   setActiveToolBtn(null);
+  showTriVertices(false);
+  GS.clearEl(layerTriTriangle);
   GS.clearEl(layerUser);
   GS.clearEl(layerConstruct);
   for (let i = 0; i <= state.stepIndex; i++) steps[i].render();
@@ -491,7 +779,8 @@ function renderGuided() {
 // ---------- Phase 2: freies Konstruieren ----------
 
 function snapToNearest(raw) {
-  const targets = current().snapPoints(state.task, state.tool).concat(userCircleIntersections());
+  const base = state.phase === "free-tri" ? freeTriSnapPoints() : current().snapPoints(state.task, state.tool);
+  const targets = base.concat(userCircleIntersections());
   let best = raw,
     bestD = TOL_PT;
   for (const t of targets) {
@@ -518,6 +807,11 @@ function userCircleIntersections() {
 // Alle Punkte, die durch die eigene Konstruktion entstanden sind, sichtbar markieren — sie sind
 // gleichzeitig die Punkte, auf die das Anklicken einrastet.
 function renderUserMarkers() {
+  if (state.phase === "free-tri") {
+    userCircleIntersections().forEach((p) => GS.drawCross(layerUser, p, "geo-schnitt-stark"));
+    renderTriUserMarkers();
+    return;
+  }
   const ex = current();
   if (ex.extraDraw) ex.extraDraw(state.task, state.tool, layerUser);
   userCircleIntersections().forEach((p) => GS.drawCross(layerUser, p, "geo-schnitt-stark"));
@@ -577,6 +871,8 @@ function setActiveToolBtn(active) {
 }
 
 function renderFreeSetup() {
+  showTriVertices(false);
+  GS.clearEl(layerTriTriangle);
   GS.clearEl(layerConstruct);
   // Werkzeugmodus ebenfalls zurücksetzen — sonst wäre kein Werkzeug hervorgehoben, ein Klick auf
   // die Zeichenfläche würde aber trotzdem noch zeichnen.
@@ -590,7 +886,39 @@ function renderFreeSetup() {
 
 // ---------- Umschalten Aufgabe / Phase ----------
 
+// Welche Phasen-Reiter für die aktuelle Übung angezeigt werden: Mittelsenkrechte/Winkelhalbierende
+// bekommen einen dritten Reiter für die volle Dreieckskonstruktion; Seitenhalbierende/Höhe
+// konstruieren schon in ihrer zweiten Phase an einem Dreieck (nur eine einzelne Linie) und heißen
+// deshalb konsistent ebenfalls "... am Dreieck".
+function phaseListFor(exercise) {
+  if (HAS_FREE_TRI[exercise]) {
+    return [
+      ["guided", "1. Geführte Anleitung ansehen"],
+      ["free", "2. Selbst konstruieren"],
+      ["free-tri", "3. Selbst konstruieren am Dreieck"],
+    ];
+  }
+  return [
+    ["guided", "1. Geführte Anleitung ansehen"],
+    ["free", "2. Selbst konstruieren am Dreieck"],
+  ];
+}
+
+function renderPhaseTabs() {
+  els.phaseTabs.innerHTML = phaseListFor(state.exercise)
+    .map(([key, label]) => `<button type="button" class="geo-mode-tab${key === state.phase ? " geo-mode-tab-active" : ""}" data-phase="${key}">${label}</button>`)
+    .join("");
+}
+
+function updateNewTaskFreeLabel() {
+  els.btnNewTaskFree.textContent = state.phase === "free-tri" ? "🎲 Neues Dreieck" : "🎲 Neue Aufgabe";
+}
+
 function refreshAll() {
+  if (state.phase === "free-tri") {
+    enterFreeTri();
+    return;
+  }
   renderGiven();
   steps = current().guided(state.task);
   if (state.phase === "guided") {
@@ -611,6 +939,11 @@ els.exerciseTabs.addEventListener("click", (e) => {
   if (!btn) return;
   state.exercise = btn.dataset.exercise;
   [...els.exerciseTabs.children].forEach((b) => b.classList.toggle("geo-mode-tab-active", b === btn));
+  if (state.phase === "free-tri" && !HAS_FREE_TRI[state.exercise]) state.phase = "guided";
+  renderPhaseTabs();
+  updateNewTaskFreeLabel();
+  els.guidedControls.hidden = state.phase !== "guided";
+  els.freeControls.hidden = state.phase === "guided";
   state.task = current().newTask();
   refreshAll();
 });
@@ -621,10 +954,13 @@ els.phaseTabs.addEventListener("click", (e) => {
   state.phase = btn.dataset.phase;
   [...els.phaseTabs.children].forEach((b) => b.classList.toggle("geo-mode-tab-active", b === btn));
   els.guidedControls.hidden = state.phase !== "guided";
-  els.freeControls.hidden = state.phase !== "free";
+  els.freeControls.hidden = state.phase === "guided";
+  updateNewTaskFreeLabel();
   if (state.phase === "guided") {
     state.stepIndex = 0;
     renderGuided();
+  } else if (state.phase === "free-tri") {
+    enterFreeTri();
   } else {
     renderFreeSetup();
   }
@@ -651,7 +987,14 @@ els.btnBack.addEventListener("click", () => {
   }
 });
 els.btnNewTask.addEventListener("click", newTaskClicked);
-els.btnNewTaskFree.addEventListener("click", newTaskClicked);
+els.btnNewTaskFree.addEventListener("click", () => {
+  if (state.phase === "free-tri") {
+    triFree.randomize();
+    enterFreeTri();
+  } else {
+    newTaskClicked();
+  }
+});
 
 els.btnToolCircle.addEventListener("click", () => {
   state.tool.setMode("circle");
@@ -687,20 +1030,23 @@ els.btnResetRadius.addEventListener("click", () => {
   updateStatus();
 });
 els.btnCheck.addEventListener("click", () => {
-  const result = current().check(state.task, state.tool);
+  const result = state.phase === "free-tri" ? checkFreeTri() : current().check(state.task, state.tool);
   showFeedback(result.ok ? "ok" : "error", result.msg);
 });
 els.btnHint.addEventListener("click", () => {
-  const result = current().check(state.task, state.tool);
+  const result = state.phase === "free-tri" ? checkFreeTri() : current().check(state.task, state.tool);
   showFeedback(result.ok ? "ok" : "hint", result.msg);
 });
 
 // ---------- Start ----------
 
+const triFree = setupDraggableTriangle(svg, layerTriVertices, W, H, GC.randomTriangle(W, H), onTriUpdate);
 state.tool = new GS.ConstructionTool(svg, layerUser, snapToNearest);
 state.tool.extraRender = renderUserMarkers;
 state.tool.onChange = updateStatus;
 state.task = current().newTask();
+renderPhaseTabs();
+updateNewTaskFreeLabel();
 refreshAll();
 
 setupCanvasZoom(document.querySelector(".geo-layout").closest(".card"), document.getElementById("btn-zoom"));
