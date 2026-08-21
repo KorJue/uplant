@@ -17,8 +17,8 @@
   Grundkonstruktionen
 </nav>
 <header class="page-header">
-  <h1>Grundkonstruktionen: Mittelsenkrechte &amp; Winkelhalbierende</h1>
-  <p>Bei jedem Laden der Seite erscheint eine neue, zufällige Aufgabe. Schau dir die Konstruktion zuerst Schritt für Schritt an — und übe sie danach selbst mit Zirkel und Lineal am Bildschirm.</p>
+  <h1>Grundkonstruktionen mit Zirkel und Lineal</h1>
+  <p>Mittelsenkrechte, Winkelhalbierende, Seitenhalbierende und Höhe. Bei jedem Laden der Seite erscheint eine neue, zufällige Aufgabe. Schau dir die Konstruktion zuerst Schritt für Schritt an — und übe sie danach selbst am Bildschirm.</p>
 </header>
 
 <main class="menu-main">
@@ -26,10 +26,12 @@
     <div class="geo-mode-tabs" id="exercise-tabs">
       <button type="button" class="geo-mode-tab geo-mode-tab-active" data-exercise="mittelsenkrechte">Mittelsenkrechte</button>
       <button type="button" class="geo-mode-tab" data-exercise="winkelhalbierende">Winkelhalbierende</button>
+      <button type="button" class="geo-mode-tab" data-exercise="seitenhalbierende">Seitenhalbierende</button>
+      <button type="button" class="geo-mode-tab" data-exercise="hoehe">Höhe</button>
     </div>
 
     <div class="geo-mode-tabs" id="phase-tabs">
-      <button type="button" class="geo-mode-tab geo-mode-tab-active" data-phase="guided">1. Geführte Animation ansehen</button>
+      <button type="button" class="geo-mode-tab geo-mode-tab-active" data-phase="guided">1. Geführte Anleitung ansehen</button>
       <button type="button" class="geo-mode-tab" data-phase="free">2. Selbst konstruieren</button>
     </div>
 
@@ -48,14 +50,23 @@
           <button type="button" class="geo-btn geo-btn-primary" id="btn-next">Weiter →</button>
           <button type="button" class="geo-btn" id="btn-new-task">🎲 Neue Aufgabe</button>
         </div>
-        <div class="geo-toolbar" id="free-controls" hidden>
-          <button type="button" class="geo-btn" id="btn-tool-circle">◯ Kreis (Zirkel)</button>
-          <button type="button" class="geo-btn" id="btn-tool-line">／ Gerade (Lineal)</button>
-          <button type="button" class="geo-btn" id="btn-undo">↩ Rückgängig</button>
-          <button type="button" class="geo-btn" id="btn-clear">🗑 Zurücksetzen</button>
-          <button type="button" class="geo-btn geo-btn-primary" id="btn-check">✓ Prüfen</button>
-          <button type="button" class="geo-btn" id="btn-hint">💡 Tipp</button>
-          <button type="button" class="geo-btn" id="btn-new-task-free">🎲 Neue Aufgabe</button>
+        <div id="free-controls" hidden>
+          <div class="geo-toolbar">
+            <button type="button" class="geo-btn" id="btn-tool-circle">◯ Zirkel</button>
+            <button type="button" class="geo-btn" id="btn-tool-line">／ Lineal</button>
+            <button type="button" class="geo-btn" id="btn-undo">↩ Rückgängig</button>
+            <button type="button" class="geo-btn" id="btn-clear">🗑 Zurücksetzen</button>
+            <button type="button" class="geo-btn geo-btn-primary" id="btn-check">✓ Prüfen</button>
+            <button type="button" class="geo-btn" id="btn-hint">💡 Tipp</button>
+            <button type="button" class="geo-btn" id="btn-new-task-free">🎲 Neue Aufgabe</button>
+          </div>
+          <div class="geo-toggle-row">
+            <label title="Wie beim echten Zirkel: einmal eingestellt, bleibt der Radius gleich — du klickst dann nur noch den Einstichpunkt an.">
+              <input type="checkbox" id="chk-lock-radius"> 🔒 Zirkel-Radius beibehalten (nicht verstellen)
+            </label>
+            <button type="button" class="geo-btn geo-btn-small" id="btn-reset-radius" hidden>🔄 Radius neu einstellen</button>
+          </div>
+          <p class="geo-radius-status" id="radius-status" hidden></p>
         </div>
         <div class="geo-feedback" id="feedback-box" hidden></div>
       </div>
@@ -72,6 +83,6 @@
   <p><a href="index.html">Zurück zu Geometrie</a></p>
   <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
-<script type="module" src="grundkonstruktionen.js?v=1"></script>
+<script type="module" src="grundkonstruktionen.js?v=2"></script>
 </body>
 </html>

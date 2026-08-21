@@ -75,6 +75,26 @@ export function circleCircleIntersections(c1, r1, c2, r2) {
   return [add(pm, scale(perpDir, h)), add(pm, scale(perpDir, -h))];
 }
 
+// Schnittpunkte eines Kreises mit der Geraden durch A und B — [], [p] (Tangente) oder [p1, p2].
+// Wird beim Lot-Fällen (Höhe) gebraucht: der Kreis um den Eckpunkt schneidet die Gegenseite in
+// zwei Punkten, die als Mittelpunkte der beiden nächsten Kreisbögen dienen.
+export function circleLineIntersections(center, r, A, B) {
+  const d = sub(B, A);
+  const f = footOfPerpendicular(center, A, B);
+  const h2 = r * r - squaredDist(center, f);
+  if (h2 < -1e-9) return [];
+  const dir = norm(d);
+  if (Math.abs(h2) < 1e-9) return [f];
+  const h = Math.sqrt(h2);
+  return [add(f, scale(dir, h)), add(f, scale(dir, -h))];
+}
+
+function squaredDist(a, b) {
+  const dx = b.x - a.x,
+    dy = b.y - a.y;
+  return dx * dx + dy * dy;
+}
+
 export function angleAt(vertex, a, b) {
   const v1 = norm(sub(a, vertex));
   const v2 = norm(sub(b, vertex));
@@ -128,6 +148,17 @@ export function orthocenter(A, B, C) {
   return sub(add(add(A, B), C), scale(O, 2));
 }
 
+// Feuerbachkreis (Neunpunktekreis): Mittelpunkt ist der Mittelpunkt der Strecke zwischen
+// Umkreismittelpunkt und Höhenschnittpunkt, sein Radius die Hälfte des Umkreisradius. Er verläuft
+// durch die drei Seitenmitten, die drei Höhenfußpunkte und die drei Mittelpunkte der oberen
+// Höhenabschnitte.
+export function ninePointCircle(A, B, C) {
+  const O = circumcenter(A, B, C);
+  if (!O) return null;
+  const Hp = orthocenter(A, B, C);
+  return { center: mid(O, Hp), radius: circumradius(A, B, C) / 2 };
+}
+
 // ---------- Zufällige Dreiecke/Strecken/Winkel für Aufgaben ----------
 
 function randIn(min, max) {
@@ -148,6 +179,34 @@ export function randomTriangle(w, h, margin = 60) {
   }
   // Fallback: festes, garantiert gutartiges Dreieck.
   return { A: pt(w * 0.2, h * 0.75), B: pt(w * 0.8, h * 0.75), C: pt(w * 0.5, h * 0.2) };
+}
+
+// Dreieck für die Höhen-Aufgabe: zusätzlich zur allgemeinen "Gutartigkeit" müssen die Winkel bei A
+// und B spitz genug sein, damit der Höhenfußpunkt von C deutlich innerhalb der Strecke AB liegt —
+// sonst müsste die Seite verlängert werden, was in der Grundkonstruktion unnötig verwirrt.
+export function randomTriangleForHeight(w, h, margin = 70) {
+  for (let tries = 0; tries < 300; tries++) {
+    const t = randomTriangle(w, h, margin);
+    const { A, B, C } = t;
+    if (angleAtDeg(A, B, C) > 80 || angleAtDeg(B, A, C) > 80) continue;
+    if (dist(A, B) < 150) continue;
+    const foot = footOfPerpendicular(C, A, B);
+    if (dist(C, foot) < 70) continue;
+    return t;
+  }
+  return { A: pt(w * 0.2, h * 0.78), B: pt(w * 0.8, h * 0.78), C: pt(w * 0.5, h * 0.22) };
+}
+
+// Dreieck für die Seitenhalbierenden-Aufgabe: die Seite AB soll lang genug sein, damit sich ihr
+// Mittelpunkt bequem konstruieren lässt.
+export function randomTriangleForMedian(w, h, margin = 70) {
+  for (let tries = 0; tries < 300; tries++) {
+    const t = randomTriangle(w, h, margin);
+    if (dist(t.A, t.B) < 170) continue;
+    if (dist(t.C, footOfPerpendicular(t.C, t.A, t.B)) < 70) continue;
+    return t;
+  }
+  return { A: pt(w * 0.18, h * 0.78), B: pt(w * 0.82, h * 0.78), C: pt(w * 0.55, h * 0.2) };
 }
 
 export function randomSegment(w, h, margin = 70, minLen = 140) {

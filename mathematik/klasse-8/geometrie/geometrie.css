@@ -120,6 +120,19 @@
   stroke: #1a9e7a;
   stroke-width: 2;
 }
+.geo-circle.geo-feuerbach {
+  stroke: #c026a3;
+  stroke-width: 2;
+  stroke-dasharray: 6 4;
+}
+.geo-trace-dot {
+  opacity: 0.55;
+}
+.geo-btn.geo-btn-small {
+  padding: 0.3rem 0.7rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
 .geo-circle.geo-user-circle {
   stroke: #e08a1e;
   stroke-width: 1.8;
@@ -136,6 +149,28 @@
 .geo-cross line {
   stroke: var(--muted);
   stroke-width: 1.6;
+}
+/* Konstruierte Schnittpunkte deutlich hervorheben — sie sind die Punkte, die als Nächstes
+   angeklickt bzw. verbunden werden müssen. */
+.geo-cross.geo-schnitt-stark line {
+  stroke: #d64545;
+  stroke-width: 2.6;
+}
+
+/* Hilfslinie, die nicht das eigentliche Konstruktionsergebnis ist (z. B. die Mittelsenkrechte
+   auf dem Weg zum Seitenmittelpunkt). */
+.geo-hilfslinie {
+  stroke: var(--muted);
+  stroke-width: 1.6;
+  stroke-dasharray: 5 4;
+}
+
+.geo-marked-point .geo-point-dot {
+  fill: #d64545;
+  r: 5;
+}
+.geo-marked-point .geo-point-label {
+  fill: #d64545;
 }
 
 .geo-rightangle {
@@ -251,6 +286,23 @@
 }
 .geo-steps li.geo-step-done {
   color: var(--text);
+}
+
+.geo-step-clickable {
+  cursor: pointer;
+}
+.geo-step-clickable:hover {
+  color: var(--text);
+}
+.geo-step-clickable:hover::before {
+  border-color: var(--accent);
+}
+
+.geo-radius-status {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: var(--accent-dark);
+  font-weight: 600;
 }
 
 .geo-instruction-box {

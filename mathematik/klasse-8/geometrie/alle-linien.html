@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alle besonderen Linien &amp; Kreise</title>
+<title>Alle besonderen Linien am Dreieck</title>
 <script src="../../../assets/theme.js"></script>
 <link rel="stylesheet" href="../../../assets/site.css">
 <link rel="stylesheet" href="geometrie.css">
@@ -14,11 +14,11 @@
   <a href="../../index.html">Mathematik</a><span class="sep">/</span>
   <a href="../index.html">Klasse 8</a><span class="sep">/</span>
   <a href="index.html">Geometrie</a><span class="sep">/</span>
-  Alle besonderen Linien &amp; Kreise
+  Alle besonderen Linien am Dreieck
 </nav>
 <header class="page-header">
-  <h1>Alle besonderen Linien &amp; Kreise</h1>
-  <p>Mittelsenkrechte, Winkelhalbierende, Seitenhalbierende und Höhen zusammen in einem Dreieck, mitsamt Um- und Inkreis. Blende einzelne Linien über die Kästchen aus, um Überschneidungen besser zu erkennen. Ziehe an A, B oder C.</p>
+  <h1>Alle besonderen Linien am Dreieck</h1>
+  <p>Alle vier besonderen Linien zusammen in einem Dreieck, mitsamt Um-, In- und Feuerbachkreis. Blende einzelne Linien über die Kästchen aus, um Überschneidungen besser zu erkennen. Ziehe an A, B oder C — mit eingeschalteten Spuren hinterlassen die besonderen Punkte dabei ihre Bahn.</p>
 </header>
 
 <main class="menu-main">
@@ -27,6 +27,7 @@
       <div class="geo-canvas-col">
         <div class="geo-canvas-wrap">
           <svg id="geo-svg" class="geo-svg" viewBox="0 0 600 460">
+            <g id="layer-traces"></g>
             <g id="layer-construct"></g>
             <g id="layer-triangle"></g>
             <g id="layer-centers"></g>
@@ -42,7 +43,12 @@
         <div class="geo-toggle-row">
           <label><input type="checkbox" id="chk-umkreis" checked> Umkreis</label>
           <label><input type="checkbox" id="chk-inkreis" checked> Inkreis</label>
-          <label><input type="checkbox" id="toggle-arcs"> Zirkelbögen (Konstruktion) anzeigen</label>
+          <label title="Der Feuerbachkreis (Neunpunktekreis) verläuft durch die drei Seitenmitten, die drei Höhenfußpunkte und die drei Mittelpunkte zwischen Höhenschnittpunkt und den Ecken."><input type="checkbox" id="chk-feuerbach"> Feuerbachkreis</label>
+          <label><input type="checkbox" id="toggle-arcs"> Zirkelbögen anzeigen</label>
+        </div>
+        <div class="geo-toggle-row">
+          <label title="Beim Ziehen an den Eckpunkten hinterlassen die besonderen Punkte M, I, S und H eine Spur — so wird sichtbar, auf welchen Bahnen sie sich bewegen."><input type="checkbox" id="chk-spuren"> 🖉 Spuren der besonderen Punkte aufzeichnen</label>
+          <button type="button" class="geo-btn geo-btn-small" id="btn-clear-traces" hidden>Spuren löschen</button>
         </div>
         <div class="geo-toolbar">
           <button type="button" class="geo-btn" id="btn-new-triangle">🎲 Neues Dreieck</button>
@@ -52,6 +58,7 @@
           <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#1a9e7a"></span>Winkelhalbierende (I)</span>
           <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#8a5cf6"></span>Seitenhalbierende (S)</span>
           <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#e08a1e"></span>Höhen (H)</span>
+          <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#c026a3"></span>Feuerbachkreis</span>
         </div>
       </div>
 
@@ -64,6 +71,8 @@
           <li><strong>Winkelhalbierende</strong> (halbiert den Innenwinkel) → Inkreismittelpunkt I, gleich weit von allen drei Seiten entfernt → Inkreis (Radius über das Lot auf eine Seite).</li>
           <li><strong>Seitenhalbierende</strong> (Eckpunkt–Seitenmitte) → Schwerpunkt S, teilt jede Seitenhalbierende im Verhältnis 2:1.</li>
           <li><strong>Höhe</strong> (senkrecht auf die Gegenseite, ggf. verlängert) → Höhenschnittpunkt H, liegt bei stumpfwinkligen Dreiecken außerhalb.</li>
+          <li><strong>Feuerbachkreis</strong>: Sein Mittelpunkt liegt genau in der Mitte zwischen M und H, sein Radius ist halb so groß wie der Umkreisradius. Er verläuft durch neun besondere Punkte — daher auch „Neunpunktekreis“.</li>
+          <li><strong>Spuren</strong>: Schalte die Spuren ein und ziehe langsam an einem Eckpunkt. M, I, S und H hinterlassen dann eine Bahn. Beobachte: M, S und H bleiben immer auf einer gemeinsamen Geraden — der <em>Eulerschen Geraden</em>.</li>
         </ol>
       </div>
     </div>
@@ -74,6 +83,6 @@
   <p><a href="index.html">Zurück zu Geometrie</a></p>
   <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
-<script type="module" src="alle-linien.js?v=1"></script>
+<script type="module" src="alle-linien.js?v=2"></script>
 </body>
 </html>

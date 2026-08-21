@@ -23,6 +23,12 @@
 
 <main class="menu-main">
   <section class="card">
+    <div class="geo-mode-tabs" id="count-tabs">
+      <button type="button" class="geo-mode-tab geo-mode-tab-active" data-count="1">1. Winkelhalbierende bei A</button>
+      <button type="button" class="geo-mode-tab" data-count="2">2. dazu die bei B</button>
+      <button type="button" class="geo-mode-tab" data-count="3">3. alle drei + Inkreis</button>
+    </div>
+
     <div class="geo-layout">
       <div class="geo-canvas-col">
         <div class="geo-canvas-wrap">
@@ -47,9 +53,7 @@
       </div>
 
       <div class="geo-side-col">
-        <div class="geo-instruction-box">
-          <p>Der Inkreis liegt vollständig im Dreieck und berührt alle drei Seiten von innen (tangential). Sein Mittelpunkt I hat von allen drei Seiten denselben Abstand.</p>
-        </div>
+        <div class="geo-instruction-box" id="instruction-box"></div>
         <ol class="geo-steps">
           <li>Konstruiere für zwei der drei Innenwinkel die Winkelhalbierende: Zirkel in den Scheitelpunkt einstechen, Bogen über beide Schenkel zeichnen, dann von den beiden neuen Schnittpunkten aus mit gleichem Radius zwei Bögen zeichnen, die sich kreuzen, und den Scheitelpunkt mit diesem Kreuzungspunkt verbinden.</li>
           <li>Die Winkelhalbierenden schneiden sich in einem Punkt — dem Inkreismittelpunkt I.</li>
@@ -65,6 +69,6 @@
   <p><a href="index.html">Zurück zu Geometrie</a></p>
   <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
-<script type="module" src="winkelhalbierende-inkreis.js?v=1"></script>
+<script type="module" src="winkelhalbierende-inkreis.js?v=2"></script>
 </body>
 </html>

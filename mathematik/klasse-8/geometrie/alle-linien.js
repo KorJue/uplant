@@ -1,7 +1,7 @@
-import * as GC from "./geo-core.js?v=1";
-import * as GS from "./geo-svg.js?v=1";
-import { setupDraggableTriangle } from "./triangle-common.js?v=1";
-import { drawMittelsenkrechte, drawUmkreis, drawWinkelhalbierende, drawInkreis, drawSeitenhalbierende, drawHoehe } from "./constructions.js?v=1";
+import * as GC from "./geo-core.js?v=2";
+import * as GS from "./geo-svg.js?v=2";
+import { setupDraggableTriangle } from "./triangle-common.js?v=2";
+import { drawMittelsenkrechte, drawUmkreis, drawWinkelhalbierende, drawInkreis, drawSeitenhalbierende, drawHoehe } from "./constructions.js?v=2";
 
 const W = 600,
   H = 460;
@@ -10,6 +10,8 @@ const layerTriangle = document.getElementById("layer-triangle");
 const layerConstruct = document.getElementById("layer-construct");
 const layerCenters = document.getElementById("layer-centers");
 const layerVertices = document.getElementById("layer-vertices");
+const layerTraces = document.getElementById("layer-traces");
+const btnClearTraces = document.getElementById("btn-clear-traces");
 
 const chk = {
   mittelsenkrechte: document.getElementById("chk-mittelsenkrechte"),
@@ -18,14 +20,61 @@ const chk = {
   hoehen: document.getElementById("chk-hoehen"),
   umkreis: document.getElementById("chk-umkreis"),
   inkreis: document.getElementById("chk-inkreis"),
+  feuerbach: document.getElementById("chk-feuerbach"),
   arcs: document.getElementById("toggle-arcs"),
 };
+const chkSpuren = document.getElementById("chk-spuren");
 
-function render(pts) {
+// Aufgezeichnete Bahnen der vier besonderen Punkte. Solange die Spuren eingeschaltet sind, wird bei
+// jeder Änderung des Dreiecks die aktuelle Position angehängt; beim Ausschalten werden sie gelöscht.
+const traces = { M: [], I: [], S: [], H: [] };
+const TRACE_COLORS = { M: "#d64545", I: "#1a9e7a", S: "#8a5cf6", H: "#e08a1e" };
+const TRACE_MAX = 400;
+
+function recordTrace(pts) {
+  const { A, B, C } = pts;
+  const O = GC.circumcenter(A, B, C);
+  const entries = { M: O, I: GC.incenter(A, B, C), S: GC.centroid(A, B, C), H: O ? GC.orthocenter(A, B, C) : null };
+  for (const key of Object.keys(traces)) {
+    const p = entries[key];
+    if (!p || !isFinite(p.x) || !isFinite(p.y)) continue;
+    const arr = traces[key];
+    const last = arr[arr.length - 1];
+    // Nur merklich verschiedene Positionen speichern, sonst wächst die Spur beim Ziehen unnötig.
+    if (last && GC.dist(last, p) < 2) continue;
+    arr.push(p);
+    if (arr.length > TRACE_MAX) arr.shift();
+  }
+}
+
+function clearTraces() {
+  for (const key of Object.keys(traces)) traces[key] = [];
+  GS.clearEl(layerTraces);
+}
+
+function renderTraces() {
+  GS.clearEl(layerTraces);
+  if (!chkSpuren.checked) return;
+  for (const key of Object.keys(traces)) {
+    for (const p of traces[key]) {
+      const dot = GS.svgEl("circle", { cx: p.x, cy: p.y, r: 1.8, class: "geo-trace-dot" });
+      dot.setAttribute("fill", TRACE_COLORS[key]);
+      layerTraces.appendChild(dot);
+    }
+  }
+}
+
+// record = true nur, wenn sich das Dreieck tatsächlich geändert hat (Ziehen, neues Dreieck) —
+// beim bloßen Umschalten eines Häkchens darf kein neuer Spurpunkt entstehen, sonst ließen sich die
+// Spuren nie vollständig löschen.
+function render(pts, record = false) {
   const { A, B, C } = pts;
   GS.clearEl(layerTriangle);
   GS.clearEl(layerConstruct);
   GS.clearEl(layerCenters);
+
+  if (record && chkSpuren.checked) recordTrace(pts);
+  renderTraces();
 
   GS.drawSegment(layerTriangle, A, B);
   GS.drawSegment(layerTriangle, B, C);
@@ -59,10 +108,26 @@ function render(pts) {
     drawHoehe(layerConstruct, C, A, B, showArcs);
     GS.drawPoint(layerCenters, GC.orthocenter(A, B, C), "H");
   }
+  if (chk.feuerbach.checked) {
+    const fb = GC.ninePointCircle(A, B, C);
+    if (fb) {
+      GS.drawCircle(layerConstruct, fb.center, fb.radius, "geo-circle geo-feuerbach");
+      GS.drawPoint(layerCenters, fb.center, "N");
+    }
+  }
 }
 
-const tri = setupDraggableTriangle(svg, layerVertices, W, H, GC.randomTriangle(W, H), render);
+const tri = setupDraggableTriangle(svg, layerVertices, W, H, GC.randomTriangle(W, H), (pts) => render(pts, true));
 render(tri.pts);
 
 Object.values(chk).forEach((el) => el.addEventListener("change", () => render(tri.pts)));
+chkSpuren.addEventListener("change", () => {
+  if (!chkSpuren.checked) clearTraces();
+  btnClearTraces.hidden = !chkSpuren.checked;
+  render(tri.pts);
+});
+btnClearTraces.addEventListener("click", () => {
+  clearTraces();
+  render(tri.pts);
+});
 document.getElementById("btn-new-triangle").addEventListener("click", () => tri.randomize());

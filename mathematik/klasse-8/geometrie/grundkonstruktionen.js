@@ -1,12 +1,13 @@
-// Grundkonstruktionen: Mittelsenkrechte & Winkelhalbierende — geführte Animation und freies
-// Konstruieren mit Prüfung. Bei jedem Laden (und über "Neue Aufgabe") wird eine neue Zufallsaufgabe
-// erzeugt.
+// Grundkonstruktionen mit Zirkel und Lineal: Mittelsenkrechte, Winkelhalbierende, Seitenhalbierende
+// und Höhe — je eine geführte, anklickbare Anleitung und ein freies Konstruieren mit Prüfung.
+// Bei jedem Laden (und über "Neue Aufgabe") wird eine neue Zufallsaufgabe erzeugt.
 
-import * as GC from "./geo-core.js?v=1";
-import * as GS from "./geo-svg.js?v=1";
+import * as GC from "./geo-core.js?v=2";
+import * as GS from "./geo-svg.js?v=2";
 
 const W = 600,
   H = 420;
+const BOX = { w: W, h: H };
 
 const svg = document.getElementById("geo-svg");
 const layerGiven = document.getElementById("layer-given");
@@ -32,158 +33,419 @@ const els = {
   btnCheck: document.getElementById("btn-check"),
   btnHint: document.getElementById("btn-hint"),
   btnNewTaskFree: document.getElementById("btn-new-task-free"),
+  chkLockRadius: document.getElementById("chk-lock-radius"),
+  btnResetRadius: document.getElementById("btn-reset-radius"),
+  radiusStatus: document.getElementById("radius-status"),
 };
 
 const state = {
-  exercise: "mittelsenkrechte", // "mittelsenkrechte" | "winkelhalbierende"
+  exercise: "mittelsenkrechte",
   phase: "guided", // "guided" | "free"
   stepIndex: 0,
   task: null,
   tool: null,
 };
-let stepsData = null;
+let steps = [];
 
-// ---------- Aufgaben erzeugen ----------
+const TOL_PT = 16; // Klick-/Prüftoleranz für "dieser Punkt ist gemeint" (SVG-Einheiten)
 
-function newTask(exercise) {
-  if (exercise === "mittelsenkrechte") {
-    const { A, B } = GC.randomSegment(W, H);
-    return { A, B };
-  }
-  const { S, P, Q } = GC.randomAngle(W, H);
-  return { S, P, Q };
+// Prüft, ob eine vom Nutzer gezogene Gerade durch zwei vorgegebene Punkte verläuft. Verglichen wird
+// der senkrechte Abstand beider Punkte zur Geraden (Kreuzprodukt mit normierter Richtung).
+function lineThroughBoth(l, p1, p2) {
+  const d = GC.norm(GC.sub(l.b, l.a));
+  const b = GC.add(l.a, d);
+  const distToLine = (p) => Math.abs(GC.cross2(l.a, b, p));
+  return distToLine(p1) < 12 && distToLine(p2) < 12;
 }
 
-// ---------- Konstruktionsschritte: Mittelsenkrechte ----------
-
-function mittelsenkrechteSteps(task) {
-  const { A, B } = task;
-  const r = GC.dist(A, B) * 0.58;
-  const inter = GC.circleCircleIntersections(A, r, B, r);
-  const [P1, P2] = inter.length === 2 ? inter : [GC.mid(A, B), GC.add(GC.mid(A, B), { x: 0, y: -1 })];
-  return {
-    steps: [
-      {
-        text: "Stelle den Zirkel auf einen Radius ein, der größer als die Hälfte der Strecke AB ist. Steche in A ein und zeichne einen Bogen oberhalb und unterhalb der Strecke.",
-        render: () => {
-          GS.drawCompassArc(layerConstruct, A, P1, r, 32, "geo-arc-a");
-          GS.drawCompassArc(layerConstruct, A, P2, r, 32, "geo-arc-a");
-        },
-      },
-      {
-        text: "Steche jetzt mit demselben Radius in B ein und zeichne wieder einen Bogen oberhalb und unterhalb der Strecke, sodass er den ersten Bogen kreuzt.",
-        render: () => {
-          GS.drawCompassArc(layerConstruct, B, P1, r, 32, "geo-arc-b");
-          GS.drawCompassArc(layerConstruct, B, P2, r, 32, "geo-arc-b");
-        },
-      },
-      {
-        text: "Die beiden Bogenpaare schneiden sich in zwei Punkten. Verbinde diese Punkte mit dem Lineal zu einer Geraden — das ist die Mittelsenkrechte von AB.",
-        render: () => {
-          GS.drawCross(layerConstruct, P1, "geo-schnitt");
-          GS.drawCross(layerConstruct, P2, "geo-schnitt");
-          GS.drawLine(layerConstruct, GC.mid(A, B), GC.perp(GC.sub(B, A)), { w: W, h: H }, "geo-construct geo-mittelsenkrechte");
-        },
-      },
-    ],
-  };
+// Zwei Kreise "mit demselben Radius" — bei Klickgenauigkeit am Bildschirm mit etwas Spielraum.
+function sameRadius(c1, c2) {
+  return Math.abs(c1.radius - c2.radius) / Math.max(c1.radius, c2.radius) <= 0.08;
 }
 
-// ---------- Konstruktionsschritte: Winkelhalbierende ----------
-
-function winkelhalbierendeSteps(task) {
-  const { S: V, P, Q } = task;
-  const r0 = Math.min(GC.dist(V, P), GC.dist(V, Q)) * 0.62;
-  const dirP = GC.norm(GC.sub(P, V));
-  const dirQ = GC.norm(GC.sub(Q, V));
-  const P1 = GC.add(V, GC.scale(dirP, r0));
-  const Q1 = GC.add(V, GC.scale(dirQ, r0));
-  const r1 = GC.dist(P1, Q1) * 0.72;
-  const cand = GC.circleCircleIntersections(P1, r1, Q1, r1);
-  const bisDir = GC.angleBisectorDir(V, P, Q);
-  let M = cand[0] || GC.add(V, GC.scale(bisDir, 120));
-  if (cand.length === 2) {
-    const d0 = GC.dot(GC.sub(cand[0], V), bisDir);
-    const d1 = GC.dot(GC.sub(cand[1], V), bisDir);
-    M = d0 >= d1 ? cand[0] : cand[1];
-  }
-  const angP = GC.angleOf(GC.sub(P1, V));
-  const angQ = GC.angleOf(GC.sub(Q1, V));
-  return {
-    steps: [
-      {
-        text: "Steche mit dem Zirkel in den Scheitelpunkt S ein und zeichne einen Bogen, der beide Schenkel des Winkels schneidet.",
-        render: () => {
-          GS.drawArcSpan(layerConstruct, V, r0, angP, angQ, "geo-arc-a");
-        },
-      },
-      {
-        text: "Steche nacheinander in die beiden neuen Schnittpunkte auf den Schenkeln ein und zeichne mit demselben Radius je einen Bogen zur Mitte des Winkels hin, sodass sie sich kreuzen.",
-        render: () => {
-          GS.drawCross(layerConstruct, P1, "geo-schnitt");
-          GS.drawCross(layerConstruct, Q1, "geo-schnitt");
-          GS.drawCompassArc(layerConstruct, P1, M, r1, 34, "geo-arc-b");
-          GS.drawCompassArc(layerConstruct, Q1, M, r1, 34, "geo-arc-c");
-        },
-      },
-      {
-        text: "Verbinde den Scheitelpunkt S mit dem neuen Schnittpunkt — das ist die Winkelhalbierende.",
-        render: () => {
-          GS.drawCross(layerConstruct, M, "geo-schnitt");
-          const far = GC.add(V, GC.scale(GC.norm(GC.sub(M, V)), Math.max(W, H) * 1.3));
-          GS.drawSegment(layerConstruct, V, far, "geo-construct geo-winkelhalbierende");
-        },
-      },
-    ],
-  };
+// Die beiden Schnittpunkte der zwei gleich großen Kreise um P und Q (mit gemitteltem Radius, damit
+// kleine Klickungenauigkeiten nicht zu einer schiefen Verbindungsgeraden führen).
+function twoArcIntersections(P, Q, c1, c2) {
+  const r = (c1.radius + c2.radius) / 2;
+  return GC.circleCircleIntersections(P, r, Q, r);
 }
 
-function computeSteps() {
-  stepsData = state.exercise === "mittelsenkrechte" ? mittelsenkrechteSteps(state.task) : winkelhalbierendeSteps(state.task);
+// ---------- Aufgabendefinitionen ----------
+// Jede Aufgabe bringt ihre eigene Zufallsfigur, ihre Anleitung, ihre Snap-Punkte und ihre Prüfung
+// mit; der Rest der Seite (Umschalten, Rendern, Werkzeuge) ist für alle vier gleich.
+
+const EXERCISES = {
+  mittelsenkrechte: {
+    newTask: () => GC.randomSegment(W, H),
+    drawGiven(task) {
+      GS.drawSegment(layerGiven, task.A, task.B);
+      GS.drawPoint(layerPoints, task.A, "A");
+      GS.drawPoint(layerPoints, task.B, "B");
+    },
+    guided(task) {
+      const { A, B } = task;
+      const r = GC.dist(A, B) * 0.58;
+      const inter = GC.circleCircleIntersections(A, r, B, r);
+      const [P1, P2] = inter.length === 2 ? inter : [GC.mid(A, B), GC.add(GC.mid(A, B), { x: 0, y: -1 })];
+      return [
+        {
+          text: "Stelle den Zirkel auf einen Radius ein, der größer als die Hälfte der Strecke AB ist. Steche in A ein und zeichne einen Bogen oberhalb und unterhalb der Strecke.",
+          render: () => {
+            GS.drawCompassArc(layerConstruct, A, P1, r, 32, "geo-arc-a");
+            GS.drawCompassArc(layerConstruct, A, P2, r, 32, "geo-arc-a");
+          },
+        },
+        {
+          text: "Steche jetzt mit demselben Radius in B ein und zeichne wieder einen Bogen oberhalb und unterhalb der Strecke, sodass er den ersten Bogen kreuzt.",
+          render: () => {
+            GS.drawCompassArc(layerConstruct, B, P1, r, 32, "geo-arc-b");
+            GS.drawCompassArc(layerConstruct, B, P2, r, 32, "geo-arc-b");
+          },
+        },
+        {
+          text: "Die beiden Bogenpaare schneiden sich in zwei Punkten. Verbinde diese Punkte mit dem Lineal zu einer Geraden — das ist die Mittelsenkrechte von AB.",
+          render: () => {
+            GS.drawCross(layerConstruct, P1, "geo-schnitt-stark");
+            GS.drawCross(layerConstruct, P2, "geo-schnitt-stark");
+            GS.drawLine(layerConstruct, GC.mid(A, B), GC.perp(GC.sub(B, A)), BOX, "geo-construct geo-mittelsenkrechte");
+          },
+        },
+      ];
+    },
+    done: "Fertig! Jeder Punkt auf der Mittelsenkrechten ist gleich weit von A und von B entfernt.",
+    freeText:
+      "Konstruiere die Mittelsenkrechte von AB selbst: Zeichne mit dem Zirkel zwei gleich große Kreise um A und um B (Radius größer als die halbe Strecke AB) und verbinde die beiden Schnittpunkte mit dem Lineal.",
+    snapPoints: (task) => [task.A, task.B],
+    check(task, tool) {
+      const { A, B } = task;
+      const cA = tool.circles.find((c) => GC.dist(c.center, A) < TOL_PT);
+      const cB = tool.circles.find((c) => c !== cA && GC.dist(c.center, B) < TOL_PT);
+      if (!cA || !cB) {
+        const missing = !cA ? "A" : "B";
+        return { ok: false, msg: `Es fehlt noch ein Kreis mit Mittelpunkt in ${missing}. Zirkel wählen und zuerst auf ${missing} klicken.` };
+      }
+      if (!sameRadius(cA, cB)) {
+        return { ok: false, msg: "Die beiden Kreise müssen denselben Radius haben — der Zirkel wird zwischen den beiden Bögen nicht verstellt. Tipp: Häkchen „Zirkel-Radius beibehalten“ setzen." };
+      }
+      if (Math.min(cA.radius, cB.radius) < (GC.dist(A, B) / 2) * 1.02) {
+        return { ok: false, msg: "Der Radius ist zu klein — er muss größer als die Hälfte der Strecke AB sein, sonst schneiden sich die Kreise nicht." };
+      }
+      const inter = twoArcIntersections(A, B, cA, cB);
+      if (inter.length < 2) return { ok: false, msg: "Die Kreise schneiden sich nicht in zwei Punkten. Radius vergrößern." };
+      if (!tool.lines.some((l) => lineThroughBoth(l, inter[0], inter[1]))) {
+        return { ok: false, msg: "Es fehlt noch die Gerade durch die beiden Schnittpunkte der Bögen. Lineal wählen und beide Kreuze anklicken." };
+      }
+      return { ok: true, msg: "Richtig konstruiert! Das ist die Mittelsenkrechte von AB — jeder Punkt auf ihr ist gleich weit von A und B entfernt." };
+    },
+  },
+
+  winkelhalbierende: {
+    newTask: () => GC.randomAngle(W, H),
+    drawGiven(task) {
+      const { S, P, Q } = task;
+      GS.drawSegment(layerGiven, S, GC.add(S, GC.scale(GC.sub(P, S), 1.15)));
+      GS.drawSegment(layerGiven, S, GC.add(S, GC.scale(GC.sub(Q, S), 1.15)));
+      GS.drawPoint(layerPoints, S, "S");
+      GS.drawPoint(layerPoints, P, "P");
+      GS.drawPoint(layerPoints, Q, "Q");
+    },
+    guided(task) {
+      const { S: V, P, Q } = task;
+      const r0 = Math.min(GC.dist(V, P), GC.dist(V, Q)) * 0.62;
+      const P1 = GC.add(V, GC.scale(GC.norm(GC.sub(P, V)), r0));
+      const Q1 = GC.add(V, GC.scale(GC.norm(GC.sub(Q, V)), r0));
+      const r1 = GC.dist(P1, Q1) * 0.72;
+      const bisDir = GC.angleBisectorDir(V, P, Q);
+      const cand = GC.circleCircleIntersections(P1, r1, Q1, r1);
+      let M = cand[0] || GC.add(V, GC.scale(bisDir, 120));
+      if (cand.length === 2) M = GC.dot(GC.sub(cand[0], V), bisDir) >= GC.dot(GC.sub(cand[1], V), bisDir) ? cand[0] : cand[1];
+      return [
+        {
+          text: "Steche mit dem Zirkel in den Scheitelpunkt S ein und zeichne einen Bogen, der beide Schenkel des Winkels schneidet.",
+          render: () => {
+            GS.drawArcSpan(layerConstruct, V, r0, GC.angleOf(GC.sub(P1, V)), GC.angleOf(GC.sub(Q1, V)), "geo-arc-a");
+          },
+        },
+        {
+          text: "Steche nacheinander in die beiden neuen Schnittpunkte auf den Schenkeln ein und zeichne mit demselben Radius je einen Bogen zur Mitte des Winkels hin, sodass sie sich kreuzen.",
+          render: () => {
+            GS.drawCross(layerConstruct, P1, "geo-schnitt-stark");
+            GS.drawCross(layerConstruct, Q1, "geo-schnitt-stark");
+            GS.drawCompassArc(layerConstruct, P1, M, r1, 34, "geo-arc-b");
+            GS.drawCompassArc(layerConstruct, Q1, M, r1, 34, "geo-arc-c");
+          },
+        },
+        {
+          text: "Verbinde den Scheitelpunkt S mit dem neuen Schnittpunkt — das ist die Winkelhalbierende.",
+          render: () => {
+            GS.drawCross(layerConstruct, M, "geo-schnitt-stark");
+            const far = GC.add(V, GC.scale(GC.norm(GC.sub(M, V)), Math.max(W, H) * 1.3));
+            GS.drawSegment(layerConstruct, V, far, "geo-construct geo-winkelhalbierende");
+          },
+        },
+      ];
+    },
+    done: "Fertig! Jeder Punkt auf der Winkelhalbierenden ist gleich weit von beiden Schenkeln entfernt.",
+    freeText:
+      "Konstruiere die Winkelhalbierende selbst: Zeichne zunächst einen Kreis um S, der beide Schenkel schneidet. Zeichne dann zwei gleich große Kreise um diese beiden Schnittpunkte und verbinde S mit ihrem Schnittpunkt.",
+    snapPoints(task, tool) {
+      // Der erste Kreis um S schneidet die beiden Schenkel — diese Punkte werden zwar als Kreuz
+      // angezeigt, entstehen aber nicht als Kreis-Kreis-Schnitt und brauchen daher eigene Snap-Ziele.
+      const { S, P, Q } = task;
+      const base = [S, P, Q];
+      const c0 = tool.circles.find((c) => GC.dist(c.center, S) < TOL_PT);
+      if (!c0) return base;
+      return base.concat([
+        GC.add(S, GC.scale(GC.norm(GC.sub(P, S)), c0.radius)),
+        GC.add(S, GC.scale(GC.norm(GC.sub(Q, S)), c0.radius)),
+      ]);
+    },
+    markPoints(task, tool) {
+      const { S, P, Q } = task;
+      const c0 = tool.circles.find((c) => GC.dist(c.center, S) < TOL_PT);
+      if (!c0) return [];
+      return [GC.add(S, GC.scale(GC.norm(GC.sub(P, S)), c0.radius)), GC.add(S, GC.scale(GC.norm(GC.sub(Q, S)), c0.radius))];
+    },
+    check(task, tool) {
+      const { S: V, P, Q } = task;
+      const c0 = tool.circles.find((c) => GC.dist(c.center, V) < TOL_PT);
+      if (!c0) return { ok: false, msg: "Es fehlt der erste Kreis mit Mittelpunkt im Scheitelpunkt S. Zirkel wählen und zuerst auf S klicken." };
+      const maxR0 = Math.min(GC.dist(V, P), GC.dist(V, Q));
+      if (c0.radius < 20) return { ok: false, msg: "Der erste Bogen um S ist zu klein. Größeren Radius wählen." };
+      if (c0.radius > maxR0 * 1.05) return { ok: false, msg: "Der erste Bogen um S ist zu groß — er muss beide Schenkel schneiden, bevor sie enden." };
+      const P1 = GC.add(V, GC.scale(GC.norm(GC.sub(P, V)), c0.radius));
+      const Q1 = GC.add(V, GC.scale(GC.norm(GC.sub(Q, V)), c0.radius));
+      const others = tool.circles.filter((c) => c !== c0);
+      const c1 = others.find((c) => GC.dist(c.center, P1) < TOL_PT);
+      const c2 = others.find((c) => c !== c1 && GC.dist(c.center, Q1) < TOL_PT);
+      if (!c1 || !c2) return { ok: false, msg: "Es fehlen noch die beiden Kreise um die Schnittpunkte auf den Schenkeln (die beiden Kreuze), mit gleichem Radius." };
+      if (!sameRadius(c1, c2)) return { ok: false, msg: "Die beiden neuen Kreise müssen denselben Radius haben. Tipp: Häkchen „Zirkel-Radius beibehalten“ setzen." };
+      if (Math.min(c1.radius, c2.radius) < (GC.dist(P1, Q1) / 2) * 1.02) {
+        return { ok: false, msg: "Der Radius der beiden neuen Kreise ist zu klein — sie müssen sich schneiden." };
+      }
+      const inter = twoArcIntersections(P1, Q1, c1, c2);
+      if (inter.length < 2) return { ok: false, msg: "Die beiden neuen Kreise schneiden sich nicht. Radius vergrößern." };
+      const bisDir = GC.angleBisectorDir(V, P, Q);
+      const M = GC.dot(GC.sub(inter[0], V), bisDir) >= GC.dot(GC.sub(inter[1], V), bisDir) ? inter[0] : inter[1];
+      if (!tool.lines.some((l) => lineThroughBoth(l, V, M))) {
+        return { ok: false, msg: "Es fehlt noch die Gerade vom Scheitelpunkt S durch den neuen Schnittpunkt." };
+      }
+      return { ok: true, msg: "Richtig konstruiert! Das ist die Winkelhalbierende — jeder Punkt auf ihr ist gleich weit von beiden Schenkeln entfernt." };
+    },
+  },
+
+  seitenhalbierende: {
+    newTask: () => GC.randomTriangleForMedian(W, H),
+    drawGiven(task) {
+      drawTriangle(task);
+    },
+    guided(task) {
+      const { A, B, C } = task;
+      const r = GC.dist(A, B) * 0.58;
+      const inter = GC.circleCircleIntersections(A, r, B, r);
+      const [P1, P2] = inter.length === 2 ? inter : [GC.mid(A, B), GC.add(GC.mid(A, B), { x: 0, y: -1 })];
+      const M = GC.mid(A, B);
+      return [
+        {
+          text: "Die Seitenhalbierende geht vom Eckpunkt C zum Mittelpunkt der Gegenseite AB. Zuerst wird dieser Mittelpunkt konstruiert: Zirkel auf mehr als die halbe Strecke AB einstellen, in A einstechen und Bögen ober- und unterhalb zeichnen.",
+          render: () => {
+            GS.drawCompassArc(layerConstruct, A, P1, r, 32, "geo-arc-a");
+            GS.drawCompassArc(layerConstruct, A, P2, r, 32, "geo-arc-a");
+          },
+        },
+        {
+          text: "Mit demselben Radius in B einstechen und die Bögen ebenfalls ober- und unterhalb zeichnen, sodass sie die ersten kreuzen.",
+          render: () => {
+            GS.drawCompassArc(layerConstruct, B, P1, r, 32, "geo-arc-b");
+            GS.drawCompassArc(layerConstruct, B, P2, r, 32, "geo-arc-b");
+          },
+        },
+        {
+          text: "Die Verbindung der beiden Kreuzungspunkte ist die Mittelsenkrechte von AB. Dort, wo sie die Seite AB schneidet, liegt deren Mittelpunkt M.",
+          render: () => {
+            GS.drawCross(layerConstruct, P1, "geo-schnitt-stark");
+            GS.drawCross(layerConstruct, P2, "geo-schnitt-stark");
+            GS.drawSegment(layerConstruct, P1, P2, "geo-hilfslinie");
+            GS.drawPoint(layerConstruct, M, "M", "geo-marked-point");
+          },
+        },
+        {
+          text: "Verbinde den Eckpunkt C mit dem Mittelpunkt M — das ist die Seitenhalbierende von C auf AB.",
+          render: () => {
+            GS.drawPoint(layerConstruct, M, "M", "geo-marked-point");
+            GS.drawSegment(layerConstruct, C, M, "geo-construct geo-seitenhalbierende");
+          },
+        },
+      ];
+    },
+    done: "Fertig! Alle drei Seitenhalbierenden eines Dreiecks schneiden sich in einem Punkt — dem Schwerpunkt.",
+    freeText:
+      "Konstruiere die Seitenhalbierende von C auf die Seite AB: Konstruiere zuerst mit zwei gleich großen Kreisen um A und um B den Mittelpunkt M von AB und verbinde dann C mit M.",
+    snapPoints(task, tool) {
+      // Sobald zwei gleich große Kreise um A und B existieren, ist der Seitenmittelpunkt
+      // konstruiert und wird als exakt anklickbarer Punkt angeboten.
+      const base = [task.A, task.B, task.C];
+      return midpointIfConstructed(task, tool) ? base.concat([GC.mid(task.A, task.B)]) : base;
+    },
+    markPoints(task, tool) {
+      return midpointIfConstructed(task, tool) ? [GC.mid(task.A, task.B)] : [];
+    },
+    check(task, tool) {
+      const { A, B, C } = task;
+      const cA = tool.circles.find((c) => GC.dist(c.center, A) < TOL_PT);
+      const cB = tool.circles.find((c) => c !== cA && GC.dist(c.center, B) < TOL_PT);
+      if (!cA || !cB) {
+        const missing = !cA ? "A" : "B";
+        return { ok: false, msg: `Für den Mittelpunkt von AB fehlt noch ein Kreis um ${missing}. Zirkel wählen und auf ${missing} klicken.` };
+      }
+      if (!sameRadius(cA, cB)) {
+        return { ok: false, msg: "Die beiden Kreise um A und B müssen denselben Radius haben. Tipp: Häkchen „Zirkel-Radius beibehalten“ setzen." };
+      }
+      if (Math.min(cA.radius, cB.radius) < (GC.dist(A, B) / 2) * 1.02) {
+        return { ok: false, msg: "Der Radius ist zu klein — er muss größer als die halbe Strecke AB sein, sonst schneiden sich die Kreise nicht." };
+      }
+      const M = GC.mid(A, B);
+      if (!tool.lines.some((l) => lineThroughBoth(l, C, M))) {
+        return { ok: false, msg: "Es fehlt noch die Strecke von C zum Mittelpunkt M der Seite AB. Lineal wählen, auf C und dann auf M klicken." };
+      }
+      return { ok: true, msg: "Richtig konstruiert! Das ist die Seitenhalbierende von C — sie halbiert die Seite AB genau." };
+    },
+  },
+
+  hoehe: {
+    newTask: () => GC.randomTriangleForHeight(W, H),
+    drawGiven(task) {
+      drawTriangle(task);
+    },
+    guided(task) {
+      const { A, B, C } = task;
+      const foot = GC.footOfPerpendicular(C, A, B);
+      const height = GC.dist(C, foot);
+      const r0 = height * 1.4;
+      const [X1, X2] = GC.circleLineIntersections(C, r0, A, B);
+      const r1 = GC.dist(X1, X2) * 0.62;
+      const cand = GC.circleCircleIntersections(X1, r1, X2, r1);
+      // Von den beiden Schnittpunkten der Hilfskreise der auf der anderen Seite von AB als C.
+      const Y = cand.length === 2 ? (GC.cross2(A, B, cand[0]) * GC.cross2(A, B, C) < 0 ? cand[0] : cand[1]) : foot;
+      return [
+        {
+          text: "Die Höhe von C steht senkrecht auf der Gegenseite AB. Steche mit dem Zirkel in C ein und zeichne einen Kreisbogen, der die Seite AB an zwei Stellen schneidet.",
+          render: () => {
+            GS.drawCompassArc(layerConstruct, C, X1, r0, 20, "geo-arc-a");
+            GS.drawCompassArc(layerConstruct, C, X2, r0, 20, "geo-arc-a");
+          },
+        },
+        {
+          text: "Steche nacheinander in diese beiden Schnittpunkte ein und zeichne mit gleichem Radius zwei Bögen auf der von C abgewandten Seite, sodass sie sich kreuzen.",
+          render: () => {
+            GS.drawCross(layerConstruct, X1, "geo-schnitt-stark");
+            GS.drawCross(layerConstruct, X2, "geo-schnitt-stark");
+            GS.drawCompassArc(layerConstruct, X1, Y, r1, 30, "geo-arc-b");
+            GS.drawCompassArc(layerConstruct, X2, Y, r1, 30, "geo-arc-c");
+          },
+        },
+        {
+          text: "Verbinde C mit diesem Kreuzungspunkt. Die Gerade trifft AB im rechten Winkel — der Schnittpunkt ist der Höhenfußpunkt F.",
+          render: () => {
+            GS.drawCross(layerConstruct, Y, "geo-schnitt-stark");
+            GS.drawSegment(layerConstruct, C, Y, "geo-construct geo-hoehe");
+            GS.drawRightAngleMarker(layerConstruct, foot, C, B, "geo-hoehe");
+            GS.drawPoint(layerConstruct, foot, "F", "geo-marked-point");
+          },
+        },
+      ];
+    },
+    done: "Fertig! Die Strecke von C bis zum Fußpunkt F ist die Höhe des Dreiecks über der Seite AB.",
+    freeText:
+      "Konstruiere die Höhe von C auf die Seite AB: Zeichne einen Kreis um C, der AB zweimal schneidet. Zeichne um diese beiden Punkte zwei gleich große Kreise und verbinde C mit ihrem Schnittpunkt.",
+    snapPoints(task, tool) {
+      const base = [task.A, task.B, task.C];
+      return base.concat(heightHelperPoints(task, tool));
+    },
+    markPoints(task, tool) {
+      return heightHelperPoints(task, tool);
+    },
+    check(task, tool) {
+      const { A, B, C } = task;
+      const cC = tool.circles.find((c) => GC.dist(c.center, C) < TOL_PT);
+      if (!cC) return { ok: false, msg: "Es fehlt der Kreis um den Eckpunkt C. Zirkel wählen und zuerst auf C klicken." };
+      const hits = GC.circleLineIntersections(C, cC.radius, A, B);
+      if (hits.length < 2) {
+        return { ok: false, msg: "Der Kreis um C schneidet die Gerade AB nicht an zwei Stellen — wähle einen größeren Radius." };
+      }
+      const [X1, X2] = hits;
+      const others = tool.circles.filter((c) => c !== cC);
+      const c1 = others.find((c) => GC.dist(c.center, X1) < TOL_PT);
+      const c2 = others.find((c) => c !== c1 && GC.dist(c.center, X2) < TOL_PT);
+      if (!c1 || !c2) {
+        return { ok: false, msg: "Es fehlen noch die beiden Kreise um die Schnittpunkte auf AB (die beiden Kreuze), mit gleichem Radius." };
+      }
+      if (!sameRadius(c1, c2)) {
+        return { ok: false, msg: "Die beiden Kreise müssen denselben Radius haben. Tipp: Häkchen „Zirkel-Radius beibehalten“ setzen." };
+      }
+      if (Math.min(c1.radius, c2.radius) < (GC.dist(X1, X2) / 2) * 1.02) {
+        return { ok: false, msg: "Der Radius der beiden Kreise ist zu klein — sie müssen sich kreuzen." };
+      }
+      const foot = GC.footOfPerpendicular(C, A, B);
+      if (!tool.lines.some((l) => lineThroughBoth(l, C, foot))) {
+        return { ok: false, msg: "Es fehlt noch die Gerade von C durch den Kreuzungspunkt der beiden Bögen." };
+      }
+      return { ok: true, msg: "Richtig konstruiert! Die Gerade steht senkrecht auf AB — die Strecke von C bis zum Fußpunkt ist die Höhe." };
+    },
+  },
+};
+
+// Die beiden Schnittpunkte des Nutzerkreises um C mit der Geraden AB (Hilfspunkte der Höhe).
+function heightHelperPoints(task, tool) {
+  const cC = tool.circles.find((c) => GC.dist(c.center, task.C) < TOL_PT);
+  if (!cC) return [];
+  return GC.circleLineIntersections(task.C, cC.radius, task.A, task.B);
 }
 
-// ---------- Gegebene Objekte (Strecke bzw. Winkel) zeichnen ----------
+// true, sobald zwei gleich große, ausreichend große Kreise um A und B gezeichnet sind — dann gilt
+// der Mittelpunkt von AB als konstruiert.
+function midpointIfConstructed(task, tool) {
+  const cA = tool.circles.find((c) => GC.dist(c.center, task.A) < TOL_PT);
+  const cB = tool.circles.find((c) => c !== cA && GC.dist(c.center, task.B) < TOL_PT);
+  if (!cA || !cB || !sameRadius(cA, cB)) return false;
+  return Math.min(cA.radius, cB.radius) >= (GC.dist(task.A, task.B) / 2) * 1.02;
+}
 
-function renderGivenAndPoints() {
+function drawTriangle(task) {
+  const { A, B, C } = task;
+  GS.drawSegment(layerGiven, A, B);
+  GS.drawSegment(layerGiven, B, C);
+  GS.drawSegment(layerGiven, C, A);
+  GS.drawPoint(layerPoints, A, "A");
+  GS.drawPoint(layerPoints, B, "B");
+  GS.drawPoint(layerPoints, C, "C");
+}
+
+function current() {
+  return EXERCISES[state.exercise];
+}
+
+// ---------- Gegebene Figur zeichnen ----------
+
+function renderGiven() {
   GS.clearEl(layerGiven);
   GS.clearEl(layerPoints);
-  if (state.exercise === "mittelsenkrechte") {
-    const { A, B } = state.task;
-    GS.drawSegment(layerGiven, A, B);
-    GS.drawPoint(layerPoints, A, "A");
-    GS.drawPoint(layerPoints, B, "B");
-  } else {
-    const { S, P, Q } = state.task;
-    const farP = GC.add(S, GC.scale(GC.sub(P, S), 1.15));
-    const farQ = GC.add(S, GC.scale(GC.sub(Q, S), 1.15));
-    GS.drawSegment(layerGiven, S, farP);
-    GS.drawSegment(layerGiven, S, farQ);
-    GS.drawPoint(layerPoints, S, "S");
-    GS.drawPoint(layerPoints, P, "P");
-    GS.drawPoint(layerPoints, Q, "Q");
-  }
+  current().drawGiven(state.task);
 }
 
-// ---------- Phase 1: geführte Animation ----------
-
-function finishedNote() {
-  return state.exercise === "mittelsenkrechte"
-    ? "Fertig! Jeder Punkt auf der Mittelsenkrechten ist gleich weit von A und von B entfernt."
-    : "Fertig! Jeder Punkt auf der Winkelhalbierenden ist gleich weit von beiden Schenkeln entfernt.";
-}
+// ---------- Phase 1: geführte Anleitung ----------
 
 function renderGuided() {
   GS.clearEl(layerConstruct);
-  const steps = stepsData.steps;
   for (let i = 0; i <= state.stepIndex; i++) steps[i].render();
   const isLast = state.stepIndex === steps.length - 1;
   els.instructionBox.innerHTML = `<p><strong>Schritt ${state.stepIndex + 1} von ${steps.length}:</strong> ${steps[state.stepIndex].text}</p>${
-    isLast ? `<p>✅ ${finishedNote()}</p>` : ""
+    isLast ? `<p>✅ ${current().done}</p>` : ""
   }`;
   els.stepsList.innerHTML = steps
     .map((s, i) => {
       const cls = i < state.stepIndex ? "geo-step-done" : i === state.stepIndex ? "geo-step-active" : "";
-      return `<li class="${cls}">${s.text}</li>`;
+      return `<li class="${cls} geo-step-clickable" data-step="${i}">${s.text}</li>`;
     })
     .join("");
   els.btnBack.disabled = state.stepIndex === 0;
@@ -193,36 +455,10 @@ function renderGuided() {
 
 // ---------- Phase 2: freies Konstruieren ----------
 
-// Bei der Winkelhalbierenden schneidet der erste Kreis (um S) die beiden Schenkel — diese beiden
-// Punkte sind an der Zeichnung selbst nicht mit einem Kreuz markiert (anders als Kreis-Kreis-
-// Schnittpunkte), sollen aber trotzdem präzise anklickbar sein, damit sich die beiden nächsten
-// Kreise exakt dort zentrieren lassen.
-function getRaySnapPoints() {
-  if (state.exercise !== "winkelhalbierende") return [];
-  const { S, P, Q } = state.task;
-  const c0 = state.tool.circles.find((c) => GC.dist(c.center, S) < 16);
-  if (!c0) return [];
-  const dirP = GC.norm(GC.sub(P, S));
-  const dirQ = GC.norm(GC.sub(Q, S));
-  return [GC.add(S, GC.scale(dirP, c0.radius)), GC.add(S, GC.scale(dirQ, c0.radius))];
-}
-
-function getSnapTargets() {
-  const fixed = state.exercise === "mittelsenkrechte" ? [state.task.A, state.task.B] : [state.task.S, state.task.P, state.task.Q];
-  const circlePts = [];
-  const circles = state.tool.circles;
-  for (let i = 0; i < circles.length; i++) {
-    for (let j = i + 1; j < circles.length; j++) {
-      circlePts.push(...GC.circleCircleIntersections(circles[i].center, circles[i].radius, circles[j].center, circles[j].radius));
-    }
-  }
-  return fixed.concat(circlePts, getRaySnapPoints());
-}
-
 function snapToNearest(raw) {
-  const targets = getSnapTargets();
+  const targets = current().snapPoints(state.task, state.tool).concat(userCircleIntersections());
   let best = raw,
-    bestD = 16;
+    bestD = TOL_PT;
   for (const t of targets) {
     const d = GC.dist(raw, t);
     if (d < bestD) {
@@ -233,108 +469,46 @@ function snapToNearest(raw) {
   return best;
 }
 
-function renderUserIntersectionCrosses() {
+function userCircleIntersections() {
+  const out = [];
   const circles = state.tool.circles;
   for (let i = 0; i < circles.length; i++) {
     for (let j = i + 1; j < circles.length; j++) {
-      const inter = GC.circleCircleIntersections(circles[i].center, circles[i].radius, circles[j].center, circles[j].radius);
-      inter.forEach((p) => GS.drawCross(layerUser, p, "geo-schnitt"));
+      out.push(...GC.circleCircleIntersections(circles[i].center, circles[i].radius, circles[j].center, circles[j].radius));
     }
   }
-  getRaySnapPoints().forEach((p) => GS.drawCross(layerUser, p, "geo-schnitt"));
+  return out;
+}
+
+// Alle Punkte, die durch die eigene Konstruktion entstanden sind, sichtbar markieren — sie sind
+// gleichzeitig die Punkte, auf die das Anklicken einrastet.
+function renderUserMarkers() {
+  userCircleIntersections().forEach((p) => GS.drawCross(layerUser, p, "geo-schnitt-stark"));
+  const extra = current().markPoints ? current().markPoints(state.task, state.tool) : [];
+  extra.forEach((p) => GS.drawCross(layerUser, p, "geo-schnitt-stark"));
 }
 
 function updateFreeInstruction() {
-  const text =
-    state.exercise === "mittelsenkrechte"
-      ? "Konstruiere die Mittelsenkrechte von AB selbst: Zeichne mit dem Kreis-Werkzeug zwei gleich große Kreise um A und um B (Radius größer als die halbe Strecke AB) und verbinde die beiden Schnittpunkte mit dem Geraden-Werkzeug."
-      : "Konstruiere die Winkelhalbierende selbst: Zeichne zunächst einen Kreis um S, der beide Schenkel schneidet. Zeichne dann zwei gleich große Kreise um diese beiden Schnittpunkte und verbinde S mit ihrem Schnittpunkt.";
-  els.instructionBox.innerHTML = `<p>${text}</p>`;
+  els.instructionBox.innerHTML = `<p>${current().freeText}</p>`;
   els.stepsList.innerHTML = `
-    <li>Kreis-Werkzeug wählen, auf den Mittelpunkt klicken, dann auf einen Punkt auf dem gewünschten Radius klicken.</li>
-    <li>Geraden-Werkzeug wählen, zwei Punkte anklicken, durch die die Gerade verlaufen soll (Schnittpunkte der Bögen lassen sich präzise anklicken).</li>
+    <li>Zirkel wählen, auf den Einstichpunkt klicken, dann auf einen Punkt auf dem gewünschten Radius klicken.</li>
+    <li>Mit „🔒 Zirkel-Radius beibehalten“ bleibt der Radius danach gleich — dann genügt ein Klick auf den nächsten Einstichpunkt.</li>
+    <li>Lineal wählen und zwei Punkte anklicken, durch die die Gerade verlaufen soll. Konstruierte Punkte (Kreuze) rasten beim Anklicken ein.</li>
     <li>Mit „Prüfen“ kontrollieren, mit „Tipp“ einen Hinweis bekommen.</li>
   `;
 }
 
-function lineThroughBoth(l, p1, p2) {
-  const d = GC.norm(GC.sub(l.b, l.a));
-  const b = GC.add(l.a, d);
-  const distToLine = (p) => Math.abs(GC.cross2(l.a, b, p));
-  return distToLine(p1) < 12 && distToLine(p2) < 12;
-}
-
-function checkMittelsenkrechte() {
-  const { A, B } = state.task;
-  const circles = state.tool.circles;
-  const lines = state.tool.lines;
-  const tolPt = 16;
-  const cA = circles.find((c) => GC.dist(c.center, A) < tolPt);
-  const cB = circles.find((c) => c !== cA && GC.dist(c.center, B) < tolPt);
-  if (!cA || !cB) {
-    return { ok: false, msg: `Es fehlt noch ein Kreis mit Mittelpunkt in ${!cA ? "A" : "B"}. Zirkel-Werkzeug wählen und zuerst auf ${!cA ? "A" : "B"} klicken.` };
+function updateRadiusStatus() {
+  const t = state.tool;
+  els.btnResetRadius.hidden = !(t.radiusLocked && t.lockedRadius);
+  if (!t.radiusLocked) {
+    els.radiusStatus.hidden = true;
+    return;
   }
-  const relDiff = Math.abs(cA.radius - cB.radius) / Math.max(cA.radius, cB.radius);
-  if (relDiff > 0.08) {
-    return { ok: false, msg: "Die beiden Kreise müssen denselben Radius haben — der Zirkel wird zwischen den beiden Bögen nicht verstellt." };
-  }
-  const minR = GC.dist(A, B) / 2;
-  if (Math.min(cA.radius, cB.radius) < minR * 1.02) {
-    return { ok: false, msg: "Der Radius ist zu klein — er muss größer als die Hälfte der Strecke AB sein, sonst schneiden sich die Kreise nicht." };
-  }
-  const avgR = (cA.radius + cB.radius) / 2;
-  const inter = GC.circleCircleIntersections(A, avgR, B, avgR);
-  if (inter.length < 2) {
-    return { ok: false, msg: "Die Kreise schneiden sich nicht in zwei Punkten. Radius vergrößern." };
-  }
-  const goodLine = lines.find((l) => lineThroughBoth(l, inter[0], inter[1]));
-  if (!goodLine) {
-    return { ok: false, msg: "Es fehlt noch die Gerade durch die beiden Schnittpunkte der Bögen. Geraden-Werkzeug wählen." };
-  }
-  return { ok: true, msg: "Richtig konstruiert! Das ist die Mittelsenkrechte von AB — jeder Punkt auf ihr ist gleich weit von A und B entfernt." };
-}
-
-function checkWinkelhalbierende() {
-  const { S: V, P, Q } = state.task;
-  const circles = state.tool.circles;
-  const lines = state.tool.lines;
-  const tolPt = 16;
-  const c0 = circles.find((c) => GC.dist(c.center, V) < tolPt);
-  if (!c0) {
-    return { ok: false, msg: "Es fehlt der erste Kreis mit Mittelpunkt im Scheitelpunkt S. Zirkel-Werkzeug wählen und zuerst auf S klicken." };
-  }
-  const r0 = c0.radius;
-  const maxR0 = Math.min(GC.dist(V, P), GC.dist(V, Q));
-  if (r0 < 20) return { ok: false, msg: "Der erste Bogen um S ist zu klein. Größeren Radius wählen." };
-  if (r0 > maxR0 * 1.05) return { ok: false, msg: "Der erste Bogen um S ist zu groß — er muss beide Schenkel schneiden, bevor sie enden." };
-  const dirP = GC.norm(GC.sub(P, V));
-  const dirQ = GC.norm(GC.sub(Q, V));
-  const P1 = GC.add(V, GC.scale(dirP, r0));
-  const Q1 = GC.add(V, GC.scale(dirQ, r0));
-  const others = circles.filter((c) => c !== c0);
-  const c1 = others.find((c) => GC.dist(c.center, P1) < tolPt);
-  const c2 = others.find((c) => c !== c1 && GC.dist(c.center, Q1) < tolPt);
-  if (!c1 || !c2) {
-    return { ok: false, msg: "Es fehlen noch die beiden Kreise um die Schnittpunkte auf den Schenkeln (gleicher Radius, zur Mitte des Winkels hin)." };
-  }
-  const relDiff = Math.abs(c1.radius - c2.radius) / Math.max(c1.radius, c2.radius);
-  if (relDiff > 0.08) {
-    return { ok: false, msg: "Die beiden neuen Kreise müssen denselben Radius haben." };
-  }
-  const minR1 = GC.dist(P1, Q1) / 2;
-  if (Math.min(c1.radius, c2.radius) < minR1 * 1.02) {
-    return { ok: false, msg: "Der Radius der beiden neuen Kreise ist zu klein — sie müssen sich schneiden." };
-  }
-  const avgR1 = (c1.radius + c2.radius) / 2;
-  const inter = GC.circleCircleIntersections(P1, avgR1, Q1, avgR1);
-  if (inter.length < 2) return { ok: false, msg: "Die beiden neuen Kreise schneiden sich nicht. Radius vergrößern." };
-  const bisDir = GC.angleBisectorDir(V, P, Q);
-  const M = GC.dot(GC.sub(inter[0], V), bisDir) >= GC.dot(GC.sub(inter[1], V), bisDir) ? inter[0] : inter[1];
-  const goodLine = lines.find((l) => lineThroughBoth(l, V, M));
-  if (!goodLine) {
-    return { ok: false, msg: "Es fehlt noch die Gerade vom Scheitelpunkt S durch den neuen Schnittpunkt." };
-  }
-  return { ok: true, msg: "Richtig konstruiert! Das ist die Winkelhalbierende — jeder Punkt auf ihr ist gleich weit von beiden Schenkeln entfernt." };
+  els.radiusStatus.hidden = false;
+  els.radiusStatus.textContent = t.lockedRadius
+    ? `🔒 Zirkel steht fest auf ${Math.round(t.lockedRadius)} — ein Klick setzt den nächsten Kreis mit genau diesem Radius. Für eine andere Größe auf „Radius neu einstellen“ klicken.`
+    : "🔒 Zirkel-Radius wird eingerastet: Zeichne den nächsten Kreis wie gewohnt mit zwei Klicks, danach genügt ein Klick.";
 }
 
 function showFeedback(kind, msg) {
@@ -352,14 +526,15 @@ function renderFreeSetup() {
   state.tool.reset();
   setActiveToolBtn(null);
   updateFreeInstruction();
+  updateRadiusStatus();
   els.feedbackBox.hidden = true;
 }
 
 // ---------- Umschalten Aufgabe / Phase ----------
 
 function refreshAll() {
-  renderGivenAndPoints();
-  computeSteps();
+  renderGiven();
+  steps = current().guided(state.task);
   if (state.phase === "guided") {
     state.stepIndex = 0;
     renderGuided();
@@ -368,12 +543,17 @@ function refreshAll() {
   }
 }
 
+function newTaskClicked() {
+  state.task = current().newTask();
+  refreshAll();
+}
+
 els.exerciseTabs.addEventListener("click", (e) => {
   const btn = e.target.closest(".geo-mode-tab[data-exercise]");
   if (!btn) return;
   state.exercise = btn.dataset.exercise;
   [...els.exerciseTabs.children].forEach((b) => b.classList.toggle("geo-mode-tab-active", b === btn));
-  state.task = newTask(state.exercise);
+  state.task = current().newTask();
   refreshAll();
 });
 
@@ -392,8 +572,16 @@ els.phaseTabs.addEventListener("click", (e) => {
   }
 });
 
+// Die Anleitung ist anklickbar: ein Klick auf einen Schritt springt direkt dorthin.
+els.stepsList.addEventListener("click", (e) => {
+  const li = e.target.closest("li[data-step]");
+  if (!li || state.phase !== "guided") return;
+  state.stepIndex = Number(li.dataset.step);
+  renderGuided();
+});
+
 els.btnNext.addEventListener("click", () => {
-  if (state.stepIndex < stepsData.steps.length - 1) {
+  if (state.stepIndex < steps.length - 1) {
     state.stepIndex++;
     renderGuided();
   }
@@ -404,10 +592,6 @@ els.btnBack.addEventListener("click", () => {
     renderGuided();
   }
 });
-function newTaskClicked() {
-  state.task = newTask(state.exercise);
-  refreshAll();
-}
 els.btnNewTask.addEventListener("click", newTaskClicked);
 els.btnNewTaskFree.addEventListener("click", newTaskClicked);
 
@@ -419,25 +603,36 @@ els.btnToolLine.addEventListener("click", () => {
   state.tool.setMode("line");
   setActiveToolBtn(els.btnToolLine);
 });
-els.btnUndo.addEventListener("click", () => state.tool.undo());
+els.btnUndo.addEventListener("click", () => {
+  state.tool.undo();
+  updateRadiusStatus();
+});
 els.btnClear.addEventListener("click", () => {
   state.tool.reset();
+  updateRadiusStatus();
   els.feedbackBox.hidden = true;
 });
+els.chkLockRadius.addEventListener("change", () => {
+  state.tool.setRadiusLocked(els.chkLockRadius.checked);
+  updateRadiusStatus();
+});
+els.btnResetRadius.addEventListener("click", () => {
+  state.tool.clearLockedRadius();
+  updateRadiusStatus();
+});
 els.btnCheck.addEventListener("click", () => {
-  const result = state.exercise === "mittelsenkrechte" ? checkMittelsenkrechte() : checkWinkelhalbierende();
+  const result = current().check(state.task, state.tool);
   showFeedback(result.ok ? "ok" : "error", result.msg);
 });
 els.btnHint.addEventListener("click", () => {
-  const result = state.exercise === "mittelsenkrechte" ? checkMittelsenkrechte() : checkWinkelhalbierende();
+  const result = current().check(state.task, state.tool);
   showFeedback(result.ok ? "ok" : "hint", result.msg);
 });
 
 // ---------- Start ----------
 
 state.tool = new GS.ConstructionTool(svg, layerUser, snapToNearest);
-state.tool.extraRender = renderUserIntersectionCrosses;
-state.task = newTask(state.exercise);
-renderGivenAndPoints();
-computeSteps();
-renderGuided();
+state.tool.extraRender = renderUserMarkers;
+state.tool.onChange = updateRadiusStatus;
+state.task = current().newTask();
+refreshAll();

@@ -3,8 +3,8 @@
 // Zirkelbogen-Konstruktion (wenn showArcs) als auch die fertige Linie, exakt berechnet (die Bögen
 // dienen nur der Veranschaulichung, nicht der eigentlichen Berechnung).
 
-import * as GC from "./geo-core.js?v=1";
-import * as GS from "./geo-svg.js?v=1";
+import * as GC from "./geo-core.js?v=2";
+import * as GS from "./geo-svg.js?v=2";
 
 function projT(P, Q, X) {
   const d = GC.sub(Q, P);
@@ -36,7 +36,9 @@ export function drawUmkreis(layerConstruct, layerCenters, A, B, C) {
 }
 
 export function drawWinkelhalbierende(layer, W, H, V, P, Q, showArcs) {
-  const r0 = Math.min(GC.dist(V, P), GC.dist(V, Q)) * 0.32;
+  // Der erste Bogen um den Eckpunkt muss deutlich größer sein als eine übliche Winkelmarkierung,
+  // sonst liest man ihn als "hier ist der Winkel eingezeichnet" statt als Konstruktionsbogen.
+  const r0 = Math.min(GC.dist(V, P), GC.dist(V, Q)) * 0.46;
   const dirP = GC.norm(GC.sub(P, V));
   const dirQ = GC.norm(GC.sub(Q, V));
   const P1 = GC.add(V, GC.scale(dirP, r0));
@@ -56,6 +58,10 @@ export function drawWinkelhalbierende(layer, W, H, V, P, Q, showArcs) {
     }
     GS.drawCompassArc(layer, P1, M, r1, 26, "geo-arc");
     GS.drawCompassArc(layer, Q1, M, r1, 26, "geo-arc");
+    // Wo der erste Bogen die beiden Dreiecksseiten schneidet, sitzen die Einstichpunkte der
+    // nächsten beiden Bögen — deutlich markieren.
+    GS.drawCross(layer, P1, "geo-schnitt-stark");
+    GS.drawCross(layer, Q1, "geo-schnitt-stark");
   }
   GS.drawLine(layer, V, bisDir, { w: W, h: H }, "geo-construct geo-winkelhalbierende");
 }
