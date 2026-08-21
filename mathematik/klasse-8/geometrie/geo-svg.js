@@ -3,7 +3,7 @@
 // Gerade, Kreis, Zirkelbogen, rechter-Winkel-Marke) sowie ein klick-basiertes Werkzeug
 // ("Kreis"/"Gerade") für das freie Konstruieren mit anschließender Prüfung.
 
-import { add, scale, sub, len, dist, norm, angleOf } from "./geo-core.js?v=1";
+import { add, scale, sub, len, dist, norm, angleOf } from "./geo-core.js?v=2";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -201,12 +201,36 @@ export class ConstructionTool {
     this.circles = []; // {center, radius}
     this.lines = []; // {a, b}
     this.pending = null; // {type:"circle", center} während des zweiten Klicks
+    // "Zirkel eingerastet": Wie bei einem echten Zirkel, den man zwischen zwei Bögen nicht
+    // verstellt — ist ein Radius gemerkt, genügt ein einzelner Klick auf den neuen Einstichpunkt.
+    this.lockedRadius = null;
+    this.radiusLocked = false;
     this.onChange = null;
     svg.addEventListener("click", (e) => this._onClick(e));
     svg.addEventListener("pointermove", (e) => this._onMove(e));
   }
   setMode(mode) {
     this.mode = mode;
+    this.pending = null;
+    this._render();
+  }
+  // Radius-Sperre umschalten. Beim Einschalten wird der Radius des zuletzt gezeichneten Kreises
+  // übernommen (falls vorhanden) — sonst rastet der nächste gezeichnete Kreis den Radius ein.
+  setRadiusLocked(locked) {
+    this.radiusLocked = locked;
+    if (locked) {
+      if (this.circles.length) this.lockedRadius = this.circles[this.circles.length - 1].radius;
+    } else {
+      this.lockedRadius = null;
+    }
+    this.pending = null;
+    this._render();
+  }
+  // Gemerkten Radius verwerfen, ohne die Sperre auszuschalten: Der nächste Kreis wird wieder mit
+  // zwei Klicks gezeichnet und rastet dann als neuer Radius ein. Ohne das wäre ein einmal
+  // eingerasteter Zirkel nicht mehr verstellbar.
+  clearLockedRadius() {
+    this.lockedRadius = null;
     this.pending = null;
     this._render();
   }
@@ -224,6 +248,9 @@ export class ConstructionTool {
     this.circles = [];
     this.lines = [];
     this.pending = null;
+    // Der eingerastete Radius gehört zur weggeworfenen Zeichnung; die Einstellung selbst
+    // ("Zirkel nicht verstellen") bleibt aktiv und rastet beim nächsten Kreis neu ein.
+    this.lockedRadius = null;
     this._render();
   }
   _onClick(e) {
@@ -231,11 +258,18 @@ export class ConstructionTool {
     const raw = toSvgPoint(this.svg, e);
     const p = this.snapFn(raw);
     if (this.mode === "circle") {
-      if (!this.pending) {
+      if (this.radiusLocked && this.lockedRadius) {
+        // Zirkel ist eingerastet: ein Klick setzt den Einstichpunkt, der Radius bleibt gleich.
+        this.circles.push({ center: p, radius: this.lockedRadius });
+        this.pending = null;
+      } else if (!this.pending) {
         this.pending = { type: "circle", center: p };
       } else {
         const r = dist(this.pending.center, p);
-        if (r > 6) this.circles.push({ center: this.pending.center, radius: r });
+        if (r > 6) {
+          this.circles.push({ center: this.pending.center, radius: r });
+          if (this.radiusLocked) this.lockedRadius = r;
+        }
         this.pending = null;
       }
     } else if (this.mode === "line") {
@@ -250,7 +284,10 @@ export class ConstructionTool {
     if (this.onChange) this.onChange();
   }
   _onMove(e) {
-    if (!this.mode || !this.pending) return;
+    // Bei eingerastetem Zirkel gibt es keinen zweiten Klick — trotzdem soll der Kreis schon beim
+    // Bewegen als Vorschau am Mauszeiger hängen, damit die Position vorher klar ist.
+    const lockedPreview = this.mode === "circle" && this.radiusLocked && this.lockedRadius;
+    if (!this.mode || (!this.pending && !lockedPreview)) return;
     const raw = toSvgPoint(this.svg, e);
     this._previewPoint = this.snapFn(raw);
     this._render();
@@ -262,7 +299,10 @@ export class ConstructionTool {
       const d = sub(l.b, l.a);
       drawLine(this.layer, l.a, d, { w: 2000, h: 2000 }, "geo-user-line");
     });
-    if (this.pending && this.pending.type === "circle") {
+    if (this.mode === "circle" && this.radiusLocked && this.lockedRadius && this._previewPoint) {
+      drawCircle(this.layer, this._previewPoint, this.lockedRadius, "geo-user-circle geo-preview");
+      drawPoint(this.layer, this._previewPoint, "", "geo-pending-point");
+    } else if (this.pending && this.pending.type === "circle") {
       drawPoint(this.layer, this.pending.center, "", "geo-pending-point");
       if (this._previewPoint) {
         const r = dist(this.pending.center, this._previewPoint);

@@ -23,6 +23,12 @@
 
 <main class="menu-main">
   <section class="card">
+    <div class="geo-mode-tabs" id="count-tabs">
+      <button type="button" class="geo-mode-tab geo-mode-tab-active" data-count="1">1. Mittelsenkrechte von AB</button>
+      <button type="button" class="geo-mode-tab" data-count="2">2. dazu die von BC</button>
+      <button type="button" class="geo-mode-tab" data-count="3">3. alle drei + Umkreis</button>
+    </div>
+
     <div class="geo-layout">
       <div class="geo-canvas-col">
         <div class="geo-canvas-wrap">
@@ -46,9 +52,7 @@
       </div>
 
       <div class="geo-side-col">
-        <div class="geo-instruction-box">
-          <p>Der Umkreis ist der Kreis, der durch alle drei Eckpunkte A, B und C verläuft. Sein Mittelpunkt M hat von allen drei Ecken denselben Abstand — das ist genau der Radius des Umkreises.</p>
-        </div>
+        <div class="geo-instruction-box" id="instruction-box"></div>
         <ol class="geo-steps">
           <li>Konstruiere für jede der drei Seiten die Mittelsenkrechte: Zirkel in beide Endpunkte der Seite einstechen (Radius größer als die halbe Seitenlänge) und die beiden Schnittpunkte der Bögen verbinden.</li>
           <li>Alle drei Mittelsenkrechten schneiden sich in einem Punkt — dem Umkreismittelpunkt M. (Das muss man nur für zwei der drei Seiten wirklich konstruieren, die dritte geht automatisch durch M.)</li>
@@ -63,6 +67,6 @@
   <p><a href="index.html">Zurück zu Geometrie</a></p>
   <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
-<script type="module" src="mittelsenkrechte-umkreis.js?v=1"></script>
+<script type="module" src="mittelsenkrechte-umkreis.js?v=2"></script>
 </body>
 </html>
