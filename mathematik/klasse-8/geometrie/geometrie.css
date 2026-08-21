@@ -141,9 +141,24 @@
   stroke: #e08a1e;
   stroke-width: 2;
 }
+/* Vorschau des noch nicht gesetzten Kreises/der Geraden — bewusst blass und neutral, damit sie
+   nicht mit einer fertig gezeichneten Konstruktionslinie verwechselt wird. */
 .geo-preview {
-  opacity: 0.55;
-  stroke-dasharray: 4 4;
+  opacity: 0.4;
+  stroke: var(--muted) !important;
+  stroke-dasharray: 4 5;
+}
+
+/* Der bereits gesetzte erste Klick eines Kreises/einer Geraden: offener Ring statt gefülltem
+   Punkt, damit er nicht wie ein fertiger Konstruktionspunkt wirkt. */
+.geo-pending-ring {
+  fill: none;
+  stroke: #e08a1e;
+  stroke-width: 1.8;
+  stroke-dasharray: 3 3;
+}
+.geo-pending-dot {
+  fill: #e08a1e;
 }
 
 .geo-cross line {
@@ -303,6 +318,16 @@
   font-size: 0.85rem;
   color: var(--accent-dark);
   font-weight: 600;
+}
+
+.geo-pending-status {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: #b26a06;
+  font-weight: 600;
+}
+:root[data-theme="dark"] .geo-pending-status {
+  color: #e8a54a;
 }
 
 .geo-instruction-box {

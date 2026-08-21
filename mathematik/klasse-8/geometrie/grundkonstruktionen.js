@@ -2,8 +2,8 @@
 // und Höhe — je eine geführte, anklickbare Anleitung und ein freies Konstruieren mit Prüfung.
 // Bei jedem Laden (und über "Neue Aufgabe") wird eine neue Zufallsaufgabe erzeugt.
 
-import * as GC from "./geo-core.js?v=3";
-import * as GS from "./geo-svg.js?v=3";
+import * as GC from "./geo-core.js?v=4";
+import * as GS from "./geo-svg.js?v=4";
 
 const W = 600,
   H = 420;
@@ -36,6 +36,7 @@ const els = {
   chkLockRadius: document.getElementById("chk-lock-radius"),
   btnResetRadius: document.getElementById("btn-reset-radius"),
   radiusStatus: document.getElementById("radius-status"),
+  pendingStatus: document.getElementById("pending-status"),
 };
 
 const state = {
@@ -531,6 +532,24 @@ function updateFreeInstruction() {
   `;
 }
 
+// Zeigt an, dass ein Kreis bzw. eine Gerade erst halb gesetzt ist — sonst ist der gestrichelte
+// Vorschaukreis am Bildschirm nicht als "noch nicht fertig" zu erkennen.
+function updatePendingStatus() {
+  const p = state.tool.pending;
+  els.pendingStatus.hidden = !p;
+  if (!p) return;
+  els.pendingStatus.textContent =
+    p.type === "circle"
+      ? "◯ Einstichpunkt gesetzt — klicke jetzt auf einen Punkt, durch den der Kreis gehen soll (Esc bricht ab)."
+      : "／ Erster Punkt gesetzt — klicke jetzt auf den zweiten Punkt der Geraden (Esc bricht ab).";
+}
+
+// Beide Statuszeilen gemeinsam auffrischen.
+function updateStatus() {
+  updatePendingStatus();
+  updateRadiusStatus();
+}
+
 function updateRadiusStatus() {
   const t = state.tool;
   els.btnResetRadius.hidden = !(t.radiusLocked && t.lockedRadius);
@@ -562,7 +581,7 @@ function renderFreeSetup() {
   state.tool.reset();
   setActiveToolBtn(null);
   updateFreeInstruction();
-  updateRadiusStatus();
+  updateStatus();
   els.feedbackBox.hidden = true;
 }
 
@@ -634,28 +653,35 @@ els.btnNewTaskFree.addEventListener("click", newTaskClicked);
 els.btnToolCircle.addEventListener("click", () => {
   state.tool.setMode("circle");
   setActiveToolBtn(els.btnToolCircle);
+  updateStatus();
 });
 els.btnToolLine.addEventListener("click", () => {
   state.tool.setMode("line");
   setActiveToolBtn(els.btnToolLine);
+  updateStatus();
+});
+// Escape bricht einen halb gesetzten Kreis bzw. eine halb gesetzte Gerade ab.
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Escape") return;
+  if (state.tool.cancelPending()) updateStatus();
 });
 els.btnUndo.addEventListener("click", () => {
   state.tool.undo();
-  updateRadiusStatus();
+  updateStatus();
 });
 els.btnClear.addEventListener("click", () => {
   GS.clearEl(layerConstruct);
   state.tool.reset();
-  updateRadiusStatus();
+  updateStatus();
   els.feedbackBox.hidden = true;
 });
 els.chkLockRadius.addEventListener("change", () => {
   state.tool.setRadiusLocked(els.chkLockRadius.checked);
-  updateRadiusStatus();
+  updateStatus();
 });
 els.btnResetRadius.addEventListener("click", () => {
   state.tool.clearLockedRadius();
-  updateRadiusStatus();
+  updateStatus();
 });
 els.btnCheck.addEventListener("click", () => {
   const result = current().check(state.task, state.tool);
@@ -670,6 +696,6 @@ els.btnHint.addEventListener("click", () => {
 
 state.tool = new GS.ConstructionTool(svg, layerUser, snapToNearest);
 state.tool.extraRender = renderUserMarkers;
-state.tool.onChange = updateRadiusStatus;
+state.tool.onChange = updateStatus;
 state.task = current().newTask();
 refreshAll();

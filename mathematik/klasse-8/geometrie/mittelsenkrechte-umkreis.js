@@ -1,7 +1,7 @@
-import * as GC from "./geo-core.js?v=3";
-import * as GS from "./geo-svg.js?v=3";
-import { setupDraggableTriangle } from "./triangle-common.js?v=3";
-import { drawMittelsenkrechte, drawUmkreis } from "./constructions.js?v=3";
+import * as GC from "./geo-core.js?v=4";
+import * as GS from "./geo-svg.js?v=4";
+import { setupDraggableTriangle } from "./triangle-common.js?v=4";
+import { drawMittelsenkrechte, drawUmkreis } from "./constructions.js?v=4";
 
 const W = 600,
   H = 440;

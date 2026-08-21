@@ -3,8 +3,8 @@
 // rechte/Umkreis, Winkelhalbierende/Inkreis, ...) rendert jede Seite selbst über den onUpdate-
 // Callback, der bei jeder Änderung (Ziehen oder neues Dreieck) aufgerufen wird.
 
-import { clampToBox, randomTriangle } from "./geo-core.js?v=3";
-import { drawDraggablePoint } from "./geo-svg.js?v=3";
+import { clampToBox, randomTriangle } from "./geo-core.js?v=4";
+import { drawDraggablePoint } from "./geo-svg.js?v=4";
 
 export function setupDraggableTriangle(svg, layer, W, H, initial, onUpdate) {
   const pts = { A: initial.A, B: initial.B, C: initial.C };
