@@ -95,7 +95,7 @@
     <a class="menu-card" data-section="mathematik" href="mathematik/index.html" hidden>
       <span class="menu-icon">🧮</span>
       <h2>1 Mathematik</h2>
-      <p>Werkzeuge für den Mathematikunterricht, sortiert nach Klassenstufe (Klasse 8, Klasse 10, MSS).</p>
+      <p>Werkzeuge für den Mathematikunterricht, sortiert nach Klassenstufe (Klasse 8, Klasse 10, MSS 12).</p>
     </a>
     <a class="menu-card" data-section="physik" href="physik/index.html" hidden>
       <span class="menu-icon">⚛️</span>
@@ -137,7 +137,7 @@
   //
   // "bundle": Wird der Code eines Eintrags eingegeben, schalten sich alle dort genannten
   // Bereiche gemeinsam frei — nicht nur der Eintrag selbst. Der Mathematik-Code schaltet so auch
-  // gleich Klasse 8, Klasse 10 und MSS mit frei, obwohl jeder von ihnen zusätzlich einen eigenen,
+  // gleich Klasse 8, Klasse 10 und MSS 12 mit frei, obwohl jeder von ihnen zusätzlich einen eigenen,
   // unabhängigen Code behält (fehlt "bundle", gilt automatisch [key]).
   var SECTIONS = [
     { key: "mathematik", label: "Mathematik", nummer: 1, bundle: ["mathematik", "klasse-8", "klasse-10", "mss12"] },
@@ -147,7 +147,7 @@
     { key: "office-tools", label: "Office-Tools", nummer: 0 },
     { key: "klasse-8", label: "Klasse 8", nummer: 8 },
     { key: "klasse-10", label: "Klasse 10", nummer: 10 },
-    { key: "mss12", label: "MSS", nummer: 12 },
+    { key: "mss12", label: "MSS 12", nummer: 12 },
   ];
 
   // Sonder-Menüpunkt-Zahl -1: schaltet, wenn ihr Code eingegeben wird, wirklich alle Bereiche auf
