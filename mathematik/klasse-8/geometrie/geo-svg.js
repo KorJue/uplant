@@ -3,7 +3,7 @@
 // Gerade, Kreis, Zirkelbogen, rechter-Winkel-Marke) sowie ein klick-basiertes Werkzeug
 // ("Kreis"/"Gerade") für das freie Konstruieren mit anschließender Prüfung.
 
-import { add, scale, sub, len, dist, norm, angleOf } from "./geo-core.js?v=11";
+import { add, scale, sub, len, dist, norm, angleOf } from "./geo-core.js?v=12";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -153,27 +153,37 @@ export function drawRightAngleMarker(layer, foot, towardA, towardB, cls = "") {
 // Macht "handle" (ein SVG-Element, meist ein unsichtbarer größerer Trefferkreis) per Maus/Touch
 // ziehbar. onDrag(x, y) bekommt die neue Position in SVG-Koordinaten (vor dem Clamping durch den
 // Aufrufer). onStart/onEnd sind optionale Callbacks.
+//
+// move/up hängen bewusst am document statt am Handle selbst, und ohne setPointerCapture: Da der
+// Punkt bei jedem Schritt an die neue Fingerposition gezeichnet wird, reicht ein Frame Verzögerung,
+// damit der Finger kurzzeitig neben dem (kleinen) Trefferkreis steht — mit Listenern nur am Handle
+// bricht der Zug dann sofort ab ("Fokus verloren"), weil weitere Events dieses Element gar nicht
+// mehr treffen. setPointerCapture sollte das eigentlich abfangen, verhält sich auf SVG-Elementen
+// aber nicht auf jedem mobilen Browser zuverlässig. Am document lauschen umgeht das Problem
+// vollständig: Es kommt nur noch auf die (stabile) Pointer-ID an, nicht mehr auf die Trefferfläche.
 export function makeDraggable(svg, handle, onDrag, opts = {}) {
   handle.classList.add("geo-draggable");
   handle.addEventListener("pointerdown", (e) => {
     e.preventDefault();
-    handle.setPointerCapture(e.pointerId);
+    const pointerId = e.pointerId;
     handle.classList.add("geo-dragging");
     if (opts.onStart) opts.onStart();
     function move(ev) {
+      if (ev.pointerId !== pointerId) return;
       const p = toSvgPoint(svg, ev);
       onDrag(p.x, p.y);
     }
-    function up() {
+    function up(ev) {
+      if (ev.pointerId !== pointerId) return;
       handle.classList.remove("geo-dragging");
-      handle.removeEventListener("pointermove", move);
-      handle.removeEventListener("pointerup", up);
-      handle.removeEventListener("pointercancel", up);
+      document.removeEventListener("pointermove", move);
+      document.removeEventListener("pointerup", up);
+      document.removeEventListener("pointercancel", up);
       if (opts.onEnd) opts.onEnd();
     }
-    handle.addEventListener("pointermove", move);
-    handle.addEventListener("pointerup", up);
-    handle.addEventListener("pointercancel", up);
+    document.addEventListener("pointermove", move);
+    document.addEventListener("pointerup", up);
+    document.addEventListener("pointercancel", up);
   });
 }
 

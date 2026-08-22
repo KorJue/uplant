@@ -1,8 +1,8 @@
-import * as GC from "./geo-core.js?v=11";
-import * as GS from "./geo-svg.js?v=11";
-import { drawWinkelhalbierende, drawInkreis } from "./constructions.js?v=11";
-import { TRI_TASKS } from "./tri-construct.js?v=11";
-import { setupTrianglePage } from "./tri-page.js?v=11";
+import * as GC from "./geo-core.js?v=12";
+import * as GS from "./geo-svg.js?v=12";
+import { drawWinkelhalbierende, drawInkreis } from "./constructions.js?v=12";
+import { TRI_TASKS } from "./tri-construct.js?v=12";
+import { setupTrianglePage } from "./tri-page.js?v=12";
 
 const W = 600,
   H = 440;
