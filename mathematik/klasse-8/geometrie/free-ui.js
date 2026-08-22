@@ -3,10 +3,10 @@
 // und das Rückmeldefeld. Das ist auf allen Geometrie-Seiten identisch — nur das Modell (welche Punkte
 // einrasten, was markiert wird, was geprüft wird) kommt von der jeweiligen Seite.
 
-import * as GC from "./geo-core.js?v=15";
-import * as GS from "./geo-svg.js?v=15";
-import { circlesIntersections, pairedIntersections } from "./check-helpers.js?v=15";
-import { TOL_PT } from "./tri-construct.js?v=15";
+import * as GC from "./geo-core.js?v=16";
+import * as GS from "./geo-svg.js?v=16";
+import { circlesIntersections, pairedIntersections } from "./check-helpers.js?v=16";
+import { TOL_PT } from "./tri-construct.js?v=16";
 
 const PENDING_TEXT = {
   circle: "◯ Einstichpunkt gesetzt — klicke jetzt auf einen Punkt, durch den der Kreis gehen soll (Esc bricht ab).",

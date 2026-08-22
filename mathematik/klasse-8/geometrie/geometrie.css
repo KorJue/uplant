@@ -494,9 +494,11 @@ body.geo-fullscreen-active {
   background: #fdecec;
   color: #b3261e;
 }
+/* Hilfestellungen (Tipp-Rückmeldung, Rätsel-Hilfe) sind einheitlich violett eingefärbt — eine
+   eigene Farbe, die nicht mit der Grün/Orange/Rot-Ampel der Rätsel-Schwierigkeitsstufen kollidiert. */
 .geo-feedback.geo-feedback-hint {
-  background: #eef2ff;
-  color: var(--accent-dark);
+  background: #f3e8ff;
+  color: #6d28d9;
 }
 :root[data-theme="dark"] .geo-feedback.geo-feedback-ok {
   background: #17321f;
@@ -507,8 +509,8 @@ body.geo-fullscreen-active {
   color: #ff8a8a;
 }
 :root[data-theme="dark"] .geo-feedback.geo-feedback-hint {
-  background: #1e2a4a;
-  color: #8ab4f8;
+  background: #2e1a47;
+  color: #c084fc;
 }
 
 .geo-mode-tabs {
@@ -607,8 +609,9 @@ body.geo-fullscreen-active {
 .raetsel-auftrag {
   border-left-color: var(--accent);
 }
+/* Hilfestellungen sind einheitlich violett — dieselbe Farbe wie die Tipp-Rückmeldung. */
 .raetsel-hilfe {
-  border-left-color: #1a9e7a;
+  border-left-color: #6d28d9;
 }
 .raetsel-merksatz {
   border-left-color: #e08a1e;
@@ -664,23 +667,24 @@ body.geo-fullscreen-active {
   color: var(--muted);
 }
 
-/* Die drei Differenzierungsstufen sind zusätzlich zur Beschriftung farbig markiert, damit im
-   Klassenraum auf einen Blick sichtbar ist, wer auf welcher Stufe arbeitet. */
+/* Die drei Differenzierungsstufen sind zusätzlich zur Beschriftung farbig markiert wie eine Ampel
+   (grün = einfach, orange = mittel, rot = schwierig), damit im Klassenraum auf einen Blick sichtbar
+   ist, wer auf welcher Stufe arbeitet. */
 .raetsel-stufen .geo-mode-tab {
   font-size: 0.82rem;
   padding: 0.4rem 0.7rem;
 }
 .raetsel-stufen .geo-mode-tab[data-stufe="1"].geo-mode-tab-active {
+  background: #15803d;
+  border-color: #15803d;
+}
+.raetsel-stufen .geo-mode-tab[data-stufe="2"].geo-mode-tab-active {
   background: #c2410c;
   border-color: #c2410c;
 }
-.raetsel-stufen .geo-mode-tab[data-stufe="2"].geo-mode-tab-active {
-  background: #be185d;
-  border-color: #be185d;
-}
 .raetsel-stufen .geo-mode-tab[data-stufe="3"].geo-mode-tab-active {
-  background: #6d28d9;
-  border-color: #6d28d9;
+  background: #b91c1c;
+  border-color: #b91c1c;
 }
 
 .raetsel-ampel {
