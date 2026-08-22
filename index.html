@@ -21,7 +21,7 @@
     border-radius: 8px;
     font-size: 1rem;
     font-family: inherit;
-    text-transform: uppercase;
+    letter-spacing: 0.08em;
   }
   .access-form button {
     padding: 0.55rem 1.3rem;
@@ -77,9 +77,9 @@
 <main class="menu-main">
   <section class="card" id="access-card">
     <h2>Zugang</h2>
-    <p>Gib deinen 5-stelligen Code ein, um den passenden Bereich freizuschalten.</p>
+    <p>Gib deinen 4-stelligen Code ein, um den passenden Bereich freizuschalten.</p>
     <form class="access-form" id="access-form">
-      <input type="text" id="access-code" placeholder="Code" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" maxlength="5">
+      <input type="text" id="access-code" inputmode="numeric" pattern="[0-9]*" placeholder="Code" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="4">
       <button type="submit">Freischalten</button>
     </form>
     <p class="access-error" id="access-error" hidden>Unbekannter Code.</p>
@@ -102,7 +102,7 @@
       <h2>Klasse 10</h2>
       <p>Themen und Rechner für die 10. Klasse.</p>
     </a>
-    <a class="menu-card" data-section="mss" href="mathematik/mss/index.html" hidden>
+    <a class="menu-card" data-section="mss12" href="mathematik/mss12/index.html" hidden>
       <span class="menu-icon">🎓</span>
       <h2>MSS</h2>
       <p>Themen und Rechner für die Mainzer Studienstufe (Oberstufe).</p>
@@ -125,17 +125,36 @@
   "use strict";
   var STORAGE_KEY = "uplant-access";
 
-  // Zugangscodes (jeweils 5-stellig, zufällig aus einem Alphabet ohne verwechselbare Zeichen
-  // wie 0/O oder 1/I/l) → welche Bereiche sie freischalten.
-  // Hier anpassen/ergänzen. Achtung: nur eine Navigationshilfe, keine echte
-  // Zugriffskontrolle (siehe Hinweis im Text).
-  var CODES = {
-    Q3X4P: ["klasse-8"],
-    "78PTT": ["klasse-10"],
-    H2H82: ["mss"],
-    RXFE3: ["office-tools"],
-    NEEF9: ["klasse-8", "klasse-10", "mss", "office-tools"],
-  };
+  // Bereiche und ihre Menüpunkt-Zahl für die Code-Berechnung (siehe berechneCode unten).
+  // "office-tools" ist bewusst 0, weil es keiner Jahrgangs-/Klassenstufe entspricht; "mss12"
+  // trägt die 12 schon im Namen. Hier anpassen/ergänzen, wenn ein Bereich dazukommt.
+  var SECTIONS = [
+    { key: "klasse-8", label: "Klasse 8", nummer: 8 },
+    { key: "klasse-10", label: "Klasse 10", nummer: 10 },
+    { key: "mss12", label: "MSS", nummer: 12 },
+    { key: "office-tools", label: "Office-Tools", nummer: 0 },
+  ];
+
+  // Der Code eines Bereichs wechselt automatisch jeden Monat, ohne dass hier jemals etwas von
+  // Hand nachgetragen werden müsste: (Jahr + Menüpunkt-Zahl) * Monat, davon die letzten vier
+  // Ziffern. Wer die Menüpunkt-Zahl eines Bereichs kennt, kann den aktuellen Code jederzeit selbst
+  // im Kopf oder mit einem Taschenrechner ausrechnen.
+  //
+  // Die vier Menüpunkt-Zahlen (0, 8, 10, 12) unterscheiden sich paarweise um höchstens 12, der
+  // Monat ist höchstens 12 — zwei Bereiche können sich im selben Monat also um höchstens 12 * 12 =
+  // 144 unterscheiden. Das ist immer kleiner als 10000, weshalb die Kürzung auf vier Ziffern zwei
+  // verschiedene Bereiche im selben Monat nie zufällig auf denselben Code fallen lässt.
+  //
+  // Wie überall auf dieser Seite ist das keine echte Zugriffskontrolle (siehe Hinweistext), nur
+  // eine sich monatlich ändernde Navigationshilfe.
+  function berechneCode(nummer, datum) {
+    var jahr = datum.getFullYear();
+    var monat = datum.getMonth() + 1;
+    var wert = (jahr + nummer) * monat;
+    var code = String(wert % 10000);
+    while (code.length < 4) code = "0" + code;
+    return code;
+  }
 
   var form = document.getElementById("access-form");
   var input = document.getElementById("access-code");
@@ -144,8 +163,6 @@
   var unlockStatus = document.getElementById("unlock-status");
   var lockAgainBtn = document.getElementById("lock-again");
   var cards = document.querySelectorAll(".menu-card[data-section]");
-
-  var LABELS = { "klasse-8": "Klasse 8", "klasse-10": "Klasse 10", mss: "MSS", "office-tools": "Office-Tools" };
 
   function getUnlocked() {
     try {
@@ -158,6 +175,10 @@
   function setUnlocked(sections) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(sections));
   }
+  function labelVon(key) {
+    var section = SECTIONS.filter(function (s) { return s.key === key; })[0];
+    return section ? section.label : key;
+  }
 
   function render() {
     var unlocked = getUnlocked();
@@ -168,23 +189,23 @@
     // (z. B. erst MATHE, später zusätzlich OFFICE) statt nur einmalig freischalten zu können.
     unlockBar.hidden = unlocked.length === 0;
     if (unlocked.length > 0) {
-      unlockStatus.textContent =
-        "Freigeschaltet: " + unlocked.map(function (s) { return LABELS[s] || s; }).join(", ");
+      unlockStatus.textContent = "Freigeschaltet: " + unlocked.map(labelVon).join(", ");
     }
   }
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
-    var code = input.value.trim().toUpperCase();
-    var sections = CODES[code];
-    if (!sections) {
+    var eingabe = input.value.trim();
+    var jetzt = new Date();
+    var treffer = SECTIONS.filter(function (s) { return berechneCode(s.nummer, jetzt) === eingabe; });
+    if (!treffer.length) {
       errorBox.hidden = false;
       return;
     }
     errorBox.hidden = true;
     var unlocked = getUnlocked();
-    sections.forEach(function (s) {
-      if (unlocked.indexOf(s) === -1) unlocked.push(s);
+    treffer.forEach(function (s) {
+      if (unlocked.indexOf(s.key) === -1) unlocked.push(s.key);
     });
     setUnlocked(unlocked);
     input.value = "";

@@ -1,4 +1,4 @@
-// Blendet auf Unterseiten mit Menü-Karten (mathematik/index.html, mss/index.html, usw.) nur die
+// Blendet auf Unterseiten mit Menü-Karten (mathematik/index.html, mss12/index.html, usw.) nur die
 // Karten ein, deren Bereich auf der Startseite per Code freigeschaltet wurde (localStorage
 // "uplant-access", siehe index.html). So lässt sich nicht einfach über die Ordnerstruktur klicken,
 // ohne vorher auf der Startseite einen Code eingegeben zu haben.
