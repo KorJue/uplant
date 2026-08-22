@@ -139,15 +139,20 @@
   // Bereiche gemeinsam frei — nicht nur der Eintrag selbst. Der Mathematik-Code schaltet so auch
   // gleich Klasse 8, Klasse 10 und MSS 12 mit frei, obwohl jeder von ihnen zusätzlich einen eigenen,
   // unabhängigen Code behält (fehlt "bundle", gilt automatisch [key]).
+  //
+  // Umgekehrt bündeln Klasse 8, Klasse 10 und MSS 12 jeweils "mathematik" mit ein: Sie haben selbst
+  // keine eigene Karte auf dieser Startseite (die liegt eine Ebene tiefer, auf mathematik/index.html)
+  // — ohne die Mathematik-Karte hier hätte man nach Eingabe z. B. des Klasse-8-Codes gar keinen
+  // Klick-Weg mehr dorthin, der Code würde scheinbar "ins Leere laufen".
   var SECTIONS = [
     { key: "mathematik", label: "Mathematik", nummer: 1, bundle: ["mathematik", "klasse-8", "klasse-10", "mss12"] },
     { key: "physik", label: "Physik", nummer: 2 },
     { key: "nawi", label: "NaWi", nummer: 3 },
     { key: "mint", label: "MINT", nummer: 4 },
     { key: "office-tools", label: "Office-Tools", nummer: 0 },
-    { key: "klasse-8", label: "Klasse 8", nummer: 8 },
-    { key: "klasse-10", label: "Klasse 10", nummer: 10 },
-    { key: "mss12", label: "MSS 12", nummer: 12 },
+    { key: "klasse-8", label: "Klasse 8", nummer: 8, bundle: ["klasse-8", "mathematik"] },
+    { key: "klasse-10", label: "Klasse 10", nummer: 10, bundle: ["klasse-10", "mathematik"] },
+    { key: "mss12", label: "MSS 12", nummer: 12, bundle: ["mss12", "mathematik"] },
   ];
 
   // Sonder-Menüpunkt-Zahl -1: schaltet, wenn ihr Code eingegeben wird, wirklich alle Bereiche auf
