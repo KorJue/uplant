@@ -18,7 +18,7 @@
 </nav>
 <header class="page-header">
   <h1>Alle besonderen Linien am Dreieck</h1>
-  <p>Alle vier besonderen Linien zusammen in einem Dreieck, mitsamt Um- und Inkreis. Blende einzelne Linien über die Kästchen aus, um Überschneidungen besser zu erkennen. Ziehe an A, B oder C — mit eingeschalteten Spuren hinterlassen die besonderen Punkte dabei ihre Bahn (nur für Linien, die gerade eingeblendet sind).</p>
+  <p>Alle vier besonderen Linien zusammen in einem Dreieck, mitsamt Um- und Inkreis. Es startet leer: Blende über die Kästchen genau das ein, was du gerade untersuchen willst — eine Linienart allein, oder mehrere zum Vergleich. Ziehe an A, B oder C — mit eingeschalteten Spuren hinterlassen die besonderen Punkte dabei ihre Bahn (nur für Linien, die gerade eingeblendet sind).</p>
 </header>
 
 <main class="menu-main">
@@ -38,14 +38,14 @@
           <button type="button" class="geo-btn geo-zoom-btn" id="btn-zoom">⛶ Zeichenfläche vergrößern</button>
         </div>
         <div class="geo-toggle-row" id="line-toggles">
-          <label><input type="checkbox" id="chk-mittelsenkrechte" checked> Mittelsenkrechte</label>
-          <label><input type="checkbox" id="chk-winkelhalbierende" checked> Winkelhalbierende</label>
-          <label><input type="checkbox" id="chk-seitenhalbierende" checked> Seitenhalbierende</label>
-          <label><input type="checkbox" id="chk-hoehen" checked> Höhen</label>
+          <label><input type="checkbox" id="chk-mittelsenkrechte"> Mittelsenkrechte</label>
+          <label><input type="checkbox" id="chk-winkelhalbierende"> Winkelhalbierende</label>
+          <label><input type="checkbox" id="chk-seitenhalbierende"> Seitenhalbierende</label>
+          <label><input type="checkbox" id="chk-hoehen"> Höhen</label>
         </div>
         <div class="geo-toggle-row">
-          <label><input type="checkbox" id="chk-umkreis" checked> Umkreis</label>
-          <label><input type="checkbox" id="chk-inkreis" checked> Inkreis</label>
+          <label><input type="checkbox" id="chk-umkreis"> Umkreis</label>
+          <label><input type="checkbox" id="chk-inkreis"> Inkreis</label>
           <label><input type="checkbox" id="toggle-arcs"> Zirkelbögen anzeigen</label>
         </div>
         <div class="geo-toggle-row">
@@ -66,13 +66,15 @@
       <div class="geo-side-col">
         <div class="geo-instruction-box">
           <p>Vier besondere Punkte in einem Dreieck: Umkreismittelpunkt M, Inkreismittelpunkt I, Schwerpunkt S und Höhenschnittpunkt H. Sie fallen im Allgemeinen nicht zusammen — nur beim gleichseitigen Dreieck liegen alle vier exakt an derselben Stelle.</p>
+          <p class="geo-why"><strong>Der gemeinsame Gedanke:</strong> M und I entstehen als <em>Ortslinien</em>-Schnittpunkte. Auf einer Mittelsenkrechten liegen genau die Punkte mit gleichem Abstand zu zwei Ecken, auf einer Winkelhalbierenden genau die mit gleichem Abstand zu zwei Seiten. Wer zwei solche Bedingungen erfüllt, erfüllt automatisch auch die dritte — deshalb treffen sich die drei Linien jeweils in <em>einem</em> Punkt, und deshalb gibt es überhaupt einen Um- und einen Inkreis.</p>
         </div>
         <ol class="geo-steps">
-          <li><strong>Mittelsenkrechte</strong> (Seitenmitte, rechtwinklig zur Seite) → Umkreismittelpunkt M, gleich weit von A, B, C entfernt → Umkreis.</li>
-          <li><strong>Winkelhalbierende</strong> (halbiert den Innenwinkel) → Inkreismittelpunkt I, gleich weit von allen drei Seiten entfernt → Inkreis (Radius über das Lot auf eine Seite).</li>
-          <li><strong>Seitenhalbierende</strong> (Eckpunkt–Seitenmitte) → Schwerpunkt S, teilt jede Seitenhalbierende im Verhältnis 2:1.</li>
-          <li><strong>Höhe</strong> (senkrecht auf die Gegenseite, ggf. verlängert) → Höhenschnittpunkt H, liegt bei stumpfwinkligen Dreiecken außerhalb.</li>
-          <li><strong>Spuren</strong>: Schalte die Spuren ein und ziehe langsam an einem Eckpunkt. Die Schnittpunkte der gerade eingeblendeten Linien hinterlassen dann eine Bahn (z. B. nur M, wenn nur die Mittelsenkrechten aktiv sind). Sind Mittelsenkrechte, Winkelhalbierende, Seitenhalbierende und Höhen alle gleichzeitig eingeblendet, zeigt sich: M, S und H bleiben immer auf einer gemeinsamen Geraden — der <em>Eulerschen Geraden</em>.</li>
+          <li><strong>Mittelsenkrechte</strong> (Seitenmitte, rechtwinklig zur Seite) → Umkreismittelpunkt M, gleich weit von A, B, C entfernt → Umkreis. Ziehe die Ecken: Bei einem spitzwinkligen Dreieck liegt M innen, bei einem rechtwinkligen genau auf der Mitte der längsten Seite (Satz des Thales), bei einem stumpfwinkligen außerhalb.</li>
+          <li><strong>Winkelhalbierende</strong> (halbiert den Innenwinkel) → Inkreismittelpunkt I, gleich weit von allen drei Seiten entfernt → Inkreis. Der Radius ist dieser gemeinsame Abstand, gemessen als Lot auf eine Seite; dort berührt der Kreis. I liegt als einziger der vier Punkte <em>immer</em> im Inneren.</li>
+          <li><strong>Seitenhalbierende</strong> (Eckpunkt–Seitenmitte, <em>nicht</em> senkrecht!) → Schwerpunkt S, teilt jede Seitenhalbierende im Verhältnis 2:1. Auf Pappe ausgeschnitten balanciert das Dreieck genau auf S.</li>
+          <li><strong>Höhe</strong> (senkrecht auf die Gegenseite, ggf. verlängert) → Höhenschnittpunkt H. Bei stumpfwinkligen Dreiecken liegt H außerhalb, beim rechtwinkligen genau in der Ecke mit dem rechten Winkel.</li>
+          <li><strong>Spuren</strong>: Schalte die Spuren ein und ziehe langsam an einem Eckpunkt. Die Schnittpunkte der gerade eingeblendeten Linien hinterlassen dann eine Bahn (z. B. nur M, wenn nur die Mittelsenkrechten aktiv sind).</li>
+          <li><strong>Eulersche Gerade</strong>: Blende Mittelsenkrechte, Seitenhalbierende und Höhen gleichzeitig ein und zieh an einer Ecke. M, S und H bleiben stets auf <em>einer</em> Geraden, und S liegt immer zwischen M und H — es teilt die Strecke MH im Verhältnis 1:2. Der Inkreismittelpunkt I macht das nicht mit: Er liegt im Allgemeinen neben dieser Geraden.</li>
         </ol>
       </div>
     </div>
@@ -83,6 +85,6 @@
   <p><a href="index.html">Zurück zu Geometrie</a></p>
   <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
-<script type="module" src="alle-linien.js?v=9"></script>
+<script type="module" src="alle-linien.js?v=10"></script>
 </body>
 </html>

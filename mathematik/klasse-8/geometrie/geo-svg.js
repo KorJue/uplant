@@ -3,7 +3,7 @@
 // Gerade, Kreis, Zirkelbogen, rechter-Winkel-Marke) sowie ein klick-basiertes Werkzeug
 // ("Kreis"/"Gerade") für das freie Konstruieren mit anschließender Prüfung.
 
-import { add, scale, sub, len, dist, norm, angleOf } from "./geo-core.js?v=9";
+import { add, scale, sub, len, dist, norm, angleOf } from "./geo-core.js?v=10";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -216,12 +216,18 @@ export class ConstructionTool {
     this.mode = null; // "circle" | "line" | null
     this.circles = []; // {center, radius}
     this.lines = []; // {a, b}
+    // Reihenfolge der gesetzten Elemente ("circle"/"line") für ein chronologisches Rückgängig.
+    this._order = [];
     this.pending = null; // {type:"circle", center} während des zweiten Klicks
     // "Zirkel eingerastet": Wie bei einem echten Zirkel, den man zwischen zwei Bögen nicht
     // verstellt — ist ein Radius gemerkt, genügt ein einzelner Klick auf den neuen Einstichpunkt.
     this.lockedRadius = null;
     this.radiusLocked = false;
     this.onChange = null;
+    // Optionaler Haken (circles) => [cssKlasse, ...], einmal pro Zeichenvorgang aufgerufen: damit
+    // können fertig verwendete Hilfskreise grau zurücktreten, ohne dass die Zeichenlogik hier die
+    // Konstruktion kennen muss.
+    this.circleClasses = null;
     svg.addEventListener("click", (e) => this._onClick(e));
     svg.addEventListener("pointermove", (e) => this._onMove(e));
     // Verlässt der Zeiger die Zeichenfläche, verschwindet die Vorschau. Sonst bliebe der
@@ -272,20 +278,23 @@ export class ConstructionTool {
     this._previewPoint = null;
     this._render();
   }
+  // Nimmt den zuletzt ausgeführten Schritt zurück — Kreis oder Gerade, je nachdem was zuletzt kam.
+  // Ohne die Reihenfolge in _order würde ein verklickter Kreis eine längst fertige Gerade löschen.
   undo() {
     if (this.pending) {
       this.pending = null;
       this._previewPoint = null;
-    } else if (this.lines.length) {
-      this.lines.pop();
-    } else if (this.circles.length) {
-      this.circles.pop();
+    } else {
+      const last = this._order.pop();
+      if (last === "line") this.lines.pop();
+      else if (last === "circle") this.circles.pop();
     }
     this._render();
   }
   reset() {
     this.circles = [];
     this.lines = [];
+    this._order = [];
     this.pending = null;
     this._previewPoint = null;
     // Der eingerastete Radius gehört zur weggeworfenen Zeichnung; die Einstellung selbst
@@ -301,6 +310,7 @@ export class ConstructionTool {
       if (this.radiusLocked && this.lockedRadius) {
         // Zirkel ist eingerastet: ein Klick setzt den Einstichpunkt, der Radius bleibt gleich.
         this.circles.push({ center: p, radius: this.lockedRadius });
+        this._order.push("circle");
         this.pending = null;
       } else if (!this.pending) {
         this.pending = { type: "circle", center: p };
@@ -308,6 +318,7 @@ export class ConstructionTool {
         const r = dist(this.pending.center, p);
         if (r > 6) {
           this.circles.push({ center: this.pending.center, radius: r });
+          this._order.push("circle");
           if (this.radiusLocked) this.lockedRadius = r;
         }
         this.pending = null;
@@ -316,7 +327,10 @@ export class ConstructionTool {
       if (!this.pending) {
         this.pending = { type: "line", a: p };
       } else {
-        if (dist(this.pending.a, p) > 6) this.lines.push({ a: this.pending.a, b: p });
+        if (dist(this.pending.a, p) > 6) {
+          this.lines.push({ a: this.pending.a, b: p });
+          this._order.push("line");
+        }
         this.pending = null;
       }
     }
@@ -334,7 +348,8 @@ export class ConstructionTool {
   }
   _render() {
     clearEl(this.layer);
-    this.circles.forEach((c) => drawCircle(this.layer, c.center, c.radius, "geo-user-circle"));
+    const extraCls = this.circleClasses ? this.circleClasses(this.circles) : null;
+    this.circles.forEach((c, i) => drawCircle(this.layer, c.center, c.radius, "geo-user-circle " + ((extraCls && extraCls[i]) || "")));
     this.lines.forEach((l) => {
       const d = sub(l.b, l.a);
       drawLine(this.layer, l.a, d, { w: 2000, h: 2000 }, "geo-user-line");

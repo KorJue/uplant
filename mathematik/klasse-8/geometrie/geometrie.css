@@ -269,6 +269,21 @@ body.geo-fullscreen-active {
   stroke-width: 2.6;
 }
 
+/* Erledigt: Hilfskreise und Schnittpunkte, deren Linie schon steht, treten zurück. Bei drei
+   Mittelsenkrechten bzw. Winkelhalbierenden liegen sonst am Ende bis zu neun Kreise übereinander
+   und man findet die noch offenen Klickziele nicht mehr. Sichtbar bleiben sie trotzdem — die
+   Konstruktion soll ja nachvollziehbar bleiben. */
+.geo-circle.geo-user-circle.geo-done {
+  stroke: var(--muted);
+  stroke-width: 1.2;
+  opacity: 0.45;
+}
+.geo-cross.geo-done line {
+  stroke: var(--muted);
+  stroke-width: 1.6;
+  opacity: 0.7;
+}
+
 /* Hilfslinie, die nicht das eigentliche Konstruktionsergebnis ist (z. B. die Mittelsenkrechte
    auf dem Weg zum Seitenmittelpunkt). */
 .geo-hilfslinie {
@@ -436,6 +451,20 @@ body.geo-fullscreen-active {
 }
 .geo-instruction-box p {
   margin: 0;
+}
+.geo-instruction-box p + p {
+  margin-top: 0.7rem;
+}
+/* Begründung statt bloßer Anweisung: warum die Konstruktion überhaupt das Gewünschte liefert.
+   Bewusst abgesetzt, damit sie sich vom Handlungsschritt darüber unterscheidet. */
+.geo-why {
+  border-top: 1px solid var(--border);
+  padding-top: 0.7rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.geo-why strong {
+  color: var(--text);
 }
 
 .geo-feedback {
