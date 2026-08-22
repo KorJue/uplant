@@ -3,7 +3,7 @@
 // Gerade, Kreis, Zirkelbogen, rechter-Winkel-Marke) sowie ein klick-basiertes Werkzeug
 // ("Kreis"/"Gerade") für das freie Konstruieren mit anschließender Prüfung.
 
-import { add, scale, sub, len, dist, norm, angleOf } from "./geo-core.js?v=10";
+import { add, scale, sub, len, dist, norm, angleOf } from "./geo-core.js?v=11";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -21,14 +21,23 @@ export function clearEl(el) {
   while (el.firstChild) el.removeChild(el.firstChild);
 }
 
+// Rechnet eine Bildschirmposition (clientX/clientY) in SVG-Koordinaten um. Bewusst über
+// getBoundingClientRect() statt getScreenCTM(): Auf manchen Mobilgeräten (v. a. wenn die Seite per
+// Pinch-Zoom vergrößert ist — auf kleinen Smartphone-Bildschirmen deutlich häufiger als auf einem
+// iPad) liefert getScreenCTM() eine Matrix, die den aktuellen Zoom nicht berücksichtigt; das Ziehen
+// eines Punkts bewegte sich dann nur noch um einen Bruchteil des tatsächlichen Fingerwegs.
+// getBoundingClientRect() ist dagegen laut Spezifikation immer im selben (bereits um Pinch-Zoom
+// bereinigten) Koordinatensystem wie clientX/clientY angegeben. Die Umrechnung über das viewBox-
+// Rechteck setzt voraus, dass Breite und Höhe des gerenderten <svg> genau das viewBox-Seiten-
+// verhältnis haben — hier immer der Fall (CSS: width: 100%; height: auto).
 export function toSvgPoint(svg, evt) {
-  const p = svg.createSVGPoint();
-  p.x = evt.clientX;
-  p.y = evt.clientY;
-  const ctm = svg.getScreenCTM();
-  if (!ctm) return { x: 0, y: 0 };
-  const local = p.matrixTransform(ctm.inverse());
-  return { x: local.x, y: local.y };
+  const rect = svg.getBoundingClientRect();
+  const vb = svg.viewBox.baseVal;
+  if (!rect.width || !rect.height || !vb) return { x: 0, y: 0 };
+  return {
+    x: vb.x + ((evt.clientX - rect.left) / rect.width) * vb.width,
+    y: vb.y + ((evt.clientY - rect.top) / rect.height) * vb.height,
+  };
 }
 
 // ---------- Zeichenprimitive ----------
