@@ -3,7 +3,7 @@
 // Gerade, Kreis, Zirkelbogen, rechter-Winkel-Marke) sowie ein klick-basiertes Werkzeug
 // ("Kreis"/"Gerade") für das freie Konstruieren mit anschließender Prüfung.
 
-import { add, scale, sub, len, dist, norm, angleOf } from "./geo-core.js?v=12";
+import { add, scale, sub, len, dist, norm, angleOf } from "./geo-core.js?v=13";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -161,6 +161,16 @@ export function drawRightAngleMarker(layer, foot, towardA, towardB, cls = "") {
 // mehr treffen. setPointerCapture sollte das eigentlich abfangen, verhält sich auf SVG-Elementen
 // aber nicht auf jedem mobilen Browser zuverlässig. Am document lauschen umgeht das Problem
 // vollständig: Es kommt nur noch auf die (stabile) Pointer-ID an, nicht mehr auf die Trefferfläche.
+//
+// Der zusätzliche, nicht-passive touchmove-Listener ist auf Android (u. a. Samsung Internet UND
+// Chrome, dort beobachtet) nötig: preventDefault() auf pointerdown unterdrückt dort das native
+// Scrollen/die Gesten-Erkennung der Seite NICHT zuverlässig — offenbar wird die touch-action:none-
+// Regel auf dem kleinen SVG-Trefferkreis nicht in jedem Fall strikt gegen das touch-action:
+// manipulation der übergeordneten Zeichenfläche durchgesetzt. Symptom ohne diesen Listener: Der
+// Punkt bewegt sich nur um einen winzigen, von der Fingergeschwindigkeit abhängigen Betrag, weil
+// der Browser das Touch-Gesture nach wenigen Millisekunden als Seiten-Wisch übernimmt. Ein
+// touchmove-Listener mit { passive: false } + preventDefault() verhindert das robust, unabhängig
+// von der touch-action-Berechnung des jeweiligen Browsers.
 export function makeDraggable(svg, handle, onDrag, opts = {}) {
   handle.classList.add("geo-draggable");
   handle.addEventListener("pointerdown", (e) => {
@@ -173,17 +183,22 @@ export function makeDraggable(svg, handle, onDrag, opts = {}) {
       const p = toSvgPoint(svg, ev);
       onDrag(p.x, p.y);
     }
+    function blockScroll(ev) {
+      ev.preventDefault();
+    }
     function up(ev) {
       if (ev.pointerId !== pointerId) return;
       handle.classList.remove("geo-dragging");
       document.removeEventListener("pointermove", move);
       document.removeEventListener("pointerup", up);
       document.removeEventListener("pointercancel", up);
+      document.removeEventListener("touchmove", blockScroll);
       if (opts.onEnd) opts.onEnd();
     }
     document.addEventListener("pointermove", move);
     document.addEventListener("pointerup", up);
     document.addEventListener("pointercancel", up);
+    document.addEventListener("touchmove", blockScroll, { passive: false });
   });
 }
 
