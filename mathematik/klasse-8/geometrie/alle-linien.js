@@ -1,8 +1,8 @@
-import * as GC from "./geo-core.js?v=13";
-import * as GS from "./geo-svg.js?v=13";
-import { setupDraggableTriangle } from "./triangle-common.js?v=13";
-import { drawMittelsenkrechte, drawUmkreis, drawWinkelhalbierende, drawInkreis, drawSeitenhalbierende, drawHoehe } from "./constructions.js?v=13";
-import { setupCanvasZoom } from "./canvas-zoom.js?v=13";
+import * as GC from "./geo-core.js?v=14";
+import * as GS from "./geo-svg.js?v=14";
+import { setupDraggableTriangle } from "./triangle-common.js?v=14";
+import { drawMittelsenkrechte, drawUmkreis, drawWinkelhalbierende, drawInkreis, drawSeitenhalbierende, drawHoehe } from "./constructions.js?v=14";
+import { setupCanvasZoom } from "./canvas-zoom.js?v=14";
 
 const W = 600,
   H = 460;
@@ -34,6 +34,8 @@ const traces = { M: [], I: [], S: [], H: [] };
 const TRACE_COLORS = { M: "#d64545", I: "#1a9e7a", S: "#8a5cf6", H: "#e08a1e" };
 const TRACE_LINE_CHK = { M: "mittelsenkrechte", I: "winkelhalbierende", S: "seitenhalbierende", H: "hoehen" };
 const TRACE_MAX = 400;
+// Ab welchem Abstand von M und H die Eulersche Gerade als bestimmt gilt (SVG-Einheiten).
+const EULER_MIN_SPAN = 3;
 
 function recordTrace(pts) {
   const { A, B, C } = pts;
@@ -113,6 +115,27 @@ function render(pts, record = false) {
     drawHoehe(layerConstruct, C, A, B, showArcs);
     GS.drawPoint(layerCenters, GC.orthocenter(A, B, C), "H");
   }
+
+  drawEulerLine(pts);
+}
+
+// Eulersche Gerade: Sind Mittelsenkrechte, Seitenhalbierende und Höhen gleichzeitig eingeblendet,
+// liegen mit M, S und H genau die drei Punkte auf dem Bild, die immer auf *einer* Geraden liegen —
+// dann wird sie auch gezeichnet. Der Inkreismittelpunkt I gehört bewusst nicht dazu: Er liegt im
+// Allgemeinen neben dieser Geraden, und genau das soll sichtbar bleiben.
+function drawEulerLine(pts) {
+  if (!(chk.mittelsenkrechte.checked && chk.seitenhalbierende.checked && chk.hoehen.checked)) return;
+  const { A, B, C } = pts;
+  const M = GC.circumcenter(A, B, C);
+  if (!M) return;
+  const Hp = GC.orthocenter(A, B, C);
+  // Beim gleichseitigen Dreieck fallen M, S und H zusammen — dann ist keine Gerade bestimmt, und
+  // eine trotzdem gezeichnete würde beim Ziehen wild um den gemeinsamen Punkt kreiseln.
+  if (GC.dist(M, Hp) < EULER_MIN_SPAN) return;
+  GS.drawLine(layerConstruct, M, GC.sub(Hp, M), { w: W, h: H }, "geo-euler");
+  // M wird sonst nur zusammen mit dem Umkreis beschriftet — als einer der drei Punkte, die die
+  // Gerade festlegen, muss er hier aber in jedem Fall zu sehen sein.
+  if (!chk.umkreis.checked) GS.drawPoint(layerCenters, M, "M");
 }
 
 const tri = setupDraggableTriangle(svg, layerVertices, W, H, GC.randomTriangle(W, H), (pts) => render(pts, true));
