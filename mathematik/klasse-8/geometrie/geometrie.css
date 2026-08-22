@@ -194,6 +194,18 @@ body.geo-fullscreen-active {
   stroke: #e08a1e;
 }
 
+/* Eulersche Gerade durch M, S und H — bewusst durchgezogen und kräftiger als die vier gestrichelten
+   Linienarten: Sie ist keine weitere Konstruktionslinie, sondern das Ergebnis, das alle drei
+   Schnittpunkte verbindet. */
+.geo-euler {
+  stroke: #c2255c;
+  stroke-width: 2.6;
+  fill: none;
+}
+:root[data-theme="dark"] .geo-euler {
+  stroke: #f472b6;
+}
+
 .geo-arc {
   stroke: var(--muted);
   stroke-width: 1.6;
@@ -554,6 +566,262 @@ body.geo-fullscreen-active {
   align-items: center;
   gap: 0.4rem;
   cursor: pointer;
+}
+
+/* ---------- Rätsel um den Goldenen Zirkel ---------- */
+/* Jeder Fall hat denselben Aufbau (Rückblick → Rätselkarte → Auftrag → Hilfe → Merksatz →
+   Selbstkontrolle → Denkfrage → Buchstabe). Die Blöcke sind deshalb bewusst gleich gebaut und nur
+   über einen farbigen Streifen links voneinander unterscheidbar. */
+
+.raetsel-block {
+  background: var(--bg);
+  border-radius: 10px;
+  border-left: 4px solid var(--border);
+  padding: 0.75rem 0.9rem;
+  margin-bottom: 0.8rem;
+}
+.raetsel-block > strong,
+.raetsel-block > summary {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 0.35rem;
+}
+.raetsel-block p {
+  margin: 0.4rem 0 0;
+  font-size: 0.92rem;
+}
+.raetsel-block p:first-of-type {
+  margin-top: 0;
+}
+.raetsel-rueckblick {
+  border-left-color: var(--muted);
+}
+.raetsel-karte {
+  border-left-color: #a16207;
+  font-style: italic;
+}
+.raetsel-karte strong,
+.raetsel-karte .raetsel-meta {
+  font-style: normal;
+}
+.raetsel-auftrag {
+  border-left-color: var(--accent);
+}
+.raetsel-hilfe {
+  border-left-color: #1a9e7a;
+}
+.raetsel-merksatz {
+  border-left-color: #e08a1e;
+}
+.raetsel-selbstcheck {
+  border-left-color: #8a5cf6;
+}
+.raetsel-denkfrage {
+  border-left-color: #2563eb;
+}
+.raetsel-buchstabe {
+  border-left-color: #c2255c;
+}
+.raetsel-hilfe summary,
+.raetsel-denkfrage summary,
+.raetsel-konzept summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.raetsel-hilfe .geo-steps li,
+.raetsel-denkfrage .geo-steps li {
+  font-size: 0.9rem;
+}
+.raetsel-meta {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.raetsel-knobel {
+  border-top: 1px solid var(--border);
+  padding-top: 0.6rem;
+  margin-top: 0.6rem;
+}
+.raetsel-status {
+  font-weight: 700;
+}
+.raetsel-gross {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #c2255c;
+  letter-spacing: 0.06em;
+}
+:root[data-theme="dark"] .raetsel-gross {
+  color: #f472b6;
+}
+.raetsel-musterantwort {
+  margin-top: 0.5rem;
+  border-top: 1px dashed var(--border);
+  padding-top: 0.5rem;
+}
+.raetsel-musterantwort summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* Die drei Differenzierungsstufen sind zusätzlich zur Beschriftung farbig markiert, damit im
+   Klassenraum auf einen Blick sichtbar ist, wer auf welcher Stufe arbeitet. */
+.raetsel-stufen .geo-mode-tab {
+  font-size: 0.82rem;
+  padding: 0.4rem 0.7rem;
+}
+.raetsel-stufen .geo-mode-tab[data-stufe="1"].geo-mode-tab-active {
+  background: #c2410c;
+  border-color: #c2410c;
+}
+.raetsel-stufen .geo-mode-tab[data-stufe="2"].geo-mode-tab-active {
+  background: #be185d;
+  border-color: #be185d;
+}
+.raetsel-stufen .geo-mode-tab[data-stufe="3"].geo-mode-tab-active {
+  background: #6d28d9;
+  border-color: #6d28d9;
+}
+
+.raetsel-ampel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+}
+.raetsel-ampel-btn {
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.raetsel-ampel-btn:hover {
+  border-color: var(--accent);
+}
+.raetsel-ampel-btn.raetsel-ampel-aktiv {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* Lösungswort-Leiste über den Reitern: der rote Faden durch alle fünf Fälle. */
+.raetsel-wort-leiste {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+.raetsel-wort-label {
+  font-weight: 700;
+  margin-right: 0.2rem;
+}
+.raetsel-wort-feld {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2.3rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+.raetsel-wort-feld.raetsel-wort-frei {
+  border-color: #c2255c;
+  color: #c2255c;
+  background: var(--card-bg);
+}
+:root[data-theme="dark"] .raetsel-wort-feld.raetsel-wort-frei {
+  border-color: #f472b6;
+  color: #f472b6;
+}
+.raetsel-wort-eingabe {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+.raetsel-wort-eingabe input {
+  padding: 0.5rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  width: 11rem;
+}
+
+.raetsel-tabelle-wrap {
+  overflow-x: auto;
+  margin-bottom: 0.8rem;
+}
+.raetsel-tabelle {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.88rem;
+}
+.raetsel-tabelle th,
+.raetsel-tabelle td {
+  text-align: left;
+  padding: 0.5rem 0.7rem;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.raetsel-tabelle th {
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.raetsel-konzept h3 {
+  font-size: 1rem;
+  margin: 1.2rem 0 0.4rem;
+}
+.raetsel-konzept ul {
+  margin: 0.4rem 0;
+  padding-left: 1.2rem;
+  font-size: 0.92rem;
+}
+.raetsel-konzept li {
+  margin-bottom: 0.35rem;
+}
+.raetsel-konzept p {
+  font-size: 0.92rem;
+}
+
+/* Die Sachsituation auf der Zeichenfläche: leicht getönte Fläche (Wiese, Blechschild, Acker) und
+   der Ortsname unter dem jeweiligen Eckpunkt. */
+.raetsel-flaeche {
+  fill: var(--accent);
+  opacity: 0.06;
+  stroke: none;
+}
+.raetsel-ortsname {
+  font-size: 12px;
+  fill: var(--muted);
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+}
+/* Der Eckbuchstabe innerhalb der Beschriftung — gleiche Schrift wie überall sonst am Dreieck,
+   damit „A“ hier und „A“ in der Rückmeldung sichtbar dasselbe sind. */
+.raetsel-ortsname-buchstabe {
+  font-family: "Cambria Math", Cambria, serif;
+  font-size: 15px;
+  font-weight: 700;
+  fill: var(--text);
 }
 
 /* ---------- Bedienung per Finger (iPad & Co.) ---------- */

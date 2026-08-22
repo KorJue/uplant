@@ -2,7 +2,7 @@
 // verwendet von grundkonstruktionen.js (einzelne Linien), tri-construct.js (ganzes Dreieck) und
 // free-ui.js (Markierung der Schnittpunkte).
 
-import { norm, sub, add, cross2, circleCircleIntersections } from "./geo-core.js?v=13";
+import { norm, sub, add, cross2, circleCircleIntersections } from "./geo-core.js?v=14";
 
 // Prüft, ob eine vom Nutzer gezogene Gerade durch zwei vorgegebene Punkte verläuft. Verglichen wird
 // der senkrechte Abstand beider Punkte zur Geraden (Kreuzprodukt mit normierter Richtung).

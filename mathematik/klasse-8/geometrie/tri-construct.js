@@ -7,9 +7,9 @@
 // sie tatsächlich entstanden ist. Daraus ergibt sich beides — die Prüfung ("was fehlt noch?") und die
 // Darstellung (fertige Hilfskreise und ihre Schnittpunkte treten grau zurück).
 
-import * as GC from "./geo-core.js?v=13";
-import * as GS from "./geo-svg.js?v=13";
-import { lineThroughBoth, sameRadius, twoArcIntersections } from "./check-helpers.js?v=13";
+import * as GC from "./geo-core.js?v=14";
+import * as GS from "./geo-svg.js?v=14";
+import { lineThroughBoth, sameRadius, twoArcIntersections } from "./check-helpers.js?v=14";
 
 // Klick-/Prüftoleranz für "dieser Punkt ist gemeint" (SVG-Einheiten). Per Finger wird ungenauer
 // getroffen als mit der Maus, deshalb dort ein größerer Radius.
@@ -27,7 +27,7 @@ const R_TOL = 0.05;
 // gewählt wurden. Ohne Sortierung würde dann womöglich der Kreis einer *anderen* Teilkonstruktion
 // als "hier verwendet" gelten — die Prüfung bliebe richtig, aber die graue Markierung träfe den
 // falschen Kreis.
-function circlesAt(tool, p) {
+export function circlesAt(tool, p) {
   return tool.circles
     .filter((c) => GC.dist(c.center, p) < TOL_PT)
     .sort((a, b) => GC.dist(a.center, p) - GC.dist(b.center, p));
@@ -36,7 +36,7 @@ function circlesAt(tool, p) {
 // Die Schnittpunkte eines gleich großen Kreispaares um P und Q, sobald beide gezeichnet sind — das
 // sind die Punkte, auf die die Konstruktion als Nächstes hinausläuft. Nur solche Punkte werden als
 // Kreuz markiert; die Kreuzungen beliebiger anderer Kreise sind bedeutungslos.
-function pairPoints(tool, P, Q) {
+export function pairPoints(tool, P, Q) {
   for (const cP of circlesAt(tool, P)) {
     for (const cQ of circlesAt(tool, Q)) {
       if (cP === cQ || !sameRadius(cP, cQ)) continue;
@@ -121,6 +121,30 @@ export function findLot(tool, sides, I) {
     }
   }
   return null;
+}
+
+// Seitenhalbierende von V auf die Seite PQ. Anders als bei der Mittelsenkrechten wird die
+// Verbindung der beiden Bogenschnittpunkte *nicht* verlangt: Die beiden gleich großen Kreise um P
+// und Q liefern den Seitenmittelpunkt bereits eindeutig, und gezeichnet werden muss am Ende nur die
+// Strecke vom Eckpunkt dorthin — sie steht ausdrücklich nicht senkrecht auf der Seite.
+export function findMedian(tool, V, P, Q) {
+  const M = GC.mid(P, Q);
+  for (const cP of circlesAt(tool, P)) {
+    for (const cQ of circlesAt(tool, Q)) {
+      if (cP === cQ || !sameRadius(cP, cQ)) continue;
+      if (Math.min(cP.radius, cQ.radius) < (GC.dist(P, Q) / 2) * MIN_SPAN) continue;
+      if (twoArcIntersections(P, Q, cP, cQ).length < 2) continue;
+      const line = tool.lines.find((l) => lineThroughBoth(l, V, M));
+      if (line) return { circles: [cP, cQ], points: [M], mid: M, line };
+    }
+  }
+  return null;
+}
+
+// Höhe von V auf die Seite PQ — dieselbe Lot-Konstruktion wie beim Inkreisradius, nur ausgehend vom
+// Eckpunkt statt vom Inkreismittelpunkt.
+export function findAltitude(tool, V, P, Q) {
+  return findLot(tool, [[P, Q]], V);
 }
 
 // Ergebniskreis: Kreis um "center" mit vorgegebenem Radius. Gibt zusätzlich zurück, ob überhaupt ein
