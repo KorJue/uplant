@@ -92,20 +92,25 @@
   </div>
 
   <div class="menu-grid" id="menu-grid">
-    <a class="menu-card" data-section="klasse-8" href="mathematik/klasse-8/index.html" hidden>
-      <span class="menu-icon">8️⃣</span>
-      <h2>Klasse 8</h2>
-      <p>Themen und Werkzeuge für die 8. Klasse.</p>
+    <a class="menu-card" data-section="mathematik" href="mathematik/index.html" hidden>
+      <span class="menu-icon">🧮</span>
+      <h2>1 Mathematik</h2>
+      <p>Werkzeuge für den Mathematikunterricht, sortiert nach Klassenstufe (Klasse 8, Klasse 10, MSS).</p>
     </a>
-    <a class="menu-card" data-section="klasse-10" href="mathematik/klasse-10/index.html" hidden>
-      <span class="menu-icon">🔟</span>
-      <h2>Klasse 10</h2>
-      <p>Themen und Rechner für die 10. Klasse.</p>
+    <a class="menu-card" data-section="physik" href="physik/index.html" hidden>
+      <span class="menu-icon">⚛️</span>
+      <h2>2 Physik</h2>
+      <p>Werkzeuge und Rechner für den Physikunterricht — folgen in Kürze.</p>
     </a>
-    <a class="menu-card" data-section="mss12" href="mathematik/mss12/index.html" hidden>
-      <span class="menu-icon">🎓</span>
-      <h2>MSS</h2>
-      <p>Themen und Rechner für die Mainzer Studienstufe (Oberstufe).</p>
+    <a class="menu-card" data-section="nawi" href="nawi/index.html" hidden>
+      <span class="menu-icon">🔬</span>
+      <h2>3 NaWi</h2>
+      <p>Werkzeuge für den naturwissenschaftlichen Unterricht (Biologie, Chemie, Physik) — folgen in Kürze.</p>
+    </a>
+    <a class="menu-card" data-section="mint" href="mint/index.html" hidden>
+      <span class="menu-icon">🛠️</span>
+      <h2>4 MINT</h2>
+      <p>Fächerübergreifende MINT-Projekte und -Werkzeuge — folgen in Kürze.</p>
     </a>
     <a class="menu-card" data-section="office-tools" href="office-tools/index.html" hidden>
       <span class="menu-icon">🗂️</span>
@@ -126,24 +131,41 @@
   var STORAGE_KEY = "uplant-access";
 
   // Bereiche und ihre Menüpunkt-Zahl für die Code-Berechnung (siehe berechneCode unten).
-  // "office-tools" ist bewusst 0, weil es keiner Jahrgangs-/Klassenstufe entspricht; "mss12"
-  // trägt die 12 schon im Namen. Hier anpassen/ergänzen, wenn ein Bereich dazukommt.
+  // "office-tools" ist bewusst 0, weil es keiner Jahrgangs-/Fachstufe entspricht; die vier
+  // Hauptfächer tragen ihre Menü-Nummer (1-4), "mss12" die 12 schon im eigenen Namen. Hier
+  // anpassen/ergänzen, wenn ein Bereich dazukommt.
+  //
+  // "bundle": Wird der Code eines Eintrags eingegeben, schalten sich alle dort genannten
+  // Bereiche gemeinsam frei — nicht nur der Eintrag selbst. Der Mathematik-Code schaltet so auch
+  // gleich Klasse 8, Klasse 10 und MSS mit frei, obwohl jeder von ihnen zusätzlich einen eigenen,
+  // unabhängigen Code behält (fehlt "bundle", gilt automatisch [key]).
   var SECTIONS = [
+    { key: "mathematik", label: "Mathematik", nummer: 1, bundle: ["mathematik", "klasse-8", "klasse-10", "mss12"] },
+    { key: "physik", label: "Physik", nummer: 2 },
+    { key: "nawi", label: "NaWi", nummer: 3 },
+    { key: "mint", label: "MINT", nummer: 4 },
+    { key: "office-tools", label: "Office-Tools", nummer: 0 },
     { key: "klasse-8", label: "Klasse 8", nummer: 8 },
     { key: "klasse-10", label: "Klasse 10", nummer: 10 },
     { key: "mss12", label: "MSS", nummer: 12 },
-    { key: "office-tools", label: "Office-Tools", nummer: 0 },
   ];
+
+  // Sonder-Menüpunkt-Zahl -1: schaltet, wenn ihr Code eingegeben wird, wirklich alle Bereiche auf
+  // einmal frei (siehe "alles" im Formular unten) — der Nachfolger des früheren festen
+  // "Alles"-Codes, jetzt aber genauso monatlich berechnet wie jeder Einzelcode.
+  var ALLES_NUMMER = -1;
+  var ALLE_BEREICHE = SECTIONS.map(function (s) { return s.key; });
 
   // Der Code eines Bereichs wechselt automatisch jeden Monat, ohne dass hier jemals etwas von
   // Hand nachgetragen werden müsste: (Jahr + Menüpunkt-Zahl) * Monat, davon die letzten vier
   // Ziffern. Wer die Menüpunkt-Zahl eines Bereichs kennt, kann den aktuellen Code jederzeit selbst
   // im Kopf oder mit einem Taschenrechner ausrechnen.
   //
-  // Die vier Menüpunkt-Zahlen (0, 8, 10, 12) unterscheiden sich paarweise um höchstens 12, der
-  // Monat ist höchstens 12 — zwei Bereiche können sich im selben Monat also um höchstens 12 * 12 =
-  // 144 unterscheiden. Das ist immer kleiner als 10000, weshalb die Kürzung auf vier Ziffern zwei
-  // verschiedene Bereiche im selben Monat nie zufällig auf denselben Code fallen lässt.
+  // Die verwendeten Menüpunkt-Zahlen (-1, 0, 1, 2, 3, 4, 8, 10, 12) unterscheiden sich paarweise
+  // um höchstens 13 (12 minus -1), der Monat ist höchstens 12 — zwei Bereiche können sich im
+  // selben Monat also um höchstens 13 * 12 = 156 unterscheiden. Das ist immer kleiner als 10000,
+  // weshalb die Kürzung auf vier Ziffern zwei verschiedene Bereiche im selben Monat nie zufällig
+  // auf denselben Code fallen lässt.
   //
   // Wie überall auf dieser Seite ist das keine echte Zugriffskontrolle (siehe Hinweistext), nur
   // eine sich monatlich ändernde Navigationshilfe.
@@ -151,7 +173,7 @@
     var jahr = datum.getFullYear();
     var monat = datum.getMonth() + 1;
     var wert = (jahr + nummer) * monat;
-    var code = String(wert % 10000);
+    var code = String(((wert % 10000) + 10000) % 10000);
     while (code.length < 4) code = "0" + code;
     return code;
   }
@@ -197,15 +219,24 @@
     e.preventDefault();
     var eingabe = input.value.trim();
     var jetzt = new Date();
-    var treffer = SECTIONS.filter(function (s) { return berechneCode(s.nummer, jetzt) === eingabe; });
-    if (!treffer.length) {
+
+    var neu = [];
+    if (berechneCode(ALLES_NUMMER, jetzt) === eingabe) {
+      neu = ALLE_BEREICHE;
+    } else {
+      SECTIONS.filter(function (s) { return berechneCode(s.nummer, jetzt) === eingabe; }).forEach(function (s) {
+        (s.bundle || [s.key]).forEach(function (k) { neu.push(k); });
+      });
+    }
+
+    if (!neu.length) {
       errorBox.hidden = false;
       return;
     }
     errorBox.hidden = true;
     var unlocked = getUnlocked();
-    treffer.forEach(function (s) {
-      if (unlocked.indexOf(s.key) === -1) unlocked.push(s.key);
+    neu.forEach(function (k) {
+      if (unlocked.indexOf(k) === -1) unlocked.push(k);
     });
     setUnlocked(unlocked);
     input.value = "";
