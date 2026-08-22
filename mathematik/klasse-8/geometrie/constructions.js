@@ -3,8 +3,8 @@
 // Zirkelbogen-Konstruktion (wenn showArcs) als auch die fertige Linie, exakt berechnet (die Bögen
 // dienen nur der Veranschaulichung, nicht der eigentlichen Berechnung).
 
-import * as GC from "./geo-core.js?v=17";
-import * as GS from "./geo-svg.js?v=17";
+import * as GC from "./geo-core.js?v=18";
+import * as GS from "./geo-svg.js?v=18";
 
 function projT(P, Q, X) {
   const d = GC.sub(Q, P);

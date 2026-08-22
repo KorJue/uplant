@@ -1,8 +1,8 @@
-import * as GC from "./geo-core.js?v=17";
-import * as GS from "./geo-svg.js?v=17";
-import { setupDraggableTriangle } from "./triangle-common.js?v=17";
-import { drawMittelsenkrechte, drawUmkreis, drawWinkelhalbierende, drawInkreis, drawSeitenhalbierende, drawHoehe } from "./constructions.js?v=17";
-import { setupCanvasZoom } from "./canvas-zoom.js?v=17";
+import * as GC from "./geo-core.js?v=18";
+import * as GS from "./geo-svg.js?v=18";
+import { setupDraggableTriangle } from "./triangle-common.js?v=18";
+import { drawMittelsenkrechte, drawUmkreis, drawWinkelhalbierende, drawInkreis, drawSeitenhalbierende, drawHoehe } from "./constructions.js?v=18";
+import { setupCanvasZoom } from "./canvas-zoom.js?v=18";
 
 const W = 600,
   H = 460;
@@ -94,14 +94,27 @@ function render(pts, record = false) {
     drawMittelsenkrechte(layerConstruct, W, H, B, C, showArcs);
     drawMittelsenkrechte(layerConstruct, W, H, C, A, showArcs);
   }
-  if (chk.umkreis.checked) drawUmkreis(layerConstruct, layerCenters, A, B, C);
+  if (chk.umkreis.checked) {
+    // Zeichnet Kreis und Beschriftung von M zusammen.
+    drawUmkreis(layerConstruct, layerCenters, A, B, C);
+  } else if (chk.mittelsenkrechte.checked) {
+    // Genau wie bei S und H wird der Schnittpunkt schon beschriftet, sobald nur die Linien (ohne
+    // den zugehörigen Kreis) eingeblendet sind.
+    const M = GC.circumcenter(A, B, C);
+    if (M) GS.drawPoint(layerCenters, M, "M");
+  }
 
   if (chk.winkelhalbierende.checked) {
     drawWinkelhalbierende(layerConstruct, W, H, A, B, C, showArcs);
     drawWinkelhalbierende(layerConstruct, W, H, B, A, C, showArcs);
     drawWinkelhalbierende(layerConstruct, W, H, C, A, B, showArcs);
   }
-  if (chk.inkreis.checked) drawInkreis(layerConstruct, layerCenters, A, B, C);
+  if (chk.inkreis.checked) {
+    // Zeichnet Kreis, Lotlinien und Beschriftung von I zusammen.
+    drawInkreis(layerConstruct, layerCenters, A, B, C);
+  } else if (chk.winkelhalbierende.checked) {
+    GS.drawPoint(layerCenters, GC.incenter(A, B, C), "I");
+  }
 
   if (chk.seitenhalbierende.checked) {
     drawSeitenhalbierende(layerConstruct, layerCenters, A, B, C, showArcs);
@@ -133,9 +146,8 @@ function drawEulerLine(pts) {
   // eine trotzdem gezeichnete würde beim Ziehen wild um den gemeinsamen Punkt kreiseln.
   if (GC.dist(M, Hp) < EULER_MIN_SPAN) return;
   GS.drawLine(layerConstruct, M, GC.sub(Hp, M), { w: W, h: H }, "geo-euler");
-  // M wird sonst nur zusammen mit dem Umkreis beschriftet — als einer der drei Punkte, die die
-  // Gerade festlegen, muss er hier aber in jedem Fall zu sehen sein.
-  if (!chk.umkreis.checked) GS.drawPoint(layerCenters, M, "M");
+  // M ist an dieser Stelle bereits beschriftet: drawEulerLine wird nur aufgerufen, wenn die
+  // Mittelsenkrechten eingeblendet sind, und genau dann beschriftet der Abschnitt oben M so oder so.
 }
 
 const tri = setupDraggableTriangle(svg, layerVertices, W, H, GC.randomTriangle(W, H), (pts) => render(pts, true));
