@@ -155,10 +155,10 @@
     { key: "mss12", label: "MSS 12", nummer: 12, bundle: ["mss12", "mathematik"] },
   ];
 
-  // Sonder-Menüpunkt-Zahl -1: schaltet, wenn ihr Code eingegeben wird, wirklich alle Bereiche auf
+  // Sonder-Menüpunkt-Zahl 15: schaltet, wenn ihr Code eingegeben wird, wirklich alle Bereiche auf
   // einmal frei (siehe "alles" im Formular unten) — der Nachfolger des früheren festen
   // "Alles"-Codes, jetzt aber genauso monatlich berechnet wie jeder Einzelcode.
-  var ALLES_NUMMER = -1;
+  var ALLES_NUMMER = 15;
   var ALLE_BEREICHE = SECTIONS.map(function (s) { return s.key; });
 
   // Der Code eines Bereichs wechselt automatisch jeden Monat, ohne dass hier jemals etwas von
@@ -166,9 +166,9 @@
   // Ziffern. Wer die Menüpunkt-Zahl eines Bereichs kennt, kann den aktuellen Code jederzeit selbst
   // im Kopf oder mit einem Taschenrechner ausrechnen.
   //
-  // Die verwendeten Menüpunkt-Zahlen (-1, 0, 1, 2, 3, 4, 8, 10, 12) unterscheiden sich paarweise
-  // um höchstens 13 (12 minus -1), der Monat ist höchstens 12 — zwei Bereiche können sich im
-  // selben Monat also um höchstens 13 * 12 = 156 unterscheiden. Das ist immer kleiner als 10000,
+  // Die verwendeten Menüpunkt-Zahlen (0, 1, 2, 3, 4, 8, 10, 12, 15) unterscheiden sich paarweise
+  // um höchstens 15 (15 minus 0), der Monat ist höchstens 12 — zwei Bereiche können sich im
+  // selben Monat also um höchstens 15 * 12 = 180 unterscheiden. Das ist immer kleiner als 10000,
   // weshalb die Kürzung auf vier Ziffern zwei verschiedene Bereiche im selben Monat nie zufällig
   // auf denselben Code fallen lässt.
   //
