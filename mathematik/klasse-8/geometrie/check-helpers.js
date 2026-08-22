@@ -1,8 +1,8 @@
-// Gemeinsame Hilfsfunktionen für die Prüfung des freien Konstruierens mit Zirkel und Lineal.
-// Verwendet von mittelsenkrechte-umkreis.js und winkelhalbierende-inkreis.js (grundkonstruktionen.js
-// hat wegen der aufgabenspezifischen Sonderfälle — z. B. gesperrte Schenkelpunkte — eigene Kopien).
+// Gemeinsame Hilfsfunktionen für die Prüfung des freien Konstruierens mit Zirkel und Lineal —
+// verwendet von grundkonstruktionen.js (einzelne Linien), tri-construct.js (ganzes Dreieck) und
+// free-ui.js (Markierung der Schnittpunkte).
 
-import { norm, sub, add, cross2, circleCircleIntersections } from "./geo-core.js?v=9";
+import { norm, sub, add, cross2, circleCircleIntersections } from "./geo-core.js?v=10";
 
 // Prüft, ob eine vom Nutzer gezogene Gerade durch zwei vorgegebene Punkte verläuft. Verglichen wird
 // der senkrechte Abstand beider Punkte zur Geraden (Kreuzprodukt mit normierter Richtung).
@@ -25,12 +25,29 @@ export function twoArcIntersections(P, Q, c1, c2) {
   return circleCircleIntersections(P, r, Q, r);
 }
 
-// Alle paarweisen Schnittpunkte der bisher vom Nutzer gezeichneten Kreise — dienen als Einrast- und
-// Markierungspunkte für die eigene Konstruktion.
+// Alle paarweisen Schnittpunkte der bisher vom Nutzer gezeichneten Kreise. Beim Einrasten wird
+// bewusst großzügig verfahren: Auch ein ungewöhnlicher, aber gültiger Konstruktionsweg soll
+// funktionieren — worauf es ankommt, entscheidet am Ende die Prüfung.
 export function circlesIntersections(circles) {
   const out = [];
   for (let i = 0; i < circles.length; i++) {
     for (let j = i + 1; j < circles.length; j++) {
+      out.push(...circleCircleIntersections(circles[i].center, circles[i].radius, circles[j].center, circles[j].radius));
+    }
+  }
+  return out;
+}
+
+// Nur die Schnittpunkte gleich großer Kreise — und nur diese werden als Kreuz markiert. In allen
+// Konstruktionen hier entsteht jeder gesuchte Punkt aus zwei Zirkelschlägen mit demselben Radius
+// (das ist ja gerade der Trick). Kreuzungen verschieden großer Kreise sind dagegen bedeutungslos:
+// Bei neun Kreisen am Dreieck kämen so über hundert Kreuze zusammen und die Zeichnung wäre nicht
+// mehr lesbar.
+export function pairedIntersections(circles) {
+  const out = [];
+  for (let i = 0; i < circles.length; i++) {
+    for (let j = i + 1; j < circles.length; j++) {
+      if (!sameRadius(circles[i], circles[j])) continue;
       out.push(...circleCircleIntersections(circles[i].center, circles[i].radius, circles[j].center, circles[j].radius));
     }
   }
