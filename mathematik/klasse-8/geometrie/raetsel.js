@@ -3,11 +3,11 @@
 // (was konstruiert und wie geprüft wird) steckt in raetsel-tasks.js, das Zeichnen und die Werkzeuge
 // in geo-svg.js / free-ui.js — hier geht es nur um den Ablauf drumherum.
 
-import * as GS from "./geo-svg.js?v=15";
-import { norm, sub } from "./geo-core.js?v=15";
-import { setupCanvasZoom } from "./canvas-zoom.js?v=15";
-import { setupFreeConstruction } from "./free-ui.js?v=15";
-import { FAELLE, LOESUNGSWORT, randomCaseTriangle, W, H } from "./raetsel-tasks.js?v=15";
+import * as GS from "./geo-svg.js?v=16";
+import { norm, sub } from "./geo-core.js?v=16";
+import { setupCanvasZoom } from "./canvas-zoom.js?v=16";
+import { setupFreeConstruction } from "./free-ui.js?v=16";
+import { FAELLE, LOESUNGSWORT, randomCaseTriangle, W, H } from "./raetsel-tasks.js?v=16";
 
 const STORAGE_KEY = "uplant-geo-raetsel";
 const AMPEL = [
@@ -142,10 +142,11 @@ const free = setupFreeConstruction({
 // ---------- Seitenspalte ----------
 
 function stufenReiter() {
+  // Farbkodierung wie bei einer Ampel: grün = einfach, orange = mittel, rot = schwierig.
   const stufen = [
-    { nr: 1, label: "🟠 Stufe 1 · Sicher werden" },
-    { nr: 2, label: "🩷 Stufe 2 · Anwenden" },
-    { nr: 3, label: "🟣 Stufe 3 · Knobeln" },
+    { nr: 1, label: "🟢 Stufe 1 · Sicher werden" },
+    { nr: 2, label: "🟠 Stufe 2 · Anwenden" },
+    { nr: 3, label: "🔴 Stufe 3 · Knobeln" },
   ];
   return `<div class="geo-mode-tabs raetsel-stufen" id="stufen-tabs">${stufen
     .map((s) => `<button type="button" class="geo-mode-tab${s.nr === state.stufe ? " geo-mode-tab-active" : ""}" data-stufe="${s.nr}">${s.label}</button>`)
@@ -164,7 +165,7 @@ function renderSeite() {
   const fall = aktuellerFall();
   const stand = standVon(fall.key);
   const hilfeOffen = state.stufe === 1 ? " open" : "";
-  const knobel = state.stufe === 3 ? `<p class="raetsel-knobel"><strong>🟣 Zusätzlich zum Knobeln:</strong> ${fall.knobel}</p>` : "";
+  const knobel = state.stufe === 3 ? `<p class="raetsel-knobel"><strong>🔴 Zusätzlich zum Knobeln:</strong> ${fall.knobel}</p>` : "";
 
   // Im Knobelmodus (Stufe 3) darf vor dem Lösen nirgends stehen, welche der vier Linien gebraucht
   // wird — weder als Tag noch im Merksatz oder in der Denkfrage (die nennt die Linie beim Namen).
@@ -177,7 +178,7 @@ function renderSeite() {
   const hilfeBlock = state.stufe === 3
     ? `<details class="raetsel-block raetsel-hilfe">
         <summary>🧭 Hilfe — falls du gar nicht weiterweißt</summary>
-        <p>Frag dich zuerst: Welche <strong>Eigenschaft</strong> muss der gesuchte Punkt haben? Genau diese Eigenschaft kennst du schon von einer der vier Konstruktionen (Mittelsenkrechte, Winkelhalbierende, Seitenhalbierende, Höhe). Willst du direkt nachlesen, welche hier gemeint ist, wechsle oben auf „🩷 Stufe 2 · Anwenden“.</p>
+        <p>Frag dich zuerst: Welche <strong>Eigenschaft</strong> muss der gesuchte Punkt haben? Genau diese Eigenschaft kennst du schon von einer der vier Konstruktionen (Mittelsenkrechte, Winkelhalbierende, Seitenhalbierende, Höhe). Willst du direkt nachlesen, welche hier gemeint ist, wechsle oben auf „🟠 Stufe 2 · Anwenden“.</p>
       </details>`
     : `<details class="raetsel-block raetsel-hilfe"${hilfeOffen}>
         <summary>🧭 Hilfe — so geht die Konstruktion Schritt für Schritt</summary>
