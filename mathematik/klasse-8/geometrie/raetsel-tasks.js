@@ -7,10 +7,10 @@
 // Kontext. Neu sind hier nur die beiden Fälle, für die es bisher keine Prüfung am *ganzen* Dreieck
 // gab (drei Seitenhalbierende, drei Höhen) und das Finale mit der Eulerschen Geraden.
 
-import * as GC from "./geo-core.js?v=17";
-import * as GS from "./geo-svg.js?v=17";
-import { lineThroughBoth } from "./check-helpers.js?v=17";
-import { TRI_TASKS, findMediatrice, findMedian, findAltitude, circlesAt, pairPoints } from "./tri-construct.js?v=17";
+import * as GC from "./geo-core.js?v=18";
+import * as GS from "./geo-svg.js?v=18";
+import { lineThroughBoth } from "./check-helpers.js?v=18";
+import { TRI_TASKS, findMediatrice, findMedian, findAltitude, circlesAt, pairPoints } from "./tri-construct.js?v=18";
 
 export const W = 600;
 export const H = 440;
