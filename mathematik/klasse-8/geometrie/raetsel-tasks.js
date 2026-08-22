@@ -7,10 +7,10 @@
 // Kontext. Neu sind hier nur die beiden Fälle, für die es bisher keine Prüfung am *ganzen* Dreieck
 // gab (drei Seitenhalbierende, drei Höhen) und das Finale mit der Eulerschen Geraden.
 
-import * as GC from "./geo-core.js?v=14";
-import * as GS from "./geo-svg.js?v=14";
-import { lineThroughBoth } from "./check-helpers.js?v=14";
-import { TRI_TASKS, findMediatrice, findMedian, findAltitude, circlesAt, pairPoints } from "./tri-construct.js?v=14";
+import * as GC from "./geo-core.js?v=15";
+import * as GS from "./geo-svg.js?v=15";
+import { lineThroughBoth } from "./check-helpers.js?v=15";
+import { TRI_TASKS, findMediatrice, findMedian, findAltitude, circlesAt, pairPoints } from "./tri-construct.js?v=15";
 
 export const W = 600;
 export const H = 440;
@@ -259,143 +259,22 @@ const eulerModell = {
 // Selbstkontrolle → Merksatz → Denkfrage → Buchstabe). Diese Wiederholung ist Teil des Konzepts:
 // Wer den ersten Fall verstanden hat, muss sich in keinem weiteren neu orientieren und kann die
 // Aufmerksamkeit ganz auf die Mathematik richten.
+//
+// Die Reihenfolge unten (Fußwege → Brunnen → Rondell → Wetterhahn → Finale) weicht bewusst von der
+// Reihenfolge ab, in der die vier Linienarten sonst auf der Seite unterrichtet werden (Mittel-
+// senkrechte, Winkelhalbierende, Seitenhalbierende, Höhe) — sonst ließe sich aus "Fall 1 ist die
+// Mittelsenkrechte" sofort erraten, dass Fall 2 die Winkelhalbierende sein muss, usw. Die Rückblick-
+// Texte verweisen deshalb auch nicht mehr auf eine bestimmte Fall-Nummer, sondern auf die passende
+// Trainingsseite — das bleibt so unabhängig davon, in welcher Reihenfolge die Fälle hier stehen.
+// Roter Faden: Brunnen und Rondell spielen an denselben drei Höfen (Adlerhof, Birkenhof,
+// Cammerhof) — einmal geht es um die Höfe selbst, einmal um die Wege dazwischen.
 
 export const FAELLE = [
   {
-    key: "brunnen",
-    nr: 1,
-    titel: "Fall 1: Der Brunnen",
-    kurz: "Fall 1 · Brunnen",
-    linie: "Mittelsenkrechte",
-    ergebnis: "Umkreismittelpunkt M + Umkreis",
-    farbe: "#d64545",
-    buchstabe: "I",
-    position: 2,
-    namen: { A: "🏡 Adlerhof", B: "🏡 Birkenhof", C: "🏡 Cammerhof" },
-    flaeche: false,
-    rueckblick:
-      "Zum Warmwerden: Was gilt für <em>jeden</em> Punkt, der auf der Mittelsenkrechten der Strecke AB liegt? (Antwort im Merksatz unten prüfen.)",
-    story:
-      "„Drei Höfe standen mir im Feld: der Adlerhof, der Birkenhof und der Cammerhof. Ich grub ihnen einen gemeinsamen Brunnen — und keine Bäuerin sollte weiter laufen müssen als die andere. Um den Brunnen zog ich später eine Hecke, genau durch alle drei Höfe.“",
-    auftrag: {
-      1:
-        "Konstruiere die Mittelsenkrechte der Seite AB: zwei gleich große Kreise um A und um B (Radius größer als die halbe Seitenlänge), dann die beiden Schnittpunkte mit dem Lineal verbinden. Wiederhole das für BC und CA. Die drei Linien treffen sich in einem Punkt — das ist der Brunnen M. Stich zuletzt mit dem Zirkel in M ein und stelle den Radius bis zu einem Hof ein: Das ist die Hecke (der Umkreis).",
-      2:
-        "Finde die Stelle für den Brunnen, die von allen drei Höfen gleich weit entfernt ist, und zeichne anschließend Anton Winkels Hecke — den Kreis durch alle drei Höfe.",
-      3:
-        "Anton Winkel behauptet, es gebe <em>genau eine</em> solche Stelle. Konstruiere sie und die Hecke dazu.",
-    },
-    knobel:
-      "Warum treffen sich alle drei Mittelsenkrechten in <em>einem</em> Punkt — obwohl man doch für jede Seite eine eigene Linie zeichnet? Und warum genügen schon zwei davon, um den Brunnen zu finden?",
-    hilfe: [
-      "Zirkel wählen, in einen Eckpunkt einstechen, dann auf einen Punkt im gewünschten Abstand klicken. Der Radius muss größer sein als die halbe Seitenlänge — sonst schneiden sich die Bögen nicht.",
-      "Mit dem Häkchen „🔒 Zirkel-Radius beibehalten“ bleibt der Radius zwischen beiden Kreisen gleich, genau wie bei einem echten Zirkel, den man nicht verstellt.",
-      "Lineal wählen und die beiden Schnittpunkte der Bögen verbinden — fertig ist eine Mittelsenkrechte. Ihre Hilfskreise treten dann grau zurück.",
-      "Sobald zwei Mittelsenkrechten stehen, rastet ihr Schnittpunkt M beim Anklicken von selbst ein.",
-    ],
-    merksatz:
-      "Auf der Mittelsenkrechten einer Strecke liegen <strong>genau die Punkte, die von beiden Endpunkten gleich weit entfernt sind</strong>. Deshalb ist der Schnittpunkt zweier Mittelsenkrechten von allen drei Ecken gleich weit weg — und deshalb gibt es um ihn einen Kreis durch A, B und C: den Umkreis.",
-    denkfrage: "Warum muss die dritte Mittelsenkrechte automatisch durch M laufen, ohne dass man sie überhaupt zeichnet?",
-    musterantwort:
-      "M liegt auf der Mittelsenkrechten von AB, ist also von A und B gleich weit entfernt. M liegt auch auf der von BC, ist also von B und C gleich weit entfernt. Zusammen: M ist von A und C gleich weit entfernt — und das ist genau die Bedingung für die Mittelsenkrechte von CA. M liegt also auch auf ihr.",
-    grundlagen: { href: "mittelsenkrechte-umkreis.html", text: "2. Mittelsenkrechte & Umkreis" },
-    minEulerSpan: 0,
-    analyze: (tool, pts) => TRI_TASKS.mittelsenkrechte.analyze(tool, pts),
-    check: (a) => TRI_TASKS.mittelsenkrechte.check(a),
-  },
-
-  {
-    key: "rondell",
-    nr: 2,
-    titel: "Fall 2: Das Rondell",
-    kurz: "Fall 2 · Rondell",
-    linie: "Winkelhalbierende",
-    ergebnis: "Inkreismittelpunkt I + Inkreis",
-    farbe: "#1a9e7a",
-    buchstabe: "E",
-    position: 5,
-    namen: { A: "🌳 Wegkreuz A", B: "🌳 Wegkreuz B", C: "🌳 Wegkreuz C" },
-    flaeche: true,
-    rueckblick:
-      "Rückblick auf Fall 1: Dort ging es um gleiche Abstände zu <em>Punkten</em> (den Höfen). Hier geht es um gleiche Abstände zu <em>Geraden</em> (den Wegen). Wie misst man den Abstand eines Punktes von einer Geraden?",
-    story:
-      "„Zwischen meinen drei Wegen lag ein Stück Wiese. Dort ließ ich ein rundes Beet anlegen — so groß, wie es nur eben ging: Es sollte jeden der drei Wege genau einmal berühren, keinen überqueren.“",
-    auftrag: {
-      1:
-        "Konstruiere die Winkelhalbierende bei A: Kreis um A zeichnen, der beide anliegenden Wege schneidet; um die zwei neuen Schnittpunkte zwei gleich große Kreise; A mit deren Kreuzungspunkt verbinden. Wiederhole das bei B und C — die drei Linien treffen sich im Beetmittelpunkt I. Fälle dann von I das Lot auf einen Weg (Kreis um I, der den Weg zweimal schneidet, zwei gleich große Kreise darum, I mit dem Kreuzungspunkt verbinden). Stich zuletzt in I ein und stelle den Radius genau bis zum Lotfußpunkt ein.",
-      2:
-        "Finde den Mittelpunkt des Beetes und zeichne das Beet so groß, dass es alle drei Wege berührt. Denk daran: Der Radius ist der <em>Lotabstand</em> zu einem Weg.",
-      3:
-        "Konstruiere das größtmögliche Rondell, das ganz zwischen den drei Wegen liegt. Begründe unterwegs, warum der Radius nicht größer gewählt werden darf.",
-    },
-    knobel:
-      "Der Umkreismittelpunkt aus Fall 1 kann außerhalb des Dreiecks liegen — der Inkreismittelpunkt niemals. Woran liegt das? (Tipp: Denk daran, was „auf der Winkelhalbierenden liegen“ bedeutet.)",
-    hilfe: [
-      "Der erste Bogen um den Eckpunkt muss <em>beide</em> anliegenden Seiten schneiden — lieber etwas größer wählen.",
-      "Die beiden Schnittpunkte auf den Seiten sind die nächsten Einstichpunkte; sie werden als rote Kreuze markiert.",
-      "Sobald zwei Winkelhalbierende stehen, rastet ihr Schnittpunkt I ein.",
-      "Das Lot von I auf eine Seite ist dieselbe Konstruktion wie eine Höhe — nur startet sie in I statt in einer Ecke.",
-      "Der Inkreisradius reicht genau bis zum Lotfußpunkt, nicht bis zu einer Ecke.",
-    ],
-    merksatz:
-      "Auf der Winkelhalbierenden liegen <strong>genau die Punkte, die von beiden Schenkeln gleich weit entfernt sind</strong> — gemessen wird dieser Abstand immer über das <strong>Lot</strong>. Deshalb hat der Schnittpunkt I von allen drei Seiten denselben Abstand, und der Kreis um I mit diesem Abstand berührt jede Seite genau einmal: der Inkreis.",
-    denkfrage: "Warum darf man den Inkreisradius nicht einfach von I bis zu einer Ecke messen?",
-    musterantwort:
-      "Der Abstand eines Punktes von einer Geraden ist immer der <em>kürzeste</em> Abstand, und der wird über das Lot gemessen. Der Weg von I zu einer Ecke ist schräg und damit länger als das Lot. Ein Kreis mit diesem größeren Radius würde die Wege überqueren statt sie zu berühren.",
-    grundlagen: { href: "winkelhalbierende-inkreis.html", text: "3. Winkelhalbierende & Inkreis" },
-    minEulerSpan: 0,
-    analyze: (tool, pts) => TRI_TASKS.winkelhalbierende.analyze(tool, pts),
-    check: (a) => TRI_TASKS.winkelhalbierende.check(a),
-  },
-
-  {
-    key: "wetterhahn",
-    nr: 3,
-    titel: "Fall 3: Der Wetterhahn",
-    kurz: "Fall 3 · Wetterhahn",
-    linie: "Seitenhalbierende",
-    ergebnis: "Schwerpunkt S",
-    farbe: "#8a5cf6",
-    buchstabe: "L",
-    position: 1,
-    namen: { A: "Ecke A", B: "Ecke B", C: "Ecke C" },
-    flaeche: true,
-    rueckblick:
-      "Rückblick auf Fall 1: Dort hast du die Mittelsenkrechte gebraucht, um <em>eine ganze Linie</em> zu bekommen. Hier brauchst du von derselben Konstruktion nur <em>einen einzigen Punkt</em>. Welchen?",
-    story:
-      "„Aus Blech schnitt ich ein dreieckiges Schild für den Wetterhahn und setzte es auf eine einzige Stange. Es stand waagerecht und kippte nicht — obwohl das Dreieck ganz schief war.“",
-    auftrag: {
-      1:
-        "Die Seitenhalbierende geht von einer Ecke zum <em>Mittelpunkt</em> der Gegenseite. Konstruiere zuerst diesen Mittelpunkt: zwei gleich große Kreise um die beiden Endpunkte der Seite (Radius größer als die halbe Seitenlänge). Der Mittelpunkt rastet dann beim Anklicken ein. Verbinde die Ecke mit ihm. Wiederhole das für alle drei Ecken.",
-      2:
-        "Konstruiere die Stelle, auf der das Blechschild balanciert — den Schwerpunkt. Nutze dafür alle drei Seitenhalbierenden.",
-      3:
-        "Finde den Balancepunkt des Schildes. Miss anschließend nach, in welchem Verhältnis er jede Seitenhalbierende teilt, und formuliere deine Beobachtung als Regel.",
-    },
-    knobel:
-      "Die Seitenhalbierende steht <em>nicht</em> senkrecht auf der Seite — die Mittelsenkrechte schon. Trotzdem beginnen beide Konstruktionen exakt gleich. Erkläre, warum das kein Widerspruch ist.",
-    hilfe: [
-      "Achtung, häufige Verwechslung: Die Mittelsenkrechte wird hier nur als <em>Werkzeug</em> gebraucht, um den Seitenmittelpunkt zu finden. Gezeichnet wird am Ende die Strecke von der Ecke zu diesem Mittelpunkt.",
-      "Sobald die beiden gleich großen Kreise um die Endpunkte einer Seite stehen, wird ihr Mittelpunkt als Kreuz markiert und rastet beim Anklicken ein.",
-      "Du brauchst die Verbindungslinie der beiden Bogenschnittpunkte nicht zu zeichnen — sie schadet aber auch nicht.",
-      "Zwei Seitenhalbierende genügen bereits, um S zu finden; die dritte ist die Probe.",
-    ],
-    merksatz:
-      "Die <strong>Seitenhalbierende</strong> verbindet eine Ecke mit dem <strong>Mittelpunkt der Gegenseite</strong> (und steht dabei nicht senkrecht). Alle drei treffen sich im <strong>Schwerpunkt S</strong>, der jede von ihnen im Verhältnis <strong>2:1</strong> teilt — von der Ecke aus gemessen ist das längere Stück zuerst dran. Auf S balanciert das Dreieck.",
-    denkfrage: "Wozu braucht man in dieser Konstruktion überhaupt Zirkelbögen, wo doch am Ende nur eine gerade Strecke gezeichnet wird?",
-    musterantwort:
-      "Der Mittelpunkt einer Strecke lässt sich mit Zirkel und Lineal nicht „abschätzen“ und nicht abmessen — er muss konstruiert werden. Zwei gleich große Kreise um die Endpunkte liefern ihn exakt: Ihre beiden Schnittpunkte sind von A und B gleich weit entfernt, und die Verbindung dieser Punkte trifft AB genau in der Mitte.",
-    grundlagen: { href: "grundkonstruktionen.html", text: "1. Grundkonstruktionen → Seitenhalbierende" },
-    minEulerSpan: 0,
-    analyze: (tool, pts) => seitenhalbierendeModell.analyze(tool, pts),
-    check: (a) => seitenhalbierendeModell.check(a),
-  },
-
-  {
     key: "fusswege",
-    nr: 4,
-    titel: "Fall 4: Die drei Fußwege",
-    kurz: "Fall 4 · Fußwege",
+    nr: 1,
+    titel: "Fall 1: Die drei Fußwege",
+    kurz: "Fall 1 · Fußwege",
     linie: "Höhe",
     ergebnis: "Höhenschnittpunkt H",
     farbe: "#e08a1e",
@@ -404,7 +283,7 @@ export const FAELLE = [
     namen: { A: "Ecke A", B: "Ecke B", C: "Ecke C" },
     flaeche: true,
     rueckblick:
-      "Rückblick auf Fall 2: Dort hast du von I aus ein Lot auf eine Seite gefällt, um den Inkreisradius zu bekommen. Genau dieselbe Konstruktion brauchst du jetzt wieder — nur startet sie diesmal in einer Ecke.",
+      "Rückblick: Auf der Seite „Winkelhalbierende & Inkreis“ hast du von einem Punkt aus schon einmal ein Lot auf eine Seite gefällt, um den Inkreisradius zu bestimmen. Genau dieselbe Konstruktion brauchst du jetzt wieder — nur startet sie diesmal in einer Ecke, nicht im Inkreismittelpunkt.",
     story:
       "„Von jeder Ecke meines Ackers legte ich den <em>kürzesten</em> Weg zum gegenüberliegenden Feldrand an. Ich staunte nicht schlecht: Alle drei Wege kreuzten sich an ein und derselben Stelle. Dort rammte ich meinen Messpfahl in den Boden.“",
     auftrag: {
@@ -416,7 +295,7 @@ export const FAELLE = [
         "Konstruiere die Stelle des Messpfahls. Begründe zusätzlich, warum der kürzeste Weg von einer Ecke zum Feldrand ausgerechnet der senkrechte ist.",
     },
     knobel:
-      "Anton Winkels Acker war spitzwinklig, deshalb lag der Messpfahl mitten im Feld. Öffne die Seite „Alle besonderen Linien“, blende die Höhen ein und zieh eine Ecke so weit, bis ein Winkel stumpf wird. Wo liegt H dann? Und was passiert bei genau 90°?",
+      "Anton Winkels Acker war spitzwinklig, deshalb lag der Messpfahl mitten im Feld. Öffne die Seite „Alle besonderen Linien“ und finde dort selbst heraus, welches Häkchen zu diesem Fall gehört. Zieh dann eine Ecke so weit, bis ein Winkel stumpf wird — wo liegt der Messpfahl dann? Und was passiert bei genau 90°?",
     hilfe: [
       "Der Kreis um die Ecke muss die Gegenseite an <em>zwei</em> Stellen treffen — ist der Radius zu klein, passiert nichts.",
       "Die beiden Treffer auf der Seite werden als rote Kreuze markiert und rasten beim Anklicken ein.",
@@ -437,6 +316,136 @@ export const FAELLE = [
   },
 
   {
+    key: "brunnen",
+    nr: 2,
+    titel: "Fall 2: Der Brunnen",
+    kurz: "Fall 2 · Brunnen",
+    linie: "Mittelsenkrechte",
+    ergebnis: "Umkreismittelpunkt M + Umkreis",
+    farbe: "#d64545",
+    buchstabe: "I",
+    position: 2,
+    namen: { A: "🏡 Adlerhof", B: "🏡 Birkenhof", C: "🏡 Cammerhof" },
+    flaeche: false,
+    rueckblick:
+      "Zum Warmwerden: Wenn ein Punkt von zwei anderen Punkten A und B gleich weit entfernt ist — auf welcher besonderen Linie liegt er dann garantiert? (Der Merksatz dazu wartet unten, sobald du diesen Fall gelöst hast.)",
+    story:
+      "„Drei Höfe standen mir im Feld: der Adlerhof, der Birkenhof und der Cammerhof. Ich grub ihnen einen gemeinsamen Brunnen — und keine Bäuerin sollte weiter laufen müssen als die andere. Um den Brunnen zog ich später eine Hecke, genau durch alle drei Höfe.“",
+    auftrag: {
+      1:
+        "Konstruiere die Mittelsenkrechte der Seite AB: zwei gleich große Kreise um A und um B (Radius größer als die halbe Seitenlänge), dann die beiden Schnittpunkte mit dem Lineal verbinden. Wiederhole das für BC und CA. Die drei Linien treffen sich in einem Punkt — das ist der Brunnen M. Stich zuletzt mit dem Zirkel in M ein und stelle den Radius bis zu einem Hof ein: Das ist die Hecke (der Umkreis).",
+      2:
+        "Finde die Stelle für den Brunnen, die von allen drei Höfen gleich weit entfernt ist, und zeichne anschließend Anton Winkels Hecke — den Kreis durch alle drei Höfe.",
+      3:
+        "Anton Winkel behauptet, es gebe <em>genau eine</em> solche Stelle. Konstruiere sie und die Hecke dazu.",
+    },
+    knobel:
+      "Warum treffen sich alle drei Konstruktionslinien in <em>einem</em> Punkt — obwohl du für jede Seite eine eigene zeichnest? Und warum genügen schon zwei davon, um den Brunnen zu finden?",
+    hilfe: [
+      "Zirkel wählen, in einen Eckpunkt einstechen, dann auf einen Punkt im gewünschten Abstand klicken. Der Radius muss größer sein als die halbe Seitenlänge — sonst schneiden sich die Bögen nicht.",
+      "Mit dem Häkchen „🔒 Zirkel-Radius beibehalten“ bleibt der Radius zwischen beiden Kreisen gleich, genau wie bei einem echten Zirkel, den man nicht verstellt.",
+      "Lineal wählen und die beiden Schnittpunkte der Bögen verbinden — fertig ist eine Mittelsenkrechte. Ihre Hilfskreise treten dann grau zurück.",
+      "Sobald zwei Mittelsenkrechten stehen, rastet ihr Schnittpunkt M beim Anklicken von selbst ein.",
+    ],
+    merksatz:
+      "Auf der Mittelsenkrechten einer Strecke liegen <strong>genau die Punkte, die von beiden Endpunkten gleich weit entfernt sind</strong>. Deshalb ist der Schnittpunkt zweier Mittelsenkrechten von allen drei Ecken gleich weit weg — und deshalb gibt es um ihn einen Kreis durch A, B und C: den Umkreis.",
+    denkfrage: "Warum muss die dritte Mittelsenkrechte automatisch durch M laufen, ohne dass man sie überhaupt zeichnet?",
+    musterantwort:
+      "M liegt auf der Mittelsenkrechten von AB, ist also von A und B gleich weit entfernt. M liegt auch auf der von BC, ist also von B und C gleich weit entfernt. Zusammen: M ist von A und C gleich weit entfernt — und das ist genau die Bedingung für die Mittelsenkrechte von CA. M liegt also auch auf ihr.",
+    grundlagen: { href: "mittelsenkrechte-umkreis.html", text: "2. Mittelsenkrechte & Umkreis" },
+    minEulerSpan: 0,
+    analyze: (tool, pts) => TRI_TASKS.mittelsenkrechte.analyze(tool, pts),
+    check: (a) => TRI_TASKS.mittelsenkrechte.check(a),
+  },
+
+  {
+    key: "rondell",
+    nr: 3,
+    titel: "Fall 3: Das Rondell",
+    kurz: "Fall 3 · Rondell",
+    linie: "Winkelhalbierende",
+    ergebnis: "Inkreismittelpunkt I + Inkreis",
+    farbe: "#1a9e7a",
+    buchstabe: "E",
+    position: 5,
+    namen: { A: "🏡 Adlerhof", B: "🏡 Birkenhof", C: "🏡 Cammerhof" },
+    flaeche: true,
+    rueckblick:
+      "Rückblick: Erinnerst du dich an die drei Höfe? Beim Brunnen ging es um gleiche Abstände zu <em>Punkten</em> (den Höfen selbst). Hier geht es um gleiche Abstände zu <em>Geraden</em> (den Wegen dazwischen). Wie misst man eigentlich den Abstand eines Punktes von einer Geraden?",
+    story:
+      "„Die Wege, die den Adlerhof, den Birkenhof und den Cammerhof miteinander verbanden, schlossen ein Stück Wiese ein. Dort ließ ich ein rundes Beet anlegen — so groß, wie es nur eben ging: Es sollte jeden der drei Wege genau einmal berühren, keinen überqueren.“",
+    auftrag: {
+      1:
+        "Konstruiere die Winkelhalbierende bei A: Kreis um A zeichnen, der beide anliegenden Wege schneidet; um die zwei neuen Schnittpunkte zwei gleich große Kreise; A mit deren Kreuzungspunkt verbinden. Wiederhole das bei B und C — die drei Linien treffen sich im Beetmittelpunkt I. Fälle dann von I das Lot auf einen Weg (Kreis um I, der den Weg zweimal schneidet, zwei gleich große Kreise darum, I mit dem Kreuzungspunkt verbinden). Stich zuletzt in I ein und stelle den Radius genau bis zum Lotfußpunkt ein.",
+      2:
+        "Finde den Mittelpunkt des Beetes und zeichne das Beet so groß, dass es alle drei Wege berührt. Denk daran: Der Radius ist der <em>Lotabstand</em> zu einem Weg.",
+      3:
+        "Konstruiere das größtmögliche Rondell, das ganz zwischen den drei Wegen liegt. Begründe unterwegs, warum der Radius nicht größer gewählt werden darf.",
+    },
+    knobel:
+      "Der Mittelpunkt aus dem Brunnen-Fall kann außerhalb des Dreiecks liegen — der Mittelpunkt hier niemals. Woran liegt das? (Tipp: Überlege, was es bedeutet, dass ein Punkt von einer Geraden „gleich weit entfernt“ ist.)",
+    hilfe: [
+      "Der erste Bogen um den Eckpunkt muss <em>beide</em> anliegenden Seiten schneiden — lieber etwas größer wählen.",
+      "Die beiden Schnittpunkte auf den Seiten sind die nächsten Einstichpunkte; sie werden als rote Kreuze markiert.",
+      "Sobald zwei Winkelhalbierende stehen, rastet ihr Schnittpunkt I ein.",
+      "Das Lot von I auf eine Seite ist dieselbe Konstruktion wie eine Höhe — nur startet sie in I statt in einer Ecke.",
+      "Der Inkreisradius reicht genau bis zum Lotfußpunkt, nicht bis zu einer Ecke.",
+    ],
+    merksatz:
+      "Auf der Winkelhalbierenden liegen <strong>genau die Punkte, die von beiden Schenkeln gleich weit entfernt sind</strong> — gemessen wird dieser Abstand immer über das <strong>Lot</strong>. Deshalb hat der Schnittpunkt I von allen drei Seiten denselben Abstand, und der Kreis um I mit diesem Abstand berührt jede Seite genau einmal: der Inkreis.",
+    denkfrage: "Warum darf man den Inkreisradius nicht einfach von I bis zu einer Ecke messen?",
+    musterantwort:
+      "Der Abstand eines Punktes von einer Geraden ist immer der <em>kürzeste</em> Abstand, und der wird über das Lot gemessen. Der Weg von I zu einer Ecke ist schräg und damit länger als das Lot. Ein Kreis mit diesem größeren Radius würde die Wege überqueren statt sie zu berühren.",
+    grundlagen: { href: "winkelhalbierende-inkreis.html", text: "3. Winkelhalbierende & Inkreis" },
+    minEulerSpan: 0,
+    analyze: (tool, pts) => TRI_TASKS.winkelhalbierende.analyze(tool, pts),
+    check: (a) => TRI_TASKS.winkelhalbierende.check(a),
+  },
+
+  {
+    key: "wetterhahn",
+    nr: 4,
+    titel: "Fall 4: Der Wetterhahn",
+    kurz: "Fall 4 · Wetterhahn",
+    linie: "Seitenhalbierende",
+    ergebnis: "Schwerpunkt S",
+    farbe: "#8a5cf6",
+    buchstabe: "L",
+    position: 1,
+    namen: { A: "Ecke A", B: "Ecke B", C: "Ecke C" },
+    flaeche: true,
+    rueckblick:
+      "Rückblick: Auf der Seite „Mittelsenkrechte & Umkreis“ hast du gelernt, wie man den Mittelpunkt einer Strecke konstruiert. Von genau dieser Konstruktion brauchst du hier nur <em>einen einzigen Punkt</em> — nicht die ganze Linie. Welchen?",
+    story:
+      "„Aus Blech schnitt ich ein dreieckiges Schild für den Wetterhahn und setzte es auf eine einzige Stange. Es stand waagerecht und kippte nicht — obwohl das Dreieck ganz schief war.“",
+    auftrag: {
+      1:
+        "Die Seitenhalbierende geht von einer Ecke zum <em>Mittelpunkt</em> der Gegenseite. Konstruiere zuerst diesen Mittelpunkt: zwei gleich große Kreise um die beiden Endpunkte der Seite (Radius größer als die halbe Seitenlänge). Der Mittelpunkt rastet dann beim Anklicken ein. Verbinde die Ecke mit ihm. Wiederhole das für alle drei Ecken.",
+      2:
+        "Konstruiere die Stelle, auf der das Blechschild balanciert — den Schwerpunkt. Nutze dafür alle drei Seitenhalbierenden.",
+      3:
+        "Finde den Balancepunkt des Schildes. Miss anschließend nach, in welchem Verhältnis er jede Verbindungslinie von einer Ecke zum gegenüberliegenden Seitenmittelpunkt teilt, und formuliere deine Beobachtung als Regel.",
+    },
+    knobel:
+      "Zwei ganz unterschiedliche Konstruktionslinien im Dreieck beginnen mit exakt denselben ersten Schritten (zwei gleich große Kreise um zwei Eckpunkte) — enden aber bei unterschiedlichen Linien mit unterschiedlichen Eigenschaften. Erkläre, wie das sein kann, und was am Ende den Unterschied macht.",
+    hilfe: [
+      "Achtung, häufige Verwechslung: Die Mittelsenkrechte wird hier nur als <em>Werkzeug</em> gebraucht, um den Seitenmittelpunkt zu finden. Gezeichnet wird am Ende die Strecke von der Ecke zu diesem Mittelpunkt.",
+      "Sobald die beiden gleich großen Kreise um die Endpunkte einer Seite stehen, wird ihr Mittelpunkt als Kreuz markiert und rastet beim Anklicken ein.",
+      "Du brauchst die Verbindungslinie der beiden Bogenschnittpunkte nicht zu zeichnen — sie schadet aber auch nicht.",
+      "Zwei Seitenhalbierende genügen bereits, um S zu finden; die dritte ist die Probe.",
+    ],
+    merksatz:
+      "Die <strong>Seitenhalbierende</strong> verbindet eine Ecke mit dem <strong>Mittelpunkt der Gegenseite</strong> (und steht dabei nicht senkrecht). Alle drei treffen sich im <strong>Schwerpunkt S</strong>, der jede von ihnen im Verhältnis <strong>2:1</strong> teilt — von der Ecke aus gemessen ist das längere Stück zuerst dran. Auf S balanciert das Dreieck.",
+    denkfrage: "Wozu braucht man in dieser Konstruktion überhaupt Zirkelbögen, wo doch am Ende nur eine gerade Strecke gezeichnet wird?",
+    musterantwort:
+      "Der Mittelpunkt einer Strecke lässt sich mit Zirkel und Lineal nicht „abschätzen“ und nicht abmessen — er muss konstruiert werden. Zwei gleich große Kreise um die Endpunkte liefern ihn exakt: Ihre beiden Schnittpunkte sind von A und B gleich weit entfernt, und die Verbindung dieser Punkte trifft AB genau in der Mitte.",
+    grundlagen: { href: "grundkonstruktionen.html", text: "1. Grundkonstruktionen → Seitenhalbierende" },
+    minEulerSpan: 0,
+    analyze: (tool, pts) => seitenhalbierendeModell.analyze(tool, pts),
+    check: (a) => seitenhalbierendeModell.check(a),
+  },
+
+  {
     key: "peilstrahl",
     nr: 5,
     titel: "Finale: Anton Winkels Peilstrahl",
@@ -449,7 +458,7 @@ export const FAELLE = [
     namen: { A: "Ecke A", B: "Ecke B", C: "Ecke C" },
     flaeche: false,
     rueckblick:
-      "Rückblick auf die Fälle 1, 3 und 4: Du brauchst jetzt alle drei Punkte auf einmal — den Brunnen M, den Waagepunkt S und den Messpfahl H. Für jeden einzelnen genügen <em>zwei</em> Linien der passenden Sorte. Warum eigentlich?",
+      "Rückblick auf die Fälle Brunnen, Wetterhahn und Fußwege: Du brauchst jetzt alle drei Punkte auf einmal — den Brunnen M, den Waagepunkt S und den Messpfahl H. Für jeden einzelnen genügen <em>zwei</em> Linien der passenden Sorte. Warum eigentlich?",
     story:
       "„Zum Schluss verrate ich dir das Merkwürdigste: Brunnen, Waagepunkt und Messpfahl liegen auf <em>einer einzigen Geraden</em>, so gerade wie ein Peilstrahl. Spanne die Schnur von meinem Brunnen bis zu meinem Messpfahl — dann weißt du, wo du zu graben hast.“",
     auftrag: {
@@ -473,7 +482,7 @@ export const FAELLE = [
       "In <em>jedem</em> Dreieck liegen der Umkreismittelpunkt <strong>M</strong>, der Schwerpunkt <strong>S</strong> und der Höhenschnittpunkt <strong>H</strong> auf einer gemeinsamen Geraden — der <strong>Eulerschen Geraden</strong>. S liegt dabei immer <em>zwischen</em> M und H und teilt die Strecke MH im Verhältnis <strong>1:2</strong>. Nur der Inkreismittelpunkt I macht nicht mit. Beim gleichseitigen Dreieck fallen M, S und H zusammen — dann gibt es keine Eulersche Gerade mehr.",
     denkfrage: "Warum genügen zwei Mittelsenkrechte, um M zu bestimmen — und warum ist es trotzdem sinnvoll, die dritte als Probe zu zeichnen?",
     musterantwort:
-      "Zwei sich schneidende Geraden haben genau einen Schnittpunkt, damit ist M eindeutig festgelegt; die dritte Mittelsenkrechte läuft aus dem im Merksatz von Fall 1 genannten Grund automatisch mit hindurch. Als Probe ist sie trotzdem nützlich: Geht sie nicht durch M, hat man sich beim Zeichnen irgendwo vertan.",
+      "Zwei sich schneidende Geraden haben genau einen Schnittpunkt, damit ist M eindeutig festgelegt; die dritte Mittelsenkrechte läuft aus demselben Grund automatisch mit hindurch, den du schon beim Brunnen-Fall kennengelernt hast. Als Probe ist sie trotzdem nützlich: Geht sie nicht durch M, hat man sich beim Zeichnen irgendwo vertan.",
     grundlagen: { href: "alle-linien.html", text: "4. Alle besonderen Linien am Dreieck" },
     minEulerSpan: EULER_MIN_SPAN,
     analyze: (tool, pts) => eulerModell.analyze(tool, pts),
