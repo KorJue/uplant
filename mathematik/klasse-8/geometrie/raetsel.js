@@ -3,11 +3,11 @@
 // (was konstruiert und wie geprüft wird) steckt in raetsel-tasks.js, das Zeichnen und die Werkzeuge
 // in geo-svg.js / free-ui.js — hier geht es nur um den Ablauf drumherum.
 
-import * as GS from "./geo-svg.js?v=14";
-import { norm, sub } from "./geo-core.js?v=14";
-import { setupCanvasZoom } from "./canvas-zoom.js?v=14";
-import { setupFreeConstruction } from "./free-ui.js?v=14";
-import { FAELLE, LOESUNGSWORT, randomCaseTriangle, W, H } from "./raetsel-tasks.js?v=14";
+import * as GS from "./geo-svg.js?v=15";
+import { norm, sub } from "./geo-core.js?v=15";
+import { setupCanvasZoom } from "./canvas-zoom.js?v=15";
+import { setupFreeConstruction } from "./free-ui.js?v=15";
+import { FAELLE, LOESUNGSWORT, randomCaseTriangle, W, H } from "./raetsel-tasks.js?v=15";
 
 const STORAGE_KEY = "uplant-geo-raetsel";
 const AMPEL = [
@@ -52,7 +52,9 @@ function standVon(key) {
   return fortschritt[key];
 }
 
-const state = { fall: 0, stufe: 2, pass: false };
+// Start bewusst immer im Knobelmodus (Stufe 3): Sonst würde beim ersten Öffnen einer Seite schon
+// verraten, welche Konstruktion gebraucht wird — und genau das soll das Rätsel ja nicht tun.
+const state = { fall: 0, stufe: 3, pass: false };
 let tri = null;
 
 function aktuellerFall() {
@@ -164,13 +166,37 @@ function renderSeite() {
   const hilfeOffen = state.stufe === 1 ? " open" : "";
   const knobel = state.stufe === 3 ? `<p class="raetsel-knobel"><strong>🟣 Zusätzlich zum Knobeln:</strong> ${fall.knobel}</p>` : "";
 
+  // Im Knobelmodus (Stufe 3) darf vor dem Lösen nirgends stehen, welche der vier Linien gebraucht
+  // wird — weder als Tag noch im Merksatz oder in der Denkfrage (die nennt die Linie beim Namen).
+  // Auf Stufe 1/2 ist das Nennen ausdrücklich erlaubt ("an geeigneter Stelle": direkt im Auftrag),
+  // im Knobelmodus schaltet stattdessen das Lösen selbst diese Blöcke frei — wie beim Buchstaben.
+  const gesperrt = state.stufe === 3 && !stand.geloest;
+  const gebrauchtWird = !gesperrt
+    ? `<p class="raetsel-meta">Gebraucht wird: <span style="color:${fall.farbe}">${fall.linie}</span> → ${fall.ergebnis}</p>`
+    : "";
+  const hilfeBlock = state.stufe === 3
+    ? `<details class="raetsel-block raetsel-hilfe">
+        <summary>🧭 Hilfe — falls du gar nicht weiterweißt</summary>
+        <p>Frag dich zuerst: Welche <strong>Eigenschaft</strong> muss der gesuchte Punkt haben? Genau diese Eigenschaft kennst du schon von einer der vier Konstruktionen (Mittelsenkrechte, Winkelhalbierende, Seitenhalbierende, Höhe). Willst du direkt nachlesen, welche hier gemeint ist, wechsle oben auf „🩷 Stufe 2 · Anwenden“.</p>
+      </details>`
+    : `<details class="raetsel-block raetsel-hilfe"${hilfeOffen}>
+        <summary>🧭 Hilfe — so geht die Konstruktion Schritt für Schritt</summary>
+        <ol class="geo-steps">${fall.hilfe.map((h) => `<li>${h}</li>`).join("")}</ol>
+        <p class="raetsel-meta">Noch ganz unsicher? Übe die Grundkonstruktion zuerst hier: <a href="${fall.grundlagen.href}">${fall.grundlagen.text}</a></p>
+      </details>`;
+  const merksatzBlock = gesperrt
+    ? `<p>🔒 Dieser Merksatz nennt die gesuchte Konstruktion beim Namen — er schaltet sich frei, sobald du den Fall gelöst hast (oder wenn du auf Stufe 1/2 wechselst).</p>`
+    : `<p>${fall.merksatz}</p>`;
+  const denkfrageBlock = gesperrt
+    ? `<p>Löse den Fall zuerst — die Denkfrage verrät sonst schon, um welche Konstruktion es hier geht.</p>`
+    : `<p>${fall.denkfrage}</p><details class="raetsel-musterantwort"><summary>Musterantwort anzeigen</summary><p>${fall.musterantwort}</p></details>`;
+
   sideCol.innerHTML = `
     <div class="raetsel-block raetsel-rueckblick"><strong>🔁 Rückblick</strong><p>${fall.rueckblick}</p></div>
 
     <div class="raetsel-block raetsel-karte">
       <strong>📜 Rätselkarte ${fall.nr}</strong>
       <p>${fall.story}</p>
-      <p class="raetsel-meta">Gebraucht wird: <span style="color:${fall.farbe}">${fall.linie}</span> → ${fall.ergebnis}</p>
     </div>
 
     ${stufenReiter()}
@@ -178,16 +204,13 @@ function renderSeite() {
     <div class="raetsel-block raetsel-auftrag">
       <strong>🎯 Dein Auftrag</strong>
       <p>${fall.auftrag[state.stufe]}</p>
+      ${gebrauchtWird}
       ${knobel}
     </div>
 
-    <details class="raetsel-block raetsel-hilfe"${hilfeOffen}>
-      <summary>🧭 Hilfe — so geht die Konstruktion Schritt für Schritt</summary>
-      <ol class="geo-steps">${fall.hilfe.map((h) => `<li>${h}</li>`).join("")}</ol>
-      <p class="raetsel-meta">Noch ganz unsicher? Übe die Grundkonstruktion zuerst hier: <a href="${fall.grundlagen.href}">${fall.grundlagen.text}</a></p>
-    </details>
+    ${hilfeBlock}
 
-    <div class="raetsel-block raetsel-merksatz"><strong>💡 Merksatz</strong><p>${fall.merksatz}</p></div>
+    <div class="raetsel-block raetsel-merksatz"><strong>💡 Merksatz</strong>${merksatzBlock}</div>
 
     <div class="raetsel-block raetsel-selbstcheck">
       <strong>✅ Selbstkontrolle</strong>
@@ -200,8 +223,7 @@ function renderSeite() {
 
     <details class="raetsel-block raetsel-denkfrage">
       <summary>🤔 Denkfrage — erst selbst antworten, dann vergleichen</summary>
-      <p>${fall.denkfrage}</p>
-      <details class="raetsel-musterantwort"><summary>Musterantwort anzeigen</summary><p>${fall.musterantwort}</p></details>
+      ${denkfrageBlock}
     </details>
 
     <div class="raetsel-block raetsel-buchstabe">

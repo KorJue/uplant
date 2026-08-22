@@ -3,11 +3,11 @@
 // geführte Phase mit den Stufen 1/2/3 und eine Phase zum Selbstkonstruieren. Unterschiedlich sind
 // nur die Texte und was in der geführten Phase gezeichnet wird — das kommt über die Konfiguration.
 
-import * as GC from "./geo-core.js?v=14";
-import * as GS from "./geo-svg.js?v=14";
-import { setupDraggableTriangle } from "./triangle-common.js?v=14";
-import { setupCanvasZoom } from "./canvas-zoom.js?v=14";
-import { setupFreeConstruction } from "./free-ui.js?v=14";
+import * as GC from "./geo-core.js?v=15";
+import * as GS from "./geo-svg.js?v=15";
+import { setupDraggableTriangle } from "./triangle-common.js?v=15";
+import { setupCanvasZoom } from "./canvas-zoom.js?v=15";
+import { setupFreeConstruction } from "./free-ui.js?v=15";
 
 /**
  * @param W, H        Maße der Zeichenfläche
