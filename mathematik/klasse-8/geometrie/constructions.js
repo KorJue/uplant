@@ -3,8 +3,8 @@
 // Zirkelbogen-Konstruktion (wenn showArcs) als auch die fertige Linie, exakt berechnet (die Bögen
 // dienen nur der Veranschaulichung, nicht der eigentlichen Berechnung).
 
-import * as GC from "./geo-core.js?v=19";
-import * as GS from "./geo-svg.js?v=19";
+import * as GC from "./geo-core.js?v=20";
+import * as GS from "./geo-svg.js?v=20";
 
 function projT(P, Q, X) {
   const d = GC.sub(Q, P);
@@ -68,8 +68,10 @@ export function drawWinkelhalbierende(layer, W, H, V, P, Q, showArcs) {
 
 // Fällt schrittweise das Lot von V (z. B. dem Inkreismittelpunkt I) auf die Seite PQ, exakt wie
 // beim Höhenfußpunkt: stufe 1 zeigt nur den ersten Bogen um V, der PQ zweimal schneidet; stufe 2
-// ergänzt die beiden gleich großen Kreise um diese Schnittpunkte, deren Kreuzungspunkt mit V
-// verbunden den Lotfußpunkt liefert.
+// ergänzt die beiden gleich großen Kreise um diese Schnittpunkte. V liegt selbst schon auf beiden
+// (Radius r wurde ja von dort abgegriffen) — ihr zweiter, neuer Schnittpunkt ist der Spiegelpunkt
+// von V an PQ. Die Verbindung beider Schnittpunkte (V und dieser Spiegelpunkt) ist das Lot; bis
+// der Inkreis feststeht, wird es hier nur als graue Hilfslinie angedeutet.
 export function drawLotSchritt(layer, layerCenters, V, P, Q, stufe) {
   const foot = GC.footOfPerpendicular(V, P, Q);
   const height = GC.dist(V, foot);
@@ -87,6 +89,9 @@ export function drawLotSchritt(layer, layerCenters, V, P, Q, stufe) {
   if (stufe >= 2) {
     GS.drawCompassArc(layer, X1, V, r, 24, "geo-arc");
     GS.drawCompassArc(layer, X2, V, r, 24, "geo-arc");
+    const Vspiegel = GC.sub(GC.scale(foot, 2), V);
+    GS.drawCross(layer, Vspiegel, "geo-schnitt");
+    GS.drawSegment(layer, V, Vspiegel, "geo-hilfslinie");
     GS.drawPoint(layerCenters, foot, "");
   }
 }
