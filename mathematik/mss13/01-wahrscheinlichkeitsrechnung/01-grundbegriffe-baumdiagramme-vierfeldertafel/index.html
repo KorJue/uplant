@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grundbegriffe, Baumdiagramme und Vierfeldertafel</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">MSS 13</a><span class="sep">/</span>
+  <a href="../index.html">01 Wahrscheinlichkeitsrechnung</a><span class="sep">/</span>
+  1 Grundbegriffe, Baumdiagramme und Vierfeldertafel
+</nav>
+<header class="page-header">
+  <h1>Grundbegriffe, Baumdiagramme und Vierfeldertafel</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Fachbegriff, zeigt ihn an einer Simulation und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Auf diesem Lernpfad wiederholst und vertiefst du die Grundlagen der Wahrscheinlichkeitsrechnung. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li><span class="term">Zufallsexperiment</span>, <span class="term">Ergebnis</span> und <span class="term">Ergebnismenge</span> an einem Beispiel erklären</li>
+      <li><span class="term">absolute</span> und <span class="term">relative Häufigkeit</span> berechnen und das <span class="term">Gesetz der großen Zahlen</span> an einer Simulation beobachten</li>
+      <li><span class="term">Ereignis</span>, <span class="term">Gegenereignis</span> und die <span class="term">Summenregel</span> anwenden</li>
+      <li>ein <span class="term">Laplace-Experiment</span> erkennen und Wahrscheinlichkeiten damit berechnen</li>
+      <li><span class="term">mehrstufige Zufallsexperimente</span> in einem <span class="term">Baumdiagramm</span> darstellen und mit <span class="term">Pfadmultiplikations-</span> und <span class="term">Pfadadditionsregel</span> auswerten</li>
+      <li><span class="term">unabhängige</span> und <span class="term">abhängige Stufen</span> unterscheiden (mit/ohne Zurücklegen)</li>
+      <li>eine <span class="term">Vierfeldertafel</span> mit absoluten und relativen Häufigkeiten füllen und sie mit einem Baumdiagramm verknüpfen</li>
+    </ul>
+    <p class="hinweis-box">💡 Arbeite die Abschnitte der Reihe nach durch. Probiere jede Simulation selbst aus, bevor du die Kontrollfrage beantwortest — die Antwort ergibt sich meist direkt aus dem, was du gerade beobachtet hast.</p>
+  </section>
+
+  <!-- 1. Zufallsexperiment, Ergebnis, Ergebnismenge -->
+  <section class="card" id="sec-ergebnis">
+    <h2>1. Zufallsexperiment, Ergebnis und Ergebnismenge</h2>
+    <p>Ein <span class="term">Zufallsexperiment</span> ist ein Vorgang mit mehreren möglichen <span class="term">Ergebnissen</span> (Versuchsausgängen), dessen Ausgang sich nicht vorhersagen lässt. Die Menge aller möglichen Ergebnisse heißt <span class="term">Ergebnismenge</span> Ω.</p>
+    <p>Das Glücksrad unten ist ein Zufallsexperiment mit vier möglichen Ergebnissen: blau, grün, gelb und rot.</p>
+    <div class="widget">
+      <div class="widget-row">
+        <div class="widget-col" id="spinner-mount"></div>
+        <div class="widget-col">
+          <p id="ergebnismenge-out"></p>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="spin-once-btn">🎡 Einmal drehen</button>
+          </div>
+          <p class="progress-note">Jede Drehung liefert genau ein Ergebnis aus Ω — nie mehr, nie weniger.</p>
+        </div>
+      </div>
+    </div>
+    <div class="quiz" id="quiz-ergebnis"></div>
+  </section>
+
+  <!-- 2. Häufigkeiten, Gesetz der großen Zahlen -->
+  <section class="card" id="sec-haeufigkeit">
+    <h2>2. Absolute und relative Häufigkeit — das Gesetz der großen Zahlen</h2>
+    <p>Die <span class="term">absolute Häufigkeit</span> H eines Ergebnisses gibt an, wie oft es bei n Durchführungen vorgekommen ist. Die <span class="term">relative Häufigkeit</span> h = H/n gibt den Anteil an der Gesamtzahl an.</p>
+    <p>Drehe das Glücksrad oft genug, und beobachte: Die relative Häufigkeit jeder Farbe pendelt sich in der Nähe eines festen Werts ein — das <span class="term">empirische Gesetz der großen Zahlen</span>. Dieser feste Wert heißt <span class="term">Wahrscheinlichkeit</span> P des Ergebnisses.</p>
+    <div class="widget">
+      <p>Das Rad von oben zählt weiter mit. Nutze die Schnell-Buttons, um viele Drehungen auf einmal zu simulieren:</p>
+      <div class="btn-row">
+        <button type="button" class="btn" data-spin-many="1">🎡 1×</button>
+        <button type="button" class="btn" data-spin-many="10">10×</button>
+        <button type="button" class="btn" data-spin-many="100">100×</button>
+        <button type="button" class="btn" data-spin-many="1000">1000×</button>
+        <button type="button" class="btn" id="reset-stats-btn">🔄 Zurücksetzen</button>
+      </div>
+      <table class="stat-table" id="stat-table"></table>
+      <p class="progress-note">Der kurze senkrechte Strich in jedem Balken markiert die tatsächliche Wahrscheinlichkeit P. Je mehr Drehungen, desto näher rückt der Balken heran.</p>
+      <div id="bar-chart"></div>
+    </div>
+    <div class="quiz" id="quiz-haeufigkeit"></div>
+  </section>
+
+  <!-- 3. Ereignis, Gegenereignis, Summenregel -->
+  <section class="card" id="sec-ereignis">
+    <h2>3. Ereignis, Gegenereignis und Summenregel</h2>
+    <p>Fasst man mehrere Ergebnisse zu einer Aussage zusammen, erhält man ein <span class="term">Ereignis</span> E. Seine Wahrscheinlichkeit ist die Summe der Wahrscheinlichkeiten der zugehörigen Ergebnisse (<span class="term">Summenregel</span>). Alle Ergebnisse, die <em>nicht</em> zu E gehören, bilden das <span class="term">Gegenereignis</span> Ē, und es gilt P(Ē) = 1 − P(E).</p>
+    <p>Wähle unten aus, welche Farben zum Ereignis E gehören sollen:</p>
+    <div class="widget">
+      <div class="event-picker" id="event-picker"></div>
+      <div class="event-result" id="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-ereignis"></div>
+  </section>
+
+  <!-- 4. Laplace-Experiment -->
+  <section class="card" id="sec-laplace">
+    <h2>4. Das Laplace-Experiment</h2>
+    <p>Sind bei einem Zufallsexperiment <em>alle</em> Ergebnisse gleich wahrscheinlich, heißt es <span class="term">Laplace-Experiment</span>. Dann gilt für jedes Ereignis E:</p>
+    <div class="formula-block">P(E) = (Anzahl der Ergebnisse in E) / (Anzahl aller Ergebnisse in Ω)</div>
+    <p>Ein Würfel mit acht gleich großen Seiten (Augenzahlen 1 bis 8) ist ein Laplace-Experiment: Jede Seite hat die gleiche Chance. Wähle unten, welche Augenzahlen zum Ereignis E gehören sollen, und würfle anschließend.</p>
+    <div class="widget">
+      <div class="die-row">
+        <div>
+          <div class="die-face" id="die-face">?</div>
+          <div class="btn-row" style="justify-content:center">
+            <button type="button" class="btn btn-primary" id="roll-die-btn">🎲 Würfeln</button>
+          </div>
+        </div>
+        <div class="widget-col">
+          <p><strong>Ereignis E:</strong> welche Augenzahlen sollen dazugehören?</p>
+          <div class="face-picker" id="face-picker"></div>
+          <div class="event-result" id="laplace-result"></div>
+          <p class="progress-note" id="laplace-tally"></p>
+        </div>
+      </div>
+    </div>
+    <div class="quiz" id="quiz-laplace"></div>
+  </section>
+
+  <!-- 5. Mehrstufige Zufallsexperimente / Baumdiagramm unabhängig -->
+  <section class="card" id="sec-baum1">
+    <h2>5. Mehrstufige Zufallsexperimente: das Baumdiagramm</h2>
+    <p>Wird ein Zufallsexperiment mehrfach hintereinander durchgeführt, spricht man von einem <span class="term">mehrstufigen Zufallsexperiment</span>. Übersichtlich darstellen lässt es sich in einem <span class="term">Baumdiagramm</span>: An den Ästen stehen die Wahrscheinlichkeiten der jeweiligen Stufe.</p>
+    <p>Beeinflusst das Ergebnis der ersten Stufe die Wahrscheinlichkeiten der zweiten Stufe nicht, heißen die Stufen <span class="term">unabhängig</span>. Im Beispiel unten wird zuerst eine Münze geworfen und danach unabhängig davon ein Glücksrad gedreht.</p>
+    <div class="widget">
+      <div id="tree1-mount"></div>
+      <p><strong><span class="term">Pfadmultiplikationsregel:</span></strong> Die Wahrscheinlichkeit eines Pfades (eines zusammengesetzten Ergebnisses) ist das Produkt der Wahrscheinlichkeiten entlang des Pfades.</p>
+      <p><strong><span class="term">Pfadadditionsregel:</span></strong> Die Wahrscheinlichkeit eines Ereignisses, das aus mehreren Pfaden besteht, ist die Summe der Pfadwahrscheinlichkeiten. Hake unten Blätter an, um ein Ereignis aus mehreren Pfaden zusammenzustellen.</p>
+      <div id="tree1-event"></div>
+    </div>
+    <div class="quiz" id="quiz-baum1"></div>
+  </section>
+
+  <!-- 6. Abhängige Stufen + Vierfeldertafel -->
+  <section class="card" id="sec-baum2">
+    <h2>6. Abhängige Stufen: Baumdiagramm und Vierfeldertafel kombiniert</h2>
+    <p>In einer Urne liegen 4 rote und 6 blaue Kugeln. Es werden nacheinander zwei Kugeln gezogen. Wird die erste Kugel <strong>zurückgelegt</strong>, bleiben die Wahrscheinlichkeiten der zweiten Ziehung unverändert — die Stufen sind unabhängig. Wird sie <strong>nicht zurückgelegt</strong>, ändert sich die Zusammensetzung der Urne, und die zweite Stufe hängt vom Ergebnis der ersten ab: die Stufen sind <span class="term">abhängig</span>.</p>
+    <div class="mode-toggle" id="urn-mode-toggle"></div>
+    <div class="widget">
+      <div id="tree2-mount"></div>
+    </div>
+    <p>Die gleichen vier Pfadwahrscheinlichkeiten lassen sich auch in einer <span class="term">Vierfeldertafel</span> darstellen: Zeilen und Spalten stehen für die Farbe der ersten bzw. zweiten Kugel, jede Zelle für die Wahrscheinlichkeit (bzw. Häufigkeit) einer Kombination. Klicke auf eine Zelle oder einen Pfad — die jeweils andere Darstellung wird mitmarkiert.</p>
+    <div class="widget">
+      <div class="widget-row">
+        <div class="widget-col">
+          <p><strong>Als relative Häufigkeiten (Wahrscheinlichkeiten in %):</strong></p>
+          <div id="vft-relative"></div>
+        </div>
+        <div class="widget-col">
+          <p><strong>Als absolute Häufigkeiten, hochgerechnet auf</strong>
+            <input type="number" id="vft-n" value="1000" min="10" max="100000" step="10" style="width:6rem;padding:0.3rem 0.5rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> Ziehungen:</p>
+          <div id="vft-absolute"></div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn" id="vft-simulate-btn">🎲 1000 Ziehungen simulieren</button>
+      </div>
+      <p>Simulierte (empirische) Häufigkeiten:</p>
+      <div id="vft-empirisch"></div>
+    </div>
+    <div class="quiz" id="quiz-baum2"></div>
+    <div class="quiz" id="quiz-vft"></div>
+  </section>
+
+  <!-- 7. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>7. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Löse die Aufgaben auf einem separaten Blatt und trage dann deine Ergebnisse ein.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 01 Wahrscheinlichkeitsrechnung</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
