@@ -79,6 +79,10 @@
 .spinner-wrap { display: flex; justify-content: center; }
 .spinner-svg { max-width: 220px; width: 100%; height: auto; }
 .spinner-wheel {
+  /* Ohne "fill-box" würden Prozent-Angaben in transform-origin sich auf das SVG-Viewport beziehen
+     statt auf die Kreisfläche selbst — das Rad würde dann nicht um seinen eigenen Mittelpunkt,
+     sondern um die (etwas andere) Viewport-Mitte rotieren und sichtbar "eiern". */
+  transform-box: fill-box;
   transform-origin: 50% 50%;
   transition: transform 3.2s cubic-bezier(0.12, 0.72, 0.14, 1);
 }

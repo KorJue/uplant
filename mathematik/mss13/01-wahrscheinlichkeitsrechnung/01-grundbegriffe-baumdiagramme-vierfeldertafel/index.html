@@ -96,22 +96,26 @@
     <h2>4. Das Laplace-Experiment</h2>
     <p>Sind bei einem Zufallsexperiment <em>alle</em> Ergebnisse gleich wahrscheinlich, heißt es <span class="term">Laplace-Experiment</span>. Dann gilt für jedes Ereignis E:</p>
     <div class="formula-block">P(E) = (Anzahl der Ergebnisse in E) / (Anzahl aller Ergebnisse in Ω)</div>
-    <p>Ein Würfel mit acht gleich großen Seiten (Augenzahlen 1 bis 8) ist ein Laplace-Experiment: Jede Seite hat die gleiche Chance. Wähle unten, welche Augenzahlen zum Ereignis E gehören sollen, und würfle anschließend.</p>
+    <p>Ein Würfel mit acht gleich großen Seiten (Augenzahlen 1 bis 8) ist ein Laplace-Experiment: Jede Seite hat die gleiche Chance. Wähle unten, welche Augenzahlen zum Ereignis E gehören sollen — und würfle dann oft. Genau wie beim Glücksrad in Abschnitt 2 kannst du beobachten, wie sich die relative Häufigkeit von E der berechneten Wahrscheinlichkeit P(E) annähert. Das bestätigt die Formel von oben ganz praktisch.</p>
     <div class="widget">
       <div class="die-row">
         <div>
           <div class="die-face" id="die-face">?</div>
           <div class="btn-row" style="justify-content:center">
-            <button type="button" class="btn btn-primary" id="roll-die-btn">🎲 Würfeln</button>
+            <button type="button" class="btn btn-primary" data-roll-many="1">🎲 1×</button>
+            <button type="button" class="btn" data-roll-many="10">10×</button>
+            <button type="button" class="btn" data-roll-many="100">100×</button>
+            <button type="button" class="btn" id="reset-die-btn">🔄 Zurücksetzen</button>
           </div>
         </div>
         <div class="widget-col">
           <p><strong>Ereignis E:</strong> welche Augenzahlen sollen dazugehören?</p>
           <div class="face-picker" id="face-picker"></div>
           <div class="event-result" id="laplace-result"></div>
-          <p class="progress-note" id="laplace-tally"></p>
         </div>
       </div>
+      <div id="laplace-bar"></div>
+      <p class="progress-note" id="laplace-tally">Noch keine Würfe.</p>
     </div>
     <div class="quiz" id="quiz-laplace"></div>
   </section>
@@ -138,7 +142,24 @@
     <div class="widget">
       <div id="tree2-mount"></div>
     </div>
-    <p>Die gleichen vier Pfadwahrscheinlichkeiten lassen sich auch in einer <span class="term">Vierfeldertafel</span> darstellen: Zeilen und Spalten stehen für die Farbe der ersten bzw. zweiten Kugel, jede Zelle für die Wahrscheinlichkeit (bzw. Häufigkeit) einer Kombination. Klicke auf eine Zelle oder einen Pfad — die jeweils andere Darstellung wird mitmarkiert.</p>
+
+    <h3>Vom Baumdiagramm zur Vierfeldertafel — Schritt für Schritt</h3>
+    <p>Jedes Blatt des Baumdiagramms wird zu genau einer Zelle der <span class="term">Vierfeldertafel</span>: Die Zeile richtet sich nach dem Ergebnis der ersten Ziehung, die Spalte nach dem der zweiten. Trage die vier Blätter nacheinander ein und beobachte, wie die Tafel entsteht:</p>
+    <div class="widget">
+      <div class="btn-row">
+        <button type="button" class="btn btn-primary" id="vft-guide-next">▸ Nächstes Blatt eintragen</button>
+        <button type="button" class="btn" id="vft-guide-reset">🔄 Von vorn</button>
+      </div>
+      <p class="progress-note" id="vft-guide-explain"></p>
+      <div id="vft-guide-table"></div>
+    </div>
+
+    <h3>Und umgekehrt: von der Vierfeldertafel zum Baumdiagramm</h3>
+    <p>Kennt man nur die fertige Vierfeldertafel, lässt sich der Baum auch rückwärts rekonstruieren: Eine Zelle geteilt durch ihre Zeilensumme ergibt die bedingte Wahrscheinlichkeit des passenden Astes auf der zweiten Stufe. Klicke oben auf ein Blatt im Baumdiagramm oder unten auf eine beliebige Zelle — hier erscheint jeweils die Rechnung in <strong>beide</strong> Richtungen:</p>
+    <div class="widget" id="vft-explain-box">
+      <p class="progress-note">Klicke oben auf ein Blatt oder unten auf eine Zelle, um die Verbindung zu sehen.</p>
+    </div>
+
     <div class="widget">
       <div class="widget-row">
         <div class="widget-col">
@@ -175,6 +196,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=1"></script>
+<script type="module" src="lernpfad.js?v=2"></script>
 </body>
 </html>
