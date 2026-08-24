@@ -308,9 +308,11 @@ function initLaplace() {
   const picker = document.getElementById("face-picker");
   const result = document.getElementById("laplace-result");
   const tally = document.getElementById("laplace-tally");
+  const barMount = document.getElementById("laplace-bar");
   const selected = new Set();
-  const counts = new Array(N + 1).fill(0);
-  let total = 0;
+  // Alle gewürfelten Augenzahlen in Reihenfolge — nicht nur ein Zähler pro Zahl, damit sich die
+  // relative Häufigkeit von E korrekt neu berechnen lässt, auch wenn E nachträglich geändert wird.
+  const history = [];
 
   for (let f = 1; f <= N; f++) {
     const btn = el("button", { type: "button", class: "face-btn" }, String(f));
@@ -324,23 +326,56 @@ function initLaplace() {
   }
 
   function refresh() {
+    barMount.innerHTML = "";
     if (selected.size === 0) {
       result.innerHTML = "Wähle mindestens eine Augenzahl für E aus.";
+      tally.textContent = "Noch keine Würfe.";
       return;
     }
     const list = [...selected].sort((a, b) => a - b);
     const pE = list.length / N;
     result.innerHTML = `E = {${list.join(", ")}}<br>P(E) = ${list.length}/${N} = <strong>${num(pE, 3)} (${pct(pE)})</strong>`;
+
+    const total = history.length;
+    const inE = history.filter((f) => selected.has(f)).length;
+    const relE = total > 0 ? inE / total : 0;
+    barMount.appendChild(
+      el("div", { class: "bar-row" }, [
+        el("span", { class: "bar-label" }, "h(E)"),
+        el("div", { class: "bar-track" }, [
+          el("div", { class: "bar-fill", style: `width:${(relE * 100).toFixed(1)}%;background:#2563eb` }),
+          el("div", { class: "bar-target", style: `left:${(pE * 100).toFixed(1)}%` }),
+        ]),
+        el("span", { class: "bar-value" }, total > 0 ? pct(relE) : "–"),
+      ])
+    );
+    tally.textContent =
+      total > 0
+        ? `Bisher ${total} Würfe, davon ${inE} in E → relative Häufigkeit h(E) = ${pct(relE)}. Der Strich im Balken markiert die berechnete Wahrscheinlichkeit P(E) = ${pct(pE)} — je mehr Würfe, desto näher rückt der Balken heran.`
+        : "Noch keine Würfe. Nutze die Buttons oben, um zu würfeln.";
   }
   refresh();
 
-  document.getElementById("roll-die-btn").addEventListener("click", () => {
+  function rollOnce() {
     const outcome = 1 + Math.floor(Math.random() * N);
-    counts[outcome]++;
-    total++;
+    history.push(outcome);
     face.textContent = String(outcome);
     face.style.color = selected.has(outcome) ? "#157347" : "";
-    tally.textContent = `Bisher ${total} Würfe. Augenzahl ${outcome} ist ${selected.has(outcome) ? "" : "nicht "}Teil von E.`;
+    return outcome;
+  }
+
+  document.querySelectorAll("[data-roll-many]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const n = Number(btn.dataset.rollMany);
+      for (let i = 0; i < n; i++) rollOnce();
+      refresh();
+    });
+  });
+  document.getElementById("reset-die-btn").addEventListener("click", () => {
+    history.length = 0;
+    face.textContent = "?";
+    face.style.color = "";
+    refresh();
   });
 }
 
@@ -561,12 +596,20 @@ function initBaum2() {
   const absMount = document.getElementById("vft-absolute");
   const empMount = document.getElementById("vft-empirisch");
   const nInput = document.getElementById("vft-n");
+  const explainBox = document.getElementById("vft-explain-box");
+  const guideMount = document.getElementById("vft-guide-table");
+  const guideExplain = document.getElementById("vft-guide-explain");
+  const guideNextBtn = document.getElementById("vft-guide-next");
+  const guideResetBtn = document.getElementById("vft-guide-reset");
+  const labelOf = { rot: "rot", blau: "blau" };
 
-  function renderVft(mountEl, values, formatFn, highlightKey) {
+  // filledSet == null bedeutet "alle Zellen anzeigen" (die drei normalen Tafeln); wird ein Set
+  // übergeben (die Schritt-für-Schritt-Tafel), bleiben noch nicht enthaltene Zellen ein "?" und
+  // zählen auch nicht in die Rand-/Gesamtsummen mit ein — die Tafel wächst sichtbar mit.
+  function renderVft(mountEl, values, formatFn, highlightKey, filledSet) {
     mountEl.innerHTML = "";
     const s1 = stage1();
     const keys = s1.map((b) => b.key);
-    const labelOf = { rot: "rot", blau: "blau" };
     const table = el("table", { class: "vft-table" });
     const headRow = el("tr", {}, [el("th", {}), ...keys.map((k) => el("th", {}, "2.: " + labelOf[k])), el("th", { class: "vft-gesamt" }, "gesamt")]);
     table.appendChild(headRow);
@@ -577,15 +620,19 @@ function initBaum2() {
       let rowSum = 0;
       const cells = keys.map((ck) => {
         const key = cellKey(rk, ck);
+        const isFilled = !filledSet || filledSet.has(key);
         const v = values[key] || 0;
-        rowSum += v;
-        colSums[ck] += v;
-        const td = el("td", { class: "vft-cell", "data-key": key }, formatFn(v));
+        if (isFilled) {
+          rowSum += v;
+          colSums[ck] += v;
+        }
+        const td = el("td", { class: "vft-cell", "data-key": key }, isFilled ? formatFn(v) : "?");
         if (highlightKey && key === highlightKey) td.classList.add("vft-highlight");
         td.addEventListener("click", () => {
           const idxLeaf = tree.leaves.findIndex((lf) => lf.b1.key === rk && lf.b2.key === ck);
           if (idxLeaf >= 0) tree.highlight(idxLeaf);
           highlightVftCell(key);
+          explainBox.innerHTML = cellExplainHTML(rk, ck);
         });
         return td;
       });
@@ -596,10 +643,74 @@ function initBaum2() {
     mountEl.appendChild(table);
   }
 
+  // Erklärt eine Zelle in beide Richtungen: Baum -> Tafel (Pfadmultiplikation) und, umgekehrt,
+  // Tafel -> Baum (Division liefert die bedingte Wahrscheinlichkeit des zweiten Astes zurück).
+  function cellExplainHTML(rk, ck) {
+    const probs = currentProbs();
+    const s1 = stage1();
+    const idx1 = s1.findIndex((b) => b.key === rk);
+    const b1 = s1[idx1];
+    const s2 = stage2Fn(idx1, b1);
+    const b2 = s2.find((b) => b.key === ck);
+    const key = cellKey(rk, ck);
+    const cellP = probs[key];
+    return (
+      `<p><strong>Baum → Tafel</strong> (Pfadmultiplikationsregel):<br>` +
+      `P(1. ${labelOf[rk]}; 2. ${labelOf[ck]}) = P(1. ${labelOf[rk]}) · P(2. ${labelOf[ck]} | 1. ${labelOf[rk]}) = ${num(b1.p, 3)} · ${num(b2.p, 3)} = <strong>${num(cellP, 4)}</strong> (${pct(cellP)})<br>` +
+      `→ das ist genau der Wert in der Zelle „1. ${labelOf[rk]}, 2. ${labelOf[ck]}“.</p>` +
+      `<p><strong>Tafel → Baum</strong> (umgekehrt, bedingte Wahrscheinlichkeit):<br>` +
+      `P(2. ${labelOf[ck]} | 1. ${labelOf[rk]}) = Zellenwert ÷ Zeilensumme = ${num(cellP, 4)} ÷ ${num(b1.p, 3)} = <strong>${num(b2.p, 3)}</strong><br>` +
+      `→ genau der Ast „2. ${labelOf[ck]}“ nach „1. ${labelOf[rk]}“ im Baumdiagramm.</p>`
+    );
+  }
+
+  let guideIndex = 0;
+  let guideFilled = new Set();
+  let guideLastKey = null;
+
+  function renderGuide() {
+    const values = currentProbs();
+    renderVft(guideMount, values, (v) => pct(v), guideLastKey, guideFilled);
+    if (guideIndex >= tree.leaves.length) {
+      const s1 = stage1();
+      guideExplain.innerHTML =
+        "✅ Alle vier Pfade eingetragen! Die Randsummen (gesamt) entsprechen genau den Wahrscheinlichkeiten der ersten Stufe im Baum: P(1. rot) = " +
+        num(s1[0].p, 3) +
+        ", P(1. blau) = " +
+        num(s1[1].p, 3) +
+        ".";
+      guideNextBtn.disabled = true;
+    } else {
+      guideExplain.textContent = `Klicke „Nächstes Blatt eintragen“, um Pfad ${guideIndex + 1} von ${tree.leaves.length} einzutragen.`;
+      guideNextBtn.disabled = false;
+    }
+  }
+  function resetGuide() {
+    guideIndex = 0;
+    guideFilled = new Set();
+    guideLastKey = null;
+    tree.highlight(null);
+    renderGuide();
+  }
+  guideNextBtn.addEventListener("click", () => {
+    if (guideIndex >= tree.leaves.length) return;
+    const lf = tree.leaves[guideIndex];
+    const key = cellKey(lf.b1.key, lf.b2.key);
+    guideFilled.add(key);
+    guideLastKey = key;
+    tree.highlight(guideIndex);
+    highlightVftCell(key);
+    explainBox.innerHTML = cellExplainHTML(lf.b1.key, lf.b2.key);
+    guideIndex++;
+    renderGuide();
+  });
+  guideResetBtn.addEventListener("click", resetGuide);
+
   function refreshAll() {
     tree = renderTree(treeMount, stage1(), stage2Fn, {
       onLeafClick(idx, lf) {
         highlightVftCell(cellKey(lf.b1.key, lf.b2.key));
+        explainBox.innerHTML = cellExplainHTML(lf.b1.key, lf.b2.key);
       },
     });
     const probs = currentProbs();
@@ -609,6 +720,7 @@ function initBaum2() {
     Object.keys(probs).forEach((k) => (absValues[k] = Math.round(probs[k] * n)));
     renderVft(absMount, absValues, (v) => String(v));
     renderVft(empMount, simCounts, (v) => String(v));
+    resetGuide();
   }
   function highlightVftCell(key) {
     [relMount, absMount, empMount].forEach((m) => {
