@@ -125,20 +125,20 @@
 
   // Bereiche und ihre Menüpunkt-Zahl für die Code-Berechnung (siehe berechneCode unten).
   // "office-tools" ist bewusst 0, weil es keiner Jahrgangs-/Fachstufe entspricht; die vier
-  // Hauptfächer tragen ihre Menü-Nummer (1-4), "mss12" die 12 schon im eigenen Namen. Hier
-  // anpassen/ergänzen, wenn ein Bereich dazukommt.
+  // Hauptfächer tragen ihre Menü-Nummer (1-4), "mss12"/"mss13" die 12/13 schon im eigenen Namen.
+  // Hier anpassen/ergänzen, wenn ein Bereich dazukommt.
   //
   // "bundle": Wird der Code eines Eintrags eingegeben, schalten sich alle dort genannten
   // Bereiche gemeinsam frei — nicht nur der Eintrag selbst. Der Mathematik-Code schaltet so auch
-  // gleich Klasse 8, Klasse 10 und MSS 12 mit frei, obwohl jeder von ihnen zusätzlich einen eigenen,
-  // unabhängigen Code behält (fehlt "bundle", gilt automatisch [key]).
+  // gleich Klasse 8, Klasse 10, MSS 12 und MSS 13 mit frei, obwohl jeder von ihnen zusätzlich einen
+  // eigenen, unabhängigen Code behält (fehlt "bundle", gilt automatisch [key]).
   //
-  // Umgekehrt bündeln Klasse 8, Klasse 10 und MSS 12 jeweils "mathematik" mit ein: Sie haben selbst
-  // keine eigene Karte auf dieser Startseite (die liegt eine Ebene tiefer, auf mathematik/index.html)
-  // — ohne die Mathematik-Karte hier hätte man nach Eingabe z. B. des Klasse-8-Codes gar keinen
-  // Klick-Weg mehr dorthin, der Code würde scheinbar "ins Leere laufen".
+  // Umgekehrt bündeln Klasse 8, Klasse 10, MSS 12 und MSS 13 jeweils "mathematik" mit ein: Sie haben
+  // selbst keine eigene Karte auf dieser Startseite (die liegt eine Ebene tiefer, auf
+  // mathematik/index.html) — ohne die Mathematik-Karte hier hätte man nach Eingabe z. B. des
+  // Klasse-8-Codes gar keinen Klick-Weg mehr dorthin, der Code würde scheinbar "ins Leere laufen".
   var SECTIONS = [
-    { key: "mathematik", label: "Mathematik", nummer: 1, bundle: ["mathematik", "klasse-8", "klasse-10", "mss12"] },
+    { key: "mathematik", label: "Mathematik", nummer: 1, bundle: ["mathematik", "klasse-8", "klasse-10", "mss12", "mss13"] },
     { key: "physik", label: "Physik", nummer: 2 },
     { key: "nawi", label: "NaWi", nummer: 3 },
     { key: "mint", label: "MINT", nummer: 4 },
@@ -146,6 +146,7 @@
     { key: "klasse-8", label: "Klasse 8", nummer: 8, bundle: ["klasse-8", "mathematik"] },
     { key: "klasse-10", label: "Klasse 10", nummer: 10, bundle: ["klasse-10", "mathematik"] },
     { key: "mss12", label: "MSS 12", nummer: 12, bundle: ["mss12", "mathematik"] },
+    { key: "mss13", label: "MSS 13", nummer: 13, bundle: ["mss13", "mathematik"] },
   ];
 
   // Sonder-Menüpunkt-Zahl 15: schaltet, wenn ihr Code eingegeben wird, wirklich alle Bereiche auf
@@ -159,7 +160,7 @@
   // Ziffern. Wer die Menüpunkt-Zahl eines Bereichs kennt, kann den aktuellen Code jederzeit selbst
   // im Kopf oder mit einem Taschenrechner ausrechnen.
   //
-  // Die verwendeten Menüpunkt-Zahlen (0, 1, 2, 3, 4, 8, 10, 12, 15) unterscheiden sich paarweise
+  // Die verwendeten Menüpunkt-Zahlen (0, 1, 2, 3, 4, 8, 10, 12, 13, 15) unterscheiden sich paarweise
   // um höchstens 15 (15 minus 0), der Monat ist höchstens 12 — zwei Bereiche können sich im
   // selben Monat also um höchstens 15 * 12 = 180 unterscheiden. Das ist immer kleiner als 10000,
   // weshalb die Kürzung auf vier Ziffern zwei verschiedene Bereiche im selben Monat nie zufällig
