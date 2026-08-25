@@ -774,7 +774,7 @@ function initExercises() {
     prompt:
       "Beim Glücksrad aus Abschnitt 1–3 gilt P(blau) = 0,25, P(grün) = 0,125, P(gelb) = 0,125, P(rot) = 0,5. " +
       "Wie groß ist die Wahrscheinlichkeit für das Ereignis „grün oder rot“?",
-    placeholder: "z. B. 0,625 oder 62,5%",
+    placeholder: "Dezimalzahl oder %, z. B. 0,42",
     check: (v) => Math.abs(v - 0.625) < 0.01,
     explain: "P(grün oder rot) = P(grün) + P(gelb ... nein, grün) + P(rot) = 0,125 + 0,5 = 0,625 (62,5 %).",
   });
@@ -784,7 +784,7 @@ function initExercises() {
     prompt:
       "Eine faire Münze wird geworfen (P(Kopf) = P(Zahl) = 0,5) und unabhängig davon ein Glücksrad gedreht, bei dem P(rot) = 0,3 gilt. " +
       "Wie groß ist die Wahrscheinlichkeit für den Pfad „Kopf, dann rot“?",
-    placeholder: "z. B. 0,15",
+    placeholder: "Dezimalzahl oder %, z. B. 0,42",
     check: (v) => Math.abs(v - 0.15) < 0.01,
     explain: "Pfadmultiplikationsregel: P(Kopf; rot) = 0,5 · 0,3 = 0,15.",
   });
@@ -794,7 +794,7 @@ function initExercises() {
     prompt:
       "In der Urne aus Abschnitt 6 liegen 4 rote und 6 blaue Kugeln. Es werden zwei Kugeln nacheinander <strong>ohne Zurücklegen</strong> gezogen. " +
       "Wie groß ist die Wahrscheinlichkeit, dass beide Kugeln rot sind?",
-    placeholder: "z. B. 0,133",
+    placeholder: "Dezimalzahl oder %, z. B. 0,42",
     check: (v) => Math.abs(v - 4 / 10 * (3 / 9)) < 0.01,
     explain: "P(rot; rot) = 4/10 · 3/9 ≈ 0,133 (13,3 %) — nach der ersten roten Kugel bleiben nur noch 3 rote von 9 übrig.",
   });
@@ -804,7 +804,7 @@ function initExercises() {
     prompt:
       "In einer Umfrage unter 80 Personen gaben 50 an, lieber Tee zu trinken, die restlichen lieber Kaffee. Von den Tee-Trinkern bevorzugen 20 " +
       "Personen süßes Gebäck, von den Kaffee-Trinkern 18. Wie groß ist die relative Häufigkeit (in %) der Personen, die Tee <em>und</em> süßes Gebäck bevorzugen?",
-    placeholder: "z. B. 25%",
+    placeholder: "Dezimalzahl oder %, z. B. 0,42",
     check: (v) => Math.abs(v - 0.25) < 0.01,
     explain: "20 von 80 Personen: 20/80 = 0,25 = 25 %.",
   });
@@ -814,7 +814,7 @@ function initExercises() {
     prompt:
       "Wieder die Urne mit 4 roten und 6 blauen Kugeln, zwei Ziehungen <strong>ohne Zurücklegen</strong>. Wie groß ist die Wahrscheinlichkeit, " +
       "dass die beiden gezogenen Kugeln <strong>unterschiedliche</strong> Farben haben?",
-    placeholder: "z. B. 0,533",
+    placeholder: "Dezimalzahl oder %, z. B. 0,42",
     check: (v) => Math.abs(v - (4 / 10 * (6 / 9) + 6 / 10 * (4 / 9))) < 0.01,
     explain: "P(rot;blau) + P(blau;rot) = 4/10·6/9 + 6/10·4/9 = 4/15 + 4/15 = 8/15 ≈ 0,533 (53,3 %) — Pfadadditionsregel über die beiden passenden Pfade.",
   });
