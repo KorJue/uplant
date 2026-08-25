@@ -765,12 +765,193 @@ function initBaum2() {
 }
 
 // ================= 7. Übungsaufgaben =================
+// Zwei Aufgabentypen wechseln sich ab: "auf dem Blatt" (Rechnung von Hand, nur das Endergebnis
+// wird eingetragen — mountExercise) und "auf der Seite" (die Lücken in einem Baumdiagramm bzw.
+// einer Vierfeldertafel werden direkt hier ausgefüllt — mountTreeFillExercise/mountVftFillExercise).
+
+function circled(n) {
+  return String.fromCodePoint(0x2460 + (n - 1));
+}
+
+// Baumdiagramm mit nummerierten Lücken (①, ②, …): manche Astbeschriftungen bzw. Pfadwahrschein-
+// lichkeiten werden durch "? " ersetzt, dahinter füllt man in einer Liste die passenden Eingabe-
+// felder aus. "Prüfen" markiert jedes Feld einzeln und trägt bei richtiger wie falscher Antwort
+// den korrekten Wert direkt in den Baum ein (grün/rot), damit die Aufgabe sich wie ein sich
+// vervollständigendes Baumdiagramm anfühlt statt wie ein isoliertes Formular.
+function mountTreeFillExercise(container, { title, prompt, stage1, stage2Fn, blankSpecs, explain }) {
+  const box = el("div", { class: "exercise" });
+  box.appendChild(el("h3", {}, title));
+  box.appendChild(el("p", { html: prompt }));
+
+  const W = 560,
+    H = 230,
+    marginY = 24;
+  const leafGap = (H - 2 * marginY) / 4;
+  const leaves = [];
+  const nodes1 = [];
+  let y = marginY;
+  stage1.forEach((b1, i) => {
+    const kids = stage2Fn(i, b1);
+    const yStart = y;
+    kids.forEach((b2) => {
+      const cy = y + leafGap / 2;
+      leaves.push({ i, b1, b2, cy, path: b1.p * b2.p });
+      y += leafGap;
+    });
+    nodes1.push({ i, b1, cy: (yStart + y) / 2 });
+  });
+  const rootY = H / 2,
+    rootX = 30,
+    x1 = W * 0.36,
+    x2 = W * 0.68,
+    xEnd = W - 20;
+
+  let counter = 0;
+  const s1BlankMap = {},
+    s2BlankMap = {},
+    leafBlankMap = {};
+  blankSpecs.forEach((spec) => {
+    counter++;
+    spec.num = counter;
+    if (spec.kind === "s1") s1BlankMap[spec.i] = spec;
+    else if (spec.kind === "s2") s2BlankMap[spec.leafIdx] = spec;
+    else leafBlankMap[spec.leafIdx] = spec;
+  });
+
+  const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, class: "tree-svg" });
+  nodes1.forEach((n1) => {
+    svg.appendChild(svgEl("path", { d: `M ${rootX} ${rootY} L ${x1} ${n1.cy}`, class: "tree-edge" }));
+    const mx = (rootX + x1) / 2,
+      my = (rootY + n1.cy) / 2 - 6;
+    const spec = s1BlankMap[n1.i];
+    const t = svgEl("text", { x: mx, y: my, "text-anchor": "middle", class: "tree-edge-label" + (spec ? " tree-blank" : "") });
+    if (spec) t.setAttribute("data-blank", spec.num);
+    t.textContent = spec ? circled(spec.num) + " ?" : n1.b1.label + " (" + num(n1.b1.p, 3) + ")";
+    svg.appendChild(t);
+  });
+  leaves.forEach((lf, idx) => {
+    const n1 = nodes1[lf.i];
+    svg.appendChild(svgEl("path", { d: `M ${x1} ${n1.cy} L ${x2} ${lf.cy}`, class: "tree-edge" }));
+    const mx = (x1 + x2) / 2,
+      my = (n1.cy + lf.cy) / 2 - 6;
+    const spec2 = s2BlankMap[idx];
+    const t2 = svgEl("text", { x: mx, y: my, "text-anchor": "middle", class: "tree-edge-label" + (spec2 ? " tree-blank" : "") });
+    if (spec2) t2.setAttribute("data-blank", spec2.num);
+    t2.textContent = spec2 ? circled(spec2.num) + " ?" : lf.b2.label + " (" + num(lf.b2.p, 3) + ")";
+    svg.appendChild(t2);
+
+    svg.appendChild(svgEl("line", { x1: x2, y1: lf.cy, x2: xEnd, y2: lf.cy, class: "tree-edge" }));
+    const leafLabel = svgEl("text", { x: x2 + 6, y: lf.cy - 14, class: "tree-leaf-label" });
+    leafLabel.textContent = lf.b1.label + " – " + lf.b2.label;
+    svg.appendChild(leafLabel);
+
+    const specL = leafBlankMap[idx];
+    const probLabel = svgEl("text", { x: x2 + 6, y: lf.cy + 14, class: "tree-leaf-prob" + (specL ? " tree-blank" : "") });
+    if (specL) probLabel.setAttribute("data-blank", specL.num);
+    probLabel.textContent = specL ? "P = " + circled(specL.num) + " ?" : "P = " + num(lf.path, 4);
+    svg.appendChild(probLabel);
+  });
+  const rootDot = el("g", { class: "tree-node" });
+  rootDot.appendChild(svgEl("circle", { cx: rootX, cy: rootY, r: 5 }));
+  svg.appendChild(rootDot);
+  nodes1.forEach((n1) => {
+    const g = el("g", { class: "tree-node" });
+    g.appendChild(svgEl("circle", { cx: x1, cy: n1.cy, r: 5 }));
+    svg.appendChild(g);
+  });
+  box.appendChild(svg);
+
+  const list = el("ol", { class: "exercise-blank-list" });
+  blankSpecs.forEach((spec) => {
+    const inp = el("input", { type: "text", placeholder: "Dezimalzahl oder %" });
+    spec.input = inp;
+    list.appendChild(el("li", {}, [circled(spec.num) + " " + spec.labelText + ": ", inp]));
+  });
+  box.appendChild(list);
+
+  const btn = el("button", { type: "button", class: "btn btn-primary" }, "Prüfen");
+  const feedback = el("div", { class: "exercise-feedback" });
+  box.appendChild(el("div", { class: "btn-row" }, btn));
+  box.appendChild(feedback);
+
+  btn.addEventListener("click", () => {
+    let allOk = true;
+    blankSpecs.forEach((spec) => {
+      const val = parseFlexibleNumber(spec.input.value);
+      const ok = Math.abs(val - spec.correct) < 0.01;
+      if (!ok) allOk = false;
+      spec.input.style.borderColor = ok ? "#157347" : "#b3261e";
+      spec.input.style.background = ok ? "#e7f6ec" : "#fdecec";
+      const svgText = svg.querySelector(`[data-blank="${spec.num}"]`);
+      if (svgText) {
+        svgText.textContent = spec.render(spec.correct);
+        svgText.classList.remove("tree-blank");
+        svgText.classList.add(ok ? "tree-blank-correct" : "tree-blank-wrong");
+      }
+    });
+    feedback.className = "exercise-feedback " + (allOk ? "ok" : "err");
+    feedback.textContent = (allOk ? "✓ Alles richtig! " : "✗ Noch nicht alles richtig — die korrekten Werte stehen jetzt im Baum. ") + (explain || "");
+  });
+
+  container.appendChild(box);
+}
+
+// Vierfeldertafel mit Lücken: manche Zellen/Randsummen sind vorgegeben, andere über <input>
+// auszufüllen. "Prüfen" markiert jede Lücke einzeln grün/rot.
+function mountVftFillExercise(container, { title, prompt, rowLabel, colLabel, rowKeys, colKeys, given, blanks, formatFn, explain }) {
+  const box = el("div", { class: "exercise" });
+  box.appendChild(el("h3", {}, title));
+  box.appendChild(el("p", { html: prompt }));
+
+  const cellRefs = {};
+  function cellNode(key) {
+    if (key in given) return document.createTextNode(formatFn(given[key]));
+    if (key in blanks) {
+      const inp = el("input", { type: "text", placeholder: "?", style: "width:4.5rem;padding:0.3rem 0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)" });
+      cellRefs[key] = inp;
+      return inp;
+    }
+    return document.createTextNode("");
+  }
+
+  const table = el("table", { class: "vft-table" });
+  table.appendChild(el("tr", {}, [el("th", {}), ...colKeys.map((ck) => el("th", {}, colLabel + ": " + ck.label)), el("th", { class: "vft-gesamt" }, "gesamt")]));
+  rowKeys.forEach((rk) => {
+    const cells = colKeys.map((ck) => el("td", { class: "vft-cell" }, cellNode(rk.key + "_" + ck.key)));
+    table.appendChild(el("tr", {}, [el("th", {}, rowLabel + ": " + rk.label), ...cells, el("td", { class: "vft-gesamt" }, cellNode("row_" + rk.key))]));
+  });
+  table.appendChild(
+    el("tr", {}, [el("th", { class: "vft-gesamt" }, "gesamt"), ...colKeys.map((ck) => el("td", { class: "vft-gesamt" }, cellNode("col_" + ck.key))), el("td", { class: "vft-gesamt" }, cellNode("grand"))])
+  );
+  box.appendChild(table);
+
+  const btn = el("button", { type: "button", class: "btn btn-primary" }, "Prüfen");
+  const feedback = el("div", { class: "exercise-feedback" });
+  box.appendChild(el("div", { class: "btn-row" }, btn));
+  box.appendChild(feedback);
+
+  btn.addEventListener("click", () => {
+    let allOk = true;
+    Object.keys(blanks).forEach((key) => {
+      const inp = cellRefs[key];
+      const val = parseFlexibleNumber(inp.value);
+      const ok = Math.abs(val - blanks[key]) < 0.01;
+      if (!ok) allOk = false;
+      inp.style.borderColor = ok ? "#157347" : "#b3261e";
+      inp.style.background = ok ? "#e7f6ec" : "#fdecec";
+    });
+    feedback.className = "exercise-feedback " + (allOk ? "ok" : "err");
+    feedback.textContent = (allOk ? "✓ Alles richtig! " : "✗ Noch nicht alle Felder richtig. ") + (explain || "");
+  });
+
+  container.appendChild(box);
+}
 
 function initExercises() {
   const mount = document.getElementById("exercises-mount");
 
   mountExercise(mount, {
-    title: "Aufgabe 1 — Summenregel",
+    title: "Aufgabe 1 — Summenregel (🖊 auf dem Blatt)",
     prompt:
       "Beim Glücksrad aus Abschnitt 1–3 gilt P(blau) = 0,25, P(grün) = 0,125, P(gelb) = 0,125, P(rot) = 0,5. " +
       "Wie groß ist die Wahrscheinlichkeit für das Ereignis „grün oder rot“?",
@@ -779,8 +960,32 @@ function initExercises() {
     explain: "P(grün oder rot) = P(grün) + P(gelb ... nein, grün) + P(rot) = 0,125 + 0,5 = 0,625 (62,5 %).",
   });
 
+  mountTreeFillExercise(mount, {
+    title: "Aufgabe 2 — Baumdiagramm ausfüllen: unabhängige Stufen (💻 auf der Seite)",
+    prompt:
+      "Ein Reisebüro hat ermittelt: 60&nbsp;% der Kundinnen und Kunden buchen einen Flug (der Rest bucht keinen). Unabhängig davon wählen 30&nbsp;% " +
+      "zusätzlich eine Reiserücktrittsversicherung (der Rest nicht). Vervollständige das Baumdiagramm: Trage die fehlende Astwahrscheinlichkeit und " +
+      "alle vier Pfadwahrscheinlichkeiten in die nummerierten Felder ein.",
+    stage1: [
+      { key: "flug", label: "Flug", p: 0.6 },
+      { key: "keinflug", label: "kein Flug", p: 0.4 },
+    ],
+    stage2Fn: () => [
+      { key: "vers", label: "Versicherung", p: 0.3 },
+      { key: "keinvers", label: "keine Versicherung", p: 0.7 },
+    ],
+    blankSpecs: [
+      { kind: "s1", i: 1, correct: 0.4, labelText: "2. Ast der ersten Stufe: „kein Flug“", render: (v) => "kein Flug (" + num(v, 3) + ")" },
+      { kind: "leaf", leafIdx: 0, correct: 0.18, labelText: "Pfad „Flug, Versicherung“", render: (v) => "P = " + num(v, 4) },
+      { kind: "leaf", leafIdx: 1, correct: 0.42, labelText: "Pfad „Flug, keine Versicherung“", render: (v) => "P = " + num(v, 4) },
+      { kind: "leaf", leafIdx: 2, correct: 0.12, labelText: "Pfad „kein Flug, Versicherung“", render: (v) => "P = " + num(v, 4) },
+      { kind: "leaf", leafIdx: 3, correct: 0.28, labelText: "Pfad „kein Flug, keine Versicherung“", render: (v) => "P = " + num(v, 4) },
+    ],
+    explain: "kein Flug: 1 − 0,6 = 0,4. Pfade (Pfadmultiplikationsregel): 0,6·0,3 = 0,18, 0,6·0,7 = 0,42, 0,4·0,3 = 0,12, 0,4·0,7 = 0,28.",
+  });
+
   mountExercise(mount, {
-    title: "Aufgabe 2 — Baumdiagramm, unabhängige Stufen",
+    title: "Aufgabe 3 — Baumdiagramm, unabhängige Stufen (🖊 auf dem Blatt)",
     prompt:
       "Eine faire Münze wird geworfen (P(Kopf) = P(Zahl) = 0,5) und unabhängig davon ein Glücksrad gedreht, bei dem P(rot) = 0,3 gilt. " +
       "Wie groß ist die Wahrscheinlichkeit für den Pfad „Kopf, dann rot“?",
@@ -789,8 +994,29 @@ function initExercises() {
     explain: "Pfadmultiplikationsregel: P(Kopf; rot) = 0,5 · 0,3 = 0,15.",
   });
 
+  mountVftFillExercise(mount, {
+    title: "Aufgabe 4 — Vierfeldertafel ausfüllen: absolute Häufigkeiten (💻 auf der Seite)",
+    prompt:
+      "Bei einer Befragung von 120 Personen gaben 70 an, Hunde zu mögen (die übrigen mögen keine Hunde). Von den Hundefreunden mögen 45 auch Katzen. " +
+      "Insgesamt mögen 80 der befragten Personen Katzen. Vervollständige die Vierfeldertafel.",
+    rowLabel: "Hunde",
+    colLabel: "Katzen",
+    rowKeys: [
+      { key: "ja", label: "ja" },
+      { key: "nein", label: "nein" },
+    ],
+    colKeys: [
+      { key: "ja", label: "ja" },
+      { key: "nein", label: "nein" },
+    ],
+    given: { ja_ja: 45, row_ja: 70, col_ja: 80, grand: 120 },
+    blanks: { ja_nein: 25, nein_ja: 35, nein_nein: 15, row_nein: 50, col_nein: 40 },
+    formatFn: (v) => String(v),
+    explain: "Hunde nein = 120−70 = 50. Hunde ja & Katzen nein = 70−45 = 25. Katzen nein gesamt = 120−80 = 40. Hunde nein & Katzen ja = 80−45 = 35. Hunde nein & Katzen nein = 50−35 = 15.",
+  });
+
   mountExercise(mount, {
-    title: "Aufgabe 3 — abhängige Stufen (ohne Zurücklegen)",
+    title: "Aufgabe 5 — abhängige Stufen ohne Zurücklegen (🖊 auf dem Blatt)",
     prompt:
       "In der Urne aus Abschnitt 6 liegen 4 rote und 6 blaue Kugeln. Es werden zwei Kugeln nacheinander <strong>ohne Zurücklegen</strong> gezogen. " +
       "Wie groß ist die Wahrscheinlichkeit, dass beide Kugeln rot sind?",
@@ -799,8 +1025,35 @@ function initExercises() {
     explain: "P(rot; rot) = 4/10 · 3/9 ≈ 0,133 (13,3 %) — nach der ersten roten Kugel bleiben nur noch 3 rote von 9 übrig.",
   });
 
+  mountTreeFillExercise(mount, {
+    title: "Aufgabe 6 — Baumdiagramm ausfüllen: abhängige Stufen (💻 auf der Seite)",
+    prompt:
+      "In einer Box liegen 5 blaue und 3 gelbe Bauklötze. Zwei Klötze werden nacheinander <strong>ohne Zurücklegen</strong> herausgenommen. Die erste " +
+      "Stufe ist schon eingetragen — vervollständige die vier Äste der zweiten Stufe. Sie hängt vom Ergebnis der ersten Ziehung ab.",
+    stage1: [
+      { key: "blau", label: "blau", p: 5 / 8 },
+      { key: "gelb", label: "gelb", p: 3 / 8 },
+    ],
+    stage2Fn: (i, b1) => {
+      const urn = { blau: 5, gelb: 3 };
+      urn[b1.key] -= 1;
+      return [
+        { key: "blau", label: "blau", p: urn.blau / 7 },
+        { key: "gelb", label: "gelb", p: urn.gelb / 7 },
+      ];
+    },
+    blankSpecs: [
+      { kind: "s2", leafIdx: 0, correct: 4 / 7, labelText: "2. Ast nach „blau“: „blau“", render: (v) => "blau (" + num(v, 3) + ")" },
+      { kind: "s2", leafIdx: 1, correct: 3 / 7, labelText: "2. Ast nach „blau“: „gelb“", render: (v) => "gelb (" + num(v, 3) + ")" },
+      { kind: "s2", leafIdx: 2, correct: 5 / 7, labelText: "2. Ast nach „gelb“: „blau“", render: (v) => "blau (" + num(v, 3) + ")" },
+      { kind: "s2", leafIdx: 3, correct: 2 / 7, labelText: "2. Ast nach „gelb“: „gelb“", render: (v) => "gelb (" + num(v, 3) + ")" },
+    ],
+    explain:
+      "Nach „blau“ liegen noch 4 blaue und 3 gelbe (7 insgesamt) in der Box: blau = 4/7 ≈ 0,571, gelb = 3/7 ≈ 0,429. Nach „gelb“ liegen noch 5 blaue und 2 gelbe (7 insgesamt): blau = 5/7 ≈ 0,714, gelb = 2/7 ≈ 0,286.",
+  });
+
   mountExercise(mount, {
-    title: "Aufgabe 4 — Vierfeldertafel, relative Häufigkeit",
+    title: "Aufgabe 7 — Vierfeldertafel, relative Häufigkeit (🖊 auf dem Blatt)",
     prompt:
       "In einer Umfrage unter 80 Personen gaben 50 an, lieber Tee zu trinken, die restlichen lieber Kaffee. Von den Tee-Trinkern bevorzugen 20 " +
       "Personen süßes Gebäck, von den Kaffee-Trinkern 18. Wie groß ist die relative Häufigkeit (in %) der Personen, die Tee <em>und</em> süßes Gebäck bevorzugen?",
@@ -809,8 +1062,31 @@ function initExercises() {
     explain: "20 von 80 Personen: 20/80 = 0,25 = 25 %.",
   });
 
+  mountVftFillExercise(mount, {
+    title: "Aufgabe 8 — Vierfeldertafel ausfüllen: relative Häufigkeiten (💻 auf der Seite)",
+    prompt:
+      "An einer Schule spielen 55&nbsp;% der Jugendlichen ein Smartphone-Spiel, die übrigen 45&nbsp;% nicht. Von den Spielenden nutzen 40&nbsp;% " +
+      "zusätzlich eine Lernapp, von den Nicht-Spielenden 70&nbsp;%. Die Randwerte für „Spiel“ stehen schon in der Tafel — berechne daraus die vier " +
+      "inneren Felder und die beiden Randwerte für „Lernapp“.",
+    rowLabel: "Spiel",
+    colLabel: "Lernapp",
+    rowKeys: [
+      { key: "ja", label: "ja" },
+      { key: "nein", label: "nein" },
+    ],
+    colKeys: [
+      { key: "ja", label: "ja" },
+      { key: "nein", label: "nein" },
+    ],
+    given: { row_ja: 0.55, row_nein: 0.45, grand: 1 },
+    blanks: { ja_ja: 0.22, ja_nein: 0.33, nein_ja: 0.315, nein_nein: 0.135, col_ja: 0.535, col_nein: 0.465 },
+    formatFn: (v) => pct(v),
+    explain:
+      "Innere Felder über die Pfadmultiplikationsregel: 0,55·0,40 = 0,22; 0,55·0,60 = 0,33; 0,45·0,70 = 0,315; 0,45·0,30 = 0,135. Die Randwerte für Lernapp sind die Spaltensummen: 0,22+0,315 = 0,535 bzw. 0,33+0,135 = 0,465.",
+  });
+
   mountExercise(mount, {
-    title: "Aufgabe 5 — Kombination: Baumdiagramm und Summenregel",
+    title: "Aufgabe 9 — Kombination: Baumdiagramm und Summenregel (🖊 auf dem Blatt)",
     prompt:
       "Wieder die Urne mit 4 roten und 6 blauen Kugeln, zwei Ziehungen <strong>ohne Zurücklegen</strong>. Wie groß ist die Wahrscheinlichkeit, " +
       "dass die beiden gezogenen Kugeln <strong>unterschiedliche</strong> Farben haben?",
