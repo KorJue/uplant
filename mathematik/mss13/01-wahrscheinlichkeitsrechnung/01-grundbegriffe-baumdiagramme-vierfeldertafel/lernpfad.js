@@ -644,7 +644,9 @@ function initBaum2() {
   }
 
   // Erklärt eine Zelle in beide Richtungen: Baum -> Tafel (Pfadmultiplikation) und, umgekehrt,
-  // Tafel -> Baum (Division liefert die bedingte Wahrscheinlichkeit des zweiten Astes zurück).
+  // Tafel -> Baum (Division als Umkehrrechnung liefert den zweiten Ast zurück). Bewusst ohne den
+  // Begriff/die Notation der bedingten Wahrscheinlichkeit, da der Lernpfad diese noch nicht
+  // eingeführt hat — die Division wird stattdessen als reine Umkehrung der Multiplikation erklärt.
   function cellExplainHTML(rk, ck) {
     const probs = currentProbs();
     const s1 = stage1();
@@ -656,11 +658,12 @@ function initBaum2() {
     const cellP = probs[key];
     return (
       `<p><strong>Baum → Tafel</strong> (Pfadmultiplikationsregel):<br>` +
-      `P(1. ${labelOf[rk]}; 2. ${labelOf[ck]}) = P(1. ${labelOf[rk]}) · P(2. ${labelOf[ck]} | 1. ${labelOf[rk]}) = ${num(b1.p, 3)} · ${num(b2.p, 3)} = <strong>${num(cellP, 4)}</strong> (${pct(cellP)})<br>` +
+      `Die beiden Äste des Pfades werden multipliziert: ${num(b1.p, 3)} (erster Ast „1. ${labelOf[rk]}“) · ${num(b2.p, 3)} (zweiter Ast „2. ${labelOf[ck]}“, direkt danach) = <strong>${num(cellP, 4)}</strong> (${pct(cellP)})<br>` +
       `→ das ist genau der Wert in der Zelle „1. ${labelOf[rk]}, 2. ${labelOf[ck]}“.</p>` +
-      `<p><strong>Tafel → Baum</strong> (umgekehrt, bedingte Wahrscheinlichkeit):<br>` +
-      `P(2. ${labelOf[ck]} | 1. ${labelOf[rk]}) = Zellenwert ÷ Zeilensumme = ${num(cellP, 4)} ÷ ${num(b1.p, 3)} = <strong>${num(b2.p, 3)}</strong><br>` +
-      `→ genau der Ast „2. ${labelOf[ck]}“ nach „1. ${labelOf[rk]}“ im Baumdiagramm.</p>`
+      `<p><strong>Tafel → Baum</strong> (Division als Umkehrung der Multiplikation):<br>` +
+      `Vorwärts gilt: erster Ast · zweiter Ast = Zellenwert. Division macht genau das rückgängig, so wie 3 · 4 = 12 sich durch 12 ÷ 3 = 4 umkehren lässt: teilt man den Zellenwert durch den bereits bekannten ersten Ast (die Zeilensumme), bleibt nur noch der gesuchte zweite Ast übrig.<br>` +
+      `${num(cellP, 4)} ÷ ${num(b1.p, 3)} = <strong>${num(b2.p, 3)}</strong><br>` +
+      `→ genau die Wahrscheinlichkeit des Astes „2. ${labelOf[ck]}“ nach „1. ${labelOf[rk]}“ im Baumdiagramm.</p>`
     );
   }
 
