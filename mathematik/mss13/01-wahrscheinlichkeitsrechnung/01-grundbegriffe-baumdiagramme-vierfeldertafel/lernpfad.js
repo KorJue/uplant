@@ -765,24 +765,105 @@ function initBaum2() {
 }
 
 // ================= 7. Übungsaufgaben =================
-// Zwei Aufgabentypen wechseln sich ab: "auf dem Blatt" (Rechnung von Hand, nur das Endergebnis
-// wird eingetragen — mountExercise) und "auf der Seite" (die Lücken in einem Baumdiagramm bzw.
-// einer Vierfeldertafel werden direkt hier ausgefüllt — mountTreeFillExercise/mountVftFillExercise).
+// Alle Aufgaben werden direkt hier auf der Seite gelöst — nicht auf einem separaten Blatt — und
+// sind nach aufsteigendem Schwierigkeitsgrad sortiert. Wie im Rest des Lernpfads gilt dabei:
+// kein Begriff/keine Notation der bedingten Wahrscheinlichkeit, Platzhalter verraten nie die
+// Lösung, und Division wird bei Bedarf als Umkehrung der Multiplikation erklärt.
 
 function circled(n) {
   return String.fromCodePoint(0x2460 + (n - 1));
 }
 
-// Baumdiagramm mit nummerierten Lücken (①, ②, …): manche Astbeschriftungen bzw. Pfadwahrschein-
-// lichkeiten werden durch "? " ersetzt, dahinter füllt man in einer Liste die passenden Eingabe-
-// felder aus. "Prüfen" markiert jedes Feld einzeln und trägt bei richtiger wie falscher Antwort
-// den korrekten Wert direkt in den Baum ein (grün/rot), damit die Aufgabe sich wie ein sich
-// vervollständigendes Baumdiagramm anfühlt statt wie ein isoliertes Formular.
-function mountTreeFillExercise(container, { title, prompt, stage1, stage2Fn, blankSpecs, explain }) {
+// ---------- Baustein: Ereignis per Häkchen auswählen ----------
+// mode "exact": die Auswahl muss exakt correctKeys entsprechen (z. B. "wähle alle geraden Zahlen").
+// mode "target": jede Auswahl mit passender Wahrscheinlichkeit zählt (offene, kombinatorische
+// Aufgabe, z. B. "wähle irgendeine Menge mit P(E) = 0,4").
+function mountSelectExercise(container, { title, prompt, outcomes, mode, correctKeys, targetP, secondaryChecks, explain }) {
   const box = el("div", { class: "exercise" });
   box.appendChild(el("h3", {}, title));
   box.appendChild(el("p", { html: prompt }));
 
+  const picker = el("div", { class: "event-picker" });
+  const checks = outcomes.map((o) => {
+    const cb = el("input", { type: "checkbox" });
+    const swatch = o.color ? el("span", { class: "stat-swatch", style: `background:${o.color}` }) : null;
+    const label = el("label", {}, [cb, swatch, o.label].filter(Boolean));
+    picker.appendChild(label);
+    return { cb, label, o };
+  });
+  box.appendChild(picker);
+
+  const liveInfo = el("p", { class: "progress-note" }, "");
+  box.appendChild(liveInfo);
+  function refreshLive() {
+    const chosen = checks.filter((c) => c.cb.checked).map((c) => c.o);
+    if (chosen.length === 0) {
+      liveInfo.textContent = "Noch keine Auswahl.";
+      return;
+    }
+    const p = chosen.reduce((s, o) => s + o.p, 0);
+    liveInfo.textContent = "Aktuelle Auswahl: {" + chosen.map((o) => o.label).join(", ") + "} → P = " + num(p, 3) + " (" + pct(p) + ")";
+  }
+  checks.forEach((c) => c.cb.addEventListener("change", refreshLive));
+  refreshLive();
+
+  const secondary = secondaryChecks || [];
+  if (secondary.length) {
+    const list = el("ol", { class: "exercise-blank-list" });
+    secondary.forEach((sc) => {
+      const inp = el("input", { type: "text", placeholder: "Dezimalzahl oder %" });
+      sc.input = inp;
+      list.appendChild(el("li", {}, [sc.labelText + ": ", inp]));
+    });
+    box.appendChild(list);
+  }
+
+  const btn = el("button", { type: "button", class: "btn btn-primary" }, "Prüfen");
+  const feedback = el("div", { class: "exercise-feedback" });
+  box.appendChild(el("div", { class: "btn-row" }, btn));
+  box.appendChild(feedback);
+
+  btn.addEventListener("click", () => {
+    const chosenKeys = new Set(checks.filter((c) => c.cb.checked).map((c) => c.o.key));
+    let selectionOk;
+    if (mode === "exact") {
+      selectionOk = chosenKeys.size === correctKeys.length && correctKeys.every((k) => chosenKeys.has(k));
+      checks.forEach((c) => {
+        c.label.classList.remove("select-correct", "select-wrong");
+        const shouldBeChecked = correctKeys.includes(c.o.key);
+        c.label.classList.add(shouldBeChecked === c.cb.checked ? "select-correct" : "select-wrong");
+      });
+    } else {
+      const p = outcomes.filter((o) => chosenKeys.has(o.key)).reduce((s, o) => s + o.p, 0);
+      selectionOk = chosenKeys.size > 0 && Math.abs(p - targetP) < 0.01;
+      checks.forEach((c) => {
+        c.label.classList.remove("select-correct", "select-wrong");
+        if (c.cb.checked) c.label.classList.add(selectionOk ? "select-correct" : "select-wrong");
+      });
+    }
+    let secondaryOk = true;
+    secondary.forEach((sc) => {
+      const val = parseFlexibleNumber(sc.input.value);
+      const ok = Math.abs(val - sc.correct) < 0.01;
+      if (!ok) secondaryOk = false;
+      sc.input.style.borderColor = ok ? "#157347" : "#b3261e";
+      sc.input.style.background = ok ? "#e7f6ec" : "#fdecec";
+    });
+    const allOk = selectionOk && secondaryOk;
+    feedback.className = "exercise-feedback " + (allOk ? "ok" : "err");
+    feedback.textContent = (allOk ? "✓ Richtig! " : "✗ Noch nicht richtig. ") + (explain || "");
+  });
+
+  container.appendChild(box);
+}
+
+// ---------- Baustein: Baumdiagramm mit nummerierten Lücken ----------
+// Manche Astbeschriftungen bzw. Pfadwahrscheinlichkeiten werden durch "① ?" ersetzt, dahinter
+// füllt man in einer Liste die passenden Eingabefelder aus. buildTreeFill baut Baum + Liste,
+// checkTreeBlanks prüft sie und trägt bei richtiger wie falscher Antwort den korrekten Wert
+// direkt in den Baum ein (grün/rot) — die beiden sind getrennt, damit die Kombi-Aufgabe unten
+// Baum und Vierfeldertafel unter einem gemeinsamen "Prüfen"-Knopf zusammenfassen kann.
+function buildTreeFill(box, { stage1, stage2Fn, blankSpecs }) {
   const W = 560,
     H = 230,
     marginY = 24;
@@ -869,26 +950,37 @@ function mountTreeFillExercise(container, { title, prompt, stage1, stage2Fn, bla
   });
   box.appendChild(list);
 
+  return { svg };
+}
+function checkTreeBlanks(svg, blankSpecs) {
+  let allOk = true;
+  blankSpecs.forEach((spec) => {
+    const val = parseFlexibleNumber(spec.input.value);
+    const ok = Math.abs(val - spec.correct) < 0.01;
+    if (!ok) allOk = false;
+    spec.input.style.borderColor = ok ? "#157347" : "#b3261e";
+    spec.input.style.background = ok ? "#e7f6ec" : "#fdecec";
+    const svgText = svg.querySelector(`[data-blank="${spec.num}"]`);
+    if (svgText) {
+      svgText.textContent = spec.render(spec.correct);
+      svgText.classList.remove("tree-blank");
+      svgText.classList.add(ok ? "tree-blank-correct" : "tree-blank-wrong");
+    }
+  });
+  return allOk;
+}
+function mountTreeFillExercise(container, { title, prompt, stage1, stage2Fn, blankSpecs, explain }) {
+  const box = el("div", { class: "exercise" });
+  box.appendChild(el("h3", {}, title));
+  box.appendChild(el("p", { html: prompt }));
+  const { svg } = buildTreeFill(box, { stage1, stage2Fn, blankSpecs });
+
   const btn = el("button", { type: "button", class: "btn btn-primary" }, "Prüfen");
   const feedback = el("div", { class: "exercise-feedback" });
   box.appendChild(el("div", { class: "btn-row" }, btn));
   box.appendChild(feedback);
-
   btn.addEventListener("click", () => {
-    let allOk = true;
-    blankSpecs.forEach((spec) => {
-      const val = parseFlexibleNumber(spec.input.value);
-      const ok = Math.abs(val - spec.correct) < 0.01;
-      if (!ok) allOk = false;
-      spec.input.style.borderColor = ok ? "#157347" : "#b3261e";
-      spec.input.style.background = ok ? "#e7f6ec" : "#fdecec";
-      const svgText = svg.querySelector(`[data-blank="${spec.num}"]`);
-      if (svgText) {
-        svgText.textContent = spec.render(spec.correct);
-        svgText.classList.remove("tree-blank");
-        svgText.classList.add(ok ? "tree-blank-correct" : "tree-blank-wrong");
-      }
-    });
+    const allOk = checkTreeBlanks(svg, blankSpecs);
     feedback.className = "exercise-feedback " + (allOk ? "ok" : "err");
     feedback.textContent = (allOk ? "✓ Alles richtig! " : "✗ Noch nicht alles richtig — die korrekten Werte stehen jetzt im Baum. ") + (explain || "");
   });
@@ -896,18 +988,17 @@ function mountTreeFillExercise(container, { title, prompt, stage1, stage2Fn, bla
   container.appendChild(box);
 }
 
-// Vierfeldertafel mit Lücken: manche Zellen/Randsummen sind vorgegeben, andere über <input>
-// auszufüllen. "Prüfen" markiert jede Lücke einzeln grün/rot.
-function mountVftFillExercise(container, { title, prompt, rowLabel, colLabel, rowKeys, colKeys, given, blanks, formatFn, explain }) {
-  const box = el("div", { class: "exercise" });
-  box.appendChild(el("h3", {}, title));
-  box.appendChild(el("p", { html: prompt }));
-
+// ---------- Baustein: Vierfeldertafel mit Lücken ----------
+function buildVftFill(box, { rowLabel, colLabel, rowKeys, colKeys, given, blanks, formatFn }) {
   const cellRefs = {};
   function cellNode(key) {
     if (key in given) return document.createTextNode(formatFn(given[key]));
     if (key in blanks) {
-      const inp = el("input", { type: "text", placeholder: "?", style: "width:4.5rem;padding:0.3rem 0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)" });
+      const inp = el("input", {
+        type: "text",
+        placeholder: "?",
+        style: "width:4.5rem;padding:0.3rem 0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)",
+      });
       cellRefs[key] = inp;
       return inp;
     }
@@ -924,24 +1015,59 @@ function mountVftFillExercise(container, { title, prompt, rowLabel, colLabel, ro
     el("tr", {}, [el("th", { class: "vft-gesamt" }, "gesamt"), ...colKeys.map((ck) => el("td", { class: "vft-gesamt" }, cellNode("col_" + ck.key))), el("td", { class: "vft-gesamt" }, cellNode("grand"))])
   );
   box.appendChild(table);
+  return { cellRefs };
+}
+function checkVftBlanks(cellRefs, blanks) {
+  let allOk = true;
+  Object.keys(blanks).forEach((key) => {
+    const inp = cellRefs[key];
+    const val = parseFlexibleNumber(inp.value);
+    const ok = Math.abs(val - blanks[key]) < 0.01;
+    if (!ok) allOk = false;
+    inp.style.borderColor = ok ? "#157347" : "#b3261e";
+    inp.style.background = ok ? "#e7f6ec" : "#fdecec";
+  });
+  return allOk;
+}
+function mountVftFillExercise(container, { title, prompt, rowLabel, colLabel, rowKeys, colKeys, given, blanks, formatFn, explain }) {
+  const box = el("div", { class: "exercise" });
+  box.appendChild(el("h3", {}, title));
+  box.appendChild(el("p", { html: prompt }));
+  const { cellRefs } = buildVftFill(box, { rowLabel, colLabel, rowKeys, colKeys, given, blanks, formatFn });
 
   const btn = el("button", { type: "button", class: "btn btn-primary" }, "Prüfen");
   const feedback = el("div", { class: "exercise-feedback" });
   box.appendChild(el("div", { class: "btn-row" }, btn));
   box.appendChild(feedback);
-
   btn.addEventListener("click", () => {
-    let allOk = true;
-    Object.keys(blanks).forEach((key) => {
-      const inp = cellRefs[key];
-      const val = parseFlexibleNumber(inp.value);
-      const ok = Math.abs(val - blanks[key]) < 0.01;
-      if (!ok) allOk = false;
-      inp.style.borderColor = ok ? "#157347" : "#b3261e";
-      inp.style.background = ok ? "#e7f6ec" : "#fdecec";
-    });
+    const allOk = checkVftBlanks(cellRefs, blanks);
     feedback.className = "exercise-feedback " + (allOk ? "ok" : "err");
     feedback.textContent = (allOk ? "✓ Alles richtig! " : "✗ Noch nicht alle Felder richtig. ") + (explain || "");
+  });
+
+  container.appendChild(box);
+}
+
+// ---------- Baustein: Kombi-Aufgabe (Baumdiagramm UND Vierfeldertafel in einem, ein Prüfen-Knopf) ----------
+function mountComboExercise(container, { title, prompt, stage1, stage2Fn, blankSpecs, vft, explain }) {
+  const box = el("div", { class: "exercise" });
+  box.appendChild(el("h3", {}, title));
+  box.appendChild(el("p", { html: prompt }));
+  box.appendChild(el("p", {}, el("strong", {}, "1. Baumdiagramm")));
+  const { svg } = buildTreeFill(box, { stage1, stage2Fn, blankSpecs });
+  box.appendChild(el("p", {}, el("strong", {}, "2. Vierfeldertafel")));
+  const { cellRefs } = buildVftFill(box, vft);
+
+  const btn = el("button", { type: "button", class: "btn btn-primary" }, "Prüfen");
+  const feedback = el("div", { class: "exercise-feedback" });
+  box.appendChild(el("div", { class: "btn-row" }, btn));
+  box.appendChild(feedback);
+  btn.addEventListener("click", () => {
+    const treeOk = checkTreeBlanks(svg, blankSpecs);
+    const vftOk = checkVftBlanks(cellRefs, vft.blanks);
+    const allOk = treeOk && vftOk;
+    feedback.className = "exercise-feedback " + (allOk ? "ok" : "err");
+    feedback.textContent = (allOk ? "✓ Alles richtig! " : "✗ Noch nicht alles richtig — die korrekten Werte stehen jetzt im Baum bzw. in der Tafel. ") + (explain || "");
   });
 
   container.appendChild(box);
@@ -950,18 +1076,52 @@ function mountVftFillExercise(container, { title, prompt, rowLabel, colLabel, ro
 function initExercises() {
   const mount = document.getElementById("exercises-mount");
 
-  mountExercise(mount, {
-    title: "Aufgabe 1 — Summenregel (🖊 auf dem Blatt)",
-    prompt:
-      "Beim Glücksrad aus Abschnitt 1–3 gilt P(blau) = 0,25, P(grün) = 0,125, P(gelb) = 0,125, P(rot) = 0,5. " +
-      "Wie groß ist die Wahrscheinlichkeit für das Ereignis „grün oder rot“?",
-    placeholder: "Dezimalzahl oder %, z. B. 0,42",
-    check: (v) => Math.abs(v - 0.625) < 0.01,
-    explain: "P(grün oder rot) = P(grün) + P(gelb ... nein, grün) + P(rot) = 0,125 + 0,5 = 0,625 (62,5 %).",
+  // Aufgabe 1 (leicht) — Ereignis direkt erkennen, exakte Auswahl.
+  mountSelectExercise(mount, {
+    title: "Aufgabe 1 — Ereignis erkennen",
+    prompt: "Ein normaler 6-seitiger Würfel wird einmal geworfen. Wähle alle Augenzahlen aus, die zum Ereignis E = „gerade Zahl“ gehören.",
+    outcomes: [1, 2, 3, 4, 5, 6].map((n) => ({ key: String(n), label: String(n), p: 1 / 6 })),
+    mode: "exact",
+    correctKeys: ["2", "4", "6"],
+    explain: "E = {2, 4, 6} — das sind genau die geraden Augenzahlen von 1 bis 6.",
   });
 
+  // Aufgabe 2 (leicht-mittel) — Gegenereignis erkennen und Summenregel anwenden.
+  mountSelectExercise(mount, {
+    title: "Aufgabe 2 — Gegenereignis und Summenregel",
+    prompt:
+      "Ein Glücksrad hat die Farben orange (P = 0,1), lila (P = 0,2), türkis (P = 0,3) und braun (P = 0,4). Das Ereignis E ist „türkis oder braun“. " +
+      "Wähle die Farben des Gegenereignisses Ē aus und trage anschließend P(E) und P(Ē) ein.",
+    outcomes: [
+      { key: "orange", label: "orange", p: 0.1, color: "#e08a1e" },
+      { key: "lila", label: "lila", p: 0.2, color: "#8a5cf6" },
+      { key: "tuerkis", label: "türkis", p: 0.3, color: "#1a9e7a" },
+      { key: "braun", label: "braun", p: 0.4, color: "#8b5a2b" },
+    ],
+    mode: "exact",
+    correctKeys: ["orange", "lila"],
+    secondaryChecks: [
+      { labelText: "P(E)", correct: 0.7 },
+      { labelText: "P(Ē)", correct: 0.3 },
+    ],
+    explain: "Ē = {orange, lila} — alles außer türkis und braun. P(E) = 0,3 + 0,4 = 0,7. P(Ē) = 0,1 + 0,2 = 0,3 = 1 − 0,7.",
+  });
+
+  // Aufgabe 3 (mittel) — offene, kombinatorische Laplace-Aufgabe: jede passende Auswahl zählt.
+  mountSelectExercise(mount, {
+    title: "Aufgabe 3 — Laplace-Experiment rückwärts",
+    prompt:
+      "Ein Laplace-Würfel hat die Augenzahlen 1 bis 10 (alle gleich wahrscheinlich). Wähle <strong>irgendeine</strong> Menge von Augenzahlen, " +
+      "deren Ereignis die Wahrscheinlichkeit P(E) = 0,4 hat.",
+    outcomes: Array.from({ length: 10 }, (_, i) => ({ key: String(i + 1), label: String(i + 1), p: 0.1 })),
+    mode: "target",
+    targetP: 0.4,
+    explain: "Jede Auswahl mit genau 4 von 10 Zahlen ergibt P(E) = 4/10 = 0,4 — zum Beispiel {1, 2, 3, 4}, aber jede andere 4er-Auswahl ist genauso richtig.",
+  });
+
+  // Aufgabe 4 (mittel) — Baumdiagramm ausfüllen, unabhängige Stufen.
   mountTreeFillExercise(mount, {
-    title: "Aufgabe 2 — Baumdiagramm ausfüllen: unabhängige Stufen (💻 auf der Seite)",
+    title: "Aufgabe 4 — Baumdiagramm ausfüllen: unabhängige Stufen",
     prompt:
       "Ein Reisebüro hat ermittelt: 60&nbsp;% der Kundinnen und Kunden buchen einen Flug (der Rest bucht keinen). Unabhängig davon wählen 30&nbsp;% " +
       "zusätzlich eine Reiserücktrittsversicherung (der Rest nicht). Vervollständige das Baumdiagramm: Trage die fehlende Astwahrscheinlichkeit und " +
@@ -984,49 +1144,9 @@ function initExercises() {
     explain: "kein Flug: 1 − 0,6 = 0,4. Pfade (Pfadmultiplikationsregel): 0,6·0,3 = 0,18, 0,6·0,7 = 0,42, 0,4·0,3 = 0,12, 0,4·0,7 = 0,28.",
   });
 
-  mountExercise(mount, {
-    title: "Aufgabe 3 — Baumdiagramm, unabhängige Stufen (🖊 auf dem Blatt)",
-    prompt:
-      "Eine faire Münze wird geworfen (P(Kopf) = P(Zahl) = 0,5) und unabhängig davon ein Glücksrad gedreht, bei dem P(rot) = 0,3 gilt. " +
-      "Wie groß ist die Wahrscheinlichkeit für den Pfad „Kopf, dann rot“?",
-    placeholder: "Dezimalzahl oder %, z. B. 0,42",
-    check: (v) => Math.abs(v - 0.15) < 0.01,
-    explain: "Pfadmultiplikationsregel: P(Kopf; rot) = 0,5 · 0,3 = 0,15.",
-  });
-
-  mountVftFillExercise(mount, {
-    title: "Aufgabe 4 — Vierfeldertafel ausfüllen: absolute Häufigkeiten (💻 auf der Seite)",
-    prompt:
-      "Bei einer Befragung von 120 Personen gaben 70 an, Hunde zu mögen (die übrigen mögen keine Hunde). Von den Hundefreunden mögen 45 auch Katzen. " +
-      "Insgesamt mögen 80 der befragten Personen Katzen. Vervollständige die Vierfeldertafel.",
-    rowLabel: "Hunde",
-    colLabel: "Katzen",
-    rowKeys: [
-      { key: "ja", label: "ja" },
-      { key: "nein", label: "nein" },
-    ],
-    colKeys: [
-      { key: "ja", label: "ja" },
-      { key: "nein", label: "nein" },
-    ],
-    given: { ja_ja: 45, row_ja: 70, col_ja: 80, grand: 120 },
-    blanks: { ja_nein: 25, nein_ja: 35, nein_nein: 15, row_nein: 50, col_nein: 40 },
-    formatFn: (v) => String(v),
-    explain: "Hunde nein = 120−70 = 50. Hunde ja & Katzen nein = 70−45 = 25. Katzen nein gesamt = 120−80 = 40. Hunde nein & Katzen ja = 80−45 = 35. Hunde nein & Katzen nein = 50−35 = 15.",
-  });
-
-  mountExercise(mount, {
-    title: "Aufgabe 5 — abhängige Stufen ohne Zurücklegen (🖊 auf dem Blatt)",
-    prompt:
-      "In der Urne aus Abschnitt 6 liegen 4 rote und 6 blaue Kugeln. Es werden zwei Kugeln nacheinander <strong>ohne Zurücklegen</strong> gezogen. " +
-      "Wie groß ist die Wahrscheinlichkeit, dass beide Kugeln rot sind?",
-    placeholder: "Dezimalzahl oder %, z. B. 0,42",
-    check: (v) => Math.abs(v - 4 / 10 * (3 / 9)) < 0.01,
-    explain: "P(rot; rot) = 4/10 · 3/9 ≈ 0,133 (13,3 %) — nach der ersten roten Kugel bleiben nur noch 3 rote von 9 übrig.",
-  });
-
+  // Aufgabe 5 (mittel-schwer) — Baumdiagramm ausfüllen, abhängige Stufen.
   mountTreeFillExercise(mount, {
-    title: "Aufgabe 6 — Baumdiagramm ausfüllen: abhängige Stufen (💻 auf der Seite)",
+    title: "Aufgabe 5 — Baumdiagramm ausfüllen: abhängige Stufen",
     prompt:
       "In einer Box liegen 5 blaue und 3 gelbe Bauklötze. Zwei Klötze werden nacheinander <strong>ohne Zurücklegen</strong> herausgenommen. Die erste " +
       "Stufe ist schon eingetragen — vervollständige die vier Äste der zweiten Stufe. Sie hängt vom Ergebnis der ersten Ziehung ab.",
@@ -1052,18 +1172,31 @@ function initExercises() {
       "Nach „blau“ liegen noch 4 blaue und 3 gelbe (7 insgesamt) in der Box: blau = 4/7 ≈ 0,571, gelb = 3/7 ≈ 0,429. Nach „gelb“ liegen noch 5 blaue und 2 gelbe (7 insgesamt): blau = 5/7 ≈ 0,714, gelb = 2/7 ≈ 0,286.",
   });
 
-  mountExercise(mount, {
-    title: "Aufgabe 7 — Vierfeldertafel, relative Häufigkeit (🖊 auf dem Blatt)",
+  // Aufgabe 6 (schwer) — Vierfeldertafel ausfüllen, absolute Häufigkeiten (Rand- und Innenwerte).
+  mountVftFillExercise(mount, {
+    title: "Aufgabe 6 — Vierfeldertafel ausfüllen: absolute Häufigkeiten",
     prompt:
-      "In einer Umfrage unter 80 Personen gaben 50 an, lieber Tee zu trinken, die restlichen lieber Kaffee. Von den Tee-Trinkern bevorzugen 20 " +
-      "Personen süßes Gebäck, von den Kaffee-Trinkern 18. Wie groß ist die relative Häufigkeit (in %) der Personen, die Tee <em>und</em> süßes Gebäck bevorzugen?",
-    placeholder: "Dezimalzahl oder %, z. B. 0,42",
-    check: (v) => Math.abs(v - 0.25) < 0.01,
-    explain: "20 von 80 Personen: 20/80 = 0,25 = 25 %.",
+      "Bei einer Befragung von 120 Personen gaben 70 an, Hunde zu mögen (die übrigen mögen keine Hunde). Von den Hundefreunden mögen 45 auch Katzen. " +
+      "Insgesamt mögen 80 der befragten Personen Katzen. Vervollständige die Vierfeldertafel.",
+    rowLabel: "Hunde",
+    colLabel: "Katzen",
+    rowKeys: [
+      { key: "ja", label: "ja" },
+      { key: "nein", label: "nein" },
+    ],
+    colKeys: [
+      { key: "ja", label: "ja" },
+      { key: "nein", label: "nein" },
+    ],
+    given: { ja_ja: 45, row_ja: 70, col_ja: 80, grand: 120 },
+    blanks: { ja_nein: 25, nein_ja: 35, nein_nein: 15, row_nein: 50, col_nein: 40 },
+    formatFn: (v) => String(v),
+    explain: "Hunde nein = 120−70 = 50. Hunde ja & Katzen nein = 70−45 = 25. Katzen nein gesamt = 120−80 = 40. Hunde nein & Katzen ja = 80−45 = 35. Hunde nein & Katzen nein = 50−35 = 15.",
   });
 
+  // Aufgabe 7 (schwer) — Vierfeldertafel ausfüllen, relative Häufigkeiten aus Prozentangaben im Text.
   mountVftFillExercise(mount, {
-    title: "Aufgabe 8 — Vierfeldertafel ausfüllen: relative Häufigkeiten (💻 auf der Seite)",
+    title: "Aufgabe 7 — Vierfeldertafel ausfüllen: relative Häufigkeiten",
     prompt:
       "An einer Schule spielen 55&nbsp;% der Jugendlichen ein Smartphone-Spiel, die übrigen 45&nbsp;% nicht. Von den Spielenden nutzen 40&nbsp;% " +
       "zusätzlich eine Lernapp, von den Nicht-Spielenden 70&nbsp;%. Die Randwerte für „Spiel“ stehen schon in der Tafel — berechne daraus die vier " +
@@ -1085,14 +1218,49 @@ function initExercises() {
       "Innere Felder über die Pfadmultiplikationsregel: 0,55·0,40 = 0,22; 0,55·0,60 = 0,33; 0,45·0,70 = 0,315; 0,45·0,30 = 0,135. Die Randwerte für Lernapp sind die Spaltensummen: 0,22+0,315 = 0,535 bzw. 0,33+0,135 = 0,465.",
   });
 
-  mountExercise(mount, {
-    title: "Aufgabe 9 — Kombination: Baumdiagramm und Summenregel (🖊 auf dem Blatt)",
+  // Aufgabe 8 (am schwersten) — Kombi: erst das Baumdiagramm, dann die zugehörige Vierfeldertafel
+  // für dasselbe Szenario, beide in einer Aufgabe mit einem gemeinsamen "Prüfen".
+  mountComboExercise(mount, {
+    title: "Aufgabe 8 — Kombi: Baumdiagramm und Vierfeldertafel zusammen",
     prompt:
-      "Wieder die Urne mit 4 roten und 6 blauen Kugeln, zwei Ziehungen <strong>ohne Zurücklegen</strong>. Wie groß ist die Wahrscheinlichkeit, " +
-      "dass die beiden gezogenen Kugeln <strong>unterschiedliche</strong> Farben haben?",
-    placeholder: "Dezimalzahl oder %, z. B. 0,42",
-    check: (v) => Math.abs(v - (4 / 10 * (6 / 9) + 6 / 10 * (4 / 9))) < 0.01,
-    explain: "P(rot;blau) + P(blau;rot) = 4/10·6/9 + 6/10·4/9 = 4/15 + 4/15 = 8/15 ≈ 0,533 (53,3 %) — Pfadadditionsregel über die beiden passenden Pfade.",
+      "In einem Beutel liegen 6 grüne und 4 gelbe Chips. Zwei Chips werden nacheinander <strong>ohne Zurücklegen</strong> gezogen. Vervollständige " +
+      "zuerst die zweite Stufe des Baumdiagramms und trage anschließend die passenden relativen Häufigkeiten (in %) in die Vierfeldertafel ein.",
+    stage1: [
+      { key: "gruen", label: "grün", p: 0.6 },
+      { key: "gelb", label: "gelb", p: 0.4 },
+    ],
+    stage2Fn: (i, b1) => {
+      const beutel = { gruen: 6, gelb: 4 };
+      beutel[b1.key] -= 1;
+      return [
+        { key: "gruen", label: "grün", p: beutel.gruen / 9 },
+        { key: "gelb", label: "gelb", p: beutel.gelb / 9 },
+      ];
+    },
+    blankSpecs: [
+      { kind: "s2", leafIdx: 0, correct: 5 / 9, labelText: "2. Ast nach „grün“: „grün“", render: (v) => "grün (" + num(v, 3) + ")" },
+      { kind: "s2", leafIdx: 1, correct: 4 / 9, labelText: "2. Ast nach „grün“: „gelb“", render: (v) => "gelb (" + num(v, 3) + ")" },
+      { kind: "s2", leafIdx: 2, correct: 6 / 9, labelText: "2. Ast nach „gelb“: „grün“", render: (v) => "grün (" + num(v, 3) + ")" },
+      { kind: "s2", leafIdx: 3, correct: 3 / 9, labelText: "2. Ast nach „gelb“: „gelb“", render: (v) => "gelb (" + num(v, 3) + ")" },
+    ],
+    vft: {
+      rowLabel: "1. Chip",
+      colLabel: "2. Chip",
+      rowKeys: [
+        { key: "gruen", label: "grün" },
+        { key: "gelb", label: "gelb" },
+      ],
+      colKeys: [
+        { key: "gruen", label: "grün" },
+        { key: "gelb", label: "gelb" },
+      ],
+      given: { row_gruen: 0.6, row_gelb: 0.4, grand: 1 },
+      blanks: { gruen_gruen: 1 / 3, gruen_gelb: 4 / 15, gelb_gruen: 4 / 15, gelb_gelb: 2 / 15, col_gruen: 0.6, col_gelb: 0.4 },
+      formatFn: (v) => pct(v),
+    },
+    explain:
+      "Baum: nach „grün“ bleiben 5 grüne von 9 (5/9 ≈ 0,556), nach „gelb“ bleiben 6 grüne von 9 (6/9 ≈ 0,667) usw. Tafel (Pfadmultiplikationsregel): 0,6·5/9 ≈ 33,3 %, 0,6·4/9 ≈ 26,7 %, 0,4·6/9 ≈ 26,7 %, 0,4·3/9 ≈ 13,3 %. " +
+      "Die Randwerte für den 2. Chip sind zufällig genau wieder 60 % / 40 % — bei diesem Modell ist die Verteilung des zweiten Zugs genauso wie die des ersten.",
   });
 }
 
