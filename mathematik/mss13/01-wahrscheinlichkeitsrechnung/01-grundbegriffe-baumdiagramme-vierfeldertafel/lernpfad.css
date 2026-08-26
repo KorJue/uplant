@@ -63,6 +63,8 @@
   font-size: 0.92rem;
   font-weight: 600;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
   font-family: inherit;
 }
 .btn:hover { border-color: var(--accent); }
@@ -158,7 +160,13 @@
   gap: 0.35rem;
   cursor: pointer;
   font-weight: 600;
+  border-radius: 6px;
+  padding: 0.15rem 0.4rem;
 }
+.event-picker label.select-correct { background: #e7f6ec; }
+.event-picker label.select-wrong { background: #fdecec; }
+:root[data-theme="dark"] .event-picker label.select-correct { background: #17321f; }
+:root[data-theme="dark"] .event-picker label.select-wrong { background: #3a1f1f; }
 .event-result {
   background: var(--card-bg);
   border: 1px solid var(--border);
