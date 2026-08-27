@@ -6,6 +6,7 @@
 <title>Geometrie – Klasse 8</title>
 <script src="../../../assets/theme.js"></script>
 <link rel="stylesheet" href="../../../assets/site.css">
+<link rel="stylesheet" href="geometrie.css">
 </head>
 <body>
 <nav class="breadcrumb">
@@ -14,6 +15,37 @@
   <a href="../index.html">Klasse 8</a><span class="sep">/</span>
   Geometrie
 </nav>
+<style>
+  .geo-download-box {
+    max-width: 860px;
+    margin: 0 auto 2rem;
+    padding: 0 1.5rem;
+  }
+  .geo-download-inner {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  }
+  .geo-download-inner p {
+    margin: 0 0 0.75rem;
+    color: var(--muted);
+  }
+  .geo-download-inner a.geo-btn {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .geo-download-inner a.geo-btn:hover { background: var(--accent-dark); }
+  .menu-tiny {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.6em;
+    font-weight: 400;
+    color: var(--muted);
+  }
+</style>
 <header class="page-header">
   <h1>Geometrie</h1>
   <p>Die vier besonderen Linien im Dreieck — interaktiv, mit Zirkel-und-Lineal-Konstruktion und beweglichen Punkten.</p>
@@ -22,7 +54,7 @@
 <main class="menu-main">
   <div class="menu-grid">
     <a class="menu-card" data-section="klasse-8" href="grundkonstruktionen.html" hidden>
-      <h2>1. Grundkonstruktionen</h2>
+      <h2>1. Grundkonstruktionen<br><small class="menu-tiny">Mittelsenkrechte, Winkelhalbierende, Seitenhalbierende und Höhen</small></h2>
     </a>
     <a class="menu-card" data-section="klasse-8" href="mittelsenkrechte-umkreis.html" hidden>
       <h2>2. Mittelsenkrechte &amp; Umkreis</h2>
@@ -38,6 +70,13 @@
     </a>
   </div>
 </main>
+
+<div class="geo-download-box">
+  <div class="geo-download-inner">
+    <p>📄 Alle Grundkonstruktionen (Mittelsenkrechte, Winkelhalbierende, Seitenhalbierende, Höhe) sowie Punkt 2 (Umkreis) und Punkt 3 (Inkreis) als Schritt-für-Schritt-Anleitung zum Ausdrucken.</p>
+    <a class="geo-btn" href="grundkonstruktionen.pdf" download>📄 Konstruktionsschritte als PDF herunterladen (DIN A4, Querformat)</a>
+  </div>
+</div>
 
 <footer class="site-footer">
   <p><a href="../index.html">Zurück zu Klasse 8</a></p>
