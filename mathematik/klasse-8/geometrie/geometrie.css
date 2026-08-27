@@ -351,6 +351,8 @@ body.geo-fullscreen-active {
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
+  text-decoration: none;
+  display: inline-block;
 }
 .geo-btn:hover {
   border-color: var(--accent);
