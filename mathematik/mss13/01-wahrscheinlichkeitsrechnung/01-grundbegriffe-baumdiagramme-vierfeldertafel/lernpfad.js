@@ -850,8 +850,22 @@ function mountSelectExercise(container, { title, prompt, outcomes, mode, correct
       sc.input.style.background = ok ? "#e7f6ec" : "#fdecec";
     });
     const allOk = selectionOk && secondaryOk;
+    // Getrennte Rückmeldung zu Auswahl und Zahlenfeldern, damit z. B. "Zahlen richtig, Auswahl
+    // falsch" nicht wie eine pauschale Ablehnung der (eigentlich richtigen) Zahlen aussieht.
+    let msg;
+    if (allOk) {
+      msg = "✓ Richtig! " + (explain || "");
+    } else if (secondary.length === 0) {
+      msg = "✗ Die Auswahl ist noch nicht richtig. " + (explain || "");
+    } else if (!selectionOk && !secondaryOk) {
+      msg = "✗ Weder die Auswahl noch die eingetragenen Zahlen sind schon richtig. " + (explain || "");
+    } else if (!selectionOk) {
+      msg = "✗ Die Zahlen stimmen schon — aber die Auswahl der angekreuzten Felder ist noch nicht richtig. " + (explain || "");
+    } else {
+      msg = "✗ Die Auswahl stimmt schon — aber die eingetragenen Zahlen sind noch nicht richtig. " + (explain || "");
+    }
     feedback.className = "exercise-feedback " + (allOk ? "ok" : "err");
-    feedback.textContent = (allOk ? "✓ Richtig! " : "✗ Noch nicht richtig. ") + (explain || "");
+    feedback.textContent = msg;
   });
 
   container.appendChild(box);
@@ -1073,6 +1087,34 @@ function mountComboExercise(container, { title, prompt, stage1, stage2Fn, blankS
   container.appendChild(box);
 }
 
+// ---------- Baustein: Baumdiagramm aus einer fertigen Vierfeldertafel rekonstruieren ----------
+// Die Umkehr-Richtung: Die Vierfeldertafel steht komplett und unveränderlich da (keine Lücken —
+// buildVftFill mit blanks:{} zeigt nur Text, keine Eingabefelder), das Baumdiagramm daneben hat
+// Lücken. Die Äste ergeben sich durch Division: Randsumme ÷ Gesamt für die erste Stufe, Zellenwert
+// ÷ Zeilensumme für die zweite — also genau die "Division als Umkehrung der Multiplikation" aus
+// Abschnitt 6, jetzt als eigenständige Übung statt nur als Beispiel.
+function mountTreeFromVftExercise(container, { title, prompt, vft, stage1, stage2Fn, blankSpecs, explain }) {
+  const box = el("div", { class: "exercise" });
+  box.appendChild(el("h3", {}, title));
+  box.appendChild(el("p", { html: prompt }));
+  box.appendChild(el("p", {}, el("strong", {}, "Gegebene Vierfeldertafel")));
+  buildVftFill(box, { ...vft, blanks: {} });
+  box.appendChild(el("p", {}, el("strong", {}, "Baumdiagramm ausfüllen")));
+  const { svg } = buildTreeFill(box, { stage1, stage2Fn, blankSpecs });
+
+  const btn = el("button", { type: "button", class: "btn btn-primary" }, "Prüfen");
+  const feedback = el("div", { class: "exercise-feedback" });
+  box.appendChild(el("div", { class: "btn-row" }, btn));
+  box.appendChild(feedback);
+  btn.addEventListener("click", () => {
+    const allOk = checkTreeBlanks(svg, blankSpecs);
+    feedback.className = "exercise-feedback " + (allOk ? "ok" : "err");
+    feedback.textContent = (allOk ? "✓ Alles richtig! " : "✗ Noch nicht alles richtig — die korrekten Werte stehen jetzt im Baum. ") + (explain || "");
+  });
+
+  container.appendChild(box);
+}
+
 function initExercises() {
   const mount = document.getElementById("exercises-mount");
 
@@ -1261,6 +1303,182 @@ function initExercises() {
     explain:
       "Baum: nach „grün“ bleiben 5 grüne von 9 (5/9 ≈ 0,556), nach „gelb“ bleiben 6 grüne von 9 (6/9 ≈ 0,667) usw. Tafel (Pfadmultiplikationsregel): 0,6·5/9 ≈ 33,3 %, 0,6·4/9 ≈ 26,7 %, 0,4·6/9 ≈ 26,7 %, 0,4·3/9 ≈ 13,3 %. " +
       "Die Randwerte für den 2. Chip sind zufällig genau wieder 60 % / 40 % — bei diesem Modell ist die Verteilung des zweiten Zugs genauso wie die des ersten.",
+  });
+
+  // Aufgabe 9 (schwer) — Umkehrung: aus einer fertigen Vierfeldertafel nur die erste Stufe
+  // des Baumdiagramms rekonstruieren (Randsumme ÷ Gesamt).
+  const busSchirmVft = {
+    rowLabel: "Bus",
+    colLabel: "Schirm",
+    rowKeys: [
+      { key: "ja", label: "ja" },
+      { key: "nein", label: "nein" },
+    ],
+    colKeys: [
+      { key: "ja", label: "ja" },
+      { key: "nein", label: "nein" },
+    ],
+    given: { ja_ja: 80, ja_nein: 40, nein_ja: 10, nein_nein: 70, row_ja: 120, row_nein: 80, col_ja: 90, col_nein: 110, grand: 200 },
+    blanks: {},
+    formatFn: (v) => String(v),
+  };
+  mountTreeFromVftExercise(mount, {
+    title: "Aufgabe 9 — Vierfeldertafel → Baumdiagramm: erste Stufe",
+    prompt:
+      "Bei einer Befragung von 200 Personen wurde erfasst, ob sie mit dem Bus fahren und ob sie einen Regenschirm dabeihaben. Die vollständige " +
+      "Vierfeldertafel steht unten. Rekonstruiere daraus die <strong>erste Stufe</strong> des Baumdiagramms (Randsumme ÷ Gesamtzahl).",
+    vft: busSchirmVft,
+    stage1: [
+      { key: "ja", label: "Bus", p: 120 / 200 },
+      { key: "nein", label: "kein Bus", p: 80 / 200 },
+    ],
+    stage2Fn: (i, b1) => {
+      if (b1.key === "ja") return [
+        { key: "ja", label: "Schirm", p: 80 / 120 },
+        { key: "nein", label: "kein Schirm", p: 40 / 120 },
+      ];
+      return [
+        { key: "ja", label: "Schirm", p: 10 / 80 },
+        { key: "nein", label: "kein Schirm", p: 70 / 80 },
+      ];
+    },
+    blankSpecs: [
+      { kind: "s1", i: 0, correct: 0.6, labelText: "1. Ast: „Bus“", render: (v) => "Bus (" + num(v, 3) + ")" },
+      { kind: "s1", i: 1, correct: 0.4, labelText: "1. Ast: „kein Bus“", render: (v) => "kein Bus (" + num(v, 3) + ")" },
+    ],
+    explain: "Erste Stufe = Randsumme ÷ Gesamtzahl: Bus = 120/200 = 0,6, kein Bus = 80/200 = 0,4 — die zweite Stufe (schon eingetragen) hängt hier vom Bus-Ergebnis ab.",
+  });
+
+  // Aufgabe 10 (schwer) — dieselbe Tafel, jetzt das ganze Baumdiagramm (auch die zweite Stufe,
+  // die hier je nach Zeile unterschiedlich ist: Zellenwert ÷ Zeilensumme).
+  mountTreeFromVftExercise(mount, {
+    title: "Aufgabe 10 — Vierfeldertafel → Baumdiagramm: ganzer Baum",
+    prompt:
+      "Dieselbe Tafel wie in Aufgabe 9. Diesmal das <strong>ganze</strong> Baumdiagramm rekonstruieren: erste Stufe wie eben, zweite Stufe über " +
+      "Zellenwert ÷ Zeilensumme. Achtung: Die zweite Stufe hängt hier vom Ergebnis der ersten ab (abhängige Stufen) — die Äste sind in beiden Zeilen unterschiedlich.",
+    vft: busSchirmVft,
+    stage1: [
+      { key: "ja", label: "Bus", p: 120 / 200 },
+      { key: "nein", label: "kein Bus", p: 80 / 200 },
+    ],
+    stage2Fn: (i, b1) => {
+      if (b1.key === "ja") return [
+        { key: "ja", label: "Schirm", p: 80 / 120 },
+        { key: "nein", label: "kein Schirm", p: 40 / 120 },
+      ];
+      return [
+        { key: "ja", label: "Schirm", p: 10 / 80 },
+        { key: "nein", label: "kein Schirm", p: 70 / 80 },
+      ];
+    },
+    blankSpecs: [
+      { kind: "s1", i: 0, correct: 0.6, labelText: "1. Ast: „Bus“", render: (v) => "Bus (" + num(v, 3) + ")" },
+      { kind: "s1", i: 1, correct: 0.4, labelText: "1. Ast: „kein Bus“", render: (v) => "kein Bus (" + num(v, 3) + ")" },
+      { kind: "s2", leafIdx: 0, correct: 80 / 120, labelText: "2. Ast nach „Bus“: „Schirm“", render: (v) => "Schirm (" + num(v, 3) + ")" },
+      { kind: "s2", leafIdx: 1, correct: 40 / 120, labelText: "2. Ast nach „Bus“: „kein Schirm“", render: (v) => "kein Schirm (" + num(v, 3) + ")" },
+      { kind: "s2", leafIdx: 2, correct: 10 / 80, labelText: "2. Ast nach „kein Bus“: „Schirm“", render: (v) => "Schirm (" + num(v, 3) + ")" },
+      { kind: "s2", leafIdx: 3, correct: 70 / 80, labelText: "2. Ast nach „kein Bus“: „kein Schirm“", render: (v) => "kein Schirm (" + num(v, 3) + ")" },
+    ],
+    explain:
+      "Erste Stufe wie in Aufgabe 9. Zweite Stufe (Division als Umkehrung der Multiplikation, Zellenwert ÷ Zeilensumme): nach „Bus“ (120 Personen) 80/120 ≈ 0,667 Schirm, 40/120 ≈ 0,333 kein Schirm. " +
+      "Nach „kein Bus“ (80 Personen) 10/80 = 0,125 Schirm, 70/80 = 0,875 kein Schirm — deutlich andere Anteile, die Stufen sind also abhängig.",
+  });
+
+  // Aufgabe 11 (schwer) — Umkehrung mit relativen Häufigkeiten (%) statt absoluten Zahlen.
+  const kaffeeTeeVft = {
+    rowLabel: "Getränk",
+    colLabel: "Süßes",
+    rowKeys: [
+      { key: "kaffee", label: "Kaffee" },
+      { key: "tee", label: "Tee" },
+    ],
+    colKeys: [
+      { key: "schoko", label: "Schokolade" },
+      { key: "frucht", label: "Frucht" },
+    ],
+    given: { kaffee_schoko: 0.26, kaffee_frucht: 0.39, tee_schoko: 0.21, tee_frucht: 0.14, row_kaffee: 0.65, row_tee: 0.35, col_schoko: 0.47, col_frucht: 0.53, grand: 1 },
+    blanks: {},
+    formatFn: (v) => pct(v),
+  };
+  mountTreeFromVftExercise(mount, {
+    title: "Aufgabe 11 — Vierfeldertafel → Baumdiagramm: relative Häufigkeiten",
+    prompt:
+      "Eine Umfrage zu Lieblingsgetränk und Lieblingssüßigkeit ist komplett als Vierfeldertafel mit relativen Häufigkeiten (%) gegeben. " +
+      "Rekonstruiere das komplette Baumdiagramm (erste Stufe: Getränk, zweite Stufe: Süßes).",
+    vft: kaffeeTeeVft,
+    stage1: [
+      { key: "kaffee", label: "Kaffee", p: 0.65 },
+      { key: "tee", label: "Tee", p: 0.35 },
+    ],
+    stage2Fn: (i, b1) => {
+      if (b1.key === "kaffee") return [
+        { key: "schoko", label: "Schokolade", p: 0.26 / 0.65 },
+        { key: "frucht", label: "Frucht", p: 0.39 / 0.65 },
+      ];
+      return [
+        { key: "schoko", label: "Schokolade", p: 0.21 / 0.35 },
+        { key: "frucht", label: "Frucht", p: 0.14 / 0.35 },
+      ];
+    },
+    blankSpecs: [
+      { kind: "s1", i: 0, correct: 0.65, labelText: "1. Ast: „Kaffee“", render: (v) => "Kaffee (" + num(v, 3) + ")" },
+      { kind: "s1", i: 1, correct: 0.35, labelText: "1. Ast: „Tee“", render: (v) => "Tee (" + num(v, 3) + ")" },
+      { kind: "s2", leafIdx: 0, correct: 0.26 / 0.65, labelText: "2. Ast nach „Kaffee“: „Schokolade“", render: (v) => "Schokolade (" + num(v, 3) + ")" },
+      { kind: "s2", leafIdx: 1, correct: 0.39 / 0.65, labelText: "2. Ast nach „Kaffee“: „Frucht“", render: (v) => "Frucht (" + num(v, 3) + ")" },
+      { kind: "s2", leafIdx: 2, correct: 0.21 / 0.35, labelText: "2. Ast nach „Tee“: „Schokolade“", render: (v) => "Schokolade (" + num(v, 3) + ")" },
+      { kind: "s2", leafIdx: 3, correct: 0.14 / 0.35, labelText: "2. Ast nach „Tee“: „Frucht“", render: (v) => "Frucht (" + num(v, 3) + ")" },
+    ],
+    explain:
+      "Erste Stufe direkt aus den Randwerten: Kaffee = 65 %, Tee = 35 %. Zweite Stufe über Zellenwert ÷ Zeilensumme: nach Kaffee 0,26/0,65 = 0,4 Schokolade, 0,39/0,65 = 0,6 Frucht; nach Tee 0,21/0,35 = 0,6 Schokolade, 0,14/0,35 = 0,4 Frucht.",
+  });
+
+  // Aufgabe 12 (am schwersten) — Umkehrung mit unrunden Brüchen (Urne ohne Zurücklegen).
+  const kugelnVft = {
+    rowLabel: "1. Kugel",
+    colLabel: "2. Kugel",
+    rowKeys: [
+      { key: "rot", label: "rot" },
+      { key: "gruen", label: "grün" },
+    ],
+    colKeys: [
+      { key: "rot", label: "rot" },
+      { key: "gruen", label: "grün" },
+    ],
+    given: { rot_rot: 5 / 12, rot_gruen: 1 / 4, gruen_rot: 1 / 4, gruen_gruen: 1 / 12, row_rot: 2 / 3, row_gruen: 1 / 3, col_rot: 2 / 3, col_gruen: 1 / 3, grand: 1 },
+    blanks: {},
+    formatFn: (v) => pct(v),
+  };
+  mountTreeFromVftExercise(mount, {
+    title: "Aufgabe 12 — Vierfeldertafel → Baumdiagramm: unrunde Brüche",
+    prompt:
+      "Eine Urne enthält 6 rote und 3 grüne Kugeln. Zwei Kugeln werden nacheinander <strong>ohne Zurücklegen</strong> gezogen. Die vollständige " +
+      "Vierfeldertafel mit relativen Häufigkeiten ist gegeben. Rekonstruiere das komplette Baumdiagramm — die Brüche gehen diesmal nicht so glatt auf.",
+    vft: kugelnVft,
+    stage1: [
+      { key: "rot", label: "rot", p: 2 / 3 },
+      { key: "gruen", label: "grün", p: 1 / 3 },
+    ],
+    stage2Fn: (i, b1) => {
+      if (b1.key === "rot") return [
+        { key: "rot", label: "rot", p: (5 / 12) / (2 / 3) },
+        { key: "gruen", label: "grün", p: (1 / 4) / (2 / 3) },
+      ];
+      return [
+        { key: "rot", label: "rot", p: (1 / 4) / (1 / 3) },
+        { key: "gruen", label: "grün", p: (1 / 12) / (1 / 3) },
+      ];
+    },
+    blankSpecs: [
+      { kind: "s1", i: 0, correct: 2 / 3, labelText: "1. Ast: „rot“", render: (v) => "rot (" + num(v, 3) + ")" },
+      { kind: "s1", i: 1, correct: 1 / 3, labelText: "1. Ast: „grün“", render: (v) => "grün (" + num(v, 3) + ")" },
+      { kind: "s2", leafIdx: 0, correct: (5 / 12) / (2 / 3), labelText: "2. Ast nach „rot“: „rot“", render: (v) => "rot (" + num(v, 3) + ")" },
+      { kind: "s2", leafIdx: 1, correct: (1 / 4) / (2 / 3), labelText: "2. Ast nach „rot“: „grün“", render: (v) => "grün (" + num(v, 3) + ")" },
+      { kind: "s2", leafIdx: 2, correct: (1 / 4) / (1 / 3), labelText: "2. Ast nach „grün“: „rot“", render: (v) => "rot (" + num(v, 3) + ")" },
+      { kind: "s2", leafIdx: 3, correct: (1 / 12) / (1 / 3), labelText: "2. Ast nach „grün“: „grün“", render: (v) => "grün (" + num(v, 3) + ")" },
+    ],
+    explain:
+      "Erste Stufe: rot = 2/3 ≈ 0,667, grün = 1/3 ≈ 0,333. Zweite Stufe (Zellenwert ÷ Zeilensumme): nach rot (5/12)÷(2/3) = 5/8 = 0,625 rot, (1/4)÷(2/3) = 3/8 = 0,375 grün; " +
+      "nach grün (1/4)÷(1/3) = 3/4 = 0,75 rot, (1/12)÷(1/3) = 1/4 = 0,25 grün.",
   });
 }
 
