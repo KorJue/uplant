@@ -347,10 +347,10 @@ function buildVftFill(box, { rowLabel, colLabel, rowKeys, colKeys, given, blanks
   }
 
   const table = el("table", { class: "vft-table" });
-  table.appendChild(el("tr", {}, [el("th", {}), ...colKeys.map((ck) => el("th", {}, colLabel + ": " + ck.label)), el("th", { class: "vft-gesamt" }, "gesamt")]));
+  table.appendChild(el("tr", {}, [el("th", {}), ...colKeys.map((ck) => el("th", {}, (colLabel ? colLabel + ": " : "") + ck.label)), el("th", { class: "vft-gesamt" }, "gesamt")]));
   rowKeys.forEach((rk) => {
     const cells = colKeys.map((ck) => el("td", { class: "vft-cell" }, cellNode(rk.key + "_" + ck.key)));
-    table.appendChild(el("tr", {}, [el("th", {}, rowLabel + ": " + rk.label), ...cells, el("td", { class: "vft-gesamt" }, cellNode("row_" + rk.key))]));
+    table.appendChild(el("tr", {}, [el("th", {}, (rowLabel ? rowLabel + ": " : "") + rk.label), ...cells, el("td", { class: "vft-gesamt" }, cellNode("row_" + rk.key))]));
   });
   table.appendChild(
     el("tr", {}, [el("th", { class: "vft-gesamt" }, "gesamt"), ...colKeys.map((ck) => el("td", { class: "vft-gesamt" }, cellNode("col_" + ck.key))), el("td", { class: "vft-gesamt" }, cellNode("grand"))])
