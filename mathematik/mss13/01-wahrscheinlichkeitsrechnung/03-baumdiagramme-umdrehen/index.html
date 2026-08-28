@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baumdiagramme umdrehen</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">MSS 13</a><span class="sep">/</span>
+  <a href="../index.html">01 Wahrscheinlichkeitsrechnung</a><span class="sep">/</span>
+  3 Baumdiagramme umdrehen
+</nav>
+<header class="page-header">
+  <h1>Baumdiagramme umdrehen</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Simulation und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Oft ist eine bedingte Wahrscheinlichkeit P<sub>A</sub>(B) bekannt, aber eigentlich interessiert die <strong>umgekehrte</strong> Richtung P<sub>B</sub>(A). Auf diesem Lernpfad lernst du:</p>
+    <ul class="lern-intro-list">
+      <li>warum man ein Baumdiagramm manchmal <span class="term">umdrehen</span> möchte — an einem echten Beispiel: einem Corona-Schnelltest</li>
+      <li>den Weg dorthin: <span class="term">multiplizieren</span> (Baum → Vierfeldertafel), dann in der <span class="term">neuen Richtung dividieren</span> (Vierfeldertafel → umgedrehter Baum)</li>
+      <li>ein Baumdiagramm mit <span class="term">absoluten Häufigkeiten</span> umzudrehen</li>
+      <li>die <span class="term">allgemeinen Formeln</span> für ein umgedrehtes Baumdiagramm</li>
+      <li>eine typische Stolperstelle beim Umdrehen zu erkennen</li>
+      <li>zum Schluss einen Ausblick auf die <span class="term">Regel von Bayes</span></li>
+    </ul>
+    <p class="hinweis-box">💡 Arbeite die Abschnitte der Reihe nach durch. Probiere jedes Beispiel selbst aus, bevor du die Kontrollfrage beantwortest.</p>
+  </section>
+
+  <!-- 1. Warum umdrehen? Bayes-Rechner -->
+  <section class="card" id="sec-bayes-rechner">
+    <h2>1. Warum umdrehen? Der Corona-Schnelltest</h2>
+    <p>Ein Corona-Schnelltest zeigt bei 96&nbsp;% der Infizierten ein positives Testergebnis (<span class="term">Sensitivität</span>), zu 99&nbsp;% werden Nicht-Infizierte korrekt erkannt (<span class="term">Spezifität</span>). Nach einer Feier sind 10&nbsp;% der Teilnehmer infiziert (<span class="term">Prävalenz</span>).</p>
+    <p>Diese drei Werte sind bedingte Wahrscheinlichkeiten der Form „Testergebnis, <strong>gegeben</strong> Infektionsstatus" — P<sub>I</sub>(positiv), P<sub>Ī</sub>(negativ). Eine getestete Person kennt aber nur ihr <strong>Testergebnis</strong>, nicht ihren wahren Infektionsstatus. Sie will wissen: „Bin ich <strong>wirklich</strong> infiziert, wenn mein Test positiv ist?" — also die <strong>umgekehrte</strong> bedingte Wahrscheinlichkeit P<sub>positiv</sub>(infiziert).</p>
+    <p>Probiere es aus: Ändere die drei Werte und beobachte, wie sich Baumdiagramm, Vierfeldertafel und die umgekehrte Wahrscheinlichkeit verändern.</p>
+    <div class="widget">
+      <div class="widget-row">
+        <div class="widget-col">
+          <p>Prävalenz P(infiziert): <input type="number" id="input-praevalenz" value="10" min="0.1" max="99" step="0.1" style="width:5rem;padding:0.3rem 0.5rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">&nbsp;%</p>
+          <p>Sensitivität P<sub>infiziert</sub>(positiv): <input type="number" id="input-sensitivitaet" value="96" min="0" max="100" step="0.1" style="width:5rem;padding:0.3rem 0.5rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">&nbsp;%</p>
+          <p>Spezifität P<sub>nicht infiziert</sub>(negativ): <input type="number" id="input-spezifitaet" value="99" min="0" max="100" step="0.1" style="width:5rem;padding:0.3rem 0.5rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">&nbsp;%</p>
+        </div>
+        <div class="widget-col">
+          <div id="bayes-result" class="event-result"></div>
+        </div>
+      </div>
+      <div class="widget-row">
+        <div class="widget-col">
+          <p style="text-align:center"><strong>Baumdiagramm (Infektion → Testergebnis)</strong></p>
+          <div id="bayes-tree-mount"></div>
+        </div>
+        <div class="widget-col">
+          <p style="text-align:center"><strong>Vierfeldertafel</strong></p>
+          <div id="bayes-vft-mount"></div>
+        </div>
+      </div>
+    </div>
+    <div class="quiz" id="quiz-bayes-rechner"></div>
+  </section>
+
+  <!-- 2. Von der Tafel zum umgedrehten Baum -->
+  <section class="card" id="sec-tafel-umkehr">
+    <h2>2. Von der Vierfeldertafel zum umgedrehten Baum</h2>
+    <p>Um die Zuverlässigkeit eines Corona-Schnelltests zu überprüfen, wurden 10&nbsp;000 Menschen ohne Krankheitssymptome getestet, von denen 50 mit Covid-19 infiziert waren. Dabei gab es 125 positive Testergebnisse, von denen 72&nbsp;% falsch positive Resultate waren. 15 an Covid-19 erkrankte Personen erhielten ein negatives Testergebnis.</p>
+    <p>N: Das Testergebnis ist negativ. I: Die getestete Person ist infiziert. Das folgende Baumdiagramm verzweigt zuerst nach dem Testergebnis (N bzw. N̄) und dann nach der Infektion (I bzw. Ī) — so, wie die Angaben im Text formuliert sind:</p>
+    <div class="widget">
+      <div id="beispiel2-original-mount"></div>
+    </div>
+    <p>Daraus ergibt sich diese Vierfeldertafel mit absoluten Häufigkeiten:</p>
+    <div class="widget">
+      <div id="beispiel2-vft-mount"></div>
+    </div>
+    <p>Jetzt du: Leite daraus das <strong>umgedrehte</strong> Baumdiagramm ab, das zuerst nach der Infektion und dann nach dem Testergebnis verzweigt — das ist die Richtung, die man eigentlich wissen will (z.&nbsp;B. „Wie zuverlässig erkennt der Test die Infizierten?"). Nutze dazu die Randsummen (÷ Gesamtzahl) für die erste Stufe und Zellenwert ÷ neue Zeilensumme für die zweite Stufe.</p>
+    <div id="beispiel2-exercise-mount"></div>
+    <p class="progress-note">Die WHO fordert: mindestens 80&nbsp;% der Infizierten werden erkannt (P<sub>I</sub>(N̄) ≥ 0,8) und mindestens 97&nbsp;% der Nicht-Infizierten korrekt ausgeschlossen (P<sub>Ī</sub>(N) ≥ 0,97). Vergleiche deine berechneten Werte damit — erfüllt dieser Test beide Forderungen?</p>
+    <div class="quiz" id="quiz-tafel-umkehr"></div>
+  </section>
+
+  <!-- 3. Allgemeine Formeln -->
+  <section class="card" id="sec-formeln">
+    <h2>3. Die allgemeinen Formeln</h2>
+    <p>Ein Baumdiagramm ① mit erster Stufe A/B (Wahrscheinlichkeiten a, b) und zweiter Stufe 1/2 (bedingte Wahrscheinlichkeiten a₁ = P<sub>A</sub>(1), a₂ = P<sub>A</sub>(2), b₁ = P<sub>B</sub>(1), b₂ = P<sub>B</sub>(2)) soll umgekehrt werden zu Baumdiagramm ② mit erster Stufe 1/2 (c, d) und zweiter Stufe A/B (c<sub>A</sub>, c<sub>B</sub>, d<sub>A</sub>, d<sub>B</sub>).</p>
+    <div class="widget">
+      <p style="text-align:center"><strong>Allgemeine Vierfeldertafel (der Zwischenschritt für beide Bäume)</strong></p>
+      <table class="vft-table" style="max-width:420px;margin:0.5rem auto">
+        <tr><th></th><th>1</th><th>2</th><th class="vft-gesamt">gesamt</th></tr>
+        <tr><th>A</th><td class="vft-cell">a·a₁</td><td class="vft-cell">a·a₂</td><td class="vft-gesamt">a</td></tr>
+        <tr><th>B</th><td class="vft-cell">b·b₁</td><td class="vft-cell">b·b₂</td><td class="vft-gesamt">b</td></tr>
+        <tr><th class="vft-gesamt">gesamt</th><td class="vft-gesamt">c</td><td class="vft-gesamt">d</td><td class="vft-gesamt">1</td></tr>
+      </table>
+      <p>Erste Stufe des umgedrehten Baums = Spaltensummen der Tafel:</p>
+      <div class="formula-block">c = a·a₁ + b·b₁ &nbsp;&nbsp;&nbsp; d = a·a₂ + b·b₂ = 1 − c</div>
+      <p>Zweite Stufe des umgedrehten Baums = Zellenwert ÷ neue (Spalten-)Summe:</p>
+      <div class="formula-block">c<sub>A</sub> = (a·a₁) / c &nbsp;&nbsp;&nbsp; c<sub>B</sub> = (b·b₁) / c &nbsp;&nbsp;&nbsp; d<sub>A</sub> = (a·a₂) / d &nbsp;&nbsp;&nbsp; d<sub>B</sub> = (b·b₂) / d</div>
+      <p class="progress-note">Genau das hast du in Abschnitt 1 und 2 schon konkret ausgerechnet — hier stehen nur Buchstaben statt Zahlen.</p>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Ausblick: Die Regel von Bayes</span>
+      Schreibt man c<sub>A</sub> = (a·a₁) / c komplett aus, ohne die Abkürzung c zu verwenden, erhält man die <strong>Regel von Bayes</strong>:
+      <div class="formula-block" style="background:var(--card-bg)">P<sub>1</sub>(A) = [P(A) · P<sub>A</sub>(1)] / [P(A) · P<sub>A</sub>(1) + P(B) · P<sub>B</sub>(1)]</div>
+      Zur Probe mit den Zahlen aus Abschnitt 1 (Standardeinstellung 10&nbsp;%/96&nbsp;%/99&nbsp;%): P<sub>positiv</sub>(infiziert) = (0,1 · 0,96) / (0,1 · 0,96 + 0,9 · 0,01) = 0,096 / 0,105 ≈ 0,914 — derselbe Wert wie oben. Die Formel ist also nur eine kompakte Schreibweise für „erst multiplizieren, dann in der Vierfeldertafel durch die Spaltensumme teilen".
+    </div>
+    <div class="quiz" id="quiz-formeln"></div>
+  </section>
+
+  <!-- 4. Stolperstelle -->
+  <section class="card" id="sec-stolperstelle">
+    <h2>4. Stolperstelle: Baumdiagramm falsch umgedreht</h2>
+    <p>Ein Handyhersteller lässt in Fabrik A 30&nbsp;% seiner Geräte produzieren, in Fabrik B 70&nbsp;%. In Fabrik A sind 5&nbsp;% der Geräte defekt, in Fabrik B 2&nbsp;%. Tim soll das Baumdiagramm umdrehen, um zu bestimmen, aus welcher Fabrik ein defektes bzw. ein einwandfreies Gerät wahrscheinlich stammt.</p>
+    <p>So macht es Tim (falsch) — er vertauscht nur die Reihenfolge im Diagramm, ändert aber die Werte nicht:</p>
+    <div class="widget">
+      <div id="tree-tim-wrong-mount"></div>
+      <p class="progress-note">Schau dir die Astwahrscheinlichkeiten an einem Knoten an — was fällt dir auf, wenn du sie addierst?</p>
+    </div>
+    <div class="quiz" id="quiz-stolperstelle"></div>
+    <p>So sieht das <strong>richtige</strong> umgedrehte Baumdiagramm aus — jeder Wert wurde neu berechnet (multiplizieren, dann durch die neue Spaltensumme teilen):</p>
+    <div class="widget">
+      <div id="tree-tim-correct-mount"></div>
+    </div>
+  </section>
+
+  <!-- 5. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>5. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite. Sie sind nach aufsteigendem Schwierigkeitsgrad sortiert.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 01 Wahrscheinlichkeitsrechnung</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
