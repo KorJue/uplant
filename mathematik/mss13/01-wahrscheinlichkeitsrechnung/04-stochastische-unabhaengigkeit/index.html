@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stochastische Unabhängigkeit</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">MSS 13</a><span class="sep">/</span>
+  <a href="../index.html">01 Wahrscheinlichkeitsrechnung</a><span class="sep">/</span>
+  4 Stochastische Unabhängigkeit
+</nav>
+<header class="page-header">
+  <h1>Stochastische Unabhängigkeit</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Simulation und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Ein Fußballspieler hat in seiner Karriere 90&nbsp;% aller Elfmeter verwandelt. Er tritt an, um den entscheidenden Elfmeter im Pokalfinale zu schießen. Beträgt seine Trefferwahrscheinlichkeit jetzt wirklich genau 90&nbsp;%, oder spielt der Druck der Situation eine Rolle? Diese Frage führt zum Begriff der <span class="term">stochastischen Unabhängigkeit</span>. Auf diesem Lernpfad lernst du:</p>
+    <ul class="lern-intro-list">
+      <li>wann zwei Ereignisse <span class="term">stochastisch unabhängig</span> heißen — und wie man das im Baumdiagramm erkennt</li>
+      <li>die <span class="term">Multiplikationsregel</span> P(A∩B) = P(A) · P(B) als praktischen Test auf Unabhängigkeit</li>
+      <li>den wichtigen Unterschied zwischen <span class="term">Korrelation</span> und <span class="term">Kausalität</span></li>
+      <li>einen typischen Fehler beim Umgang mit der Multiplikationsregel zu erkennen</li>
+      <li>zum Schluss einen Ausblick: paarweise Unabhängigkeit ist nicht dasselbe wie vollständige Unabhängigkeit</li>
+    </ul>
+    <p class="hinweis-box">💡 Arbeite die Abschnitte der Reihe nach durch. Probiere jedes Beispiel selbst aus, bevor du die Kontrollfrage beantwortest.</p>
+  </section>
+
+  <!-- 1. Definition -->
+  <section class="card" id="sec-urne-unabhaengig">
+    <h2>1. Wann sind zwei Ereignisse unabhängig?</h2>
+    <p>In einer Urne liegen 3 grüne und 4 rote Kugeln. Es werden nacheinander zwei Kugeln gezogen. Betrachte die Ereignisse G: „grüne Kugel beim ersten Zug" und R: „rote Kugel beim zweiten Zug".</p>
+    <div class="definition-box">
+      <span class="box-label">Definition</span>
+      Zwei Ereignisse eines Zufallsexperiments heißen <strong>(stochastisch) unabhängig</strong>, wenn das Eintreten des einen Ereignisses die Wahrscheinlichkeit des Eintretens des anderen nicht beeinflusst.
+    </div>
+    <p>Vergleiche: Wie verändert sich P(R), je nachdem ob zurückgelegt wird oder nicht?</p>
+    <div class="mode-toggle" id="urn-mode-toggle"></div>
+    <div class="widget">
+      <div id="urn-tree-mount"></div>
+      <div id="urn-vergleich" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-urne"></div>
+  </section>
+
+  <!-- 2. Multiplikationsregel als Test -->
+  <section class="card" id="sec-multiplikationsregel">
+    <h2>2. Die Multiplikationsregel als Unabhängigkeitstest</h2>
+    <p>Man kann zeigen: Ist B stochastisch unabhängig von A, so ist auch A stochastisch unabhängig von B. Aus der Pfadmultiplikationsregel P(A∩B) = P(A) · P<sub>A</sub>(B) folgt für unabhängige Ereignisse unmittelbar:</p>
+    <div class="wissen-box">
+      <span class="box-label">Wissen</span>
+      Zwei Ereignisse A und B mit P(A) &gt; 0 und P(B) &gt; 0 heißen stochastisch unabhängig, wenn gilt: P<sub>A</sub>(B) = P(B) bzw. P<sub>B</sub>(A) = P(A). Mit der <strong>Multiplikationsregel</strong> prüft man das direkt an einer Vierfeldertafel: A und B sind genau dann unabhängig, wenn P(A ∩ B) = P(A) · P(B) gilt.
+    </div>
+    <p>Eine Umfrage zur Schlafqualität und Arbeitszeit ergab die Vierfeldertafel unten (521 Befragte). Klicke auf eine Zelle: Der Vergleich von P(A∩B) mit P(A)·P(B) zeigt, ob die Ereignisse „arbeitet mehr als 40h/Woche" und „schläft ruhig" unabhängig sind.</p>
+    <div class="widget">
+      <div id="mult-vft-mount"></div>
+      <div id="mult-explain" class="event-result">Klicke auf eine Zelle, um den Unabhängigkeitstest zu sehen.</div>
+    </div>
+    <div class="quiz" id="quiz-multiplikationsregel"></div>
+  </section>
+
+  <!-- 3. Korrelation und Kausalität -->
+  <section class="card" id="sec-korrelation-kausalitaet">
+    <h2>3. Korrelation und Kausalität</h2>
+    <p>Besteht zwischen zwei Ereignissen eine stochastische Abhängigkeit, dann gibt es zwischen den zugehörigen Merkmalen einen Zusammenhang, den man in der Statistik auch als <span class="term">Korrelation</span> bezeichnet.</p>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel</span>
+      Eine Korrelation bedeutet <strong>nicht</strong>, dass sich die Merkmale direkt beeinflussen (<span class="term">Kausalität</span>). Es ist auch möglich, dass beide Merkmale von einem oder mehreren weiteren Merkmalen beeinflusst werden (z.&nbsp;B. kaltes Wetter, das sowohl das Schaltragen als auch das Erkältungsrisiko erhöht). Das macht Interpretationen in Sachzusammenhängen schwierig.
+    </div>
+    <p>Die Vierfeldertafel zeigt die Ergebnisse einer Befragung des Gesundheitsamts: 100 Personen wurden befragt, ob sie erkältet sind (E) und ob sie einen Schal tragen (S). Klicke auf eine Zelle, um den Unabhängigkeitstest zu sehen.</p>
+    <div class="widget">
+      <div id="korrelation-vft-mount"></div>
+      <div id="korrelation-explain" class="event-result">Klicke auf eine Zelle, um den Unabhängigkeitstest zu sehen.</div>
+    </div>
+    <div class="quiz" id="quiz-korrelation"></div>
+  </section>
+
+  <!-- 4. Stolperstelle -->
+  <section class="card" id="sec-stolperstelle">
+    <h2>4. Stolperstelle: Eriks Rechenfehler</h2>
+    <p>Eine Umfrage hat ergeben, dass 53&nbsp;% der Befragten weiblich waren und 39&nbsp;% lange Haare hatten.</p>
+    <div class="beispiel-box">
+      <span class="box-label">Erik meint</span>
+      „47&nbsp;% der Befragten sind also männlich und 61&nbsp;% haben kurze Haare. Also beträgt der Anteil an Männern mit kurzen Haaren nach der Multiplikationsregel 0,47 · 0,61 ≈ 0,29."
+    </div>
+    <div class="quiz" id="quiz-stolperstelle"></div>
+    <p>Die Umrechnung 53&nbsp;% → 47&nbsp;% und 39&nbsp;% → 61&nbsp;% (Gegenereignis) ist richtig. Der Fehler liegt in der <strong>Multiplikationsregel</strong>: P(A∩B) = P(A) · P(B) gilt nur, wenn A und B <strong>unabhängig</strong> sind — das wurde hier nirgends gezeigt! Ohne diese Information kann der tatsächliche Anteil an Männern mit kurzen Haaren <strong>irgendein</strong> Wert zwischen 8&nbsp;% und 47&nbsp;% sein (nicht kleiner als 47&nbsp;%+61&nbsp;%−100&nbsp;%, nicht größer als das kleinere der beiden Merkmale) — 29&nbsp;% ist nur der Wert, der bei Unabhängigkeit herauskäme.</p>
+    <div class="wissen-box">
+      <span class="box-label">Ausblick: Mehr als zwei Ereignisse</span>
+      Sind drei Ereignisse A, B, C <strong>paarweise</strong> unabhängig (je zwei von ihnen erfüllen die Multiplikationsregel), folgt daraus <strong>nicht automatisch</strong>, dass auch P(A∩B∩C) = P(A)·P(B)·P(C) gilt. Klassisches Beispiel: Zwei faire Münzen werden geworfen. A: „1. Münze zeigt Kopf", B: „2. Münze zeigt Kopf", C: „beide Münzen zeigen dasselbe". Alle drei Paare sind unabhängig (je P = 1/4 = 1/2 · 1/2), aber P(A∩B∩C) = 1/4 ≠ 1/8 = P(A)·P(B)·P(C).
+    </div>
+  </section>
+
+  <!-- 5. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>5. Formelsammlung</h2>
+    <p>Alle Regeln dieses Lernpfads mit Beispielen und Visualisierungen auf zwei Seiten zusammengefasst — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 6. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>6. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite. Sie sind nach aufsteigendem Schwierigkeitsgrad sortiert.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 01 Wahrscheinlichkeitsrechnung</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
