@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bedingte Wahrscheinlichkeit</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">MSS 13</a><span class="sep">/</span>
+  <a href="../index.html">01 Wahrscheinlichkeitsrechnung</a><span class="sep">/</span>
+  2 Bedingte Wahrscheinlichkeit
+</nav>
+<header class="page-header">
+  <h1>Bedingte Wahrscheinlichkeit</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Fachbegriff, zeigt ihn an einer interaktiven Simulation und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Manchmal ändert sich eine Wahrscheinlichkeit, sobald man eine zusätzliche Information über den Ausgang eines Zufallsexperiments hat. Auf diesem Lernpfad lernst du:</p>
+    <ul class="lern-intro-list">
+      <li>was eine <span class="term">bedingte Wahrscheinlichkeit</span> P<sub>A</sub>(B) bedeutet und wie sie im Baumdiagramm eingezeichnet wird</li>
+      <li>wie man sie über die <span class="term">reduzierte Ergebnismenge</span> Ω<sub>A</sub> berechnet</li>
+      <li>wie man sie aus einer <span class="term">Vierfeldertafel</span> abliest — und dass die Reihenfolge (Zeile oder Spalte als Bedingung) einen Unterschied macht</li>
+      <li>die <span class="term">Formel</span> P<sub>A</sub>(B) = P(A∩B) / P(A), hergeleitet aus der Pfadmultiplikationsregel</li>
+      <li>einen typischen Fehler beim Aufstellen von Baumdiagrammen aus einer Vierfeldertafel zu erkennen und zu vermeiden</li>
+    </ul>
+    <p class="hinweis-box">💡 Arbeite die Abschnitte der Reihe nach durch. Probiere jedes Beispiel selbst aus, bevor du die Kontrollfrage beantwortest.</p>
+  </section>
+
+  <!-- 1. Bedingte Wahrscheinlichkeit am Baumdiagramm -->
+  <section class="card" id="sec-baum-bedingt">
+    <h2>1. Bedingte Wahrscheinlichkeit am Baumdiagramm</h2>
+    <p>Es ist bekannt, dass ca. 9&nbsp;% aller Männer und ca. 0,8&nbsp;% der Frauen unter einer Rot-Grün-Sehschwäche leiden. Weiter ist bekannt, dass ca. 51&nbsp;% aller Neugeborenen männlich sind.</p>
+    <p>Die erste Stufe des Baumdiagramms zeigt die Wahrscheinlichkeiten des Geschlechts. In der zweiten Stufe stehen die Wahrscheinlichkeiten dafür, dass eine Person eine Rot-Grün-Sehschwäche hat (Ereignis S) — <strong>abhängig vom Geschlecht</strong>. Man spricht deshalb von <span class="term">bedingten Wahrscheinlichkeiten</span> und schreibt P<sub>M</sub>(S) bzw. P<sub>W</sub>(S).</p>
+    <div class="definition-box">
+      <span class="box-label">Definition</span>
+      P<sub>A</sub>(B) ist die <strong>bedingte Wahrscheinlichkeit</strong>, dass das Ereignis B eintritt, <strong>unter der Bedingung</strong>, dass das Ereignis A bereits eingetreten ist.
+    </div>
+    <div class="widget">
+      <div id="tree-bedingt-mount"></div>
+      <p class="progress-note">Klicke auf ein Blatt (einen Pfad) im Baumdiagramm, um zu sehen, welche bedingte Wahrscheinlichkeit an dem zugehörigen zweiten Ast steht.</p>
+      <div id="tree-bedingt-explain" class="event-result">Klicke auf einen Pfad, um die Erklärung zu sehen.</div>
+    </div>
+    <div class="quiz" id="quiz-baum-bedingt"></div>
+  </section>
+
+  <!-- 2. Reduzierte Ergebnismenge -->
+  <section class="card" id="sec-reduziert">
+    <h2>2. Die reduzierte Ergebnismenge</h2>
+    <p>Dein Würfel ist unters Sofa gerollt. Du weißt nur: die geworfene Zahl gehört zu einem Ereignis A, das dir schon verraten wurde (z.&nbsp;B. „die Zahl ist gerade"). Das schränkt die Ergebnismenge Ω = {1, 2, 3, 4, 5, 6} auf die sogenannte <span class="term">reduzierte Ergebnismenge</span> Ω<sub>A</sub> = A ein — alle anderen Zahlen kommen gar nicht mehr in Frage.</p>
+    <p>Innerhalb dieser reduzierten Menge berechnet man die Wahrscheinlichkeit von B wie bei einem gewöhnlichen Laplace-Experiment: als Anteil der zu B gehörenden Ergebnisse an allen Ergebnissen von Ω<sub>A</sub>.</p>
+    <div class="formula-block">P<sub>A</sub>(B) = |A ∩ B| / |A|</div>
+    <p>Wähle unten selbst zwei Ereignisse: <strong>A</strong> (blau, die Bedingung — „das ist bereits bekannt") und <strong>B</strong> (grün, das Ereignis, dessen bedingte Wahrscheinlichkeit du berechnen willst). Eine Zahl kann zu keinem, einem oder beiden Ereignissen gehören.</p>
+    <div class="widget">
+      <p><strong>Ereignis A (Bedingung):</strong></p>
+      <div class="num-picker" id="picker-a"></div>
+      <p><strong>Ereignis B:</strong></p>
+      <div class="num-picker" id="picker-b"></div>
+      <div class="event-result" id="reduziert-out"></div>
+    </div>
+    <div class="quiz" id="quiz-reduziert"></div>
+  </section>
+
+  <!-- 3. Vierfeldertafel -->
+  <section class="card" id="sec-vft-bedingt">
+    <h2>3. Bedingte Wahrscheinlichkeit aus der Vierfeldertafel</h2>
+    <p>In einer Umfrage wurden Personen aus zwei Altersgruppen befragt, ob sie Mobile-Banking nutzen. Klicke unten auf eine beliebige Zelle der Vierfeldertafel — du bekommst die bedingte Wahrscheinlichkeit in <strong>beiden</strong> Richtungen angezeigt: einmal mit der Zeile als Bedingung, einmal mit der Spalte als Bedingung. Beachte: Die beiden Werte sind in der Regel <strong>nicht</strong> gleich groß!</p>
+    <div class="formula-block">P<sub>B</sub>(A) = |A ∩ B| / |B|</div>
+    <div class="widget">
+      <div id="vft-bedingt-mount"></div>
+      <div id="vft-bedingt-explain" class="event-result">Klicke auf eine Zelle der Tafel, um die Rechnung zu sehen.</div>
+    </div>
+    <div class="quiz" id="quiz-vft-bedingt"></div>
+  </section>
+
+  <!-- 4. Formel -->
+  <section class="card" id="sec-formel">
+    <h2>4. Die Formel für die bedingte Wahrscheinlichkeit</h2>
+    <p>Statt ein Baumdiagramm zu zeichnen oder eine Vierfeldertafel zu nutzen, lässt sich die bedingte Wahrscheinlichkeit auch direkt mit einer Formel berechnen. Sie folgt aus der Pfadmultiplikationsregel:</p>
+    <div class="widget">
+      <p>Für den Pfad „männlich → Sehschwäche" aus Abschnitt 1 gilt nach der Pfadmultiplikationsregel:</p>
+      <div class="formula-block">P(M) · P<sub>M</sub>(S) = P(M ∩ S)</div>
+      <p>Löst man diese Gleichung nach P<sub>M</sub>(S) auf (division durch P(M) auf beiden Seiten):</p>
+      <div class="formula-block">P<sub>M</sub>(S) = P(M ∩ S) / P(M) = 4,59&nbsp;% / 51&nbsp;% = 0,0459 / 0,51 = 0,09 (9&nbsp;%)</div>
+      <p class="progress-note">Das ist genau der Wert, den wir in Abschnitt 1 schon direkt am zweiten Ast abgelesen hatten — die Formel liefert also dasselbe Ergebnis wie das Baumdiagramm.</p>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Wissen</span>
+      Für die bedingte Wahrscheinlichkeit gilt allgemein: P<sub>A</sub>(B) = P(A ∩ B) / P(A) mit P(A) &gt; 0.
+    </div>
+    <p>Diese Formel gilt sowohl mit relativen Häufigkeiten (Wahrscheinlichkeiten) als auch mit absoluten Häufigkeiten — dann steht in Zähler und Nenner statt P(...) jeweils die Anzahl |...|, wie in Abschnitt&nbsp;2 und 3.</p>
+    <p>In der Vierfeldertafel und im Baumdiagramm sieht das allgemein so aus:</p>
+    <div class="widget-row">
+      <div class="widget-col">
+        <p style="text-align:center"><strong>Allgemeine Vierfeldertafel</strong></p>
+        <table class="vft-table">
+          <tr><th></th><th>B</th><th>B̄</th><th class="vft-gesamt">gesamt</th></tr>
+          <tr><th>A</th><td class="vft-cell">P(A∩B)</td><td class="vft-cell">P(A∩B̄)</td><td class="vft-gesamt">P(A)</td></tr>
+          <tr><th>Ā</th><td class="vft-cell">P(Ā∩B)</td><td class="vft-cell">P(Ā∩B̄)</td><td class="vft-gesamt">P(Ā)</td></tr>
+          <tr><th class="vft-gesamt">gesamt</th><td class="vft-gesamt">P(B)</td><td class="vft-gesamt">P(B̄)</td><td class="vft-gesamt">1</td></tr>
+        </table>
+      </div>
+      <div class="widget-col">
+        <p style="text-align:center"><strong>Zugehöriges Baumdiagramm (1. Stufe: A/Ā)</strong></p>
+        <p style="text-align:center">Die bedingten Wahrscheinlichkeiten P<sub>A</sub>(B), P<sub>A</sub>(B̄), P<sub>Ā</sub>(B), P<sub>Ā</sub>(B̄) stehen an den Ästen der <strong>zweiten Stufe</strong> — genau wie beim Geschlecht/Sehschwäche-Beispiel oben.</p>
+      </div>
+    </div>
+    <div class="quiz" id="quiz-formel"></div>
+  </section>
+
+  <!-- 5. Stolperstelle -->
+  <section class="card" id="sec-stolperstelle">
+    <h2>5. Stolperstelle: Baumdiagramm aus einer Vierfeldertafel</h2>
+    <p>Die Vierfeldertafel zeigt die Ergebnisse einer Befragung zu Rauchen und Bronchitis (in Prozent):</p>
+    <table class="vft-table" style="max-width:420px;margin:0.5rem auto">
+      <tr><th></th><th>Bronchitis</th><th>keine Br.</th><th class="vft-gesamt">gesamt</th></tr>
+      <tr><th>Raucher</th><td class="vft-cell">40&nbsp;%</td><td class="vft-cell">10&nbsp;%</td><td class="vft-gesamt">50&nbsp;%</td></tr>
+      <tr><th>Nichtr.</th><td class="vft-cell">6&nbsp;%</td><td class="vft-cell">44&nbsp;%</td><td class="vft-gesamt">50&nbsp;%</td></tr>
+      <tr><th class="vft-gesamt">gesamt</th><td class="vft-gesamt">46&nbsp;%</td><td class="vft-gesamt">54&nbsp;%</td><td class="vft-gesamt">100&nbsp;%</td></tr>
+    </table>
+    <p>Leon hat daraus dieses Baumdiagramm erstellt:</p>
+    <div class="widget">
+      <div id="tree-leon-wrong-mount"></div>
+      <p class="progress-note">Schau dir die zweite Stufe genau an — was fällt dir auf, wenn du die beiden Astwahrscheinlichkeiten pro Knoten addierst?</p>
+    </div>
+    <div class="quiz" id="quiz-stolperstelle"></div>
+    <p>So sieht das <strong>richtige</strong> Baumdiagramm aus — die zweite Stufe zeigt bedingte Wahrscheinlichkeiten (Zellenwert ÷ Zeilensumme), nicht die Zellenwerte selbst:</p>
+    <div class="widget">
+      <div id="tree-leon-correct-mount"></div>
+    </div>
+  </section>
+
+  <!-- 6. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>6. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite. Sie sind nach aufsteigendem Schwierigkeitsgrad sortiert.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 01 Wahrscheinlichkeitsrechnung</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
