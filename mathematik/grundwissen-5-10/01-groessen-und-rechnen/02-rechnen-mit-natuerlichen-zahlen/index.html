@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rechnen mit natürlichen Zahlen</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">1 Größen und Rechnen</a><span class="sep">/</span>
+  2 Rechnen mit natürlichen Zahlen
+</nav>
+<header class="page-header">
+  <h1>Rechnen mit natürlichen Zahlen</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Auf diesem Lernpfad wiederholst und vertiefst du das Grundwissen zum Rechnen mit natürlichen Zahlen. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>die <span class="term">Rechengesetze</span> (Kommutativ-, Assoziativ- und Distributivgesetz) anwenden</li>
+      <li>Terme nach der <span class="term">Rangfolge der Rechenarten</span> (Klammern, Punkt vor Strich) korrekt auswerten</li>
+      <li>Zahlen <span class="term">schriftlich addieren und subtrahieren</span> — mit Übertrag bzw. Entbündeln</li>
+      <li>Zahlen <span class="term">schriftlich multiplizieren</span></li>
+      <li>eine <span class="term">Division mit Rest</span> durchführen</li>
+    </ul>
+    <p class="hinweis-box">💡 Arbeite die Abschnitte der Reihe nach durch. Die Rangfolge aus Abschnitt 2 brauchst du in jedem längeren Term — auch bei den schriftlichen Rechenverfahren in Abschnitt 3-5.</p>
+  </section>
+
+  <!-- 1. Rechengesetze -->
+  <section class="card" id="sec-rechengesetze">
+    <h2>1. Die Rechengesetze</h2>
+    <p>Beim Rechnen mit natürlichen Zahlen gelten drei Grundgesetze:</p>
+    <div class="definition-box">
+      <span class="box-label">Definition</span>
+      <strong>Kommutativgesetz:</strong> a + b = b + a und a · b = b · a (die Reihenfolge spielt keine Rolle).<br>
+      <strong>Assoziativgesetz:</strong> (a + b) + c = a + (b + c) und (a · b) · c = a · (b · c) (die Klammersetzung spielt keine Rolle).<br>
+      <strong>Distributivgesetz:</strong> a · (b + c) = a · b + a · c (ausmultiplizieren/ausklammern).
+    </div>
+    <p>Das Distributivgesetz lässt sich als Rechteck-Flächenmodell anschaulich machen: Ein Rechteck mit den Seiten a und (b + c) hat denselben Flächeninhalt wie zwei nebeneinanderliegende Rechtecke a·b und a·c. Probiere es aus:</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a = <input type="number" id="dist-a" value="4" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label>b = <input type="number" id="dist-b" value="3" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label>c = <input type="number" id="dist-c" value="5" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <div id="dist-mount"></div>
+      <div id="dist-formel" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-rechengesetze"></div>
+  </section>
+
+  <!-- 2. Rangfolge -->
+  <section class="card" id="sec-rangfolge">
+    <h2>2. Rangfolge der Rechenoperationen</h2>
+    <p>Kommen in einem Term mehrere Rechenarten vor, wird nicht einfach von links nach rechts gerechnet — es gilt eine feste Rangfolge:</p>
+    <div class="wissen-box">
+      <span class="box-label">Rangfolge</span>
+      1. Klammern zuerst. 2. Punktrechnung (· und :) vor Strichrechnung (+ und −). 3. Bei gleichem Rang von links nach rechts.
+    </div>
+    <p>Wähle drei Zahlen — vergleiche, wie sich das Ergebnis mit und ohne Klammern unterscheidet:</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a = <input type="number" id="rang-a" value="2" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label>b = <input type="number" id="rang-b" value="3" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label>c = <input type="number" id="rang-c" value="4" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <div id="rang-mount"></div>
+    </div>
+    <div class="quiz" id="quiz-rangfolge"></div>
+  </section>
+
+  <!-- 3. Schriftliche Addition und Subtraktion -->
+  <section class="card" id="sec-schriftlich-addition">
+    <h2>3. Schriftliche Addition und Subtraktion</h2>
+    <p>Bei der <span class="term">schriftlichen Addition</span> werden die Zahlen stellengerecht untereinandergeschrieben und spaltenweise von rechts nach links addiert. Ist eine Spaltensumme 10 oder mehr, wird ein <span class="term">Übertrag</span> in die nächste Spalte notiert.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <input type="number" id="add-a" value="4837" min="0" max="99999" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <span style="align-self:center">+</span>
+        <input type="number" id="add-b" value="2695" min="0" max="99999" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+      </div>
+      <div class="schriftlich-wrap" id="add-mount"></div>
+    </div>
+    <p>Bei der <span class="term">schriftlichen Subtraktion</span> wird spaltenweise subtrahiert. Reicht eine Ziffer nicht aus, wird von der nächsten Spalte <span class="term">entbündelt</span> (10 dazugeliehen, in der Nachbarspalte als −1 vermerkt).</p>
+    <div class="widget">
+      <div class="btn-row">
+        <input type="number" id="sub-a" value="8043" min="0" max="99999" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <span style="align-self:center">−</span>
+        <input type="number" id="sub-b" value="2758" min="0" max="99999" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+      </div>
+      <div class="schriftlich-wrap" id="sub-mount"></div>
+      <p class="progress-note" id="sub-hinweis"></p>
+    </div>
+    <div class="quiz" id="quiz-schriftlich-addition"></div>
+  </section>
+
+  <!-- 4. Schriftliche Multiplikation -->
+  <section class="card" id="sec-schriftlich-multiplikation">
+    <h2>4. Schriftliche Multiplikation</h2>
+    <p>Bei der schriftlichen Multiplikation mit einer einstelligen Zahl wird jede Ziffer von rechts nach links mit dem Faktor multipliziert; ist das Teilprodukt 10 oder mehr, wird auch hier ein Übertrag notiert.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <input type="number" id="mul-a" value="3247" min="0" max="99999" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <span style="align-self:center">·</span>
+        <input type="number" id="mul-b" value="6" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+      </div>
+      <div class="schriftlich-wrap" id="mul-mount"></div>
+      <p class="progress-note">Bei einem mehrstelligen zweiten Faktor (z.&nbsp;B. 234 · 56) berechnet man mehrere Teilprodukte (234 · 6 und 234 · 50) und addiert sie — siehe Formelsammlung.</p>
+    </div>
+    <div class="quiz" id="quiz-schriftlich-multiplikation"></div>
+  </section>
+
+  <!-- 5. Division mit Rest -->
+  <section class="card" id="sec-division">
+    <h2>5. Division mit Rest</h2>
+    <p>Geht eine Division nicht ohne Rest auf, bleibt ein <span class="term">Rest</span> übrig, der kleiner als der Divisor ist. Es gilt immer die Umkehrprobe:</p>
+    <div class="formula-block">Dividend : Divisor = Quotient Rest r, mit Divisor · Quotient + r = Dividend und 0 ≤ r &lt; Divisor</div>
+    <div class="widget">
+      <div class="btn-row">
+        <input type="number" id="div-a" value="47" min="0" max="99999" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <span style="align-self:center">:</span>
+        <input type="number" id="div-b" value="6" min="1" max="999" style="width:5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+      </div>
+      <div id="div-ergebnis" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-division"></div>
+  </section>
+
+  <!-- 6. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>6. Formelsammlung</h2>
+    <p>Alle Regeln dieses Lernpfads mit Beispielen und Visualisierungen auf zwei Seiten zusammengefasst — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 7. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>7. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 1 Größen und Rechnen</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
