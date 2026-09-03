@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brüche und Dezimalzahlen addieren und subtrahieren</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">1 Größen und Rechnen</a><span class="sep">/</span>
+  4 Addieren und Subtrahieren
+</nav>
+<header class="page-header">
+  <h1>Brüche und Dezimalzahlen addieren und subtrahieren</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Beide Rechenarten folgen <strong>derselben Grundregel</strong>: Addiert und subtrahiert wird nur, was <em>gleichnamig</em> ist — also Teile derselben Größe. Bei Brüchen heißt das „gleicher Nenner“, bei Dezimalzahlen „gleicher Stellenwert“. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li><span class="term">gleichnamige Brüche</span> addieren und subtrahieren</li>
+      <li><span class="term">ungleichnamige Brüche</span> über den Hauptnenner zusammenfassen</li>
+      <li>mit <span class="term">gemischten Zahlen</span> rechnen — auch wenn dabei umgewandelt werden muss</li>
+      <li>Dezimalzahlen <span class="term">schriftlich</span> addieren und subtrahieren (Komma unter Komma)</li>
+      <li>ein Ergebnis mit einem <span class="term">Überschlag</span> auf Plausibilität prüfen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../03-brueche-und-dezimalzahlen/index.html">Thema 3</a> das Erweitern, Kürzen und den Hauptnenner. Falls das noch wackelt, geh kurz zurück.</p>
+  </section>
+
+  <!-- 1. Gleichnamige Brüche -->
+  <section class="card" id="sec-gleichnamig">
+    <h2>1. Gleichnamige Brüche addieren und subtrahieren</h2>
+    <p>Haben zwei Brüche <strong>denselben Nenner</strong>, sind ihre Teile gleich groß — dann kann man sie einfach zusammenzählen, so wie man 3 Äpfel und 2 Äpfel zu 5 Äpfeln zusammenzählt.</p>
+    <div class="wissen-box">
+      <span class="box-label">Regel</span>
+      Gleichnamige Brüche werden addiert bzw. subtrahiert, indem man <strong>nur die Zähler</strong> addiert bzw. subtrahiert. Der <strong>Nenner bleibt unverändert</strong>. Zum Schluss wird das Ergebnis vollständig gekürzt.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der häufigste Bruchrechenfehler überhaupt</span>
+      Die Nenner dürfen <strong>nicht</strong> mit addiert werden. Der Nenner sagt ja nur, <em>wie die Teile heißen</em> — und die ändern sich beim Zusammenlegen nicht.
+      <div class="falsch-richtig">
+        <div class="fr-falsch">
+          <div class="fr-kopf">✗ falsch</div>
+          <span class="bruch"><span class="z">1</span><span class="n">4</span></span> + <span class="bruch"><span class="z">1</span><span class="n">4</span></span> = <span class="bruch"><span class="z">2</span><span class="n">8</span></span> = <span class="bruch"><span class="z">1</span><span class="n">4</span></span><br>
+          <span style="font-size:0.86rem">Ein Viertel plus ein Viertel wäre dann so viel wie ein Viertel — offensichtlich Unsinn.</span>
+        </div>
+        <div class="fr-richtig">
+          <div class="fr-kopf">✓ richtig</div>
+          <span class="bruch"><span class="z">1</span><span class="n">4</span></span> + <span class="bruch"><span class="z">1</span><span class="n">4</span></span> = <span class="bruch"><span class="z">2</span><span class="n">4</span></span> = <span class="bruch"><span class="z">1</span><span class="n">2</span></span><br>
+          <span style="font-size:0.86rem">Zwei von vier Vierteln sind zusammen die Hälfte.</span>
+        </div>
+      </div>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label><input type="number" id="gn-z1" value="1" min="0" max="20" style="width:3.6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <select id="gn-op" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <option value="add">+</option>
+          <option value="sub">−</option>
+        </select>
+        <label><input type="number" id="gn-z2" value="1" min="0" max="20" style="width:3.6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label>bei gemeinsamem Nenner <input type="number" id="gn-n" value="4" min="1" max="20" style="width:3.6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <div id="gn-mount" class="summe-viz"></div>
+      <div id="gn-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-gleichnamig"></div>
+  </section>
+
+  <!-- 2. Ungleichnamige Brüche -->
+  <section class="card" id="sec-ungleichnamig">
+    <h2>2. Ungleichnamige Brüche</h2>
+    <p>Sind die Nenner <strong>verschieden</strong>, sind auch die Teile verschieden groß — sie lassen sich nicht direkt zusammenzählen. Man muss sie erst auf eine <strong>gemeinsame Teilegröße</strong> bringen.</p>
+    <div class="wissen-box">
+      <span class="box-label">Vorgehen in vier Schritten</span>
+      ① <strong>Hauptnenner</strong> bestimmen: das kgV der beiden Nenner.<br>
+      ② beide Brüche auf diesen Nenner <a href="../03-brueche-und-dezimalzahlen/index.html#sec-erweitern">erweitern</a>.<br>
+      ③ jetzt sind sie gleichnamig — Zähler addieren bzw. subtrahieren, Nenner bleibt.<br>
+      ④ Ergebnis <strong>vollständig kürzen</strong> (und bei einem unechten Bruch ggf. als gemischte Zahl schreiben).
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label><input type="number" id="un-z1" value="1" min="0" max="20" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
+        <input type="number" id="un-n1" value="2" min="1" max="20" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <select id="un-op" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <option value="add">+</option>
+          <option value="sub">−</option>
+        </select>
+        <label><input type="number" id="un-z2" value="1" min="0" max="20" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
+        <input type="number" id="un-n2" value="3" min="1" max="20" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <div id="un-mount" class="summe-viz"></div>
+      <div id="un-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-ungleichnamig"></div>
+  </section>
+
+  <!-- 3. Gemischte Zahlen -->
+  <section class="card" id="sec-gemischt">
+    <h2>3. Gemischte Zahlen</h2>
+    <p>Bei gemischten Zahlen rechnet man Ganze und Brüche getrennt. Heikel wird es, wenn der Bruchteil beim Addieren <strong>über ein Ganzes hinauswächst</strong> oder beim Subtrahieren <strong>nicht ausreicht</strong> — dann muss ein Ganzes umgewandelt werden.</p>
+    <div class="wissen-box">
+      <span class="box-label">Sicherer Weg</span>
+      Wandle beide gemischten Zahlen zuerst in <strong>unechte Brüche</strong> um (ganze&nbsp;·&nbsp;Nenner&nbsp;+&nbsp;Zähler), rechne dann wie in Abschnitt&nbsp;2 und wandle das Ergebnis am Ende zurück. So kann beim Übertrag nichts schiefgehen.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Entbündeln bei Brüchen</span>
+      Reicht der Bruchteil beim Subtrahieren nicht aus, wird <strong>ein Ganzes in Bruchteile zerlegt</strong> — genau wie beim <a href="../02-rechnen-mit-natuerlichen-zahlen/index.html#sec-schriftlich-addition">Entbündeln</a> im Stellenwertsystem.<br>
+      Beispiel: 3<span class="bruch"><span class="z">1</span><span class="n">4</span></span> − 1<span class="bruch"><span class="z">3</span><span class="n">4</span></span>. Ein Viertel minus drei Viertel geht nicht — also ein Ganzes zerlegen: 3<span class="bruch"><span class="z">1</span><span class="n">4</span></span> = 2<span class="bruch"><span class="z">5</span><span class="n">4</span></span>. Jetzt geht es: 2<span class="bruch"><span class="z">5</span><span class="n">4</span></span> − 1<span class="bruch"><span class="z">3</span><span class="n">4</span></span> = 1<span class="bruch"><span class="z">2</span><span class="n">4</span></span> = 1<span class="bruch"><span class="z">1</span><span class="n">2</span></span>.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label><input type="number" id="gm-g1" value="3" min="0" max="20" style="width:3.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="number" id="gm-z1" value="1" min="0" max="20" style="width:3.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
+        <input type="number" id="gm-n1" value="4" min="1" max="20" style="width:3.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <select id="gm-op" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <option value="sub">−</option>
+          <option value="add">+</option>
+        </select>
+        <label><input type="number" id="gm-g2" value="1" min="0" max="20" style="width:3.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="number" id="gm-z2" value="3" min="0" max="20" style="width:3.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
+        <input type="number" id="gm-n2" value="4" min="1" max="20" style="width:3.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <div id="gm-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-gemischt"></div>
+  </section>
+
+  <!-- 4. Dezimalzahlen schriftlich -->
+  <section class="card" id="sec-dezimal">
+    <h2>4. Dezimalzahlen schriftlich addieren und subtrahieren</h2>
+    <p>Es gilt dasselbe Prinzip wie bei den Brüchen — nur heißt „gleichnamig“ hier <strong>gleicher Stellenwert</strong>. Zehntel dürfen nur zu Zehnteln addiert werden, Hundertstel nur zu Hundertsteln.</p>
+    <div class="wissen-box">
+      <span class="box-label">Regel</span>
+      <strong>Komma unter Komma</strong> schreiben — dann stehen automatisch alle Stellenwerte untereinander. Fehlende Nachkommastellen mit <strong>Nullen auffüllen</strong>. Danach rechnet man Spalte für Spalte wie bei natürlichen Zahlen; das Komma wird ins Ergebnis übernommen.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — nicht rechtsbündig untereinanderschreiben</span>
+      Wer die Zahlen einfach rechtsbündig untereinanderschreibt, addiert Zehntel zu Hundertsteln und bekommt Unsinn.
+      <div class="falsch-richtig">
+        <div class="fr-falsch">
+          <div class="fr-kopf">✗ falsch (rechtsbündig)</div>
+          <code style="font-family:ui-monospace,monospace;white-space:pre">  2,5
++ 0,25
+──────</code><br>
+          <span style="font-size:0.86rem">Hier stünde die 5 (ein Zehntel) über der 5 (ein Hundertstel).</span>
+        </div>
+        <div class="fr-richtig">
+          <div class="fr-kopf">✓ richtig (Komma unter Komma)</div>
+          <code style="font-family:ui-monospace,monospace;white-space:pre"> 2,50
++0,25
+─────
+ 2,75</code><br>
+          <span style="font-size:0.86rem">2,5 wird zu 2,50 aufgefüllt — der Wert ändert sich dadurch nicht.</span>
+        </div>
+      </div>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <input type="text" id="dz-a" value="24,7" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <select id="dz-op" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <option value="add">+</option>
+          <option value="sub">−</option>
+        </select>
+        <input type="text" id="dz-b" value="8,35" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+      </div>
+      <div class="schriftlich-wrap" id="dz-mount"></div>
+      <div id="dz-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-dezimal"></div>
+  </section>
+
+  <!-- 5. Überschlag und Probe -->
+  <section class="card" id="sec-kontrolle">
+    <h2>5. Überschlag und Probe</h2>
+    <p>Ein Ergebnis, das man nicht geprüft hat, ist nur ein Vorschlag. Zwei Kontrollen kosten wenige Sekunden:</p>
+    <div class="wissen-box">
+      <span class="box-label">Zwei Kontrollen</span>
+      <strong>Überschlag:</strong> Runde beide Zahlen grob und rechne im Kopf. Bei Brüchen hilft der Vergleich mit 0, <span class="bruch"><span class="z">1</span><span class="n">2</span></span> und 1.<br>
+      <strong>Probe:</strong> Addition und Subtraktion sind <a href="../02-rechnen-mit-natuerlichen-zahlen/index.html#sec-vernetzung">Umkehroperationen</a>. Rechne das Ergebnis zurück — kommt der Ausgangswert heraus, stimmt es.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label><input type="number" id="ko-z1" value="3" min="0" max="30" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
+        <input type="number" id="ko-n1" value="5" min="1" max="30" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <span style="align-self:center">+</span>
+        <label><input type="number" id="ko-z2" value="5" min="0" max="30" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
+        <input type="number" id="ko-n2" value="6" min="1" max="30" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <div id="ko-mount" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-kontrolle"></div>
+  </section>
+
+  <!-- 6. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>6. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Die eine Idee hinter allem:</strong> Addiert wird nur Gleichnamiges. Bei Brüchen ist das der gemeinsame Nenner, bei Dezimalzahlen der gemeinsame Stellenwert, bei <a href="../01-natuerliche-zahlen-und-groessen/index.html#sec-groessen">Größen</a> die gemeinsame Einheit. Drei Erscheinungsformen derselben Regel.</li>
+      <li><strong>Baut auf:</strong> <a href="../03-brueche-und-dezimalzahlen/index.html#sec-erweitern">Erweitern und Kürzen</a> sowie den <a href="../03-brueche-und-dezimalzahlen/index.html#sec-vergleichen">Hauptnenner</a> — ohne sie geht bei ungleichnamigen Brüchen nichts.</li>
+      <li><strong>Baut auf:</strong> <a href="../02-rechnen-mit-natuerlichen-zahlen/index.html#sec-schriftlich-addition">Schriftliche Addition und Subtraktion</a> — bei Dezimalzahlen ist das Verfahren identisch, es kommt nur das Komma dazu.</li>
+      <li><strong>Entbündeln kehrt wieder:</strong> Ein Ganzes in Bruchteile zerlegen ist derselbe Gedanke wie 1 Zehner in 10 Einer zu zerlegen.</li>
+      <li><strong>Führt weiter zu:</strong> Beim Zusammenfassen von Termen gilt genau dieselbe Bedingung — nur <em>gleichartige</em> Glieder dürfen addiert werden (3a + 5a = 8a, aber 3a + 5b bleibt stehen).</li>
+      <li><strong>Führt weiter zu:</strong> Das Lösen von Gleichungen beruht darauf, auf beiden Seiten dasselbe zu addieren oder zu subtrahieren — die Umkehroperation aus der Probe wird dort zum Werkzeug.</li>
+    </ul>
+  </section>
+
+  <!-- 7. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>7. Formelsammlung</h2>
+    <p>Alle Regeln dieses Lernpfads mit Beispielen und Visualisierungen auf zwei Seiten zusammengefasst — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 8. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>8. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Brüche gibst du in der Form <code>3/4</code> ein, Dezimalzahlen mit Komma (<code>0,75</code>). Wo ein Bruch verlangt ist, muss er <strong>vollständig gekürzt</strong> sein.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 1 Größen und Rechnen</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>

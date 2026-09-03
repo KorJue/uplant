@@ -1,0 +1,394 @@
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  margin-bottom: 1.5rem;
+}
+.card h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+.card h3 {
+  font-size: 1.05rem;
+  margin: 1.5rem 0 0.6rem;
+  color: var(--accent-dark);
+}
+.card h3:first-of-type { margin-top: 0.5rem; }
+
+.lern-intro-list {
+  margin: 0.75rem 0 0;
+  padding-left: 1.3rem;
+}
+.lern-intro-list li { margin-bottom: 0.3rem; }
+
+.term {
+  font-weight: 700;
+  color: var(--accent-dark);
+}
+
+.hinweis-box {
+  background: var(--bg);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin: 0.9rem 0;
+  font-size: 0.92rem;
+}
+
+/* ---------- Widget-Rahmen ---------- */
+
+.widget {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 1rem 0;
+  background: var(--bg);
+}
+.widget-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.widget-col { flex: 1 1 260px; min-width: 240px; }
+
+.btn {
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  font-family: inherit;
+}
+.btn:hover { border-color: var(--accent); }
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--accent-dark); }
+.btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.75rem 0; }
+
+/* ---------- Ergebnisanzeige ---------- */
+
+.event-result {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+  margin-top: 0.5rem;
+  font-family: "Cambria Math", Cambria, serif;
+}
+
+/* ---------- Quiz ---------- */
+
+.quiz {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1.1rem 0 0.5rem;
+}
+.quiz-q { font-weight: 700; margin: 0 0 0.6rem; }
+.quiz-options { display: flex; flex-direction: column; gap: 0.5rem; }
+.quiz-opt {
+  text-align: left;
+  padding: 0.55rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.94rem;
+}
+.quiz-opt:hover { border-color: var(--accent); }
+.quiz-opt.correct { border-color: #157347; background: #e7f6ec; color: #157347; font-weight: 700; }
+.quiz-opt.wrong { border-color: #b3261e; background: #fdecec; color: #b3261e; font-weight: 700; }
+:root[data-theme="dark"] .quiz-opt.correct { background: #17321f; color: #6fd68f; border-color: #6fd68f; }
+:root[data-theme="dark"] .quiz-opt.wrong { background: #3a1f1f; color: #ff8a8a; border-color: #ff8a8a; }
+.quiz-feedback { margin-top: 0.6rem; font-size: 0.9rem; }
+.quiz-feedback.ok { color: #157347; }
+.quiz-feedback.err { color: #b3261e; }
+:root[data-theme="dark"] .quiz-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .quiz-feedback.err { color: #ff8a8a; }
+
+/* ---------- Übungsaufgaben ---------- */
+
+.exercise {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1rem 0;
+}
+.exercise h3 { margin-top: 0; }
+.exercise-input-row { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; margin-top: 0.6rem; }
+.exercise-input-row input {
+  width: 11rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: var(--card-bg);
+  color: var(--text);
+}
+.exercise-feedback { margin-top: 0.6rem; font-size: 0.92rem; font-weight: 600; }
+.exercise-feedback.ok { color: #157347; }
+.exercise-feedback.err { color: #b3261e; }
+:root[data-theme="dark"] .exercise-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .exercise-feedback.err { color: #ff8a8a; }
+
+.formula-block {
+  font-family: "Cambria Math", Cambria, "STIX Two Math", serif;
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  margin: 0.5rem 0;
+  overflow-x: auto;
+}
+
+.progress-note {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+
+/* ---------- Definition / Wissen / Beispiel — farbige Merkboxen wie im Lehrbuch ---------- */
+
+.definition-box, .wissen-box, .beispiel-box {
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin: 0.9rem 0;
+}
+.definition-box .box-label, .wissen-box .box-label, .beispiel-box .box-label {
+  display: block;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+.definition-box, .wissen-box {
+  background: #fdecec;
+  border-left: 4px solid #b3261e;
+}
+.definition-box .box-label, .wissen-box .box-label { color: #b3261e; }
+:root[data-theme="dark"] .definition-box, :root[data-theme="dark"] .wissen-box { background: #3a1f1f; }
+:root[data-theme="dark"] .definition-box .box-label, :root[data-theme="dark"] .wissen-box .box-label { color: #ff8a8a; }
+.beispiel-box {
+  background: #e7f6ec;
+  border-left: 4px solid #157347;
+}
+.beispiel-box .box-label { color: #157347; }
+:root[data-theme="dark"] .beispiel-box { background: #17321f; }
+:root[data-theme="dark"] .beispiel-box .box-label { color: #6fd68f; }
+
+/* ---------- Gestaffelte Übungsaufgaben (Reiter Mittel/Schwierig/Komplex) ---------- */
+
+.schwierigkeit-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  margin-left: 0.6rem;
+  vertical-align: middle;
+}
+.schwierigkeit-badge.einfach { background: #e7f6ec; color: #157347; }
+.schwierigkeit-badge.mittel { background: #eef2ff; color: #1d4ed8; }
+.schwierigkeit-badge.schwierig { background: #fff4e0; color: #b3650a; }
+.schwierigkeit-badge.komplex { background: #fdecec; color: #b3261e; }
+:root[data-theme="dark"] .schwierigkeit-badge.einfach { background: #17321f; color: #6fd68f; }
+:root[data-theme="dark"] .schwierigkeit-badge.mittel { background: #1e2a4a; color: #93a9ff; }
+:root[data-theme="dark"] .schwierigkeit-badge.schwierig { background: #3a2a10; color: #ffbf6e; }
+:root[data-theme="dark"] .schwierigkeit-badge.komplex { background: #3a1f1f; color: #ff8a8a; }
+
+.schwierigkeit-tabs { display: flex; gap: 0.4rem; margin: 1rem 0 0; flex-wrap: wrap; }
+.schwierigkeit-tabs button {
+  padding: 0.5rem 1rem;
+  border-radius: 8px 8px 0 0;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+.schwierigkeit-tabs button.active { background: var(--card-bg); color: var(--text); border-color: var(--accent); }
+.schwierigkeit-tab-panel { border: 1px solid var(--border); border-radius: 0 10px 10px 10px; padding: 0; margin-bottom: 1rem; }
+.schwierigkeit-tab-panel .aufgabe-box { border: none; margin: 0; }
+
+.aufgabe-box {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1rem 0;
+}
+.aufgabe-box h3 { margin: 0 0 0.5rem; display: flex; align-items: center; flex-wrap: wrap; }
+.aufgabe-box .aufgabe-prompt { margin: 0.5rem 0; }
+.aufgabe-box .btn-row { margin-top: 0.5rem; }
+.aufgabe-feedback { margin-top: 0.7rem; font-size: 0.92rem; }
+.aufgabe-feedback .status { font-weight: 700; margin-bottom: 0.3rem; }
+.aufgabe-feedback .status.ok { color: #157347; }
+.aufgabe-feedback .status.err { color: #b3261e; }
+:root[data-theme="dark"] .aufgabe-feedback .status.ok { color: #6fd68f; }
+:root[data-theme="dark"] .aufgabe-feedback .status.err { color: #ff8a8a; }
+.musterloesung {
+  background: var(--bg);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.7rem 0.9rem;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.musterloesung .ml-label { font-weight: 700; color: var(--accent-dark); display: block; margin-bottom: 0.3rem; }
+
+/* ---------- Achtung-Box: typische Fehlvorstellungen ---------- */
+
+.achtung-box {
+  background: #fff4e0;
+  border-left: 4px solid #b3650a;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin: 0.9rem 0;
+}
+.achtung-box .box-label {
+  display: block;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+  color: #b3650a;
+}
+:root[data-theme="dark"] .achtung-box { background: #3a2a10; }
+:root[data-theme="dark"] .achtung-box .box-label { color: #ffbf6e; }
+
+/* ---------- Innermathematische Vernetzung ---------- */
+
+.vernetzung-liste { list-style: none; padding: 0; margin: 0.75rem 0 0; }
+.vernetzung-liste li {
+  padding: 0.6rem 0.85rem;
+  border-left: 3px solid var(--accent);
+  background: var(--bg);
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 0.5rem;
+  font-size: 0.94rem;
+}
+.vernetzung-liste a { font-weight: 700; }
+
+
+/* ---------- Bruchdarstellung ---------- */
+
+/* Echter Bruchstrich statt "3/4": Zähler über Nenner, damit die Notation der aus dem Buch
+   entspricht und Zähler/Nenner auch optisch als Bestandteile eines Terms erkennbar sind. */
+.bruch {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: middle;
+  margin: 0 0.18em;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+.bruch .z { padding: 0 0.3em; border-bottom: 2px solid currentColor; }
+.bruch .n { padding: 0 0.3em; }
+.bruch.gross { font-size: 1.3rem; font-weight: 700; }
+.bruch-zaehler-farbe { color: #2563eb; }
+.bruch-nenner-farbe { color: #1a9e7a; }
+
+.bruch-viz { display: flex; justify-content: center; gap: 1.6rem; flex-wrap: wrap; margin: 1rem 0; align-items: center; }
+/* Beim Erweitern stehen die Balken ÜBEREINANDER: nur so sieht man auf einen Blick, dass die
+   gefärbte Länge identisch ist und sich nur die Unterteilung ändert. */
+.bruch-viz.gestapelt { flex-direction: column; gap: 0.6rem; }
+.bruch-viz svg { max-width: 100%; height: auto; }
+.anteil-teil { fill: #2563eb; fill-opacity: 0.3; stroke: #2563eb; stroke-width: 1.2; }
+.anteil-rest { fill: var(--card-bg); stroke: var(--muted); stroke-width: 1.2; }
+.anteil-teil-b { fill: #1a9e7a; fill-opacity: 0.3; stroke: #1a9e7a; stroke-width: 1.2; }
+
+/* ---------- Dezimal-Stellenwerttafel ---------- */
+
+.dez-tafel { border-collapse: collapse; margin: 0.75rem auto; font-size: 0.95rem; }
+.dez-tafel th, .dez-tafel td {
+  border: 1px solid var(--border);
+  width: 3.1rem;
+  height: 2.3rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.dez-tafel th { background: var(--card-bg); font-size: 0.7rem; font-weight: 700; line-height: 1.15; }
+.dez-tafel td { font-weight: 700; font-size: 1.1rem; }
+.dez-tafel td.leer { color: var(--muted); font-weight: 400; }
+/* Die Kommaspalte ist keine Stelle, sondern nur die Markierung zwischen Einern und Zehnteln. */
+.dez-tafel th.komma, .dez-tafel td.komma { width: 1.1rem; border-top: none; border-bottom: none; font-weight: 700; }
+.dez-tafel .ganze { background: #eef2ff; }
+:root[data-theme="dark"] .dez-tafel .ganze { background: #1e2a4a; }
+
+/* ---------- Periodische Dezimalzahlen ---------- */
+
+.periode { text-decoration: overline; }
+.dez-ergebnis { font-size: 1.15rem; font-weight: 700; color: var(--accent-dark); }
+
+/* Restetabelle der Divisionsschritte: zeigt, warum sich eine Periode wiederholen MUSS. */
+.reste-tabelle { border-collapse: collapse; margin: 0.6rem auto; font-size: 0.86rem; }
+.reste-tabelle td, .reste-tabelle th { border: 1px solid var(--border); padding: 0.3rem 0.55rem; text-align: center; }
+.reste-tabelle th { background: var(--card-bg); font-size: 0.78rem; }
+.reste-tabelle td.wiederholung { background: #fdecec; color: #b3261e; font-weight: 700; }
+:root[data-theme="dark"] .reste-tabelle td.wiederholung { background: #3a1f1f; color: #ff8a8a; }
+
+/* ---------- Vergleichs-Gegenüberstellung ---------- */
+
+.vergleich-zeile { display: flex; align-items: center; justify-content: center; gap: 0.8rem; flex-wrap: wrap; font-size: 1.1rem; margin: 0.6rem 0; }
+.vergleich-zeichen { font-size: 1.5rem; font-weight: 800; color: var(--accent-dark); min-width: 1.6rem; text-align: center; }
+
+/* ---------- Schriftliches Rechnen mit Dezimalzahlen ---------- */
+
+.schriftlich-wrap { display: flex; justify-content: center; margin: 1rem 0; overflow-x: auto; }
+.schriftlich-tabelle { border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 1.05rem; }
+.schriftlich-tabelle td { width: 2.1rem; height: 2rem; text-align: center; }
+.schriftlich-tabelle td.uebertrag { font-size: 0.68rem; color: #b3261e; height: 1.1rem; font-weight: 700; }
+.schriftlich-tabelle td.op { text-align: right; padding-right: 0.3rem; color: var(--muted); width: 1.4rem; }
+/* Der Ergebnisstrich gehört ÜBER die Ergebniszeile, nicht über den zweiten Operanden. */
+.schriftlich-tabelle tr.rechenzeile td { border-top: 2px solid var(--text); }
+.schriftlich-tabelle td.digit { font-weight: 700; }
+.schriftlich-tabelle td.blank { color: var(--muted); }
+.schriftlich-tabelle td.ergebnis { font-weight: 700; color: var(--accent-dark); }
+/* Die Kommaspalte ist schmal und in jeder Zeile an derselben Stelle — genau darum geht es. */
+.schriftlich-tabelle td.komma { width: 0.75rem; font-weight: 700; }
+.schriftlich-tabelle td.komma-kopf { font-size: 0.62rem; color: var(--accent); height: 1.1rem; }
+/* Nullen, die nur zum Auffüllen ergänzt wurden, werden blass gesetzt. */
+.schriftlich-tabelle td.fuellnull { color: var(--muted); font-weight: 400; }
+
+/* ---------- Summanden-Balken (Bruchaddition) ---------- */
+
+.summe-viz { display: flex; flex-direction: column; align-items: center; gap: 0.45rem; margin: 1rem 0; }
+.summe-zeile { display: flex; align-items: center; gap: 0.6rem; }
+.summe-label { font-size: 0.85rem; color: var(--muted); min-width: 4.5rem; text-align: right; }
+.anteil-teil-c { fill: #8a5cf6; fill-opacity: 0.3; stroke: #8a5cf6; stroke-width: 1.2; }
+
+/* ---------- Falschrechnung zum Widerlegen ---------- */
+
+.falsch-richtig { display: flex; gap: 1rem; flex-wrap: wrap; margin: 0.8rem 0; }
+.falsch-richtig > div { flex: 1 1 220px; border-radius: 8px; padding: 0.7rem 0.9rem; font-size: 0.95rem; }
+.fr-falsch { background: #fdecec; border-left: 4px solid #b3261e; }
+.fr-richtig { background: #e7f6ec; border-left: 4px solid #157347; }
+:root[data-theme="dark"] .fr-falsch { background: #3a1f1f; }
+:root[data-theme="dark"] .fr-richtig { background: #17321f; }
+.fr-kopf { font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 0.3rem; }
+.fr-falsch .fr-kopf { color: #b3261e; }
+.fr-richtig .fr-kopf { color: #157347; }
+:root[data-theme="dark"] .fr-falsch .fr-kopf { color: #ff8a8a; }
+:root[data-theme="dark"] .fr-richtig .fr-kopf { color: #6fd68f; }
