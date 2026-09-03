@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brüche und Dezimalzahlen</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">1 Größen und Rechnen</a><span class="sep">/</span>
+  3 Brüche und Dezimalzahlen
+</nav>
+<header class="page-header">
+  <h1>Brüche und Dezimalzahlen</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Brüche und Dezimalzahlen sind <strong>zwei Schreibweisen für dieselben Zahlen</strong>. Auf diesem Lernpfad lernst du beide kennen und wechselst sicher zwischen ihnen. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>einen <span class="term">Bruch</span> als Anteil deuten und Anteile von Größen berechnen</li>
+      <li>Brüche <span class="term">erweitern</span> und <span class="term">kürzen</span> — und erklären, warum sich ihr Wert dabei nicht ändert</li>
+      <li>Brüche <span class="term">vergleichen und ordnen</span>, indem du sie gleichnamig machst</li>
+      <li>zwischen <span class="term">echten, unechten</span> Brüchen und <span class="term">gemischten Zahlen</span> wechseln</li>
+      <li>Dezimalzahlen in der <span class="term">Stellenwerttafel</span> lesen und schreiben</li>
+      <li>Brüche in Dezimalzahlen umwandeln und umgekehrt — auch bei <span class="term">periodischen</span> Dezimalzahlen</li>
+      <li>Dezimalzahlen sicher <span class="term">vergleichen und runden</span></li>
+    </ul>
+    <p class="hinweis-box">💡 Dieser Lernpfad behandelt die <em>Schreibweisen</em> und den <em>Vergleich</em>. Wie man mit Brüchen und Dezimalzahlen <em>rechnet</em>, folgt in den Themen 4 und 5.</p>
+  </section>
+
+  <!-- 1. Der Bruch als Anteil -->
+  <section class="card" id="sec-anteil">
+    <h2>1. Der Bruch als Anteil</h2>
+    <p>Ein <span class="term">Bruch</span> beschreibt einen Anteil eines Ganzen. Der <span class="term">Nenner</span> sagt, in wie viele gleich große Teile das Ganze zerlegt wird; der <span class="term">Zähler</span> sagt, wie viele dieser Teile genommen werden.</p>
+    <div class="definition-box">
+      <span class="box-label">Definition</span>
+      In einem Bruch <span class="bruch"><span class="z bruch-zaehler-farbe">z</span><span class="n bruch-nenner-farbe">n</span></span> heißt <span class="bruch-zaehler-farbe"><strong>z</strong> der Zähler</span> (er <em>zählt</em>, wie viele Teile) und <span class="bruch-nenner-farbe"><strong>n</strong> der Nenner</span> (er <em>benennt</em>, wie die Teile heißen). Der Strich dazwischen ist der <strong>Bruchstrich</strong>; er bedeutet dasselbe wie ein Divisionszeichen: <span class="bruch"><span class="z">z</span><span class="n">n</span></span> = z : n. Der Nenner darf nie 0 sein.
+    </div>
+    <p>Stelle Zähler und Nenner ein und beobachte beide Darstellungen:</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Zähler = <input type="number" id="anteil-z" value="3" min="0" max="12" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label>Nenner = <input type="number" id="anteil-n" value="4" min="1" max="12" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <div id="anteil-mount" class="bruch-viz"></div>
+      <div id="anteil-text" class="event-result"></div>
+    </div>
+    <p>Weil der Bruchstrich eine Division ist, berechnet man den <strong>Anteil einer Größe</strong> so: erst durch den Nenner teilen, dann mit dem Zähler multiplizieren.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Anteil <input type="number" id="groesse-z" value="3" min="1" max="20" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
+        <input type="number" id="groesse-n" value="4" min="1" max="20" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label>von <input type="number" id="groesse-wert" value="60" min="0" max="100000" style="width:6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <select id="groesse-einheit" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <option value="min">min</option>
+          <option value="g">g</option>
+          <option value="cm">cm</option>
+          <option value="€">€</option>
+        </select>
+      </div>
+      <div id="groesse-ergebnis" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-anteil"></div>
+  </section>
+
+  <!-- 2. Erweitern und Kürzen -->
+  <section class="card" id="sec-erweitern">
+    <h2>2. Erweitern und Kürzen</h2>
+    <p>Derselbe Anteil lässt sich auf viele Arten aufschreiben: <span class="bruch"><span class="z">1</span><span class="n">2</span></span> = <span class="bruch"><span class="z">2</span><span class="n">4</span></span> = <span class="bruch"><span class="z">3</span><span class="n">6</span></span>. Man zerlegt das Ganze nur feiner oder gröber — der <strong>Anteil selbst bleibt gleich</strong>.</p>
+    <div class="wissen-box">
+      <span class="box-label">Merke</span>
+      <strong>Erweitern:</strong> Zähler und Nenner mit derselben Zahl multiplizieren.<br>
+      <strong>Kürzen:</strong> Zähler und Nenner durch dieselbe Zahl dividieren.<br>
+      Der <strong>Wert des Bruchs ändert sich dabei nicht</strong> — man schreibt dieselbe Zahl nur anders auf.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — häufiger Fehler</span>
+      Kürzen macht den Bruch <strong>nicht kleiner</strong>! <span class="bruch"><span class="z">6</span><span class="n">8</span></span> und <span class="bruch"><span class="z">3</span><span class="n">4</span></span> sind <em>dieselbe Zahl</em> — nur die Schreibweise wird kürzer. Und: Gekürzt wird nur, was <strong>beide</strong> Zahlen teilt, nie einzelne Summanden.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Bruch <input type="number" id="erw-z" value="3" min="1" max="60" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
+        <input type="number" id="erw-n" value="4" min="1" max="60" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label>erweitern mit <input type="number" id="erw-k" value="3" min="1" max="8" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <div id="erw-mount" class="bruch-viz gestapelt"></div>
+      <div id="erw-text" class="event-result"></div>
+    </div>
+    <p>Umgekehrt heißt <span class="term">vollständig kürzen</span>: durch den <strong>größten gemeinsamen Teiler</strong> (ggT) von Zähler und Nenner dividieren. Der Bruch ist dann <span class="term">teilerfremd</span> und lässt sich nicht weiter kürzen.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Kürze <input type="number" id="kuerz-z" value="18" min="1" max="999" style="width:5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
+        <input type="number" id="kuerz-n" value="24" min="1" max="999" style="width:5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <div id="kuerz-mount" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-erweitern"></div>
+  </section>
+
+  <!-- 3. Vergleichen und Ordnen -->
+  <section class="card" id="sec-vergleichen">
+    <h2>3. Brüche vergleichen und ordnen</h2>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der häufigste Bruchfehler</span>
+      Ein größerer Nenner bedeutet <strong>nicht</strong> einen größeren Bruch — im Gegenteil: Je mehr Teile das Ganze hat, desto <em>kleiner</em> ist jedes einzelne Teil. Deshalb ist <span class="bruch"><span class="z">1</span><span class="n">3</span></span> <strong>größer</strong> als <span class="bruch"><span class="z">1</span><span class="n">5</span></span>. Brüche kann man erst dann direkt an den Zählern vergleichen, wenn sie <strong>denselben Nenner</strong> haben.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Vorgehen</span>
+      Zwei Brüche vergleicht man, indem man sie <span class="term">gleichnamig</span> macht: Beide werden auf den <strong>Hauptnenner</strong> erweitert — das kleinste gemeinsame Vielfache (kgV) der beiden Nenner. Dann entscheidet der Zähler.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label><input type="number" id="vgl-z1" value="2" min="0" max="99" style="width:3.6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
+        <input type="number" id="vgl-n1" value="3" min="1" max="99" style="width:3.6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <span style="align-self:center;font-weight:700">und</span>
+        <label><input type="number" id="vgl-z2" value="3" min="0" max="99" style="width:3.6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
+        <input type="number" id="vgl-n2" value="5" min="1" max="99" style="width:3.6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <div id="vgl-mount"></div>
+      <div id="vgl-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-vergleichen"></div>
+  </section>
+
+  <!-- 4. Echte, unechte Brüche und gemischte Zahlen -->
+  <section class="card" id="sec-gemischt">
+    <h2>4. Echte und unechte Brüche, gemischte Zahlen</h2>
+    <div class="definition-box">
+      <span class="box-label">Definition</span>
+      Ein Bruch heißt <strong>echt</strong>, wenn der Zähler kleiner als der Nenner ist (der Wert liegt zwischen 0 und 1), sonst <strong>unecht</strong>. Einen unechten Bruch kann man als <strong>gemischte Zahl</strong> schreiben: ganze Teile plus ein echter Restbruch.
+    </div>
+    <p>Die Umwandlung ist nichts anderes als eine <a href="../02-rechnen-mit-natuerlichen-zahlen/index.html#sec-division">Division mit Rest</a>: Der Quotient wird die ganze Zahl, der Rest wird der neue Zähler, der Nenner bleibt.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Unechter Bruch <input type="number" id="gem-z" value="17" min="1" max="999" style="width:5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
+        <input type="number" id="gem-n" value="5" min="1" max="99" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <div id="gem-mount" class="bruch-viz"></div>
+      <div id="gem-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-gemischt"></div>
+  </section>
+
+  <!-- 5. Dezimalschreibweise -->
+  <section class="card" id="sec-dezimal">
+    <h2>5. Die Dezimalschreibweise</h2>
+    <p>Die <a href="../01-natuerliche-zahlen-und-groessen/index.html#sec-stellenwertsystem">Stellenwerttafel</a> hört bei den Einern nicht auf — sie wird nach rechts einfach fortgesetzt. Jede Stelle ist wieder ein Zehntel der vorherigen:</p>
+    <div class="definition-box">
+      <span class="box-label">Definition</span>
+      Hinter dem <strong>Komma</strong> folgen die Stellen <strong>Zehntel</strong> (<span class="bruch"><span class="z">1</span><span class="n">10</span></span>), <strong>Hundertstel</strong> (<span class="bruch"><span class="z">1</span><span class="n">100</span></span>) und <strong>Tausendstel</strong> (<span class="bruch"><span class="z">1</span><span class="n">1000</span></span>). Das Komma trennt nur die Ganzen von den Bruchteilen — es ist selbst <em>keine</em> Stelle.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <input type="text" id="dez-input" value="3,472" style="width:9rem;padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem">
+      </div>
+      <div id="dez-tafel-mount"></div>
+      <div id="dez-zerlegung" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Dezimalzahlen sind keine zwei Zahlen</span>
+      Die Nachkommastellen dürfen <strong>nicht</strong> wie eine eigene natürliche Zahl gelesen werden. Es gilt <strong>0,5 &gt; 0,45</strong>, obwohl 45 größer als 5 ist — denn 0,5 sind 5 Zehntel, 0,45 nur 4 Zehntel und 5 Hundertstel.<br>
+      Trick: gleich lang machen, indem man <strong>hinten Nullen anhängt</strong> (das ändert den Wert nicht): 0,50 gegen 0,45 — jetzt entscheidet der direkte Vergleich. Vorsicht: Nullen <em>vor</em> der Zahl oder <em>zwischen</em> Komma und Ziffern ändern den Wert sehr wohl (0,45 ≠ 0,045).
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Dezimalzahlen vergleichen und ordnen (mit <strong>Semikolon</strong> getrennt — das Komma ist ja das Dezimaltrennzeichen):</label>
+      </div>
+      <div class="btn-row">
+        <input type="text" id="dezvgl-input" value="0,5; 0,45; 0,405; 0,54" style="flex:1;min-width:16rem;padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem">
+      </div>
+      <div id="dezvgl-mount"></div>
+    </div>
+    <div class="quiz" id="quiz-dezimal"></div>
+  </section>
+
+  <!-- 6. Umwandeln -->
+  <section class="card" id="sec-umwandeln">
+    <h2>6. Umwandeln: Bruch ⇄ Dezimalzahl</h2>
+    <p><strong>Bruch → Dezimalzahl:</strong> Weil der Bruchstrich eine Division ist, teilt man einfach den Zähler durch den Nenner.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label><input type="number" id="bd-z" value="3" min="0" max="999" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
+        <input type="number" id="bd-n" value="8" min="1" max="99" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <div id="bd-mount" class="event-result"></div>
+      <div id="bd-reste"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Abbrechend oder periodisch?</span>
+      Beim Teilen kann nur eine <strong>begrenzte Anzahl verschiedener Reste</strong> auftreten (bei Nenner n höchstens n − 1 von null verschiedene). Kommt ein Rest zum zweiten Mal vor, wiederholt sich ab da alles — die Dezimalzahl wird <strong>periodisch</strong>. Wird ein Rest 0, <strong>bricht</strong> sie ab.<br>
+      Woran man es vorher sieht: Ein <em>vollständig gekürzter</em> Bruch ergibt genau dann eine abbrechende Dezimalzahl, wenn sein Nenner nur die Primfaktoren <strong>2 und 5</strong> enthält (z.&nbsp;B. 2, 4, 5, 8, 10, 20, 25). Jeder andere Primfaktor — etwa 3 oder 7 — erzwingt eine Periode.
+    </div>
+    <p><strong>Dezimalzahl → Bruch:</strong> Eine abbrechende Dezimalzahl schreibt man mit der Stellenwert-Endung als Nenner (Zehntel, Hundertstel, …) und kürzt dann vollständig.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <input type="text" id="db-input" value="0,375" style="width:9rem;padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem">
+      </div>
+      <div id="db-mount" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-umwandeln"></div>
+  </section>
+
+  <!-- 7. Runden -->
+  <section class="card" id="sec-runden">
+    <h2>7. Dezimalzahlen runden</h2>
+    <p>Gerundet wird nach <a href="../01-natuerliche-zahlen-und-groessen/index.html#sec-runden">derselben Regel wie bei natürlichen Zahlen</a>: Die Ziffer <strong>rechts neben</strong> der Rundungsstelle entscheidet — 0 bis 4 abrunden, 5 bis 9 aufrunden. Alle Stellen dahinter fallen weg.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <input type="text" id="rnd-input" value="3,4728" style="width:9rem;padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem">
+        <select id="rnd-stelle" style="padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem">
+          <option value="0">auf ganze Zahlen</option>
+          <option value="1" selected>auf Zehntel</option>
+          <option value="2">auf Hundertstel</option>
+          <option value="3">auf Tausendstel</option>
+        </select>
+      </div>
+      <div id="rnd-mount" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Übertrag und Schluss-Null</span>
+      Auch hier kann ein <strong>Übertrag</strong> entstehen: 2,97 auf Zehntel gerundet ist <strong>3,0</strong> — nicht 2,10.<br>
+      Die Null am Ende wird dabei <strong>mitgeschrieben</strong>, wenn die Genauigkeit angegeben werden soll: „3,0“ sagt „auf Zehntel gerundet“, „3“ sagt nur „auf Ganze gerundet“.
+    </div>
+    <div class="quiz" id="quiz-runden"></div>
+  </section>
+
+  <!-- 8. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>8. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../01-natuerliche-zahlen-und-groessen/index.html#sec-stellenwertsystem">Stellenwertsystem</a> — die Dezimalschreibweise setzt die Stellenwerttafel nach rechts fort. Zehntel, Hundertstel und Tausendstel sind einfach die nächsten Stufen.</li>
+      <li><strong>Baut auf:</strong> <a href="../02-rechnen-mit-natuerlichen-zahlen/index.html#sec-division">Division mit Rest</a> — sie liefert die gemischte Zahl aus einem unechten Bruch, und die Reste beim Weiterteilen entscheiden, ob eine Dezimalzahl abbricht oder periodisch wird.</li>
+      <li><strong>Baut auf:</strong> <a href="../01-natuerliche-zahlen-und-groessen/index.html#sec-runden">Runden</a> — die Rundungsregel gilt für Dezimalzahlen wörtlich genauso.</li>
+      <li><strong>Teilbarkeit:</strong> Kürzen braucht den größten gemeinsamen Teiler, Gleichnamigmachen das kleinste gemeinsame Vielfache. Beides kommt aus der Primfaktorzerlegung.</li>
+      <li><strong>Führt weiter zu:</strong> Das <a href="../01-natuerliche-zahlen-und-groessen/index.html#sec-groessen">Umrechnen von Größen</a> ist Bruchrechnung in Verkleidung: 3&nbsp;cm = <span class="bruch"><span class="z">3</span><span class="n">100</span></span>&nbsp;m = 0,03&nbsp;m.</li>
+      <li><strong>Führt weiter zu:</strong> Prozente sind Hundertstel — 25&nbsp;% = <span class="bruch"><span class="z">25</span><span class="n">100</span></span> = <span class="bruch"><span class="z">1</span><span class="n">4</span></span> = 0,25. Wer sicher kürzt und umwandelt, hat die Prozentrechnung halb geschafft.</li>
+      <li><strong>Führt weiter zu:</strong> Brüche mit Variablen heißen später <em>Bruchterme</em> — erweitert und gekürzt wird dort nach genau denselben Regeln.</li>
+    </ul>
+  </section>
+
+  <!-- 9. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>9. Formelsammlung</h2>
+    <p>Alle Regeln dieses Lernpfads mit Beispielen und Visualisierungen auf zwei Seiten zusammengefasst — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 10. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>10. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Brüche darfst du in der Form <code>3/4</code> eingeben, Dezimalzahlen mit Komma (<code>0,75</code>).</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 1 Größen und Rechnen</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
