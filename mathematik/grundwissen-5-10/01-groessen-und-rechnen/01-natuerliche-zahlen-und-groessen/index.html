@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Natürliche Zahlen und Größen</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">1 Größen und Rechnen</a><span class="sep">/</span>
+  1 Natürliche Zahlen und Größen
+</nav>
+<header class="page-header">
+  <h1>Natürliche Zahlen und Größen</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Auf diesem Lernpfad wiederholst und vertiefst du das Grundwissen zu natürlichen Zahlen und Größen. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>eine Zahl im <span class="term">Stellenwertsystem</span> in eine Stellenwerttafel eintragen und in Stellenwerte zerlegen</li>
+      <li>Zahlen sachgerecht <span class="term">runden</span></li>
+      <li>Zahlen auf dem <span class="term">Zahlenstrahl</span> darstellen, vergleichen und ordnen</li>
+      <li><span class="term">Größen</span> (Längen, Massen, Zeiten, Geldbeträge) in andere Einheiten umrechnen</li>
+    </ul>
+    <p class="hinweis-box">💡 Arbeite die Abschnitte der Reihe nach durch. Das Runden in Abschnitt 2 baut direkt auf dem Stellenwertsystem aus Abschnitt 1 auf — die entscheidende Ziffer ist immer eine Stelle in dieser Tafel.</p>
+  </section>
+
+  <!-- 1. Stellenwertsystem -->
+  <section class="card" id="sec-stellenwertsystem">
+    <h2>1. Das Stellenwertsystem</h2>
+    <p>Unser Zahlensystem ist ein <span class="term">Dezimalsystem</span> (Zehnersystem): Jede Ziffer einer Zahl hat je nach ihrer Position einen anderen <span class="term">Stellenwert</span> — von rechts nach links das Zehnfache der vorherigen Stelle.</p>
+    <div class="definition-box">
+      <span class="box-label">Definition</span>
+      Die <strong>natürlichen Zahlen</strong> ℕ = {0, 1, 2, 3, …} sind die Zahlen, mit denen man zählt. Jede natürliche Zahl lässt sich eindeutig in eine Summe aus Stellenwerten zerlegen, z.&nbsp;B. 4708 = 4 · 1000 + 7 · 100 + 0 · 10 + 8 · 1.
+    </div>
+    <p>Gib unten eine Zahl ein (0 bis 999&nbsp;999) und beobachte, wie sie sich auf die Stellenwerttafel verteilt:</p>
+    <div class="widget">
+      <div class="btn-row">
+        <input type="number" id="swt-input" value="4708" min="0" max="999999" step="1" style="width:9rem;padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem">
+      </div>
+      <div id="swt-tafel-mount"></div>
+      <div id="swt-zerlegung" class="event-result"></div>
+      <p class="progress-note" id="swt-wort"></p>
+    </div>
+    <div class="quiz" id="quiz-stellenwertsystem"></div>
+  </section>
+
+  <!-- 2. Runden -->
+  <section class="card" id="sec-runden">
+    <h2>2. Runden von Zahlen</h2>
+    <p>Beim <span class="term">Runden</span> ersetzt man eine Zahl durch eine „einfachere" Zahl in der Nähe. Dazu schaut man auf die Ziffer <strong>rechts neben</strong> der Rundungsstelle — der <span class="term">Nachbarziffer</span>.</p>
+    <div class="wissen-box">
+      <span class="box-label">Rundungsregel</span>
+      Ist die Nachbarziffer 0, 1, 2, 3 oder 4, wird <strong>abgerundet</strong> (die Rundungsstelle bleibt, alles danach wird 0). Ist sie 5, 6, 7, 8 oder 9, wird <strong>aufgerundet</strong> (die Rundungsstelle wird um 1 erhöht, alles danach wird 0).
+    </div>
+    <p>Wähle eine Zahl und eine Rundungsstelle — die entscheidende Nachbarziffer wird farbig markiert:</p>
+    <div class="widget">
+      <div class="btn-row">
+        <input type="number" id="runden-input" value="47382" min="0" max="999999" step="1" style="width:9rem;padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem">
+        <select id="runden-stelle" style="padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem">
+          <option value="10">auf Zehner</option>
+          <option value="100" selected>auf Hunderter</option>
+          <option value="1000">auf Tausender</option>
+          <option value="10000">auf Zehntausender</option>
+        </select>
+      </div>
+      <div id="runden-anzeige" class="event-result"></div>
+      <div id="runden-strahl-mount"></div>
+    </div>
+    <div class="quiz" id="quiz-runden"></div>
+  </section>
+
+  <!-- 3. Zahlenstrahl -->
+  <section class="card" id="sec-zahlenstrahl">
+    <h2>3. Der Zahlenstrahl: Vergleichen und Ordnen</h2>
+    <p>Auf dem <span class="term">Zahlenstrahl</span> steht jede Zahl an einem festen Punkt — je weiter rechts, desto größer die Zahl. Das macht Vergleichen anschaulich: Von zwei Zahlen ist die <strong>größer</strong> (&gt;), die weiter rechts steht, die <strong>kleiner</strong> (&lt;), die weiter links steht.</p>
+    <p>Trage bis zu 6 Zahlen ein (durch Komma getrennt):</p>
+    <div class="widget">
+      <div class="btn-row">
+        <input type="text" id="strahl-input" value="45, 8, 120, 76, 3" style="flex:1;min-width:14rem;padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem">
+      </div>
+      <div id="strahl-mount"></div>
+      <div id="strahl-ordnung" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-zahlenstrahl"></div>
+  </section>
+
+  <!-- 4. Größen und Einheiten -->
+  <section class="card" id="sec-groessen">
+    <h2>4. Größen und Einheiten</h2>
+    <p>Eine <span class="term">Größe</span> besteht aus einer Maßzahl und einer Einheit (z.&nbsp;B. 3,4&nbsp;m). Benachbarte Einheiten unterscheiden sich meist um den Faktor 10, 100 oder 1000 — wie Stufen einer Treppe. Beim Umrechnen in eine kleinere Einheit <strong>multipliziert</strong> man, beim Umrechnen in eine größere Einheit <strong>dividiert</strong> man.</p>
+    <p>Wähle eine Größenart, gib einen Wert ein und wähle die Zieleinheit:</p>
+    <div class="widget">
+      <div class="btn-row">
+        <select id="groessen-art" style="padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem">
+          <option value="laenge">Länge</option>
+          <option value="masse">Masse</option>
+          <option value="zeit">Zeit</option>
+          <option value="geld">Geld</option>
+        </select>
+        <input type="number" id="groessen-wert" value="3.4" step="any" style="width:7rem;padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem">
+        <span id="groessen-von-einheit" style="align-self:center;font-weight:700"></span>
+        <span style="align-self:center">→</span>
+        <select id="groessen-ziel" style="padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem"></select>
+      </div>
+      <div id="groessen-treppe-mount"></div>
+      <div id="groessen-ergebnis" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-groessen"></div>
+  </section>
+
+  <!-- 5. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>5. Formelsammlung</h2>
+    <p>Alle Regeln dieses Lernpfads mit Beispielen und Visualisierungen auf zwei Seiten zusammengefasst — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 6. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>6. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 1 Größen und Rechnen</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>

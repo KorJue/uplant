@@ -1,0 +1,538 @@
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  margin-bottom: 1.5rem;
+}
+.card h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+.card h3 {
+  font-size: 1.05rem;
+  margin: 1.5rem 0 0.6rem;
+  color: var(--accent-dark);
+}
+.card h3:first-of-type { margin-top: 0.5rem; }
+
+.lern-intro-list {
+  margin: 0.75rem 0 0;
+  padding-left: 1.3rem;
+}
+.lern-intro-list li { margin-bottom: 0.3rem; }
+
+.term {
+  font-weight: 700;
+  color: var(--accent-dark);
+}
+
+.hinweis-box {
+  background: var(--bg);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin: 0.9rem 0;
+  font-size: 0.92rem;
+}
+
+/* ---------- Widget-Rahmen ---------- */
+
+.widget {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 1rem 0;
+  background: var(--bg);
+}
+.widget-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.widget-col { flex: 1 1 260px; min-width: 240px; }
+
+.btn {
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  font-family: inherit;
+}
+.btn:hover { border-color: var(--accent); }
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--accent-dark); }
+.btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.75rem 0; }
+
+/* ---------- Glücksrad ---------- */
+
+.spinner-wrap { display: flex; justify-content: center; }
+.spinner-svg { max-width: 220px; width: 100%; height: auto; }
+.spinner-wheel {
+  /* Ohne "fill-box" würden Prozent-Angaben in transform-origin sich auf das SVG-Viewport beziehen
+     statt auf die Kreisfläche selbst — das Rad würde dann nicht um seinen eigenen Mittelpunkt,
+     sondern um die (etwas andere) Viewport-Mitte rotieren und sichtbar "eiern". */
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  transition: transform 3.2s cubic-bezier(0.12, 0.72, 0.14, 1);
+}
+.spinner-pointer { fill: var(--text); }
+.spinner-result {
+  text-align: center;
+  font-weight: 700;
+  margin-top: 0.5rem;
+  min-height: 1.4em;
+}
+
+.stat-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  margin-top: 0.5rem;
+}
+.stat-table th, .stat-table td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.5rem;
+  text-align: center;
+}
+.stat-table th { background: var(--card-bg); }
+.stat-swatch {
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  border-radius: 3px;
+  margin-right: 0.35em;
+  vertical-align: -0.05em;
+}
+
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0.3rem 0;
+  font-size: 0.85rem;
+}
+.bar-label { width: 4.2em; flex: none; }
+.bar-track {
+  flex: 1;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  height: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  transition: width 0.4s ease;
+}
+.bar-target {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--text);
+  opacity: 0.55;
+}
+.bar-value { width: 3.6em; flex: none; text-align: right; font-variant-numeric: tabular-nums; }
+
+.event-picker {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 0.6rem 0;
+}
+.event-picker label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 0.15rem 0.4rem;
+}
+.event-picker label.select-correct { background: #e7f6ec; }
+.event-picker label.select-wrong { background: #fdecec; }
+:root[data-theme="dark"] .event-picker label.select-correct { background: #17321f; }
+:root[data-theme="dark"] .event-picker label.select-wrong { background: #3a1f1f; }
+.event-result {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+  margin-top: 0.5rem;
+  font-family: "Cambria Math", Cambria, serif;
+}
+
+/* ---------- Würfel ---------- */
+
+.die-face {
+  width: 90px;
+  height: 90px;
+  border-radius: 12px;
+  border: 2px solid var(--accent-dark);
+  background: var(--card-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--accent-dark);
+  margin: 0 auto;
+}
+.die-row { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; justify-content: center; }
+.face-picker { display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: center; margin: 0.6rem 0; }
+.face-btn {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-weight: 700;
+  cursor: pointer;
+}
+.face-btn.active {
+  border-color: var(--accent);
+  background: #eef2ff;
+  color: var(--accent-dark);
+}
+:root[data-theme="dark"] .face-btn.active { background: #1e2a4a; }
+
+/* ---------- Baumdiagramm ---------- */
+
+.tree-svg { width: 100%; height: auto; }
+.tree-edge {
+  stroke: var(--muted);
+  stroke-width: 1.8;
+  fill: none;
+}
+.tree-edge.tree-highlight {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+.tree-edge-label {
+  font-size: 12px;
+  fill: var(--text);
+}
+.tree-node circle {
+  fill: var(--card-bg);
+  stroke: var(--muted);
+  stroke-width: 1.6;
+}
+.tree-node text {
+  font-size: 12px;
+  fill: var(--text);
+  font-weight: 700;
+}
+.tree-leaf-label {
+  font-size: 12px;
+  fill: var(--muted);
+}
+.tree-leaf-prob {
+  font-size: 12.5px;
+  font-weight: 700;
+  fill: var(--accent-dark);
+  cursor: pointer;
+}
+.tree-leaf-prob.tree-highlight { fill: #b3261e; }
+.tree-leaf-hit {
+  fill: transparent;
+  cursor: pointer;
+}
+
+/* Lücken in den Baumdiagramm-Übungsaufgaben: erst als "① ?" markiert, nach dem Prüfen grün/rot
+   mit dem eingetragenen Wert. */
+.tree-blank { fill: var(--accent); font-weight: 700; }
+.tree-blank-correct { fill: #157347; font-weight: 700; }
+.tree-blank-wrong { fill: #b3261e; font-weight: 700; }
+:root[data-theme="dark"] .tree-blank-correct { fill: #6fd68f; }
+:root[data-theme="dark"] .tree-blank-wrong { fill: #ff8a8a; }
+
+.exercise-blank-list {
+  margin: 0.75rem 0;
+  padding-left: 1.4rem;
+}
+.exercise-blank-list li { margin-bottom: 0.5rem; }
+.exercise-blank-list input {
+  width: 7rem;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: var(--card-bg);
+  color: var(--text);
+  margin-left: 0.4rem;
+}
+
+.mode-toggle { display: flex; gap: 0.5rem; margin: 0.6rem 0 1rem; flex-wrap: wrap; }
+.mode-toggle button.active {
+  border-color: var(--accent);
+  background: #eef2ff;
+  color: var(--accent-dark);
+}
+:root[data-theme="dark"] .mode-toggle button.active { background: #1e2a4a; }
+
+/* ---------- Vierfeldertafel ---------- */
+
+.vft-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.95rem;
+  margin: 0.75rem 0;
+}
+.vft-table th, .vft-table td {
+  border: 1px solid var(--border);
+  padding: 0.55rem 0.7rem;
+  text-align: center;
+}
+.vft-table th { background: var(--card-bg); }
+.vft-table td.vft-cell {
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+}
+.vft-table td.vft-cell:hover { background: #eef2ff; }
+.vft-table td.vft-highlight { background: #eef2ff; font-weight: 700; }
+:root[data-theme="dark"] .vft-table td.vft-cell:hover { background: #1e2a4a; }
+:root[data-theme="dark"] .vft-table td.vft-highlight { background: #1e2a4a; }
+.vft-table td.vft-gesamt, .vft-table th.vft-gesamt { background: var(--bg); font-weight: 700; }
+
+/* ---------- Quiz ---------- */
+
+.quiz {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1.1rem 0 0.5rem;
+}
+.quiz-q { font-weight: 700; margin: 0 0 0.6rem; }
+.quiz-options { display: flex; flex-direction: column; gap: 0.5rem; }
+.quiz-opt {
+  text-align: left;
+  padding: 0.55rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.94rem;
+}
+.quiz-opt:hover { border-color: var(--accent); }
+.quiz-opt.correct { border-color: #157347; background: #e7f6ec; color: #157347; font-weight: 700; }
+.quiz-opt.wrong { border-color: #b3261e; background: #fdecec; color: #b3261e; font-weight: 700; }
+:root[data-theme="dark"] .quiz-opt.correct { background: #17321f; color: #6fd68f; border-color: #6fd68f; }
+:root[data-theme="dark"] .quiz-opt.wrong { background: #3a1f1f; color: #ff8a8a; border-color: #ff8a8a; }
+.quiz-feedback { margin-top: 0.6rem; font-size: 0.9rem; }
+.quiz-feedback.ok { color: #157347; }
+.quiz-feedback.err { color: #b3261e; }
+:root[data-theme="dark"] .quiz-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .quiz-feedback.err { color: #ff8a8a; }
+
+/* ---------- Übungsaufgaben ---------- */
+
+.exercise {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1rem 0;
+}
+.exercise h3 { margin-top: 0; }
+.exercise-input-row { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; margin-top: 0.6rem; }
+.exercise-input-row input {
+  width: 11rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: var(--card-bg);
+  color: var(--text);
+}
+.exercise-feedback { margin-top: 0.6rem; font-size: 0.92rem; font-weight: 600; }
+.exercise-feedback.ok { color: #157347; }
+.exercise-feedback.err { color: #b3261e; }
+:root[data-theme="dark"] .exercise-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .exercise-feedback.err { color: #ff8a8a; }
+
+.formula-block {
+  font-family: "Cambria Math", Cambria, "STIX Two Math", serif;
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  margin: 0.5rem 0;
+  overflow-x: auto;
+}
+
+.progress-note {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+
+/* ---------- Definition / Wissen / Beispiel — farbige Merkboxen wie im Lehrbuch ---------- */
+
+.definition-box, .wissen-box, .beispiel-box {
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin: 0.9rem 0;
+}
+.definition-box .box-label, .wissen-box .box-label, .beispiel-box .box-label {
+  display: block;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+.definition-box, .wissen-box {
+  background: #fdecec;
+  border-left: 4px solid #b3261e;
+}
+.definition-box .box-label, .wissen-box .box-label { color: #b3261e; }
+:root[data-theme="dark"] .definition-box, :root[data-theme="dark"] .wissen-box { background: #3a1f1f; }
+:root[data-theme="dark"] .definition-box .box-label, :root[data-theme="dark"] .wissen-box .box-label { color: #ff8a8a; }
+.beispiel-box {
+  background: #e7f6ec;
+  border-left: 4px solid #157347;
+}
+.beispiel-box .box-label { color: #157347; }
+:root[data-theme="dark"] .beispiel-box { background: #17321f; }
+:root[data-theme="dark"] .beispiel-box .box-label { color: #6fd68f; }
+
+/* ---------- Reduzierte Ergebnismenge / Stolperstelle ---------- */
+
+.num-picker { display: flex; gap: 0.4rem; flex-wrap: wrap; margin: 0.5rem 0; }
+.num-picker button {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-weight: 700;
+  cursor: pointer;
+}
+.num-picker button.active-a { border-color: #2563eb; background: #eef2ff; color: #1d4ed8; }
+.num-picker button.active-b { border-color: #1a9e7a; background: #e7f6ec; color: #157347; }
+.num-picker button.active-a.active-b { background: linear-gradient(135deg, #eef2ff 50%, #e7f6ec 50%); border-color: #8a5cf6; }
+:root[data-theme="dark"] .num-picker button.active-a { background: #1e2a4a; }
+:root[data-theme="dark"] .num-picker button.active-b { background: #17321f; }
+
+.symbolic-tree {
+  width: 100%;
+  max-width: 480px;
+  display: block;
+  margin: 0.5rem auto;
+}
+
+/* ---------- Gestaffelte Übungsaufgaben (Reiter Mittel/Schwierig/Komplex) ---------- */
+
+.schwierigkeit-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  margin-left: 0.6rem;
+  vertical-align: middle;
+}
+.schwierigkeit-badge.einfach { background: #e7f6ec; color: #157347; }
+.schwierigkeit-badge.mittel { background: #eef2ff; color: #1d4ed8; }
+.schwierigkeit-badge.schwierig { background: #fff4e0; color: #b3650a; }
+.schwierigkeit-badge.komplex { background: #fdecec; color: #b3261e; }
+:root[data-theme="dark"] .schwierigkeit-badge.einfach { background: #17321f; color: #6fd68f; }
+:root[data-theme="dark"] .schwierigkeit-badge.mittel { background: #1e2a4a; color: #93a9ff; }
+:root[data-theme="dark"] .schwierigkeit-badge.schwierig { background: #3a2a10; color: #ffbf6e; }
+:root[data-theme="dark"] .schwierigkeit-badge.komplex { background: #3a1f1f; color: #ff8a8a; }
+
+.schwierigkeit-tabs { display: flex; gap: 0.4rem; margin: 1rem 0 0; flex-wrap: wrap; }
+.schwierigkeit-tabs button {
+  padding: 0.5rem 1rem;
+  border-radius: 8px 8px 0 0;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+.schwierigkeit-tabs button.active { background: var(--card-bg); color: var(--text); border-color: var(--accent); }
+.schwierigkeit-tab-panel { border: 1px solid var(--border); border-radius: 0 10px 10px 10px; padding: 0; margin-bottom: 1rem; }
+.schwierigkeit-tab-panel .aufgabe-box { border: none; margin: 0; }
+
+.aufgabe-box {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1rem 0;
+}
+.aufgabe-box h3 { margin: 0 0 0.5rem; display: flex; align-items: center; flex-wrap: wrap; }
+.aufgabe-box .aufgabe-prompt { margin: 0.5rem 0; }
+.aufgabe-box .btn-row { margin-top: 0.5rem; }
+.aufgabe-feedback { margin-top: 0.7rem; font-size: 0.92rem; }
+.aufgabe-feedback .status { font-weight: 700; margin-bottom: 0.3rem; }
+.aufgabe-feedback .status.ok { color: #157347; }
+.aufgabe-feedback .status.err { color: #b3261e; }
+:root[data-theme="dark"] .aufgabe-feedback .status.ok { color: #6fd68f; }
+:root[data-theme="dark"] .aufgabe-feedback .status.err { color: #ff8a8a; }
+.musterloesung {
+  background: var(--bg);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.7rem 0.9rem;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.musterloesung .ml-label { font-weight: 700; color: var(--accent-dark); display: block; margin-bottom: 0.3rem; }
+
+/* ---------- Stellenwerttafel ---------- */
+
+.stellenwert-tafel { border-collapse: collapse; margin: 0.75rem auto; font-size: 0.95rem; }
+.stellenwert-tafel th, .stellenwert-tafel td {
+  border: 1px solid var(--border);
+  width: 3.2rem;
+  height: 2.4rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.stellenwert-tafel th { background: var(--card-bg); font-size: 0.72rem; font-weight: 700; }
+.stellenwert-tafel td { font-weight: 700; font-size: 1.1rem; }
+.stellenwert-tafel td.leer { color: var(--muted); font-weight: 400; }
+
+/* ---------- Größen-Treppe ---------- */
+
+.staircase { margin: 1rem 0; }
+.staircase-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
+.staircase-unit {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.5rem 0.8rem;
+  background: var(--card-bg);
+  font-weight: 700;
+  text-align: center;
+  min-width: 3.5rem;
+}
+.staircase-unit.active { border-color: var(--accent); background: #eef2ff; color: var(--accent-dark); }
+:root[data-theme="dark"] .staircase-unit.active { background: #1e2a4a; }
+.staircase-arrow { font-size: 0.78rem; color: var(--muted); text-align: center; min-width: 3.2rem; }
+
