@@ -553,3 +553,68 @@
 .flaechenmodell rect.teil1 { fill: #2563eb; fill-opacity: 0.18; stroke: #2563eb; }
 .flaechenmodell rect.teil2 { fill: #1a9e7a; fill-opacity: 0.18; stroke: #1a9e7a; }
 
+/* ---------- Achtung-Box: typische Fehlvorstellungen ---------- */
+
+.achtung-box {
+  background: #fff4e0;
+  border-left: 4px solid #b3650a;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin: 0.9rem 0;
+}
+.achtung-box .box-label {
+  display: block;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+  color: #b3650a;
+}
+:root[data-theme="dark"] .achtung-box { background: #3a2a10; }
+:root[data-theme="dark"] .achtung-box .box-label { color: #ffbf6e; }
+
+/* ---------- Fachbegriffe der Rechenarten ---------- */
+
+.begriff-anzeige {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+.begriff-teil { text-align: center; min-width: 4.5rem; }
+.begriff-wert { font-size: 1.5rem; font-weight: 800; color: var(--accent-dark); font-variant-numeric: tabular-nums; }
+.begriff-name { font-size: 0.78rem; color: var(--muted); margin-top: 0.15rem; }
+.begriff-op { font-size: 1.5rem; font-weight: 700; padding-top: 0.05rem; }
+
+/* ---------- Schriftliche Division ---------- */
+
+.division-tabelle { border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 1.05rem; }
+.division-tabelle td { width: 1.5rem; height: 1.7rem; text-align: center; padding: 0; }
+.division-tabelle td.dq {
+  text-align: left;
+  white-space: nowrap;
+  padding-left: 0.5rem;
+  font-weight: 700;
+  color: var(--accent-dark);
+  width: auto;
+}
+.division-tabelle td.minus { color: var(--muted); }
+.division-tabelle td.ustrich { border-bottom: 2px solid var(--text); }
+.division-tabelle td.rest { font-weight: 700; color: var(--accent-dark); }
+
+/* ---------- Innermathematische Vernetzung ---------- */
+
+.vernetzung-liste { list-style: none; padding: 0; margin: 0.75rem 0 0; }
+.vernetzung-liste li {
+  padding: 0.6rem 0.85rem;
+  border-left: 3px solid var(--accent);
+  background: var(--bg);
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 0.5rem;
+  font-size: 0.94rem;
+}
+.vernetzung-liste a { font-weight: 700; }
+
