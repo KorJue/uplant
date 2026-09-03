@@ -27,19 +27,49 @@
     <h2>Worum geht es hier?</h2>
     <p>Auf diesem Lernpfad wiederholst und vertiefst du das Grundwissen zum Rechnen mit natürlichen Zahlen. Am Ende kannst du:</p>
     <ul class="lern-intro-list">
-      <li>die <span class="term">Rechengesetze</span> (Kommutativ-, Assoziativ- und Distributivgesetz) anwenden</li>
+      <li>die <span class="term">Fachbegriffe</span> der vier Grundrechenarten benennen</li>
+      <li>die <span class="term">Rechengesetze</span> (Kommutativ-, Assoziativ- und Distributivgesetz) anwenden — und weißt, wo sie <em>nicht</em> gelten</li>
       <li>Terme nach der <span class="term">Rangfolge der Rechenarten</span> (Klammern, Punkt vor Strich) korrekt auswerten</li>
-      <li>Zahlen <span class="term">schriftlich addieren und subtrahieren</span> — mit Übertrag bzw. Entbündeln</li>
-      <li>Zahlen <span class="term">schriftlich multiplizieren</span></li>
-      <li>eine <span class="term">Division mit Rest</span> durchführen</li>
+      <li>mit einem <span class="term">Überschlag</span> vorab prüfen, ob ein Ergebnis überhaupt plausibel ist</li>
+      <li>Zahlen <span class="term">schriftlich addieren und subtrahieren</span> — mit Übertrag bzw. Entbündeln — und erklären, <em>warum</em> diese Verfahren funktionieren</li>
+      <li>Zahlen <span class="term">schriftlich multiplizieren</span> und <span class="term">schriftlich dividieren</span></li>
+      <li>eine <span class="term">Division mit Rest</span> durchführen und das Ergebnis im Sachzusammenhang deuten</li>
     </ul>
-    <p class="hinweis-box">💡 Arbeite die Abschnitte der Reihe nach durch. Die Rangfolge aus Abschnitt 2 brauchst du in jedem längeren Term — auch bei den schriftlichen Rechenverfahren in Abschnitt 3-5.</p>
+    <p class="hinweis-box">💡 Arbeite die Abschnitte der Reihe nach durch. Die Rangfolge aus Abschnitt 3 brauchst du in jedem längeren Term — auch bei den schriftlichen Rechenverfahren in den Abschnitten 5-7.</p>
   </section>
 
-  <!-- 1. Rechengesetze -->
+  <!-- 1. Fachbegriffe -->
+  <section class="card" id="sec-fachbegriffe">
+    <h2>1. Die Fachbegriffe der Rechenarten</h2>
+    <p>Jede der vier Grundrechenarten hat eigene Namen für ihre Bestandteile. Du brauchst sie, um Aufgabenstellungen zu verstehen („Bestimme den Quotienten aus …“) und um über Rechenwege zu sprechen.</p>
+    <div class="definition-box">
+      <span class="box-label">Definition</span>
+      <strong>Addition:</strong> Summand + Summand = Summe<br>
+      <strong>Subtraktion:</strong> Minuend − Subtrahend = Differenz<br>
+      <strong>Multiplikation:</strong> Faktor · Faktor = Produkt<br>
+      <strong>Division:</strong> Dividend : Divisor = Quotient
+    </div>
+    <p>Wähle eine Rechenart und zwei Zahlen — die Bestandteile werden benannt:</p>
+    <div class="widget">
+      <div class="btn-row">
+        <input type="number" id="fb-a" value="12" min="0" max="9999" style="width:6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <select id="fb-op" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <option value="add">+ (Addition)</option>
+          <option value="sub">− (Subtraktion)</option>
+          <option value="mul">· (Multiplikation)</option>
+          <option value="div">: (Division)</option>
+        </select>
+        <input type="number" id="fb-b" value="4" min="1" max="9999" style="width:6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+      </div>
+      <div id="fb-mount"></div>
+    </div>
+    <div class="quiz" id="quiz-fachbegriffe"></div>
+  </section>
+
+  <!-- 2. Rechengesetze -->
   <section class="card" id="sec-rechengesetze">
-    <h2>1. Die Rechengesetze</h2>
-    <p>Beim Rechnen mit natürlichen Zahlen gelten drei Grundgesetze:</p>
+    <h2>2. Die Rechengesetze</h2>
+    <p>Für Addition und Multiplikation gelten drei Grundgesetze:</p>
     <div class="definition-box">
       <span class="box-label">Definition</span>
       <strong>Kommutativgesetz:</strong> a + b = b + a und a · b = b · a (die Reihenfolge spielt keine Rolle).<br>
@@ -56,12 +86,26 @@
       <div id="dist-mount"></div>
       <div id="dist-formel" class="event-result"></div>
     </div>
+
+    <div class="achtung-box">
+      <span class="box-label">Achtung — häufiger Fehler</span>
+      Kommutativ- und Assoziativgesetz gelten <strong>nur</strong> für Addition und Multiplikation. Für <strong>Subtraktion und Division gelten sie nicht</strong>: Man darf die Zahlen dort weder vertauschen noch die Klammern beliebig setzen.<br>
+      Gegenbeispiel zum Assoziativgesetz: (20 − 5) − 3 = 15 − 3 = <strong>12</strong>, aber 20 − (5 − 3) = 20 − 2 = <strong>18</strong>.
+    </div>
+    <p>Überzeuge dich selbst — wähle zwei Zahlen und vergleiche beide Reihenfolgen:</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a = <input type="number" id="gg-a" value="12" min="1" max="99" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label>b = <input type="number" id="gg-b" value="4" min="1" max="99" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <div id="gg-mount"></div>
+    </div>
     <div class="quiz" id="quiz-rechengesetze"></div>
   </section>
 
-  <!-- 2. Rangfolge -->
+  <!-- 3. Rangfolge -->
   <section class="card" id="sec-rangfolge">
-    <h2>2. Rangfolge der Rechenoperationen</h2>
+    <h2>3. Rangfolge der Rechenoperationen</h2>
     <p>Kommen in einem Term mehrere Rechenarten vor, wird nicht einfach von links nach rechts gerechnet — es gilt eine feste Rangfolge:</p>
     <div class="wissen-box">
       <span class="box-label">Rangfolge</span>
@@ -76,12 +120,49 @@
       </div>
       <div id="rang-mount"></div>
     </div>
+
+    <div class="achtung-box">
+      <span class="box-label">Achtung — häufiger Fehler</span>
+      Regel 3 wird oft übersehen: Stehen mehrere Punktrechnungen (oder mehrere Strichrechnungen) nebeneinander, wird <strong>streng von links nach rechts</strong> gerechnet. Weil Division und Subtraktion nicht kommutativ sind (Abschnitt&nbsp;2), ändert eine andere Reihenfolge das Ergebnis.
+    </div>
+    <div class="widget">
+      <p style="margin-top:0">Beispiel: 24 : 4 · 2 — die beiden möglichen Reihenfolgen im Vergleich:</p>
+      <div id="rang-gleich-mount"></div>
+    </div>
     <div class="quiz" id="quiz-rangfolge"></div>
   </section>
 
-  <!-- 3. Schriftliche Addition und Subtraktion -->
+  <!-- 4. Überschlagsrechnen -->
+  <section class="card" id="sec-ueberschlag">
+    <h2>4. Überschlagsrechnen</h2>
+    <p>Bevor man genau rechnet, verschafft man sich mit einem <span class="term">Überschlag</span> eine schnelle Vorstellung von der Größenordnung des Ergebnisses. Dazu werden die Zahlen zunächst <a href="../01-natuerliche-zahlen-und-groessen/index.html#sec-runden">gerundet</a> und dann im Kopf verrechnet.</p>
+    <div class="wissen-box">
+      <span class="box-label">Merke</span>
+      Der Überschlag ersetzt das genaue Rechnen nicht — er <strong>kontrolliert</strong> es. Weicht das genaue Ergebnis stark vom Überschlag ab, steckt meist ein Stellenwert- oder Übertragsfehler darin.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <input type="number" id="ue-a" value="4837" min="0" max="99999" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <select id="ue-op" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <option value="add">+</option>
+          <option value="sub">−</option>
+          <option value="mul">·</option>
+        </select>
+        <input type="number" id="ue-b" value="2695" min="0" max="99999" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <select id="ue-stelle" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <option value="10">auf Zehner runden</option>
+          <option value="100">auf Hunderter runden</option>
+          <option value="1000" selected>auf Tausender runden</option>
+        </select>
+      </div>
+      <div id="ue-mount" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-ueberschlag"></div>
+  </section>
+
+  <!-- 5. Schriftliche Addition und Subtraktion -->
   <section class="card" id="sec-schriftlich-addition">
-    <h2>3. Schriftliche Addition und Subtraktion</h2>
+    <h2>5. Schriftliche Addition und Subtraktion</h2>
     <p>Bei der <span class="term">schriftlichen Addition</span> werden die Zahlen stellengerecht untereinandergeschrieben und spaltenweise von rechts nach links addiert. Ist eine Spaltensumme 10 oder mehr, wird ein <span class="term">Übertrag</span> in die nächste Spalte notiert.</p>
     <div class="widget">
       <div class="btn-row">
@@ -101,13 +182,18 @@
       <div class="schriftlich-wrap" id="sub-mount"></div>
       <p class="progress-note" id="sub-hinweis"></p>
     </div>
+
+    <div class="wissen-box">
+      <span class="box-label">Warum funktioniert das?</span>
+      Beide Verfahren sind nichts anderes als <a href="../01-natuerliche-zahlen-und-groessen/index.html#sec-stellenwertsystem">Stellenwert-Rechnen</a>: Ein <strong>Übertrag</strong> entsteht, wenn 10 Einer zu 1 Zehner <em>gebündelt</em> werden (10 Zehner zu 1 Hunderter usw.) — der Übertrag ist genau dieses eine neue Bündel. Beim <strong>Entbündeln</strong> läuft es rückwärts: 1 Zehner wird in 10 Einer zerlegt, deshalb bekommt die rechte Spalte 10 dazu und die linke verliert 1. Genau deshalb muss man stellengerecht untereinanderschreiben — sonst würde man Einer mit Zehnern verrechnen.
+    </div>
     <div class="quiz" id="quiz-schriftlich-addition"></div>
   </section>
 
-  <!-- 4. Schriftliche Multiplikation -->
+  <!-- 6. Schriftliche Multiplikation -->
   <section class="card" id="sec-schriftlich-multiplikation">
-    <h2>4. Schriftliche Multiplikation</h2>
-    <p>Bei der schriftlichen Multiplikation mit einer einstelligen Zahl wird jede Ziffer von rechts nach links mit dem Faktor multipliziert; ist das Teilprodukt 10 oder mehr, wird auch hier ein Übertrag notiert.</p>
+    <h2>6. Schriftliche Multiplikation</h2>
+    <p>Bei der schriftlichen Multiplikation mit einer <strong>einstelligen</strong> Zahl wird jede Ziffer von rechts nach links mit dem Faktor multipliziert; ist das Teilprodukt 10 oder mehr, wird auch hier ein Übertrag notiert.</p>
     <div class="widget">
       <div class="btn-row">
         <input type="number" id="mul-a" value="3247" min="0" max="99999" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
@@ -115,14 +201,23 @@
         <input type="number" id="mul-b" value="6" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
       </div>
       <div class="schriftlich-wrap" id="mul-mount"></div>
-      <p class="progress-note">Bei einem mehrstelligen zweiten Faktor (z.&nbsp;B. 234 · 56) berechnet man mehrere Teilprodukte (234 · 6 und 234 · 50) und addiert sie — siehe Formelsammlung.</p>
+    </div>
+    <p>Ist der zweite Faktor <strong>mehrstellig</strong>, zerlegt man ihn mit dem <a href="#sec-rechengesetze">Distributivgesetz</a> in seine Stellenwerte und berechnet für jede Ziffer ein <span class="term">Teilprodukt</span>. Die Teilprodukte werden stellengerecht untereinandergeschrieben und addiert:</p>
+    <div class="widget">
+      <div class="btn-row">
+        <input type="number" id="mulm-a" value="234" min="1" max="9999" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <span style="align-self:center">·</span>
+        <input type="number" id="mulm-b" value="56" min="1" max="999" style="width:6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+      </div>
+      <div class="schriftlich-wrap" id="mulm-mount"></div>
+      <div id="mulm-erklaerung" class="event-result"></div>
     </div>
     <div class="quiz" id="quiz-schriftlich-multiplikation"></div>
   </section>
 
-  <!-- 5. Division mit Rest -->
+  <!-- 7. Division -->
   <section class="card" id="sec-division">
-    <h2>5. Division mit Rest</h2>
+    <h2>7. Division mit Rest und schriftliche Division</h2>
     <p>Geht eine Division nicht ohne Rest auf, bleibt ein <span class="term">Rest</span> übrig, der kleiner als der Divisor ist. Es gilt immer die Umkehrprobe:</p>
     <div class="formula-block">Dividend : Divisor = Quotient Rest r, mit Divisor · Quotient + r = Dividend und 0 ≤ r &lt; Divisor</div>
     <div class="widget">
@@ -133,21 +228,51 @@
       </div>
       <div id="div-ergebnis" class="event-result"></div>
     </div>
+
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Division durch null</span>
+      Durch <strong>0 darf man nie dividieren</strong>: Der Term 7 : 0 hat kein Ergebnis. Denn nach der Umkehrprobe müsste eine Zahl q existieren mit 0 · q = 7 — aber 0 · q ist für jedes q gleich 0. Die Division durch 0 ist deshalb <strong>nicht definiert</strong>. (Dagegen ist 0 : 7 = 0 völlig in Ordnung.)
+    </div>
+
+    <p>Bei größeren Zahlen rechnet man <span class="term">schriftlich</span>: Man teilt von links beginnend Stelle für Stelle, zieht das jeweilige Produkt ab und „holt“ die nächste Ziffer herunter.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <input type="number" id="ldiv-a" value="4536" min="1" max="999999" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <span style="align-self:center">:</span>
+        <input type="number" id="ldiv-b" value="7" min="1" max="99" style="width:5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+      </div>
+      <div class="schriftlich-wrap" id="ldiv-mount"></div>
+      <div id="ldiv-probe" class="event-result"></div>
+    </div>
     <div class="quiz" id="quiz-division"></div>
   </section>
 
-  <!-- 6. Formelsammlung -->
+  <!-- 8. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>8. Innermathematische Zusammenhänge</h2>
+    <p>Dieses Thema steht nicht für sich — es hängt in beide Richtungen mit anderen Themen zusammen:</p>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../01-natuerliche-zahlen-und-groessen/index.html#sec-stellenwertsystem">Stellenwertsystem</a> — Übertrag und Entbündeln sind Bündeln und Entbündeln von Stellenwerten. Ohne stellengerechtes Untereinanderschreiben funktioniert kein schriftliches Verfahren.</li>
+      <li><strong>Baut auf:</strong> <a href="../01-natuerliche-zahlen-und-groessen/index.html#sec-runden">Runden</a> — der Überschlag in Abschnitt 4 ist angewandtes Runden und dient der Ergebniskontrolle.</li>
+      <li><strong>Baut auf:</strong> <a href="../01-natuerliche-zahlen-und-groessen/index.html#sec-groessen">Größen und Einheiten</a> — in Sachaufgaben wird mit Größen gerechnet; vorher müssen alle Angaben in derselben Einheit stehen.</li>
+      <li><strong>Umkehroperationen:</strong> Addition und Subtraktion sind Umkehrungen voneinander, ebenso Multiplikation und Division. Genau darauf beruht jede <em>Probe</em> — und später das Lösen von Gleichungen durch Äquivalenzumformung.</li>
+      <li><strong>Führt weiter zu:</strong> Das Distributivgesetz aus Abschnitt 2 ist dasselbe Gesetz, mit dem man später <em>Terme</em> ausmultipliziert und ausklammert (a · (b + c) = a · b + a · c) — dort stehen dann Variablen statt Zahlen.</li>
+      <li><strong>Führt weiter zu:</strong> Die Division mit Rest ist die Grundlage für <em>Teilbarkeit</em> (Rest 0 bedeutet: der Divisor ist ein Teiler) und damit für Primfaktorzerlegung, Kürzen und das Rechnen mit Brüchen.</li>
+    </ul>
+  </section>
+
+  <!-- 9. Formelsammlung -->
   <section class="card" id="sec-formelsammlung">
-    <h2>6. Formelsammlung</h2>
+    <h2>9. Formelsammlung</h2>
     <p>Alle Regeln dieses Lernpfads mit Beispielen und Visualisierungen auf zwei Seiten zusammengefasst — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
     <div class="btn-row">
       <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
     </div>
   </section>
 
-  <!-- 7. Übungsaufgaben -->
+  <!-- 10. Übungsaufgaben -->
   <section class="card" id="sec-uebungen">
-    <h2>7. Übungsaufgaben</h2>
+    <h2>10. Übungsaufgaben</h2>
     <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
     <div id="exercises-mount"></div>
   </section>
@@ -159,6 +284,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=1"></script>
+<script type="module" src="lernpfad.js?v=2"></script>
 </body>
 </html>

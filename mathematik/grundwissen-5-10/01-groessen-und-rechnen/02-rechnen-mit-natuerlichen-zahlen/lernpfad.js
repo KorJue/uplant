@@ -1,8 +1,8 @@
 // Selbstlernpfad "Rechnen mit natürlichen Zahlen" (Grundwissen Klasse 5-10). Rein clientseitiges
 // Vanilla-JS, ohne Build-Schritt oder externe Bibliotheken — wie der Rest der Seite. Aufbau: kleine
-// DOM/SVG-Helfer, dann je ein Abschnitt (Rechengesetze, Rangfolge, schriftliche Addition/
-// Subtraktion, schriftliche Multiplikation, Division mit Rest), zuletzt die gestaffelten
-// Übungsaufgaben (derselbe Baustein wie im Lernpfad "Natürliche Zahlen und Größen").
+// DOM/SVG-Helfer, dann je ein Abschnitt (Fachbegriffe, Rechengesetze, Rangfolge, Überschlag,
+// schriftliche Addition/Subtraktion, schriftliche Multiplikation, Division), zuletzt die
+// gestaffelten Übungsaufgaben (derselbe Baustein wie im Lernpfad "Natürliche Zahlen und Größen").
 
 "use strict";
 
@@ -86,7 +86,72 @@ function mountQuiz(container, { q, options, correct, explain }) {
   container.appendChild(feedback);
 }
 
-// ================= 1. Rechengesetze: Distributivgesetz-Flächenmodell =================
+// ================= 1. Fachbegriffe der Rechenarten =================
+
+const FACHBEGRIFFE = {
+  add: { zeichen: "+", teile: ["Summand", "Summand"], ergebnis: "Summe" },
+  sub: { zeichen: "−", teile: ["Minuend", "Subtrahend"], ergebnis: "Differenz" },
+  mul: { zeichen: "·", teile: ["Faktor", "Faktor"], ergebnis: "Produkt" },
+  div: { zeichen: ":", teile: ["Dividend", "Divisor"], ergebnis: "Quotient" },
+};
+
+function renderFachbegriffe() {
+  const a = clampInt(document.getElementById("fb-a").value, 0, 9999);
+  const b = clampInt(document.getElementById("fb-b").value, 1, 9999);
+  const op = document.getElementById("fb-op").value;
+  const def = FACHBEGRIFFE[op];
+  const mount = document.getElementById("fb-mount");
+  mount.innerHTML = "";
+
+  let ergebnisText;
+  let hinweis = "";
+  if (op === "add") {
+    ergebnisText = String(a + b);
+  } else if (op === "mul") {
+    ergebnisText = String(a * b);
+  } else if (op === "sub") {
+    if (a < b) {
+      ergebnisText = "—";
+      hinweis =
+        "In den natürlichen Zahlen ℕ gibt es diese Differenz nicht, denn der Minuend ist kleiner als der Subtrahend. Dafür braucht man die ganzen Zahlen ℤ.";
+    } else {
+      ergebnisText = String(a - b);
+    }
+  } else {
+    const q = Math.floor(a / b);
+    const r = a - q * b;
+    ergebnisText = r === 0 ? String(q) : q + " Rest " + r;
+    if (r !== 0) hinweis = "Die Division geht nicht auf — es bleibt ein Rest (siehe Abschnitt 7).";
+  }
+
+  const teil = (wert, name) =>
+    el("div", { class: "begriff-teil" }, [el("div", { class: "begriff-wert" }, wert), el("div", { class: "begriff-name" }, name)]);
+  const zeichen = (z) => el("div", { class: "begriff-op" }, z);
+
+  mount.appendChild(
+    el("div", { class: "begriff-anzeige" }, [
+      teil(String(a), def.teile[0]),
+      zeichen(def.zeichen),
+      teil(String(b), def.teile[1]),
+      zeichen("="),
+      teil(ergebnisText, def.ergebnis),
+    ])
+  );
+  mount.appendChild(
+    el(
+      "p",
+      { class: "progress-note" },
+      hinweis || `Der gesamte Rechenausdruck ${a} ${def.zeichen} ${b} heißt Term; ${ergebnisText} ist sein Wert.`
+    )
+  );
+}
+function initFachbegriffe() {
+  ["fb-a", "fb-b"].forEach((id) => document.getElementById(id).addEventListener("input", renderFachbegriffe));
+  document.getElementById("fb-op").addEventListener("change", renderFachbegriffe);
+  renderFachbegriffe();
+}
+
+// ================= 2. Rechengesetze =================
 
 function renderDistributiv() {
   const a = clampInt(document.getElementById("dist-a").value, 1, 9);
@@ -129,12 +194,53 @@ function renderDistributiv() {
 
   document.getElementById("dist-formel").innerHTML = `<strong>${a} · (${b} + ${c}) = ${a} · ${b} + ${a} · ${c} = ${a * b} + ${a * c} = ${a * (b + c)}</strong>`;
 }
+
+// Gegenbeispiel: Subtraktion und Division sind nicht kommutativ. Wichtig ist der Sonderfall a = b —
+// dann stimmen beide Ergebnisse zufällig überein und taugen NICHT als Gegenbeispiel.
+function renderGegenbeispiel() {
+  const a = clampInt(document.getElementById("gg-a").value, 1, 99);
+  const b = clampInt(document.getElementById("gg-b").value, 1, 99);
+  const mount = document.getElementById("gg-mount");
+  mount.innerHTML = "";
+
+  if (a === b) {
+    mount.appendChild(
+      el(
+        "p",
+        { class: "progress-note" },
+        `Für a = b = ${a} stimmen beide Reihenfolgen zufällig überein (${a} − ${b} = ${b} − ${a} = 0). Ein Gegenbeispiel braucht zwei verschiedene Zahlen — ändere a oder b.`
+      )
+    );
+    return;
+  }
+
+  const subAB = a >= b ? String(a - b) : "in ℕ nicht definiert";
+  const subBA = b >= a ? String(b - a) : "in ℕ nicht definiert";
+  const row = el("div", { class: "widget-row" }, [
+    el("div", { class: "widget-col" }, [
+      el("p", {}, [el("strong", {}, "Subtraktion")]),
+      el("p", {}, `${a} − ${b} = ${subAB}`),
+      el("p", {}, `${b} − ${a} = ${subBA}`),
+      el("p", { class: "progress-note" }, "⇒ verschieden: a − b ≠ b − a"),
+    ]),
+    el("div", { class: "widget-col" }, [
+      el("p", {}, [el("strong", {}, "Division")]),
+      el("p", {}, `${a} : ${b} = ${num(a / b)}`),
+      el("p", {}, `${b} : ${a} = ${num(b / a)}`),
+      el("p", { class: "progress-note" }, "⇒ verschieden: a : b ≠ b : a"),
+    ]),
+  ]);
+  mount.appendChild(row);
+}
+
 function initRechengesetze() {
   ["dist-a", "dist-b", "dist-c"].forEach((id) => document.getElementById(id).addEventListener("input", renderDistributiv));
   renderDistributiv();
+  ["gg-a", "gg-b"].forEach((id) => document.getElementById(id).addEventListener("input", renderGegenbeispiel));
+  renderGegenbeispiel();
 }
 
-// ================= 2. Rangfolge =================
+// ================= 3. Rangfolge =================
 
 function renderRangfolge() {
   const a = Number(document.getElementById("rang-a").value) || 0;
@@ -167,12 +273,73 @@ function renderRangfolge() {
     )
   );
 }
+
+// Gleicher Rang ⇒ von links nach rechts. Feste Zahlen, weil der Term im Fließtext genannt wird.
+function renderRangfolgeGleich() {
+  const mount = document.getElementById("rang-gleich-mount");
+  mount.innerHTML = "";
+  mount.appendChild(
+    el("div", { class: "widget-row" }, [
+      el("div", { class: "widget-col" }, [
+        el("p", {}, [el("strong", {}, "✓ Richtig: von links nach rechts")]),
+        el("p", {}, "① 24 : 4 = 6"),
+        el("p", {}, ["② 6 · 2 = ", el("strong", {}, "12")]),
+      ]),
+      el("div", { class: "widget-col" }, [
+        el("p", {}, [el("strong", {}, "✗ Falsch: erst die Multiplikation")]),
+        el("p", {}, "① 4 · 2 = 8"),
+        el("p", {}, ["② 24 : 8 = ", el("strong", {}, "3")]),
+      ]),
+    ])
+  );
+  mount.appendChild(
+    el("p", { class: "progress-note" }, "Beide Wege liefern verschiedene Ergebnisse — nur der linke ist richtig. Wer sichergehen will, setzt Klammern: (24 : 4) · 2.")
+  );
+}
+
 function initRangfolge() {
   ["rang-a", "rang-b", "rang-c"].forEach((id) => document.getElementById(id).addEventListener("input", renderRangfolge));
   renderRangfolge();
+  renderRangfolgeGleich();
 }
 
-// ================= 3. Schriftliche Addition und Subtraktion =================
+// ================= 4. Überschlagsrechnen =================
+
+function rundeAufStelle(n, stelle) {
+  return Math.round(n / stelle) * stelle;
+}
+
+function renderUeberschlag() {
+  const a = clampInt(document.getElementById("ue-a").value, 0, 99999);
+  const b = clampInt(document.getElementById("ue-b").value, 0, 99999);
+  const op = document.getElementById("ue-op").value;
+  const stelle = Number(document.getElementById("ue-stelle").value);
+  const zeichen = { add: "+", sub: "−", mul: "·" }[op];
+  const rechne = { add: (x, y) => x + y, sub: (x, y) => x - y, mul: (x, y) => x * y }[op];
+
+  const ra = rundeAufStelle(a, stelle);
+  const rb = rundeAufStelle(b, stelle);
+  const exakt = rechne(a, b);
+  const ueber = rechne(ra, rb);
+  const abw = Math.abs(exakt - ueber);
+  const prozent = exakt !== 0 ? (abw / Math.abs(exakt)) * 100 : 0;
+
+  let html =
+    `Überschlag: ${num(ra)} ${zeichen} ${num(rb)} ≈ <strong>${num(ueber)}</strong><br>` +
+    `Genau: ${num(a)} ${zeichen} ${num(b)} = <strong>${num(exakt)}</strong><br>` +
+    `Abweichung: ${num(abw)}${exakt !== 0 ? " (das sind " + num(prozent, 1) + " % des genauen Werts)" : ""}`;
+  if (op === "sub" && a < b) {
+    html += `<br><span style="color:#b3650a">Hinweis: In ℕ ist ${num(a)} − ${num(b)} nicht definiert — der Minuend muss mindestens so groß sein wie der Subtrahend.</span>`;
+  }
+  document.getElementById("ue-mount").innerHTML = html;
+}
+function initUeberschlag() {
+  ["ue-a", "ue-b"].forEach((id) => document.getElementById(id).addEventListener("input", renderUeberschlag));
+  ["ue-op", "ue-stelle"].forEach((id) => document.getElementById(id).addEventListener("change", renderUeberschlag));
+  renderUeberschlag();
+}
+
+// ================= 5. Schriftliche Addition und Subtraktion =================
 
 function computeAddition(a, b) {
   const aStr = String(a),
@@ -223,7 +390,7 @@ function renderAdditionTable(mountId, a, b) {
   }
   table.appendChild(aRow);
 
-  const bRow = el("tr", { class: "rechenzeile" });
+  const bRow = el("tr");
   bRow.appendChild(el("td", { class: "op" }, "+"));
   for (let j = 0; j < cols; j++) {
     const realIdx = finalCarry ? j - 1 : j;
@@ -232,7 +399,7 @@ function renderAdditionTable(mountId, a, b) {
   }
   table.appendChild(bRow);
 
-  const resRow = el("tr");
+  const resRow = el("tr", { class: "rechenzeile" });
   resRow.appendChild(el("td"));
   for (let j = 0; j < cols; j++) {
     const realIdx = finalCarry ? j - 1 : j;
@@ -271,6 +438,11 @@ function computeSubtraction(a, b) {
   return { da, db, diff, borrowFrom, len };
 }
 
+// Prüft, ob bei a − b mindestens einmal entbündelt werden muss.
+function brauchtEntbuendeln(a, b) {
+  return computeSubtraction(a, b).borrowFrom.some(Boolean);
+}
+
 function renderSubtractionTable(mountId, a, b) {
   const mount = document.getElementById(mountId);
   const hinweis = document.getElementById("sub-hinweis");
@@ -298,12 +470,12 @@ function renderSubtractionTable(mountId, a, b) {
   da.forEach((d) => aRow.appendChild(el("td", { class: "digit" }, String(d))));
   table.appendChild(aRow);
 
-  const bRow = el("tr", { class: "rechenzeile" });
+  const bRow = el("tr");
   bRow.appendChild(el("td", { class: "op" }, "−"));
   db.forEach((d) => bRow.appendChild(el("td", { class: "digit" }, String(d))));
   table.appendChild(bRow);
 
-  const resRow = el("tr");
+  const resRow = el("tr", { class: "rechenzeile" });
   resRow.appendChild(el("td"));
   diff.forEach((d) => resRow.appendChild(el("td", { class: "digit", style: "color:var(--accent-dark)" }, String(d))));
   table.appendChild(resRow);
@@ -330,7 +502,7 @@ function initSchriftlichAddition() {
   refreshSub();
 }
 
-// ================= 4. Schriftliche Multiplikation =================
+// ================= 6. Schriftliche Multiplikation =================
 
 function computeMultiplication(a, m) {
   const digits = String(a).split("").map(Number);
@@ -371,7 +543,7 @@ function renderMultiplicationTable(mountId, a, m) {
   }
   table.appendChild(aRow);
 
-  const bRow = el("tr", { class: "rechenzeile" });
+  const bRow = el("tr");
   bRow.appendChild(el("td", { class: "op" }, "·"));
   for (let j = 0; j < cols; j++) {
     const realIdx = finalCarry ? j - 1 : j;
@@ -379,7 +551,7 @@ function renderMultiplicationTable(mountId, a, m) {
   }
   table.appendChild(bRow);
 
-  const resRow = el("tr");
+  const resRow = el("tr", { class: "rechenzeile" });
   resRow.appendChild(el("td"));
   for (let j = 0; j < cols; j++) {
     const realIdx = finalCarry ? j - 1 : j;
@@ -391,6 +563,67 @@ function renderMultiplicationTable(mountId, a, m) {
   mount.appendChild(table);
 }
 
+// Mehrstelliger zweiter Faktor: je Ziffer ein Teilprodukt, stellengerecht eingerückt.
+function computeTeilprodukte(a, b) {
+  const bStr = String(b);
+  const m = bStr.length;
+  const cols = String(a).length + m; // reicht immer: das Produkt hat höchstens so viele Stellen
+  const teile = [];
+  for (let j = 0; j < m; j++) {
+    const ziffer = Number(bStr[j]);
+    const shift = m - 1 - j; // Stellenverschiebung nach links
+    teile.push({ ziffer, shift, produkt: a * ziffer, stellenwert: Math.pow(10, shift) });
+  }
+  return { teile, cols, ergebnis: a * b };
+}
+
+function renderTeilproduktTabelle(mountId, a, b) {
+  const { teile, cols, ergebnis } = computeTeilprodukte(a, b);
+  const mount = document.getElementById(mountId);
+  mount.innerHTML = "";
+  const table = el("table", { class: "schriftlich-tabelle" });
+
+  // Kopfzeile: der Rechenausdruck über die volle Breite
+  const head = el("tr");
+  head.appendChild(el("td", { class: "op" }, ""));
+  const headCell = el("td", { colspan: String(cols), style: "text-align:right;font-weight:700;padding-right:0.2rem" }, `${a.toLocaleString("de-DE")} · ${b.toLocaleString("de-DE")}`);
+  head.appendChild(headCell);
+  table.appendChild(head);
+
+  // Je Ziffer des zweiten Faktors eine Teilproduktzeile, rechtsbündig an Spalte (cols-1-shift)
+  teile.forEach((t, idx) => {
+    const str = String(t.produkt);
+    const endCol = cols - 1 - t.shift;
+    const startCol = endCol - str.length + 1;
+    const row = el("tr");
+    row.appendChild(el("td", { class: "op" }, idx === teile.length - 1 ? "+" : ""));
+    for (let c = 0; c < cols; c++) {
+      const inside = c >= startCol && c <= endCol;
+      row.appendChild(el("td", { class: inside ? "digit" : "blank" }, inside ? str[c - startCol] : ""));
+    }
+    table.appendChild(row);
+  });
+
+  // Ergebniszeile
+  const resStr = String(ergebnis);
+  const resStart = cols - resStr.length;
+  const resRow = el("tr", { class: "rechenzeile" });
+  resRow.appendChild(el("td"));
+  for (let c = 0; c < cols; c++) {
+    const inside = c >= resStart;
+    resRow.appendChild(el("td", { class: inside ? "digit" : "blank", style: inside ? "color:var(--accent-dark)" : "" }, inside ? resStr[c - resStart] : ""));
+  }
+  table.appendChild(resRow);
+
+  mount.appendChild(table);
+
+  // Erklärung über das Distributivgesetz
+  const summanden = teile.map((t) => `${a.toLocaleString("de-DE")} · ${(t.ziffer * t.stellenwert).toLocaleString("de-DE")}`);
+  const werte = teile.map((t) => (t.produkt * t.stellenwert).toLocaleString("de-DE"));
+  document.getElementById("mulm-erklaerung").innerHTML =
+    `${a.toLocaleString("de-DE")} · ${b.toLocaleString("de-DE")} = ${summanden.join(" + ")} = ${werte.join(" + ")} = <strong>${ergebnis.toLocaleString("de-DE")}</strong>`;
+}
+
 function initSchriftlichMultiplikation() {
   function refresh() {
     const a = clampInt(document.getElementById("mul-a").value, 0, 99999);
@@ -400,9 +633,18 @@ function initSchriftlichMultiplikation() {
   document.getElementById("mul-a").addEventListener("input", refresh);
   document.getElementById("mul-b").addEventListener("input", refresh);
   refresh();
+
+  function refreshMehr() {
+    const a = clampInt(document.getElementById("mulm-a").value, 1, 9999);
+    const b = clampInt(document.getElementById("mulm-b").value, 1, 999);
+    renderTeilproduktTabelle("mulm-mount", a, b);
+  }
+  document.getElementById("mulm-a").addEventListener("input", refreshMehr);
+  document.getElementById("mulm-b").addEventListener("input", refreshMehr);
+  refreshMehr();
 }
 
-// ================= 5. Division mit Rest =================
+// ================= 7. Division mit Rest und schriftliche Division =================
 
 function initDivision() {
   const aInput = document.getElementById("div-a");
@@ -422,7 +664,104 @@ function initDivision() {
   refresh();
 }
 
-// ================= 7. Gestaffelte Übungsaufgaben =================
+function computeLangeDivision(a, b) {
+  const digits = String(a).split("").map(Number);
+  const n = digits.length;
+  const schritte = [];
+  let rem = 0;
+  for (let i = 0; i < n; i++) {
+    const cur = rem * 10 + digits[i];
+    const q = Math.floor(cur / b);
+    const prod = q * b;
+    rem = cur - prod;
+    schritte.push({ cur, q, prod, rem });
+  }
+  return { digits, n, schritte, quotient: Math.floor(a / b), rest: rem };
+}
+
+function renderLangeDivision(mountId, a, b) {
+  const mount = document.getElementById(mountId);
+  mount.innerHTML = "";
+  const { digits, n, schritte, quotient, rest } = computeLangeDivision(a, b);
+  // Spalten: 1 Vorzeichenspalte + n Ziffernspalten (Ziffer i liegt in Spalte i+1) + 1 Suffixspalte
+  const digitCols = n + 1;
+  const table = el("table", { class: "division-tabelle" });
+
+  function zeile(fill, suffix) {
+    const tr = el("tr");
+    for (let c = 0; c < digitCols; c++) tr.appendChild(fill(c));
+    tr.appendChild(suffix || el("td"));
+    return tr;
+  }
+
+  // Zeile 1: Dividend, dahinter " : Divisor = Quotient [Rest r]"
+  table.appendChild(
+    zeile(
+      (c) => (c === 0 ? el("td") : el("td", { class: "digit" }, String(digits[c - 1]))),
+      el("td", { class: "dq" }, ` : ${b.toLocaleString("de-DE")} = ${quotient.toLocaleString("de-DE")}${rest !== 0 ? " Rest " + rest.toLocaleString("de-DE") : ""}`)
+    )
+  );
+
+  const s = schritte.findIndex((st) => st.q > 0);
+  if (s === -1) {
+    // Der Dividend ist kleiner als der Divisor — es gibt keinen Rechenschritt.
+    mount.appendChild(table);
+    document.getElementById("ldiv-probe").innerHTML =
+      `${a.toLocaleString("de-DE")} ist kleiner als ${b.toLocaleString("de-DE")}: Der Quotient ist 0, der ganze Dividend bleibt als Rest übrig.`;
+    return;
+  }
+
+  for (let k = s; k < n; k++) {
+    const st = schritte[k];
+    if (st.q === 0) continue; // Ziffer wird nur heruntergeholt, es wird nichts abgezogen
+    // Wertzeile: beim ersten Schritt steht der Wert schon im Dividenden
+    if (k > s) {
+      const cur = String(st.cur);
+      const endCol = k + 1;
+      const startCol = endCol - cur.length + 1;
+      table.appendChild(
+        zeile((c) => (c >= startCol && c <= endCol ? el("td", { class: "digit" }, cur[c - startCol]) : el("td")))
+      );
+    }
+    // Produktzeile mit Minuszeichen und Abschlussstrich
+    const prod = String(st.prod);
+    const endCol = k + 1;
+    const startCol = endCol - prod.length + 1;
+    table.appendChild(
+      zeile((c) => {
+        if (c === startCol - 1) return el("td", { class: "minus ustrich" }, "−");
+        if (c >= startCol && c <= endCol) return el("td", { class: "digit ustrich" }, prod[c - startCol]);
+        return el("td");
+      })
+    );
+  }
+
+  // Restzeile
+  const restStr = String(rest);
+  const restEnd = n;
+  const restStart = restEnd - restStr.length + 1;
+  table.appendChild(
+    zeile((c) => (c >= restStart && c <= restEnd ? el("td", { class: "digit rest" }, restStr[c - restStart]) : el("td")))
+  );
+
+  mount.appendChild(table);
+
+  document.getElementById("ldiv-probe").innerHTML =
+    `Probe: ${b.toLocaleString("de-DE")} · ${quotient.toLocaleString("de-DE")}${rest !== 0 ? " + " + rest.toLocaleString("de-DE") : ""} = ${a.toLocaleString("de-DE")} ✓`;
+}
+
+function initLangeDivision() {
+  function refresh() {
+    const a = clampInt(document.getElementById("ldiv-a").value, 1, 999999);
+    const b = clampInt(document.getElementById("ldiv-b").value, 1, 99);
+    renderLangeDivision("ldiv-mount", a, b);
+  }
+  document.getElementById("ldiv-a").addEventListener("input", refresh);
+  document.getElementById("ldiv-b").addEventListener("input", refresh);
+  refresh();
+}
+
+// ================= 10. Gestaffelte Übungsaufgaben =================
 // Wiederverwendbarer Baustein (identisch zum Lernpfad "Natürliche Zahlen und Größen"): Aufgabe 1
 // (einfach) ist immer sichtbar, Aufgabe 2-4 (mittel/schwierig/komplex) liegen hinter Reitern. Jede
 // Aufgabe hat einen Würfel-Knopf, der dieselbe Aufgabenart mit neuen Zufallszahlen neu stellt. Beim
@@ -512,6 +851,7 @@ function generateAufgabe1() {
       : `Punkt vor Strich: ${b} · ${c} = ${b * c}. Dann: ${a} + ${b * c} = <strong>${correct}</strong>`,
   };
 }
+
 function generateAufgabe2() {
   const a = randInt(1000, 8999);
   const b = randInt(1000, 8999);
@@ -524,24 +864,30 @@ function generateAufgabe2() {
     musterloesungHtml: `Stellengerecht untereinanderschreiben und spaltenweise mit Übertrag addieren: ${a.toLocaleString("de-DE")} + ${b.toLocaleString("de-DE")} = <strong>${correct.toLocaleString("de-DE")}</strong>`,
   };
 }
+
+// Umkehraufgabe: aus Minuend und Differenz den Subtrahenden bestimmen. Das verlangt, den
+// Zusammenhang Minuend − Subtrahend = Differenz zu erkennen, statt nur ein Verfahren abzuarbeiten.
+// Die Zahlen werden KONSTRUKTIV erzeugt (kein Verwerfen-und-neu-Ziehen): Sind die Einerziffern von
+// Subtrahend und Differenz zusammen mindestens 10, entsteht bei s + d ein Übertrag — und genau dann
+// muss bei m − d entbündelt werden. So terminiert die Erzeugung garantiert.
 function generateAufgabe3() {
-  // b so konstruiert, dass beim Subtrahieren garantiert entbündelt werden muss. a = 9999 ist
-  // ausgeschlossen: mit lauter Neunen kann keine Ziffer von b je größer sein, sonst würde die
-  // Schleife unten nie enden.
-  const a = randInt(4000, 9998);
-  let b;
-  do {
-    b = randInt(1000, a);
-  } while (!String(a).split("").some((d, i) => Number(d) < Number(String(b).padStart(String(a).length, "0")[i])));
-  const correct = a - b;
+  const u1 = randInt(1, 9);
+  const u2 = randInt(10 - u1, 9);
+  const s = randInt(1, 8) * 1000 + randInt(0, 9) * 100 + randInt(0, 9) * 10 + u1;
+  const d = randInt(1, 8) * 1000 + randInt(0, 9) * 100 + randInt(0, 9) * 10 + u2;
+  const m = s + d;
   return {
-    promptHtml: `Berechne schriftlich: ${a.toLocaleString("de-DE")} − ${b.toLocaleString("de-DE")}`,
-    correct,
+    promptHtml: `Bei einer Subtraktion ist der <strong>Minuend ${m.toLocaleString("de-DE")}</strong>, die <strong>Differenz ${d.toLocaleString("de-DE")}</strong>.<br>Wie heißt der Subtrahend?`,
+    correct: s,
     tolerance: 0.5,
-    placeholder: "Differenz",
-    musterloesungHtml: `Spaltenweise subtrahieren, wo nötig entbündeln (10 von der Nachbarspalte leihen): ${a.toLocaleString("de-DE")} − ${b.toLocaleString("de-DE")} = <strong>${correct.toLocaleString("de-DE")}</strong>`,
+    placeholder: "Subtrahend",
+    musterloesungHtml:
+      `Es gilt Minuend − Subtrahend = Differenz, also ist der Subtrahend = Minuend − Differenz.<br>` +
+      `${m.toLocaleString("de-DE")} − ${d.toLocaleString("de-DE")} = <strong>${s.toLocaleString("de-DE")}</strong> (dabei muss entbündelt werden).<br>` +
+      `Probe: ${s.toLocaleString("de-DE")} + ${d.toLocaleString("de-DE")} = ${m.toLocaleString("de-DE")} ✓`,
   };
 }
+
 function generateAufgabe4() {
   const a = randInt(3, 7),
     b = randInt(20, 40),
@@ -563,7 +909,7 @@ function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Rangfolge anwenden", generate: generateAufgabe1 },
     { schwierigkeit: "mittel", titel: "Aufgabe 2 — Schriftliche Addition", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Schriftliche Subtraktion mit Entbündeln", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Fehlenden Subtrahenden bestimmen", generate: generateAufgabe3 },
     { schwierigkeit: "komplex", titel: "Aufgabe 4 — Mehrschrittige Textaufgabe", generate: generateAufgabe4 },
   ]);
 }
@@ -571,29 +917,56 @@ function initExercises() {
 // ================= Quizze =================
 
 function initQuizzes() {
-  mountQuiz(document.getElementById("quiz-rechengesetze"), {
-    q: "Welches Gesetz besagt, dass a · (b + c) = a · b + a · c gilt?",
-    options: ["Kommutativgesetz", "Assoziativgesetz", "Distributivgesetz", "Kein Gesetz, das ist immer falsch"],
+  mountQuiz(document.getElementById("quiz-fachbegriffe"), {
+    q: "Wie heißt das Ergebnis einer Division?",
+    options: ["Produkt", "Differenz", "Quotient", "Summe"],
     correct: 2,
-    explain: "Das ist das Distributivgesetz — es verbindet Multiplikation und Addition.",
+    explain: "Dividend : Divisor = Quotient. Das Produkt gehört zur Multiplikation, die Differenz zur Subtraktion.",
+  });
+  mountQuiz(document.getElementById("quiz-rechengesetze"), {
+    q: "Für welche Rechenarten gilt das Kommutativgesetz?",
+    options: ["Für alle vier Grundrechenarten", "Nur für Addition und Multiplikation", "Nur für Subtraktion und Division", "Nur für die Addition"],
+    correct: 1,
+    explain: "Nur Addition und Multiplikation sind kommutativ. Bei Subtraktion und Division ändert das Vertauschen das Ergebnis: 12 − 4 = 8, aber 4 − 12 ist in ℕ gar nicht definiert.",
   });
   mountQuiz(document.getElementById("quiz-rangfolge"), {
-    q: "In welcher Reihenfolge wird der Term 5 + 2 · 3 ausgewertet?",
-    options: ["Erst 5 + 2 = 7, dann 7 · 3 = 21", "Erst 2 · 3 = 6, dann 5 + 6 = 11", "Von links nach rechts, egal welche Rechenart", "Das Ergebnis ist immer gleich, egal wie man rechnet"],
+    q: "Welchen Wert hat der Term 24 : 4 · 2?",
+    options: ["3", "12", "48", "Der Term ist nicht eindeutig"],
     correct: 1,
-    explain: "Punkt vor Strich: die Multiplikation 2 · 3 wird zuerst berechnet.",
+    explain: "Division und Multiplikation haben denselben Rang, also wird von links nach rechts gerechnet: 24 : 4 = 6, dann 6 · 2 = 12.",
+  });
+  mountQuiz(document.getElementById("quiz-ueberschlag"), {
+    q: "Wozu dient ein Überschlag?",
+    options: [
+      "Er ersetzt das genaue Rechnen und liefert das endgültige Ergebnis",
+      "Er liefert schnell die Größenordnung und dient der Kontrolle des genauen Ergebnisses",
+      "Er wird nur bei Divisionen gebraucht",
+      "Er macht das Ergebnis genauer",
+    ],
+    correct: 1,
+    explain: "Der Überschlag ist eine Kontrolle: Weicht das genaue Ergebnis stark von ihm ab, steckt meist ein Stellenwert- oder Übertragsfehler in der Rechnung.",
   });
   mountQuiz(document.getElementById("quiz-schriftlich-addition"), {
-    q: "Wann braucht man beim schriftlichen Addieren einen Übertrag?",
-    options: ["Wenn die Spaltensumme 10 oder mehr ergibt", "Wenn eine der beiden Zahlen gerade ist", "Immer, in jeder Spalte", "Nur bei der letzten Spalte"],
-    correct: 0,
-    explain: "Ist die Summe einer Spalte 10 oder größer, wird die Zehnerstelle als Übertrag in die nächste (linke) Spalte notiert.",
+    q: "Was bedeutet ein Übertrag beim schriftlichen Addieren im Stellenwertsystem?",
+    options: [
+      "Dass man sich verrechnet hat",
+      "Dass 10 Einheiten einer Stelle zu 1 Einheit der nächsthöheren Stelle gebündelt werden",
+      "Dass die Zahlen gleich lang sein müssen",
+      "Dass man die Spalte noch einmal rechnen muss",
+    ],
+    correct: 1,
+    explain: "Ein Übertrag ist genau ein neues Bündel: 10 Einer werden zu 1 Zehner, 10 Zehner zu 1 Hunderter usw. Deshalb wandert er eine Spalte nach links.",
   });
   mountQuiz(document.getElementById("quiz-schriftlich-multiplikation"), {
-    q: "Warum entsteht bei der schriftlichen Multiplikation manchmal eine zusätzliche Ziffer am Anfang des Ergebnisses?",
-    options: ["Durch einen Rechenfehler", "Weil ein Übertrag aus der letzten (linken) Spalte übrig bleibt", "Das passiert nie", "Weil man immer eine 1 voranstellt"],
+    q: "Warum wird beim Multiplizieren mit einem mehrstelligen Faktor jedes Teilprodukt anders eingerückt?",
+    options: [
+      "Damit es übersichtlicher aussieht",
+      "Weil jede Ziffer des zweiten Faktors einen anderen Stellenwert hat",
+      "Weil man sonst zu wenig Platz hat",
+      "Das Einrücken ist reine Gewohnheit und ohne Bedeutung",
+    ],
     correct: 1,
-    explain: "Bleibt nach der letzten Spalte noch ein Übertrag übrig, wird er als zusätzliche Ziffer vorangestellt.",
+    explain: "Die 5 in 56 steht für 50. Das Teilprodukt 234 · 5 bedeutet also 234 · 50 — deshalb wird es um eine Stelle nach links versetzt geschrieben.",
   });
   mountQuiz(document.getElementById("quiz-division"), {
     q: "Welche Bedingung muss der Rest r bei einer Division mit Rest erfüllen?",
@@ -606,11 +979,14 @@ function initQuizzes() {
 // ================= Start =================
 
 document.addEventListener("DOMContentLoaded", () => {
+  initFachbegriffe();
   initRechengesetze();
   initRangfolge();
+  initUeberschlag();
   initSchriftlichAddition();
   initSchriftlichMultiplikation();
   initDivision();
+  initLangeDivision();
   initExercises();
   initQuizzes();
 });

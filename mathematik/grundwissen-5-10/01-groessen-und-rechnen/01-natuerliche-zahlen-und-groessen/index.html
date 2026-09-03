@@ -41,7 +41,8 @@
     <p>Unser Zahlensystem ist ein <span class="term">Dezimalsystem</span> (Zehnersystem): Jede Ziffer einer Zahl hat je nach ihrer Position einen anderen <span class="term">Stellenwert</span> — von rechts nach links das Zehnfache der vorherigen Stelle.</p>
     <div class="definition-box">
       <span class="box-label">Definition</span>
-      Die <strong>natürlichen Zahlen</strong> ℕ = {0, 1, 2, 3, …} sind die Zahlen, mit denen man zählt. Jede natürliche Zahl lässt sich eindeutig in eine Summe aus Stellenwerten zerlegen, z.&nbsp;B. 4708 = 4 · 1000 + 7 · 100 + 0 · 10 + 8 · 1.
+      Die <strong>natürlichen Zahlen</strong> ℕ = {0; 1; 2; 3; …} sind die Zahlen, mit denen man zählt. Jede natürliche Zahl lässt sich eindeutig in eine Summe aus Stellenwerten zerlegen, z.&nbsp;B. 4708 = 4 · 1000 + 7 · 100 + 0 · 10 + 8 · 1.<br>
+      <span style="font-size:0.9em;color:var(--muted)">(In Mengen trennt man die Elemente mit einem <strong>Semikolon</strong> — das Komma ist als Dezimaltrennzeichen belegt.)</span>
     </div>
     <p>Gib unten eine Zahl ein (0 bis 999&nbsp;999) und beobachte, wie sie sich auf die Stellenwerttafel verteilt:</p>
     <div class="widget">
@@ -62,6 +63,12 @@
     <div class="wissen-box">
       <span class="box-label">Rundungsregel</span>
       Ist die Nachbarziffer 0, 1, 2, 3 oder 4, wird <strong>abgerundet</strong> (die Rundungsstelle bleibt, alles danach wird 0). Ist sie 5, 6, 7, 8 oder 9, wird <strong>aufgerundet</strong> (die Rundungsstelle wird um 1 erhöht, alles danach wird 0).
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Sonderfall — Übertrag beim Aufrunden</span>
+      Ist die Rundungsstelle selbst eine <strong>9</strong>, kann man sie nicht einfach „um 1 erhöhen“ — es entsteht ein <strong>Übertrag</strong> in die nächsthöhere Stelle:<br>
+      496 auf Zehner: Nachbarziffer 6 → aufrunden, aber 9 + 1 = 10 ⇒ <strong>500</strong> (nicht 4<span style="text-decoration:line-through">10</span>0).<br>
+      9995 auf Zehner: Nachbarziffer 5 → aufrunden ⇒ <strong>10 000</strong> — die Zahl bekommt sogar eine Stelle mehr.
     </div>
     <p>Wähle eine Zahl und eine Rundungsstelle — die entscheidende Nachbarziffer wird farbig markiert:</p>
     <div class="widget">
@@ -116,21 +123,39 @@
       <div id="groessen-treppe-mount"></div>
       <div id="groessen-ergebnis" class="event-result"></div>
     </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Zeit ist kein Zehnersystem</span>
+      Bei Längen, Massen und Geld sind die Stufen 10, 100 oder 1000 groß — bei <strong>Zeiten nicht</strong>: 1&nbsp;min = 60&nbsp;s, 1&nbsp;h = 60&nbsp;min, 1&nbsp;Tag = 24&nbsp;h.<br>
+      Deshalb ist <strong>2,5&nbsp;h = 2&nbsp;h 30&nbsp;min</strong> und <em>nicht</em> 2&nbsp;h 50&nbsp;min: Die Nachkommastelle ist ein Bruchteil <em>einer Stunde</em> (0,5&nbsp;h = 0,5 · 60&nbsp;min = 30&nbsp;min), keine Minutenzahl. Genauso ist 1,75&nbsp;h = 1&nbsp;h 45&nbsp;min.
+    </div>
     <div class="quiz" id="quiz-groessen"></div>
   </section>
 
-  <!-- 5. Formelsammlung -->
+  <!-- 5. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>5. Innermathematische Zusammenhänge</h2>
+    <p>Dieses Thema ist die Grundlage für fast alles, was danach kommt:</p>
+    <ul class="vernetzung-liste">
+      <li><strong>Führt weiter zu:</strong> <a href="../02-rechnen-mit-natuerlichen-zahlen/index.html#sec-schriftlich-addition">Schriftliche Rechenverfahren</a> — Übertrag und Entbündeln sind nichts anderes als Bündeln und Entbündeln im Stellenwertsystem. Nur deshalb muss man stellengerecht untereinanderschreiben.</li>
+      <li><strong>Führt weiter zu:</strong> <a href="../02-rechnen-mit-natuerlichen-zahlen/index.html#sec-ueberschlag">Überschlagsrechnen</a> — angewandtes Runden zur Kontrolle eines Ergebnisses.</li>
+      <li><strong>Führt weiter zu:</strong> Dezimalzahlen setzen die Stellenwerttafel einfach nach rechts fort: nach den Einern kommen Zehntel, Hundertstel, Tausendstel. Die Rundungsregel bleibt dabei wörtlich dieselbe.</li>
+      <li><strong>Führt weiter zu:</strong> Der Zahlenstrahl wird später zur <em>Zahlengeraden</em> erweitert, wenn negative Zahlen dazukommen — die Ordnung „weiter rechts = größer“ gilt dann unverändert weiter.</li>
+      <li><strong>Größen überall:</strong> Maßstab, Prozentrechnung, Flächen- und Volumenberechnung rechnen alle mit Größen — vor jeder Rechnung müssen die Angaben in derselben Einheit stehen.</li>
+    </ul>
+  </section>
+
+  <!-- 6. Formelsammlung -->
   <section class="card" id="sec-formelsammlung">
-    <h2>5. Formelsammlung</h2>
+    <h2>6. Formelsammlung</h2>
     <p>Alle Regeln dieses Lernpfads mit Beispielen und Visualisierungen auf zwei Seiten zusammengefasst — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
     <div class="btn-row">
       <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
     </div>
   </section>
 
-  <!-- 6. Übungsaufgaben -->
+  <!-- 7. Übungsaufgaben -->
   <section class="card" id="sec-uebungen">
-    <h2>6. Übungsaufgaben</h2>
+    <h2>7. Übungsaufgaben</h2>
     <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
     <div id="exercises-mount"></div>
   </section>
@@ -142,6 +167,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=1"></script>
+<script type="module" src="lernpfad.js?v=2"></script>
 </body>
 </html>

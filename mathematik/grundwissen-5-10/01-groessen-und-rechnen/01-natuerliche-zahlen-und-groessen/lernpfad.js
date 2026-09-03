@@ -338,13 +338,30 @@ function initGroessen() {
     const row = el("div", { class: "staircase-row" });
     art.einheiten.forEach((e, i) => {
       if (i > 0) {
-        const faktor = e.faktor / art.einheiten[i - 1].faktor;
-        row.appendChild(el("span", { class: "staircase-arrow" }, "→ ×" + faktor.toLocaleString("de-DE")));
+        // Der Schrittfaktor beschreibt das Größenverhältnis der Einheiten. Für die Umrechnung eines
+        // Messwerts zählt aber die Richtung: nach rechts (größere Einheit) wird DIVIDIERT, nach
+        // links (kleinere Einheit) MULTIPLIZIERT. Beide Richtungen werden deshalb angeschrieben.
+        const faktor = (e.faktor / art.einheiten[i - 1].faktor).toLocaleString("de-DE");
+        row.appendChild(
+          el("span", { class: "staircase-arrow" }, [
+            el("span", { class: "pfeil-groesser" }, "— : " + faktor + " →"),
+            el("span", { class: "pfeil-kleiner" }, "← · " + faktor + " —"),
+          ])
+        );
       }
       const cls = "staircase-unit" + (e.key === vonKey || e.key === zielKey ? " active" : "");
       row.appendChild(el("div", { class: cls }, e.label));
     });
-    treppeMount.appendChild(el("div", { class: "staircase" }, row));
+    const staircase = el("div", { class: "staircase" }, row);
+    staircase.appendChild(
+      el("p", { class: "staircase-legende" }, [
+        el("span", { class: "pfeil-groesser" }, "nach rechts"),
+        " (größere Einheit) ⇒ dividieren · ",
+        el("span", { class: "pfeil-kleiner" }, "nach links"),
+        " (kleinere Einheit) ⇒ multiplizieren",
+      ])
+    );
+    treppeMount.appendChild(staircase);
   }
   function refresh() {
     const art = GROESSEN[artSel.value];
