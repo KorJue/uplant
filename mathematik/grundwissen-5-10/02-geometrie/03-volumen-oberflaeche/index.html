@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Volumen und Oberflächeninhalt</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">2 Geometrie</a><span class="sep">/</span>
+  3 Volumen und Oberflächeninhalt
+</nav>
+<header class="page-header">
+  <h1>Volumen und Oberflächeninhalt</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>An einem Körper lassen sich <strong>drei</strong> verschiedene Größen messen, und alle drei werden gern durcheinandergebracht: die <span class="legende-umfang">Kantenlänge</span> (in cm), der <span class="legende-flaeche">Oberflächeninhalt</span> (in cm²) und das <span class="legende-volumen">Volumen</span> (in cm³). Auf dieser Seite behalten sie durchgehend diese Farben — Oberfläche und Kante genau die, die sie in <a href="../02-flaeche-umfang/index.html">Thema 2</a> als Flächeninhalt und Umfang schon hatten. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>erklären, was ein <span class="term">Volumen</span> ist — und es durch Ausfüllen mit Einheitswürfeln bestimmen</li>
+      <li>Volumen und Oberflächeninhalt von <span class="term">Quader und Würfel</span> berechnen</li>
+      <li>den Oberflächeninhalt am <span class="term">Netz</span> als Summe von sechs Rechtecken lesen</li>
+      <li><span class="term">Raumeinheiten</span> umrechnen — mit dem Faktor 1000 — und Hohlmaße wie Liter zuordnen</li>
+      <li><span class="term">zusammengesetzte Körper</span> durch Zerlegen oder Ergänzen berechnen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../02-flaeche-umfang/index.html">Thema 2</a> den Flächeninhalt des Rechtecks — die Oberfläche besteht aus nichts anderem. Und du wirst sehen, dass sich die Umrechnungsstufe von 10 (Längen) über 100 (Flächen) auf 1000 (Volumen) fortsetzt.</p>
+  </section>
+
+  <!-- 1. Was ist ein Volumen? -->
+  <section class="card" id="sec-ausfuellen">
+    <h2>1. Was ist ein Volumen?</h2>
+    <p>Das Volumen eines Körpers bestimmt man, indem man ihn mit <strong>Einheitswürfeln</strong> lückenlos ausfüllt und diese zählt. Ein Würfel mit 1 cm Kantenlänge hat das Volumen <strong>1 cm³</strong> („ein Kubikzentimeter“).</p>
+    <div class="definition-box">
+      <span class="box-label">Definition</span>
+      Das <strong class="legende-volumen">Volumen V</strong> gibt an, wie viele Einheitswürfel in einen Körper passen. Es wird in Raumeinheiten gemessen (mm³, cm³, dm³, m³&nbsp;…).<br>
+      Der <strong class="legende-flaeche">Oberflächeninhalt O</strong> ist der Flächeninhalt der <em>Außenhaut</em> — die Summe aller Begrenzungsflächen. Er wird in Flächeneinheiten gemessen (cm², m²&nbsp;…).
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — drei Größenarten an einem Körper</span>
+      Kantenlänge, Oberflächeninhalt und Volumen lassen sich nicht miteinander vergleichen: <strong>cm</strong>, <strong>cm²</strong> und <strong>cm³</strong> sind drei verschiedene Größenarten. Die Einheit im Ergebnis ist deshalb keine Zugabe, sondern die Probe, ob überhaupt das Richtige gerechnet wurde.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Länge a = <input type="number" id="af-a" value="4" min="1" max="6" style="width:4.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>Breite b = <input type="number" id="af-b" value="3" min="1" max="5" style="width:4.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>Höhe c = <input type="number" id="af-c" value="2" min="1" max="5" style="width:4.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+      </div>
+      <div class="geo-wrap" id="af-mount"></div>
+      <div id="af-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-ausfuellen"></div>
+  </section>
+
+  <!-- 2. Quader und Würfel -->
+  <section class="card" id="sec-quader">
+    <h2>2. Quader und Würfel</h2>
+    <div class="wissen-box">
+      <span class="box-label">Formeln</span>
+      <strong>Quader</strong> mit den Kanten a, b und c:<br>
+      <span class="legende-volumen">V = a · b · c</span> &nbsp;·&nbsp; <span class="legende-flaeche">O = 2 · (a · b + a · c + b · c)</span> &nbsp;·&nbsp; <span class="legende-umfang">Kantensumme k = 4 · (a + b + c)</span><br>
+      <strong>Würfel</strong> mit der Kante a (Sonderfall a = b = c):<br>
+      <span class="legende-volumen">V = a · a · a = a³</span> &nbsp;·&nbsp; <span class="legende-flaeche">O = 6 · a²</span> &nbsp;·&nbsp; <span class="legende-umfang">k = 12 · a</span>
+    </div>
+    <p>Warum V = a · b · c? Weil beim Ausfüllen genau <em>c</em> Schichten übereinanderliegen und jede Schicht aus a · b Würfeln besteht. Die untere Schicht ist die Grundfläche aus <a href="../02-flaeche-umfang/index.html#sec-rechteck">Thema 2</a> — deshalb schreibt man auch <strong>V = G · h</strong>: Grundfläche mal Höhe.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a = <input type="number" id="qd-a" value="5" min="1" max="20" step="0.5" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>b = <input type="number" id="qd-b" value="3" min="1" max="20" step="0.5" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>c = <input type="number" id="qd-c" value="4" min="1" max="20" step="0.5" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+      </div>
+      <div class="geo-wrap" id="qd-mount"></div>
+      <div class="groessen-paar" id="qd-werte"></div>
+      <div id="qd-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-quader"></div>
+  </section>
+
+  <!-- 3. Das Netz -->
+  <section class="card" id="sec-netz">
+    <h2>3. Der Oberflächeninhalt am Netz</h2>
+    <p>Schneidet man einen Quader an den Kanten auf und klappt ihn flach, entsteht sein <strong>Netz</strong>. Der Oberflächeninhalt ist dann nichts Neues mehr: Es ist der Flächeninhalt dieser sechs Rechtecke.</p>
+    <div class="wissen-box">
+      <span class="box-label">Warum die Formel so aussieht</span>
+      Gegenüberliegende Flächen eines Quaders sind <strong>gleich groß</strong>. Es gibt deshalb nur <strong>drei verschiedene</strong> Rechtecke, jedes davon zweimal:<br>
+      <span class="legende-flaeche">O = 2 · a · b + 2 · a · c + 2 · b · c = 2 · (a · b + a · c + b · c)</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a = <input type="number" id="nz-a" value="5" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>b = <input type="number" id="nz-b" value="3" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>c = <input type="number" id="nz-c" value="4" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+      </div>
+      <div class="geo-wrap" id="nz-mount"></div>
+      <div id="nz-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-netz"></div>
+  </section>
+
+  <!-- 4. Gleiches Volumen, verschiedene Oberfläche -->
+  <section class="card" id="sec-vergleich">
+    <h2>4. Gleiches Volumen — trotzdem verschiedene Oberfläche</h2>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — derselbe Trugschluss wie bei der Fläche</span>
+      „Mehr Volumen heißt mehr Oberfläche“ ist <strong>falsch</strong>. Zwei Quader mit exakt demselben Volumen können sehr verschiedene Oberflächeninhalte haben — genau wie zwei Rechtecke mit gleichem Umfang verschiedene Flächeninhalte hatten.
+    </div>
+    <p>Hier bleibt das Volumen <strong>konstant</strong>; gezeigt werden alle Quader mit ganzzahligen Kanten, die dieses Volumen haben. Beobachte den Oberflächeninhalt:</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Volumen V =
+          <select id="vv-v" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></select>
+          cm³
+        </label>
+      </div>
+      <div id="vv-tabelle"></div>
+      <div class="geo-wrap" id="vv-mount"></div>
+      <div id="vv-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-vergleich"></div>
+  </section>
+
+  <!-- 5. Raumeinheiten und Hohlmaße -->
+  <section class="card" id="sec-einheiten">
+    <h2>5. Raumeinheiten und Hohlmaße</h2>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der Faktor ist 1000</span>
+      Bei <a href="../../01-groessen-und-rechnen/01-natuerliche-zahlen-und-groessen/index.html#sec-groessen">Längen</a> ist die Stufe 10 groß, bei <a href="../02-flaeche-umfang/index.html#sec-einheiten">Flächen</a> 100 — bei <strong>Volumen</strong> ist sie <strong>1000</strong> groß: 1 cm³ = 1000 mm³.<br>
+      Der Grund ist immer derselbe: Ein Würfel mit 1 cm Kante ist 10 mm lang, 10 mm breit <em>und</em> 10 mm hoch — er enthält 10 · 10 · 10 = <strong>1000</strong> Kubikmillimeter. Jede Stufe wirkt in <em>drei</em> Richtungen.
+    </div>
+    <div class="widget">
+      <p style="margin-top:0">Das Bild dazu — ein Kubikzentimeter, ausgefüllt mit Kubikmillimetern (nur die vorderen Schichten gezeichnet):</p>
+      <div class="geo-wrap" id="re-bild"></div>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <input type="number" id="re-wert" value="3" min="0" step="any" style="width:6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <select id="re-von" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></select>
+        <span style="align-self:center">→</span>
+        <select id="re-nach" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></select>
+      </div>
+      <div id="re-treppe"></div>
+      <div id="re-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Hohlmaße — dieselben Größen, anderer Name</span>
+      Für Flüssigkeiten benutzt man Liter statt Kubikdezimeter. Es sind keine neuen Größen, nur andere Namen für dieselben Volumen:
+      <div id="hohlmass-mount"></div>
+      Merksatz: <strong>1 Liter ist genau der Würfel mit 10 cm Kantenlänge.</strong>
+    </div>
+    <div class="quiz" id="quiz-einheiten"></div>
+  </section>
+
+  <!-- 6. Zusammengesetzte Körper -->
+  <section class="card" id="sec-zusammengesetzt">
+    <h2>6. Zusammengesetzte Körper</h2>
+    <p>Körper, die keine Quader sind, zerlegt man in Quader — oder ergänzt sie zu einem großen Quader und zieht das Fehlende ab. Beide Wege führen zum selben Volumen.</p>
+    <div class="wissen-box">
+      <span class="box-label">Zwei Strategien</span>
+      <strong>Zerlegen:</strong> Den Körper in Quader aufteilen und die Volumen <strong>addieren</strong>.<br>
+      <strong>Ergänzen:</strong> Den Körper zu einem großen Quader ergänzen und das fehlende Volumen <strong>subtrahieren</strong>.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Oberfläche folgt nicht derselben Regel</span>
+      Beim Zerlegen darf man die Volumen addieren — die <strong>Oberflächen aber nicht</strong>. Die Schnittfläche zwischen zwei Teilkörpern liegt innen und gehört gar nicht zur Außenhaut; beim Addieren würde sie sogar doppelt gezählt. Die Oberfläche bestimmt man immer, indem man <em>alle wirklich außen liegenden Flächen</em> zusammenzählt.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Strategie:
+          <select id="zk-strategie" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="zerlegen">Zerlegen (addieren)</option>
+            <option value="ergaenzen">Ergänzen (subtrahieren)</option>
+          </select>
+        </label>
+      </div>
+      <div class="btn-row">
+        <label>Gesamtlänge: <input type="number" id="zk-a" value="6" min="3" max="10" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>Tiefe: <input type="number" id="zk-b" value="3" min="1" max="6" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>Gesamthöhe: <input type="number" id="zk-c" value="5" min="2" max="8" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>Stufe breit: <input type="number" id="zk-d" value="2" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>Stufe hoch: <input type="number" id="zk-e" value="2" min="1" max="7" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+      </div>
+      <div class="geo-wrap" id="zk-mount"></div>
+      <div class="groessen-paar" id="zk-werte"></div>
+      <div id="zk-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-zusammengesetzt"></div>
+  </section>
+
+  <!-- 7. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>7. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Der <a href="../02-flaeche-umfang/index.html#sec-rechteck">Flächeninhalt des Rechtecks</a> — die Oberfläche eines Quaders ist nichts anderes als die Summe von sechs Rechteckflächen, und die Grundfläche in V = G · h ist genau eine davon.</li>
+      <li><strong>Baut auf:</strong> Das <a href="../02-flaeche-umfang/index.html#sec-einheiten">Umrechnen von Flächeneinheiten</a> — dieselbe Überlegung, nur eine Dimension weiter: 10 für Längen, 10² = 100 für Flächen, 10³ = 1000 für Volumen.</li>
+      <li><strong>Baut auf:</strong> <a href="../02-flaeche-umfang/index.html#sec-zusammengesetzt">Zerlegen und Ergänzen</a> — dieselbe Denkfigur wie in der Ebene, nur mit Quadern statt Rechtecken.</li>
+      <li><strong>Gleiche Struktur:</strong> Wie das Quadrat unter allen Rechtecken mit festem Umfang die größte Fläche hat, hat der <strong>Würfel</strong> unter allen Quadern mit festem Volumen die <em>kleinste</em> Oberfläche. Deshalb sind Verpackungen, bei denen Material gespart werden soll, möglichst würfelförmig.</li>
+      <li><strong>Führt weiter zu:</strong> <a href="../../01-groessen-und-rechnen/06-erweiterung-des-zahlenbereichs/index.html">Potenzen</a> — a² und a³ sind die ersten Potenzen, denen man begegnet, und sie heißen nicht zufällig „Quadrat“ und „Kubik“.</li>
+      <li><strong>Führt weiter zu:</strong> V = G · h gilt weit über den Quader hinaus — für jedes <em>Prisma</em> und für den Zylinder. Nur die Grundfläche G wird dann anders berechnet.</li>
+      <li><strong>Führt weiter zu:</strong> Beim Rückwärtsrechnen führt V = a³ auf die <em>dritte Wurzel</em>: Aus V = 64 cm³ folgt a = 4 cm.</li>
+    </ul>
+  </section>
+
+  <!-- 8. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>8. Formelsammlung</h2>
+    <p>Alle Formeln und Regeln dieses Lernpfads mit Beispielen und Zeichnungen auf zwei Seiten zusammengefasst — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 9. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>9. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit. Die verlangte Einheit steht jeweils in der Aufgabe.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 2 Geometrie</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>

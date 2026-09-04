@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kreise und Winkel</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">2 Geometrie</a><span class="sep">/</span>
+  4 Kreise und Winkel
+</nav>
+<header class="page-header">
+  <h1>Kreise und Winkel</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Kreis und Winkel gehören enger zusammen, als es zunächst aussieht: Ein Winkel <em>ist</em> ein Stück Drehung, und eine volle Drehung ist genau ein Kreis — <strong>360°</strong>. Wer das einmal gesehen hat, muss sich Vollwinkel, Kreisdiagramm und Geodreieck nicht mehr einzeln merken. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>die <span class="term">Teile des Kreises</span> benennen — Radius, Durchmesser, Sehne, Sekante, Tangente, Bogen, Ausschnitt</li>
+      <li>mit <span class="term">d = 2 · r</span> zwischen Radius und Durchmesser wechseln</li>
+      <li>einen <span class="term">Winkel</span> benennen und seine <span class="term">Winkelart</span> bestimmen</li>
+      <li>mit dem <span class="term">Geodreieck</span> messen — und dabei die richtige der beiden Skalen wählen</li>
+      <li>ein <span class="term">Kreisdiagramm</span> lesen und selbst berechnen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../01-grundbegriffe/index.html">Thema 1</a> die Begriffe Strecke, Gerade und Abstand. Der Kreis ist nichts anderes als die Menge aller Punkte mit <em>demselben Abstand</em> von einem festen Punkt.</p>
+  </section>
+
+  <!-- 1. Der Kreis -->
+  <section class="card" id="sec-kreis">
+    <h2>1. Der Kreis und seine Teile</h2>
+    <div class="definition-box">
+      <span class="box-label">Definition</span>
+      Ein <strong>Kreis</strong> um den Mittelpunkt M mit dem Radius r ist die Menge aller Punkte, die von M <strong>genau den Abstand r</strong> haben.<br>
+      Die <strong>Kreislinie</strong> ist diese Punktmenge selbst. Die <strong>Kreisfläche</strong> ist alles, was von ihr umschlossen wird.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Radius und Durchmesser</span>
+      <span class="legende-durchmesser">d = 2 · r</span> &nbsp;·&nbsp; <span class="legende-radius">r = d : 2</span><br>
+      Der <strong class="legende-radius">Radius r</strong> geht vom Mittelpunkt bis zur Kreislinie. Der <strong class="legende-durchmesser">Durchmesser d</strong> geht ganz durch den Kreis — <em>durch den Mittelpunkt hindurch</em>. Er ist die längste Strecke, die im Kreis Platz hat.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Teil zeigen:
+          <select id="kr-teil" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="radius">Radius</option>
+            <option value="durchmesser">Durchmesser</option>
+            <option value="sehne">Sehne</option>
+            <option value="sekante">Sekante</option>
+            <option value="tangente">Tangente</option>
+            <option value="bogen">Kreisbogen</option>
+            <option value="ausschnitt">Kreisausschnitt</option>
+          </select>
+        </label>
+        <label>Radius r = <input type="number" id="kr-r" value="3" min="1" max="5" step="0.5" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+      </div>
+      <div class="geo-wrap" id="kr-mount"></div>
+      <div id="kr-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Sehne, Sekante, Tangente</span>
+      Alle drei haben mit einer Geraden zu tun, sind aber verschieden:<br>
+      <strong>Sehne</strong> — eine <em>Strecke</em> zwischen zwei Punkten der Kreislinie.<br>
+      <strong>Sekante</strong> — eine <em>Gerade</em>, die den Kreis in <strong>zwei</strong> Punkten schneidet. Das Stück zwischen den Schnittpunkten ist die Sehne.<br>
+      <strong>Tangente</strong> — eine <em>Gerade</em>, die den Kreis in genau <strong>einem</strong> Punkt berührt. Sie steht dort <a href="../01-grundbegriffe/index.html#sec-lage">senkrecht</a> auf dem Radius.
+    </div>
+    <div class="quiz" id="quiz-kreis"></div>
+  </section>
+
+  <!-- 2. Winkel -->
+  <section class="card" id="sec-winkel">
+    <h2>2. Was ist ein Winkel?</h2>
+    <div class="definition-box">
+      <span class="box-label">Definition</span>
+      Ein <strong>Winkel</strong> entsteht, wenn zwei <a href="../01-grundbegriffe/index.html#sec-linien">Strahlen</a> von einem gemeinsamen Punkt ausgehen. Dieser Punkt heißt <strong>Scheitelpunkt</strong>, die beiden Strahlen heißen <strong>Schenkel</strong>.<br>
+      Der Winkel misst, <em>wie weit</em> der eine Schenkel gegen den anderen gedreht ist — gemessen in <strong>Grad (°)</strong>.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Schreibweisen</span>
+      Mit griechischen Buchstaben: <strong>α</strong> (alpha), <strong>β</strong> (beta), <strong>γ</strong> (gamma), <strong>δ</strong> (delta).<br>
+      Mit Punkten: <strong>∠ASB</strong> — der Scheitelpunkt steht dabei <em>immer in der Mitte</em>. ∠ASB ist der Winkel bei S zwischen den Schenkeln nach A und nach B.
+    </div>
+    <p>Eine volle Drehung ist <strong>360°</strong>. Diese Zahl ist keine Naturkonstante, sondern eine über 3000 Jahre alte Verabredung — 360 hat besonders viele Teiler und lässt sich deshalb bequem aufteilen.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Winkel α = <input type="range" id="wk-alpha" min="0" max="360" step="1" value="55" style="vertical-align:middle;width:14rem"> <span id="wk-alpha-anzeige" style="font-weight:800"></span></label>
+      </div>
+      <div class="geo-wrap" id="wk-mount"></div>
+      <div class="winkelart-reihe" id="wk-arten"></div>
+      <div id="wk-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-winkel"></div>
+  </section>
+
+  <!-- 3. Messen mit dem Geodreieck -->
+  <section class="card" id="sec-messen">
+    <h2>3. Messen mit dem Geodreieck</h2>
+    <p>Auf dem Geodreieck stehen <strong>zwei</strong> Gradskalen übereinander — eine von links nach rechts, eine von rechts nach links. Beide zeigen bei jedem Winkel eine Zahl an, und diese beiden Zahlen ergeben zusammen immer <strong>180°</strong>. Genau hier passiert der häufigste Messfehler.</p>
+    <div class="wissen-box">
+      <span class="box-label">So misst man richtig</span>
+      ① Den <strong>Mittelpunkt</strong> des Geodreiecks (die Markierung an der langen Kante) auf den <strong>Scheitelpunkt</strong> legen.<br>
+      ② Die lange Kante genau auf einen <strong>Schenkel</strong> legen — dieser Schenkel zeigt auf die 0.<br>
+      ③ Am anderen Schenkel ablesen — und zwar auf <strong>der Skala, die bei diesem Schenkel bei 0 beginnt</strong>.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Probe rettet dich</span>
+      Wenn du unsicher bist, welche der beiden Zahlen stimmt, entscheide über die <strong>Winkelart</strong>: Sieht der Winkel <em>spitzer</em> als ein rechter Winkel aus, muss die Zahl <strong>kleiner als 90</strong> sein. Sieht er <em>stumpfer</em> aus, muss sie <strong>größer als 90</strong> sein. Diese Probe kostet zwei Sekunden und verhindert den Fehler zuverlässig.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Zu messender Winkel: <input type="range" id="gd-alpha" min="10" max="170" step="5" value="40" style="vertical-align:middle;width:14rem"> <span id="gd-alpha-anzeige" style="font-weight:800"></span></label>
+      </div>
+      <div class="geo-wrap" id="gd-mount"></div>
+      <div id="gd-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-messen"></div>
+  </section>
+
+  <!-- 4. Winkel am Kreis: das Kreisdiagramm -->
+  <section class="card" id="sec-kreisdiagramm">
+    <h2>4. Winkel am Kreis — das Kreisdiagramm</h2>
+    <p>Ein Kreisdiagramm teilt den Vollwinkel auf. Der <strong>ganze</strong> Kreis steht für das Ganze, also für 360° — und jeder Anteil bekommt genau seinen Teil davon.</p>
+    <div class="wissen-box">
+      <span class="box-label">Vom Anteil zum Winkel</span>
+      <strong>Mittelpunktswinkel = Anteil · 360°</strong><br>
+      Bei einer Anzahl: <strong>α = (Teil : Ganzes) · 360°</strong><br>
+      Beispiel: 5 von 20 Kindern ⇒ α = (5 : 20) · 360° = 0,25 · 360° = <strong>90°</strong>.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Befragte insgesamt:
+          <select id="kd-gesamt" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></select>
+        </label>
+      </div>
+      <div class="btn-row" id="kd-regler"></div>
+      <div class="geo-wrap" id="kd-mount"></div>
+      <div id="kd-tabelle"></div>
+      <div id="kd-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-kreisdiagramm"></div>
+  </section>
+
+  <!-- 5. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>5. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Der <a href="../01-grundbegriffe/index.html#sec-abstand">Abstand</a> — der Kreis ist genau die Menge aller Punkte mit gleichem Abstand von M. Deshalb ist der Zirkel auch das Werkzeug, mit dem man Abstände überträgt.</li>
+      <li><strong>Baut auf:</strong> Die <a href="../01-grundbegriffe/index.html#sec-lage">Lagebeziehung „senkrecht“</a> — die Tangente steht im Berührpunkt senkrecht auf dem Radius.</li>
+      <li><strong>Baut auf:</strong> <a href="../../01-groessen-und-rechnen/03-brueche-und-dezimalzahlen/index.html">Brüche und Anteile</a> — ein Mittelpunktswinkel ist nichts anderes als ein Anteil von 360°.</li>
+      <li><strong>Gleiche Struktur:</strong> Der Vollwinkel 360° spielt für Winkel dieselbe Rolle wie das Ganze (100 %) bei Anteilen und wie die 1 bei Brüchen. Ein Kreisdiagramm ist die Bruchrechnung in Bildform.</li>
+      <li><strong>Führt weiter zu:</strong> die Winkelbetrachtungen — Scheitel- und Nebenwinkel, Stufen- und Wechselwinkel, die Winkelsumme im Dreieck. Alles davon baut auf dem gestreckten Winkel (180°) und dem Vollwinkel (360°) auf, die du hier kennengelernt hast.</li>
+      <li><strong>Führt weiter zu:</strong> Umfang und Flächeninhalt des Kreises — dort taucht die Kreiszahl π auf, und aus Kreisbogen und Kreisausschnitt werden Bogenlänge und Sektorfläche.</li>
+      <li><strong>Führt weiter zu:</strong> Die Prozentrechnung: 360° entsprechen 100 %, also 1 % = 3,6°.</li>
+    </ul>
+  </section>
+
+  <!-- 6. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>6. Formelsammlung</h2>
+    <p>Alle Begriffe, Formeln und Regeln dieses Lernpfads mit Beispielen und Zeichnungen auf zwei Seiten zusammengefasst — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 7. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>7. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit. Die verlangte Einheit steht jeweils in der Aufgabe.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 2 Geometrie</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
