@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Erweiterung des Zahlenbereichs</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">1 Größen und Rechnen</a><span class="sep">/</span>
+  6 Erweiterung des Zahlenbereichs
+</nav>
+<header class="page-header">
+  <h1>Erweiterung des Zahlenbereichs</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>In den bisherigen Themen ist mehrfach dieselbe Grenze aufgetaucht: <strong>5 − 8 gibt es in ℕ nicht</strong>. Statt die Aufgabe zu verbieten, erweitert die Mathematik den Zahlenbereich — genau so, wie sie es vorher schon mit den Brüchen getan hat. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>erklären, <span class="term">warum</span> es negative Zahlen gibt</li>
+      <li><span class="term">Vorzeichen</span>, <span class="term">Betrag</span> und <span class="term">Gegenzahl</span> unterscheiden</li>
+      <li>negative Zahlen sicher <span class="term">ordnen und vergleichen</span></li>
+      <li>in ℤ <span class="term">addieren und subtrahieren</span> — auch mit Klammern wie 3 − (−5)</li>
+      <li>die <span class="term">Vorzeichenregeln</span> anwenden und begründen, warum „minus mal minus" plus ergibt</li>
+      <li>die Zahlbereiche <span class="term">ℕ ⊂ ℤ ⊂ ℚ</span> einordnen</li>
+    </ul>
+    <p class="hinweis-box">💡 Dieses Thema schließt das Kapitel ab. Es beantwortet die Frage, die in <a href="../02-rechnen-mit-natuerlichen-zahlen/index.html#sec-fachbegriffe">Thema 2</a> und <a href="../04-addieren-subtrahieren/index.html">Thema 4</a> jedes Mal offengeblieben ist: „Was, wenn der Minuend kleiner ist als der Subtrahend?"</p>
+  </section>
+
+  <!-- 1. Warum ein neuer Zahlenbereich? -->
+  <section class="card" id="sec-warum">
+    <h2>1. Warum ein neuer Zahlenbereich?</h2>
+    <p>In ℕ ist die Subtraktion nicht immer ausführbar: 5 − 8 hat dort keine Lösung. Solche Lücken sind der Motor jeder Zahlbereichserweiterung — man erfindet neue Zahlen, damit eine Rechenart <strong>uneingeschränkt</strong> möglich wird.</p>
+    <div class="wissen-box">
+      <span class="box-label">Das Muster</span>
+      <strong>ℕ → ℤ:</strong> Damit jede Subtraktion lösbar ist, kommen die <strong>negativen Zahlen</strong> dazu.<br>
+      <strong>ℤ → ℚ:</strong> Damit jede Division (außer durch 0) lösbar ist, kommen die <strong>Brüche</strong> dazu.<br>
+      In beiden Fällen bleiben alle bisherigen Rechenregeln gültig — das ist die entscheidende Bedingung.
+    </div>
+    <p>Negative Zahlen sind auch alltäglich: Temperaturen unter null, Kontostände im Minus, Höhen unter dem Meeresspiegel, Stockwerke im Untergeschoss.</p>
+    <div class="widget">
+      <p style="margin-top:0">Wähle eine Deutung und einen Wert:</p>
+      <div class="btn-row">
+        <select id="ctx-art" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <option value="temp">Temperatur</option>
+          <option value="konto">Kontostand</option>
+          <option value="hoehe">Höhe</option>
+        </select>
+        <input type="number" id="ctx-wert" value="-7" min="-50" max="50" style="width:6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+      </div>
+      <div id="ctx-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-warum"></div>
+  </section>
+
+  <!-- 2. Vorzeichen, Betrag, Gegenzahl -->
+  <section class="card" id="sec-betrag">
+    <h2>2. Vorzeichen, Betrag und Gegenzahl</h2>
+    <div class="definition-box">
+      <span class="box-label">Definition</span>
+      Die <strong>ganzen Zahlen</strong> sind ℤ = {…; −3; −2; −1; 0; 1; 2; 3; …}.<br>
+      Das <strong>Vorzeichen</strong> sagt, auf welcher Seite der Null eine Zahl liegt.<br>
+      Der <strong>Betrag</strong> |a| ist ihr <em>Abstand zur Null</em> — immer positiv oder 0. Es gilt |−7| = |7| = 7.<br>
+      Die <strong>Gegenzahl</strong> entsteht durch Spiegelung an der Null: Die Gegenzahl von −7 ist 7. Eine Zahl und ihre Gegenzahl ergeben zusammen <strong>0</strong>.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Vorzeichen ist kein Rechenzeichen</span>
+      Das Minus in <strong>−7</strong> gehört zur Zahl (Vorzeichen), das Minus in <strong>12 − 7</strong> ist ein Rechenzeichen. Wenn beide zusammentreffen, setzt man Klammern: 12 − (−7).
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Zahl a = <input type="number" id="bt-a" value="-7" min="-12" max="12" style="width:5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <div class="zahlengerade-wrap" id="bt-mount"></div>
+      <div id="bt-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-betrag"></div>
+  </section>
+
+  <!-- 3. Ordnen und Vergleichen -->
+  <section class="card" id="sec-ordnen">
+    <h2>3. Negative Zahlen ordnen und vergleichen</h2>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der häufigste Fehler mit negativen Zahlen</span>
+      <strong>−5 ist kleiner als −3</strong>, obwohl 5 größer als 3 ist. Beim Vergleichen zählt <em>nicht</em> der Betrag, sondern die <strong>Lage auf der Zahlengeraden</strong>: Je weiter links, desto kleiner.<br>
+      Merkhilfe: −5 °C sind kälter als −3 °C. Ein Konto mit −5 € steht schlechter da als eines mit −3 €.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Regel</span>
+      Von zwei Zahlen ist die <strong>größer</strong>, die auf der Zahlengeraden weiter <strong>rechts</strong> liegt. Daraus folgt: Jede positive Zahl ist größer als jede negative. Bei zwei negativen Zahlen ist die mit dem <strong>kleineren Betrag</strong> die größere.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a = <input type="number" id="ord-a" value="-5" min="-12" max="12" style="width:5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label>b = <input type="number" id="ord-b" value="-3" min="-12" max="12" style="width:5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <div class="zahlengerade-wrap" id="ord-mount"></div>
+      <div id="ord-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-ordnen"></div>
+  </section>
+
+  <!-- 4. Addieren und Subtrahieren -->
+  <section class="card" id="sec-addieren">
+    <h2>4. Addieren und Subtrahieren in ℤ</h2>
+    <p>Auf der Zahlengeraden ist jede Rechnung eine <strong>Bewegung</strong>: Man startet bei der ersten Zahl und geht so viele Schritte, wie die zweite Zahl angibt — nach rechts bei Plus, nach links bei Minus.</p>
+    <div class="wissen-box">
+      <span class="box-label">Regel</span>
+      <strong>Eine negative Zahl addieren</strong> heißt: nach links gehen. &nbsp; a + (−b) = a − b<br>
+      <strong>Eine negative Zahl subtrahieren</strong> heißt: nach rechts gehen. &nbsp; a − (−b) = a + b<br>
+      Kurz: Zwei Minuszeichen direkt hintereinander werden zu einem Plus.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Warum wird aus „minus minus" ein Plus?</span>
+      Subtrahieren heißt, die <strong>Gegenzahl zu addieren</strong>. Die Gegenzahl von −5 ist +5, also ist 3 − (−5) dasselbe wie 3 + 5 = 8.<br>
+      Anschaulich: Wenn dir jemand eine Schuld von 5 € <em>erlässt</em> (also −5 € wegnimmt), bist du 5 € reicher.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a = <input type="number" id="ad-a" value="3" min="-12" max="12" style="width:5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <select id="ad-op" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <option value="add">+</option>
+          <option value="sub" selected>−</option>
+        </select>
+        <label>( <input type="number" id="ad-b" value="-5" min="-12" max="12" style="width:5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> )</label>
+      </div>
+      <div class="zahlengerade-wrap" id="ad-mount"></div>
+      <div id="ad-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-addieren"></div>
+  </section>
+
+  <!-- 5. Vorzeichenregeln -->
+  <section class="card" id="sec-vorzeichen">
+    <h2>5. Multiplizieren und Dividieren: die Vorzeichenregeln</h2>
+    <div class="wissen-box">
+      <span class="box-label">Regel</span>
+      <strong>Gleiche</strong> Vorzeichen ergeben ein <strong>Plus</strong>, <strong>verschiedene</strong> Vorzeichen ergeben ein <strong>Minus</strong>. Für die Division gilt dasselbe. Der Betrag des Ergebnisses ist immer das Produkt bzw. der Quotient der Beträge.
+    </div>
+    <div id="vz-tabelle-mount"></div>
+    <p><strong>Warum ergibt „minus mal minus" ein Plus?</strong> Weil die bisherigen Rechenregeln weiter gelten sollen. Setzt man eine bekannte Reihe einfach fort, bleibt gar nichts anderes übrig — das Muster erzwingt es:</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Reihe für den Faktor <input type="number" id="pz-b" value="-2" min="-9" max="-1" style="width:5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <div id="pz-mount"></div>
+      <p class="progress-note">Jede Zeile entsteht aus der vorigen, indem der erste Faktor um 1 kleiner wird. Das Ergebnis wächst dabei jedes Mal um denselben Betrag. Setzt man das Muster über die Null hinaus fort, müssen die Produkte positiv werden.</p>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a = <input type="number" id="vz-a" value="-6" min="-20" max="20" style="width:5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <select id="vz-op" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <option value="mul">·</option>
+          <option value="div">:</option>
+        </select>
+        <label>b = <input type="number" id="vz-b" value="-3" min="-20" max="20" style="width:5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <div id="vz-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-vorzeichen"></div>
+  </section>
+
+  <!-- 6. Die Zahlbereiche -->
+  <section class="card" id="sec-zahlbereiche">
+    <h2>6. Die Zahlbereiche im Überblick</h2>
+    <p>Jeder neue Bereich enthält den vorigen vollständig — es geht nichts verloren, es kommt nur etwas dazu.</p>
+    <div class="zahlbereiche" id="zb-mount"></div>
+    <div class="wissen-box">
+      <span class="box-label">ℕ ⊂ ℤ ⊂ ℚ</span>
+      <strong>ℕ</strong> = {0; 1; 2; 3; …} — die natürlichen Zahlen. Addition und Multiplikation sind uneingeschränkt möglich.<br>
+      <strong>ℤ</strong> = {…; −2; −1; 0; 1; 2; …} — die ganzen Zahlen. Jetzt ist auch jede <strong>Subtraktion</strong> lösbar.<br>
+      <strong>ℚ</strong> — die rationalen Zahlen: alle Zahlen, die sich als Bruch <span class="bruch"><span class="z">a</span><span class="n">b</span></span> mit a ∈ ℤ und b ∈ ℤ\{0} schreiben lassen. Jetzt ist auch jede <strong>Division</strong> lösbar — außer durch 0.
+    </div>
+    <div class="widget">
+      <p style="margin-top:0">Prüfe, zu welchen Zahlbereichen eine Zahl gehört:</p>
+      <div class="btn-row">
+        <input type="text" id="zb-eingabe" value="-3/4" style="width:8rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <span class="progress-note" style="align-self:center">z.&nbsp;B. 7 · −3 · 0,25 · −3/4</span>
+      </div>
+      <div id="zb-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-zahlbereiche"></div>
+  </section>
+
+  <!-- 7. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>7. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Schließt eine Lücke:</strong> In <a href="../02-rechnen-mit-natuerlichen-zahlen/index.html#sec-fachbegriffe">Thema 2</a> und <a href="../04-addieren-subtrahieren/index.html#sec-gleichnamig">Thema 4</a> musste der Minuend immer mindestens so groß sein wie der Subtrahend. In ℤ fällt diese Einschränkung weg.</li>
+      <li><strong>Dasselbe Muster wie bei den Brüchen:</strong> <a href="../03-brueche-und-dezimalzahlen/index.html">Brüche</a> wurden eingeführt, damit jede Division aufgeht; negative Zahlen, damit jede Subtraktion aufgeht. Beide Male gilt: Die alten Rechenregeln müssen weiter stimmen.</li>
+      <li><strong>Baut auf:</strong> Der <a href="../01-natuerliche-zahlen-und-groessen/index.html#sec-zahlenstrahl">Zahlenstrahl</a> wird zur <em>Zahlengeraden</em> — nach links über die Null hinaus verlängert. Die Ordnung „weiter rechts = größer" gilt unverändert weiter.</li>
+      <li><strong>Betrag und Abstand:</strong> |a| ist der Abstand zur Null. Später ist |a − b| der Abstand zweier Zahlen — genau das braucht man in der Geometrie für Streckenlängen.</li>
+      <li><strong>Führt weiter zu:</strong> Erst mit ℤ kann man Gleichungen wie x + 8 = 5 lösen. Ohne negative Zahlen wären viele Gleichungen unlösbar.</li>
+      <li><strong>Führt weiter zu:</strong> Im Koordinatensystem braucht man alle vier Quadranten — dafür müssen die Achsen negative Zahlen tragen.</li>
+      <li><strong>Und weiter:</strong> Auch ℚ hat noch Lücken: √2 lässt sich nicht als Bruch schreiben. Dafür kommen später die <em>irrationalen</em> Zahlen und damit ℝ dazu — dasselbe Prinzip, eine Stufe höher.</li>
+    </ul>
+  </section>
+
+  <!-- 8. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>8. Formelsammlung</h2>
+    <p>Alle Regeln dieses Lernpfads mit Beispielen und Visualisierungen auf zwei Seiten zusammengefasst — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 9. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>9. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Negative Ergebnisse schreibst du mit Minuszeichen, z.&nbsp;B. <code>-12</code>.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 1 Größen und Rechnen</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
