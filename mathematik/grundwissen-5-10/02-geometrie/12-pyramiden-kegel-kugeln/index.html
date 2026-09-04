@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pyramiden, Kegel und Kugeln</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">2 Geometrie</a><span class="sep">/</span>
+  12 Pyramiden, Kegel und Kugeln
+</nav>
+<header class="page-header">
+  <h1>Pyramiden, Kegel und Kugeln</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Prisma und Zylinder laufen oben genauso breit weiter wie unten. <strong>Pyramide</strong> und <strong>Kegel</strong> laufen dagegen spitz zu — und fassen deshalb nur ein <strong>Drittel</strong> so viel. Die <strong>Kugel</strong> fällt aus der Reihe: Sie hat gar keine Grundfläche. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>begründen, warum bei Pyramide und Kegel der Faktor <span class="term">⅓</span> steht: V = ⅓ · G · h</li>
+      <li>die <span class="term">Körperhöhe</span> von der <span class="term">Seitenhöhe</span> unterscheiden — und die eine aus der anderen berechnen</li>
+      <li>die Oberfläche einer Pyramide aus Grundfläche und Seitendreiecken zusammensetzen</li>
+      <li>beim <span class="term">Kegel</span> mit der Mantellinie s rechnen: M = π · r · s</li>
+      <li>die Formeln der <span class="term">Kugel</span> anwenden: V = ⁴⁄₃ · π · r³ und O = 4 · π · r²</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../11-prismen-zylinder/index.html#sec-volumen">Thema 11</a> die Formel V = G · h — sie ist der Vergleichspunkt für den Faktor ⅓, aus <a href="../09-pythagoras/index.html#sec-satz">Thema 9</a> den Satz des Pythagoras für Höhen und Mantellinien und aus <a href="../10-kreisberechnungen/index.html#sec-ausschnitt">Thema 10</a> den Kreisausschnitt — genau das ist der abgewickelte Kegelmantel.</p>
+  </section>
+
+  <!-- 1. Die Pyramide -->
+  <section class="card" id="sec-pyramide">
+    <h2>1. Die Pyramide</h2>
+    <p>Eine <strong>Pyramide</strong> entsteht, wenn man alle Punkte einer ebenen Figur mit <em>einem</em> Punkt darüber verbindet — der <span class="term">Spitze</span>. Aus jeder Grundseite wird dabei ein <strong>Dreieck</strong>, nicht wie beim Prisma ein Rechteck.</p>
+    <div class="py-koerper-reihe" id="pk-reihe"></div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Höhe h = <input type="range" id="pk-h" min="2" max="10" step="1" value="6" style="vertical-align:middle;width:9rem"> <span id="pk-h-anzeige" class="py-name-h"></span></label>
+        <label><input type="checkbox" id="pk-netz"> als Netz zeigen</label>
+      </div>
+      <div class="geo-wrap" id="pk-mount"></div>
+      <div class="py-bilanz" id="pk-bilanz"></div>
+      <div id="pk-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Bauplan</span>
+      Eine Pyramide über einem <strong>n-Eck</strong> hat <strong>n Seitendreiecke</strong> und dazu die Grundfläche — zusammen <strong>n + 1</strong> Flächen. Beim Prisma waren es n + 2, denn dort gibt es zusätzlich eine Deckfläche.
+    </div>
+    <div class="quiz" id="quiz-pyramide"></div>
+  </section>
+
+  <!-- 2. Der Faktor ein Drittel -->
+  <section class="card" id="sec-drittel">
+    <h2>2. Warum steht dort ⅓?</h2>
+    <p>Nimm ein Prisma und eine Pyramide mit <strong>derselben Grundfläche und derselben Höhe</strong>. Füllt man die Pyramide mit Wasser und gießt es in das Prisma um, so braucht man <strong>genau drei Füllungen</strong>. Dasselbe gilt für Kegel und Zylinder.</p>
+    <div class="wissen-box">
+      <span class="box-label">Volumen</span>
+      <strong>Pyramide und Kegel: V = ⅓ · G · h</strong><br>
+      Dieselbe Grundfläche, dieselbe Höhe — aber nur ein Drittel des Volumens. Beim <em>Kegel</em> ist G = π · r², also V = ⅓ · π · r² · h.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Grundfläche G = <input type="range" id="dr-g" min="2" max="20" step="1" value="12" style="vertical-align:middle;width:8rem"> <span id="dr-g-anzeige" class="py-name-g"></span></label>
+        <label>Höhe h = <input type="range" id="dr-h" min="2" max="10" step="1" value="6" style="vertical-align:middle;width:8rem"> <span id="dr-h-anzeige" class="py-name-h"></span></label>
+        <label>Füllungen: <input type="range" id="dr-fuell" min="0" max="3" step="1" value="0" style="vertical-align:middle;width:7rem"> <span id="dr-fuell-anzeige" style="font-weight:800"></span></label>
+      </div>
+      <div class="geo-wrap" id="dr-mount"></div>
+      <div class="py-fuellbalken" id="dr-balken"></div>
+      <div class="py-bilanz" id="dr-bilanz"></div>
+      <div id="dr-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — das Drittel gehört zum ganzen Produkt</span>
+      In V = ⅓ · G · h wird <strong>zuerst G · h</strong> ausgerechnet und <em>dann</em> gedrittelt. Es wird nicht etwa nur die Höhe oder nur die Grundfläche gedrittelt.
+    </div>
+    <div class="quiz" id="quiz-drittel"></div>
+  </section>
+
+  <!-- 3. Körperhöhe und Seitenhöhe -->
+  <section class="card" id="sec-hoehen">
+    <h2>3. Körperhöhe, Seitenhöhe, Kante — drei verschiedene Längen</h2>
+    <p>An einer Pyramide gibt es mehrere „Höhen“, und sie werden ständig verwechselt. Alle drei hängen über den <strong>Satz des Pythagoras</strong> zusammen — man muss nur sehen, in welchem rechtwinkligen Dreieck man sich gerade befindet.</p>
+    <div class="wissen-box">
+      <span class="box-label">Die drei Längen bei einer quadratischen Pyramide (Grundkante a)</span>
+      <span class="py-name-h">h</span> = <strong>Körperhöhe</strong>, senkrecht von der Spitze auf die Grundfläche<br>
+      <span class="py-name-s">h<sub>s</sub></span> = <strong>Seitenhöhe</strong>, die Höhe eines Seitendreiecks: <strong>h<sub>s</sub>² = h² + (a : 2)²</strong><br>
+      <span class="py-name-m">k</span> = <strong>Seitenkante</strong>, von der Spitze zu einer Ecke: <strong>k² = h² + (d : 2)²</strong> mit der Grundflächendiagonalen d
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Grundkante a = <input type="range" id="hh-a" min="2" max="12" step="1" value="6" style="vertical-align:middle;width:8rem"> <span id="hh-a-anzeige" class="py-name-g"></span></label>
+        <label>Körperhöhe h = <input type="range" id="hh-h" min="2" max="12" step="1" value="4" style="vertical-align:middle;width:8rem"> <span id="hh-h-anzeige" class="py-name-h"></span></label>
+        <label>zeigen:
+          <select id="hh-was" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="hs">Seitenhöhe h_s</option>
+            <option value="k">Seitenkante k</option>
+          </select>
+        </label>
+      </div>
+      <div class="geo-wrap" id="hh-mount"></div>
+      <div class="py-bilanz" id="hh-bilanz"></div>
+      <div id="hh-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — für die Oberfläche braucht man die Seitenhöhe</span>
+      Jedes Seitendreieck hat den Flächeninhalt ½ · a · <strong>h<sub>s</sub></strong>. Wer dort die Körperhöhe h einsetzt, bekommt zu wenig heraus — denn h<sub>s</sub> ist immer <em>länger</em> als h.
+    </div>
+    <div class="quiz" id="quiz-hoehen"></div>
+  </section>
+
+  <!-- 4. Der Kegel -->
+  <section class="card" id="sec-kegel">
+    <h2>4. Der Kegel — der Mantel ist ein Kreisausschnitt</h2>
+    <p>Schneidet man den Kegelmantel entlang einer Mantellinie auf und rollt ihn ab, entsteht kein Rechteck wie beim Zylinder, sondern ein <strong>Kreisausschnitt</strong> mit dem Radius s. Sein Bogen ist genau der Grundkreisumfang.</p>
+    <div class="wissen-box">
+      <span class="box-label">Kegel</span>
+      Mantellinie: <strong>s² = r² + h²</strong> (Pythagoras)<br>
+      <strong>V = ⅓ · π · r² · h</strong> &nbsp;·&nbsp; <strong>M = π · r · s</strong> &nbsp;·&nbsp; <strong>O = π · r² + π · r · s</strong>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Radius r = <input type="range" id="kg-r" min="1" max="8" step="1" value="3" style="vertical-align:middle;width:8rem"> <span id="kg-r-anzeige" class="py-name-r"></span></label>
+        <label>Höhe h = <input type="range" id="kg-h" min="1" max="12" step="1" value="4" style="vertical-align:middle;width:8rem"> <span id="kg-h-anzeige" class="py-name-h"></span></label>
+        <label><input type="checkbox" id="kg-abwickeln"> Mantel abwickeln</label>
+      </div>
+      <div class="geo-wrap" id="kg-mount"></div>
+      <div class="py-bilanz" id="kg-bilanz"></div>
+      <div id="kg-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — s ist nicht h</span>
+      In M = π · r · <strong>s</strong> steht die <em>Mantellinie</em>, die schräge Kante. Sie ist immer länger als die Körperhöhe h. Nur im Volumen V = ⅓ · π · r² · <strong>h</strong> steht die Körperhöhe.
+    </div>
+    <div class="quiz" id="quiz-kegel"></div>
+  </section>
+
+  <!-- 5. Die Kugel -->
+  <section class="card" id="sec-kugel">
+    <h2>5. Die Kugel</h2>
+    <p>Die Kugel hat weder Grundfläche noch Höhe — nur einen Radius. Ihre beiden Formeln lassen sich nicht so einfach herleiten wie die übrigen, aber man kann sie sich gut merken: Das Volumen ist <strong>zwei Drittel</strong> des umschreibenden Zylinders, und die Oberfläche ist genau <strong>viermal</strong> die Fläche eines Großkreises.</p>
+    <div class="wissen-box">
+      <span class="box-label">Kugel</span>
+      <strong>V = ⁴⁄₃ · π · r³</strong> &nbsp;·&nbsp; <strong>O = 4 · π · r²</strong><br>
+      <span class="progress-note">Merkhilfe: Die Kugel füllt ⅔ des Zylinders, in den sie genau hineinpasst (Radius r, Höhe 2r). Und ihre Oberfläche ist so groß wie vier Großkreise.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Radius r = <input type="range" id="ku-r" min="1" max="10" step="1" value="4" style="vertical-align:middle;width:10rem"> <span id="ku-r-anzeige" class="py-name-r"></span></label>
+        <label><input type="checkbox" id="ku-zylinder" checked> umschreibenden Zylinder zeigen</label>
+      </div>
+      <div class="geo-wrap" id="ku-mount"></div>
+      <div class="py-bilanz" id="ku-bilanz"></div>
+      <table class="py-vergleich" id="ku-tabelle"></table>
+      <div id="ku-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-kugel"></div>
+  </section>
+
+  <!-- 6. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>6. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../11-prismen-zylinder/index.html#sec-volumen">V = G · h beim Prisma</a> — ohne diesen Vergleichspunkt wäre der Faktor ⅓ eine bloße Behauptung. Die Aussage lautet: <em>dieselbe</em> Grundfläche, <em>dieselbe</em> Höhe, aber ein Drittel des Volumens.</li>
+      <li><strong>Baut auf:</strong> <a href="../09-pythagoras/index.html#sec-satz">Der Satz des Pythagoras</a> — Seitenhöhe, Seitenkante und Mantellinie werden alle damit berechnet. Man muss nur jedes Mal das passende rechtwinklige Dreieck im Körper finden.</li>
+      <li><strong>Baut auf:</strong> <a href="../10-kreisberechnungen/index.html#sec-ausschnitt">Der Kreisausschnitt</a> — der abgewickelte Kegelmantel <em>ist</em> ein Kreisausschnitt mit dem Radius s, dessen Bogen den Grundkreisumfang 2πr hat. Daraus folgt M = π · r · s.</li>
+      <li><strong>Baut auf:</strong> <a href="../07-flaechenberechnungen/index.html#sec-dreieck">Die Dreiecksfläche</a> — der Mantel einer Pyramide besteht aus Dreiecken, jedes mit ½ · a · h<sub>s</sub>.</li>
+      <li><strong>Gleiche Struktur:</strong> Verdoppelt man bei irgendeinem dieser Körper alle Längen, so wird die Oberfläche viermal und das Volumen achtmal so groß — die Regel k² und k³ aus der <a href="../08-aehnlichkeit/index.html#sec-potenzen">Ähnlichkeit</a>. Bei der Kugel sieht man das direkt an r² und r³.</li>
+      <li><strong>Führt weiter zu:</strong> Die Integralrechnung. Der Faktor ⅓ und die Kugelformeln lassen sich damit sauber beweisen, statt sie durch Umfüllen plausibel zu machen.</li>
+      <li><strong>Führt weiter zu:</strong> Zusammengesetzte Körper — ein Turm aus Zylinder und Kegel, ein Silo aus Zylinder und Halbkugel. Man addiert die Teilvolumina; beim Oberflächeninhalt zählt nur, was wirklich außen liegt.</li>
+    </ul>
+  </section>
+
+  <!-- 7. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>7. Formelsammlung</h2>
+    <p>Alle Formeln für Pyramide, Kegel und Kugel mit Zeichnungen, Umstellungen und typischen Fehlern auf zwei Seiten — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 8. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>8. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit. Wo gerundet werden soll, steht es in der Aufgabe.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 2 Geometrie</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
