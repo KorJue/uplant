@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brüche und Dezimalzahlen multiplizieren und dividieren</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">1 Größen und Rechnen</a><span class="sep">/</span>
+  5 Multiplizieren und Dividieren
+</nav>
+<header class="page-header">
+  <h1>Brüche und Dezimalzahlen multiplizieren und dividieren</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Beim Addieren mussten die Brüche erst gleichnamig gemacht werden. Beim Multiplizieren ist das <strong>nicht</strong> nötig — dafür verhalten sich Produkte und Quotienten hier anders, als man es von den natürlichen Zahlen gewohnt ist. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>einen Bruch mit einer <span class="term">natürlichen Zahl</span> multiplizieren</li>
+      <li>zwei Brüche multiplizieren und das <span class="term">Flächenmodell</span> dahinter erklären</li>
+      <li><span class="term">vor dem Multiplizieren kürzen</span> und dir damit Arbeit sparen</li>
+      <li>mit dem <span class="term">Kehrwert</span> durch einen Bruch dividieren — und begründen, warum das funktioniert</li>
+      <li>Dezimalzahlen multiplizieren, indem du die <span class="term">Nachkommastellen zählst</span></li>
+      <li>Dezimalzahlen dividieren, indem du das <span class="term">Komma verschiebst</span></li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../03-brueche-und-dezimalzahlen/index.html">Thema 3</a> das Kürzen. Und du wirst zwei Gewohnheiten ablegen müssen — welche, steht gleich in Abschnitt 2 und 3.</p>
+  </section>
+
+  <!-- 1. Bruch mal natürliche Zahl -->
+  <section class="card" id="sec-vervielfachen">
+    <h2>1. Bruch mal natürliche Zahl</h2>
+    <p>Ein Bruch mit 3 multiplizieren heißt: den Anteil <strong>dreimal nehmen</strong>. Die Teile bleiben gleich groß — es werden nur mehr.</p>
+    <div class="wissen-box">
+      <span class="box-label">Regel</span>
+      Ein Bruch wird mit einer natürlichen Zahl multipliziert, indem man <strong>nur den Zähler</strong> mit ihr multipliziert. Der Nenner bleibt unverändert, denn die Teilegröße ändert sich nicht.
+      <div class="formula-block" style="margin-top:0.5rem"><span class="bruch"><span class="z">z</span><span class="n">n</span></span> · k = <span class="bruch"><span class="z">z · k</span><span class="n">n</span></span></div>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label><input type="number" id="vv-z" value="2" min="0" max="12" style="width:3.6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
+        <input type="number" id="vv-n" value="5" min="1" max="12" style="width:3.6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <span style="align-self:center">·</span>
+        <label><input type="number" id="vv-k" value="3" min="1" max="8" style="width:3.6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <div id="vv-mount" class="summe-viz"></div>
+      <div id="vv-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-vervielfachen"></div>
+  </section>
+
+  <!-- 2. Bruch mal Bruch -->
+  <section class="card" id="sec-bruchmalbruch">
+    <h2>2. Bruch mal Bruch</h2>
+    <p>„<span class="bruch"><span class="z">2</span><span class="n">3</span></span> von <span class="bruch"><span class="z">3</span><span class="n">4</span></span>“ heißt: erst drei Viertel nehmen und davon dann zwei Drittel. Das <strong>„von“ ist ein Malzeichen</strong>.</p>
+    <div class="wissen-box">
+      <span class="box-label">Regel</span>
+      Zwei Brüche werden multipliziert, indem man <strong>Zähler mal Zähler</strong> und <strong>Nenner mal Nenner</strong> rechnet. Gleichnamig machen ist hier <em>nicht</em> nötig.
+      <div class="formula-block" style="margin-top:0.5rem"><span class="bruch"><span class="z">a</span><span class="n">b</span></span> · <span class="bruch"><span class="z">c</span><span class="n">d</span></span> = <span class="bruch"><span class="z">a · c</span><span class="n">b · d</span></span></div>
+    </div>
+    <p>Warum das stimmt, zeigt das <strong>Flächenmodell</strong>: Ein Einheitsquadrat wird waagerecht in <em>b</em> Streifen und senkrecht in <em>d</em> Streifen zerlegt. Es entstehen b·d gleich große Kästchen — und der doppelt markierte Bereich enthält genau a·c davon.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label><input type="number" id="bb-z1" value="2" min="0" max="8" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
+        <input type="number" id="bb-n1" value="3" min="1" max="8" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <span style="align-self:center">·</span>
+        <label><input type="number" id="bb-z2" value="3" min="0" max="8" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
+        <input type="number" id="bb-n2" value="4" min="1" max="8" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <div id="bb-mount" class="flaechen-viz"></div>
+      <div id="bb-text" class="event-result"></div>
+    </div>
+
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Multiplizieren macht nicht immer größer</span>
+      Bei natürlichen Zahlen wird ein Produkt nie kleiner als seine Faktoren. Bei Brüchen gilt das <strong>nicht</strong>: Multipliziert man mit einer Zahl <strong>kleiner als 1</strong>, wird das Ergebnis <em>kleiner</em>.<br>
+      <span class="bruch"><span class="z">1</span><span class="n">2</span></span> · <span class="bruch"><span class="z">1</span><span class="n">2</span></span> = <span class="bruch"><span class="z">1</span><span class="n">4</span></span> — die Hälfte von einer Hälfte ist ein Viertel. Das ist kein Widerspruch, sondern genau das, was „von“ bedeutet.
+    </div>
+
+    <p>Stehen gemeinsame Faktoren über und unter dem Bruchstrich, darf man sie <strong>vor</strong> dem Ausrechnen kürzen. Das Ergebnis ist dasselbe — aber die Zahlen bleiben klein:</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label><input type="number" id="kv-z1" value="3" min="1" max="24" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
+        <input type="number" id="kv-n1" value="8" min="1" max="24" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <span style="align-self:center">·</span>
+        <label><input type="number" id="kv-z2" value="4" min="1" max="24" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
+        <input type="number" id="kv-n2" value="9" min="1" max="24" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <div id="kv-mount" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-bruchmalbruch"></div>
+  </section>
+
+  <!-- 3. Kehrwert und Division -->
+  <section class="card" id="sec-division">
+    <h2>3. Kehrwert und Division durch einen Bruch</h2>
+    <div class="definition-box">
+      <span class="box-label">Definition</span>
+      Der <strong>Kehrwert</strong> eines Bruchs entsteht durch Vertauschen von Zähler und Nenner. Ein Bruch und sein Kehrwert ergeben multipliziert immer <strong>1</strong>:
+      <div class="formula-block" style="margin-top:0.5rem"><span class="bruch"><span class="z">a</span><span class="n">b</span></span> · <span class="bruch"><span class="z">b</span><span class="n">a</span></span> = <span class="bruch"><span class="z">a · b</span><span class="n">b · a</span></span> = 1</div>
+      Die Zahl 0 hat keinen Kehrwert — deshalb darf man nie durch 0 dividieren.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Regel</span>
+      Durch einen Bruch dividiert man, indem man mit seinem <strong>Kehrwert multipliziert</strong>.
+      <div class="formula-block" style="margin-top:0.5rem"><span class="bruch"><span class="z">a</span><span class="n">b</span></span> : <span class="bruch"><span class="z">c</span><span class="n">d</span></span> = <span class="bruch"><span class="z">a</span><span class="n">b</span></span> · <span class="bruch"><span class="z">d</span><span class="n">c</span></span></div>
+    </div>
+    <p><strong>Warum?</strong> Dividieren fragt: „Wie oft passt der Divisor in den Dividenden?“ In 1 passt <span class="bruch"><span class="z">1</span><span class="n">4</span></span> genau <strong>4-mal</strong> hinein — und 4 ist der Kehrwert von <span class="bruch"><span class="z">1</span><span class="n">4</span></span>. Probiere es aus:</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label><input type="number" id="dv-z1" value="3" min="0" max="20" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
+        <input type="number" id="dv-n1" value="4" min="1" max="20" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <span style="align-self:center">:</span>
+        <label><input type="number" id="dv-z2" value="1" min="1" max="20" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
+        <input type="number" id="dv-n2" value="8" min="1" max="20" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <div id="dv-mount" class="summe-viz"></div>
+      <div id="dv-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Dividieren macht nicht immer kleiner</span>
+      Genauso wenig wie Multiplizieren immer vergrößert, verkleinert Dividieren immer. Teilt man durch eine Zahl <strong>kleiner als 1</strong>, wird das Ergebnis <em>größer</em>: 3 : <span class="bruch"><span class="z">1</span><span class="n">2</span></span> = 6, denn in 3 passen sechs halbe hinein.
+    </div>
+    <div class="quiz" id="quiz-division"></div>
+  </section>
+
+  <!-- 4. Dezimalzahlen multiplizieren -->
+  <section class="card" id="sec-dezmal">
+    <h2>4. Dezimalzahlen multiplizieren</h2>
+    <p>Anders als beim Addieren wird hier <strong>nicht</strong> Komma unter Komma geschrieben. Man rechnet zunächst ohne Komma — und setzt es am Ende an die richtige Stelle.</p>
+    <div class="wissen-box">
+      <span class="box-label">Regel</span>
+      ① Beide Kommas <strong>weglassen</strong> und wie natürliche Zahlen multiplizieren.<br>
+      ② Die Nachkommastellen beider Faktoren <strong>zusammenzählen</strong>.<br>
+      ③ Im Ergebnis von rechts so viele Stellen abzählen und dort das Komma setzen.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Größenordnung prüfen</span>
+      0,2 · 0,3 ist <strong>0,06</strong>, nicht 0,6. Beide Faktoren sind kleiner als 1, also muss das Ergebnis kleiner als beide sein. Ein kurzer Überschlag verhindert diesen Fehler zuverlässig.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <input type="text" id="dm-a" value="2,5" style="width:6.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <span style="align-self:center">·</span>
+        <input type="text" id="dm-b" value="0,4" style="width:6.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+      </div>
+      <div id="dm-mount" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-dezmal"></div>
+  </section>
+
+  <!-- 5. Dezimalzahlen dividieren -->
+  <section class="card" id="sec-dezdurch">
+    <h2>5. Dezimalzahlen dividieren</h2>
+    <p>Durch eine Kommazahl kann man nicht direkt schriftlich teilen. Der Trick: Man <strong>verschiebt das Komma in beiden Zahlen gleich weit</strong>, bis der Divisor eine natürliche Zahl ist.</p>
+    <div class="wissen-box">
+      <span class="box-label">Warum darf man das?</span>
+      Das Komma um eine Stelle zu verschieben heißt, mit 10 zu multiplizieren. Werden <strong>beide</strong> Zahlen mit 10 multipliziert, ändert sich der Quotient nicht — genau wie beim <a href="../03-brueche-und-dezimalzahlen/index.html#sec-erweitern">Erweitern eines Bruchs</a>:
+      <div class="formula-block" style="margin-top:0.5rem">a : b = (a · 10) : (b · 10) = <span class="bruch"><span class="z">a · 10</span><span class="n">b · 10</span></span></div>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <input type="text" id="dd-a" value="7,2" style="width:6.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <span style="align-self:center">:</span>
+        <input type="text" id="dd-b" value="0,8" style="width:6.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+      </div>
+      <div id="dd-mount"></div>
+      <div id="dd-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-dezdurch"></div>
+  </section>
+
+  <!-- 6. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>6. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Anders als beim Addieren:</strong> Beim <a href="../04-addieren-subtrahieren/index.html">Addieren</a> müssen Brüche gleichnamig sein, beim Multiplizieren nicht. Der Grund: Addieren legt Teile zusammen (dafür müssen sie gleich groß sein), Multiplizieren nimmt einen Anteil <em>von</em> einem Anteil.</li>
+      <li><strong>Baut auf:</strong> <a href="../03-brueche-und-dezimalzahlen/index.html#sec-erweitern">Kürzen</a> — vor dem Multiplizieren gekürzt, bleiben die Zahlen klein. Und die Kommaverschiebung bei der Division ist nichts anderes als Erweitern.</li>
+      <li><strong>Baut auf:</strong> <a href="../02-rechnen-mit-natuerlichen-zahlen/index.html#sec-schriftlich-multiplikation">Schriftliche Multiplikation</a> — bei Dezimalzahlen rechnet man genauso, nur das Komma kommt zum Schluss dazu.</li>
+      <li><strong>Umkehroperationen:</strong> Multiplikation und Division heben einander auf — dieselbe Beziehung, auf der schon die <a href="../02-rechnen-mit-natuerlichen-zahlen/index.html#sec-division">Probe bei der Division mit Rest</a> beruht. Deshalb ist Dividieren dasselbe wie Multiplizieren mit dem Kehrwert — der Kehrwert ist die „Rückgängig-Zahl“ zur Multiplikation.</li>
+      <li><strong>Führt weiter zu:</strong> Die Prozentrechnung ist Bruchmultiplikation — Prozente sind Hundertstel, und das <a href="../03-brueche-und-dezimalzahlen/index.html#sec-umwandeln">Umwandeln zwischen Bruch und Dezimalzahl</a> braucht man dort ständig: 20&nbsp;% von 350 heißt <span class="bruch"><span class="z">20</span><span class="n">100</span></span> · 350. Auch der Maßstab und die Dreisatzaufgaben laufen darauf hinaus.</li>
+      <li><strong>Führt weiter zu:</strong> Beim Lösen von Gleichungen dividiert man beide Seiten durch denselben Faktor — bei Brüchen heißt das: mit dem Kehrwert multiplizieren.</li>
+      <li><strong>Führt weiter zu:</strong> Potenzen mit negativen Exponenten sind Kehrwerte: 2<sup>−1</sup> = <span class="bruch"><span class="z">1</span><span class="n">2</span></span>.</li>
+    </ul>
+  </section>
+
+  <!-- 7. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>7. Formelsammlung</h2>
+    <p>Alle Regeln dieses Lernpfads mit Beispielen und Visualisierungen auf zwei Seiten zusammengefasst — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 8. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>8. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Brüche gibst du in der Form <code>3/4</code> ein, Dezimalzahlen mit Komma (<code>0,75</code>). Wo ein Bruch verlangt ist, muss er <strong>vollständig gekürzt</strong> sein.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 1 Größen und Rechnen</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
