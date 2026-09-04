@@ -1,0 +1,837 @@
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  margin-bottom: 1.5rem;
+}
+.card h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+.card h3 {
+  font-size: 1.05rem;
+  margin: 1.5rem 0 0.6rem;
+  color: var(--accent-dark);
+}
+.card h3:first-of-type { margin-top: 0.5rem; }
+
+.lern-intro-list {
+  margin: 0.75rem 0 0;
+  padding-left: 1.3rem;
+}
+.lern-intro-list li { margin-bottom: 0.3rem; }
+
+.term {
+  font-weight: 700;
+  color: var(--accent-dark);
+}
+
+.hinweis-box {
+  background: var(--bg);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin: 0.9rem 0;
+  font-size: 0.92rem;
+}
+
+/* ---------- Widget-Rahmen ---------- */
+
+.widget {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 1rem 0;
+  background: var(--bg);
+}
+.widget-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.widget-col { flex: 1 1 260px; min-width: 240px; }
+
+.btn {
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  font-family: inherit;
+}
+.btn:hover { border-color: var(--accent); }
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--accent-dark); }
+.btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.75rem 0; }
+
+/* ---------- Ergebnisanzeige ---------- */
+
+.event-result {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+  margin-top: 0.5rem;
+  font-family: "Cambria Math", Cambria, serif;
+}
+
+/* ---------- Quiz ---------- */
+
+.quiz {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1.1rem 0 0.5rem;
+}
+.quiz-q { font-weight: 700; margin: 0 0 0.6rem; }
+.quiz-options { display: flex; flex-direction: column; gap: 0.5rem; }
+.quiz-opt {
+  text-align: left;
+  padding: 0.55rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.94rem;
+}
+.quiz-opt:hover { border-color: var(--accent); }
+.quiz-opt.correct { border-color: #157347; background: #e7f6ec; color: #157347; font-weight: 700; }
+.quiz-opt.wrong { border-color: #b3261e; background: #fdecec; color: #b3261e; font-weight: 700; }
+:root[data-theme="dark"] .quiz-opt.correct { background: #17321f; color: #6fd68f; border-color: #6fd68f; }
+:root[data-theme="dark"] .quiz-opt.wrong { background: #3a1f1f; color: #ff8a8a; border-color: #ff8a8a; }
+.quiz-feedback { margin-top: 0.6rem; font-size: 0.9rem; }
+.quiz-feedback.ok { color: #157347; }
+.quiz-feedback.err { color: #b3261e; }
+:root[data-theme="dark"] .quiz-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .quiz-feedback.err { color: #ff8a8a; }
+
+/* ---------- Übungsaufgaben ---------- */
+
+.exercise {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1rem 0;
+}
+.exercise h3 { margin-top: 0; }
+.exercise-input-row { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; margin-top: 0.6rem; }
+.exercise-input-row input {
+  width: 11rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: var(--card-bg);
+  color: var(--text);
+}
+.exercise-feedback { margin-top: 0.6rem; font-size: 0.92rem; font-weight: 600; }
+.exercise-feedback.ok { color: #157347; }
+.exercise-feedback.err { color: #b3261e; }
+:root[data-theme="dark"] .exercise-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .exercise-feedback.err { color: #ff8a8a; }
+
+.formula-block {
+  font-family: "Cambria Math", Cambria, "STIX Two Math", serif;
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  margin: 0.5rem 0;
+  overflow-x: auto;
+}
+
+.progress-note {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+
+/* ---------- Definition / Wissen / Beispiel — farbige Merkboxen wie im Lehrbuch ---------- */
+
+.definition-box, .wissen-box, .beispiel-box {
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin: 0.9rem 0;
+}
+.definition-box .box-label, .wissen-box .box-label, .beispiel-box .box-label {
+  display: block;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+.definition-box, .wissen-box {
+  background: #fdecec;
+  border-left: 4px solid #b3261e;
+}
+.definition-box .box-label, .wissen-box .box-label { color: #b3261e; }
+:root[data-theme="dark"] .definition-box, :root[data-theme="dark"] .wissen-box { background: #3a1f1f; }
+:root[data-theme="dark"] .definition-box .box-label, :root[data-theme="dark"] .wissen-box .box-label { color: #ff8a8a; }
+.beispiel-box {
+  background: #e7f6ec;
+  border-left: 4px solid #157347;
+}
+.beispiel-box .box-label { color: #157347; }
+:root[data-theme="dark"] .beispiel-box { background: #17321f; }
+:root[data-theme="dark"] .beispiel-box .box-label { color: #6fd68f; }
+
+/* ---------- Gestaffelte Übungsaufgaben (Reiter Mittel/Schwierig/Komplex) ---------- */
+
+.schwierigkeit-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  margin-left: 0.6rem;
+  vertical-align: middle;
+}
+.schwierigkeit-badge.einfach { background: #e7f6ec; color: #157347; }
+.schwierigkeit-badge.mittel { background: #eef2ff; color: #1d4ed8; }
+.schwierigkeit-badge.schwierig { background: #fff4e0; color: #b3650a; }
+.schwierigkeit-badge.komplex { background: #fdecec; color: #b3261e; }
+:root[data-theme="dark"] .schwierigkeit-badge.einfach { background: #17321f; color: #6fd68f; }
+:root[data-theme="dark"] .schwierigkeit-badge.mittel { background: #1e2a4a; color: #93a9ff; }
+:root[data-theme="dark"] .schwierigkeit-badge.schwierig { background: #3a2a10; color: #ffbf6e; }
+:root[data-theme="dark"] .schwierigkeit-badge.komplex { background: #3a1f1f; color: #ff8a8a; }
+
+.schwierigkeit-tabs { display: flex; gap: 0.4rem; margin: 1rem 0 0; flex-wrap: wrap; }
+.schwierigkeit-tabs button {
+  padding: 0.5rem 1rem;
+  border-radius: 8px 8px 0 0;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+.schwierigkeit-tabs button.active { background: var(--card-bg); color: var(--text); border-color: var(--accent); }
+.schwierigkeit-tab-panel { border: 1px solid var(--border); border-radius: 0 10px 10px 10px; padding: 0; margin-bottom: 1rem; }
+.schwierigkeit-tab-panel .aufgabe-box { border: none; margin: 0; }
+
+.aufgabe-box {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1rem 0;
+}
+.aufgabe-box h3 { margin: 0 0 0.5rem; display: flex; align-items: center; flex-wrap: wrap; }
+.aufgabe-box .aufgabe-prompt { margin: 0.5rem 0; }
+.aufgabe-box .btn-row { margin-top: 0.5rem; }
+.aufgabe-feedback { margin-top: 0.7rem; font-size: 0.92rem; }
+.aufgabe-feedback .status { font-weight: 700; margin-bottom: 0.3rem; }
+.aufgabe-feedback .status.ok { color: #157347; }
+.aufgabe-feedback .status.err { color: #b3261e; }
+:root[data-theme="dark"] .aufgabe-feedback .status.ok { color: #6fd68f; }
+:root[data-theme="dark"] .aufgabe-feedback .status.err { color: #ff8a8a; }
+.musterloesung {
+  background: var(--bg);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.7rem 0.9rem;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.musterloesung .ml-label { font-weight: 700; color: var(--accent-dark); display: block; margin-bottom: 0.3rem; }
+
+/* ---------- Achtung-Box: typische Fehlvorstellungen ---------- */
+
+.achtung-box {
+  background: #fff4e0;
+  border-left: 4px solid #b3650a;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin: 0.9rem 0;
+}
+.achtung-box .box-label {
+  display: block;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+  color: #b3650a;
+}
+:root[data-theme="dark"] .achtung-box { background: #3a2a10; }
+:root[data-theme="dark"] .achtung-box .box-label { color: #ffbf6e; }
+
+/* ---------- Innermathematische Vernetzung ---------- */
+
+.vernetzung-liste { list-style: none; padding: 0; margin: 0.75rem 0 0; }
+.vernetzung-liste li {
+  padding: 0.6rem 0.85rem;
+  border-left: 3px solid var(--accent);
+  background: var(--bg);
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 0.5rem;
+  font-size: 0.94rem;
+}
+.vernetzung-liste a { font-weight: 700; }
+
+
+/* ---------- Bruchdarstellung ---------- */
+
+/* Echter Bruchstrich statt "3/4": Zähler über Nenner, damit die Notation der aus dem Buch
+   entspricht und Zähler/Nenner auch optisch als Bestandteile eines Terms erkennbar sind. */
+.bruch {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: middle;
+  margin: 0 0.18em;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+.bruch .z { padding: 0 0.3em; border-bottom: 2px solid currentColor; }
+.bruch .n { padding: 0 0.3em; }
+.bruch.gross { font-size: 1.3rem; font-weight: 700; }
+.bruch-zaehler-farbe { color: #2563eb; }
+.bruch-nenner-farbe { color: #1a9e7a; }
+
+.bruch-viz { display: flex; justify-content: center; gap: 1.6rem; flex-wrap: wrap; margin: 1rem 0; align-items: center; }
+/* Beim Erweitern stehen die Balken ÜBEREINANDER: nur so sieht man auf einen Blick, dass die
+   gefärbte Länge identisch ist und sich nur die Unterteilung ändert. */
+.bruch-viz.gestapelt { flex-direction: column; gap: 0.6rem; }
+.bruch-viz svg { max-width: 100%; height: auto; }
+.anteil-teil { fill: #2563eb; fill-opacity: 0.3; stroke: #2563eb; stroke-width: 1.2; }
+.anteil-rest { fill: var(--card-bg); stroke: var(--muted); stroke-width: 1.2; }
+.anteil-teil-b { fill: #1a9e7a; fill-opacity: 0.3; stroke: #1a9e7a; stroke-width: 1.2; }
+
+/* ---------- Dezimal-Stellenwerttafel ---------- */
+
+.dez-tafel { border-collapse: collapse; margin: 0.75rem auto; font-size: 0.95rem; }
+.dez-tafel th, .dez-tafel td {
+  border: 1px solid var(--border);
+  width: 3.1rem;
+  height: 2.3rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.dez-tafel th { background: var(--card-bg); font-size: 0.7rem; font-weight: 700; line-height: 1.15; }
+.dez-tafel td { font-weight: 700; font-size: 1.1rem; }
+.dez-tafel td.leer { color: var(--muted); font-weight: 400; }
+/* Die Kommaspalte ist keine Stelle, sondern nur die Markierung zwischen Einern und Zehnteln. */
+.dez-tafel th.komma, .dez-tafel td.komma { width: 1.1rem; border-top: none; border-bottom: none; font-weight: 700; }
+.dez-tafel .ganze { background: #eef2ff; }
+:root[data-theme="dark"] .dez-tafel .ganze { background: #1e2a4a; }
+
+/* ---------- Periodische Dezimalzahlen ---------- */
+
+.periode { text-decoration: overline; }
+.dez-ergebnis { font-size: 1.15rem; font-weight: 700; color: var(--accent-dark); }
+
+/* Restetabelle der Divisionsschritte: zeigt, warum sich eine Periode wiederholen MUSS. */
+.reste-tabelle { border-collapse: collapse; margin: 0.6rem auto; font-size: 0.86rem; }
+.reste-tabelle td, .reste-tabelle th { border: 1px solid var(--border); padding: 0.3rem 0.55rem; text-align: center; }
+.reste-tabelle th { background: var(--card-bg); font-size: 0.78rem; }
+.reste-tabelle td.wiederholung { background: #fdecec; color: #b3261e; font-weight: 700; }
+:root[data-theme="dark"] .reste-tabelle td.wiederholung { background: #3a1f1f; color: #ff8a8a; }
+
+/* ---------- Vergleichs-Gegenüberstellung ---------- */
+
+.vergleich-zeile { display: flex; align-items: center; justify-content: center; gap: 0.8rem; flex-wrap: wrap; font-size: 1.1rem; margin: 0.6rem 0; }
+.vergleich-zeichen { font-size: 1.5rem; font-weight: 800; color: var(--accent-dark); min-width: 1.6rem; text-align: center; }
+
+/* ---------- Schriftliches Rechnen mit Dezimalzahlen ---------- */
+
+.schriftlich-wrap { display: flex; justify-content: center; margin: 1rem 0; overflow-x: auto; }
+.schriftlich-tabelle { border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 1.05rem; }
+.schriftlich-tabelle td { width: 2.1rem; height: 2rem; text-align: center; }
+.schriftlich-tabelle td.uebertrag { font-size: 0.68rem; color: #b3261e; height: 1.1rem; font-weight: 700; }
+.schriftlich-tabelle td.op { text-align: right; padding-right: 0.3rem; color: var(--muted); width: 1.4rem; }
+/* Der Ergebnisstrich gehört ÜBER die Ergebniszeile, nicht über den zweiten Operanden. */
+.schriftlich-tabelle tr.rechenzeile td { border-top: 2px solid var(--text); }
+.schriftlich-tabelle td.digit { font-weight: 700; }
+.schriftlich-tabelle td.blank { color: var(--muted); }
+.schriftlich-tabelle td.ergebnis { font-weight: 700; color: var(--accent-dark); }
+/* Die Kommaspalte ist schmal und in jeder Zeile an derselben Stelle — genau darum geht es. */
+.schriftlich-tabelle td.komma { width: 0.75rem; font-weight: 700; }
+.schriftlich-tabelle td.komma-kopf { font-size: 0.62rem; color: var(--accent); height: 1.1rem; }
+/* Nullen, die nur zum Auffüllen ergänzt wurden, werden blass gesetzt. */
+.schriftlich-tabelle td.fuellnull { color: var(--muted); font-weight: 400; }
+
+/* ---------- Summanden-Balken (Bruchaddition) ---------- */
+
+.summe-viz { display: flex; flex-direction: column; align-items: center; gap: 0.45rem; margin: 1rem 0; }
+.summe-zeile { display: flex; align-items: center; gap: 0.6rem; }
+.summe-label { font-size: 0.85rem; color: var(--muted); min-width: 4.5rem; text-align: right; }
+.anteil-teil-c { fill: #8a5cf6; fill-opacity: 0.3; stroke: #8a5cf6; stroke-width: 1.2; }
+
+/* ---------- Falschrechnung zum Widerlegen ---------- */
+
+.falsch-richtig { display: flex; gap: 1rem; flex-wrap: wrap; margin: 0.8rem 0; }
+.falsch-richtig > div { flex: 1 1 220px; border-radius: 8px; padding: 0.7rem 0.9rem; font-size: 0.95rem; }
+.fr-falsch { background: #fdecec; border-left: 4px solid #b3261e; }
+.fr-richtig { background: #e7f6ec; border-left: 4px solid #157347; }
+:root[data-theme="dark"] .fr-falsch { background: #3a1f1f; }
+:root[data-theme="dark"] .fr-richtig { background: #17321f; }
+.fr-kopf { font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 0.3rem; }
+.fr-falsch .fr-kopf { color: #b3261e; }
+.fr-richtig .fr-kopf { color: #157347; }
+:root[data-theme="dark"] .fr-falsch .fr-kopf { color: #ff8a8a; }
+:root[data-theme="dark"] .fr-richtig .fr-kopf { color: #6fd68f; }
+
+/* ---------- Flächenmodell für die Bruchmultiplikation ---------- */
+
+/* Das Einheitsquadrat wird waagerecht in n1 Streifen und senkrecht in n2 Streifen zerlegt.
+   Die Überlappung der beiden markierten Bereiche ist genau das Produkt. */
+.flaechen-viz { display: flex; justify-content: center; align-items: center; gap: 1.4rem; flex-wrap: wrap; margin: 1rem 0; }
+.flaechen-viz svg { max-width: 100%; height: auto; }
+.fm-zelle { fill: var(--card-bg); stroke: var(--border); stroke-width: 1; }
+.fm-reihe { fill: #2563eb; fill-opacity: 0.22; stroke: #2563eb; stroke-width: 1; }
+.fm-spalte { fill: #1a9e7a; fill-opacity: 0.22; stroke: #1a9e7a; stroke-width: 1; }
+.fm-schnitt { fill: #8a5cf6; fill-opacity: 0.55; stroke: #6d28d9; stroke-width: 1.2; }
+.fm-rahmen { fill: none; stroke: var(--text); stroke-width: 2; }
+.fm-legende { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; font-size: 0.84rem; color: var(--muted); margin-top: 0.5rem; }
+.fm-swatch { display: inline-block; width: 0.85em; height: 0.85em; border-radius: 3px; margin-right: 0.35em; vertical-align: -0.1em; }
+
+/* ---------- Kehrwert ---------- */
+
+.kehrwert-zeile { display: flex; align-items: center; justify-content: center; gap: 0.9rem; flex-wrap: wrap; margin: 0.8rem 0; font-size: 1.05rem; }
+.kehrwert-pfeil { font-size: 1.4rem; color: var(--accent); font-weight: 700; }
+
+/* ---------- Kürzen vor dem Multiplizieren ---------- */
+
+.gekuerzt { color: #b3261e; text-decoration: line-through; }
+.ersatz { color: #157347; font-weight: 700; }
+
+/* ---------- Kommaverschiebung bei der Division ---------- */
+
+.verschiebung { display: flex; justify-content: center; gap: 1.2rem; flex-wrap: wrap; margin: 0.8rem 0; }
+.verschiebung-block { text-align: center; font-variant-numeric: tabular-nums; }
+.verschiebung-block .vorher { color: var(--muted); font-size: 0.95rem; }
+.verschiebung-block .nachher { font-size: 1.2rem; font-weight: 700; color: var(--accent-dark); }
+.verschiebung-pfeil { font-size: 0.8rem; color: #b3261e; font-weight: 700; }
+
+/* ---------- Zahlengerade mit negativen Zahlen ---------- */
+
+.zahlengerade-wrap { margin: 1rem 0; overflow-x: auto; }
+.zahlengerade { width: 100%; height: auto; display: block; }
+.zg-achse { stroke: var(--muted); stroke-width: 1.6; }
+.zg-strich { stroke: var(--muted); stroke-width: 1.2; }
+.zg-null { stroke: var(--text); stroke-width: 2.2; }
+.zg-beschriftung { font-size: 11px; fill: var(--muted); }
+.zg-beschriftung.null { fill: var(--text); font-weight: 700; }
+.zg-punkt-a { fill: #2563eb; }
+.zg-punkt-b { fill: #1a9e7a; }
+.zg-punkt-erg { fill: #8a5cf6; }
+.zg-label { font-size: 12px; font-weight: 700; }
+.zg-label.a { fill: #2563eb; }
+.zg-label.b { fill: #1a9e7a; }
+.zg-label.erg { fill: #6d28d9; }
+/* Betrag als Abstand zur Null, Gegenzahl als Spiegelung */
+.zg-betrag { stroke: #b3650a; stroke-width: 2; stroke-dasharray: 4 3; }
+.zg-betrag-text { font-size: 11px; fill: #b3650a; font-weight: 700; }
+.zg-spiegel { stroke: #8a5cf6; stroke-width: 1.4; stroke-dasharray: 2 3; }
+
+/* Rechenpfeil: Startpunkt, Bewegung, Ziel */
+.zg-pfeil { stroke: #8a5cf6; stroke-width: 2.4; fill: none; }
+.zg-pfeilspitze { fill: #8a5cf6; }
+
+/* ---------- Vorzeichenregeln ---------- */
+
+.vz-tabelle { border-collapse: collapse; margin: 0.9rem auto; font-size: 1.05rem; }
+.vz-tabelle th, .vz-tabelle td { border: 1px solid var(--border); width: 3.4rem; height: 2.6rem; text-align: center; }
+.vz-tabelle th { background: var(--card-bg); font-weight: 700; }
+.vz-tabelle th:first-child { width: auto; white-space: nowrap; padding: 0 0.6rem; font-size: 0.88rem; }
+.vz-tabelle td.plus { background: #e7f6ec; color: #157347; font-weight: 800; }
+.vz-tabelle td.minus { background: #fdecec; color: #b3261e; font-weight: 800; }
+:root[data-theme="dark"] .vz-tabelle td.plus { background: #17321f; color: #6fd68f; }
+:root[data-theme="dark"] .vz-tabelle td.minus { background: #3a1f1f; color: #ff8a8a; }
+
+/* Permanenzreihe: die Fortsetzung des Musters begründet minus mal minus */
+.permanenz { border-collapse: collapse; margin: 0.8rem auto; font-variant-numeric: tabular-nums; font-size: 1rem; }
+.permanenz td { padding: 0.28rem 0.7rem; text-align: right; }
+.permanenz td.pfeil { color: var(--muted); font-size: 0.8rem; text-align: center; }
+.permanenz tr.bekannt td { color: var(--muted); }
+.permanenz tr.neu td { font-weight: 800; color: var(--accent-dark); }
+.permanenz tr.grenze td { border-top: 2px dashed var(--border); }
+
+/* ---------- Zahlbereichs-Übersicht ---------- */
+
+.zahlbereiche { display: flex; justify-content: center; margin: 1rem 0; }
+.zb-ring { fill: none; stroke-width: 2; }
+.zb-n { stroke: #2563eb; fill: #2563eb; fill-opacity: 0.1; }
+.zb-z { stroke: #1a9e7a; fill: #1a9e7a; fill-opacity: 0.08; }
+.zb-q { stroke: #8a5cf6; fill: #8a5cf6; fill-opacity: 0.06; }
+.zb-text { font-size: 13px; font-weight: 700; }
+.zb-bsp { font-size: 10px; fill: var(--muted); }
+
+/* ---------- Geometrie-Zeichenfläche ---------- */
+
+.geo-wrap { display: flex; justify-content: center; margin: 1rem 0; overflow-x: auto; }
+.geo-svg { max-width: 100%; height: auto; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; }
+
+/* Linienobjekte: Strecke begrenzt, Strahl einseitig offen, Gerade beidseitig offen */
+.geo-linie { stroke: #2563eb; stroke-width: 2.4; fill: none; }
+.geo-linie.offen { stroke-dasharray: none; }
+.geo-hilfslinie { stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 4 3; fill: none; }
+.geo-punkt { fill: #b3261e; }
+.geo-punkt-name { font-size: 13px; font-weight: 700; fill: #b3261e; }
+.geo-beschriftung { font-size: 12px; fill: var(--muted); }
+.geo-mass { stroke: #b3650a; stroke-width: 1.8; fill: none; }
+.geo-mass-text { font-size: 12px; font-weight: 700; fill: #b3650a; }
+.geo-gerade-b { stroke: #1a9e7a; stroke-width: 2.4; fill: none; }
+.geo-lot { stroke: #8a5cf6; stroke-width: 2; stroke-dasharray: 5 3; fill: none; }
+.geo-rechter-winkel { stroke: #8a5cf6; stroke-width: 1.8; fill: none; }
+
+/* Koordinatensystem */
+.ks-achse { stroke: var(--text); stroke-width: 1.6; }
+.ks-gitter { stroke: var(--border); stroke-width: 0.8; }
+.ks-label { font-size: 11px; fill: var(--muted); }
+.ks-quadrant { font-size: 12px; font-weight: 700; fill: var(--muted); opacity: 0.55; }
+.ks-hilfslinie { stroke: #b3261e; stroke-width: 1.2; stroke-dasharray: 3 3; }
+
+/* Winkel */
+.wk-schenkel { stroke: #2563eb; stroke-width: 2.6; stroke-linecap: round; }
+.wk-bogen { fill: #8a5cf6; fill-opacity: 0.18; stroke: #8a5cf6; stroke-width: 1.6; }
+.wk-text { font-size: 14px; font-weight: 700; fill: #6d28d9; }
+.wk-scheitel-name { font-size: 13px; font-weight: 700; fill: #b3261e; }
+.winkelarten { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin: 0.8rem 0; }
+.winkelart { border: 1px solid var(--border); border-radius: 8px; padding: 0.45rem 0.7rem; font-size: 0.85rem; text-align: center; min-width: 6.5rem; }
+.winkelart.aktiv { border-color: var(--accent); background: #eef2ff; color: var(--accent-dark); font-weight: 700; }
+:root[data-theme="dark"] .winkelart.aktiv { background: #1e2a4a; }
+.winkelart .bereich { display: block; font-size: 0.75rem; color: var(--muted); }
+.winkelart.aktiv .bereich { color: inherit; }
+
+/* Symmetrie */
+.sym-achse { stroke: #b3650a; stroke-width: 2; stroke-dasharray: 7 4; }
+.sym-figur { fill: #2563eb; fill-opacity: 0.22; stroke: #2563eb; stroke-width: 2; }
+.sym-bild { fill: #1a9e7a; fill-opacity: 0.22; stroke: #1a9e7a; stroke-width: 2; }
+.sym-zentrum { fill: #b3650a; }
+.sym-verbindung { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+
+/* ---------- Flächen auslegen ---------- */
+
+.kachel { fill: #2563eb; fill-opacity: 0.16; stroke: #2563eb; stroke-width: 0.9; }
+.kachel-zaehler { fill: #8a5cf6; fill-opacity: 0.35; stroke: #6d28d9; stroke-width: 0.9; }
+.rand-linie { stroke: #b3650a; stroke-width: 4; fill: none; stroke-linejoin: round; }
+.flaeche-fuellung { fill: #2563eb; fill-opacity: 0.18; stroke: none; }
+.mass-linie { stroke: var(--muted); stroke-width: 1.2; }
+.mass-text { font-size: 12px; font-weight: 700; fill: var(--muted); }
+
+/* Zwei Größen, die man leicht verwechselt — deshalb konsequent farbcodiert:
+   Flächeninhalt blau (die Fläche), Umfang orange (der Rand). */
+.legende-flaeche { color: #1d4ed8; font-weight: 700; }
+.legende-umfang { color: #b3650a; font-weight: 700; }
+.groessen-paar { display: flex; gap: 1.2rem; flex-wrap: wrap; justify-content: center; margin: 0.7rem 0; }
+.groessen-karte { flex: 1 1 190px; border-radius: 8px; padding: 0.7rem 0.9rem; text-align: center; }
+.groessen-karte.flaeche { background: #eef2ff; border-left: 4px solid #2563eb; }
+.groessen-karte.umfang { background: #fff4e0; border-left: 4px solid #b3650a; }
+:root[data-theme="dark"] .groessen-karte.flaeche { background: #1e2a4a; }
+:root[data-theme="dark"] .groessen-karte.umfang { background: #3a2a10; }
+.groessen-karte .wert { font-size: 1.35rem; font-weight: 800; display: block; margin-top: 0.15rem; }
+.groessen-karte.flaeche .wert { color: #1d4ed8; }
+.groessen-karte.umfang .wert { color: #b3650a; }
+:root[data-theme="dark"] .groessen-karte.flaeche .wert { color: #93a9ff; }
+:root[data-theme="dark"] .groessen-karte.umfang .wert { color: #ffbf6e; }
+
+/* ---------- Gleicher Umfang, verschiedene Fläche ---------- */
+
+.iso-tabelle { border-collapse: collapse; margin: 0.7rem auto; font-size: 0.92rem; font-variant-numeric: tabular-nums; }
+.iso-tabelle th, .iso-tabelle td { border: 1px solid var(--border); padding: 0.35rem 0.7rem; text-align: center; }
+.iso-tabelle th { background: var(--card-bg); font-size: 0.82rem; }
+.iso-tabelle tr.aktuell td { background: #eef2ff; font-weight: 700; }
+.iso-tabelle tr.maximum td { color: #157347; font-weight: 800; }
+:root[data-theme="dark"] .iso-tabelle tr.aktuell td { background: #1e2a4a; }
+:root[data-theme="dark"] .iso-tabelle tr.maximum td { color: #6fd68f; }
+
+/* ---------- Flächeneinheiten-Treppe ---------- */
+
+.fe-treppe { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 0.35rem; margin: 1rem 0; }
+.fe-einheit {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.45rem 0.7rem;
+  background: var(--card-bg);
+  font-weight: 700;
+  min-width: 3.4rem;
+  text-align: center;
+}
+.fe-einheit.active { border-color: var(--accent); background: #eef2ff; color: var(--accent-dark); }
+:root[data-theme="dark"] .fe-einheit.active { background: #1e2a4a; }
+.fe-pfeil {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.05rem;
+  font-size: 0.72rem;
+  min-width: 4.4rem;
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
+}
+.fe-groesser { color: #b3261e; font-weight: 700; }
+.fe-kleiner { color: #157347; font-weight: 700; }
+:root[data-theme="dark"] .fe-groesser { color: #ff8a8a; }
+:root[data-theme="dark"] .fe-kleiner { color: #6fd68f; }
+.fe-legende { font-size: 0.8rem; color: var(--muted); text-align: center; margin-top: 0.5rem; }
+
+/* ---------- Zusammengesetzte Flächen ---------- */
+
+.teil-a { fill: #2563eb; fill-opacity: 0.22; stroke: #2563eb; stroke-width: 1.8; }
+.teil-b { fill: #1a9e7a; fill-opacity: 0.22; stroke: #1a9e7a; stroke-width: 1.8; }
+.teil-weg { fill: #b3261e; fill-opacity: 0.14; stroke: #b3261e; stroke-width: 1.8; stroke-dasharray: 5 3; }
+.teil-label { font-size: 13px; font-weight: 700; }
+
+/* ---------- Thema 4: Kreise und Winkel ---------- */
+
+/* Kreisteile */
+.kreis-linie { fill: none; stroke: #2563eb; stroke-width: 2.2; }
+.kreis-flaeche { fill: #2563eb; fill-opacity: 0.12; stroke: none; }
+.kreis-radius { stroke: #157347; stroke-width: 2.4; }
+.kreis-durchmesser { stroke: #b3650a; stroke-width: 2.4; }
+.kreis-sehne { stroke: #8a5cf6; stroke-width: 2.2; }
+.kreis-sekante { stroke: #8a5cf6; stroke-width: 2.2; stroke-dasharray: 6 4; }
+.kreis-tangente { stroke: #b3261e; stroke-width: 2.2; }
+.kreis-bogen { fill: none; stroke: #0f9b8e; stroke-width: 3.4; }
+.kreis-ausschnitt { fill: #0f9b8e; fill-opacity: 0.22; stroke: #0f9b8e; stroke-width: 1.4; }
+.kreis-punkt { fill: #b3261e; }
+.kreis-beschriftung { font-size: 0.78rem; font-weight: 700; }
+
+.legende-radius { color: #157347; font-weight: 700; }
+.legende-durchmesser { color: #b3650a; font-weight: 700; }
+.legende-winkel { color: #8a5cf6; font-weight: 700; }
+:root[data-theme="dark"] .legende-radius { color: #6fd68f; }
+:root[data-theme="dark"] .legende-durchmesser { color: #ffbf6e; }
+:root[data-theme="dark"] .legende-winkel { color: #c4a6ff; }
+
+/* Winkel */
+.winkel-schenkel { stroke: #1f2933; stroke-width: 2.4; }
+:root[data-theme="dark"] .winkel-schenkel { stroke: #e6e9ee; }
+.winkel-flaeche { fill: #8a5cf6; fill-opacity: 0.2; stroke: none; }
+.winkel-bogen { fill: none; stroke: #8a5cf6; stroke-width: 2.4; }
+.winkel-rechter { fill: none; stroke: #8a5cf6; stroke-width: 2.4; }
+.winkel-name { font-size: 0.85rem; font-weight: 800; fill: #6d28d9; }
+:root[data-theme="dark"] .winkel-name { fill: #c4a6ff; }
+
+/* Winkelarten-Übersicht */
+.winkelart-karte {
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 0.5rem 0.6rem;
+  text-align: center;
+  flex: 1 1 118px;
+}
+.winkelart-karte.aktiv { border-color: #8a5cf6; background: #f3eeff; }
+:root[data-theme="dark"] .winkelart-karte.aktiv { background: #2a2140; }
+.winkelart-karte .name { font-weight: 800; font-size: 0.86rem; display: block; }
+.winkelart-karte .bereich { font-size: 0.74rem; color: var(--muted); display: block; }
+.winkelart-reihe { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0.8rem 0; }
+
+/* Geodreieck: die beiden Skalen */
+.geo-skala-aussen { stroke: #b3261e; stroke-width: 1.4; }
+.geo-skala-innen { stroke: #157347; stroke-width: 1.4; }
+.geo-skala-text-aussen { font-size: 0.62rem; fill: #b3261e; font-weight: 700; }
+.geo-skala-text-innen { font-size: 0.62rem; fill: #157347; font-weight: 700; }
+.geo-halbkreis { fill: #f4f6f8; fill-opacity: 0.75; stroke: var(--border); stroke-width: 1.2; }
+:root[data-theme="dark"] .geo-halbkreis { fill: #232a35; }
+.ablesung-richtig { color: #157347; font-weight: 800; }
+.ablesung-falsch { color: #b3261e; font-weight: 800; text-decoration: line-through; }
+
+/* Kreisdiagramm */
+.kd-sektor { stroke: var(--card-bg); stroke-width: 1.6; }
+.kd-tabelle { border-collapse: collapse; margin: 0.7rem auto; font-variant-numeric: tabular-nums; }
+.kd-tabelle th, .kd-tabelle td { border: 1px solid var(--border); padding: 0.35rem 0.75rem; text-align: center; }
+.kd-tabelle th { background: var(--card-bg); font-size: 0.82rem; }
+.kd-tabelle td.farbe { width: 1.6rem; }
+.kd-tabelle tr.summe td { font-weight: 800; background: var(--card-bg); }
+
+/* ---------- Thema 5: Winkelbetrachtungen ---------- */
+
+.gerade-g { stroke: #1f2933; stroke-width: 2.4; }
+:root[data-theme="dark"] .gerade-g { stroke: #e6e9ee; }
+.gerade-parallel { stroke: #1d4ed8; stroke-width: 2.6; }
+.gerade-schneidend { stroke: #b3650a; stroke-width: 2.6; }
+.gerade-hilfs { stroke: #8a5cf6; stroke-width: 2; stroke-dasharray: 6 4; }
+
+/* Winkelfelder: neutral, hervorgehoben (Paar 1) und hervorgehoben (Paar 2) */
+.wf { fill: #94a3b8; fill-opacity: 0.16; stroke: #94a3b8; stroke-width: 1; }
+.wf-a { fill: #2563eb; fill-opacity: 0.3; stroke: #1d4ed8; stroke-width: 1.6; }
+.wf-b { fill: #157347; fill-opacity: 0.3; stroke: #157347; stroke-width: 1.6; }
+.wf-nummer { font-size: 0.72rem; font-weight: 800; fill: var(--text); }
+.wf-nummer.hervor { fill: #1d4ed8; font-size: 0.82rem; }
+.wf-nummer.hervor2 { fill: #157347; font-size: 0.82rem; }
+
+.paar-gleich { color: #157347; font-weight: 800; }
+.paar-ergaenzt { color: #b3650a; font-weight: 800; }
+:root[data-theme="dark"] .paar-gleich { color: #6fd68f; }
+:root[data-theme="dark"] .paar-ergaenzt { color: #ffbf6e; }
+
+/* Dreieck */
+.dreieck-flaeche { fill: #2563eb; fill-opacity: 0.1; stroke: #1f2933; stroke-width: 2.4; }
+:root[data-theme="dark"] .dreieck-flaeche { stroke: #e6e9ee; }
+.winkel-alpha { fill: #2563eb; fill-opacity: 0.32; stroke: #1d4ed8; stroke-width: 1.4; }
+.winkel-beta { fill: #157347; fill-opacity: 0.32; stroke: #157347; stroke-width: 1.4; }
+.winkel-gamma { fill: #b3650a; fill-opacity: 0.32; stroke: #b3650a; stroke-width: 1.4; }
+.name-alpha { fill: #1d4ed8; font-weight: 800; font-size: 0.86rem; }
+.name-beta { fill: #157347; font-weight: 800; font-size: 0.86rem; }
+.name-gamma { fill: #b3650a; font-weight: 800; font-size: 0.86rem; }
+:root[data-theme="dark"] .name-alpha { fill: #93a9ff; }
+:root[data-theme="dark"] .name-beta { fill: #6fd68f; }
+:root[data-theme="dark"] .name-gamma { fill: #ffbf6e; }
+
+/* Vieleck */
+.vieleck-rand { fill: #2563eb; fill-opacity: 0.08; stroke: #1d4ed8; stroke-width: 2.2; }
+.vieleck-diagonale { stroke: #8a5cf6; stroke-width: 1.6; stroke-dasharray: 5 3; }
+.vieleck-teil { fill: #8a5cf6; fill-opacity: 0.12; stroke: none; }
+
+.beziehung-liste { list-style: none; padding: 0; margin: 0.6rem 0 0; }
+.beziehung-liste li {
+  padding: 0.4rem 0.7rem;
+  border-left: 4px solid var(--border);
+  margin-bottom: 0.35rem;
+  background: var(--card-bg);
+  border-radius: 0 6px 6px 0;
+}
+.beziehung-liste li.aktiv { border-left-color: #1d4ed8; background: #eef2ff; }
+:root[data-theme="dark"] .beziehung-liste li.aktiv { background: #1e2a4a; }
+
+/* Der Außenwinkel bekommt eine eigene Farbe, damit er nicht mit einem der drei
+   Innenwinkel verwechselt wird. */
+.winkel-aussen { fill: #8a5cf6; fill-opacity: 0.32; stroke: #6d28d9; stroke-width: 1.4; }
+.name-aussen { fill: #6d28d9; font-weight: 800; font-size: 0.86rem; }
+:root[data-theme="dark"] .name-aussen { fill: #c4a6ff; }
+
+/* ---------- Thema 6: Geometrische Konstruktionen ---------- */
+
+/* Zirkelbögen und Hilfslinien sind bewusst blass: Sie gehören zur Konstruktion,
+   sind aber nicht das Ergebnis. Das Ergebnis ist kräftig. */
+.k-hilfskreis { fill: none; stroke: #8a5cf6; stroke-width: 1.3; opacity: 0.75; }
+.k-hilfslinie { stroke: #8a5cf6; stroke-width: 1.3; stroke-dasharray: 5 3; opacity: 0.8; }
+.k-gegeben { stroke: #1f2933; stroke-width: 2.6; }
+:root[data-theme="dark"] .k-gegeben { stroke: #e6e9ee; }
+.k-ergebnis { stroke: #b3261e; stroke-width: 2.8; }
+.k-punkt { fill: #1f2933; }
+:root[data-theme="dark"] .k-punkt { fill: #e6e9ee; }
+.k-punkt-neu { fill: #8a5cf6; }
+.k-punkt-ergebnis { fill: #b3261e; }
+.k-name { font-size: 0.78rem; font-weight: 800; fill: var(--text); }
+.k-name-neu { font-size: 0.74rem; font-weight: 800; fill: #6d28d9; }
+.k-marke { stroke: #6d28d9; stroke-width: 2; fill: none; }
+
+.schritt-liste { list-style: none; padding: 0; margin: 0.7rem 0 0; counter-reset: schritt; }
+.schritt-liste li {
+  padding: 0.45rem 0.7rem 0.45rem 2.2rem;
+  border-radius: 8px;
+  margin-bottom: 0.3rem;
+  position: relative;
+  background: var(--card-bg);
+  color: var(--muted);
+}
+.schritt-liste li::before {
+  counter-increment: schritt;
+  content: counter(schritt);
+  position: absolute;
+  left: 0.6rem;
+  font-weight: 800;
+  color: var(--muted);
+}
+.schritt-liste li.getan { color: var(--text); }
+.schritt-liste li.aktuell { background: #f3eeff; color: var(--text); font-weight: 600; }
+.schritt-liste li.aktuell::before { color: #6d28d9; }
+:root[data-theme="dark"] .schritt-liste li.aktuell { background: #2a2140; }
+
+/* Kongruenzsätze */
+.kongruenz-karte {
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 0.6rem 0.7rem;
+  flex: 1 1 150px;
+}
+.kongruenz-karte.ja { border-color: #157347; background: #e7f6ec; }
+.kongruenz-karte.nein { border-color: #b3261e; background: #fdecec; }
+:root[data-theme="dark"] .kongruenz-karte.ja { background: #16301f; }
+:root[data-theme="dark"] .kongruenz-karte.nein { background: #3a1d1a; }
+.kongruenz-karte .kuerzel { font-size: 1.15rem; font-weight: 800; display: block; letter-spacing: 0.06em; }
+.kongruenz-karte.ja .kuerzel { color: #157347; }
+.kongruenz-karte.nein .kuerzel { color: #b3261e; }
+.kongruenz-karte .was { font-size: 0.8rem; display: block; margin-top: 0.15rem; }
+.kongruenz-reihe { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.8rem 0; }
+
+/* Dreiecksungleichung */
+.du-balken { display: flex; align-items: center; gap: 0.4rem; margin: 0.35rem 0; font-variant-numeric: tabular-nums; }
+.du-balken .stab { height: 12px; border-radius: 6px; }
+.du-a { background: #2563eb; }
+.du-b { background: #157347; }
+.du-c { background: #b3650a; }
+.du-urteil { font-weight: 800; }
+.du-urteil.ja { color: #157347; }
+.du-urteil.nein { color: #b3261e; }
+:root[data-theme="dark"] .du-urteil.ja { color: #6fd68f; }
+:root[data-theme="dark"] .du-urteil.nein { color: #ff9b8f; }
+
+/* ---------- Thema 7: Flächenberechnungen ---------- */
+
+.fig-flaeche { fill: #2563eb; fill-opacity: 0.18; stroke: #1d4ed8; stroke-width: 2.2; }
+.fig-vergleich { fill: #157347; fill-opacity: 0.14; stroke: #157347; stroke-width: 1.6; stroke-dasharray: 5 3; }
+.fig-umgelegt { fill: #8a5cf6; fill-opacity: 0.26; stroke: #6d28d9; stroke-width: 1.6; }
+.fig-kopie { fill: #b3650a; fill-opacity: 0.16; stroke: #b3650a; stroke-width: 1.6; stroke-dasharray: 5 3; }
+
+/* Die Höhe ist der senkrechte Abstand — sie bekommt deshalb eine eigene, kräftige
+   Farbe, klar unterschieden von der schrägen Seite. */
+.mass-hoehe { stroke: #b3261e; stroke-width: 2.6; }
+.mass-hoehe-verlaengert { stroke: #b3261e; stroke-width: 1.4; stroke-dasharray: 4 3; }
+.mass-grund { stroke: #157347; stroke-width: 3; }
+.mass-schraeg { stroke: #b3650a; stroke-width: 2.4; }
+.mass-diagonale { stroke: #6d28d9; stroke-width: 2.4; }
+.name-hoehe { fill: #b3261e; font-weight: 800; font-size: 0.82rem; }
+.name-grund { fill: #157347; font-weight: 800; font-size: 0.82rem; }
+.name-schraeg { fill: #b3650a; font-weight: 800; font-size: 0.82rem; }
+.name-diagonale { fill: #6d28d9; font-weight: 800; font-size: 0.82rem; }
+:root[data-theme="dark"] .name-hoehe { fill: #ff9b8f; }
+:root[data-theme="dark"] .name-grund { fill: #6fd68f; }
+:root[data-theme="dark"] .name-schraeg { fill: #ffbf6e; }
+:root[data-theme="dark"] .name-diagonale { fill: #c4a6ff; }
+
+.legende-h { color: #b3261e; font-weight: 700; }
+.legende-g { color: #157347; font-weight: 700; }
+.legende-b { color: #b3650a; font-weight: 700; }
+:root[data-theme="dark"] .legende-h { color: #ff9b8f; }
+:root[data-theme="dark"] .legende-g { color: #6fd68f; }
+:root[data-theme="dark"] .legende-b { color: #ffbf6e; }
+
+/* Formelübersicht */
+.formel-karte {
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 0.6rem 0.7rem;
+  flex: 1 1 168px;
+  text-align: center;
+}
+.formel-karte.aktiv { border-color: #1d4ed8; background: #eef2ff; }
+:root[data-theme="dark"] .formel-karte.aktiv { background: #1e2a4a; }
+.formel-karte .figur { font-weight: 800; display: block; font-size: 0.9rem; }
+.formel-karte .formel { display: block; margin-top: 0.2rem; font-weight: 700; color: #1d4ed8; }
+:root[data-theme="dark"] .formel-karte .formel { color: #93a9ff; }
+.formel-reihe { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.8rem 0; }
+
+.flaechen-anzeige {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #1d4ed8;
+  text-align: center;
+  margin: 0.5rem 0;
+}
+:root[data-theme="dark"] .flaechen-anzeige { color: #93a9ff; }

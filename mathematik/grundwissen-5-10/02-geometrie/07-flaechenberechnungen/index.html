@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flächenberechnungen</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">2 Geometrie</a><span class="sep">/</span>
+  7 Flächenberechnungen
+</nav>
+<header class="page-header">
+  <h1>Flächenberechnungen</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Du kennst schon <strong>eine</strong> Flächenformel: A = a · b für das Rechteck. Alle weiteren entstehen daraus — durch <strong>Umlegen, Verdoppeln oder Ergänzen</strong>. Keine davon musst du auswendig lernen, wenn du die Herleitung verstanden hast. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>begründen, warum das <span class="term">Parallelogramm</span> dieselbe Fläche hat wie ein Rechteck: A = g · h</li>
+      <li>das <span class="term">Dreieck</span> als halbes Parallelogramm erkennen: A = ½ · g · h</li>
+      <li>das <span class="term">Trapez</span> durch Ergänzen berechnen: A = ½ · (a + c) · h</li>
+      <li><span class="term">Drachen und Raute</span> über ihre Diagonalen berechnen: A = ½ · e · f</li>
+      <li>und vor allem: die <span class="term">Höhe</span> zuverlässig von der <em>schrägen Seite</em> unterscheiden</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../02-flaeche-umfang/index.html#sec-rechteck">Thema 2</a> die Rechteckformel und aus <a href="../01-grundbegriffe/index.html#sec-abstand">Thema 1</a> den Abstand als <em>Lot</em> — genau das ist die Höhe. Aus <a href="../05-winkelbetrachtungen/index.html#sec-parallelen">Thema 5</a> kommen die Parallelen.</p>
+  </section>
+
+  <!-- 1. Parallelogramm -->
+  <section class="card" id="sec-parallelogramm">
+    <h2>1. Vom Rechteck zum Parallelogramm</h2>
+    <p>Schneidet man an einem Rechteck links ein Dreieck ab und setzt es rechts wieder an, entsteht ein Parallelogramm. Dabei geht <strong>nichts verloren und nichts kommt hinzu</strong> — der Flächeninhalt bleibt derselbe.</p>
+    <div class="wissen-box">
+      <span class="box-label">Formel</span>
+      <strong>Parallelogramm: A = g · h</strong><br>
+      <span class="legende-g">g</span> ist die Grundseite, <span class="legende-h">h</span> die zugehörige <strong>Höhe</strong> — der <em>senkrechte</em> Abstand zur gegenüberliegenden Seite.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der häufigste Fehler im ganzen Kapitel</span>
+      Die Höhe ist <strong>nicht</strong> die schräge Seite. Je schräger das Parallelogramm, desto größer wird der Unterschied — die Fläche bleibt aber gleich. Wer mit der schrägen Seite rechnet, bekommt <em>immer</em> zu viel heraus.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Grundseite g = <input type="number" id="pg-g" value="7" min="2" max="12" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>Höhe h = <input type="number" id="pg-h" value="4" min="1" max="8" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>Schrägung: <input type="range" id="pg-scher" min="0" max="10" step="1" value="4" style="vertical-align:middle;width:10rem"> <span id="pg-scher-anzeige" style="font-weight:800"></span></label>
+        <label><input type="checkbox" id="pg-umlegen" checked> Umlegen zeigen</label>
+      </div>
+      <div class="geo-wrap" id="pg-mount"></div>
+      <div class="flaechen-anzeige" id="pg-flaeche"></div>
+      <div id="pg-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-parallelogramm"></div>
+  </section>
+
+  <!-- 2. Dreieck -->
+  <section class="card" id="sec-dreieck">
+    <h2>2. Das Dreieck ist ein halbes Parallelogramm</h2>
+    <p>Nimm ein beliebiges Dreieck und lege eine gedrehte Kopie daran — es entsteht immer ein <strong>Parallelogramm</strong> mit derselben Grundseite und derselben Höhe. Das Dreieck ist also genau die Hälfte davon.</p>
+    <div class="wissen-box">
+      <span class="box-label">Formel</span>
+      <strong>Dreieck: A = ½ · g · h</strong> &nbsp;(auch geschrieben als <strong>A = g · h : 2</strong>)<br>
+      Jede der drei Seiten kann Grundseite sein — dann gehört aber auch die passende Höhe dazu. Alle drei Kombinationen ergeben denselben Flächeninhalt.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Grundseite g = <input type="number" id="dr-g" value="8" min="2" max="12" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>Höhe h = <input type="number" id="dr-h" value="5" min="1" max="8" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>Spitze verschieben: <input type="range" id="dr-spitze" min="-6" max="14" step="1" value="3" style="vertical-align:middle;width:11rem"></label>
+        <label><input type="checkbox" id="dr-kopie" checked> Kopie zeigen</label>
+      </div>
+      <div class="geo-wrap" id="dr-mount"></div>
+      <div class="flaechen-anzeige" id="dr-flaeche"></div>
+      <div id="dr-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — bei stumpfen Winkeln liegt die Höhe außerhalb</span>
+      Schiebt man die Spitze weit über die Grundseite hinaus, trifft das Lot die <em>Verlängerung</em> der Grundseite. Die Höhe ist trotzdem der senkrechte Abstand, und die Formel gilt unverändert. Verschiebe die Spitze ganz nach links oder rechts, um das zu sehen.
+    </div>
+    <div class="quiz" id="quiz-dreieck"></div>
+  </section>
+
+  <!-- 3. Trapez -->
+  <section class="card" id="sec-trapez">
+    <h2>3. Das Trapez</h2>
+    <p>Ein <strong>Trapez</strong> hat zwei parallele Seiten a und c. Legt man eine um 180° gedrehte Kopie daran, entsteht ein Parallelogramm mit der Grundseite <strong>a + c</strong> und derselben Höhe. Das Trapez ist die Hälfte davon.</p>
+    <div class="wissen-box">
+      <span class="box-label">Formel</span>
+      <strong>Trapez: A = ½ · (a + c) · h</strong><br>
+      <span class="progress-note">Anders gelesen: Das Trapez hat denselben Flächeninhalt wie ein Rechteck mit der <em>mittleren</em> Breite (a + c) : 2 und der Höhe h. Diese mittlere Breite ist die Länge der Mittellinie.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a = <input type="number" id="tz-a" value="9" min="3" max="14" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>c = <input type="number" id="tz-c" value="5" min="1" max="12" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>h = <input type="number" id="tz-h" value="4" min="1" max="8" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label><input type="checkbox" id="tz-kopie" checked> Kopie zeigen</label>
+      </div>
+      <div class="geo-wrap" id="tz-mount"></div>
+      <div class="flaechen-anzeige" id="tz-flaeche"></div>
+      <div id="tz-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-trapez"></div>
+  </section>
+
+  <!-- 4. Drachen und Raute -->
+  <section class="card" id="sec-drachen">
+    <h2>4. Drachen und Raute</h2>
+    <p>Bei diesen Vierecken stehen die beiden <strong>Diagonalen senkrecht</strong> aufeinander. Dann passt die Figur genau in ein Rechteck aus den beiden Diagonalen — und füllt davon <strong>die Hälfte</strong>.</p>
+    <div class="wissen-box">
+      <span class="box-label">Formel</span>
+      <strong>Drachen und Raute: A = ½ · e · f</strong><br>
+      e und f sind die beiden Diagonalen. Die Formel gilt für <em>jedes</em> Viereck mit senkrechten Diagonalen — die Raute und das Quadrat sind Sonderfälle des Drachens.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Diagonale e = <input type="number" id="dc-e" value="8" min="2" max="14" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>Diagonale f = <input type="number" id="dc-f" value="6" min="2" max="10" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>Teilung von f: <input type="range" id="dc-teil" min="10" max="50" step="5" value="30" style="vertical-align:middle;width:9rem"> <span id="dc-teil-anzeige" style="font-weight:800"></span></label>
+      </div>
+      <div class="geo-wrap" id="dc-mount"></div>
+      <div class="flaechen-anzeige" id="dc-flaeche"></div>
+      <div id="dc-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-drachen"></div>
+  </section>
+
+  <!-- 5. Übersicht -->
+  <section class="card" id="sec-uebersicht">
+    <h2>5. Alle Formeln — und woher sie kommen</h2>
+    <p>Fünf Formeln, aber nur <strong>eine</strong> Grundidee: das Rechteck. Klicke auf eine Figur, um zu sehen, wie sie darauf zurückgeführt wird.</p>
+    <div class="formel-reihe" id="ue-reihe"></div>
+    <div class="widget">
+      <div class="geo-wrap" id="ue-mount"></div>
+      <div id="ue-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-uebersicht"></div>
+  </section>
+
+  <!-- 6. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>6. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Der <a href="../02-flaeche-umfang/index.html#sec-rechteck">Flächeninhalt des Rechtecks</a> — jede Formel dieses Themas wird darauf zurückgeführt. Es kommt keine neue Idee hinzu, nur neue Wege des Zerlegens und Ergänzens.</li>
+      <li><strong>Baut auf:</strong> Der <a href="../01-grundbegriffe/index.html#sec-abstand">Abstand als Lot</a> — die Höhe <em>ist</em> dieser senkrechte Abstand. Wer das im Kopf hat, verwechselt sie nie mit der schrägen Seite.</li>
+      <li><strong>Baut auf:</strong> <a href="../02-flaeche-umfang/index.html#sec-zusammengesetzt">Zerlegen und Ergänzen</a> — dieselbe Denkfigur, nur mit schrägen Teilen.</li>
+      <li><strong>Gleiche Struktur:</strong> Dreieck und Trapez entstehen beide durch <em>Verdoppeln zu einem Parallelogramm</em>. Und das Dreieck ist der Sonderfall c = 0 des Trapezes: ½ · (a + 0) · h = ½ · a · h ✓</li>
+      <li><strong>Führt weiter zu:</strong> Der Satz des Pythagoras erlaubt es, eine fehlende Höhe zu <em>berechnen</em> statt sie zu messen — damit werden Flächen zugänglich, für die hier noch Angaben fehlen.</li>
+      <li><strong>Führt weiter zu:</strong> Der Flächeninhalt des Kreises wird nach demselben Muster hergeleitet: Man zerlegt ihn in schmale Sektoren und legt sie zu einem Fast-Rechteck um.</li>
+      <li><strong>Führt weiter zu:</strong> Im Raum werden aus diesen Flächen die Grundflächen von Prismen — V = G · h benutzt sie unverändert weiter.</li>
+    </ul>
+  </section>
+
+  <!-- 7. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>7. Formelsammlung</h2>
+    <p>Alle Formeln und ihre Herleitungen mit Zeichnungen auf zwei Seiten zusammengefasst — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 8. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>8. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 2 Geometrie</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
