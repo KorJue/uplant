@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Satzgruppe des Pythagoras</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">2 Geometrie</a><span class="sep">/</span>
+  9 Satzgruppe des Pythagoras
+</nav>
+<header class="page-header">
+  <h1>Satzgruppe des Pythagoras</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Im <strong>rechtwinkligen</strong> Dreieck hängen die drei Seiten fest zusammen: Kennt man zwei, kann man die dritte <em>berechnen</em>, statt sie zu messen. Das ist der meistgebrauchte Satz der ganzen Schulgeometrie. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>den <span class="term">Satz des Pythagoras</span> anwenden: a² + b² = c²</li>
+      <li>begründen, <em>warum</em> er gilt — mit einer Zerlegung, die du selbst nachvollziehen kannst</li>
+      <li>die fehlende Seite berechnen, egal ob sie Kathete oder Hypotenuse ist</li>
+      <li>mit der <span class="term">Umkehrung</span> prüfen, ob ein Dreieck überhaupt rechtwinklig ist</li>
+      <li><span class="term">Kathetensatz</span> und <span class="term">Höhensatz</span> anwenden: a² = c · p und h² = p · q</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../01-grundbegriffe/index.html#sec-abstand">Thema 1</a> den rechten Winkel und das Lot, aus <a href="../07-flaechenberechnungen/index.html#sec-uebersicht">Thema 7</a> den Flächeninhalt von Quadrat und Dreieck und aus <a href="../08-aehnlichkeit/index.html#sec-saetze">Thema 8</a> die ähnlichen Dreiecke — mit ihnen werden Kathetensatz und Höhensatz bewiesen.</p>
+  </section>
+
+  <!-- 1. Der Satz -->
+  <section class="card" id="sec-satz">
+    <h2>1. Der Satz des Pythagoras</h2>
+    <p>Zeichnet man über jede Seite eines <strong>rechtwinkligen</strong> Dreiecks ein Quadrat, so sind die beiden kleinen Quadrate zusammen genauso groß wie das große. Verändere unten die beiden Katheten und beobachte die Bilanz.</p>
+    <div class="wissen-box">
+      <span class="box-label">Satz des Pythagoras</span>
+      <strong>a² + b² = c²</strong><br>
+      Dabei sind <span class="py-name-a">a</span> und <span class="py-name-b">b</span> die <span class="term">Katheten</span> — die beiden Seiten, die den rechten Winkel bilden — und <span class="py-name-c">c</span> die <span class="term">Hypotenuse</span>, die dem rechten Winkel gegenüberliegt. Sie ist immer die längste Seite.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Kathete a = <input type="range" id="ps-a" min="2" max="8" step="1" value="3" style="vertical-align:middle;width:8rem"> <span id="ps-a-anzeige" class="py-name-a"></span></label>
+        <label>Kathete b = <input type="range" id="ps-b" min="2" max="8" step="1" value="4" style="vertical-align:middle;width:8rem"> <span id="ps-b-anzeige" class="py-name-b"></span></label>
+        <label><input type="checkbox" id="ps-gitter" checked> Kästchen zeigen</label>
+      </div>
+      <div class="geo-wrap" id="ps-mount"></div>
+      <div class="py-bilanz" id="ps-bilanz"></div>
+      <div id="ps-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — c ist nicht irgendeine Seite</span>
+      In a² + b² = c² steht <strong>c immer für die Hypotenuse</strong>, also für die Seite gegenüber dem rechten Winkel. Wer die Buchstaben vertauscht, addiert die falschen Quadrate. Prüfe im Zweifel: Die Hypotenuse ist die <em>längste</em> Seite.
+    </div>
+    <div class="quiz" id="quiz-satz"></div>
+  </section>
+
+  <!-- 2. Warum gilt er? -->
+  <section class="card" id="sec-beweis">
+    <h2>2. Warum gilt der Satz?</h2>
+    <p>Der klassische Beweis braucht keine Rechnung, nur zwei Bilder. In beiden liegt <strong>dasselbe große Quadrat</strong> mit der Seitenlänge a + b, und in beiden liegen <strong>dieselben vier Dreiecke</strong>. Was übrig bleibt, muss also gleich groß sein.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Kathete a = <input type="range" id="bw-a" min="2" max="6" step="1" value="3" style="vertical-align:middle;width:7rem"> <span id="bw-a-anzeige" class="py-name-a"></span></label>
+        <label>Kathete b = <input type="range" id="bw-b" min="2" max="6" step="1" value="4" style="vertical-align:middle;width:7rem"> <span id="bw-b-anzeige" class="py-name-b"></span></label>
+      </div>
+      <div class="geo-wrap" id="bw-mount"></div>
+      <div class="py-bilanz" id="bw-bilanz"></div>
+      <div id="bw-text" class="event-result"></div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Der Gedanke in einem Satz</span>
+      Beide Anordnungen füllen dasselbe Quadrat mit denselben vier Dreiecken. Die freie Restfläche ist deshalb beide Male gleich groß — links sind es die beiden Quadrate a² und b², rechts ist es das eine Quadrat c². Also ist a² + b² = c².
+    </div>
+    <div class="quiz" id="quiz-beweis"></div>
+  </section>
+
+  <!-- 3. Umkehrung -->
+  <section class="card" id="sec-umkehrung">
+    <h2>3. Die Umkehrung — ist das Dreieck rechtwinklig?</h2>
+    <p>Der Satz gilt auch andersherum: Erfüllen drei Seitenlängen die Gleichung a² + b² = c², dann <em>muss</em> das Dreieck rechtwinklig sein. Damit lässt sich ein rechter Winkel <strong>nachrechnen</strong>, ohne ihn zu messen — genau so richten Bauleute mit einer geknoteten Schnur ihre Ecken aus.</p>
+    <div class="wissen-box">
+      <span class="box-label">Umkehrung und Vergleich</span>
+      Für die längste Seite c gilt:<br>
+      <strong>a² + b² = c²</strong> → rechtwinklig &nbsp;·&nbsp;
+      <strong>a² + b² &gt; c²</strong> → spitzwinklig &nbsp;·&nbsp;
+      <strong>a² + b² &lt; c²</strong> → stumpfwinklig
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a = <input type="number" id="uk-a" value="3" min="1" max="30" style="width:4.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label>b = <input type="number" id="uk-b" value="4" min="1" max="30" style="width:4.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label>c = <input type="number" id="uk-c" value="5" min="1" max="40" style="width:4.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <p class="progress-note">Bekannte pythagoreische Tripel zum Ausprobieren:</p>
+      <div class="py-tripel" id="uk-tripel"></div>
+      <div class="geo-wrap" id="uk-mount"></div>
+      <div class="py-bilanz" id="uk-bilanz"></div>
+      <div class="py-urteil" id="uk-urteil"></div>
+    </div>
+    <div class="quiz" id="quiz-umkehrung"></div>
+  </section>
+
+  <!-- 4. Kathetensatz und Höhensatz -->
+  <section class="card" id="sec-satzgruppe">
+    <h2>4. Kathetensatz und Höhensatz</h2>
+    <p>Fällt man im rechtwinkligen Dreieck das <strong>Lot von C auf die Hypotenuse</strong>, so zerfällt sie in zwei Abschnitte <span class="py-name-pq">p</span> und <span class="py-name-pq">q</span>. Die drei entstehenden Dreiecke sind alle <em>zueinander ähnlich</em> — daraus folgen zwei weitere Sätze. Zusammen mit dem Satz des Pythagoras bilden sie die <strong>Satzgruppe</strong>.</p>
+    <div class="py-satz-reihe" id="sg-reihe"></div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Abschnitt p = <input type="range" id="sg-p" min="2" max="12" step="1" value="4" style="vertical-align:middle;width:8rem"> <span id="sg-p-anzeige" class="py-name-pq"></span></label>
+        <label>Abschnitt q = <input type="range" id="sg-q" min="2" max="12" step="1" value="9" style="vertical-align:middle;width:8rem"> <span id="sg-q-anzeige" class="py-name-pq"></span></label>
+      </div>
+      <div class="geo-wrap" id="sg-mount"></div>
+      <div class="py-bilanz" id="sg-bilanz"></div>
+      <div id="sg-text" class="event-result"></div>
+    </div>
+    <div class="hinweis-box">💡 Warum gelten die beiden Sätze? Weil das Lot das Dreieck in zwei Teildreiecke zerlegt, die dem großen <a href="../08-aehnlichkeit/index.html#sec-saetze">ähnlich</a> sind: Alle drei haben einen rechten Winkel und teilen sich je einen weiteren Winkel, also gilt <strong>WW</strong>. Aus den Seitenverhältnissen ähnlicher Dreiecke folgen a : c = p : a und h : p = q : h — und das sind genau Kathetensatz und Höhensatz.</div>
+    <div class="quiz" id="quiz-satzgruppe"></div>
+  </section>
+
+  <!-- 5. Anwendungen -->
+  <section class="card" id="sec-anwendungen">
+    <h2>5. Anwendungen: Diagonalen und Abstände</h2>
+    <p>Überall dort, wo ein rechter Winkel steckt, lässt sich der Satz anwenden — auch wenn kein Dreieck gezeichnet ist. Man muss es nur finden.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Länge = <input type="range" id="an-l" min="2" max="12" step="1" value="8" style="vertical-align:middle;width:7rem"> <span id="an-l-anzeige" style="font-weight:800"></span></label>
+        <label>Breite = <input type="range" id="an-b" min="2" max="10" step="1" value="6" style="vertical-align:middle;width:7rem"> <span id="an-b-anzeige" style="font-weight:800"></span></label>
+        <label>Höhe = <input type="range" id="an-h" min="1" max="12" step="1" value="5" style="vertical-align:middle;width:7rem"> <span id="an-h-anzeige" style="font-weight:800"></span></label>
+      </div>
+      <div class="geo-wrap" id="an-mount"></div>
+      <div class="py-bilanz" id="an-bilanz"></div>
+      <div id="an-text" class="event-result"></div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Die Raumdiagonale — zweimal Pythagoras hintereinander</span>
+      Zuerst die Diagonale des Bodens: d² = l² + b². Dann steht diese Diagonale senkrecht auf der Höhe, also gilt für die Raumdiagonale: e² = d² + h² = <strong>l² + b² + h²</strong>. Man wendet denselben Satz einfach zweimal an.
+    </div>
+    <div class="quiz" id="quiz-anwendungen"></div>
+  </section>
+
+  <!-- 6. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>6. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../07-flaechenberechnungen/index.html#sec-uebersicht">Flächeninhalt von Quadrat und Dreieck</a> — der Beweis vergleicht Flächen, nicht Längen. Ohne die Flächenformeln ließe sich der Satz nicht begründen.</li>
+      <li><strong>Baut auf:</strong> <a href="../08-aehnlichkeit/index.html#sec-saetze">Ähnliche Dreiecke, Satz WW</a> — Kathetensatz und Höhensatz folgen unmittelbar daraus, dass die Höhe das Dreieck in zwei ähnliche Teildreiecke zerlegt.</li>
+      <li><strong>Baut auf:</strong> <a href="../01-grundbegriffe/index.html#sec-abstand">Das Lot als kürzester Abstand</a> — die Höhe auf die Hypotenuse ist genau dieses Lot.</li>
+      <li><strong>Gleiche Struktur:</strong> Der Höhensatz h² = p · q ist die geometrische Fassung des <em>geometrischen Mittels</em>: h ist die mittlere Proportionale zwischen p und q.</li>
+      <li><strong>Führt weiter zu:</strong> Die Trigonometrie. Sinus, Kosinus und Tangens beschreiben dasselbe rechtwinklige Dreieck über Winkel statt über Seitenquadrate — und sin²α + cos²α = 1 ist nichts anderes als der Satz des Pythagoras.</li>
+      <li><strong>Führt weiter zu:</strong> Der Abstand zweier Punkte im Koordinatensystem: d = √((x₂ − x₁)² + (y₂ − y₁)²) ist der Satz des Pythagoras für das Steigungsdreieck.</li>
+      <li><strong>Führt weiter zu:</strong> Quadratwurzeln. Weil c = √(a² + b²) meist irrational ist, macht dieser Satz das Rechnen mit Wurzeln überhaupt erst nötig — √2 ist die Diagonale des Einheitsquadrats.</li>
+      <li><strong>Führt weiter zu:</strong> Körperberechnungen: Die Höhe einer Pyramide, die Mantellinie eines Kegels und die Raumdiagonale eines Quaders werden alle mit diesem Satz bestimmt.</li>
+    </ul>
+  </section>
+
+  <!-- 7. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>7. Formelsammlung</h2>
+    <p>Alle drei Sätze der Satzgruppe mit Zeichnungen, Umstellungen und typischen Fehlern auf zwei Seiten — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 8. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>8. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit. Alle Ergebnisse gehen glatt auf.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 2 Geometrie</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
