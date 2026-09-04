@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geometrische Konstruktionen</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">2 Geometrie</a><span class="sep">/</span>
+  6 Geometrische Konstruktionen
+</nav>
+<header class="page-header">
+  <h1>Geometrische Konstruktionen</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p><strong>Konstruieren ist nicht Zeichnen.</strong> Beim Zeichnen darfst du messen und schätzen; beim Konstruieren erzeugst du eine Figur allein mit <strong>Zirkel und Lineal</strong>, und jeder Schritt ist begründet. Das Ergebnis ist dann nicht ungefähr richtig, sondern <em>exakt</em> — unabhängig davon, wie genau du gezeichnet hast. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>die vier <span class="term">Grundkonstruktionen</span> Schritt für Schritt ausführen und begründen</li>
+      <li>mit der <span class="term">Dreiecksungleichung</span> entscheiden, ob es ein Dreieck überhaupt gibt</li>
+      <li>an den <span class="term">Kongruenzsätzen</span> ablesen, welche Angaben ein Dreieck eindeutig festlegen</li>
+      <li>erklären, warum <span class="term">WWW</span> und <span class="term">SSW</span> nicht ausreichen</li>
+      <li>die <span class="term">besonderen Linien</span> im Dreieck und ihre Schnittpunkte einordnen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../01-grundbegriffe/index.html#sec-abstand">Thema 1</a> den Abstand, aus <a href="../04-kreise-und-winkel/index.html#sec-kreis">Thema 4</a> den Kreis als Menge aller Punkte mit gleichem Abstand — genau darauf beruht jede Zirkelkonstruktion — und aus <a href="../05-winkelbetrachtungen/index.html">Thema 5</a> die Winkelsumme.</p>
+  </section>
+
+  <!-- 1. Was heißt konstruieren? -->
+  <section class="card" id="sec-werkzeug">
+    <h2>1. Was heißt „konstruieren“?</h2>
+    <div class="definition-box">
+      <span class="box-label">Die Spielregeln</span>
+      Erlaubt sind genau zwei Werkzeuge:<br>
+      <strong>Das Lineal</strong> — nur zum <em>Geradenziehen</em> durch zwei Punkte, nicht zum Messen.<br>
+      <strong>Der Zirkel</strong> — zum Zeichnen von Kreisen und zum <em>Übertragen</em> von Strecken.<br>
+      Neue Punkte entstehen ausschließlich als <strong>Schnittpunkte</strong> von bereits Gezeichnetem.
+    </div>
+    <p>Warum diese Beschränkung? Weil der Zirkel eine Eigenschaft garantiert, die kein Lineal liefern kann: Alle Punkte eines Kreises haben vom Mittelpunkt <strong>exakt denselben Abstand</strong>. Aus dieser einen Tatsache lässt sich alles Weitere <em>beweisen</em> — deshalb ist eine Konstruktion nicht nur genau, sondern begründet.</p>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Konstruktion bleibt sichtbar</span>
+      Hilfskreise und Hilfslinien werden <strong>nicht weggeradiert</strong>. Sie sind der Nachweis, dass wirklich konstruiert und nicht gemessen wurde. Auf dieser Seite sind sie deshalb durchgehend violett, das Ergebnis rot.
+    </div>
+    <div class="quiz" id="quiz-werkzeug"></div>
+  </section>
+
+  <!-- 2. Die Grundkonstruktionen -->
+  <section class="card" id="sec-grundkonstruktionen">
+    <h2>2. Die vier Grundkonstruktionen</h2>
+    <p>Fast jede Konstruktionsaufgabe setzt sich aus diesen vier Bausteinen zusammen. Geh sie hier Schritt für Schritt durch — und lies jeweils mit, <em>warum</em> der Schritt funktioniert.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Konstruktion:
+          <select id="kn-art" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="mittelsenkrechte">Mittelsenkrechte einer Strecke</option>
+            <option value="winkelhalbierende">Winkelhalbierende eines Winkels</option>
+            <option value="lot">Lot von einem Punkt auf eine Gerade</option>
+            <option value="parallele">Parallele durch einen Punkt</option>
+          </select>
+        </label>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn" id="kn-zurueck">◀ Schritt zurück</button>
+        <span id="kn-anzeige" style="align-self:center;font-weight:800"></span>
+        <button type="button" class="btn btn-primary" id="kn-vor">Schritt vor ▶</button>
+        <button type="button" class="btn" id="kn-alle">alle Schritte</button>
+      </div>
+      <div class="geo-wrap" id="kn-mount"></div>
+      <div id="kn-schritte"></div>
+      <div id="kn-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-grundkonstruktionen"></div>
+  </section>
+
+  <!-- 3. Dreiecksungleichung -->
+  <section class="card" id="sec-ungleichung">
+    <h2>3. Gibt es das Dreieck überhaupt?</h2>
+    <p>Drei beliebige Längen ergeben noch lange kein Dreieck. Sind zwei Seiten zusammen kürzer als die dritte, treffen sich die beiden Zirkelbögen gar nicht erst.</p>
+    <div class="wissen-box">
+      <span class="box-label">Dreiecksungleichung</span>
+      Ein Dreieck mit den Seiten a, b und c existiert genau dann, wenn <strong>jede</strong> Seite kürzer ist als die Summe der beiden anderen:<br>
+      <strong>a &lt; b + c</strong> &nbsp;und&nbsp; <strong>b &lt; a + c</strong> &nbsp;und&nbsp; <strong>c &lt; a + b</strong><br>
+      <span class="progress-note">In der Praxis genügt eine Prüfung: Die <em>längste</em> Seite muss kürzer sein als die Summe der beiden anderen. Sind die anderen zwei zusammen genau so lang, entsteht kein Dreieck, sondern eine Strecke.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a = <input type="number" id="du-a" value="4" min="1" max="12" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>b = <input type="number" id="du-b" value="6" min="1" max="12" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>c = <input type="number" id="du-c" value="7" min="1" max="12" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+      </div>
+      <div class="geo-wrap" id="du-mount"></div>
+      <div id="du-pruefung"></div>
+      <div id="du-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-ungleichung"></div>
+  </section>
+
+  <!-- 4. Kongruenzsätze -->
+  <section class="card" id="sec-kongruenz">
+    <h2>4. Welche Angaben legen ein Dreieck fest?</h2>
+    <p>Ein Dreieck hat sechs Bestimmungsstücke: drei Seiten und drei Winkel. Man braucht aber nicht alle sechs — <strong>drei</strong> genügen, wenn es <em>die richtigen</em> drei sind.</p>
+    <div class="wissen-box">
+      <span class="box-label">Die vier Kongruenzsätze</span>
+      Zwei Dreiecke sind <strong>kongruent</strong> (deckungsgleich), wenn sie in einer dieser Angaben übereinstimmen:<br>
+      <strong>SSS</strong> — in allen drei Seiten &nbsp;·&nbsp; <strong>SWS</strong> — in zwei Seiten und dem <em>eingeschlossenen</em> Winkel<br>
+      <strong>WSW</strong> — in einer Seite und den beiden anliegenden Winkeln &nbsp;·&nbsp; <strong>SsW</strong> — in zwei Seiten und dem Winkel, der der <em>längeren</em> gegenüberliegt
+    </div>
+    <div class="widget">
+      <div class="btn-row" id="kg-reihe"></div>
+      <div class="geo-wrap" id="kg-mount"></div>
+      <div id="kg-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — zwei Angaben, die <em>nicht</em> reichen</span>
+      <strong>WWW</strong> legt nur die <em>Form</em> fest, nicht die Größe: Alle Dreiecke mit denselben drei Winkeln sind einander <em>ähnlich</em>, aber nicht kongruent. Das ist auch kein Wunder — aus zwei Winkeln folgt der dritte schon, es sind also gar keine drei unabhängigen Angaben.<br>
+      <strong>SSW</strong> (Winkel an der <em>kürzeren</em> Seite) kann <strong>zwei</strong> verschiedene Dreiecke zulassen. Deshalb heißt der gültige Satz SsW mit kleinem s: Der Winkel muss der <strong>längeren</strong> Seite gegenüberliegen.
+    </div>
+    <div class="quiz" id="quiz-kongruenz"></div>
+  </section>
+
+  <!-- 5. Besondere Linien -->
+  <section class="card" id="sec-linien">
+    <h2>5. Besondere Linien im Dreieck</h2>
+    <p>Vier Linienarten lassen sich in jedem Dreieck konstruieren, und jede hat eine bemerkenswerte Eigenschaft: <strong>Alle drei schneiden sich immer in einem Punkt.</strong> Das ist keineswegs selbstverständlich — drei beliebige Geraden bilden normalerweise ein kleines Dreieck.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Linienart:
+          <select id="bl-art" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="mittelsenkrechte">Mittelsenkrechten → Umkreismittelpunkt</option>
+            <option value="winkelhalbierende">Winkelhalbierende → Inkreismittelpunkt</option>
+            <option value="hoehe">Höhen → Höhenschnittpunkt</option>
+            <option value="seitenhalbierende">Seitenhalbierende → Schwerpunkt</option>
+          </select>
+        </label>
+      </div>
+      <div class="geo-wrap" id="bl-mount"></div>
+      <div id="bl-text" class="event-result"></div>
+    </div>
+    <p class="hinweis-box">🔧 Zum selbst Konstruieren mit dem Zirkel am Bildschirm gibt es eigene Übungsseiten: <a href="../../../klasse-8/geometrie/grundkonstruktionen.html">Grundkonstruktionen</a>, <a href="../../../klasse-8/geometrie/mittelsenkrechte-umkreis.html">Mittelsenkrechte und Umkreis</a>, <a href="../../../klasse-8/geometrie/winkelhalbierende-inkreis.html">Winkelhalbierende und Inkreis</a> sowie <a href="../../../klasse-8/geometrie/alle-linien.html">alle Linien im Vergleich</a>.</p>
+    <div class="quiz" id="quiz-linien"></div>
+  </section>
+
+  <!-- 6. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>6. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Der <a href="../04-kreise-und-winkel/index.html#sec-kreis">Kreis als Menge aller Punkte mit gleichem Abstand</a> — das ist die einzige Eigenschaft, die der Zirkel liefert, und jede Konstruktion lebt davon.</li>
+      <li><strong>Baut auf:</strong> Der <a href="../01-grundbegriffe/index.html#sec-abstand">Abstand als Lot</a> — die Mittelsenkrechte ist die Menge aller Punkte, die von A und B gleich weit entfernt sind; die Winkelhalbierende die Menge aller Punkte, die von beiden Schenkeln gleich weit entfernt sind.</li>
+      <li><strong>Baut auf:</strong> Die <a href="../05-winkelbetrachtungen/index.html#sec-dreieck">Winkelsumme im Dreieck</a> — deshalb genügen bei WSW zwei Winkel: Der dritte folgt automatisch.</li>
+      <li><strong>Erklärt einen Satz:</strong> Warum schneiden sich die drei Mittelsenkrechten in einem Punkt? Weil der Schnittpunkt von zwei Mittelsenkrechten von allen drei Ecken gleich weit entfernt ist — und damit zwangsläufig auch auf der dritten liegt. Dasselbe Argument trägt bei den Winkelhalbierenden.</li>
+      <li><strong>Führt weiter zu:</strong> Die <em>Ähnlichkeit</em> — WWW legt die Form fest, aber nicht die Größe. Genau das ist der Unterschied zwischen ähnlich und kongruent.</li>
+      <li><strong>Führt weiter zu:</strong> Der Satz des Thales: Konstruiert man über einer Strecke den Halbkreis, ist jeder Punkt darauf die Spitze eines rechtwinkligen Dreiecks. Bewiesen wird das mit gleichschenkligen Dreiecken und der Winkelsumme.</li>
+      <li><strong>Führt weiter zu:</strong> Der Satz des Pythagoras erlaubt es später, Längen zu <em>berechnen</em>, die hier nur konstruiert werden können.</li>
+    </ul>
+  </section>
+
+  <!-- 7. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>7. Formelsammlung</h2>
+    <p>Alle Konstruktionen, Sätze und Regeln dieses Lernpfads mit Zeichnungen auf zwei Seiten zusammengefasst — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 8. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>8. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gib nur die <strong>Zahl</strong> ein, ohne Einheit und ohne Gradzeichen.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 2 Geometrie</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
