@@ -593,10 +593,13 @@ function generateAufgabe3() {
 function generateAufgabe4() {
   // Sachaufgabe mit Dezimalmultiplikation und -division. Alle Zahlen so konstruiert, dass das
   // Ergebnis eine glatte Dezimalzahl mit höchstens zwei Nachkommastellen ist.
-  const preisCent = randInt(4, 40) * 25; // Vielfaches von 25 Cent
+  const personen = pick([2, 4, 5]);
+  // Der Preis wird so gewählt, dass die Gesamtkosten durch die Gruppenzahl teilbar
+  // bleiben: Bei 4 Gruppen reichen Vielfache von 25 Cent nicht aus (25 · 3 · 6 = 450
+  // Cent lässt sich nicht durch 4 teilen), deshalb dort Vielfache von 50 Cent.
+  const preisCent = personen === 4 ? randInt(2, 20) * 50 : randInt(4, 40) * 25;
   const menge = randInt(3, 12) * 2; // gerade Stückzahl
   const gesamtCent = preisCent * menge;
-  const personen = pick([2, 4, 5]);
   const proPersonCent = gesamtCent / personen;
   const kontext = pick([
     { was: "Kisten Mineralwasser", einh: "€ je Kiste" },

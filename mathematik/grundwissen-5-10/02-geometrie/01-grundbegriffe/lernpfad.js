@@ -675,7 +675,13 @@ function generateAufgabe4() {
   const x1 = randInt(-5, 1);
   const breite = randInt(2, 6);
   const y1 = randInt(-5, 1);
-  const hoehe = randInt(2, 5);
+  let hoehe = randInt(2, 5);
+  // Zwei Sonderfälle würden die gezielten Fehlerhinweise unbrauchbar machen:
+  // Bei (4|4) und (6|3) hätte der Flächeninhalt dieselbe Maßzahl wie der gesuchte
+  // Umfang, bei (2|2) dieselbe wie die Summe aus Länge und Breite.
+  // Zu jeder Breite ist höchstens eine Höhe betroffen — (2|2), (4|4) und (6|3) —,
+  // deshalb genügt ein einziger Weiterschritt.
+  if (breite * hoehe === 2 * (breite + hoehe) || breite * hoehe === breite + hoehe) hoehe = hoehe === 5 ? 2 : hoehe + 1;
   const x2 = x1 + breite,
     y2 = y1 + hoehe;
   const umfang = 2 * (breite + hoehe);
