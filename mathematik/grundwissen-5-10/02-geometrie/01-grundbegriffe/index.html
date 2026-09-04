@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grundbegriffe der Geometrie</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">2 Geometrie</a><span class="sep">/</span>
+  1 Grundbegriffe der Geometrie
+</nav>
+<header class="page-header">
+  <h1>Grundbegriffe der Geometrie</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Geometrie hat eine eigene Sprache. Wer sie kennt, versteht jede Aufgabenstellung — wer sie nicht kennt, scheitert schon am Text. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li><span class="term">Punkt</span>, <span class="term">Strecke</span>, <span class="term">Strahl</span> und <span class="term">Gerade</span> unterscheiden und richtig aufschreiben</li>
+      <li>die <span class="term">Lagebeziehungen</span> zweier Geraden erkennen: parallel, senkrecht oder schneidend</li>
+      <li><span class="term">Abstände</span> bestimmen — auch den eines Punktes von einer Geraden</li>
+      <li>Punkte im <span class="term">Koordinatensystem</span> ablesen und eintragen</li>
+      <li><span class="term">Winkel</span> benennen, messen und in Winkelarten einordnen</li>
+      <li><span class="term">Achsen-</span> und <span class="term">Punktsymmetrie</span> unterscheiden</li>
+    </ul>
+    <p class="hinweis-box">💡 Dieses Thema ist die Grundlage für das ganze Kapitel. Alle späteren Themen — Flächen, Konstruktionen, Pythagoras — setzen diese Begriffe voraus.</p>
+  </section>
+
+  <!-- 1. Punkt, Strecke, Strahl, Gerade -->
+  <section class="card" id="sec-linien">
+    <h2>1. Punkt, Strecke, Strahl und Gerade</h2>
+    <p>Alle drei Linienobjekte gehen durch dieselben zwei Punkte — sie unterscheiden sich nur darin, <strong>wo sie aufhören</strong>.</p>
+    <div class="definition-box">
+      <span class="box-label">Definition</span>
+      Ein <strong>Punkt</strong> hat keine Ausdehnung; er wird mit einem Großbuchstaben benannt (A, B, C&nbsp;…).<br>
+      Die <strong>Strecke</strong> <span style="text-decoration:overline">AB</span> ist der <em>kürzeste</em> Weg von A nach B. Sie hat zwei Endpunkte und damit eine <strong>Länge</strong>.<br>
+      Der <strong>Strahl</strong> (Halbgerade) beginnt in A, geht durch B und dann <em>unbegrenzt weiter</em>. Er hat einen Anfangspunkt, aber kein Ende.<br>
+      Die <strong>Gerade</strong> AB ist nach <em>beiden</em> Seiten unbegrenzt. Sie hat weder Anfang noch Ende und deshalb auch keine Länge.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Länge nur bei der Strecke</span>
+      Nach der „Länge einer Geraden“ zu fragen ist sinnlos: Eine Gerade ist unendlich lang. Nur die <strong>Strecke</strong> hat eine Länge, geschrieben <span style="text-decoration:overline">AB</span> = 5&nbsp;cm.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Objekt:
+          <select id="lin-typ" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="strecke">Strecke</option>
+            <option value="strahl">Strahl</option>
+            <option value="gerade">Gerade</option>
+          </select>
+        </label>
+      </div>
+      <div class="geo-wrap" id="lin-mount"></div>
+      <div id="lin-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-linien"></div>
+  </section>
+
+  <!-- 2. Lagebeziehungen -->
+  <section class="card" id="sec-lage">
+    <h2>2. Lagebeziehungen zweier Geraden</h2>
+    <div class="definition-box">
+      <span class="box-label">Definition</span>
+      Zwei Geraden heißen <strong>parallel</strong> (Schreibweise g ∥ h), wenn sie überall denselben Abstand haben und sich nie schneiden.<br>
+      Sie heißen <strong>senkrecht</strong> oder <strong>orthogonal</strong> (g ⊥ h), wenn sie sich unter einem Winkel von genau <strong>90°</strong> schneiden.<br>
+      Andernfalls <strong>schneiden</strong> sie sich in genau einem Punkt, dem <strong>Schnittpunkt</strong>.
+    </div>
+    <p>Stelle den Winkel der zweiten Geraden ein und beobachte, wann welcher Fall eintritt:</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Winkel der Geraden h: <input type="range" id="lage-winkel" min="0" max="180" step="1" value="35" style="vertical-align:middle;width:12rem"> <span id="lage-winkel-anzeige" style="font-weight:700"></span></label>
+      </div>
+      <div class="geo-wrap" id="lage-mount"></div>
+      <div id="lage-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-lage"></div>
+  </section>
+
+  <!-- 3. Abstand -->
+  <section class="card" id="sec-abstand">
+    <h2>3. Abstand</h2>
+    <div class="definition-box">
+      <span class="box-label">Definition</span>
+      Der <strong>Abstand</strong> zweier Punkte ist die Länge der Strecke zwischen ihnen.<br>
+      Der Abstand eines <strong>Punktes von einer Geraden</strong> ist die Länge des <strong>Lots</strong> — also die <em>kürzeste</em> Verbindung, und die steht immer senkrecht auf der Geraden. Ihr Fußpunkt heißt <strong>Lotfußpunkt</strong>.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Abstand heißt immer „kürzester Abstand“</span>
+      Jede schräge Verbindung vom Punkt zur Geraden ist <strong>länger</strong> als das Lot. Wenn nach dem Abstand gefragt ist, ist deshalb <em>immer</em> das Lot gemeint — nie irgendeine andere Verbindung.
+    </div>
+    <p>Verschiebe den Punkt P und vergleiche das Lot mit einer schrägen Verbindung:</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>P nach rechts: <input type="range" id="abst-x" min="20" max="380" step="5" value="150" style="vertical-align:middle;width:10rem"></label>
+        <label>P nach oben: <input type="range" id="abst-y" min="20" max="110" step="5" value="70" style="vertical-align:middle;width:8rem"></label>
+        <label>Vergleichspunkt Q: <input type="range" id="abst-q" min="20" max="380" step="5" value="280" style="vertical-align:middle;width:10rem"></label>
+      </div>
+      <div class="geo-wrap" id="abst-mount"></div>
+      <div id="abst-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-abstand"></div>
+  </section>
+
+  <!-- 4. Koordinatensystem -->
+  <section class="card" id="sec-koordinaten">
+    <h2>4. Das Koordinatensystem</h2>
+    <div class="definition-box">
+      <span class="box-label">Definition</span>
+      Zwei senkrecht aufeinander stehende <a href="../../01-groessen-und-rechnen/06-erweiterung-des-zahlenbereichs/index.html#sec-ordnen">Zahlengeraden</a> bilden ein <strong>Koordinatensystem</strong>. Die waagerechte heißt <strong>x-Achse</strong> (Rechtsachse), die senkrechte <strong>y-Achse</strong> (Hochachse), ihr Schnittpunkt ist der <strong>Ursprung</strong> O(0&nbsp;|&nbsp;0).<br>
+      Ein Punkt wird als <strong>P(x&nbsp;|&nbsp;y)</strong> geschrieben: <em>zuerst</em> der x-Wert (nach rechts), <em>dann</em> der y-Wert (nach oben).
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Reihenfolge entscheidet</span>
+      P(3&nbsp;|&nbsp;5) und P(5&nbsp;|&nbsp;3) sind <strong>verschiedene</strong> Punkte. Merkhilfe: erst durch den Flur (nach rechts), dann die Treppe hinauf.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>x = <input type="number" id="ks-x" value="3" min="-6" max="6" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label>y = <input type="number" id="ks-y" value="2" min="-6" max="6" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+      </div>
+      <div class="geo-wrap" id="ks-mount"></div>
+      <div id="ks-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-koordinaten"></div>
+  </section>
+
+  <!-- 5. Winkel -->
+  <section class="card" id="sec-winkel">
+    <h2>5. Winkel</h2>
+    <div class="definition-box">
+      <span class="box-label">Definition</span>
+      Ein <strong>Winkel</strong> entsteht, wenn zwei Strahlen von einem gemeinsamen Anfangspunkt ausgehen. Dieser Punkt heißt <strong>Scheitelpunkt</strong>, die beiden Strahlen heißen <strong>Schenkel</strong>.<br>
+      Winkel werden mit griechischen Kleinbuchstaben benannt (α, β, γ&nbsp;…) und in <strong>Grad</strong> gemessen. Die Schreibweise ∡ASB bedeutet: Winkel mit Scheitel S zwischen den Schenkeln SA und SB.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Schenkellänge zählt nicht</span>
+      Ein Winkel wird <strong>nicht</strong> größer, wenn man die Schenkel länger zeichnet. Gemessen wird die <em>Drehung</em> zwischen den Schenkeln, nicht ihre Länge. Probiere es unten mit dem zweiten Regler aus — die Gradzahl ändert sich dabei nicht.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Winkel: <input type="range" id="wk-grad" min="0" max="360" step="1" value="55" style="vertical-align:middle;width:12rem"> <span id="wk-grad-anzeige" style="font-weight:700"></span></label>
+        <label>Schenkellänge: <input type="range" id="wk-laenge" min="40" max="120" step="2" value="95" style="vertical-align:middle;width:8rem"></label>
+      </div>
+      <div class="geo-wrap" id="wk-mount"></div>
+      <div class="winkelarten" id="wk-arten"></div>
+      <div id="wk-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-winkel"></div>
+  </section>
+
+  <!-- 6. Symmetrie -->
+  <section class="card" id="sec-symmetrie">
+    <h2>6. Achsen- und Punktsymmetrie</h2>
+    <div class="definition-box">
+      <span class="box-label">Definition</span>
+      Eine Figur ist <strong>achsensymmetrisch</strong>, wenn sie sich an einer <strong>Symmetrieachse</strong> spiegeln lässt und dabei auf sich selbst fällt. Jeder Punkt und sein Bildpunkt haben denselben Abstand zur Achse; ihre Verbindungsstrecke steht <strong>senkrecht</strong> auf der Achse.<br>
+      Eine Figur ist <strong>punktsymmetrisch</strong>, wenn sie sich um <strong>180°</strong> um ein <strong>Symmetriezentrum</strong> drehen lässt und dabei auf sich selbst fällt.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Abbildung:
+          <select id="sym-art" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="achse">Achsenspiegelung</option>
+            <option value="punkt">Punktspiegelung (Drehung um 180°)</option>
+          </select>
+        </label>
+      </div>
+      <div class="geo-wrap" id="sym-mount"></div>
+      <div id="sym-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-symmetrie"></div>
+  </section>
+
+  <!-- 7. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>7. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Das Koordinatensystem besteht aus zwei <a href="../../01-groessen-und-rechnen/06-erweiterung-des-zahlenbereichs/index.html#sec-ordnen">Zahlengeraden</a> — deshalb braucht man dafür die negativen Zahlen. Ohne sie gäbe es nur den ersten Quadranten.</li>
+      <li><strong>Baut auf:</strong> Längen sind <a href="../../01-groessen-und-rechnen/01-natuerliche-zahlen-und-groessen/index.html#sec-groessen">Größen</a> mit Maßzahl und Einheit. Vor jeder Rechnung müssen alle Strecken in derselben Einheit angegeben sein.</li>
+      <li><strong>Abstand und Betrag:</strong> Auf der Zahlengeraden ist der Abstand zweier Zahlen ihr Betrag der Differenz. In der Ebene übernimmt diese Rolle die Streckenlänge.</li>
+      <li><strong>Führt weiter zu:</strong> Der Abstand als Lot ist die Grundlage für die <em>Höhe</em> in Dreiecken und Parallelogrammen — und damit für jede Flächenberechnung.</li>
+      <li><strong>Führt weiter zu:</strong> Senkrechte und Parallele sind die beiden Grundkonstruktionen mit Zirkel und Lineal; auf ihnen bauen alle weiteren Konstruktionen auf.</li>
+      <li><strong>Führt weiter zu:</strong> Im Koordinatensystem werden später Zuordnungen und Funktionen dargestellt — dieselben Punkte P(x&nbsp;|&nbsp;y), nur mit anderer Bedeutung.</li>
+      <li><strong>Führt weiter zu:</strong> Mit dem Satz des Pythagoras lässt sich die Länge einer Strecke aus den Koordinaten ihrer Endpunkte berechnen.</li>
+    </ul>
+  </section>
+
+  <!-- 8. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>8. Formelsammlung</h2>
+    <p>Alle Begriffe und Schreibweisen dieses Lernpfads mit Beispielen und Zeichnungen auf zwei Seiten zusammengefasst — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 9. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>9. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 2 Geometrie</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
