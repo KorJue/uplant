@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prismen und Zylinder</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">2 Geometrie</a><span class="sep">/</span>
+  11 Prismen und Zylinder
+</nav>
+<header class="page-header">
+  <h1>Prismen und Zylinder</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Ein <strong>Prisma</strong> entsteht, wenn man eine ebene Figur senkrecht in die Höhe zieht. Der Zylinder ist genau dasselbe — nur mit einem Kreis als Grundfläche. Deshalb gilt für <em>alle</em> diese Körper dieselbe Volumenformel. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>Grundfläche, Deckfläche und <span class="term">Mantel</span> eines Prismas benennen und im Netz wiederfinden</li>
+      <li>das <span class="term">Volumen</span> berechnen: V = G · h — für jedes Prisma und jeden Zylinder</li>
+      <li>die <span class="term">Oberfläche</span> zusammensetzen: O = 2 · G + M, wobei der Mantel ein <em>Rechteck</em> ist</li>
+      <li>beim <span class="term">Zylinder</span> einsetzen, was du über den Kreis weißt: G = π · r², u = 2 · π · r</li>
+      <li>mit <span class="term">Hohlmaßen</span> rechnen: 1 dm³ = 1 Liter, 1 cm³ = 1 Milliliter</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../07-flaechenberechnungen/index.html#sec-uebersicht">Thema 7</a> die Flächenformeln für die Grundfläche, aus <a href="../10-kreisberechnungen/index.html#sec-umfang">Thema 10</a> Umfang und Fläche des Kreises und aus <a href="../03-volumen-oberflaeche/index.html#sec-quader">Thema 3</a> den Quader — er ist das einfachste Prisma.</p>
+  </section>
+
+  <!-- 1. Was ist ein Prisma -->
+  <section class="card" id="sec-prisma">
+    <h2>1. Was ist ein Prisma?</h2>
+    <p>Nimm eine ebene Figur und ziehe sie <strong>senkrecht nach oben</strong>. Was dabei überstrichen wird, ist ein Prisma. Unten liegt die <span class="pz-name-g">Grundfläche</span>, oben die deckungsgleiche Deckfläche, rundherum der <span class="pz-name-m">Mantel</span>.</p>
+    <div class="pz-form-reihe" id="pr-reihe"></div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Höhe h = <input type="range" id="pr-h" min="1" max="9" step="1" value="5" style="vertical-align:middle;width:9rem"> <span id="pr-h-anzeige" class="pz-name-h"></span></label>
+        <label><input type="checkbox" id="pr-netz"> als Netz zeigen</label>
+      </div>
+      <div class="geo-wrap" id="pr-mount"></div>
+      <div class="pz-bilanz" id="pr-bilanz"></div>
+      <div id="pr-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Bauplan jedes Prismas</span>
+      Ein Prisma besteht aus <strong>zwei deckungsgleichen Vielecken</strong> (Grund- und Deckfläche) und einem <strong>Mantel aus Rechtecken</strong>. Alle Seitenkanten sind gleich lang und stehen senkrecht auf der Grundfläche — diese gemeinsame Länge ist die <span class="pz-name-h">Höhe h</span>.
+    </div>
+    <div class="quiz" id="quiz-prisma"></div>
+  </section>
+
+  <!-- 2. Volumen -->
+  <section class="card" id="sec-volumen">
+    <h2>2. Das Volumen: V = G · h</h2>
+    <p>Denke dir das Prisma aus dünnen Schichten aufgebaut, die alle die Form der Grundfläche haben. Eine Schicht von 1 cm Dicke hat das Volumen G · 1 cm. Bei h Schichten sind es <strong>G · h</strong>. Es kommt <em>nicht</em> darauf an, welche Form die Grundfläche hat.</p>
+    <div class="wissen-box">
+      <span class="box-label">Volumen</span>
+      <strong>V = G · h</strong><br>
+      G ist der Flächeninhalt der <em>Grundfläche</em>, h die Höhe des Körpers. Diese eine Formel gilt für den Quader, für jedes Prisma und für den Zylinder.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Grundfläche G = <input type="range" id="vo-g" min="2" max="20" step="1" value="12" style="vertical-align:middle;width:9rem"> <span id="vo-g-anzeige" class="pz-name-g"></span></label>
+        <label>Höhe h = <input type="range" id="vo-h" min="1" max="9" step="1" value="4" style="vertical-align:middle;width:8rem"> <span id="vo-h-anzeige" class="pz-name-h"></span></label>
+      </div>
+      <div class="geo-wrap" id="vo-mount"></div>
+      <div class="pz-bilanz" id="vo-bilanz"></div>
+      <div id="vo-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — G ist eine Fläche, keine Länge</span>
+      In V = G · h steht für G der ganze <strong>Flächeninhalt</strong> der Grundfläche, nicht eine ihrer Seiten. Bei einem dreieckigen Prisma muss man also erst ½ · g · h<sub>Dreieck</sub> ausrechnen — und diese Dreieckshöhe hat nichts mit der Höhe h des Körpers zu tun.
+    </div>
+    <div class="quiz" id="quiz-volumen"></div>
+  </section>
+
+  <!-- 3. Oberfläche und Mantel -->
+  <section class="card" id="sec-oberflaeche">
+    <h2>3. Die Oberfläche — der Mantel ist ein Rechteck</h2>
+    <p>Schneidet man den Mantel an einer Kante auf und rollt ihn ab, entsteht ein <strong>Rechteck</strong>. Es ist so hoch wie der Körper und so breit wie der <span class="pz-name-u">Umfang der Grundfläche</span>. Das ist der ganze Trick.</p>
+    <div class="wissen-box">
+      <span class="box-label">Oberfläche</span>
+      <strong>M = u · h</strong> &nbsp;und&nbsp; <strong>O = 2 · G + M = 2 · G + u · h</strong><br>
+      u ist der <em>Umfang</em> der Grundfläche, G ihr <em>Flächeninhalt</em>. Beide werden gebraucht — der Umfang für den Mantel, die Fläche für Grund- und Deckfläche.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Höhe h = <input type="range" id="ob-h" min="1" max="9" step="1" value="5" style="vertical-align:middle;width:9rem"> <span id="ob-h-anzeige" class="pz-name-h"></span></label>
+        <label>Mantel abrollen: <input type="range" id="ob-roll" min="0" max="100" step="5" value="0" style="vertical-align:middle;width:11rem"> <span id="ob-roll-anzeige" style="font-weight:800"></span></label>
+      </div>
+      <div class="geo-wrap" id="ob-mount"></div>
+      <div class="pz-bilanz" id="ob-bilanz"></div>
+      <div id="ob-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Umfang und Flächeninhalt nicht verwechseln</span>
+      In M = u · h steht der <strong>Umfang</strong>. Wer dort die Grundfläche einsetzt, rechnet G · h — und das ist das <em>Volumen</em>, nicht der Mantel. Merke: Der Mantel ist eine Fläche und entsteht aus einer <em>Länge</em> mal einer <em>Länge</em>.
+    </div>
+    <div class="quiz" id="quiz-oberflaeche"></div>
+  </section>
+
+  <!-- 4. Der Zylinder -->
+  <section class="card" id="sec-zylinder">
+    <h2>4. Der Zylinder — ein Prisma mit Kreis als Grundfläche</h2>
+    <p>Erhöht man die Eckenzahl eines regelmäßigen Prismas immer weiter, wird die Grundfläche einem Kreis immer ähnlicher. Am Ende steht der <strong>Zylinder</strong> — und alle Formeln gelten unverändert weiter. Man setzt nur ein, was man über den Kreis weiß.</p>
+    <div class="wissen-box">
+      <span class="box-label">Zylinder</span>
+      Grundfläche G = π · r², Umfang u = 2 · π · r. Daraus wird:<br>
+      <strong>V = π · r² · h</strong> &nbsp;·&nbsp; <strong>M = 2 · π · r · h</strong> &nbsp;·&nbsp; <strong>O = 2 · π · r² + 2 · π · r · h</strong>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Eckenzahl: <input type="range" id="zy-n" min="3" max="40" step="1" value="6" style="vertical-align:middle;width:11rem"> <span id="zy-n-anzeige" style="font-weight:800"></span></label>
+        <label>Radius r = <input type="range" id="zy-r" min="1" max="6" step="1" value="3" style="vertical-align:middle;width:7rem"> <span id="zy-r-anzeige" class="pz-name-g"></span></label>
+        <label>Höhe h = <input type="range" id="zy-h" min="1" max="9" step="1" value="5" style="vertical-align:middle;width:7rem"> <span id="zy-h-anzeige" class="pz-name-h"></span></label>
+      </div>
+      <div class="geo-wrap" id="zy-mount"></div>
+      <div class="pz-bilanz" id="zy-bilanz"></div>
+      <div id="zy-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-zylinder"></div>
+  </section>
+
+  <!-- 5. Hohlmaße und Rückwärtsrechnen -->
+  <section class="card" id="sec-hohlmasse">
+    <h2>5. Hohlmaße und Rückwärtsrechnen</h2>
+    <p>Volumen werden in der Praxis meist in <strong>Litern</strong> angegeben. Der Zusammenhang ist einfach — aber man muss ihn kennen, sonst stimmt das Ergebnis um den Faktor 1000 nicht.</p>
+    <div class="wissen-box">
+      <span class="box-label">Hohlmaße</span>
+      <strong>1 dm³ = 1 Liter</strong> &nbsp;·&nbsp; <strong>1 cm³ = 1 Milliliter</strong> &nbsp;·&nbsp; <strong>1 m³ = 1000 Liter</strong><br>
+      <span class="progress-note">Beim Umrechnen von Raummaßen geht es immer in Tausenderschritten: 1 m³ = 1000 dm³ = 1 000 000 cm³.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>gesucht ist:
+          <select id="hm-was" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="V">das Volumen in Litern</option>
+            <option value="h">die Höhe aus V und G</option>
+            <option value="G">die Grundfläche aus V und h</option>
+          </select>
+        </label>
+        <label>Radius r = <input type="range" id="hm-r" min="1" max="9" step="1" value="4" style="vertical-align:middle;width:8rem"> <span id="hm-r-anzeige" class="pz-name-g"></span></label>
+        <label>Höhe h = <input type="range" id="hm-h" min="1" max="12" step="1" value="6" style="vertical-align:middle;width:8rem"> <span id="hm-h-anzeige" class="pz-name-h"></span></label>
+      </div>
+      <div class="geo-wrap" id="hm-mount"></div>
+      <div class="pz-bilanz" id="hm-bilanz"></div>
+      <table class="pz-einheiten" id="hm-tabelle"></table>
+      <div id="hm-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-hohlmasse"></div>
+  </section>
+
+  <!-- 6. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>6. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../03-volumen-oberflaeche/index.html#sec-quader">Der Quader</a> — er ist das einfachste Prisma. V = a · b · c ist nichts anderes als V = G · h mit G = a · b.</li>
+      <li><strong>Baut auf:</strong> <a href="../07-flaechenberechnungen/index.html#sec-uebersicht">Die Flächenformeln</a> — für die Grundfläche braucht man je nach Form Dreieck, Trapez oder Vieleck. Ohne sie kommt man bei V = G · h keinen Schritt weiter.</li>
+      <li><strong>Baut auf:</strong> <a href="../10-kreisberechnungen/index.html#sec-umfang">Umfang und Fläche des Kreises</a> — der Zylinder ist der Grenzfall des regelmäßigen Prismas, wenn die Eckenzahl über alle Grenzen wächst.</li>
+      <li><strong>Gleiche Struktur:</strong> Der Mantel entsteht durch <em>Abrollen</em> zu einem Rechteck — dieselbe Denkfigur wie beim <a href="../10-kreisberechnungen/index.html#sec-flaeche">Umlegen des Kreises</a> und beim <a href="../07-flaechenberechnungen/index.html#sec-parallelogramm">Umlegen des Parallelogramms</a>: Man verwandelt eine unbequeme Figur in ein Rechteck.</li>
+      <li><strong>Gleiche Struktur:</strong> Verdoppelt man alle Längen, wird die Oberfläche viermal und das Volumen achtmal so groß — die Regel k² und k³ aus der <a href="../08-aehnlichkeit/index.html#sec-potenzen">Ähnlichkeit</a>.</li>
+      <li><strong>Führt weiter zu:</strong> Pyramide, Kegel und Kugel. Bei Pyramide und Kegel kommt der Faktor ⅓ hinzu: V = ⅓ · G · h. Der Zusammenhang mit dem Prisma gleicher Grundfläche und Höhe bleibt aber sichtbar.</li>
+      <li><strong>Führt weiter zu:</strong> Der <a href="../09-pythagoras/index.html#sec-anwendungen">Satz des Pythagoras</a> wird gebraucht, sobald eine Höhe oder eine Diagonale im Körper fehlt und berechnet werden muss.</li>
+    </ul>
+  </section>
+
+  <!-- 7. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>7. Formelsammlung</h2>
+    <p>Alle Formeln für Prisma und Zylinder mit Netzen, Umstellungen und typischen Fehlern auf zwei Seiten — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 8. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>8. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit. Wo gerundet werden soll, steht es in der Aufgabe.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 2 Geometrie</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
