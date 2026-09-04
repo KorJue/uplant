@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flächeninhalt und Umfang</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">2 Geometrie</a><span class="sep">/</span>
+  2 Flächeninhalt und Umfang
+</nav>
+<header class="page-header">
+  <h1>Flächeninhalt und Umfang</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Flächeninhalt und Umfang werden ständig verwechselt — dabei messen sie völlig <strong>Verschiedenes</strong>: der Umfang die Länge des <em>Randes</em>, der Flächeninhalt die Größe der <em>Fläche</em> selbst. Auf dieser Seite ist der Flächeninhalt deshalb durchgehend <span class="legende-flaeche">blau</span>, der Umfang <span class="legende-umfang">orange</span>. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>erklären, was ein <span class="term">Flächeninhalt</span> ist — und ihn durch Auslegen bestimmen</li>
+      <li>Flächeninhalt und Umfang von <span class="term">Rechteck und Quadrat</span> berechnen</li>
+      <li><span class="term">Flächeneinheiten</span> umrechnen — mit dem richtigen Faktor</li>
+      <li>begründen, warum ein größerer Umfang <em>nicht</em> automatisch mehr Fläche bedeutet</li>
+      <li><span class="term">zusammengesetzte Flächen</span> durch Zerlegen oder Ergänzen berechnen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../01-grundbegriffe/index.html">Thema 1</a> die Begriffe Strecke, senkrecht und Abstand. Und aus <a href="../../01-groessen-und-rechnen/01-natuerliche-zahlen-und-groessen/index.html#sec-groessen">Kapitel 1</a> das Umrechnen von Größen — hier kommt es in einer neuen Variante wieder.</p>
+  </section>
+
+  <!-- 1. Was ist Flächeninhalt? -->
+  <section class="card" id="sec-auslegen">
+    <h2>1. Was ist ein Flächeninhalt?</h2>
+    <p>Den Flächeninhalt einer Figur bestimmt man, indem man sie mit <strong>Einheitsquadraten</strong> lückenlos auslegt und diese zählt. Ein Quadrat mit 1 cm Seitenlänge hat den Flächeninhalt <strong>1 cm²</strong> („ein Quadratzentimeter“).</p>
+    <div class="definition-box">
+      <span class="box-label">Definition</span>
+      Der <strong class="legende-flaeche">Flächeninhalt A</strong> gibt an, wie viele Einheitsquadrate in eine Figur passen. Er wird in Flächeneinheiten gemessen (mm², cm², m²&nbsp;…).<br>
+      Der <strong class="legende-umfang">Umfang u</strong> ist die <em>Länge des Randes</em> — also die Summe aller Seitenlängen. Er wird in Längeneinheiten gemessen (mm, cm, m&nbsp;…).
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — verschiedene Größenarten</span>
+      Flächeninhalt und Umfang lassen sich gar nicht vergleichen: Der eine wird in <strong>cm²</strong> gemessen, der andere in <strong>cm</strong>. Ein Ergebnis ohne die richtige Einheit ist deshalb immer verdächtig.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Breite a = <input type="number" id="al-a" value="5" min="1" max="10" style="width:4.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>Höhe b = <input type="number" id="al-b" value="3" min="1" max="7" style="width:4.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+      </div>
+      <div class="geo-wrap" id="al-mount"></div>
+      <div id="al-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-auslegen"></div>
+  </section>
+
+  <!-- 2. Rechteck und Quadrat -->
+  <section class="card" id="sec-rechteck">
+    <h2>2. Rechteck und Quadrat</h2>
+    <div class="wissen-box">
+      <span class="box-label">Formeln</span>
+      <strong>Rechteck</strong> mit den Seiten a und b:<br>
+      <span class="legende-flaeche">A = a · b</span> &nbsp;·&nbsp; <span class="legende-umfang">u = 2 · (a + b)</span><br>
+      <strong>Quadrat</strong> mit der Seite a (Sonderfall a = b):<br>
+      <span class="legende-flaeche">A = a · a = a²</span> &nbsp;·&nbsp; <span class="legende-umfang">u = 4 · a</span>
+    </div>
+    <p>Warum A = a · b? Weil beim Auslegen genau <em>b</em> Reihen mit je <em>a</em> Quadraten entstehen — die Formel ist nichts anderes als abgekürztes Zählen.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a = <input type="number" id="rk-a" value="6" min="1" max="20" step="0.5" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>b = <input type="number" id="rk-b" value="4" min="1" max="20" step="0.5" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+      </div>
+      <div class="geo-wrap" id="rk-mount"></div>
+      <div class="groessen-paar" id="rk-werte"></div>
+      <div id="rk-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-rechteck"></div>
+  </section>
+
+  <!-- 3. Gleicher Umfang, verschiedene Fläche -->
+  <section class="card" id="sec-vergleich">
+    <h2>3. Gleicher Umfang — trotzdem verschiedene Fläche</h2>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — ein hartnäckiger Trugschluss</span>
+      „Mehr Umfang heißt mehr Fläche“ ist <strong>falsch</strong>. Zwei Rechtecke mit exakt demselben Umfang können völlig verschiedene Flächeninhalte haben. Umfang und Flächeninhalt sind voneinander unabhängige Größen.
+    </div>
+    <p>Hier bleibt der Umfang <strong>konstant</strong> — nur die Aufteilung auf die Seiten ändert sich. Beobachte, was mit dem Flächeninhalt passiert:</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Umfang u = <input type="number" id="iso-u" value="24" min="8" max="40" step="2" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>Seite a = <input type="range" id="iso-a" min="1" max="11" step="1" value="3" style="vertical-align:middle;width:10rem"> <span id="iso-a-anzeige" style="font-weight:700"></span></label>
+      </div>
+      <div class="geo-wrap" id="iso-mount"></div>
+      <div class="groessen-paar" id="iso-werte"></div>
+      <div id="iso-tabelle"></div>
+      <div id="iso-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-vergleich"></div>
+  </section>
+
+  <!-- 4. Flächeneinheiten -->
+  <section class="card" id="sec-einheiten">
+    <h2>4. Flächeneinheiten umrechnen</h2>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der Faktor ist 100, nicht 10</span>
+      Bei <a href="../../01-groessen-und-rechnen/01-natuerliche-zahlen-und-groessen/index.html#sec-groessen">Längen</a> ist die Stufe 10 groß: 1 cm = 10 mm. Bei <strong>Flächen</strong> ist sie <strong>100</strong> groß: 1 cm² = 100 mm².<br>
+      Der Grund: Ein Quadrat mit 1 cm Seitenlänge ist 10 mm breit <em>und</em> 10 mm hoch — es enthält also 10 · 10 = <strong>100</strong> Quadratmillimeter. Jede Umrechnungsstufe wirkt in <em>zwei</em> Richtungen.
+    </div>
+    <div class="widget">
+      <p style="margin-top:0">Das Bild dazu — ein Quadratzentimeter, ausgelegt mit Quadratmillimetern:</p>
+      <div class="geo-wrap" id="fe-bild"></div>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <input type="number" id="fe-wert" value="3" min="0" step="any" style="width:6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <select id="fe-von" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></select>
+        <span style="align-self:center">→</span>
+        <select id="fe-nach" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></select>
+      </div>
+      <div id="fe-treppe"></div>
+      <div id="fe-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-einheiten"></div>
+  </section>
+
+  <!-- 5. Zusammengesetzte Flächen -->
+  <section class="card" id="sec-zusammengesetzt">
+    <h2>5. Zusammengesetzte Flächen</h2>
+    <p>Figuren, die keine Rechtecke sind, zerlegt man in Rechtecke — oder ergänzt sie zu einem größeren Rechteck und zieht das Überzählige wieder ab. Beide Wege führen zum selben Ergebnis.</p>
+    <div class="wissen-box">
+      <span class="box-label">Zwei Strategien</span>
+      <strong>Zerlegen:</strong> Die Figur in Rechtecke aufteilen und die Flächeninhalte <strong>addieren</strong>.<br>
+      <strong>Ergänzen:</strong> Die Figur zu einem großen Rechteck ergänzen und die fehlende Fläche <strong>subtrahieren</strong>.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der Umfang folgt nicht derselben Regel</span>
+      Beim Zerlegen darf man die Flächeninhalte addieren — die <strong>Umfänge aber nicht</strong>. Die Schnittkante gehört bei der zusammengesetzten Figur gar nicht zum Rand. Den Umfang bestimmt man immer, indem man <em>einmal außen herumgeht</em>.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Strategie:
+          <select id="zg-strategie" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="zerlegen">Zerlegen (addieren)</option>
+            <option value="ergaenzen">Ergänzen (subtrahieren)</option>
+          </select>
+        </label>
+      </div>
+      <div class="btn-row">
+        <label>Gesamtbreite: <input type="number" id="zg-a" value="8" min="3" max="12" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>Gesamthöhe: <input type="number" id="zg-b" value="6" min="3" max="10" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>Ausschnitt breit: <input type="number" id="zg-c" value="3" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>Ausschnitt hoch: <input type="number" id="zg-d" value="2" min="1" max="8" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+      </div>
+      <div class="geo-wrap" id="zg-mount"></div>
+      <div class="groessen-paar" id="zg-werte"></div>
+      <div id="zg-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-zusammengesetzt"></div>
+  </section>
+
+  <!-- 6. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>6. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> A = a · b ist <a href="../../01-groessen-und-rechnen/02-rechnen-mit-natuerlichen-zahlen/index.html#sec-rechengesetze">das Flächenmodell der Multiplikation</a> — dieselbe Rechteckdarstellung, mit der schon das Distributivgesetz begründet wurde. Deshalb heißt a · b auch „Produkt“ und die Fläche „Rechteckfläche“.</li>
+      <li><strong>Baut auf:</strong> Das <a href="../../01-groessen-und-rechnen/01-natuerliche-zahlen-und-groessen/index.html#sec-groessen">Umrechnen von Größen</a> — nur mit dem Faktor 100 statt 10, weil eine Fläche zwei Dimensionen hat.</li>
+      <li><strong>Baut auf:</strong> Der <a href="../01-grundbegriffe/index.html#sec-abstand">Abstand als Lot</a> — bei Parallelogramm und Dreieck ist die Höhe genau dieser senkrechte Abstand, nicht eine schräge Seite.</li>
+      <li><strong>Zerlegen und Ergänzen</strong> sind dieselben Denkfiguren wie das Zerlegen von Zahlen beim Rechnen: Ein schwieriges Problem wird in bekannte Teile zerlegt.</li>
+      <li><strong>Führt weiter zu:</strong> Alle weiteren Flächenformeln entstehen aus dem Rechteck — das Parallelogramm durch Umlegen eines Dreiecks, das Dreieck als halbes Parallelogramm, das Trapez durch Ergänzen.</li>
+      <li><strong>Führt weiter zu:</strong> Ein Quadrat mit A = a² führt beim Rückwärtsrechnen auf die <em>Quadratwurzel</em>: Aus A = 49 cm² folgt a = 7 cm.</li>
+      <li><strong>Führt weiter zu:</strong> Im Raum wird aus dem Auslegen mit Einheitsquadraten das Ausfüllen mit Einheitswürfeln — dort ist der Umrechnungsfaktor dann 1000.</li>
+    </ul>
+  </section>
+
+  <!-- 7. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>7. Formelsammlung</h2>
+    <p>Alle Formeln und Regeln dieses Lernpfads mit Beispielen und Zeichnungen auf zwei Seiten zusammengefasst — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 8. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>8. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit. Die verlangte Einheit steht jeweils in der Aufgabe.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 2 Geometrie</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
