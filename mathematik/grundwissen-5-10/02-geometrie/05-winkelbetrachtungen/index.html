@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Winkelbetrachtungen</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">2 Geometrie</a><span class="sep">/</span>
+  5 Winkelbetrachtungen
+</nav>
+<header class="page-header">
+  <h1>Winkelbetrachtungen</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Bisher hast du einzelne Winkel gemessen. Jetzt geht es um ihre <strong>Beziehungen</strong>: Wenn ein Winkel bekannt ist, lassen sich viele andere <em>ausrechnen</em>, ohne noch einmal zu messen. Das ganze Kapitel steht auf zwei Bausteinen, die du schon kennst — dem <strong>gestreckten Winkel (180°)</strong> und dem <strong>Vollwinkel (360°)</strong>. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li><span class="term">Scheitelwinkel</span> und <span class="term">Nebenwinkel</span> an einem Geradenkreuz bestimmen</li>
+      <li>an geschnittenen Parallelen <span class="term">Stufen-</span>, <span class="term">Wechsel-</span> und <span class="term">Nachbarwinkel</span> erkennen</li>
+      <li>die <span class="term">Winkelsumme im Dreieck</span> nicht nur nennen, sondern <em>begründen</em></li>
+      <li>die <span class="term">Innenwinkelsumme</span> jedes Vielecks berechnen</li>
+      <li>mit dem <span class="term">Außenwinkelsatz</span> in zwei Schritten statt in dreien rechnen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../04-kreise-und-winkel/index.html">Thema 4</a> die Winkelarten und den Vollwinkel, aus <a href="../01-grundbegriffe/index.html#sec-lage">Thema 1</a> den Begriff <em>parallel</em>. Alles Weitere entsteht hier daraus.</p>
+  </section>
+
+  <!-- 1. Geradenkreuz -->
+  <section class="card" id="sec-geradenkreuz">
+    <h2>1. Am Geradenkreuz: Scheitel- und Nebenwinkel</h2>
+    <p>Zwei sich schneidende Geraden erzeugen <strong>vier</strong> Winkel. Man muss aber nur <em>einen</em> davon kennen — die anderen drei ergeben sich zwangsläufig.</p>
+    <div class="wissen-box">
+      <span class="box-label">Zwei Regeln</span>
+      <strong>Scheitelwinkel</strong> liegen sich am Schnittpunkt gegenüber. Sie sind <span class="paar-gleich">gleich groß</span>.<br>
+      <strong>Nebenwinkel</strong> liegen nebeneinander und bilden zusammen einen gestreckten Winkel. Sie <span class="paar-ergaenzt">ergänzen sich zu 180°</span>.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Winkel α = <input type="range" id="gk-alpha" min="10" max="170" step="5" value="55" style="vertical-align:middle;width:13rem"> <span id="gk-alpha-anzeige" style="font-weight:800"></span></label>
+        <label>Beziehung zeigen:
+          <select id="gk-art" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="scheitel">Scheitelwinkel</option>
+            <option value="neben">Nebenwinkel</option>
+            <option value="alle">alle vier Winkel</option>
+          </select>
+        </label>
+      </div>
+      <div class="geo-wrap" id="gk-mount"></div>
+      <div id="gk-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — nur beim rechten Winkel fällt es zusammen</span>
+      Ist α = 90°, dann sind Scheitel- und Nebenwinkel <em>zufällig</em> beide 90°. Das ist der einzige Fall, in dem die beiden Regeln dasselbe Ergebnis liefern — und genau deshalb ein schlechtes Beispiel zum Üben.
+    </div>
+    <div class="quiz" id="quiz-geradenkreuz"></div>
+  </section>
+
+  <!-- 2. Parallelen -->
+  <section class="card" id="sec-parallelen">
+    <h2>2. An geschnittenen Parallelen</h2>
+    <p>Werden <strong>zwei parallele</strong> Geraden von einer dritten geschnitten, entstehen acht Winkel — aber nur <strong>zwei verschiedene Größen</strong>. Denn an beiden Schnittpunkten sieht die Situation <em>genau gleich</em> aus: Die Schnittgerade trifft die zweite Parallele unter demselben Winkel wie die erste.</p>
+    <div class="wissen-box">
+      <span class="box-label">Drei neue Begriffe</span>
+      <strong>Stufenwinkel</strong> (F-Figur) — gleiche Lage an beiden Schnittpunkten: <span class="paar-gleich">gleich groß</span>.<br>
+      <strong>Wechselwinkel</strong> (Z-Figur) — zwischen den Parallelen, auf <em>verschiedenen</em> Seiten der Schnittgeraden: <span class="paar-gleich">gleich groß</span>.<br>
+      <strong>Nachbarwinkel</strong> (U-Figur) — zwischen den Parallelen, auf <em>derselben</em> Seite: <span class="paar-ergaenzt">ergänzen sich zu 180°</span>.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Schnittwinkel α = <input type="range" id="pa-alpha" min="35" max="145" step="5" value="55" style="vertical-align:middle;width:13rem"> <span id="pa-alpha-anzeige" style="font-weight:800"></span></label>
+        <label>Beziehung zeigen:
+          <select id="pa-art" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="stufen">Stufenwinkel (F)</option>
+            <option value="wechsel">Wechselwinkel (Z)</option>
+            <option value="nachbar">Nachbarwinkel (U)</option>
+            <option value="scheitel">Scheitelwinkel</option>
+            <option value="neben">Nebenwinkel</option>
+            <option value="alle">alle acht Winkel</option>
+          </select>
+        </label>
+      </div>
+      <div class="geo-wrap" id="pa-mount"></div>
+      <div id="pa-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Voraussetzung ist entscheidend</span>
+      Alle drei Regeln gelten <strong>nur bei parallelen</strong> Geraden. Schneiden sich die beiden Geraden irgendwo, sind Stufen- und Wechselwinkel verschieden groß. Umgekehrt gilt aber auch: Sind die Stufenwinkel gleich groß, <em>dann sind die Geraden parallel</em> — damit lässt sich Parallelität überhaupt erst nachweisen.
+    </div>
+    <div class="quiz" id="quiz-parallelen"></div>
+  </section>
+
+  <!-- 3. Winkelsumme im Dreieck -->
+  <section class="card" id="sec-dreieck">
+    <h2>3. Die Winkelsumme im Dreieck</h2>
+    <div class="wissen-box">
+      <span class="box-label">Satz</span>
+      In <strong>jedem</strong> Dreieck gilt: <strong>α + β + γ = 180°</strong>
+    </div>
+    <p>Das ist keine Beobachtung an ein paar Beispielen, sondern eine <strong>Folgerung</strong> aus dem vorigen Abschnitt. Zieht man durch eine Ecke eine Parallele zur gegenüberliegenden Seite, liegen die drei Winkel dort nebeneinander an einer Geraden — und eine Gerade ist ein gestreckter Winkel, also 180°.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>α = <input type="range" id="dr-alpha" min="15" max="120" step="5" value="50" style="vertical-align:middle;width:10rem"> <span id="dr-alpha-anzeige" style="font-weight:800"></span></label>
+        <label>β = <input type="range" id="dr-beta" min="15" max="120" step="5" value="60" style="vertical-align:middle;width:10rem"> <span id="dr-beta-anzeige" style="font-weight:800"></span></label>
+        <label><input type="checkbox" id="dr-beweis"> Begründung einblenden</label>
+      </div>
+      <div class="geo-wrap" id="dr-mount"></div>
+      <div id="dr-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-dreieck"></div>
+  </section>
+
+  <!-- 4. Außenwinkel -->
+  <section class="card" id="sec-aussenwinkel">
+    <h2>4. Der Außenwinkel</h2>
+    <p>Verlängert man eine Seite über eine Ecke hinaus, entsteht dort ein <strong>Außenwinkel</strong>. Er ist der Nebenwinkel des Innenwinkels — und deshalb schon aus Abschnitt 1 bekannt.</p>
+    <div class="wissen-box">
+      <span class="box-label">Außenwinkelsatz</span>
+      Ein Außenwinkel ist so groß wie die <strong>Summe der beiden nicht anliegenden Innenwinkel</strong>.<br>
+      Beim Außenwinkel an B: <strong>β' = α + γ</strong><br>
+      <span class="progress-note">Warum? β' = 180° − β und α + β + γ = 180°, also α + γ = 180° − β = β'. Der Satz spart einen Rechenschritt.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>α = <input type="range" id="aw-alpha" min="20" max="110" step="5" value="45" style="vertical-align:middle;width:10rem"> <span id="aw-alpha-anzeige" style="font-weight:800"></span></label>
+        <label>γ = <input type="range" id="aw-gamma" min="20" max="110" step="5" value="65" style="vertical-align:middle;width:10rem"> <span id="aw-gamma-anzeige" style="font-weight:800"></span></label>
+      </div>
+      <div class="geo-wrap" id="aw-mount"></div>
+      <div id="aw-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-aussenwinkel"></div>
+  </section>
+
+  <!-- 5. Vielecke -->
+  <section class="card" id="sec-vieleck">
+    <h2>5. Die Winkelsumme im Vieleck</h2>
+    <p>Für Vierecke, Fünfecke und alle weiteren braucht man keine neue Regel: Jedes <em>n</em>-Eck lässt sich von <strong>einer</strong> Ecke aus durch Diagonalen in Dreiecke zerlegen. Es entstehen immer <strong>n − 2</strong> Dreiecke.</p>
+    <div class="wissen-box">
+      <span class="box-label">Innenwinkelsumme</span>
+      <strong>Innenwinkelsumme eines n-Ecks = (n − 2) · 180°</strong><br>
+      Beim <strong>regelmäßigen</strong> n-Eck sind alle Innenwinkel gleich groß:<br>
+      <strong>ein Innenwinkel = (n − 2) · 180° : n = 180° − 360° : n</strong>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Eckenzahl n = <input type="range" id="vi-n" min="3" max="12" step="1" value="5" style="vertical-align:middle;width:11rem"> <span id="vi-n-anzeige" style="font-weight:800"></span></label>
+      </div>
+      <div class="geo-wrap" id="vi-mount"></div>
+      <div id="vi-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-vieleck"></div>
+  </section>
+
+  <!-- 6. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>6. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Der <a href="../04-kreise-und-winkel/index.html#sec-winkel">gestreckte Winkel und der Vollwinkel</a> — jede Regel dieses Themas ist letztlich eine Aussage über 180° oder 360°. Nebenwinkel, Nachbarwinkel und Winkelsumme im Dreieck sind drei Gesichter derselben 180°.</li>
+      <li><strong>Baut auf:</strong> Die <a href="../01-grundbegriffe/index.html#sec-lage">Lagebeziehung „parallel“</a> — ohne sie gelten Stufen- und Wechselwinkelsatz nicht.</li>
+      <li><strong>Ein Satz und seine Umkehrung:</strong> „Parallel ⇒ Stufenwinkel gleich“ und „Stufenwinkel gleich ⇒ parallel“ sind zwei verschiedene Aussagen. Beide gelten hier — das ist keineswegs selbstverständlich und wird dir bei Sätzen wieder begegnen.</li>
+      <li><strong>Gleiche Struktur:</strong> Das Vieleck wird auf das Dreieck zurückgeführt, das Dreieck auf die Parallelen, die Parallelen auf den gestreckten Winkel. Ein neues Problem wird auf ein gelöstes zurückgeführt — dieselbe Denkfigur wie beim <a href="../02-flaeche-umfang/index.html#sec-zusammengesetzt">Zerlegen von Flächen</a>.</li>
+      <li><strong>Führt weiter zu:</strong> Die Konstruktion von Dreiecken: Aus zwei Winkeln folgt der dritte, deshalb ist ein Dreieck durch zwei Winkel und eine Seite schon eindeutig festgelegt.</li>
+      <li><strong>Führt weiter zu:</strong> Die Ähnlichkeit — zwei Dreiecke mit gleichen Winkeln haben dieselbe Form. Weil der dritte Winkel automatisch folgt, genügen dafür schon zwei übereinstimmende Winkel.</li>
+      <li><strong>Führt weiter zu:</strong> Der Satz des Thales und der Umfangswinkelsatz am Kreis — beide werden mit gleichschenkligen Dreiecken und der Winkelsumme bewiesen.</li>
+    </ul>
+  </section>
+
+  <!-- 7. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>7. Formelsammlung</h2>
+    <p>Alle Sätze und Regeln dieses Lernpfads mit Beispielen und Zeichnungen auf zwei Seiten zusammengefasst — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 8. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>8. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Gradzeichen.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 2 Geometrie</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
