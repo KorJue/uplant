@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kreisberechnungen</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">2 Geometrie</a><span class="sep">/</span>
+  10 Kreisberechnungen
+</nav>
+<header class="page-header">
+  <h1>Kreisberechnungen</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Der Kreis ist die erste Figur, deren Umfang und Flächeninhalt sich <strong>nicht</strong> durch Abzählen von Kästchen bestimmen lassen. Man braucht dafür eine neue Zahl: <span class="term">π</span>. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>erklären, was π <em>ist</em> — und warum es bei jedem Kreis dieselbe Zahl ist</li>
+      <li>den <span class="term">Umfang</span> berechnen: U = 2 · π · r = π · d</li>
+      <li>begründen, woher die Formel für den <span class="term">Flächeninhalt</span> kommt: A = π · r²</li>
+      <li><span class="term">Kreisbogen</span> und <span class="term">Kreisausschnitt</span> über den Anteil α : 360° bestimmen</li>
+      <li>rückwärts rechnen: aus dem Umfang oder der Fläche den Radius bestimmen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../04-kreise-und-winkel/index.html#sec-kreis">Thema 4</a> die Begriffe Radius, Durchmesser und Sehne sowie den Vollwinkel von 360°, und aus <a href="../07-flaechenberechnungen/index.html#sec-uebersicht">Thema 7</a> die Idee, eine Figur zum Rechteck umzulegen — genau damit wird gleich A = π · r² hergeleitet.</p>
+  </section>
+
+  <!-- 1. Umfang und π -->
+  <section class="card" id="sec-umfang">
+    <h2>1. Der Umfang und die Zahl π</h2>
+    <p>Rollt man einen Kreis einmal ab, so ist die zurückgelegte Strecke sein <strong>Umfang</strong>. Erstaunlich ist: Teilt man ihn durch den Durchmesser, kommt <em>immer dieselbe Zahl</em> heraus — bei jedem Kreis, egal wie groß. Diese Zahl heißt π.</p>
+    <div class="wissen-box">
+      <span class="box-label">Umfang des Kreises</span>
+      <strong>U = 2 · π · r = π · d</strong><br>
+      π ≈ 3,14159… ist keine gewöhnliche Bruchzahl. Man rechnet mit dem Taschenrechner oder rundet auf 3,14.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Radius r = <input type="range" id="uf-r" min="1" max="8" step="1" value="3" style="vertical-align:middle;width:9rem"> <span id="uf-r-anzeige" class="kr-name-r"></span></label>
+        <label><input type="checkbox" id="uf-abrollen" checked> Umfang abgerollt zeigen</label>
+      </div>
+      <div class="geo-wrap" id="uf-mount"></div>
+      <div class="kr-bilanz" id="uf-bilanz"></div>
+      <table class="kr-pi-tabelle" id="uf-tabelle"></table>
+      <div id="uf-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Radius oder Durchmesser?</span>
+      In U = 2 · π · r steht der <strong>Radius</strong>, in U = π · d der <strong>Durchmesser</strong>. Beides ist dieselbe Formel, denn d = 2r. Wer aber den Durchmesser in die erste Formel einsetzt, bekommt <em>doppelt</em> so viel heraus. Prüfe immer zuerst, welche der beiden Größen gegeben ist.
+    </div>
+    <div class="quiz" id="quiz-umfang"></div>
+  </section>
+
+  <!-- 2. Flächeninhalt -->
+  <section class="card" id="sec-flaeche">
+    <h2>2. Der Flächeninhalt — woher A = π · r² kommt</h2>
+    <p>Zerschneidet man den Kreis in schmale Sektoren und legt sie abwechselnd nach oben und unten aneinander, entsteht eine Figur, die einem <strong>Rechteck</strong> immer ähnlicher wird. Je mehr Stücke, desto gerader die Kanten. Schiebe den Regler.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Anzahl der Stücke: <input type="range" id="fl-n" min="4" max="48" step="2" value="8" style="vertical-align:middle;width:12rem"> <span id="fl-n-anzeige" style="font-weight:800"></span></label>
+        <label><input type="checkbox" id="fl-ziel" checked> Zielrechteck einblenden</label>
+      </div>
+      <div class="geo-wrap" id="fl-mount"></div>
+      <div class="kr-bilanz" id="fl-bilanz"></div>
+      <div id="fl-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Flächeninhalt des Kreises</span>
+      <strong>A = π · r²</strong><br>
+      Das Rechteck ist <span class="kr-name-r">r</span> hoch und <strong>halb so lang wie der Umfang</strong>, also π · r breit. Sein Flächeninhalt ist damit π · r · r = π · r².
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — r² heißt r · r, nicht 2 · r</span>
+      Bei r = 5 ist r² = 25, nicht 10. Und: In A = π · r² wird <em>zuerst</em> quadriert und <em>dann</em> mit π multipliziert.
+    </div>
+    <div class="quiz" id="quiz-flaeche"></div>
+  </section>
+
+  <!-- 3. Bogen und Ausschnitt -->
+  <section class="card" id="sec-ausschnitt">
+    <h2>3. Kreisbogen und Kreisausschnitt</h2>
+    <p>Ein Stück des Kreises verhält sich zum ganzen Kreis genau so, wie sein Mittelpunktswinkel α zum Vollwinkel 360°. Dieser <strong>Anteil</strong> α : 360° ist der ganze Trick — man rechnet den vollen Kreis aus und nimmt davon den passenden Bruchteil.</p>
+    <div class="wissen-box">
+      <span class="box-label">Bogen und Ausschnitt</span>
+      Bogenlänge: <strong>b = (α : 360°) · 2 · π · r</strong><br>
+      Flächeninhalt des Ausschnitts: <strong>A = (α : 360°) · π · r²</strong><br>
+      <span class="progress-note">Beide Formeln haben denselben Bau: voller Kreis mal Anteil.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Radius r = <input type="range" id="as-r" min="2" max="8" step="1" value="5" style="vertical-align:middle;width:8rem"> <span id="as-r-anzeige" class="kr-name-r"></span></label>
+        <label>Winkel α = <input type="range" id="as-a" min="15" max="345" step="15" value="90" style="vertical-align:middle;width:11rem"> <span id="as-a-anzeige" class="kr-name-w"></span></label>
+      </div>
+      <div class="geo-wrap" id="as-mount"></div>
+      <div class="kr-bilanz" id="as-bilanz"></div>
+      <div id="as-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Bogen ist nicht Umfang</span>
+      Der <strong>Umfang des Ausschnitts</strong> besteht aus dem Bogen <em>und</em> den beiden Radien: u = b + 2r. Wer nur den Bogen angibt, hat die geraden Kanten vergessen.
+    </div>
+    <div class="quiz" id="quiz-ausschnitt"></div>
+  </section>
+
+  <!-- 4. Zusammengesetzte Figuren -->
+  <section class="card" id="sec-zusammengesetzt">
+    <h2>4. Kreisring und zusammengesetzte Figuren</h2>
+    <p>Fast alle Anwendungsaufgaben bestehen aus mehreren Teilen, die man <strong>addiert oder voneinander abzieht</strong>. Neue Formeln braucht man dafür nicht. Klicke eine Figur an.</p>
+    <div class="kr-figur-reihe" id="zs-reihe"></div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>großes Maß = <input type="range" id="zs-gross" min="4" max="12" step="1" value="8" style="vertical-align:middle;width:8rem"> <span id="zs-gross-anzeige" style="font-weight:800"></span></label>
+        <label>kleines Maß = <input type="range" id="zs-klein" min="1" max="8" step="1" value="5" style="vertical-align:middle;width:8rem"> <span id="zs-klein-anzeige" style="font-weight:800"></span></label>
+      </div>
+      <div class="geo-wrap" id="zs-mount"></div>
+      <div class="kr-bilanz" id="zs-bilanz"></div>
+      <div id="zs-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-zusammengesetzt"></div>
+  </section>
+
+  <!-- 5. Rückwärtsrechnen -->
+  <section class="card" id="sec-rueckwaerts">
+    <h2>5. Rückwärtsrechnen — den Radius bestimmen</h2>
+    <p>Oft ist nicht der Radius gegeben, sondern der Umfang oder die Fläche. Dann stellt man die Formel um. Der einzige neue Schritt ist die <strong>Quadratwurzel</strong> beim Flächeninhalt.</p>
+    <div class="wissen-box">
+      <span class="box-label">Umstellen</span>
+      Aus U = 2 · π · r folgt <strong>r = U : (2 · π)</strong><br>
+      Aus A = π · r² folgt zuerst r² = A : π, dann <strong>r = √(A : π)</strong>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>gegeben ist:
+          <select id="rw-was" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="U">der Umfang U</option>
+            <option value="A">der Flächeninhalt A</option>
+          </select>
+        </label>
+        <label>Wert = <input type="range" id="rw-wert" min="10" max="200" step="10" value="60" style="vertical-align:middle;width:11rem"> <span id="rw-wert-anzeige" style="font-weight:800"></span></label>
+      </div>
+      <div class="geo-wrap" id="rw-mount"></div>
+      <div class="kr-bilanz" id="rw-bilanz"></div>
+      <div id="rw-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-rueckwaerts"></div>
+  </section>
+
+  <!-- 6. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>6. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../04-kreise-und-winkel/index.html#sec-kreis">Radius, Durchmesser und Mittelpunktswinkel</a> — ohne diese Begriffe lässt sich keine der Formeln auch nur aufschreiben.</li>
+      <li><strong>Baut auf:</strong> <a href="../07-flaechenberechnungen/index.html#sec-uebersicht">Das Umlegen zum Rechteck</a> — dieselbe Denkfigur wie beim Parallelogramm, nur mit unendlich vielen, unendlich schmalen Stücken. Deshalb wird das Ergebnis hier nicht exakt gleich, sondern nur beliebig genau.</li>
+      <li><strong>Baut auf:</strong> <a href="../04-kreise-und-winkel/index.html#sec-kreisdiagramm">Anteile am Vollwinkel</a> — die Formel für den Kreisausschnitt ist reine Prozentrechnung: α : 360° ist der Anteil.</li>
+      <li><strong>Gleiche Struktur:</strong> Umfang und Fläche wachsen unterschiedlich schnell. Verdoppelt man r, so verdoppelt sich U, aber A wird <em>viermal</em> so groß — das ist genau die Regel k und k² aus der <a href="../08-aehnlichkeit/index.html#sec-potenzen">Ähnlichkeit</a>, denn alle Kreise sind zueinander ähnlich.</li>
+      <li><strong>Führt weiter zu:</strong> Der Zylinder: Grundfläche π · r², Mantel ein Rechteck mit den Seiten U = 2πr und h. Und der Kegel, dessen Mantel ein Kreisausschnitt ist.</li>
+      <li><strong>Führt weiter zu:</strong> Das Bogenmaß. Statt in Grad misst man den Winkel durch die Bogenlänge im Einheitskreis — der Vollwinkel ist dann 2π.</li>
+      <li><strong>Führt weiter zu:</strong> π ist <em>irrational</em>: Es lässt sich nicht als Bruch zweier ganzer Zahlen schreiben, die Dezimaldarstellung bricht nie ab und wird nie periodisch. Damit gehört π zu denselben Zahlen wie √2 aus dem <a href="../09-pythagoras/index.html#sec-satz">Satz des Pythagoras</a>.</li>
+    </ul>
+  </section>
+
+  <!-- 7. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>7. Formelsammlung</h2>
+    <p>Alle Kreisformeln mit Zeichnungen, Umstellungen und typischen Fehlern auf zwei Seiten — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 8. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>8. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit. Wo gerundet werden soll, steht es in der Aufgabe.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 2 Geometrie</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
