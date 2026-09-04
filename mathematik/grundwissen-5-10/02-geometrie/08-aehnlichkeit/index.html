@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ähnlichkeit</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">2 Geometrie</a><span class="sep">/</span>
+  8 Ähnlichkeit
+</nav>
+<header class="page-header">
+  <h1>Ähnlichkeit</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p><strong>Ähnlich</strong> heißt: gleiche Form, andere Größe. Ein Foto, das man vergrößert, ein Modellauto, eine Landkarte — überall wird jede Länge mit derselben Zahl multipliziert, dem <span class="term">Streckfaktor k</span>. Die Winkel ändern sich dabei <em>nicht</em>. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>eine <span class="term">zentrische Streckung</span> ausführen und ihren Streckfaktor ablesen</li>
+      <li>begründen, warum zwei Figuren ähnlich sind: gleiche Winkel <em>und</em> gleiche Seitenverhältnisse</li>
+      <li>mit den <span class="term">Strahlensätzen</span> unzugängliche Längen berechnen</li>
+      <li>an den <span class="term">Ähnlichkeitssätzen</span> erkennen, wann zwei Dreiecke schon ähnlich sein <em>müssen</em></li>
+      <li>und vor allem: sagen, warum Flächen mit <strong>k²</strong> und Volumen mit <strong>k³</strong> wachsen — nicht mit k</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../01-grundbegriffe/index.html#sec-abstand">Thema 1</a> Strecken und Parallelen, aus <a href="../05-winkelbetrachtungen/index.html#sec-parallelen">Thema 5</a> die Stufen- und Wechselwinkel an geschnittenen Parallelen und aus <a href="../07-flaechenberechnungen/index.html#sec-uebersicht">Thema 7</a> die Flächenformeln.</p>
+  </section>
+
+  <!-- 1. Zentrische Streckung -->
+  <section class="card" id="sec-streckung">
+    <h2>1. Die zentrische Streckung</h2>
+    <p>Wähle einen Punkt <strong>Z</strong>, das <span class="term">Streckzentrum</span>. Ziehe von Z aus einen Strahl durch jeden Punkt der Figur und trage darauf das <strong>k-fache</strong> der Entfernung ab. So entsteht das Bild der Figur.</p>
+    <div class="wissen-box">
+      <span class="box-label">Definition</span>
+      <strong>Zentrische Streckung mit Zentrum Z und Streckfaktor k</strong><br>
+      Jeder Punkt P geht über in den Punkt P' auf der Geraden ZP mit <strong>ZP' = k · ZP</strong>.<br>
+      Ist k &gt; 0, liegt P' auf derselben Seite von Z wie P; ist k &lt; 0, auf der anderen.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Streckfaktor k = <input type="range" id="zs-k" min="25" max="250" step="25" value="175" style="vertical-align:middle;width:12rem"> <span id="zs-k-anzeige" class="k-wert" style="font-weight:800"></span></label>
+        <label><input type="checkbox" id="zs-negativ"> k negativ machen</label>
+        <label><input type="checkbox" id="zs-strahlen" checked> Strahlen von Z zeigen</label>
+      </div>
+      <div class="geo-wrap" id="zs-mount"></div>
+      <div class="ae-anzeige" id="zs-anzeige"></div>
+      <div id="zs-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — k ist ein Faktor, kein Zuschlag</span>
+      k = 2 bedeutet <em>doppelt so lang</em>, nicht „2 cm länger“. Und k = 1 bildet jeden Punkt auf sich selbst ab; bei 0 &lt; k &lt; 1 wird die Figur <strong>kleiner</strong>, obwohl man von „Streckung“ spricht.
+    </div>
+    <div class="quiz" id="quiz-streckung"></div>
+  </section>
+
+  <!-- 2. Ähnliche Figuren -->
+  <section class="card" id="sec-aehnlich">
+    <h2>2. Wann sind zwei Figuren ähnlich?</h2>
+    <p>Es reicht <strong>nicht</strong>, dass zwei Figuren „irgendwie gleich aussehen“. Ähnlich sind sie, wenn <em>alle</em> einander entsprechenden Winkel gleich groß sind <strong>und</strong> <em>alle</em> einander entsprechenden Seiten dasselbe Verhältnis haben.</p>
+    <p>Bei <strong>Dreiecken</strong> genügt schon eine der beiden Bedingungen — die andere folgt dann von selbst. Bei Vierecken und größeren Figuren muss man <strong>beide</strong> prüfen: Ein Quadrat und eine Raute haben lauter gleich lange Seiten und sind trotzdem nicht ähnlich; ein Quadrat und ein Rechteck haben lauter rechte Winkel und sind es auch nicht.</p>
+    <div class="wissen-box">
+      <span class="box-label">Merkmal</span>
+      <strong>Zwei Figuren sind ähnlich, wenn</strong><br>
+      1. einander entsprechende Winkel gleich groß sind <strong>und</strong><br>
+      2. einander entsprechende Seiten alle dasselbe Verhältnis k haben:
+      <strong>a' : a = b' : b = c' : c = k</strong>
+    </div>
+    <p>Unten stehen zwei <strong>Dreiecke</strong> — dort genügen die Seitenverhältnisse. Verändere die Seite a' allein: Dann stimmt ein Quotient nicht mehr mit den anderen überein, und die Ähnlichkeit ist dahin.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>gemeinsamer Faktor k = <input type="range" id="af-k" min="8" max="20" step="1" value="15" style="vertical-align:middle;width:9rem"> <span id="af-k-anzeige" style="font-weight:800"></span></label>
+        <label>Seite a' allein ändern: <input type="range" id="af-stoer" min="-4" max="4" step="1" value="0" style="vertical-align:middle;width:9rem"> <span id="af-stoer-anzeige" style="font-weight:800"></span></label>
+      </div>
+      <div class="geo-wrap" id="af-mount"></div>
+      <table class="ae-quotienten" id="af-tabelle"></table>
+      <div class="ae-urteil" id="af-urteil"></div>
+    </div>
+    <div class="quiz" id="quiz-aehnlich"></div>
+  </section>
+
+  <!-- 3. Strahlensätze -->
+  <section class="card" id="sec-strahlensaetze">
+    <h2>3. Die Strahlensätze</h2>
+    <p>Zwei Strahlen gehen von Z aus und werden von zwei <strong>Parallelen</strong> geschnitten. Dann sind die beiden entstehenden Dreiecke ähnlich — und es gelten zwei feste Verhältnisgleichungen.</p>
+    <div class="wissen-box">
+      <span class="box-label">1. Strahlensatz</span>
+      Verhältnisse <strong>auf den Strahlen</strong>:<br>
+      <strong>ZA : ZA' = ZB : ZB'</strong> &nbsp;(und ebenso AA' : ZA = BB' : ZB)
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">2. Strahlensatz</span>
+      Verhältnis <strong>der Parallelenstücke</strong> zu den Strahlenabschnitten <em>vom Zentrum aus</em>:<br>
+      <strong>AB : A'B' = ZA : ZA'</strong>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>zweite Parallele verschieben: <input type="range" id="st-t" min="16" max="30" step="1" value="24" style="vertical-align:middle;width:11rem"></label>
+        <label><input type="checkbox" id="st-x"> X-Figur (Parallele jenseits von Z)</label>
+      </div>
+      <div class="geo-wrap" id="st-mount"></div>
+      <div class="ae-anzeige" id="st-anzeige"></div>
+      <div id="st-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der häufigste Fehler bei den Strahlensätzen</span>
+      Im zweiten Strahlensatz stehen rechts die Abschnitte <strong>ab dem Zentrum Z</strong> — also ZA und ZA', <em>nicht</em> die Stücke AA' zwischen den Parallelen. Wer AA' einsetzt, rechnet mit dem falschen Verhältnis.
+    </div>
+    <div class="quiz" id="quiz-strahlensaetze"></div>
+  </section>
+
+  <!-- 4. Ähnlichkeitssätze für Dreiecke -->
+  <section class="card" id="sec-saetze">
+    <h2>4. Wann sind zwei Dreiecke ähnlich?</h2>
+    <p>Bei Dreiecken muss man nicht alles prüfen. Schon wenige übereinstimmende Stücke erzwingen die Ähnlichkeit. Klicke eine Karte an.</p>
+    <div class="ae-satz-reihe" id="sa-reihe"></div>
+    <div class="widget">
+      <div class="geo-wrap" id="sa-mount"></div>
+      <div id="sa-text" class="event-result"></div>
+    </div>
+    <div class="hinweis-box">💡 Vergleiche mit den <a href="../06-konstruktionen/index.html#sec-kongruenz">Kongruenzsätzen</a>: Dort müssen die Seiten <em>gleich lang</em> sein, hier nur im gleichen <em>Verhältnis</em>. Kongruent ist also der Sonderfall k = 1 der Ähnlichkeit.</div>
+    <div class="quiz" id="quiz-saetze"></div>
+  </section>
+
+  <!-- 5. Länge, Fläche, Volumen -->
+  <section class="card" id="sec-potenzen">
+    <h2>5. Länge mal k, Fläche mal k², Volumen mal k³</h2>
+    <p>Verdoppelt man alle Längen einer Figur, wird sie <strong>nicht</strong> doppelt so groß, sondern <strong>viermal</strong> so groß. Denn beim Flächeninhalt werden zwei Längen multipliziert — und beide werden verdoppelt.</p>
+    <div class="wissen-box">
+      <span class="box-label">Regel</span>
+      Bei einer Streckung mit dem Faktor k gilt:<br>
+      jede <strong>Länge</strong> · k &nbsp;·&nbsp; jeder <strong>Flächeninhalt</strong> · k² &nbsp;·&nbsp; jedes <strong>Volumen</strong> · k³<br>
+      <span class="progress-note">Winkel bleiben unverändert — sie sind keine Längen.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Streckfaktor k = <input type="range" id="pt-k" min="10" max="40" step="5" value="20" style="vertical-align:middle;width:11rem"> <span id="pt-k-anzeige" class="k-wert" style="font-weight:800"></span></label>
+      </div>
+      <div class="geo-wrap" id="pt-mount"></div>
+      <div class="ae-potenzen" id="pt-karten"></div>
+      <div id="pt-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die klassische Falle</span>
+      „Das Modell ist im Maßstab 1 : 10, also passt zehnmal so viel Wasser hinein.“ Falsch: Es passt <strong>1000-mal</strong> so viel hinein, denn das Volumen wächst mit k³ = 10³.
+    </div>
+    <div class="quiz" id="quiz-potenzen"></div>
+  </section>
+
+  <!-- 6. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>6. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../05-winkelbetrachtungen/index.html#sec-parallelen">Stufen- und Wechselwinkel an Parallelen</a> — sie sind der Beweisgrund dafür, dass bei den Strahlensätzen überhaupt ähnliche Dreiecke entstehen: Die Parallele erzeugt gleich große Stufenwinkel, damit stimmen zwei Winkel überein.</li>
+      <li><strong>Baut auf:</strong> Die <a href="../05-winkelbetrachtungen/index.html#sec-dreieck">Winkelsumme im Dreieck</a> — deshalb genügt beim Ähnlichkeitssatz <em>WW</em> die Übereinstimmung in zwei Winkeln: Der dritte ergibt sich von selbst.</li>
+      <li><strong>Baut auf:</strong> <a href="../06-konstruktionen/index.html#sec-kongruenz">Die Kongruenzsätze</a> — dieselben vier Buchstabenkürzel, nur mit Verhältnissen statt Längen. Kongruenz ist Ähnlichkeit mit k = 1.</li>
+      <li><strong>Baut auf:</strong> <a href="../07-flaechenberechnungen/index.html#sec-uebersicht">Die Flächenformeln</a> — in jeder von ihnen werden zwei Längen multipliziert. Genau daran sieht man, warum der Flächeninhalt mit k² wächst.</li>
+      <li><strong>Gleiche Struktur:</strong> Die zentrische Streckung gehört zu den Abbildungen wie Spiegelung, Drehung und Verschiebung. Sie ist die einzige darunter, die Längen <em>verändert</em> — Winkel lässt auch sie unangetastet.</li>
+      <li><strong>Führt weiter zu:</strong> Der Satz des Pythagoras und die Sätze über Höhe und Kathete werden über ähnliche Dreiecke bewiesen: Die Höhe zerlegt ein rechtwinkliges Dreieck in zwei Teildreiecke, die ihm ähnlich sind.</li>
+      <li><strong>Führt weiter zu:</strong> Sinus, Kosinus und Tangens sind nur deshalb sinnvoll definiert, weil alle rechtwinkligen Dreiecke mit demselben Winkel zueinander ähnlich sind — das Seitenverhältnis hängt dann nur noch vom Winkel ab, nicht von der Größe.</li>
+      <li><strong>Führt weiter zu:</strong> Maßstab bei Karten und Modellen, und die Frage, wie sich Oberfläche und Volumen beim Vergrößern <em>unterschiedlich schnell</em> ändern.</li>
+    </ul>
+  </section>
+
+  <!-- 7. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>7. Formelsammlung</h2>
+    <p>Alle Sätze und Regeln mit Zeichnungen auf zwei Seiten zusammengefasst — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 8. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>8. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 2 Geometrie</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
