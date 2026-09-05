@@ -3,10 +3,10 @@
 // und das Rückmeldefeld. Das ist auf allen Geometrie-Seiten identisch — nur das Modell (welche Punkte
 // einrasten, was markiert wird, was geprüft wird) kommt von der jeweiligen Seite.
 
-import * as GC from "./geo-core.js?v=20";
-import * as GS from "./geo-svg.js?v=20";
-import { circlesIntersections, pairedIntersections } from "./check-helpers.js?v=20";
-import { TOL_PT } from "./tri-construct.js?v=20";
+import * as GC from "./geo-core.js?v=21";
+import * as GS from "./geo-svg.js?v=21";
+import { pairedIntersections } from "./check-helpers.js?v=21";
+import { TOL_PT } from "./tri-construct.js?v=21";
 
 const PENDING_TEXT = {
   circle: "◯ Einstichpunkt gesetzt — klicke jetzt auf einen Punkt, durch den der Kreis gehen soll (Esc bricht ab).",
@@ -30,8 +30,31 @@ const SAME_PT = 2;
 export function setupFreeConstruction({ svg, layer, els, model, check, onDraw, onClear }) {
   const tool = new GS.ConstructionTool(svg, layer, snapToNearest);
 
+  // Die Punkte, die die Zeichnung wirklich ZEIGT: Schnittpunkte gleich großer
+  // Kreise plus die seiteneigenen Marken. Genau darauf wird auch eingerastet.
+  //
+  // Vorher waren die Einrastziele ALLE Kreis-Kreis-Schnittpunkte — bei neun
+  // Kreisen am Dreieck über hundert Stück, von denen nur ein Bruchteil
+  // gezeichnet wird. Der Zeiger sprang dadurch auf Stellen, die gar nicht zu
+  // sehen sind: Man zielt auf einen Punkt und landet mehrere Einheiten daneben,
+  // ohne zu erkennen, warum. Was man sieht, ist jetzt auch das, worauf man
+  // einrastet. Eingeschränkt wird dadurch nichts — die Prüfung am Ende bewertet
+  // die gezeichneten Kreise und Geraden, nicht die Einrastziele; und ohne
+  // Einrasten trifft ein Klick weiterhin genau die Stelle, auf die er zeigt.
+  function sichtbareMarken() {
+    const m0 = model();
+    // Liefert das Modell seine Punkte vollständig (autoMarks === false), wird nichts dazugeraten.
+    const marks = m0.autoMarks === false ? [] : pairedIntersections(tool.circles).map((p) => ({ p, done: false }));
+    for (const m of m0.marks || []) {
+      const same = marks.find((o) => GC.dist(o.p, m.p) < SAME_PT);
+      if (same) same.done = same.done || m.done;
+      else marks.push({ p: m.p, done: m.done });
+    }
+    return marks;
+  }
+
   function snapToNearest(raw) {
-    const targets = (model().snapPoints || []).concat(circlesIntersections(tool.circles));
+    const targets = (model().snapPoints || []).concat(sichtbareMarken().map((m) => m.p));
     let best = raw,
       bestD = TOL_PT;
     for (const t of targets) {
@@ -50,20 +73,12 @@ export function setupFreeConstruction({ svg, layer, els, model, check, onDraw, o
     return circles.map((c) => (spent && spent.has(c) ? "geo-done" : ""));
   };
 
-  // Konstruierte Punkte als Kreuz markieren. Angezeigt werden nur die Schnittpunkte gleich großer
-  // Kreise (die bedeutungstragenden), eingerastet wird großzügiger — siehe check-helpers.js.
-  // Seiteneigene Zusatzpunkte (Punkte auf Schenkeln/Seiten, Mittelpunkte) kommen über model().marks.
+  // Konstruierte Punkte als Kreuz markieren — dieselbe Menge, auf die auch
+  // eingerastet wird (siehe sichtbareMarken oben). Seiteneigene Zusatzpunkte
+  // (Punkte auf Schenkeln/Seiten, Mittelpunkte) kommen über model().marks.
   tool.extraRender = () => {
     if (onDraw) onDraw(layer);
-    const m0 = model();
-    // Liefert das Modell seine Punkte vollständig (autoMarks === false), wird nichts dazugeraten.
-    const marks = m0.autoMarks === false ? [] : pairedIntersections(tool.circles).map((p) => ({ p, done: false }));
-    for (const m of m0.marks || []) {
-      const same = marks.find((o) => GC.dist(o.p, m.p) < SAME_PT);
-      if (same) same.done = same.done || m.done;
-      else marks.push({ p: m.p, done: m.done });
-    }
-    marks.forEach((m) => GS.drawCross(layer, m.p, m.done ? "geo-done" : "geo-schnitt-stark"));
+    sichtbareMarken().forEach((m) => GS.drawCross(layer, m.p, m.done ? "geo-done" : "geo-schnitt-stark"));
   };
 
   function updateStatus() {
