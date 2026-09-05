@@ -1,0 +1,401 @@
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  margin-bottom: 1.5rem;
+}
+.card h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+.card h3 {
+  font-size: 1.05rem;
+  margin: 1.5rem 0 0.6rem;
+  color: var(--accent-dark);
+}
+.card h3:first-of-type { margin-top: 0.5rem; }
+
+.lern-intro-list {
+  margin: 0.75rem 0 0;
+  padding-left: 1.3rem;
+}
+.lern-intro-list li { margin-bottom: 0.3rem; }
+
+.term {
+  font-weight: 700;
+  color: var(--accent-dark);
+}
+
+.hinweis-box {
+  background: var(--bg);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin: 0.9rem 0;
+  font-size: 0.92rem;
+}
+
+/* ---------- Widget-Rahmen ---------- */
+
+.widget {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 1rem 0;
+  background: var(--bg);
+}
+.widget-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.widget-col { flex: 1 1 260px; min-width: 240px; }
+
+.btn {
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  font-family: inherit;
+}
+.btn:hover { border-color: var(--accent); }
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--accent-dark); }
+.btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.75rem 0; }
+
+/* ---------- Ergebnisanzeige ---------- */
+
+.event-result {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+  margin-top: 0.5rem;
+  font-family: "Cambria Math", Cambria, serif;
+}
+
+/* ---------- Quiz ---------- */
+
+.quiz {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1.1rem 0 0.5rem;
+}
+.quiz-q { font-weight: 700; margin: 0 0 0.6rem; }
+.quiz-options { display: flex; flex-direction: column; gap: 0.5rem; }
+.quiz-opt {
+  text-align: left;
+  padding: 0.55rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.94rem;
+}
+.quiz-opt:hover { border-color: var(--accent); }
+.quiz-opt.correct { border-color: #157347; background: #e7f6ec; color: #157347; font-weight: 700; }
+.quiz-opt.wrong { border-color: #b3261e; background: #fdecec; color: #b3261e; font-weight: 700; }
+:root[data-theme="dark"] .quiz-opt.correct { background: #17321f; color: #6fd68f; border-color: #6fd68f; }
+:root[data-theme="dark"] .quiz-opt.wrong { background: #3a1f1f; color: #ff8a8a; border-color: #ff8a8a; }
+.quiz-feedback { margin-top: 0.6rem; font-size: 0.9rem; }
+.quiz-feedback.ok { color: #157347; }
+.quiz-feedback.err { color: #b3261e; }
+:root[data-theme="dark"] .quiz-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .quiz-feedback.err { color: #ff8a8a; }
+
+/* ---------- Übungsaufgaben ---------- */
+
+.exercise {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1rem 0;
+}
+.exercise h3 { margin-top: 0; }
+.exercise-input-row { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; margin-top: 0.6rem; }
+.exercise-input-row input {
+  width: 11rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: var(--card-bg);
+  color: var(--text);
+}
+.exercise-feedback { margin-top: 0.6rem; font-size: 0.92rem; font-weight: 600; }
+.exercise-feedback.ok { color: #157347; }
+.exercise-feedback.err { color: #b3261e; }
+:root[data-theme="dark"] .exercise-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .exercise-feedback.err { color: #ff8a8a; }
+
+.formula-block {
+  font-family: "Cambria Math", Cambria, "STIX Two Math", serif;
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  margin: 0.5rem 0;
+  overflow-x: auto;
+}
+
+.progress-note {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+
+/* ---------- Definition / Wissen / Beispiel — farbige Merkboxen wie im Lehrbuch ---------- */
+
+.definition-box, .wissen-box, .beispiel-box {
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin: 0.9rem 0;
+}
+.definition-box .box-label, .wissen-box .box-label, .beispiel-box .box-label {
+  display: block;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+.definition-box, .wissen-box {
+  background: #fdecec;
+  border-left: 4px solid #b3261e;
+}
+.definition-box .box-label, .wissen-box .box-label { color: #b3261e; }
+:root[data-theme="dark"] .definition-box, :root[data-theme="dark"] .wissen-box { background: #3a1f1f; }
+:root[data-theme="dark"] .definition-box .box-label, :root[data-theme="dark"] .wissen-box .box-label { color: #ff8a8a; }
+.beispiel-box {
+  background: #e7f6ec;
+  border-left: 4px solid #157347;
+}
+.beispiel-box .box-label { color: #157347; }
+:root[data-theme="dark"] .beispiel-box { background: #17321f; }
+:root[data-theme="dark"] .beispiel-box .box-label { color: #6fd68f; }
+
+/* ---------- Gestaffelte Übungsaufgaben (Reiter Mittel/Schwierig/Komplex) ---------- */
+
+.schwierigkeit-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  margin-left: 0.6rem;
+  vertical-align: middle;
+}
+.schwierigkeit-badge.einfach { background: #e7f6ec; color: #157347; }
+.schwierigkeit-badge.mittel { background: #eef2ff; color: #1d4ed8; }
+.schwierigkeit-badge.schwierig { background: #fff4e0; color: #b3650a; }
+.schwierigkeit-badge.komplex { background: #fdecec; color: #b3261e; }
+:root[data-theme="dark"] .schwierigkeit-badge.einfach { background: #17321f; color: #6fd68f; }
+:root[data-theme="dark"] .schwierigkeit-badge.mittel { background: #1e2a4a; color: #93a9ff; }
+:root[data-theme="dark"] .schwierigkeit-badge.schwierig { background: #3a2a10; color: #ffbf6e; }
+:root[data-theme="dark"] .schwierigkeit-badge.komplex { background: #3a1f1f; color: #ff8a8a; }
+
+.schwierigkeit-tabs { display: flex; gap: 0.4rem; margin: 1rem 0 0; flex-wrap: wrap; }
+.schwierigkeit-tabs button {
+  padding: 0.5rem 1rem;
+  border-radius: 8px 8px 0 0;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+.schwierigkeit-tabs button.active { background: var(--card-bg); color: var(--text); border-color: var(--accent); }
+.schwierigkeit-tab-panel { border: 1px solid var(--border); border-radius: 0 10px 10px 10px; padding: 0; margin-bottom: 1rem; }
+.schwierigkeit-tab-panel .aufgabe-box { border: none; margin: 0; }
+
+.aufgabe-box {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1rem 0;
+}
+.aufgabe-box h3 { margin: 0 0 0.5rem; display: flex; align-items: center; flex-wrap: wrap; }
+.aufgabe-box .aufgabe-prompt { margin: 0.5rem 0; }
+.aufgabe-box .btn-row { margin-top: 0.5rem; }
+.aufgabe-feedback { margin-top: 0.7rem; font-size: 0.92rem; }
+.aufgabe-feedback .status { font-weight: 700; margin-bottom: 0.3rem; }
+.aufgabe-feedback .status.ok { color: #157347; }
+.aufgabe-feedback .status.err { color: #b3261e; }
+:root[data-theme="dark"] .aufgabe-feedback .status.ok { color: #6fd68f; }
+:root[data-theme="dark"] .aufgabe-feedback .status.err { color: #ff8a8a; }
+.musterloesung {
+  background: var(--bg);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.7rem 0.9rem;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.musterloesung .ml-label { font-weight: 700; color: var(--accent-dark); display: block; margin-bottom: 0.3rem; }
+
+/* ---------- Achtung-Box: typische Fehlvorstellungen ---------- */
+
+.achtung-box {
+  background: #fff4e0;
+  border-left: 4px solid #b3650a;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin: 0.9rem 0;
+}
+.achtung-box .box-label {
+  display: block;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+  color: #b3650a;
+}
+:root[data-theme="dark"] .achtung-box { background: #3a2a10; }
+:root[data-theme="dark"] .achtung-box .box-label { color: #ffbf6e; }
+
+/* ---------- Innermathematische Vernetzung ---------- */
+
+.vernetzung-liste { list-style: none; padding: 0; margin: 0.75rem 0 0; }
+.vernetzung-liste li {
+  padding: 0.6rem 0.85rem;
+  border-left: 3px solid var(--accent);
+  background: var(--bg);
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 0.5rem;
+  font-size: 0.94rem;
+}
+.vernetzung-liste a { font-weight: 700; }
+
+
+
+/* ---------- Zeichenfläche ---------- */
+
+.geo-wrap { display: flex; justify-content: center; margin: 1rem 0; overflow-x: auto; }
+.geo-svg { max-width: 100%; height: auto; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; }
+
+
+/* ---------- Thema 1: Daten und Häufigkeiten ---------- */
+
+/* Farbcode: absolute Häufigkeit blau, relative Häufigkeit violett,
+   arithmetisches Mittel rot, Median grün, Ausreißer orange. */
+
+/* Urliste als Chip-Reihe */
+.da-urliste { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.7rem 0; }
+.da-wert {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.1rem;
+  padding: 0.25rem 0.45rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+.da-wert.markiert { border-color: #2563eb; background: #e7edfd; color: #1d4ed8; }
+:root[data-theme="dark"] .da-wert.markiert { background: #1e2a4a; color: #93a9ff; }
+.da-wert.ausreisser { border-color: #b3650a; background: #fdf3e6; color: #b3650a; }
+:root[data-theme="dark"] .da-wert.ausreisser { background: #3a2a12; color: #ffbf6e; }
+
+/* Häufigkeitstabelle */
+.da-tabelle { width: 100%; border-collapse: collapse; margin: 0.6rem 0; font-variant-numeric: tabular-nums; }
+.da-tabelle th, .da-tabelle td { padding: 0.35rem 0.5rem; border-bottom: 1px solid var(--border); text-align: center; }
+.da-tabelle th { font-size: 0.82rem; color: var(--muted); font-weight: 700; }
+.da-tabelle td.strich { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 0.06em; color: var(--muted); }
+.da-tabelle td.abs { color: #1d4ed8; font-weight: 800; }
+.da-tabelle td.rel { color: #6d28d9; font-weight: 800; }
+.da-tabelle tr.summe td { border-top: 2px solid var(--border); border-bottom: none; font-weight: 800; }
+
+/* Diagramme */
+.da-saeule { fill: #2563eb; fill-opacity: 0.55; stroke: #1d4ed8; stroke-width: 1.2; }
+.da-saeule.hervor { fill-opacity: 0.85; }
+.da-achse { stroke: var(--text); stroke-width: 1.6; }
+.da-gitter { stroke: var(--border); stroke-width: 0.8; }
+.da-achsentext { font-size: 11px; fill: var(--muted); }
+.da-saeulentext { font-size: 11px; font-weight: 700; fill: #1d4ed8; }
+.da-sektor { stroke: var(--card-bg); stroke-width: 1.4; }
+.da-sektortext { font-size: 11px; font-weight: 700; fill: #1f2933; }
+.da-legende { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; justify-content: center; font-size: 0.85rem; margin-top: 0.4rem; }
+.da-legende span.punkt { display: inline-block; width: 0.8em; height: 0.8em; border-radius: 3px; margin-right: 0.35em; vertical-align: -0.05em; }
+
+/* Kennwerte: Mittelwert, Median, Modalwert, Spannweite */
+.da-mittel { stroke: #b3261e; stroke-width: 2.4; stroke-dasharray: 6 4; }
+.da-median { stroke: #157347; stroke-width: 2.4; }
+.da-mittel-text { font-size: 12px; font-weight: 800; fill: #b3261e; }
+.da-median-text { font-size: 12px; font-weight: 800; fill: #157347; }
+.da-spanne { stroke: #b3650a; stroke-width: 1.8; }
+.da-spanne-text { font-size: 11px; font-weight: 700; fill: #b3650a; }
+.da-punkt { fill: #2563eb; }
+.da-punkt.ausreisser { fill: #b3650a; }
+
+/* Kennwert-Karten */
+.da-kennwerte { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0.8rem 0; }
+.da-karte {
+  flex: 1 1 8.5rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.55rem 0.75rem;
+  background: var(--card-bg);
+  text-align: center;
+}
+.da-karte .name { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; }
+.da-karte .wert { display: block; font-size: 1.3rem; font-weight: 800; margin-top: 0.15rem; font-variant-numeric: tabular-nums; }
+.da-karte.mittel .wert { color: #b3261e; }
+.da-karte.median .wert { color: #157347; }
+.da-karte.modal .wert { color: #6d28d9; }
+.da-karte.spanne .wert { color: #b3650a; }
+
+/* Waage-Modell für das arithmetische Mittel */
+.da-balken { stroke: var(--text); stroke-width: 2.4; }
+.da-drehpunkt { fill: #b3261e; }
+.da-gewicht { fill: #2563eb; fill-opacity: 0.5; stroke: #1d4ed8; stroke-width: 1.2; }
+
+/* Bilanzzeile */
+.da-bilanz {
+  margin-top: 0.6rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 8px;
+  background: var(--code-bg, rgba(127, 127, 127, 0.08));
+  font-variant-numeric: tabular-nums;
+  line-height: 1.75;
+  font-size: 1.02rem;
+}
+.da-bilanz .wa { color: #1d4ed8; font-weight: 800; }
+.da-bilanz .wr { color: #6d28d9; font-weight: 800; }
+.da-bilanz .wm { color: #b3261e; font-weight: 800; }
+.da-bilanz .wz { color: #157347; font-weight: 800; }
+.da-bilanz .wo { color: #b3650a; font-weight: 800; }
+
+/* Zwei Diagramme nebeneinander für den Manipulations-Vergleich */
+.da-doppel { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+.da-doppel > figure { margin: 0; flex: 1 1 15rem; text-align: center; }
+.da-doppel figcaption { font-size: 0.85rem; color: var(--muted); margin-top: 0.3rem; }
+
+/* Strichliste: Fünferbündel werden durchgestrichen dargestellt */
+.da-tabelle td.strich .fuenf { text-decoration: line-through; margin-right: 0.4em; }
