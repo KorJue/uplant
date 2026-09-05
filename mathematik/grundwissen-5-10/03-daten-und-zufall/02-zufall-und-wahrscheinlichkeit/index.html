@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zufall und Wahrscheinlichkeit</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">3 Daten und Zufall</a><span class="sep">/</span>
+  2 Zufall und Wahrscheinlichkeit
+</nav>
+<header class="page-header">
+  <h1>Zufall und Wahrscheinlichkeit</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Beim einzelnen Wurf ist nichts vorherzusagen. Über <em>viele</em> Wiederholungen zeigt sich aber ein stabiles Muster — und genau dieses Muster misst die <strong>Wahrscheinlichkeit</strong>. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li><span class="term">Ergebnis</span> und <span class="term">Ereignis</span> unterscheiden und beide als Menge aufschreiben</li>
+      <li>die <span class="term">Laplace-Wahrscheinlichkeit</span> P(E) = |E| : |Ω| anwenden — und prüfen, ob sie überhaupt gelten darf</li>
+      <li>begründen, warum sich die relativen Häufigkeiten mit wachsender Versuchszahl bei P einpendeln</li>
+      <li>mit dem <span class="term">Gegenereignis</span> rechnen: P(Ē) = 1 − P(E)</li>
+      <li>an einem ungleichmäßigen Glücksrad zeigen, dass <em>Abzählen</em> dort in die Irre führt</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../01-daten-und-haeufigkeiten/index.html#sec-urliste">Thema 1</a> die relative Häufigkeit h = H : n — sie ist der Schlüssel zur Wahrscheinlichkeit — und aus <a href="../../01-groessen-und-rechnen/03-brueche-und-dezimalzahlen/index.html#sec-umwandeln">dem ersten Kapitel</a> die Umwandlung Bruch ↔ Dezimalzahl ↔ Prozent.</p>
+  </section>
+
+  <!-- 1. Ergebnis und Ereignis -->
+  <section class="card" id="sec-ergebnis">
+    <h2>1. Ergebnis und Ereignis</h2>
+    <p>Ein <strong>Zufallsexperiment</strong> ist ein Vorgang mit mehreren möglichen Ausgängen, von denen keiner vorhersagbar ist. Ein einzelner Ausgang heißt <strong>Ergebnis</strong>, eine Zusammenfassung mehrerer Ergebnisse heißt <strong>Ereignis</strong>.</p>
+    <div class="definition-box">
+      <span class="box-label">Ergebnismenge und Ereignis</span>
+      Die <strong>Ergebnismenge Ω</strong> („Omega“) enthält <em>alle</em> möglichen Ergebnisse.<br>
+      Ein <strong>Ereignis E</strong> ist eine Teilmenge davon: E ⊆ Ω.<br>
+      <span class="progress-note">Klicke unten die Ergebnisse an, die zu E gehören sollen.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Zufallsexperiment:
+          <select id="er-exp" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="wuerfel">ein Würfel</option>
+            <option value="muenze2">eine Münze zweimal</option>
+            <option value="rad8">Glücksrad mit 8 Feldern</option>
+          </select>
+        </label>
+        <button type="button" class="btn" id="er-alle">alle auswählen</button>
+        <button type="button" class="btn" id="er-keine">keins auswählen</button>
+      </div>
+      <div class="zu-chips" id="er-chips"></div>
+      <div class="zu-bilanz" id="er-bilanz"></div>
+      <div id="er-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Zwei Sonderfälle</span>
+      Das <strong>unmögliche Ereignis</strong> enthält kein Ergebnis: P = 0.<br>
+      Das <strong>sichere Ereignis</strong> ist ganz Ω: P = 1.<br>
+      Jede Wahrscheinlichkeit liegt dazwischen: <strong>0 ≤ P(E) ≤ 1</strong>.
+    </div>
+    <div class="quiz" id="quiz-ergebnis"></div>
+  </section>
+
+  <!-- 2. Die Laplace-Wahrscheinlichkeit -->
+  <section class="card" id="sec-laplace">
+    <h2>2. Abzählen: die Laplace-Wahrscheinlichkeit</h2>
+    <p>Sind alle Ergebnisse <strong>gleich wahrscheinlich</strong>, so genügt Abzählen. Man nennt solche Experimente <strong>Laplace-Experimente</strong>.</p>
+    <div class="definition-box">
+      <span class="box-label">Laplace-Wahrscheinlichkeit</span>
+      <strong>P(E) = Anzahl der günstigen Ergebnisse : Anzahl aller Ergebnisse = |E| : |Ω|</strong><br>
+      <span class="progress-note">Diese Formel gilt <em>nur</em>, wenn wirklich alle Ergebnisse gleich wahrscheinlich sind.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>rote Kugeln: <input type="range" id="lp-rot" min="1" max="12" step="1" value="3" style="vertical-align:middle;width:9rem"> <span id="lp-rot-anzeige" style="font-weight:800;color:#b3261e"></span></label>
+        <label>blaue Kugeln: <input type="range" id="lp-blau" min="1" max="12" step="1" value="5" style="vertical-align:middle;width:9rem"> <span id="lp-blau-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+      </div>
+      <div class="geo-wrap" id="lp-mount"></div>
+      <div class="zu-karten" id="lp-karten"></div>
+      <div class="zu-bilanz" id="lp-bilanz"></div>
+      <div id="lp-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — günstig durch <em>alle</em>, nicht günstig durch ungünstig</span>
+      Bei 3 roten und 5 blauen Kugeln ist P(rot) = 3 : <strong>8</strong>, nicht 3 : 5. Im Nenner steht die Gesamtzahl aller Kugeln. Ein Anteil ist nie größer als 1 — das ist die schnellste Probe.
+    </div>
+    <div class="quiz" id="quiz-laplace"></div>
+  </section>
+
+  <!-- 3. Das empirische Gesetz der großen Zahlen -->
+  <section class="card" id="sec-grosse-zahlen">
+    <h2>3. Warum das funktioniert: das Gesetz der großen Zahlen</h2>
+    <p>Die Wahrscheinlichkeit ist keine Vorhersage für den einzelnen Versuch. Sie ist der Wert, bei dem sich die <a href="../01-daten-und-haeufigkeiten/index.html#sec-urliste">relative Häufigkeit</a> einpendelt, wenn man das Experiment sehr oft wiederholt. Würfle unten selbst und beobachte die blaue Kurve.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Ereignis:
+          <select id="gz-ereignis" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="sechs">eine 6</option>
+            <option value="gerade">eine gerade Zahl</option>
+            <option value="gross">eine Zahl größer als 4</option>
+          </select>
+        </label>
+        <button type="button" class="btn" id="gz-plus1">+1 Wurf</button>
+        <button type="button" class="btn" id="gz-plus10">+10</button>
+        <button type="button" class="btn btn-primary" id="gz-plus100">+100</button>
+        <button type="button" class="btn btn-primary" id="gz-plus1000">+1000</button>
+        <button type="button" class="btn" id="gz-reset">zurücksetzen</button>
+      </div>
+      <div class="geo-wrap" id="gz-mount"></div>
+      <div class="zu-karten" id="gz-karten"></div>
+      <div class="zu-bilanz" id="gz-bilanz"></div>
+      <div id="gz-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der Zufall hat kein Gedächtnis</span>
+      Nach fünf Würfen ohne 6 ist die 6 beim sechsten Wurf <em>nicht</em> „fällig“. Der Würfel weiß nichts von den vorigen Würfen; die Wahrscheinlichkeit bleibt bei jedem Wurf ⅙. Was sich ausgleicht, ist nicht die Anzahl, sondern der <strong>Anteil</strong> — und zwar dadurch, dass ein Rückstand von wenigen Treffern auf immer mehr Würfe verteilt wird.
+    </div>
+    <div class="quiz" id="quiz-grosse-zahlen"></div>
+  </section>
+
+  <!-- 4. Das Gegenereignis -->
+  <section class="card" id="sec-gegen">
+    <h2>4. Das Gegenereignis</h2>
+    <p>Zu jedem Ereignis E gehört das <strong>Gegenereignis Ē</strong> — es tritt genau dann ein, wenn E <em>nicht</em> eintritt. Zusammen decken beide ganz Ω ab, ohne sich zu überschneiden.</p>
+    <div class="wissen-box">
+      <span class="box-label">Gegenereignis</span>
+      <strong>P(Ē) = 1 − P(E)</strong> &nbsp;bzw.&nbsp; <strong>P(E) + P(Ē) = 1</strong><br>
+      Oft ist das Gegenereignis viel leichter abzuzählen als das Ereignis selbst — besonders bei Aufgaben mit „mindestens“.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Ereignis E beim Würfel:
+          <select id="ge-ereignis" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="sechs">eine 6</option>
+            <option value="gerade">eine gerade Zahl</option>
+            <option value="mind3">mindestens eine 3</option>
+            <option value="prim">eine Primzahl</option>
+          </select>
+        </label>
+      </div>
+      <div class="zu-chips" id="ge-chips"></div>
+      <div class="zu-balken" id="ge-balken"></div>
+      <div class="zu-skala"><span>0</span><span>½</span><span>1</span></div>
+      <div class="zu-bilanz" id="ge-bilanz"></div>
+      <div id="ge-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-gegen"></div>
+  </section>
+
+  <!-- 5. Wenn Laplace nicht gilt -->
+  <section class="card" id="sec-nichtlaplace">
+    <h2>5. Wenn Abzählen nicht reicht</h2>
+    <p>Ein Glücksrad mit vier Feldern hat vier Ergebnisse — aber nur wenn die Felder <strong>gleich groß</strong> sind, hat jedes die Wahrscheinlichkeit ¼. Sonst entscheidet der <a href="../../02-geometrie/10-kreisberechnungen/index.html#sec-ausschnitt">Mittelpunktswinkel</a>.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Ungleichheit der Felder: <input type="range" id="nl-spreizung" min="0" max="28" step="1" value="0" style="vertical-align:middle;width:12rem"> <span id="nl-spreizung-anzeige" class="term"></span></label>
+      </div>
+      <div class="geo-wrap" id="nl-mount"></div>
+      <table class="zu-tabelle" id="nl-tabelle"></table>
+      <div class="zu-bilanz" id="nl-bilanz"></div>
+      <div id="nl-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — „vier Felder“ heißt nicht „je ¼“</span>
+      Die Laplace-Formel darf man nur anwenden, wenn die Gleichwahrscheinlichkeit begründet ist: durch Symmetrie (fairer Würfel, faire Münze, gleich große Sektoren) oder durch gleichartige Objekte (Kugeln, die sich nur in der Farbe unterscheiden). Bei einer Reißzwecke, einem gezinkten Würfel oder ungleichen Sektoren hilft nur Messen — also die relative Häufigkeit aus vielen Versuchen.
+    </div>
+    <div class="quiz" id="quiz-nichtlaplace"></div>
+  </section>
+
+  <!-- 6. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>6. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../01-daten-und-haeufigkeiten/index.html#sec-urliste">Die relative Häufigkeit</a> — h = H : n ist die <em>gemessene</em> Größe, P die <em>vorhergesagte</em>. Das Gesetz der großen Zahlen verbindet beide: h nähert sich P, je größer n wird.</li>
+      <li><strong>Baut auf:</strong> <a href="../../01-groessen-und-rechnen/03-brueche-und-dezimalzahlen/index.html#sec-anteil">Der Anteil</a> — P(E) = |E| : |Ω| ist ein Anteil und lässt sich als Bruch, Dezimalzahl oder Prozentsatz schreiben. Deshalb gilt immer 0 ≤ P ≤ 1.</li>
+      <li><strong>Baut auf:</strong> <a href="../../02-geometrie/10-kreisberechnungen/index.html#sec-ausschnitt">Der Kreisausschnitt</a> — beim Glücksrad ist P genau der Anteil des Sektors am Vollkreis: P = α : 360°.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../01-daten-und-haeufigkeiten/index.html#sec-diagramme">Im Kreisdiagramm</a> galt α = h · 360°, hier gilt P = α : 360°. Es ist dieselbe Beziehung, einmal vorwärts und einmal rückwärts gelesen.</li>
+      <li><strong>Führt weiter zu:</strong> Mehrstufigen Zufallsexperimenten. Wird zweimal gewürfelt, hat Ω schon 36 Ergebnisse; man zeichnet dann einen Baum und multipliziert entlang der Pfade.</li>
+      <li><strong>Führt weiter zu:</strong> Der bedingten Wahrscheinlichkeit — der Frage, wie sich P(E) ändert, wenn man über den Ausgang schon etwas weiß.</li>
+    </ul>
+  </section>
+
+  <!-- 7. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>7. Formelsammlung</h2>
+    <p>Begriffe, Laplace-Regel, Gegenereignis und die Grenzen des Abzählens mit Zeichnungen, Beispielen und typischen Fehlern auf zwei Seiten — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 8. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>8. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit. Wo gerundet werden soll, steht es in der Aufgabe.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 3 Daten und Zufall</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
