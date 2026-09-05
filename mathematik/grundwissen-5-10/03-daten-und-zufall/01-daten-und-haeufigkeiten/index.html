@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daten und Häufigkeiten</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">3 Daten und Zufall</a><span class="sep">/</span>
+  1 Daten und Häufigkeiten
+</nav>
+<header class="page-header">
+  <h1>Daten und Häufigkeiten</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Eine Umfrage liefert erst einmal nur eine lange, ungeordnete Zahlenreihe. Aus ihr wird eine <strong>Aussage</strong>, indem man <em>zählt</em>, <em>ordnet</em> und <em>zusammenfasst</em>. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>aus einer Urliste eine <span class="term">Häufigkeitstabelle</span> machen und <span class="term">absolute</span> von <span class="term">relativer</span> Häufigkeit unterscheiden</li>
+      <li>dieselben Daten als <span class="term">Säulendiagramm</span> und als <span class="term">Kreisdiagramm</span> darstellen</li>
+      <li><span class="term">arithmetisches Mittel</span>, <span class="term">Median</span> und <span class="term">Modalwert</span> berechnen — und begründen, wann welcher passt</li>
+      <li>erklären, warum ein <span class="term">Ausreißer</span> das arithmetische Mittel beliebig weit verschiebt, den Median aber höchstens auf den nächsten Datenwert</li>
+      <li>ein Diagramm daraufhin prüfen, ob es ehrlich gezeichnet ist</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../../01-groessen-und-rechnen/03-brueche-und-dezimalzahlen/index.html#sec-umwandeln">Thema 3 des ersten Kapitels</a> die Umwandlung Bruch ↔ Dezimalzahl ↔ Prozent — genau das ist die relative Häufigkeit — und aus <a href="../../02-geometrie/10-kreisberechnungen/index.html#sec-ausschnitt">Kreisberechnungen</a> den Kreisausschnitt für das Kreisdiagramm.</p>
+  </section>
+
+  <!-- 1. Von der Urliste zur Tabelle -->
+  <section class="card" id="sec-urliste">
+    <h2>1. Von der Urliste zur Häufigkeitstabelle</h2>
+    <p>Die <strong>Urliste</strong> ist die Rohform: alle Werte in der Reihenfolge, in der sie erhoben wurden. Sie sagt für sich genommen wenig. Erst das <strong>Zählen</strong> macht daraus eine Übersicht.</p>
+    <div class="definition-box">
+      <span class="box-label">Absolute und relative Häufigkeit</span>
+      Die <strong>absolute Häufigkeit H(x)</strong> ist die Anzahl der Werte, die gleich x sind.<br>
+      Die <strong>relative Häufigkeit h(x) = H(x) : n</strong> ist ihr <em>Anteil</em> an allen n Werten.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Anzahl der Werte n = <input type="range" id="ur-n" min="10" max="40" step="1" value="24" style="vertical-align:middle;width:10rem"> <span id="ur-n-anzeige" class="term"></span></label>
+        <button type="button" class="btn" id="ur-neu">🎲 Neue Erhebung</button>
+      </div>
+      <p class="progress-note">Erhoben wird die gewürfelte Augenzahl bei n Würfen.</p>
+      <div class="da-urliste" id="ur-liste"></div>
+      <table class="da-tabelle" id="ur-tabelle"></table>
+      <div class="da-bilanz" id="ur-bilanz"></div>
+      <div id="ur-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Zwei Proben, die immer stimmen müssen</span>
+      Die absoluten Häufigkeiten ergeben zusammen <strong>n</strong>.<br>
+      Die relativen Häufigkeiten ergeben zusammen <strong>1</strong> (also 100 %).
+    </div>
+    <div class="quiz" id="quiz-urliste"></div>
+  </section>
+
+  <!-- 2. Diagramme -->
+  <section class="card" id="sec-diagramme">
+    <h2>2. Säulendiagramm und Kreisdiagramm</h2>
+    <p>Beide Diagramme zeigen dieselben Daten, beantworten aber verschiedene Fragen. Das <strong>Säulendiagramm</strong> vergleicht die Kategorien <em>untereinander</em>. Das <strong>Kreisdiagramm</strong> zeigt, welchen <em>Anteil am Ganzen</em> jede Kategorie hat.</p>
+    <div class="wissen-box">
+      <span class="box-label">Vom Anteil zum Mittelpunktswinkel</span>
+      Der volle Kreis entspricht allen n Werten, also 360°. Eine Kategorie mit der relativen Häufigkeit h bekommt den Winkel<br>
+      <strong>α = h · 360°</strong> &nbsp;bzw.&nbsp; <strong>α = (H : n) · 360°</strong>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Darstellung:
+          <select id="di-art" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="saeule">Säulendiagramm</option>
+            <option value="kreis">Kreisdiagramm</option>
+          </select>
+        </label>
+        <button type="button" class="btn" id="di-neu">🎲 Neue Umfrage</button>
+      </div>
+      <div class="geo-wrap" id="di-mount"></div>
+      <div class="da-legende" id="di-legende"></div>
+      <table class="da-tabelle" id="di-tabelle"></table>
+      <div class="da-bilanz" id="di-bilanz"></div>
+      <div id="di-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — 360°, nicht 100</span>
+      Der Winkel entsteht aus dem <em>Anteil</em>, nicht aus der Anzahl. Wer H direkt als Gradzahl einträgt, zeichnet Unsinn. Und die Winkel müssen sich am Ende zu 360° ergänzen — das ist die Probe.
+    </div>
+    <div class="quiz" id="quiz-diagramme"></div>
+  </section>
+
+  <!-- 3. Mittelwert, Median, Modalwert -->
+  <section class="card" id="sec-mittelwerte">
+    <h2>3. Drei Arten von „Durchschnitt“</h2>
+    <p>„Der Durchschnitt“ ist nicht eindeutig. Es gibt drei gebräuchliche Kennwerte, und sie können weit auseinanderliegen.</p>
+    <div class="definition-box">
+      <span class="box-label">Die drei Kennwerte</span>
+      <strong>Arithmetisches Mittel x̄</strong> = Summe aller Werte : Anzahl der Werte<br>
+      <strong>Median (Zentralwert)</strong> = der mittlere Wert der <em>der Größe nach geordneten</em> Liste; bei gerader Anzahl das Mittel der beiden mittleren<br>
+      <strong>Modalwert</strong> = der Wert, der am häufigsten vorkommt
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>ein Wert wird verschoben: <input type="range" id="mw-ausreisser" min="1" max="60" step="1" value="9" style="vertical-align:middle;width:12rem"> <span id="mw-ausreisser-anzeige" class="da-mittel-text"></span></label>
+        <button type="button" class="btn" id="mw-neu">🎲 Neue Daten</button>
+      </div>
+      <div class="geo-wrap" id="mw-mount"></div>
+      <div class="da-kennwerte" id="mw-karten"></div>
+      <div class="da-bilanz" id="mw-bilanz"></div>
+      <div id="mw-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der Median braucht die geordnete Liste</span>
+      Der mittlere Wert der <em>Urliste</em> ist irgendein Wert und bedeutet gar nichts. Erst <a href="../../01-groessen-und-rechnen/06-erweiterung-des-zahlenbereichs/index.html#sec-ordnen">der Größe nach ordnen</a>, dann die Mitte nehmen.
+    </div>
+    <div class="quiz" id="quiz-mittelwerte"></div>
+  </section>
+
+  <!-- 4. Die Waage -->
+  <section class="card" id="sec-waage">
+    <h2>4. Warum das Mittel „ausgleicht“</h2>
+    <p>Das arithmetische Mittel ist der Punkt, an dem sich die Abweichungen nach oben und nach unten genau aufheben. Legt man die Werte als Gewichte auf einen Balken, so ist x̄ der Punkt, an dem der Balken im Gleichgewicht ist.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Drehpunkt: <input type="range" id="wa-punkt" min="0" max="100" step="1" value="50" style="vertical-align:middle;width:12rem"> <span id="wa-punkt-anzeige" class="term"></span></label>
+        <button type="button" class="btn" id="wa-neu">🎲 Neue Daten</button>
+        <button type="button" class="btn btn-primary" id="wa-ans-mittel">auf x̄ setzen</button>
+      </div>
+      <div class="geo-wrap" id="wa-mount"></div>
+      <div class="da-bilanz" id="wa-bilanz"></div>
+      <div id="wa-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Die Ausgleichseigenschaft</span>
+      Für das arithmetische Mittel gilt immer <strong>(x₁ − x̄) + (x₂ − x̄) + … + (x<sub>n</sub> − x̄) = 0</strong>.<br>
+      Genau deshalb zieht ein einzelner sehr großer Wert das Mittel spürbar zu sich — er muss von allen anderen gemeinsam ausgeglichen werden.
+    </div>
+    <div class="quiz" id="quiz-waage"></div>
+  </section>
+
+  <!-- 5. Diagramme ehrlich lesen -->
+  <section class="card" id="sec-taeuschung">
+    <h2>5. Diagramme ehrlich lesen</h2>
+    <p>Ein Säulendiagramm wirkt sachlich — aber der Eindruck hängt davon ab, wo die senkrechte Achse beginnt. Verschiebe den Achsenanfang und beobachte, wie sich derselbe Datensatz verändert.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Achse beginnt bei: <input type="range" id="ma-start" min="0" max="90" step="1" value="0" style="vertical-align:middle;width:12rem"> <span id="ma-start-anzeige" class="da-spanne-text"></span></label>
+      </div>
+      <div class="da-doppel">
+        <figure><div class="geo-wrap" id="ma-mount-a"></div><figcaption>links: Achse ab 0</figcaption></figure>
+        <figure><div class="geo-wrap" id="ma-mount-b"></div><figcaption id="ma-caption-b">rechts: Achse ab dem eingestellten Wert</figcaption></figure>
+      </div>
+      <div class="da-bilanz" id="ma-bilanz"></div>
+      <div id="ma-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Zahlen bleiben, der Eindruck nicht</span>
+      Beide Diagramme zeigen exakt dieselben Werte. Nur das <em>Verhältnis der Säulenhöhen</em> stimmt rechts nicht mehr mit dem Verhältnis der Zahlen überein. Ein Säulendiagramm ist deshalb nur dann ehrlich, wenn die Achse bei 0 beginnt.
+    </div>
+    <div class="quiz" id="quiz-taeuschung"></div>
+  </section>
+
+  <!-- 6. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>6. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../../01-groessen-und-rechnen/03-brueche-und-dezimalzahlen/index.html#sec-anteil">Der Anteil</a> — die relative Häufigkeit <em>ist</em> ein Anteil. H : n als Bruch, als Dezimalzahl und als Prozentsatz sind drei Schreibweisen desselben Werts.</li>
+      <li><strong>Baut auf:</strong> <a href="../../01-groessen-und-rechnen/05-multiplizieren-dividieren/index.html#sec-division">Die Division</a> — sowohl h = H : n als auch x̄ = Summe : Anzahl sind Divisionen. Beim Mittelwert wird durch n geteilt, nicht durch n − 1.</li>
+      <li><strong>Baut auf:</strong> <a href="../../02-geometrie/10-kreisberechnungen/index.html#sec-ausschnitt">Der Kreisausschnitt</a> — ein Sektor des Kreisdiagramms ist genau ein Kreisausschnitt mit dem Mittelpunktswinkel α = h · 360°.</li>
+      <li><strong>Baut auf:</strong> <a href="../../01-groessen-und-rechnen/01-natuerliche-zahlen-und-groessen/index.html#sec-runden">Runden</a> — Mittelwerte gehen selten glatt auf. Gerundet wird erst am Schluss, nie zwischendurch.</li>
+      <li><strong>Gleiche Struktur:</strong> Der Mittelwert ist ein <em>gewichteter</em> Wert: Aus der Häufigkeitstabelle rechnet man x̄ = (x₁ · H₁ + x₂ · H₂ + …) : n. Dieselbe Struktur begegnet dir beim Erwartungswert.</li>
+      <li><strong>Führt weiter zu:</strong> Der Wahrscheinlichkeit. Wiederholt man ein Zufallsexperiment sehr oft, so pendeln sich die relativen Häufigkeiten bei festen Werten ein — diese Werte nennt man Wahrscheinlichkeiten.</li>
+      <li><strong>Führt weiter zu:</strong> Streuungsmaßen. Die Spannweite ist das gröbste davon; später kommen Quartile, Boxplot und Standardabweichung dazu.</li>
+    </ul>
+  </section>
+
+  <!-- 7. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>7. Formelsammlung</h2>
+    <p>Häufigkeiten, Diagramme und Kennwerte mit Zeichnungen, Beispielen und typischen Fehlern auf zwei Seiten — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 8. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>8. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit. Wo gerundet werden soll, steht es in der Aufgabe.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 3 Daten und Zufall</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
