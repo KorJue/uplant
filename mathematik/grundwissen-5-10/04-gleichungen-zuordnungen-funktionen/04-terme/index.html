@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terme</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">4 Gleichungen, Zuordnungen und Funktionen</a><span class="sep">/</span>
+  4 Terme
+</nav>
+<header class="page-header">
+  <h1>Terme</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Ein <strong>Term</strong> ist ein Rechenausdruck — mehr nicht. Neu ist nur, dass darin Buchstaben stehen dürfen. Damit lässt sich eine ganze Familie von Rechnungen auf einmal aufschreiben: <strong>2 · x + 3</strong> steht für 5, 7, 9 und für unendlich viele weitere Zahlen zugleich. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>einen <span class="term">Termwert</span> berechnen, indem du für die Variable eine Zahl einsetzt</li>
+      <li>die <span class="term">Struktur</span> eines Terms erkennen — ist er eine Summe, ein Produkt oder eine Potenz?</li>
+      <li><span class="term">gleichartige Terme zusammenfassen</span> und begründen, warum 3x + 2 <em>nicht</em> 5x ergibt</li>
+      <li><span class="term">ausmultiplizieren</span> und <span class="term">ausklammern</span> — beides ist dasselbe Gesetz, nur in zwei Richtungen</li>
+      <li>die drei <span class="term">binomischen Formeln</span> anwenden und am Flächenbild begründen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../../01-groessen-und-rechnen/02-rechnen-mit-natuerlichen-zahlen/index.html#sec-rangfolge">Kapitel 1</a> die Reihenfolge der Rechenoperationen und aus <a href="../../01-groessen-und-rechnen/06-erweiterung-des-zahlenbereichs/index.html#sec-vorzeichen">der Zahlbereichserweiterung</a> die Vorzeichenregeln — ohne sie geht beim Ausmultiplizieren jedes Minuszeichen verloren.</p>
+  </section>
+
+  <!-- 1. Term und Termwert -->
+  <section class="card" id="sec-term">
+    <h2>1. Term, Variable und Termwert</h2>
+    <p>Ein Term enthält Zahlen, Rechenzeichen, Klammern — und oft eine <strong>Variable</strong>. Solange man nicht weiß, welche Zahl die Variable meint, ist der Term nur eine <em>Rechenvorschrift</em>. Setzt man eine Zahl ein, wird daraus ein <strong>Termwert</strong>.</p>
+    <div class="definition-box">
+      <span class="box-label">Term und Termwert</span>
+      Ein <strong>Term</strong> ist ein sinnvoller Rechenausdruck. Er darf Variablen enthalten, aber <em>kein</em> Gleichheitszeichen.<br>
+      Der <strong>Termwert</strong> entsteht, wenn man für jede Variable eine Zahl einsetzt und ausrechnet.<br>
+      <span class="progress-note">Beim Einsetzen wird die Variable durch die Zahl <strong>in Klammern</strong> ersetzt — sonst geht bei negativen Zahlen das Vorzeichen verloren: aus −x wird für x = −3 nicht „−−3“, sondern −(−3) = 3.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Term:
+          <select id="te-term" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="0">2x + 3</option>
+            <option value="1">x² − 4</option>
+            <option value="2">3 · (x + 2)</option>
+            <option value="3">10 − 2x</option>
+            <option value="4">x² − 2x + 1</option>
+          </select>
+        </label>
+        <label>Einsetzen: <input type="range" id="te-x" min="-5" max="6" step="1" value="3" style="vertical-align:middle;width:9rem"> <span id="te-x-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+      </div>
+      <div class="tm-term" id="te-anzeige"></div>
+      <div class="tm-schritte" id="te-schritte"></div>
+      <table class="tm-tabelle" id="te-tabelle"></table>
+      <div class="tm-rechnung" id="te-bilanz"></div>
+      <div id="te-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Klammer beim Einsetzen</span>
+      Für x = −2 ist <strong>x²</strong> gleich <span class="nw">(−2)² = 4</span>, nicht −4. Und <strong>10 − 2x</strong> wird zu <span class="nw">10 − 2 · (−2) = 14</span>, nicht zu 6. Schreibe die eingesetzte Zahl <strong>immer in Klammern</strong> — dann kann nichts schiefgehen.
+    </div>
+    <div class="quiz" id="quiz-term"></div>
+  </section>
+
+  <!-- 2. Termstruktur -->
+  <section class="card" id="sec-struktur">
+    <h2>2. Die Struktur eines Terms</h2>
+    <p>Zwei Terme können aus denselben Zeichen bestehen und trotzdem völlig verschieden sein: <strong>2 · x + 3</strong> und <strong>2 · (x + 3)</strong>. Was sie unterscheidet, ist der <strong>zuletzt ausgeführte Rechenschritt</strong> — und danach bekommt der Term seinen Namen.</p>
+    <div class="definition-box">
+      <span class="box-label">Wie ein Term heißt</span>
+      Der Term heißt so, wie sein <strong>letzter</strong> Rechenschritt lautet:<br>
+      <strong>2x + 3</strong> → zuletzt wird addiert → eine <strong>Summe</strong><br>
+      <strong>2 · (x + 3)</strong> → zuletzt wird multipliziert → ein <strong>Produkt</strong><br>
+      <strong>(x + 3)²</strong> → zuletzt wird potenziert → eine <strong>Potenz</strong><br>
+      <span class="progress-note">Die Reihenfolge ist immer dieselbe: Klammern zuerst, dann Potenzen, dann Punkt vor Strich.</span>
+    </div>
+    <div class="widget">
+      <div class="tm-schalter" id="st-schalter"></div>
+      <div class="tm-term" id="st-anzeige"></div>
+      <div class="geo-wrap" id="st-mount"></div>
+      <div class="tm-karten" id="st-karten"></div>
+      <div class="tm-rechnung" id="st-bilanz"></div>
+      <div id="st-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Wozu das gut ist</span>
+      Die Struktur entscheidet, welche Regel man anwenden darf. Ein <strong>Produkt</strong> darf man ausmultiplizieren, eine <strong>Summe</strong> nicht. Und beim Kürzen später gilt: Gekürzt wird nur, was <em>Faktor</em> ist — deshalb muss man wissen, ob ein Ausdruck ein Produkt ist oder eine Summe.
+    </div>
+    <div class="quiz" id="quiz-struktur"></div>
+  </section>
+
+  <!-- 3. Zusammenfassen -->
+  <section class="card" id="sec-zusammenfassen">
+    <h2>3. Gleichartige Terme zusammenfassen</h2>
+    <p>3 Äpfel und 2 Äpfel sind 5 Äpfel. 3 Äpfel und 2 Birnen sind — 3 Äpfel und 2 Birnen. Genauso ist es mit Termen: Zusammenfassen darf man nur, was <strong>gleichartig</strong> ist.</p>
+    <div class="definition-box">
+      <span class="box-label">Gleichartige Terme</span>
+      Zwei Summanden heißen <strong>gleichartig</strong>, wenn sie in <em>allen</em> Variablen und deren Hochzahlen übereinstimmen. Nur die Zahl davor — der <strong>Koeffizient</strong> — darf verschieden sein.<br>
+      <strong>3x + 5x = 8x</strong> &nbsp;·&nbsp; <strong>3x² + 5x</strong> bleibt stehen &nbsp;·&nbsp; <strong>3x + 2</strong> bleibt stehen<br>
+      <span class="progress-note">Zusammengefasst wird, indem man die Koeffizienten addiert und die Variable stehen lässt: 3x + 5x = (3 + 5) · x.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>x²-Terme: <input type="range" id="zf-q" min="0" max="3" step="1" value="1" style="vertical-align:middle;width:6rem"> <span id="zf-q-anzeige" style="font-weight:800;color:#157347"></span></label>
+        <label>x-Terme: <input type="range" id="zf-x" min="0" max="5" step="1" value="3" style="vertical-align:middle;width:6rem"> <span id="zf-x-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+        <label>Zahlen: <input type="range" id="zf-e" min="0" max="6" step="1" value="4" style="vertical-align:middle;width:6rem"> <span id="zf-e-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>abgezogene x: <input type="range" id="zf-w" min="0" max="4" step="1" value="2" style="vertical-align:middle;width:6rem"> <span id="zf-w-anzeige" style="font-weight:800;color:#b3261e"></span></label>
+      </div>
+      <div class="tm-term" id="zf-anzeige"></div>
+      <div class="geo-wrap" id="zf-mount"></div>
+      <div class="tm-legende">
+        <span><i style="background:#157347"></i> x² · eine Fläche</span>
+        <span><i style="background:#6d28d9"></i> x · ein Streifen</span>
+        <span><i style="background:#1d4ed8"></i> 1 · ein Kästchen</span>
+        <span>gestrichelt: wird abgezogen</span>
+      </div>
+      <div class="tm-schritte" id="zf-schritte"></div>
+      <div class="tm-rechnung" id="zf-bilanz"></div>
+      <div id="zf-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — x und x² sind nicht gleichartig</span>
+      <strong>3x + 2x² ist nicht 5x³</strong> und auch nicht 5x². Die Kacheln zeigen warum: Ein Streifen der Länge x und ein Quadrat der Seitenlänge x haben verschiedene Formen — man kann sie nicht zu einer Sorte zusammenschieben. Probe mit x = 2: 3 · 2 + 2 · 4 = 14, aber 5 · 4 = 20.
+    </div>
+    <div class="quiz" id="quiz-zusammenfassen"></div>
+  </section>
+
+  <!-- 4. Ausmultiplizieren und Ausklammern -->
+  <section class="card" id="sec-ausmultiplizieren">
+    <h2>4. Ausmultiplizieren und Ausklammern</h2>
+    <p>Ein Rechteck mit den Seiten <strong>a</strong> und <strong>b + c</strong> lässt sich auf zwei Arten messen: einmal als Ganzes, einmal als zwei Teilrechtecke. Beide Male kommt derselbe Flächeninhalt heraus — das ist das <strong>Distributivgesetz</strong>.</p>
+    <div class="definition-box">
+      <span class="box-label">Distributivgesetz</span>
+      <strong>a · (b + c) = a · b + a · c</strong><br>
+      Von links nach rechts gelesen heißt das <strong>Ausmultiplizieren</strong>, von rechts nach links <strong>Ausklammern</strong>.<br>
+      <span class="progress-note">Beim Ausmultiplizieren wird <em>jeder</em> Summand in der Klammer mit dem Faktor multipliziert — auch der letzte.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Richtung:
+          <select id="am-richtung" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="aus">ausmultiplizieren: a · (b + c)</option>
+            <option value="ein">ausklammern: a·b + a·c</option>
+          </select>
+        </label>
+        <label>a: <input type="range" id="am-a" min="1" max="6" step="1" value="3" style="vertical-align:middle;width:6rem"> <span id="am-a-anzeige" style="font-weight:800;color:#b3650a"></span></label>
+        <label>b: <input type="range" id="am-b" min="1" max="7" step="1" value="4" style="vertical-align:middle;width:6rem"> <span id="am-b-anzeige" style="font-weight:800;color:#157347"></span></label>
+        <label>c: <input type="range" id="am-c" min="1" max="7" step="1" value="2" style="vertical-align:middle;width:6rem"> <span id="am-c-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+      </div>
+      <div class="tm-term" id="am-anzeige"></div>
+      <div class="geo-wrap" id="am-mount"></div>
+      <div class="tm-schritte" id="am-schritte"></div>
+      <div class="tm-rechnung" id="am-bilanz"></div>
+      <div id="am-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — das Minus vor der Klammer</span>
+      Steht ein Minuszeichen vor der Klammer, so kehren sich <strong>alle</strong> Vorzeichen darin um: <span class="nw">5 − (x − 3) = 5 − x + 3 = 8 − x</span>. Wer nur das erste Zeichen dreht, bekommt <span class="nw">5 − x − 3 = 2 − x</span> — und liegt um 6 daneben. Merke: Vor der Klammer steht in Wahrheit der Faktor <strong>(−1)</strong>.
+    </div>
+    <div class="quiz" id="quiz-ausmultiplizieren"></div>
+  </section>
+
+  <!-- 5. Binomische Formeln -->
+  <section class="card" id="sec-binomisch">
+    <h2>5. Die binomischen Formeln</h2>
+    <p>Was ist <strong>(a + b)²</strong>? Die häufigste Antwort — a² + b² — ist falsch, und das Flächenbild zeigt sofort, was fehlt: zwei Rechtecke der Größe a · b.</p>
+    <div class="definition-box">
+      <span class="box-label">Die drei binomischen Formeln</span>
+      <strong>1.</strong> (a + b)² = a² + 2ab + b²<br>
+      <strong>2.</strong> (a − b)² = a² − 2ab + b²<br>
+      <strong>3.</strong> (a + b) · (a − b) = a² − b²<br>
+      <span class="progress-note">Es sind keine neuen Gesetze: Alle drei entstehen durch Ausmultiplizieren nach Abschnitt 4. Sie lohnen sich nur, weil man sie auch <em>rückwärts</em> lesen kann.</span>
+    </div>
+    <div class="widget">
+      <div class="tm-schalter" id="bi-schalter"></div>
+      <div class="btn-row">
+        <label>a: <input type="range" id="bi-a" min="2" max="9" step="1" value="5" style="vertical-align:middle;width:7rem"> <span id="bi-a-anzeige" style="font-weight:800;color:#157347"></span></label>
+        <label>b: <input type="range" id="bi-b" min="1" max="6" step="1" value="3" style="vertical-align:middle;width:7rem"> <span id="bi-b-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+      </div>
+      <div class="tm-term" id="bi-anzeige"></div>
+      <div class="geo-wrap" id="bi-mount"></div>
+      <div class="tm-karten" id="bi-karten"></div>
+      <div class="tm-rechnung" id="bi-bilanz"></div>
+      <div id="bi-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Rückwärts gelesen: das Erkennen</span>
+      Steht irgendwo <strong>x² + 10x + 25</strong>, so lohnt der Blick: Ist die letzte Zahl eine Quadratzahl (25 = 5²) und der mittlere Koeffizient ihr Doppeltes (2 · 5 = 10)? Dann ist der ganze Ausdruck <strong>(x + 5)²</strong>. Diese Rückrichtung braucht man später bei der quadratischen Ergänzung und bei der pq-Formel.
+    </div>
+    <div class="quiz" id="quiz-binomisch"></div>
+  </section>
+
+  <!-- 6. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>6. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../../01-groessen-und-rechnen/02-rechnen-mit-natuerlichen-zahlen/index.html#sec-rangfolge">Die Reihenfolge der Rechenoperationen</a> — sie legt fest, welcher Rechenschritt der letzte ist, und damit, wie ein Term heißt.</li>
+      <li><strong>Baut auf:</strong> <a href="../../01-groessen-und-rechnen/06-erweiterung-des-zahlenbereichs/index.html#sec-vorzeichen">Die Vorzeichenregeln</a> — beim Ausmultiplizieren mit negativen Zahlen entscheidet sich an ihnen alles. Ein Minus vor der Klammer ist nichts anderes als der Faktor (−1).</li>
+      <li><strong>Baut auf:</strong> <a href="../../02-geometrie/02-flaeche-umfang/index.html#sec-rechteck">Der Flächeninhalt des Rechtecks</a> — das Distributivgesetz und alle drei binomischen Formeln sind Aussagen über zerlegte Rechtecke. Wer das Bild kennt, muss die Formeln nicht auswendig lernen.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../03-gleichungen/index.html#sec-loesen">Gleichungen lösen</a> — Zusammenfassen und Ausmultiplizieren sind dort die Vorarbeit. Ohne sie lässt sich <span class="nw">3 · (x + 4) = 2x + 19</span> nicht sortieren.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../02-prozent-und-zinsrechnung/index.html#sec-veraenderung">Der Wachstumsfaktor</a> — dass G + p · G : 100 dasselbe ist wie G · (1 + p : 100), ist genau das Ausklammern aus Abschnitt 4.</li>
+      <li><strong>Führt weiter zu:</strong> Den <strong>linearen Funktionen</strong> — der Funktionsterm m · x + b ist ein Term, und der Graph zeigt seine Werte auf einen Blick.</li>
+      <li><strong>Führt weiter zu:</strong> Den <strong>quadratischen Gleichungen</strong> — die pq-Formel entsteht durch quadratische Ergänzung, also durch rückwärts gelesene erste binomische Formel.</li>
+      <li><strong>Führt weiter zu:</strong> Den <strong>Potenzen</strong> — dass x · x = x² ist und x² · x³ = x⁵, sind die Rechenregeln, mit denen man Terme höheren Grades zusammenfasst.</li>
+    </ul>
+  </section>
+
+  <!-- 7. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>7. Formelsammlung</h2>
+    <p>Termbegriffe, das Erkennen der Termstruktur, die Regel zum Zusammenfassen, das Distributivgesetz mit Flächenbild und alle drei binomischen Formeln samt Herleitung — auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 8. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>8. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gesucht ist jeweils eine <strong>Zahl</strong>. Alle Aufgaben auf dieser Seite haben ganzzahlige Lösungen; negative Zahlen schreibst du mit einem Minuszeichen davor.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 4 Gleichungen, Zuordnungen und Funktionen</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
