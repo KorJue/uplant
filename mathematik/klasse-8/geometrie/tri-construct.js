@@ -7,9 +7,9 @@
 // sie tatsächlich entstanden ist. Daraus ergibt sich beides — die Prüfung ("was fehlt noch?") und die
 // Darstellung (fertige Hilfskreise und ihre Schnittpunkte treten grau zurück).
 
-import * as GC from "./geo-core.js?v=21";
-import * as GS from "./geo-svg.js?v=21";
-import { lineThroughBoth, sameRadius, twoArcIntersections } from "./check-helpers.js?v=21";
+import * as GC from "./geo-core.js?v=22";
+import * as GS from "./geo-svg.js?v=22";
+import { lineThroughBoth, sameRadius, twoArcIntersections } from "./check-helpers.js?v=22";
 
 // Klick-/Prüftoleranz für "dieser Punkt ist gemeint" (SVG-Einheiten). Per Finger wird ungenauer
 // getroffen als mit der Maus, deshalb dort ein größerer Radius.
@@ -33,18 +33,77 @@ export function circlesAt(tool, p) {
     .sort((a, b) => GC.dist(a.center, p) - GC.dist(b.center, p));
 }
 
+// Wie gut passen die Radien mehrerer Kreise zusammen? 0 = genau gleich.
+function radienAbweichung(...kreise) {
+  const r = kreise.map((c) => c.radius);
+  return (Math.max(...r) - Math.min(...r)) / Math.max(...r);
+}
+
 // Die Schnittpunkte eines gleich großen Kreispaares um P und Q, sobald beide gezeichnet sind — das
 // sind die Punkte, auf die die Konstruktion als Nächstes hinausläuft. Nur solche Punkte werden als
 // Kreuz markiert; die Kreuzungen beliebiger anderer Kreise sind bedeutungslos.
+//
+// Genommen wird das Paar mit den ÄHNLICHSTEN Radien, nicht das erstbeste. Die
+// Toleranz von sameRadius ist mit 8 % großzügig, und im Verlauf der
+// Konstruktion liegen Kreise mehrerer Seiten gleichzeitig vor. Das erstbeste
+// Paar kann dann eines aus einer anderen Teilkonstruktion sein — das Kreuz
+// stünde ein paar Einheiten neben der Stelle, auf die die Zeichnung wirklich
+// hinausläuft, und der Klick würde genau dorthin einrasten.
 export function pairPoints(tool, P, Q) {
+  let beste = null;
   for (const cP of circlesAt(tool, P)) {
     for (const cQ of circlesAt(tool, Q)) {
       if (cP === cQ || !sameRadius(cP, cQ)) continue;
       const inter = twoArcIntersections(P, Q, cP, cQ);
-      if (inter.length === 2) return inter;
+      if (inter.length !== 2) continue;
+      const abweichung = radienAbweichung(cP, cQ);
+      if (!beste || abweichung < beste.abweichung) beste = { inter, abweichung };
     }
   }
-  return [];
+  return beste ? beste.inter : [];
+}
+
+// Von mehreren passenden Kreiskombinationen die stimmigste nehmen.
+//
+// sameRadius lässt bewusst 8 % Unterschied durch — von Hand geklickt wird der
+// Radius nie exakt getroffen. Am Ende der Konstruktion liegen aber die Kreise
+// aller drei Teilkonstruktionen gleichzeitig vor, und dann passt zu einem Kreis
+// oft auch einer aus einer *anderen* Teilkonstruktion noch innerhalb dieser
+// 8 %. Weil twoArcIntersections mit dem gemittelten Radius rechnet, liegen die
+// Schnittpunkte eines solchen Fehlpaares trotzdem exakt auf der gesuchten
+// Geraden — die Kombination wird also angenommen. Wer dann die erste nimmt,
+// färbt den falschen Kreis grau: Der richtige Partner bleibt bunt stehen, und
+// es sieht so aus, als fehlte noch etwas.
+//
+// Dieselbe Überlegung steht schon bei circlesAt für die Mittelpunkte; für die
+// Radien fehlte sie. Bewertet wird deshalb, wie gut die Radien wirklich
+// zusammenpassen, und gewonnen hat die kleinste Abweichung.
+// Welches Kreispaar der Zeichnende wirklich benutzt hat, verrät die Gerade
+// allein nicht: Zwei gleich große Kreise um P und Q schneiden sich IMMER auf
+// der Mittelsenkrechten von PQ — ganz gleich, wie groß sie sind. Liegen am Ende
+// der Konstruktion zufällig zwei Kreise zweier *verschiedener* Seiten dicht
+// beieinander (bei einem Dreieck mit zwei ähnlich langen Seiten passiert das
+// leicht), so passt dieses Fremdpaar ebenso gut. Wer es nimmt, färbt den
+// falschen Kreis grau — der wirklich gezeichnete Partner bleibt bunt stehen,
+// als fehlte noch etwas.
+//
+// Verraten wird das gemeinte Paar von den ANGEKLICKTEN Endpunkten der Geraden:
+// Sie liegen auf den Schnittpunkten genau dieses Paares. Deshalb wird zuerst
+// nach dieser Passung ausgewählt und erst bei Gleichstand danach, wie gut die
+// Radien zusammenpassen.
+function passungZuLinie(line, p1, p2) {
+  return Math.min(
+    GC.dist(line.a, p1) + GC.dist(line.b, p2),
+    GC.dist(line.a, p2) + GC.dist(line.b, p1)
+  );
+}
+export function bester(treffer) {
+  if (!treffer.length) return null;
+  return treffer.reduce((a, b) => {
+    if (b.passung < a.passung - 0.5) return b;
+    if (a.passung < b.passung - 0.5) return a;
+    return b.abweichung < a.abweichung ? b : a;
+  });
 }
 
 // ---------- Teilkonstruktionen suchen ----------
@@ -55,7 +114,8 @@ export function pairPoints(tool, P, Q) {
 
 // Mittelsenkrechte von PQ: zwei gleich große, ausreichend große Kreise um P und Q plus die Gerade
 // durch ihre beiden Schnittpunkte.
-export function findMediatrice(tool, P, Q) {
+export function findMediatriceAlle(tool, P, Q) {
+  const treffer = [];
   for (const cP of circlesAt(tool, P)) {
     for (const cQ of circlesAt(tool, Q)) {
       if (cP === cQ || !sameRadius(cP, cQ)) continue;
@@ -63,10 +123,16 @@ export function findMediatrice(tool, P, Q) {
       const inter = twoArcIntersections(P, Q, cP, cQ);
       if (inter.length < 2) continue;
       const line = tool.lines.find((l) => lineThroughBoth(l, inter[0], inter[1]));
-      if (line) return { circles: [cP, cQ], points: inter, line };
+      if (line) {
+        treffer.push({
+          circles: [cP, cQ], points: inter, line,
+          passung: passungZuLinie(line, inter[0], inter[1]),
+          abweichung: radienAbweichung(cP, cQ),
+        });
+      }
     }
   }
-  return null;
+  return treffer;
 }
 
 // Die beiden Schnittpunkte eines Kreises um V mit den Schenkeln VP und VQ.
@@ -76,9 +142,10 @@ function legPoints(V, P, Q, r) {
 
 // Winkelhalbierende bei V (Schenkel nach P und Q): Bogen um V über beide Schenkel, zwei gleich große
 // Kreise um die beiden neuen Schenkelpunkte, Gerade von V durch deren Schnittpunkt.
-export function findBisector(tool, V, P, Q) {
+export function findBisectorAlle(tool, V, P, Q) {
   const maxR0 = Math.min(GC.dist(V, P), GC.dist(V, Q));
   const bisDir = GC.angleBisectorDir(V, P, Q);
+  const treffer = [];
   for (const c0 of circlesAt(tool, V)) {
     if (c0.radius < 20 || c0.radius > maxR0 * 1.05) continue;
     const [P1, Q1] = legPoints(V, P, Q, c0.radius);
@@ -92,17 +159,26 @@ export function findBisector(tool, V, P, Q) {
         // Von den beiden Schnittpunkten der ins Winkelinnere zeigende.
         const M = GC.dot(GC.sub(inter[0], V), bisDir) >= GC.dot(GC.sub(inter[1], V), bisDir) ? inter[0] : inter[1];
         const line = tool.lines.find((l) => lineThroughBoth(l, V, M));
-        if (line) return { circles: [c0, c1, c2], points: [P1, Q1, M], line };
+        if (line) {
+          treffer.push({
+            circles: [c0, c1, c2], points: [P1, Q1, M], line,
+            // Die Gerade läuft von V nach M; V ist bei allen Kandidaten gleich,
+            // der andere Endpunkt verrät also den gemeinten Kreuzungspunkt.
+            passung: Math.min(GC.dist(line.a, M), GC.dist(line.b, M)),
+            abweichung: radienAbweichung(c1, c2),
+          });
+        }
       }
     }
   }
-  return null;
+  return treffer;
 }
 
 // Lot von I auf eine der drei Seiten: Kreis um I, der die Seite zweimal schneidet, zwei gleich große
 // Kreise um diese Schnittpunkte, Gerade von I durch deren Schnittpunkt. Liefert zusätzlich den
 // Lotfußpunkt — er ist der Berührpunkt des Inkreises und legt dessen Radius fest.
-export function findLot(tool, sides, I) {
+export function findLotAlle(tool, sides, I) {
+  const treffer = [];
   for (const cI of circlesAt(tool, I)) {
     for (const [sA, sB] of sides) {
       const hits = GC.circleLineIntersections(I, cI.radius, sA, sB);
@@ -115,36 +191,47 @@ export function findLot(tool, sides, I) {
           if (Math.min(c1.radius, c2.radius) < (GC.dist(X1, X2) / 2) * MIN_SPAN) continue;
           const foot = GC.footOfPerpendicular(I, sA, sB);
           const line = tool.lines.find((l) => lineThroughBoth(l, I, foot));
-          if (line) return { circles: [cI, c1, c2], points: [X1, X2, foot], foot, line };
+          if (line) {
+            // Beim Lot ist die Gerade für alle Kandidaten dieselbe (I zum
+            // Lotfußpunkt); unterschieden wird allein über die Radien.
+            treffer.push({
+              circles: [cI, c1, c2], points: [X1, X2, foot], foot, line,
+              passung: 0, abweichung: radienAbweichung(c1, c2),
+            });
+          }
         }
       }
     }
   }
-  return null;
+  return treffer;
 }
 
 // Seitenhalbierende von V auf die Seite PQ. Anders als bei der Mittelsenkrechten wird die
 // Verbindung der beiden Bogenschnittpunkte *nicht* verlangt: Die beiden gleich großen Kreise um P
 // und Q liefern den Seitenmittelpunkt bereits eindeutig, und gezeichnet werden muss am Ende nur die
 // Strecke vom Eckpunkt dorthin — sie steht ausdrücklich nicht senkrecht auf der Seite.
-export function findMedian(tool, V, P, Q) {
+export function findMedianAlle(tool, V, P, Q) {
   const M = GC.mid(P, Q);
+  const treffer = [];
   for (const cP of circlesAt(tool, P)) {
     for (const cQ of circlesAt(tool, Q)) {
       if (cP === cQ || !sameRadius(cP, cQ)) continue;
       if (Math.min(cP.radius, cQ.radius) < (GC.dist(P, Q) / 2) * MIN_SPAN) continue;
       if (twoArcIntersections(P, Q, cP, cQ).length < 2) continue;
       const line = tool.lines.find((l) => lineThroughBoth(l, V, M));
-      if (line) return { circles: [cP, cQ], points: [M], mid: M, line };
+      // Bei der Seitenhalbierenden wird die Verbindung der Bogenschnittpunkte
+      // gar nicht gezeichnet — die Gerade läuft von V zum Seitenmittelpunkt.
+      // Sie kann das Kreispaar deshalb nicht verraten; es entscheiden die Radien.
+      if (line) treffer.push({ circles: [cP, cQ], points: [M], mid: M, line, passung: 0, abweichung: radienAbweichung(cP, cQ) });
     }
   }
-  return null;
+  return treffer;
 }
 
 // Höhe von V auf die Seite PQ — dieselbe Lot-Konstruktion wie beim Inkreisradius, nur ausgehend vom
 // Eckpunkt statt vom Inkreismittelpunkt.
-export function findAltitude(tool, V, P, Q) {
-  return findLot(tool, [[P, Q]], V);
+export function findAltitudeAlle(tool, V, P, Q) {
+  return findLotAlle(tool, [[P, Q]], V);
 }
 
 // Ergebniskreis: Kreis um "center" mit vorgegebenem Radius. Gibt zusätzlich zurück, ob überhaupt ein
@@ -195,7 +282,7 @@ export const TRI_TASKS = {
 
     analyze(tool, pts) {
       const { A, B, C } = pts;
-      const parts = sidesOf(pts).map(([P, Q, label]) => ({ label, P, Q, hit: findMediatrice(tool, P, Q) }));
+      const parts = sidesOf(pts).map(([P, Q, label]) => ({ label, P, Q, hit: bester(findMediatriceAlle(tool, P, Q)) }));
       const doneCount = parts.filter((p) => p.hit).length;
       const spentCircles = new Set();
       const marks = [];
@@ -268,7 +355,7 @@ export const TRI_TASKS = {
     analyze(tool, pts) {
       const { A, B, C } = pts;
       const sides = sidesOf(pts);
-      const parts = verticesOf(pts).map(([V, P, Q, label]) => ({ label, V, P, Q, hit: findBisector(tool, V, P, Q) }));
+      const parts = verticesOf(pts).map(([V, P, Q, label]) => ({ label, V, P, Q, hit: bester(findBisectorAlle(tool, V, P, Q)) }));
       const doneCount = parts.filter((p) => p.hit).length;
       const spentCircles = new Set();
       const marks = [];
@@ -294,7 +381,7 @@ export const TRI_TASKS = {
 
       // Der Inkreismittelpunkt ist erst konstruiert, wenn sich zwei Winkelhalbierende schneiden.
       const center = doneCount >= 2 ? GC.incenter(A, B, C) : null;
-      const lot = center ? findLot(tool, sides, center) : null;
+      const lot = center ? bester(findLotAlle(tool, sides, center)) : null;
       let radius = 0;
       let res = { circle: null, anyAt: false };
 

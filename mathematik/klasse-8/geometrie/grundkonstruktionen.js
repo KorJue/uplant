@@ -4,13 +4,13 @@
 // samt Um- bzw. Inkreis an einem ziehbaren Dreieck konstruiert werden (Modell in tri-construct.js).
 // Bei jedem Laden (und über "Neue Aufgabe") wird eine neue Zufallsaufgabe erzeugt.
 
-import * as GC from "./geo-core.js?v=21";
-import * as GS from "./geo-svg.js?v=21";
-import { setupCanvasZoom } from "./canvas-zoom.js?v=21";
-import { setupDraggableTriangle } from "./triangle-common.js?v=21";
-import { setupFreeConstruction } from "./free-ui.js?v=21";
-import { TRI_TASKS, TOL_PT } from "./tri-construct.js?v=21";
-import { lineThroughBoth, sameRadius, twoArcIntersections } from "./check-helpers.js?v=21";
+import * as GC from "./geo-core.js?v=22";
+import * as GS from "./geo-svg.js?v=22";
+import { setupCanvasZoom } from "./canvas-zoom.js?v=22";
+import { setupDraggableTriangle } from "./triangle-common.js?v=22";
+import { setupFreeConstruction } from "./free-ui.js?v=22";
+import { TRI_TASKS, TOL_PT } from "./tri-construct.js?v=22";
+import { lineThroughBoth, sameRadius, twoArcIntersections } from "./check-helpers.js?v=22";
 
 const W = 600,
   H = 420;
