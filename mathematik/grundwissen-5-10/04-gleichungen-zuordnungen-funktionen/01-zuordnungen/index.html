@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zuordnungen</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">4 Gleichungen, Zuordnungen und Funktionen</a><span class="sep">/</span>
+  1 Zuordnungen
+</nav>
+<header class="page-header">
+  <h1>Zuordnungen</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>5 Brötchen kosten 2,50 €. Was kosten 8? — Diese Frage lässt sich nur beantworten, weil zwischen Anzahl und Preis ein <strong>Zusammenhang</strong> besteht. Solche Zusammenhänge heißen <strong>Zuordnungen</strong>, und zwei Sorten davon kommen so oft vor, dass sie eigene Namen haben. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>eine Zuordnung als <span class="term">Tabelle</span>, <span class="term">Pfeildiagramm</span> und <span class="term">Graph</span> darstellen und zwischen den drei Formen wechseln</li>
+      <li><span class="term">proportionale</span> Zuordnungen an der Quotientengleichheit y : x = k und an der Ursprungsgeraden erkennen</li>
+      <li><span class="term">antiproportionale</span> Zuordnungen an der Produktgleichheit x · y = k und an der Hyperbel erkennen</li>
+      <li>mit dem <span class="term">Dreisatz</span> rechnen — und wissen, wann er <em>umgekehrt</em> läuft</li>
+      <li>begründen, warum viele Zuordnungen <span class="term">weder das eine noch das andere</span> sind</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../../01-groessen-und-rechnen/03-brueche-und-dezimalzahlen/index.html#sec-anteil">Kapitel 1</a> den Anteil und aus <a href="../../02-geometrie/01-grundbegriffe/index.html#sec-koordinaten">Kapitel 2</a> das Koordinatensystem — Punkte werden hier genauso eingetragen wie dort.</p>
+  </section>
+
+  <!-- 1. Was ist eine Zuordnung? -->
+  <section class="card" id="sec-zuordnung">
+    <h2>1. Drei Darstellungen derselben Sache</h2>
+    <p>Eine <strong>Zuordnung</strong> ordnet jedem Wert einer Größe genau einen Wert einer zweiten Größe zu. Man schreibt sie <strong>x ↦ y</strong> (gelesen „x wird y zugeordnet“). Dieselbe Zuordnung lässt sich auf drei Arten aufschreiben — und jede zeigt etwas anderes besonders gut.</p>
+    <div class="wissen-box">
+      <span class="box-label">Was welche Darstellung zeigt</span>
+      <strong>Tabelle:</strong> die einzelnen Wertepaare, genau ablesbar.<br>
+      <strong>Pfeildiagramm:</strong> dass wirklich <em>jedem</em> x genau <em>ein</em> y zugeordnet ist.<br>
+      <strong>Graph:</strong> den Verlauf im Ganzen — steigt es, fällt es, ist es geradlinig?
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Beispiel:
+          <select id="da-beispiel" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="broetchen">Brötchen → Preis</option>
+            <option value="arbeiter">Arbeiter → Bauzeit</option>
+            <option value="taxi">Fahrstrecke → Taxipreis</option>
+          </select>
+        </label>
+      </div>
+      <div class="zo-schalter" id="da-schalter"></div>
+      <table class="zo-tabelle" id="da-tabelle"></table>
+      <div class="geo-wrap" id="da-mount"></div>
+      <div class="zo-rechnung" id="da-bilanz"></div>
+      <div id="da-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — jedem x genau <em>ein</em> y</span>
+      Von jedem Wert links darf im Pfeildiagramm nur <strong>ein</strong> Pfeil ausgehen. „Alter ↦ Körpergröße“ ist deshalb keine Zuordnung, wenn man eine ganze Klasse betrachtet: Zu 13 Jahren gehören dort viele verschiedene Größen. Bei <em>einer</em> Person dagegen schon.
+    </div>
+    <div class="quiz" id="quiz-zuordnung"></div>
+  </section>
+
+  <!-- 2. Proportionale Zuordnungen -->
+  <section class="card" id="sec-proportional">
+    <h2>2. Proportionale Zuordnungen</h2>
+    <p>Kosten 5 Brötchen 2,50 €, so kosten 10 Brötchen 5,00 € — <strong>doppelt so viele, doppelter Preis</strong>. Zuordnungen mit dieser Eigenschaft heißen <strong>proportional</strong>.</p>
+    <div class="definition-box">
+      <span class="box-label">Proportionale Zuordnung</span>
+      Alle Quotienten y : x sind <strong>gleich</strong>. Diese Zahl heißt <strong>Proportionalitätsfaktor k</strong>:<br>
+      <strong>y : x = k</strong> &nbsp;bzw.&nbsp; <strong>y = k · x</strong><br>
+      <span class="progress-note">Der Graph ist eine <strong>Gerade durch den Ursprung</strong> — bei 0 Brötchen zahlt man 0 €.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Preis für 1 Brötchen: <input type="range" id="pr-k" min="20" max="120" step="5" value="50" style="vertical-align:middle;width:10rem"> <span id="pr-k-anzeige" style="font-weight:800;color:#157347"></span></label>
+        <label>Anzahl hervorheben: <input type="range" id="pr-x" min="1" max="8" step="1" value="5" style="vertical-align:middle;width:8rem"> <span id="pr-x-anzeige" style="font-weight:800;color:#b3261e"></span></label>
+      </div>
+      <div class="geo-wrap" id="pr-mount"></div>
+      <table class="zo-tabelle" id="pr-tabelle"></table>
+      <div class="zo-karten" id="pr-karten"></div>
+      <div class="zo-rechnung" id="pr-bilanz"></div>
+      <div id="pr-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Woran man es erkennt</span>
+      <strong>In der Tabelle:</strong> alle Quotienten y : x sind gleich.<br>
+      <strong>Am Graphen:</strong> eine Gerade, die durch den Ursprung (0|0) geht.<br>
+      <strong>In Worten:</strong> „doppelt so viel — doppelt so viel“, „dreimal so viel — dreimal so viel“.
+    </div>
+    <div class="quiz" id="quiz-proportional"></div>
+  </section>
+
+  <!-- 3. Antiproportionale Zuordnungen -->
+  <section class="card" id="sec-antiproportional">
+    <h2>3. Antiproportionale Zuordnungen</h2>
+    <p>Schaffen 4 Arbeiter eine Mauer in 12 Tagen, so brauchen 8 Arbeiter nur 6 Tage — <strong>doppelt so viele, halbe Zeit</strong>. Solche Zuordnungen heißen <strong>antiproportional</strong>.</p>
+    <div class="definition-box">
+      <span class="box-label">Antiproportionale Zuordnung</span>
+      Alle Produkte x · y sind <strong>gleich</strong>:<br>
+      <strong>x · y = k</strong> &nbsp;bzw.&nbsp; <strong>y = k : x</strong><br>
+      <span class="progress-note">Der Graph ist eine <strong>Hyperbel</strong>: Er fällt und nähert sich beiden Achsen, ohne sie je zu erreichen.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Gesamtarbeit (Arbeitstage): <input type="range" id="ap-k" min="12" max="72" step="6" value="48" style="vertical-align:middle;width:10rem"> <span id="ap-k-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+        <label>Arbeiterzahl hervorheben: <input type="range" id="ap-x" min="1" max="12" step="1" value="4" style="vertical-align:middle;width:8rem"> <span id="ap-x-anzeige" style="font-weight:800;color:#b3261e"></span></label>
+      </div>
+      <div class="geo-wrap" id="ap-mount"></div>
+      <table class="zo-tabelle" id="ap-tabelle"></table>
+      <div class="zo-karten" id="ap-karten"></div>
+      <div class="zo-rechnung" id="ap-bilanz"></div>
+      <div id="ap-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — „mehr“ heißt nicht automatisch „antiproportional“</span>
+      Antiproportional ist eine Zuordnung nur, wenn das <strong>Produkt</strong> konstant bleibt. Dass y kleiner wird, wenn x wächst, genügt nicht: Bei einem Vorrat, von dem man täglich 3 kg entnimmt, sinkt der Rest zwar, aber x · y ist nicht konstant — das ist keine antiproportionale Zuordnung.
+    </div>
+    <div class="quiz" id="quiz-antiproportional"></div>
+  </section>
+
+  <!-- 4. Der Dreisatz -->
+  <section class="card" id="sec-dreisatz">
+    <h2>4. Der Dreisatz</h2>
+    <p>Der <strong>Dreisatz</strong> löst beide Fälle mit demselben Schema: Man rechnet zuerst auf <strong>eine</strong> Einheit herunter und von dort auf die gesuchte Zahl hinauf. Nur der mittlere Schritt sieht in beiden Fällen anders aus.</p>
+    <div class="definition-box">
+      <span class="box-label">Die drei Sätze</span>
+      <strong>1.</strong> Aufschreiben, was gegeben ist.<br>
+      <strong>2.</strong> Auf <strong>eine</strong> Einheit umrechnen — proportional: <em>beide Seiten dividieren</em>; antiproportional: <em>eine Seite dividieren, die andere multiplizieren</em>.<br>
+      <strong>3.</strong> Auf die gesuchte Zahl hochrechnen.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Art:
+          <select id="ds-art" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="prop">proportional (Brötchen → Preis)</option>
+            <option value="anti">antiproportional (Arbeiter → Tage)</option>
+          </select>
+        </label>
+        <label>gegeben: <input type="range" id="ds-a" min="0" max="5" step="1" value="3" style="vertical-align:middle;width:8rem"> <span id="ds-a-anzeige" class="term"></span></label>
+        <label>gesucht für: <input type="range" id="ds-b" min="0" max="8" step="1" value="5" style="vertical-align:middle;width:8rem"> <span id="ds-b-anzeige" class="term"></span></label>
+      </div>
+      <div class="zo-dreisatz" id="ds-schritte"></div>
+      <div class="zo-rechnung" id="ds-bilanz"></div>
+      <div id="ds-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die häufigste Falle</span>
+      Beim <strong>antiproportionalen</strong> Dreisatz drehen sich die Rechenzeichen im mittleren Schritt um: Aus „geteilt durch 4“ wird „mal 4“. Wer das übersieht, rechnet mehr Arbeiter in mehr Tage um — und merkt es oft nicht. <strong>Probe:</strong> Muss das Ergebnis größer oder kleiner sein als der Ausgangswert? Erst überlegen, dann rechnen.
+    </div>
+    <div class="quiz" id="quiz-dreisatz"></div>
+  </section>
+
+  <!-- 5. Weder noch -->
+  <section class="card" id="sec-weder">
+    <h2>5. Wenn keines von beidem gilt</h2>
+    <p>Ein Taxi verlangt 3,50 € Grundpreis und dann 2,00 € je Kilometer. Der Preis wächst mit der Strecke — aber nicht proportional: Bei 0 km zahlt man schon 3,50 €, und der Graph geht nicht durch den Ursprung.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Datensatz:
+          <select id="we-satz" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="taxi">Taxi: Grundpreis und Kilometerpreis</option>
+            <option value="prop">Tankstelle: Liter → Preis</option>
+            <option value="anti">Pizza teilen: Personen → Stücke</option>
+            <option value="quadrat">Quadrat: Seitenlänge → Flächeninhalt</option>
+          </select>
+        </label>
+      </div>
+      <div class="geo-wrap" id="we-mount"></div>
+      <table class="zo-tabelle" id="we-tabelle"></table>
+      <div class="zo-rechnung" id="we-bilanz"></div>
+      <div id="we-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Der Test in zwei Zeilen</span>
+      <strong>1.</strong> Sind alle Quotienten y : x gleich? → proportional.<br>
+      <strong>2.</strong> Sind alle Produkte x · y gleich? → antiproportional.<br>
+      <strong>3.</strong> Weder noch? → Dann ist es eine ganz gewöhnliche Zuordnung, und der Dreisatz ist <em>nicht</em> anwendbar.
+    </div>
+    <div class="quiz" id="quiz-weder"></div>
+  </section>
+
+  <!-- 6. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>6. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../../01-groessen-und-rechnen/03-brueche-und-dezimalzahlen/index.html#sec-anteil">Der Anteil</a> — der Proportionalitätsfaktor k ist nichts anderes als „wie viel entfällt auf eine Einheit“. Deshalb ist der Dreisatz im Kern eine Anteilsrechnung.</li>
+      <li><strong>Baut auf:</strong> <a href="../../02-geometrie/01-grundbegriffe/index.html#sec-koordinaten">Das Koordinatensystem</a> — die Wertepaare einer Zuordnung werden genauso eingetragen wie Punkte in der Geometrie. Neu ist nur, dass die Achsen jetzt Größen mit Einheiten tragen.</li>
+      <li><strong>Baut auf:</strong> <a href="../../01-groessen-und-rechnen/05-multiplizieren-dividieren/index.html#sec-division">Multiplizieren und Dividieren</a> — die beiden Erkennungsmerkmale sind schlicht die beiden Rechenarten: konstanter <em>Quotient</em> gegen konstantes <em>Produkt</em>.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../../02-geometrie/08-aehnlichkeit/index.html">Ähnlichkeit</a> — beim Vergrößern einer Figur sind alle Streckenlängen proportional zueinander, mit dem Streckfaktor als Proportionalitätsfaktor. Es ist derselbe Gedanke in geometrischem Gewand.</li>
+      <li><strong>Führt weiter zu:</strong> Der <strong>Prozent- und Zinsrechnung</strong> — „x % von G“ ist eine proportionale Zuordnung mit dem Faktor p : 100. Jede Prozentaufgabe lässt sich deshalb auch mit dem Dreisatz lösen.</li>
+      <li><strong>Führt weiter zu:</strong> Den <strong>linearen Funktionen</strong> y = m · x + b. Die proportionale Zuordnung ist genau der Sonderfall b = 0; das Taxibeispiel aus Abschnitt 5 ist der allgemeine Fall.</li>
+      <li><strong>Führt weiter zu:</strong> Den <strong>quadratischen Funktionen</strong> — beim Quadrat aus Abschnitt 5 wächst der Flächeninhalt mit dem Quadrat der Seitenlänge. Verdoppelt man die Seite, vervierfacht sich die Fläche.</li>
+    </ul>
+  </section>
+
+  <!-- 7. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>7. Formelsammlung</h2>
+    <p>Die drei Darstellungen, beide Sorten von Zuordnungen, das Dreisatzschema in beiden Fassungen und der Test „weder noch“ — mit Zeichnungen, Beispielen und typischen Fehlern auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 8. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>8. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit. Wo gerundet werden soll, steht es in der Aufgabe.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 4 Gleichungen, Zuordnungen und Funktionen</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
