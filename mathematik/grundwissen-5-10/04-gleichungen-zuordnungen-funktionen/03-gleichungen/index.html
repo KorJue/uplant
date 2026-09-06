@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gleichungen</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">4 Gleichungen, Zuordnungen und Funktionen</a><span class="sep">/</span>
+  3 Gleichungen
+</nav>
+<header class="page-header">
+  <h1>Gleichungen</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>„Ich denke mir eine Zahl, verdreifache sie und addiere 5. Ich erhalte 20.“ — Wer diese Zahl sucht, löst eine <strong>Gleichung</strong>. Das Werkzeug dafür ist verblüffend einfach: Eine Gleichung ist eine <strong>Waage</strong>, und solange man auf beiden Seiten dasselbe tut, bleibt sie im Gleichgewicht. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>eine <span class="term">Lösung</span> von einer bloßen Zahl unterscheiden — und jede Lösung durch die <span class="term">Probe</span> prüfen</li>
+      <li>die vier <span class="term">Äquivalenzumformungen</span> anwenden und begründen, warum sie die Lösungsmenge nicht verändern</li>
+      <li>jede <span class="term">lineare Gleichung</span> nach demselben Schema lösen — auch mit x auf beiden Seiten und mit Klammern</li>
+      <li>die <span class="term">Sonderfälle</span> erkennen: keine Lösung und alle Zahlen als Lösung</li>
+      <li>aus einem Sachtext eine <span class="term">Gleichung aufstellen</span> und die Antwort in einem Satz formulieren</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../../01-groessen-und-rechnen/06-erweiterung-des-zahlenbereichs/index.html#sec-addieren">Kapitel 1</a> das Rechnen mit negativen Zahlen und aus <a href="../../01-groessen-und-rechnen/05-multiplizieren-dividieren/index.html#sec-division">Multiplizieren und Dividieren</a> die Umkehrbeziehung der beiden Rechenarten — auf ihr beruht das gesamte Verfahren.</p>
+  </section>
+
+  <!-- 1. Gleichung, Lösung, Probe -->
+  <section class="card" id="sec-gleichung">
+    <h2>1. Gleichung, Lösung und Probe</h2>
+    <p>Eine <strong>Gleichung</strong> behauptet, dass zwei Terme denselben Wert haben. Steht darin eine Variable, so ist die Behauptung erst einmal <em>weder wahr noch falsch</em> — sie wird es, sobald man für die Variable eine Zahl einsetzt.</p>
+    <div class="definition-box">
+      <span class="box-label">Lösung und Lösungsmenge</span>
+      Eine Zahl heißt <strong>Lösung</strong> der Gleichung, wenn beim Einsetzen auf beiden Seiten <strong>derselbe Wert</strong> herauskommt.<br>
+      Alle Lösungen zusammen bilden die <strong>Lösungsmenge L</strong>. Man schreibt zum Beispiel <strong>L = {5}</strong>.<br>
+      <span class="progress-note">Die <strong>Probe</strong> ist kein Zierrat: Sie ist die Definition der Lösung, in Rechnung übersetzt.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Anzahl der x-Kästchen: <input type="range" id="wa-a" min="1" max="4" step="1" value="3" style="vertical-align:middle;width:7rem"> <span id="wa-a-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+        <label>Gewichte links: <input type="range" id="wa-b" min="0" max="8" step="1" value="5" style="vertical-align:middle;width:7rem"> <span id="wa-b-anzeige" style="font-weight:800;color:#157347"></span></label>
+        <label>Gewichte rechts: <input type="range" id="wa-c" min="2" max="20" step="1" value="20" style="vertical-align:middle;width:8rem"> <span id="wa-c-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>Probierwert für x: <input type="range" id="wa-x" min="0" max="10" step="1" value="2" style="vertical-align:middle;width:8rem"> <span id="wa-x-anzeige" style="font-weight:800;color:#b3261e"></span></label>
+      </div>
+      <div class="gl-gleichung" id="wa-gleichung"></div>
+      <div class="geo-wrap" id="wa-mount"></div>
+      <div class="gl-karten" id="wa-karten"></div>
+      <div class="gl-rechnung" id="wa-bilanz"></div>
+      <div id="wa-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Probieren ist keine Lösungsmethode</span>
+      Am Regler zu schieben, bis die Waage einrastet, funktioniert nur, weil die Lösung hier eine kleine ganze Zahl ist. Bei <strong>3x + 5 = 21</strong> wäre sie <span class="nw">16 : 3</span> — kein Regler der Welt trifft das. Deshalb braucht man ein Verfahren, das die Lösung <em>berechnet</em> statt sie zu suchen. Genau darum geht es ab dem nächsten Abschnitt.
+    </div>
+    <div class="quiz" id="quiz-gleichung"></div>
+  </section>
+
+  <!-- 2. Äquivalenzumformungen -->
+  <section class="card" id="sec-umformen">
+    <h2>2. Äquivalenzumformungen</h2>
+    <p>Eine ausgeglichene Waage bleibt ausgeglichen, wenn man auf <strong>beiden</strong> Seiten dasselbe tut. Genau das sind die <strong>Äquivalenzumformungen</strong>: Sie verändern die Gleichung, aber nicht ihre Lösungsmenge.</p>
+    <div class="definition-box">
+      <span class="box-label">Die vier erlaubten Umformungen</span>
+      <strong>1.</strong> Auf beiden Seiten dieselbe Zahl <strong>addieren</strong>.<br>
+      <strong>2.</strong> Auf beiden Seiten dieselbe Zahl <strong>subtrahieren</strong>.<br>
+      <strong>3.</strong> Beide Seiten mit derselben Zahl <strong>multiplizieren</strong> — <em>nicht mit 0</em>.<br>
+      <strong>4.</strong> Beide Seiten durch dieselbe Zahl <strong>dividieren</strong> — <em>nicht durch 0</em>.<br>
+      <span class="progress-note">Statt einer Zahl darf auch ein Term wie 2x verwendet werden. Man notiert die Umformung rechts neben der Gleichung, getrennt durch einen senkrechten Strich.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Startgleichung:
+          <select id="uf-start" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="0">3x + 5 = 20</option>
+            <option value="1">5x − 4 = 2x + 11</option>
+            <option value="2">2x + 9 = 1</option>
+          </select>
+        </label>
+        <button type="button" class="btn" id="uf-zurueck">↺ Zurücksetzen</button>
+      </div>
+      <div class="gl-ops" id="uf-ops"></div>
+      <div class="gl-protokoll" id="uf-protokoll"></div>
+      <div class="gl-rechnung" id="uf-bilanz"></div>
+      <div id="uf-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Warum die Lösungsmenge erhalten bleibt</span>
+      Jede der vier Umformungen lässt sich <strong>rückgängig</strong> machen: Addition durch Subtraktion, Multiplikation durch Division. Deshalb erfüllt eine Zahl die neue Gleichung genau dann, wenn sie auch die alte erfüllt. Bei <strong>· 0</strong> ist das nicht so — aus 3x = 6 würde 0 = 0, und plötzlich wäre jede Zahl eine Lösung. Deshalb ist die Null als Faktor verboten.
+    </div>
+    <div class="quiz" id="quiz-umformen"></div>
+  </section>
+
+  <!-- 3. Lineare Gleichungen lösen -->
+  <section class="card" id="sec-loesen">
+    <h2>3. Lineare Gleichungen lösen</h2>
+    <p>Für Gleichungen der Form <strong>a · x + b = c · x + d</strong> gibt es ein Verfahren, das immer funktioniert. Es hat drei Schritte und ein Ziel: <strong>x allein auf einer Seite</strong>.</p>
+    <div class="definition-box">
+      <span class="box-label">Das Verfahren in drei Schritten</span>
+      <strong>1. Sortieren:</strong> alle x-Terme auf <em>eine</em> Seite bringen, alle Zahlen auf die andere.<br>
+      <strong>2. Zusammenfassen:</strong> auf jeder Seite ausrechnen, bis dort nur noch <strong>k · x = m</strong> steht.<br>
+      <strong>3. Teilen:</strong> beide Seiten durch den Koeffizienten k (falls k ≠ 0). Dann steht die Lösung da.<br>
+      <span class="progress-note">Danach immer die <strong>Probe</strong> — sie kostet zehn Sekunden und findet jeden Vorzeichenfehler.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a: <input type="range" id="ls-a" min="2" max="9" step="1" value="5" style="vertical-align:middle;width:6rem"> <span id="ls-a-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+        <label>c: <input type="range" id="ls-c" min="0" max="8" step="1" value="2" style="vertical-align:middle;width:6rem"> <span id="ls-c-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+        <label>b: <input type="range" id="ls-b" min="-9" max="9" step="1" value="-4" style="vertical-align:middle;width:7rem"> <span id="ls-b-anzeige" style="font-weight:800;color:#157347"></span></label>
+        <label>Lösung x: <input type="range" id="ls-x" min="-6" max="8" step="1" value="5" style="vertical-align:middle;width:7rem"> <span id="ls-x-anzeige" style="font-weight:800;color:#b3261e"></span></label>
+      </div>
+      <div class="gl-gleichung" id="ls-gleichung"></div>
+      <div class="gl-protokoll" id="ls-protokoll"></div>
+      <div class="gl-rechnung" id="ls-bilanz"></div>
+      <div id="ls-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die drei häufigsten Fehler</span>
+      <strong>1. Vorzeichen beim Hinüberbringen.</strong> „Auf die andere Seite bringen“ heißt <em>subtrahieren</em>: Aus <span class="nw">+ 3x</span> links wird <span class="nw">− 3x</span> rechts, nicht <span class="nw">+ 3x</span>.<br>
+      <strong>2. Nur ein Summand geteilt.</strong> Beim Teilen muss die <em>ganze</em> Seite geteilt werden: Aus <span class="nw">2x + 4 = 10</span> folgt nicht <span class="nw">x + 4 = 5</span>.<br>
+      <strong>3. Der Koeffizient wird zur Lösung erklärt.</strong> Aus <span class="nw">3x = 12</span> folgt x = 4, nicht x = 12 und nicht x = 3.
+    </div>
+    <div class="quiz" id="quiz-loesen"></div>
+  </section>
+
+  <!-- 4. Sonderfälle -->
+  <section class="card" id="sec-sonderfaelle">
+    <h2>4. Keine Lösung, eine Lösung, alle Zahlen</h2>
+    <p>Nicht jede lineare Gleichung hat genau eine Lösung. Verschwindet beim Sortieren das x <em>vollständig</em>, so bleibt eine Aussage ohne Variable übrig — und die ist entweder wahr oder falsch.</p>
+    <div class="definition-box">
+      <span class="box-label">Die drei Fälle</span>
+      <strong>a ≠ c</strong> → genau eine Lösung, <strong>L = {x₀}</strong>.<br>
+      <strong>a = c und b ≠ d</strong> → es bleibt etwas Falsches wie 5 = 11 stehen: <strong>L = { }</strong>, keine Lösung.<br>
+      <strong>a = c und b = d</strong> → es bleibt etwas Wahres wie 0 = 0 stehen: <strong>L = ℚ</strong>, jede Zahl ist Lösung.<br>
+      <span class="progress-note">Man sieht die drei Fälle auch am Graphen: Zwei Geraden schneiden sich, verlaufen parallel oder liegen aufeinander.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Fall:
+          <select id="sf-fall" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="eine">genau eine Lösung</option>
+            <option value="keine">keine Lösung</option>
+            <option value="alle">jede Zahl ist Lösung</option>
+          </select>
+        </label>
+        <label>Steigung links: <input type="range" id="sf-a" min="-3" max="4" step="1" value="3" style="vertical-align:middle;width:7rem"> <span id="sf-a-anzeige" style="font-weight:800;color:#157347"></span></label>
+        <label>Zahl rechts: <input type="range" id="sf-d" min="-6" max="6" step="1" value="4" style="vertical-align:middle;width:7rem"> <span id="sf-d-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+      </div>
+      <div class="gl-gleichung" id="sf-gleichung"></div>
+      <div class="geo-wrap" id="sf-mount"></div>
+      <div class="gl-protokoll" id="sf-protokoll"></div>
+      <div class="gl-rechnung" id="sf-bilanz"></div>
+      <div id="sf-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Der Blick auf den Graphen</span>
+      Links und rechts vom Gleichheitszeichen steht je ein Term. Zeichnet man beide als Gerade, so fragt die Gleichung: <strong>Wo sind beide gleich hoch?</strong> Genau dort liegt der Schnittpunkt — und seine x-Koordinate ist die Lösung. Parallele Geraden treffen sich nie (keine Lösung), aufeinanderliegende überall (alle Zahlen).
+    </div>
+    <div class="quiz" id="quiz-sonderfaelle"></div>
+  </section>
+
+  <!-- 5. Gleichungen aufstellen -->
+  <section class="card" id="sec-aufstellen">
+    <h2>5. Gleichungen aufstellen</h2>
+    <p>Die eigentliche Kunst ist nicht das Lösen, sondern das <strong>Übersetzen</strong>: vom deutschen Satz in die Sprache der Terme. Der erste Schritt ist immer derselbe — die gesuchte Größe bekommt einen Namen.</p>
+    <div class="definition-box">
+      <span class="box-label">Vier Schritte vom Text zur Antwort</span>
+      <strong>1.</strong> „Ich nenne die gesuchte Größe x.“ — und dazuschreiben, <em>was</em> x bedeutet, mit Einheit.<br>
+      <strong>2.</strong> Jede Angabe des Textes als Term aufschreiben.<br>
+      <strong>3.</strong> Die Gleichung aufstellen und lösen.<br>
+      <strong>4.</strong> Die Lösung <strong>im Sachzusammenhang</strong> prüfen und in einem Antwortsatz formulieren.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Aufgabe:
+          <select id="au-typ" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="zahl">Zahlenrätsel</option>
+            <option value="alter">Altersaufgabe</option>
+            <option value="rechteck">Umfang eines Rechtecks</option>
+            <option value="tarif">Zwei Tarife vergleichen</option>
+          </select>
+        </label>
+        <label>Zahlen: <input type="range" id="au-nr" min="0" max="3" step="1" value="0" style="vertical-align:middle;width:7rem"> <span id="au-nr-anzeige" class="term"></span></label>
+      </div>
+      <div id="au-text-aufgabe" class="event-result"></div>
+      <div class="gl-uebersetzung" id="au-uebersetzung"></div>
+      <div class="gl-gleichung" id="au-gleichung"></div>
+      <div class="gl-protokoll" id="au-protokoll"></div>
+      <div class="gl-rechnung" id="au-bilanz"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Probe muss zum Text passen, nicht nur zur Gleichung</span>
+      Eine Lösung kann die Gleichung erfüllen und trotzdem unsinnig sein: negative Längen, halbe Personen, ein Alter von −7 Jahren. Prüfe deshalb immer <strong>beides</strong> — die Rechnung <em>und</em> die Sachlage. Und wenn die Frage nach etwas anderem verlangt als nach x selbst (etwa nach dem Alter <em>in fünf Jahren</em>), dann ist x noch nicht die Antwort.
+    </div>
+    <div class="quiz" id="quiz-aufstellen"></div>
+  </section>
+
+  <!-- 6. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>6. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../../01-groessen-und-rechnen/06-erweiterung-des-zahlenbereichs/index.html#sec-addieren">Addieren und Subtrahieren in ℤ</a> — beim Sortieren entstehen fast immer negative Zwischenwerte. Wer dort unsicher ist, verliert hier Vorzeichen.</li>
+      <li><strong>Baut auf:</strong> <a href="../../01-groessen-und-rechnen/05-multiplizieren-dividieren/index.html#sec-division">Multiplizieren und Dividieren</a> — dass Division die Umkehrung der Multiplikation ist, <em>ist</em> die Begründung des dritten Schritts.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../02-prozent-und-zinsrechnung/index.html#sec-grundaufgaben">Die drei Grundaufgaben der Prozentrechnung</a> — jede von ihnen ist eine lineare Gleichung mit einer Unbekannten. „Welcher Grundwert?“ heißt nichts anderes als: löse G · p : 100 = W nach G auf.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../01-zuordnungen/index.html#sec-dreisatz">Der Dreisatz</a> — auch er löst eine Gleichung, nur ohne sie hinzuschreiben. Die Gleichungsschreibweise macht dasselbe Vorgehen für alle Fälle verfügbar, auch für die, in denen der Dreisatz nicht greift.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../../02-geometrie/09-pythagoras/index.html">Der Satz des Pythagoras</a> — a² + b² = c² ist eine Gleichung, und jede der drei Größen lässt sich durch Umformen daraus gewinnen. Das ist dasselbe Handwerk.</li>
+      <li><strong>Führt weiter zu:</strong> Den <strong>Termen</strong> — Klammern auflösen, ausmultiplizieren und zusammenfassen sind die Vorarbeiten, die jede kompliziertere Gleichung erst lösbar machen.</li>
+      <li><strong>Führt weiter zu:</strong> Den <strong>linearen Funktionen</strong> — der Graph aus Abschnitt 4 ist genau das Bild zweier linearer Funktionen, und das Lösen einer Gleichung wird dort zur Suche nach dem Schnittpunkt.</li>
+      <li><strong>Führt weiter zu:</strong> Den <strong>linearen Gleichungssystemen</strong> — zwei Gleichungen mit zwei Unbekannten. Das Einsetzungs- und das Additionsverfahren benutzen genau die Äquivalenzumformungen aus Abschnitt 2.</li>
+      <li><strong>Führt weiter zu:</strong> Den <strong>quadratischen Gleichungen</strong> — sobald x² auftritt, versagt das Verfahren aus Abschnitt 3, und es braucht die pq-Formel. Der erste Schritt bleibt aber derselbe: auf die Normalform bringen.</li>
+    </ul>
+  </section>
+
+  <!-- 7. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>7. Formelsammlung</h2>
+    <p>Das Waagemodell, die vier Äquivalenzumformungen, das Lösungsverfahren mit vollständigem Beispiel, die drei Fälle der Lösungsmenge samt Graphen und ein Übersetzungswörterbuch für Sachaufgaben — auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 8. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>8. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gesucht ist jeweils der Wert von <strong>x</strong> als Zahl. Alle Aufgaben auf dieser Seite haben ganzzahlige Lösungen; negative Zahlen schreibst du mit einem Minuszeichen davor.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 4 Gleichungen, Zuordnungen und Funktionen</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
