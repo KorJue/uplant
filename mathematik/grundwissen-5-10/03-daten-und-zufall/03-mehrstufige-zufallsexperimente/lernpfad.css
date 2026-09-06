@@ -1,0 +1,429 @@
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  margin-bottom: 1.5rem;
+}
+.card h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+.card h3 {
+  font-size: 1.05rem;
+  margin: 1.5rem 0 0.6rem;
+  color: var(--accent-dark);
+}
+.card h3:first-of-type { margin-top: 0.5rem; }
+
+.lern-intro-list {
+  margin: 0.75rem 0 0;
+  padding-left: 1.3rem;
+}
+.lern-intro-list li { margin-bottom: 0.3rem; }
+
+.term {
+  font-weight: 700;
+  color: var(--accent-dark);
+}
+
+.hinweis-box {
+  background: var(--bg);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin: 0.9rem 0;
+  font-size: 0.92rem;
+}
+
+/* ---------- Widget-Rahmen ---------- */
+
+.widget {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 1rem 0;
+  background: var(--bg);
+}
+.widget-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.widget-col { flex: 1 1 260px; min-width: 240px; }
+
+.btn {
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  font-family: inherit;
+}
+.btn:hover { border-color: var(--accent); }
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--accent-dark); }
+.btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.75rem 0; }
+
+/* ---------- Ergebnisanzeige ---------- */
+
+.event-result {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+  margin-top: 0.5rem;
+  font-family: "Cambria Math", Cambria, serif;
+}
+
+/* ---------- Quiz ---------- */
+
+.quiz {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1.1rem 0 0.5rem;
+}
+.quiz-q { font-weight: 700; margin: 0 0 0.6rem; }
+.quiz-options { display: flex; flex-direction: column; gap: 0.5rem; }
+.quiz-opt {
+  text-align: left;
+  padding: 0.55rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.94rem;
+}
+.quiz-opt:hover { border-color: var(--accent); }
+.quiz-opt.correct { border-color: #157347; background: #e7f6ec; color: #157347; font-weight: 700; }
+.quiz-opt.wrong { border-color: #b3261e; background: #fdecec; color: #b3261e; font-weight: 700; }
+:root[data-theme="dark"] .quiz-opt.correct { background: #17321f; color: #6fd68f; border-color: #6fd68f; }
+:root[data-theme="dark"] .quiz-opt.wrong { background: #3a1f1f; color: #ff8a8a; border-color: #ff8a8a; }
+.quiz-feedback { margin-top: 0.6rem; font-size: 0.9rem; }
+.quiz-feedback.ok { color: #157347; }
+.quiz-feedback.err { color: #b3261e; }
+:root[data-theme="dark"] .quiz-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .quiz-feedback.err { color: #ff8a8a; }
+
+/* ---------- Übungsaufgaben ---------- */
+
+.exercise {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1rem 0;
+}
+.exercise h3 { margin-top: 0; }
+.exercise-input-row { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; margin-top: 0.6rem; }
+.exercise-input-row input {
+  width: 11rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: var(--card-bg);
+  color: var(--text);
+}
+.exercise-feedback { margin-top: 0.6rem; font-size: 0.92rem; font-weight: 600; }
+.exercise-feedback.ok { color: #157347; }
+.exercise-feedback.err { color: #b3261e; }
+:root[data-theme="dark"] .exercise-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .exercise-feedback.err { color: #ff8a8a; }
+
+.formula-block {
+  font-family: "Cambria Math", Cambria, "STIX Two Math", serif;
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  margin: 0.5rem 0;
+  overflow-x: auto;
+}
+
+.progress-note {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+
+/* ---------- Definition / Wissen / Beispiel — farbige Merkboxen wie im Lehrbuch ---------- */
+
+.definition-box, .wissen-box, .beispiel-box {
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin: 0.9rem 0;
+}
+.definition-box .box-label, .wissen-box .box-label, .beispiel-box .box-label {
+  display: block;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+.definition-box, .wissen-box {
+  background: #fdecec;
+  border-left: 4px solid #b3261e;
+}
+.definition-box .box-label, .wissen-box .box-label { color: #b3261e; }
+:root[data-theme="dark"] .definition-box, :root[data-theme="dark"] .wissen-box { background: #3a1f1f; }
+:root[data-theme="dark"] .definition-box .box-label, :root[data-theme="dark"] .wissen-box .box-label { color: #ff8a8a; }
+.beispiel-box {
+  background: #e7f6ec;
+  border-left: 4px solid #157347;
+}
+.beispiel-box .box-label { color: #157347; }
+:root[data-theme="dark"] .beispiel-box { background: #17321f; }
+:root[data-theme="dark"] .beispiel-box .box-label { color: #6fd68f; }
+
+/* ---------- Gestaffelte Übungsaufgaben (Reiter Mittel/Schwierig/Komplex) ---------- */
+
+.schwierigkeit-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  margin-left: 0.6rem;
+  vertical-align: middle;
+}
+.schwierigkeit-badge.einfach { background: #e7f6ec; color: #157347; }
+.schwierigkeit-badge.mittel { background: #eef2ff; color: #1d4ed8; }
+.schwierigkeit-badge.schwierig { background: #fff4e0; color: #b3650a; }
+.schwierigkeit-badge.komplex { background: #fdecec; color: #b3261e; }
+:root[data-theme="dark"] .schwierigkeit-badge.einfach { background: #17321f; color: #6fd68f; }
+:root[data-theme="dark"] .schwierigkeit-badge.mittel { background: #1e2a4a; color: #93a9ff; }
+:root[data-theme="dark"] .schwierigkeit-badge.schwierig { background: #3a2a10; color: #ffbf6e; }
+:root[data-theme="dark"] .schwierigkeit-badge.komplex { background: #3a1f1f; color: #ff8a8a; }
+
+.schwierigkeit-tabs { display: flex; gap: 0.4rem; margin: 1rem 0 0; flex-wrap: wrap; }
+.schwierigkeit-tabs button {
+  padding: 0.5rem 1rem;
+  border-radius: 8px 8px 0 0;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+.schwierigkeit-tabs button.active { background: var(--card-bg); color: var(--text); border-color: var(--accent); }
+.schwierigkeit-tab-panel { border: 1px solid var(--border); border-radius: 0 10px 10px 10px; padding: 0; margin-bottom: 1rem; }
+.schwierigkeit-tab-panel .aufgabe-box { border: none; margin: 0; }
+
+.aufgabe-box {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1rem 0;
+}
+.aufgabe-box h3 { margin: 0 0 0.5rem; display: flex; align-items: center; flex-wrap: wrap; }
+.aufgabe-box .aufgabe-prompt { margin: 0.5rem 0; }
+.aufgabe-box .btn-row { margin-top: 0.5rem; }
+.aufgabe-feedback { margin-top: 0.7rem; font-size: 0.92rem; }
+.aufgabe-feedback .status { font-weight: 700; margin-bottom: 0.3rem; }
+.aufgabe-feedback .status.ok { color: #157347; }
+.aufgabe-feedback .status.err { color: #b3261e; }
+:root[data-theme="dark"] .aufgabe-feedback .status.ok { color: #6fd68f; }
+:root[data-theme="dark"] .aufgabe-feedback .status.err { color: #ff8a8a; }
+.musterloesung {
+  background: var(--bg);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.7rem 0.9rem;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.musterloesung .ml-label { font-weight: 700; color: var(--accent-dark); display: block; margin-bottom: 0.3rem; }
+
+/* ---------- Achtung-Box: typische Fehlvorstellungen ---------- */
+
+.achtung-box {
+  background: #fff4e0;
+  border-left: 4px solid #b3650a;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin: 0.9rem 0;
+}
+.achtung-box .box-label {
+  display: block;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+  color: #b3650a;
+}
+:root[data-theme="dark"] .achtung-box { background: #3a2a10; }
+:root[data-theme="dark"] .achtung-box .box-label { color: #ffbf6e; }
+
+/* ---------- Innermathematische Vernetzung ---------- */
+
+.vernetzung-liste { list-style: none; padding: 0; margin: 0.75rem 0 0; }
+.vernetzung-liste li {
+  padding: 0.6rem 0.85rem;
+  border-left: 3px solid var(--accent);
+  background: var(--bg);
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 0.5rem;
+  font-size: 0.94rem;
+}
+.vernetzung-liste a { font-weight: 700; }
+
+
+
+/* ---------- Zeichenfläche ---------- */
+
+.geo-wrap { display: flex; justify-content: center; margin: 1rem 0; overflow-x: auto; }
+.geo-svg { max-width: 100%; height: auto; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; }
+
+
+/* ---------- Thema 3: Mehrstufige Zufallsexperimente ---------- */
+
+/* Farbcode: gewählter Pfad violett, Ereignis (mehrere Pfade) grün,
+   Gegenereignis orange, „mit Zurücklegen“ blau, „ohne Zurücklegen“ rot. */
+
+/* Baumdiagramm */
+.me-ast { fill: none; stroke: var(--muted); stroke-width: 1.6; }
+.me-ast.aktiv { stroke: #6d28d9; stroke-width: 3.4; }
+.me-ast.ereignis { stroke: #157347; stroke-width: 3.4; }
+.me-ast.gegen { stroke: #b3650a; stroke-width: 3.4; }
+/* Heller Saum um die Glyphen: Bei drei und mehr Ästen je Knoten liegt eine
+   Beschriftung zwangsläufig nahe an einem Nachbarast — der Saum hält sie
+   trotzdem lesbar, statt sie mit der Linie verschmelzen zu lassen. */
+.me-astbeschriftung {
+  font-size: 11px;
+  font-weight: 700;
+  fill: var(--muted);
+  paint-order: stroke;
+  stroke: var(--card-bg);
+  stroke-width: 3.5px;
+  stroke-linejoin: round;
+}
+.me-astbeschriftung.aktiv { fill: #6d28d9; }
+.me-astbeschriftung.ereignis { fill: #157347; }
+.me-astbeschriftung.gegen { fill: #b3650a; }
+.me-knoten { fill: var(--card-bg); stroke: var(--muted); stroke-width: 1.4; }
+.me-knoten.aktiv { stroke: #6d28d9; stroke-width: 2.6; }
+.me-knotentext { font-size: 12px; font-weight: 800; fill: var(--text); }
+.me-blatt { font-size: 11px; font-weight: 700; fill: var(--text); }
+.me-blatt.aktiv { fill: #6d28d9; }
+.me-blatt.ereignis { fill: #157347; }
+.me-blatt.gegen { fill: #b3650a; }
+.me-blattwert { font-size: 11px; fill: var(--muted); font-variant-numeric: tabular-nums; }
+.me-blattwert.aktiv { fill: #6d28d9; font-weight: 800; }
+.me-blattwert.ereignis { fill: #157347; font-weight: 800; }
+.me-blattwert.gegen { fill: #b3650a; font-weight: 800; }
+.me-stufentext { font-size: 11px; font-weight: 700; fill: var(--muted); letter-spacing: 0.04em; }
+.me-trenner { stroke: var(--border); stroke-width: 0.9; stroke-dasharray: 4 4; }
+
+/* Klickbare Äste und Blätter */
+.me-klickflaeche { fill: transparent; stroke: transparent; stroke-width: 16; cursor: pointer; }
+
+/* Flächenmodell (Einheitsquadrat) */
+.me-feld { stroke: var(--card-bg); stroke-width: 1.4; }
+.me-feld.aktiv { stroke: #6d28d9; stroke-width: 2.6; }
+/* reiner Rahmen ohne Füllung — als Klasse, weil ein fill-Attribut von den
+   Klassenregeln oben überschrieben würde */
+.me-feld.nurrahmen { fill: none; }
+.me-feld-rr { fill: #b3261e; fill-opacity: 0.42; }
+.me-feld-rb { fill: #b3261e; fill-opacity: 0.16; }
+.me-feld-br { fill: #1d4ed8; fill-opacity: 0.16; }
+.me-feld-bb { fill: #1d4ed8; fill-opacity: 0.34; }
+.me-feldtext { font-size: 10.5px; font-weight: 700; fill: #1f2933; }
+/* Im Dunkelmodus liegt der Text auf dunkel getönten Flächen — dort braucht er
+   eine helle Farbe, sonst verschwindet er darin. */
+:root[data-theme="dark"] .me-feldtext { fill: #e8eef5; }
+.me-rahmen { fill: none; stroke: var(--text); stroke-width: 1.6; }
+.me-massband { stroke: var(--muted); stroke-width: 1.1; }
+.me-masstext { font-size: 10.5px; fill: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* Urne mit Kugeln */
+.me-kugel-rot { fill: #b3261e; fill-opacity: 0.75; stroke: #7f1d1a; stroke-width: 1; }
+.me-kugel-blau { fill: #1d4ed8; fill-opacity: 0.7; stroke: #13328a; stroke-width: 1; }
+.me-kugel-weg { fill: none; stroke: var(--border); stroke-width: 1.2; stroke-dasharray: 3 3; }
+.me-urne { fill: none; stroke: var(--muted); stroke-width: 2.4; stroke-linejoin: round; }
+.me-urnentext { font-size: 11px; font-weight: 700; fill: var(--muted); }
+
+/* Pfadauswahl als Chips */
+.me-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.8rem 0; }
+.me-chip {
+  padding: 0.4rem 0.65rem;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  background: var(--card-bg);
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.me-chip:hover { border-color: #157347; }
+.me-chip.gewaehlt { border-color: #157347; background: #e7f6ec; color: #0f5132; }
+:root[data-theme="dark"] .me-chip.gewaehlt { background: #17321f; color: #6fd68f; }
+
+/* Zusammengehörige Faktoren wie "(3 : 8)" nie umbrechen */
+.nw { white-space: nowrap; }
+
+/* Rechenweg als Formelzeile */
+.me-rechnung {
+  margin: 0.6rem 0 0;
+  padding: 0.55rem 0.7rem;
+  border-radius: 8px;
+  background: var(--code-bg, rgba(127, 127, 127, 0.08));
+  font-variant-numeric: tabular-nums;
+  line-height: 1.8;
+  font-size: 1.02rem;
+  overflow-x: auto;
+}
+.me-rechnung .wp { color: #6d28d9; font-weight: 800; }
+.me-rechnung .wg { color: #157347; font-weight: 800; }
+.me-rechnung .wo { color: #b3650a; font-weight: 800; }
+.me-rechnung .wm { color: #1d4ed8; font-weight: 800; }
+.me-rechnung .wr { color: #b3261e; font-weight: 800; }
+
+/* Kennzahlenkarten */
+.me-karten { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0.8rem 0; }
+.me-karte {
+  flex: 1 1 8.5rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.55rem 0.75rem;
+  background: var(--card-bg);
+  text-align: center;
+}
+.me-karte .name { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; }
+.me-karte .wert { display: block; font-size: 1.3rem; font-weight: 800; margin-top: 0.15rem; font-variant-numeric: tabular-nums; }
+.me-karte.p .wert { color: #6d28d9; }
+.me-karte.e .wert { color: #157347; }
+.me-karte.gegen .wert { color: #b3650a; }
+.me-karte.anzahl .wert { color: #1d4ed8; }
+
+/* Vergleichstabelle mit/ohne Zurücklegen */
+.me-tabelle { width: 100%; border-collapse: collapse; margin: 0.6rem 0; font-variant-numeric: tabular-nums; }
+.me-tabelle th, .me-tabelle td { padding: 0.35rem 0.5rem; border-bottom: 1px solid var(--border); text-align: center; }
+.me-tabelle th { font-size: 0.82rem; color: var(--muted); font-weight: 700; }
+.me-tabelle tr.summe td { border-top: 2px solid var(--border); border-bottom: none; font-weight: 800; }
+.me-tabelle td.mit { color: #1d4ed8; font-weight: 800; }
+.me-tabelle td.ohne { color: #b3261e; font-weight: 800; }
+.me-tabelle td.pfad { text-align: left; font-weight: 700; }
