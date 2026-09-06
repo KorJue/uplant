@@ -7,10 +7,13 @@
 // Kontext. Neu sind hier nur die beiden Fälle, für die es bisher keine Prüfung am *ganzen* Dreieck
 // gab (drei Seitenhalbierende, drei Höhen) und das Finale mit der Eulerschen Geraden.
 
-import * as GC from "./geo-core.js?v=21";
-import * as GS from "./geo-svg.js?v=21";
-import { lineThroughBoth } from "./check-helpers.js?v=21";
-import { TRI_TASKS, findMediatrice, findMedian, findAltitude, circlesAt, pairPoints } from "./tri-construct.js?v=21";
+import * as GC from "./geo-core.js?v=22";
+import * as GS from "./geo-svg.js?v=22";
+import { lineThroughBoth } from "./check-helpers.js?v=22";
+import {
+  TRI_TASKS, findMediatriceAlle, findMedianAlle, findAltitudeAlle,
+  bester, circlesAt, pairPoints,
+} from "./tri-construct.js?v=22";
 
 export const W = 600;
 export const H = 440;
@@ -97,8 +100,8 @@ function drawSideExtension(layer, A, B, points) {
 }
 
 // Sammelt die drei Teilkonstruktionen eines Typs samt der Kreise/Punkte, die dafür verbraucht sind.
-function collect(tool, parts, find, progress, spentCircles, marks, snapPoints) {
-  const out = parts.map((part) => ({ ...part, hit: find(tool, part) }));
+function collect(tool, parts, findAlle, progress, spentCircles, marks, snapPoints) {
+  const out = parts.map((part) => ({ ...part, hit: bester(findAlle(tool, part)) }));
   for (const part of out) {
     if (part.hit) {
       part.hit.circles.forEach((c) => spentCircles.add(c));
@@ -121,7 +124,7 @@ const seitenhalbierendeModell = {
     const spentCircles = new Set();
     const marks = [];
     const snapPoints = [A, B, C];
-    const parts = collect(tool, verticesOf(pts), (t, p) => findMedian(t, p.V, p.P, p.Q), medianProgress, spentCircles, marks, snapPoints);
+    const parts = collect(tool, verticesOf(pts), (t, p) => findMedianAlle(t, p.V, p.P, p.Q), medianProgress, spentCircles, marks, snapPoints);
     const doneCount = parts.filter((p) => p.hit).length;
     // Der Schwerpunkt steht fest, sobald sich zwei Seitenhalbierende schneiden.
     const center = doneCount >= 2 ? GC.centroid(A, B, C) : null;
@@ -154,7 +157,7 @@ const hoehenModell = {
     const spentCircles = new Set();
     const marks = [];
     const snapPoints = [A, B, C];
-    const parts = collect(tool, verticesOf(pts), (t, p) => findAltitude(t, p.V, p.P, p.Q), altitudeProgress, spentCircles, marks, snapPoints);
+    const parts = collect(tool, verticesOf(pts), (t, p) => findAltitudeAlle(t, p.V, p.P, p.Q), altitudeProgress, spentCircles, marks, snapPoints);
     const doneCount = parts.filter((p) => p.hit).length;
     // Zwei Höhen legen den Höhenschnittpunkt bereits fest.
     const center = doneCount >= 2 ? GC.orthocenter(A, B, C) : null;
@@ -197,9 +200,9 @@ const eulerModell = {
     const spentCircles = new Set();
     const marks = [];
     const snapPoints = [A, B, C];
-    const mittel = collect(tool, sidesOf(pts), (t, p) => findMediatrice(t, p.P, p.Q), null, spentCircles, marks, snapPoints);
-    const seiten = collect(tool, verticesOf(pts), (t, p) => findMedian(t, p.V, p.P, p.Q), null, spentCircles, marks, snapPoints);
-    const hoehen = collect(tool, verticesOf(pts), (t, p) => findAltitude(t, p.V, p.P, p.Q), null, spentCircles, marks, snapPoints);
+    const mittel = collect(tool, sidesOf(pts), (t, p) => findMediatriceAlle(t, p.P, p.Q), null, spentCircles, marks, snapPoints);
+    const seiten = collect(tool, verticesOf(pts), (t, p) => findMedianAlle(t, p.V, p.P, p.Q), null, spentCircles, marks, snapPoints);
+    const hoehen = collect(tool, verticesOf(pts), (t, p) => findAltitudeAlle(t, p.V, p.P, p.Q), null, spentCircles, marks, snapPoints);
     const nMittel = mittel.filter((p) => p.hit).length;
     const nSeiten = seiten.filter((p) => p.hit).length;
     const nHoehen = hoehen.filter((p) => p.hit).length;

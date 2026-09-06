@@ -3,11 +3,11 @@
 // (was konstruiert und wie geprüft wird) steckt in raetsel-tasks.js, das Zeichnen und die Werkzeuge
 // in geo-svg.js / free-ui.js — hier geht es nur um den Ablauf drumherum.
 
-import * as GS from "./geo-svg.js?v=21";
-import { norm, sub } from "./geo-core.js?v=21";
-import { setupCanvasZoom } from "./canvas-zoom.js?v=21";
-import { setupFreeConstruction } from "./free-ui.js?v=21";
-import { FAELLE, LOESUNGSWORT, randomCaseTriangle, W, H } from "./raetsel-tasks.js?v=21";
+import * as GS from "./geo-svg.js?v=22";
+import { norm, sub } from "./geo-core.js?v=22";
+import { setupCanvasZoom } from "./canvas-zoom.js?v=22";
+import { setupFreeConstruction } from "./free-ui.js?v=22";
+import { FAELLE, LOESUNGSWORT, randomCaseTriangle, W, H } from "./raetsel-tasks.js?v=22";
 
 const STORAGE_KEY = "uplant-geo-raetsel";
 const AMPEL = [
