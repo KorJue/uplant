@@ -734,7 +734,13 @@ function generateAufgabe1() {
   }
   const c = ohneKollision(
     kandidaten,
-    (k) => [k.stueck * k.b, k.stueck * k.a, k.a, k.b, k.stueck, (k.stueck * k.a) / k.b, k.stueck * k.a + k.b - k.a],
+    (k) => [
+      k.stueck * k.b,                       // richtig
+      k.stueck * k.a,                       // der gegebene Preis
+      k.a, k.b, k.stueck,
+      (k.stueck * k.a * k.a) / k.b,         // Anzahlen vertauscht — genau der Wert des Hinweises
+      k.stueck * k.a + k.b - k.a,           // Unterschied addiert statt vervielfacht
+    ],
     kandidaten[0]
   );
   const { a, stueck, b } = c;
@@ -753,7 +759,7 @@ function generateAufgabe1() {
         return `${num(stueck)} € ist der Preis für <em>ein</em> Stück — das ist der Zwischenschritt, nicht die Antwort. Jetzt noch mit ${num(b)} multiplizieren.`;
       if (Math.abs(val - (preisA + b - a)) < 0.01)
         return `Du hast den Unterschied <em>addiert</em>. Bei einer proportionalen Zuordnung wird aber vervielfacht, nicht dazugezählt: ${num(b)} Stück kosten das ${num(b)}-fache von einem Stück.`;
-      if (Math.abs(val - (preisA * a) / b) < 0.01 || Math.abs(val - (preisA / b) * a) < 0.01)
+      if (Math.abs(val - (preisA * a) / b) < 0.01)
         return `Du hast die beiden Anzahlen vertauscht. Geteilt wird durch die <em>gegebene</em> Anzahl ${num(a)}, multipliziert wird mit der <em>gesuchten</em> Anzahl ${num(b)}.`;
       return `Rechne zuerst den Preis für <strong>${ware.eines}</strong> aus: ${num(preisA)} € : ${num(a)}.`;
     },
@@ -937,6 +943,7 @@ function generateAufgabe4() {
         (c1 / t.s1) * t.s3,      // proportional aus der ersten Angabe
         (c2 / t.s2) * t.s3,      // proportional aus der zweiten Angabe
         t.p * t.s3,              // Grundpreis vergessen
+        c1 + c2,                 // beide Preise addiert — der Wert des vierten Hinweises
         c1, c2, t.g, t.p, t.s3,
       ];
     },
