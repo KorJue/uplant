@@ -611,11 +611,11 @@ function mountUebungsaufgaben(container, defs) {
 // Oberfläche und Volumen beide 216. Fallen zwei Fehlerwerte zusammen, ist die
 // Diagnose mehrdeutig. Ausgewählt wird aus einer VORHER gefilterten Liste,
 // nicht durch Verwerfen und Neuziehen.
+function paarweiseVerschieden(alle) {
+  return alle.every((x, i) => alle.every((y, j) => i === j || Math.abs(x - y) > 1e-9));
+}
 function ohneKollision(kandidaten, werte, notfall) {
-  const sauber = kandidaten.filter((k) => {
-    const alle = werte(k);
-    return alle.every((x, i) => alle.every((y, j) => i === j || Math.abs(x - y) > 1e-9));
-  });
+  const sauber = kandidaten.filter((k) => paarweiseVerschieden(werte(k)));
   return sauber.length ? pick(sauber) : notfall;
 }
 
@@ -659,18 +659,27 @@ function generateAufgabe1() {
 
 // Aufgabe 2 — Oberfläche eines Prismas mit rechteckiger Grundfläche.
 // Alle Zwischenwerte sind ganzzahlig.
-function generateAufgabe2() {
-  const a = randInt(2, 12), b = randInt(2, 12);
+// Fehlerwerte: nur der Mantel (u·h), Grundfläche einfach statt doppelt
+// (G + u·h), das Volumen (a·b·h) und "G statt u im Mantel" (2G + G·h).
+const A2_HOEHEN = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+function a2Werte(a, b, k) {
   const G = a * b, u = 2 * (a + b);
-  // Fehlerwerte: nur der Mantel (u·h), Grundfläche einfach statt doppelt
-  // (G + u·h), das Volumen (a·b·h) und "G statt u im Mantel" (2G + G·h).
-  // Beim Würfel der Kante 6 wären Oberfläche und Volumen beide 216 — genau
-  // solche Fälle siebt die Auswahl aus.
-  const h = ohneKollision(
-    [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-    (k) => [2 * G + u * k, u * k, G + u * k, a * b * k, 2 * G + G * k],
-    7
-  );
+  return [2 * G + u * k, u * k, G + u * k, a * b * k, 2 * G + G * k];
+}
+function generateAufgabe2() {
+  // Manche Kollisionen hängen gar nicht an der Höhe: Ist G = u (also bei
+  // 3 × 6, 6 × 3 und 4 × 4), so fällt der Fehlerwert 2G + G·h für JEDES h mit
+  // der Lösung 2G + u·h zusammen. Solche Grundflächen müssen deshalb schon
+  // beim Grundriss ausgesiebt werden, nicht erst bei der Höhe.
+  const paare = [];
+  for (let x = 2; x <= 12; x++) {
+    for (let y = 2; y <= 12; y++) {
+      if (A2_HOEHEN.some((k) => paarweiseVerschieden(a2Werte(x, y, k)))) paare.push([x, y]);
+    }
+  }
+  const [a, b] = pick(paare);
+  const G = a * b, u = 2 * (a + b);
+  const h = ohneKollision(A2_HOEHEN, (k) => a2Werte(a, b, k), A2_HOEHEN[0]);
   const M = u * h, O = 2 * G + M;
 
   return {
