@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mehrstufige Zufallsexperimente</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">3 Daten und Zufall</a><span class="sep">/</span>
+  3 Mehrstufige Zufallsexperimente
+</nav>
+<header class="page-header">
+  <h1>Mehrstufige Zufallsexperimente</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Ein Würfel, ein Wurf — das war <a href="../02-zufall-und-wahrscheinlichkeit/index.html">Thema 2</a>. Sobald man <em>zweimal</em> würfelt, hat Ω schon 36 Ergebnisse, bei dreimal 216. Abzählen wird unübersichtlich. Das <strong>Baumdiagramm</strong> bringt Ordnung hinein: Jede Stufe ist eine Verzweigung, jeder vollständige Weg von der Wurzel zum Blatt ist genau <em>ein</em> Ergebnis. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>ein mehrstufiges Experiment als <span class="term">Baumdiagramm</span> zeichnen und daran |Ω| ablesen</li>
+      <li>mit der <span class="term">1. Pfadregel (Produktregel)</span> die Wahrscheinlichkeit eines einzelnen Pfades bestimmen</li>
+      <li>mit der <span class="term">2. Pfadregel (Summenregel)</span> mehrere Pfade zu einem Ereignis zusammenfassen</li>
+      <li>Aufgaben mit <span class="term">„mindestens einmal“</span> über das Gegenereignis abkürzen</li>
+      <li><span class="term">Ziehen mit</span> und <span class="term">ohne Zurücklegen</span> unterscheiden und begründen, warum sich nur die zweite Stufe ändert</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../02-zufall-und-wahrscheinlichkeit/index.html#sec-laplace">Thema 2</a> die Laplace-Regel P(E) = |E| : |Ω| und das <a href="../02-zufall-und-wahrscheinlichkeit/index.html#sec-gegen">Gegenereignis</a> P(Ē) = 1 − P(E), außerdem aus <a href="../../01-groessen-und-rechnen/05-multiplizieren-dividieren/index.html#sec-bruchmalbruch">Kapitel 1</a> die Multiplikation zweier Brüche — sie ist der Rechenkern der Produktregel.</p>
+  </section>
+
+  <!-- 1. Das Baumdiagramm -->
+  <section class="card" id="sec-baum">
+    <h2>1. Das Baumdiagramm</h2>
+    <p>Ein <strong>mehrstufiges Zufallsexperiment</strong> besteht aus mehreren Teilexperimenten, die nacheinander ausgeführt werden — zweimal würfeln, dreimal eine Münze werfen, zwei Kugeln nacheinander ziehen. Man zeichnet es als Baum: Von jedem Knoten geht für jeden möglichen Ausgang der nächsten Stufe ein <strong>Ast</strong> ab.</p>
+    <div class="definition-box">
+      <span class="box-label">Pfad und Ergebnismenge</span>
+      Ein <strong>Pfad</strong> ist ein vollständiger Weg von der Wurzel bis zu einem Blatt. Jeder Pfad ist genau <em>ein</em> Ergebnis des Gesamtexperiments.<br>
+      Hat jede Stufe <strong>m</strong> Ausgänge und gibt es <strong>k</strong> Stufen, so gilt <strong>|Ω| = m<sup>k</sup></strong>.<br>
+      <span class="progress-note">Stell unten das Experiment und die Stufenzahl ein und beobachte, wie schnell |Ω| wächst.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Experiment:
+          <select id="bd-exp" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="muenze">Münze werfen (K, Z)</option>
+            <option value="wuerfel6">Würfeln: 6 oder keine 6</option>
+            <option value="ampel">Ampel: rot, gelb, grün</option>
+          </select>
+        </label>
+        <label>Stufen: <input type="range" id="bd-stufen" min="1" max="3" step="1" value="2" style="vertical-align:middle;width:8rem"> <span id="bd-stufen-anzeige" class="term"></span></label>
+      </div>
+      <div class="geo-wrap" id="bd-mount"></div>
+      <div class="me-karten" id="bd-karten"></div>
+      <div class="me-rechnung" id="bd-bilanz"></div>
+      <div id="bd-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Reihenfolge zählt mit</span>
+      Beim zweifachen Münzwurf sind <strong>KZ</strong> und <strong>ZK</strong> zwei <em>verschiedene</em> Pfade, auch wenn beide „einmal Kopf, einmal Zahl“ heißen. Wer sie zu einem Ergebnis zusammenzieht, kommt auf drei statt vier Ergebnisse — und rechnet dann fälschlich mit ⅓ statt ¼. Im Baum sieht man den Unterschied sofort: Es sind zwei getrennte Wege.
+    </div>
+    <div class="quiz" id="quiz-baum"></div>
+  </section>
+
+  <!-- 2. Die 1. Pfadregel -->
+  <section class="card" id="sec-produktregel">
+    <h2>2. Die 1. Pfadregel: entlang eines Pfades multiplizieren</h2>
+    <p>An jeden Ast schreibt man die Wahrscheinlichkeit dieses Teilausgangs. Die Wahrscheinlichkeit eines ganzen Pfades ist dann das <strong>Produkt</strong> aller Astwahrscheinlichkeiten auf dem Weg.</p>
+    <div class="definition-box">
+      <span class="box-label">1. Pfadregel (Produktregel)</span>
+      <strong>P(Pfad) = p<sub>1</sub> · p<sub>2</sub> · … · p<sub>k</sub></strong><br>
+      <span class="progress-note">Klicke im Baum einen Ast nach dem anderen an — das Produkt baut sich Schritt für Schritt auf.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>rote Kugeln: <input type="range" id="pr-rot" min="1" max="9" step="1" value="3" style="vertical-align:middle;width:9rem"> <span id="pr-rot-anzeige" style="font-weight:800;color:#b3261e"></span></label>
+        <label>blaue Kugeln: <input type="range" id="pr-blau" min="1" max="9" step="1" value="7" style="vertical-align:middle;width:9rem"> <span id="pr-blau-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <button type="button" class="btn" id="pr-reset">Auswahl löschen</button>
+      </div>
+      <div class="geo-wrap" id="pr-mount"></div>
+      <div class="me-karten" id="pr-karten"></div>
+      <div class="me-rechnung" id="pr-bilanz"></div>
+      <div id="pr-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Warum multipliziert man?</span>
+      Das rechte Bild zeigt das Einheitsquadrat: Die <em>Breite</em> ist die Wahrscheinlichkeit der ersten Stufe, die <em>Höhe</em> die der zweiten. Der Pfad ist das Rechteck aus beiden — und ein Rechteck hat den <a href="../../02-geometrie/02-flaeche-umfang/index.html#sec-rechteck">Flächeninhalt Breite · Höhe</a>. Genau das ist auch die Bedeutung von <a href="../../01-groessen-und-rechnen/05-multiplizieren-dividieren/index.html#sec-bruchmalbruch">Bruch mal Bruch</a>: ein <em>Anteil von einem Anteil</em>. Die Hälfte von einem Drittel ist ein Sechstel — und die Hälfte der Fälle, in denen schon ein Drittel eingetreten ist, sind ein Sechstel aller Fälle.
+    </div>
+    <div class="quiz" id="quiz-produktregel"></div>
+  </section>
+
+  <!-- 3. Die 2. Pfadregel -->
+  <section class="card" id="sec-summenregel">
+    <h2>3. Die 2. Pfadregel: Pfade eines Ereignisses addieren</h2>
+    <p>Ein Ereignis besteht meist aus <em>mehreren</em> Pfaden. Weil sich zwei verschiedene Pfade nie gleichzeitig ereignen können, darf man ihre Wahrscheinlichkeiten einfach addieren.</p>
+    <div class="definition-box">
+      <span class="box-label">2. Pfadregel (Summenregel)</span>
+      <strong>P(E) = Summe der Wahrscheinlichkeiten aller Pfade, die zu E gehören</strong><br>
+      <span class="progress-note">Wähle unten ein Ereignis — die zugehörigen Pfade werden grün, ihre Summe steht darunter.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Ereignis (3 Münzwürfe):
+          <select id="sr-ereignis" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="genau1">genau einmal Kopf</option>
+            <option value="genau2">genau zweimal Kopf</option>
+            <option value="mind1">mindestens einmal Kopf</option>
+            <option value="mind2">mindestens zweimal Kopf</option>
+            <option value="kein">kein einziges Mal Kopf</option>
+          </select>
+        </label>
+        <label style="display:inline-flex;align-items:center;gap:0.35rem"><input type="checkbox" id="sr-gegen"> Gegenereignis mitzeichnen</label>
+      </div>
+      <div class="geo-wrap" id="sr-mount"></div>
+      <div class="me-karten" id="sr-karten"></div>
+      <div class="me-rechnung" id="sr-bilanz"></div>
+      <div id="sr-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">„Mindestens einmal“ — der Umweg über das Gegenereignis</span>
+      Bei „mindestens einmal Kopf“ gehören <em>sieben</em> der acht Pfade zum Ereignis. Sie einzeln zu addieren ist viel Arbeit. Das Gegenereignis dagegen ist ein <strong>einziger</strong> Pfad: „gar kein Kopf“. Deshalb rechnet man<br>
+      <strong>P(mindestens einmal) = 1 − P(kein einziges Mal)</strong>.<br>
+      Bei k Stufen mit Trefferwahrscheinlichkeit p heißt das P = 1 − (1 − p)<sup>k</sup>. Setz oben den Haken, um beide Wege nebeneinander zu sehen.
+    </div>
+    <div class="quiz" id="quiz-summenregel"></div>
+  </section>
+
+  <!-- 4. Mit und ohne Zurücklegen -->
+  <section class="card" id="sec-zuruecklegen">
+    <h2>4. Ziehen mit und ohne Zurücklegen</h2>
+    <p>Zwei Kugeln aus einer Urne — das ist zweistufig. Entscheidend ist, was zwischen den Zügen passiert: Legt man die erste Kugel <strong>zurück</strong>, ist die Urne vor dem zweiten Zug wieder dieselbe. Legt man sie <strong>nicht</strong> zurück, ist eine Kugel weniger drin — und zwar genau von der gezogenen Farbe.</p>
+    <div class="wissen-box">
+      <span class="box-label">Was sich ändert — und was nicht</span>
+      <strong>Erste Stufe:</strong> in beiden Fällen gleich, die Urne ist ja noch unberührt.<br>
+      <strong>Zweite Stufe:</strong> mit Zurücklegen unverändert; ohne Zurücklegen sinkt der Nenner um 1, und der Zähler der gerade gezogenen Farbe ebenfalls.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>rote Kugeln: <input type="range" id="zz-rot" min="1" max="8" step="1" value="3" style="vertical-align:middle;width:9rem"> <span id="zz-rot-anzeige" style="font-weight:800;color:#b3261e"></span></label>
+        <label>blaue Kugeln: <input type="range" id="zz-blau" min="1" max="8" step="1" value="5" style="vertical-align:middle;width:9rem"> <span id="zz-blau-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <button type="button" class="btn btn-primary" id="zz-modus">ohne Zurücklegen anzeigen</button>
+      </div>
+      <div class="geo-wrap" id="zz-mount"></div>
+      <table class="me-tabelle" id="zz-tabelle"></table>
+      <div class="me-rechnung" id="zz-bilanz"></div>
+      <div id="zz-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der Nenner sinkt, nicht die Wahrscheinlichkeit</span>
+      Ohne Zurücklegen wird P(rot, rot) <em>kleiner</em> als mit Zurücklegen — denn nach einer roten Kugel sind weniger rote übrig. P(rot, blau) wird dagegen <em>größer</em>. Beide Bäume haben aber weiterhin die Pfadsumme 1: Wahrscheinlichkeit verschwindet nicht, sie wird nur umverteilt.
+    </div>
+    <div class="quiz" id="quiz-zuruecklegen"></div>
+  </section>
+
+  <!-- 5. Ungleiche Stufen -->
+  <section class="card" id="sec-ungleich">
+    <h2>5. Wenn die Stufen ganz verschieden sind</h2>
+    <p>In Sachaufgaben sind die beiden Stufen oft völlig unterschiedliche Vorgänge: erst das Wetter, dann der Bus. Am Baum ändert das nichts — die erste Stufe verzweigt in die Wetterlagen, und an jedem dieser Knoten hängt ein <em>eigenes</em> Astpaar für den Bus.</p>
+    <div class="definition-box">
+      <span class="box-label">Zusammengesetztes Ereignis über beide Stufen</span>
+      Ein Ereignis, das an mehreren Stellen des Baums vorkommt, sammelt man mit <em>beiden</em> Pfadregeln ein:<br>
+      <strong>P(E) = p<sub>1</sub> · q<sub>1</sub> + p<sub>2</sub> · q<sub>2</sub></strong> &nbsp;— erst entlang der Pfade multiplizieren, dann über die Pfade addieren.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Regenwahrscheinlichkeit: <input type="range" id="ug-regen" min="10" max="80" step="5" value="30" style="vertical-align:middle;width:9rem"> <span id="ug-regen-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>Bus zu spät bei Regen: <input type="range" id="ug-q1" min="10" max="90" step="5" value="40" style="vertical-align:middle;width:9rem"> <span id="ug-q1-anzeige" style="font-weight:800;color:#b3650a"></span></label>
+        <label>… bei trockenem Wetter: <input type="range" id="ug-q2" min="0" max="60" step="5" value="10" style="vertical-align:middle;width:9rem"> <span id="ug-q2-anzeige" style="font-weight:800;color:#b3650a"></span></label>
+      </div>
+      <div class="geo-wrap" id="ug-mount"></div>
+      <div class="me-karten" id="ug-karten"></div>
+      <div class="me-rechnung" id="ug-bilanz"></div>
+      <div id="ug-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Prozentzahlen der zweiten Stufe darf man nicht einfach mitteln</span>
+      Bei 40 % Verspätung im Regen und 10 % bei Trockenheit ist die Gesamtverspätung <em>nicht</em> 25 %. Jeder Ast wird mit dem <strong>Gewicht seines Zweigs</strong> multipliziert: Wenn es nur an 30 % der Tage regnet, zählt die 40 % auch nur zu 30 % mit. Genau deshalb liegt das Ergebnis näher am Wert des häufigeren Zweigs.
+    </div>
+    <div class="quiz" id="quiz-ungleich"></div>
+  </section>
+
+  <!-- 6. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>6. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../02-zufall-und-wahrscheinlichkeit/index.html#sec-laplace">Die Laplace-Regel</a> — sie liefert die Zahlen <em>an den Ästen</em>. Jede einzelne Stufe wird für sich mit P = |E| : |Ω| bewertet, erst danach wird multipliziert.</li>
+      <li><strong>Baut auf:</strong> <a href="../02-zufall-und-wahrscheinlichkeit/index.html#sec-gegen">Das Gegenereignis</a> — es macht aus sieben Pfaden einen. Ohne P(Ē) = 1 − P(E) sind „mindestens“-Aufgaben mit vielen Stufen praktisch nicht zu rechnen.</li>
+      <li><strong>Baut auf:</strong> <a href="../../01-groessen-und-rechnen/05-multiplizieren-dividieren/index.html#sec-bruchmalbruch">Bruch mal Bruch</a> — die Produktregel <em>ist</em> die Anteil-vom-Anteil-Deutung der Bruchmultiplikation, nur mit Wahrscheinlichkeiten statt Kuchenstücken.</li>
+      <li><strong>Baut auf:</strong> <a href="../../02-geometrie/02-flaeche-umfang/index.html#sec-rechteck">Der Flächeninhalt des Rechtecks</a> — im Einheitsquadrat ist jeder Pfad ein Rechteck mit A = Breite · Höhe. Dass alle Pfadwahrscheinlichkeiten zusammen 1 ergeben, ist dort schlicht: Die Rechtecke füllen das Quadrat lückenlos aus.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../01-daten-und-haeufigkeiten/index.html#sec-urliste">Die relative Häufigkeit</a> — führt man das mehrstufige Experiment sehr oft durch, so pendeln sich die Anteile der einzelnen Pfade bei genau den berechneten Pfadwahrscheinlichkeiten ein. Der Baum sagt voraus, die Strichliste misst nach.</li>
+      <li><strong>Führt weiter zu:</strong> Der <strong>bedingten Wahrscheinlichkeit</strong>. Die Zahlen an der zweiten Stufe sind bereits bedingte Wahrscheinlichkeiten — „P(blau, <em>nachdem</em> rot gezogen wurde)“. Beim Ziehen ohne Zurücklegen sieht man das direkt: Der zweite Ast hängt davon ab, was auf dem ersten passiert ist.</li>
+      <li><strong>Führt weiter zu:</strong> Der <strong>stochastischen Unabhängigkeit</strong> — genau dem Fall, in dem die zweite Stufe an <em>allen</em> Knoten dieselben Zahlen trägt. Ziehen mit Zurücklegen ist der Musterfall, Ziehen ohne Zurücklegen der Gegenfall.</li>
+    </ul>
+  </section>
+
+  <!-- 7. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>7. Formelsammlung</h2>
+    <p>Baumdiagramm, beide Pfadregeln, der „mindestens“-Trick und der Unterschied zwischen Ziehen mit und ohne Zurücklegen mit Zeichnungen, Beispielen und typischen Fehlern auf zwei Seiten — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 8. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>8. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit. Wo eine Prozentzahl verlangt ist, trägst du nur die Zahl vor dem Prozentzeichen ein.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 3 Daten und Zufall</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
