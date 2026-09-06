@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bedingte Wahrscheinlichkeit und Unabhängigkeit</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">3 Daten und Zufall</a><span class="sep">/</span>
+  4 Bedingte Wahrscheinlichkeit und Unabhängigkeit
+</nav>
+<header class="page-header">
+  <h1>Bedingte Wahrscheinlichkeit und Unabhängigkeit</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Bisher galt: Wahrscheinlichkeit ist der Anteil der günstigen an <em>allen</em> Ergebnissen. Jetzt kommt eine Zusatzinformation ins Spiel — „von den Radfahrenden …“, „unter denen mit positivem Test …“. Damit ändert sich nicht das Ereignis, sondern das <strong>Ganze</strong>, auf das man den Anteil bezieht. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>eine <span class="term">bedingte Wahrscheinlichkeit</span> P(A|B) als Anteil in einer <em>verkleinerten</em> Grundmenge bestimmen</li>
+      <li>eine <span class="term">Vierfeldertafel</span> aufstellen, vervollständigen und daraus alle Wahrscheinlichkeiten ablesen</li>
+      <li>denselben Sachverhalt als <span class="term">Baum in beiden Reihenfolgen</span> darstellen — und erklären, warum P(A|B) und P(B|A) verschieden sind</li>
+      <li><span class="term">stochastische Unabhängigkeit</span> prüfen: P(A ∩ B) = P(A) · P(B)</li>
+      <li>begründen, warum ein guter Test bei einer <span class="term">seltenen Krankheit</span> trotzdem meistens falschen Alarm gibt</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../03-mehrstufige-zufallsexperimente/index.html#sec-produktregel">Thema 3</a> die beiden Pfadregeln — die Zahlen an der zweiten Stufe eines Baumdiagramms <em>sind</em> bereits bedingte Wahrscheinlichkeiten — und aus <a href="../01-daten-und-haeufigkeiten/index.html#sec-urliste">Thema 1</a> die relative Häufigkeit.</p>
+  </section>
+
+  <!-- 1. Die verkleinerte Grundmenge -->
+  <section class="card" id="sec-bedingt">
+    <h2>1. „Unter der Bedingung, dass …“</h2>
+    <p>In einer Klasse tragen einige eine Brille, einige kommen mit dem Rad. Die Frage „Wie viele tragen eine Brille?“ und die Frage „Wie viele <em>der Radfahrenden</em> tragen eine Brille?“ haben verschiedene Antworten — obwohl es um dieselben Kinder geht.</p>
+    <div class="definition-box">
+      <span class="box-label">Bedingte Wahrscheinlichkeit</span>
+      <strong>P(A|B)</strong> („P von A unter der Bedingung B“) ist der Anteil von A <em>innerhalb</em> von B:<br>
+      <strong>P(A|B) = |A ∩ B| : |B|</strong> &nbsp;bzw.&nbsp; <strong>P(A|B) = P(A ∩ B) : P(B)</strong><br>
+      <span class="progress-note">Im Nenner steht nicht mehr ganz Ω, sondern nur noch B — die Bedingung ist die neue Grundmenge.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Bedingung:
+          <select id="re-bedingung" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="alle">keine — die ganze Klasse</option>
+            <option value="rad">nur die Radfahrenden</option>
+            <option value="kein-rad">nur die ohne Rad</option>
+          </select>
+        </label>
+        <button type="button" class="btn" id="re-neu">🎲 neue Klasse</button>
+      </div>
+      <div class="geo-wrap" id="re-mount"></div>
+      <div class="bw-karten" id="re-karten"></div>
+      <div class="bw-rechnung" id="re-bilanz"></div>
+      <div id="re-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — P(A|B) und P(B|A) sind nicht dasselbe</span>
+      „Wie viele der Radfahrenden tragen eine Brille?“ und „Wie viele der Brillenträger fahren Rad?“ sind zwei verschiedene Fragen. Der Zähler ist beide Male gleich (die Kinder mit Rad <em>und</em> Brille), aber der Nenner ist ein anderer. Nur wenn zufällig gleich viele Rad fahren wie Brille tragen, kommt dasselbe heraus.
+    </div>
+    <div class="quiz" id="quiz-bedingt"></div>
+  </section>
+
+  <!-- 2. Die Vierfeldertafel -->
+  <section class="card" id="sec-vierfeldertafel">
+    <h2>2. Die Vierfeldertafel</h2>
+    <p>Zwei Ja-Nein-Merkmale ergeben vier Fälle. Trägt man sie in eine Tabelle ein und ergänzt die Randsummen, lässt sich <em>jede</em> der Wahrscheinlichkeiten direkt ablesen — man muss nur wissen, welche Zahl der Nenner ist.</p>
+    <div class="wissen-box">
+      <span class="box-label">Wo steht welcher Nenner?</span>
+      <strong>P(A)</strong> — Randsumme der A-Zeile geteilt durch die Gesamtzahl.<br>
+      <strong>P(A ∩ B)</strong> — <em>eine</em> Zelle geteilt durch die Gesamtzahl.<br>
+      <strong>P(A|B)</strong> — dieselbe Zelle, aber geteilt durch die Randsumme der <em>B-Spalte</em>.<br>
+      <span class="progress-note">Die Zelle bleibt gleich, der Nenner wechselt — das ist der ganze Unterschied.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>A und B: <input type="range" id="vf-ab" min="0" max="40" step="1" value="14" style="vertical-align:middle;width:8rem"> <span id="vf-ab-anzeige" class="term"></span></label>
+        <label>A ohne B: <input type="range" id="vf-anb" min="0" max="40" step="1" value="6" style="vertical-align:middle;width:8rem"> <span id="vf-anb-anzeige" class="term"></span></label>
+        <label>B ohne A: <input type="range" id="vf-nab" min="0" max="40" step="1" value="16" style="vertical-align:middle;width:8rem"> <span id="vf-nab-anzeige" class="term"></span></label>
+        <label>weder noch: <input type="range" id="vf-nanb" min="0" max="40" step="1" value="14" style="vertical-align:middle;width:8rem"> <span id="vf-nanb-anzeige" class="term"></span></label>
+      </div>
+      <table class="bw-tafel" id="vf-tafel"></table>
+      <div class="bw-karten" id="vf-karten"></div>
+      <div class="bw-rechnung" id="vf-bilanz"></div>
+      <div id="vf-text" class="event-result"></div>
+    </div>
+    <div class="quiz" id="quiz-vierfeldertafel"></div>
+  </section>
+
+  <!-- 3. Den Baum umdrehen -->
+  <section class="card" id="sec-umdrehen">
+    <h2>3. Denselben Sachverhalt, zwei Bäume</h2>
+    <p>Aus derselben Vierfeldertafel lassen sich zwei <a href="../03-mehrstufige-zufallsexperimente/index.html#sec-baum">Baumdiagramme</a> zeichnen: eines, das zuerst nach A verzweigt, und eines, das zuerst nach B verzweigt. Die vier Pfadwerte sind in beiden Bäumen dieselben — die Zahlen an den Ästen der zweiten Stufe aber nicht.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>A und B: <input type="range" id="bu-ab" min="1" max="40" step="1" value="12" style="vertical-align:middle;width:8rem"> <span id="bu-ab-anzeige" class="term"></span></label>
+        <label>A ohne B: <input type="range" id="bu-anb" min="1" max="40" step="1" value="8" style="vertical-align:middle;width:8rem"> <span id="bu-anb-anzeige" class="term"></span></label>
+        <label>B ohne A: <input type="range" id="bu-nab" min="1" max="40" step="1" value="18" style="vertical-align:middle;width:8rem"> <span id="bu-nab-anzeige" class="term"></span></label>
+        <label>weder noch: <input type="range" id="bu-nanb" min="1" max="40" step="1" value="12" style="vertical-align:middle;width:8rem"> <span id="bu-nanb-anzeige" class="term"></span></label>
+      </div>
+      <div class="geo-wrap" id="bu-mount"></div>
+      <div class="bw-rechnung" id="bu-bilanz"></div>
+      <div id="bu-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Woran man das erkennt</span>
+      An der ersten Stufe steht die <strong>unbedingte</strong> Wahrscheinlichkeit des Merkmals, mit dem man beginnt. An der zweiten Stufe stehen <strong>bedingte</strong> Wahrscheinlichkeiten — sie hängen davon ab, welchen Ast man vorher genommen hat. Dreht man den Baum um, tauschen die Rollen: Aus P(B|A) wird P(A|B).
+    </div>
+    <div class="quiz" id="quiz-umdrehen"></div>
+  </section>
+
+  <!-- 4. Stochastische Unabhängigkeit -->
+  <section class="card" id="sec-unabhaengig">
+    <h2>4. Stochastische Unabhängigkeit</h2>
+    <p>Manchmal ändert die Bedingung gar nichts: Der Anteil der Brillenträger ist unter den Radfahrenden genauso groß wie in der ganzen Klasse. Dann heißen die beiden Merkmale <strong>stochastisch unabhängig</strong>.</p>
+    <div class="definition-box">
+      <span class="box-label">Unabhängigkeit — drei gleichwertige Formulierungen</span>
+      <strong>P(A|B) = P(A)</strong> &nbsp;⟺&nbsp; <strong>P(B|A) = P(B)</strong> &nbsp;⟺&nbsp; <strong>P(A ∩ B) = P(A) · P(B)</strong><br>
+      <span class="progress-note">Die letzte ist die bequemste Probe: Man rechnet beide Seiten aus und vergleicht.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Verschiebung: <input type="range" id="ua-schub" min="-12" max="12" step="1" value="4" style="vertical-align:middle;width:12rem"> <span id="ua-schub-anzeige" class="term"></span></label>
+        <button type="button" class="btn btn-primary" id="ua-unabhaengig">genau unabhängig machen</button>
+      </div>
+      <table class="bw-tafel" id="ua-tafel"></table>
+      <div class="geo-wrap" id="ua-mount"></div>
+      <div class="bw-karten" id="ua-karten"></div>
+      <div class="bw-rechnung" id="ua-bilanz"></div>
+      <div id="ua-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — unabhängig heißt nicht „hat nichts miteinander zu tun“</span>
+      Stochastische Unabhängigkeit ist eine <em>Rechenaussage</em> über Anteile, keine Aussage über Ursachen. Zwei Merkmale können unabhängig sein und trotzdem inhaltlich zusammenhängen — und umgekehrt bedeutet Abhängigkeit nicht, dass das eine das andere <em>verursacht</em>. Beim <a href="../03-mehrstufige-zufallsexperimente/index.html#sec-zuruecklegen">Ziehen ohne Zurücklegen</a> sind die beiden Züge abhängig; mit Zurücklegen sind sie unabhängig — dort sieht man den Unterschied direkt an den Ästen der zweiten Stufe.
+    </div>
+    <div class="quiz" id="quiz-unabhaengig"></div>
+  </section>
+
+  <!-- 5. Seltene Krankheit -->
+  <section class="card" id="sec-basisrate">
+    <h2>5. Warum ein guter Test trotzdem meistens irrt</h2>
+    <p>Ein Test erkennt 99 % der Kranken und schlägt nur bei 1 % der Gesunden fälschlich an. Klingt hervorragend. Ist die Krankheit aber selten, so sind unter den positiv Getesteten trotzdem die <em>meisten</em> gesund. Der Grund steht in den absoluten Zahlen.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Kranke je 10 000: <input type="range" id="br-kranke" min="1" max="1000" step="1" value="10" style="vertical-align:middle;width:10rem"> <span id="br-kranke-anzeige" class="term"></span></label>
+        <label>Test erkennt Kranke: <input type="range" id="br-sens" min="50" max="100" step="1" value="99" style="vertical-align:middle;width:8rem"> <span id="br-sens-anzeige" style="font-weight:800;color:#157347"></span></label>
+        <label>Fehlalarm bei Gesunden: <input type="range" id="br-falsch" min="0" max="20" step="1" value="1" style="vertical-align:middle;width:8rem"> <span id="br-falsch-anzeige" style="font-weight:800;color:#b3650a"></span></label>
+      </div>
+      <div class="geo-wrap" id="br-mount"></div>
+      <table class="bw-tafel" id="br-tafel"></table>
+      <div class="bw-karten" id="br-karten"></div>
+      <div class="bw-rechnung" id="br-bilanz"></div>
+      <div id="br-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die berühmteste Verwechslung der Stochastik</span>
+      „Der Test erkennt 99 % der Kranken“ ist <strong>P(positiv | krank)</strong>. Gefragt ist aber <strong>P(krank | positiv)</strong> — und das ist eine ganz andere Zahl. Wer beides verwechselt, hält einen Fehlalarm für eine Diagnose. Die absoluten Zahlen zeigen sofort, warum: Wenige Kranke stehen sehr vielen Gesunden gegenüber, und schon ein kleiner Prozentsatz von sehr vielen ergibt eine große Zahl.
+    </div>
+    <div class="quiz" id="quiz-basisrate"></div>
+  </section>
+
+  <!-- 6. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>6. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../03-mehrstufige-zufallsexperimente/index.html#sec-produktregel">Die 1. Pfadregel</a> — sie ist die bedingte Wahrscheinlichkeit in anderer Schreibweise: P(A ∩ B) = P(A) · P(B|A). An der zweiten Stufe eines Baums standen also schon immer bedingte Wahrscheinlichkeiten, nur ohne den Namen.</li>
+      <li><strong>Baut auf:</strong> <a href="../03-mehrstufige-zufallsexperimente/index.html#sec-zuruecklegen">Ziehen mit und ohne Zurücklegen</a> — der Musterfall für unabhängig (mit) und abhängig (ohne). Ohne Zurücklegen ändern sich die Zahlen der zweiten Stufe je nach erstem Zug; genau das <em>ist</em> Abhängigkeit.</li>
+      <li><strong>Baut auf:</strong> <a href="../02-zufall-und-wahrscheinlichkeit/index.html#sec-laplace">Die Laplace-Regel</a> — P(A|B) = |A ∩ B| : |B| ist wieder nur „günstige durch alle“, bloß mit einem kleineren „alle“.</li>
+      <li><strong>Baut auf:</strong> <a href="../01-daten-und-haeufigkeiten/index.html#sec-diagramme">Häufigkeiten in Tabellen</a> — die Vierfeldertafel ist eine gewöhnliche Häufigkeitstabelle mit zwei Merkmalen; die Randsummen sind die Häufigkeiten der einzelnen Merkmale.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../../01-groessen-und-rechnen/03-brueche-und-dezimalzahlen/index.html#sec-anteil">Der Anteil</a> — „40 % der Radfahrenden“ ist ein Anteil eines Anteils. Deshalb rechnet man beim Umdrehen des Baums nicht mit den Prozentsätzen selbst, sondern immer über die absoluten Zahlen oder über P(A ∩ B).</li>
+      <li><strong>Führt weiter zu:</strong> Der <strong>Vierfeldertafel mit Wahrscheinlichkeiten statt Anzahlen</strong> und dem <strong>Satz von Bayes</strong> in der Oberstufe. Dort wird aus dem Umdrehen des Baums eine Formel, die genau das leistet, was du hier durch Auszählen bekommst.</li>
+      <li><strong>Führt weiter zu:</strong> Der Unterscheidung von <strong>Zusammenhang und Ursache</strong> in der Statistik — zwei Merkmale können stochastisch abhängig sein, ohne dass das eine das andere bewirkt.</li>
+    </ul>
+  </section>
+
+  <!-- 7. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>7. Formelsammlung</h2>
+    <p>Bedingte Wahrscheinlichkeit, Vierfeldertafel, beide Bäume, der Unabhängigkeitstest und die Falle mit der seltenen Krankheit — mit Zeichnungen, Beispielen und typischen Fehlern auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 8. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>8. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit. Wo eine Prozentzahl verlangt ist, trägst du nur die Zahl vor dem Prozentzeichen ein.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 3 Daten und Zufall</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
