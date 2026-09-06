@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prozent- und Zinsrechnung</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">4 Gleichungen, Zuordnungen und Funktionen</a><span class="sep">/</span>
+  2 Prozent- und Zinsrechnung
+</nav>
+<header class="page-header">
+  <h1>Prozent- und Zinsrechnung</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>„30 % reduziert“, „19 % Mehrwertsteuer“, „2,5 % Zinsen“ — Prozente sind die Sprache, in der Anteile vergleichbar gemacht werden. Ein Prozent ist nichts anderes als <strong>ein Hundertstel</strong>, und die ganze Prozentrechnung ist deshalb eine <a href="../01-zuordnungen/index.html#sec-proportional">proportionale Zuordnung</a> mit dem Faktor p : 100. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li><span class="term">Grundwert G</span>, <span class="term">Prozentsatz p&nbsp;%</span> und <span class="term">Prozentwert W</span> in einer Sachsituation auseinanderhalten</li>
+      <li>alle <span class="term">drei Grundaufgaben</span> lösen — je nachdem, welche der drei Größen gesucht ist</li>
+      <li>mit dem <span class="term">Wachstumsfaktor</span> rechnen und den <span class="term">vermehrten und verminderten Grundwert</span> zurückrechnen</li>
+      <li><span class="term">Zinsen</span> für ein ganzes Jahr, für Monate und für Tage berechnen</li>
+      <li>erklären, warum beim <span class="term">Zinseszins</span> mehr herauskommt als beim einfachen Zins</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../../01-groessen-und-rechnen/03-brueche-und-dezimalzahlen/index.html#sec-anteil">Kapitel 1</a> den Anteil und die Umwandlung von Brüchen in Dezimalzahlen sowie aus <a href="../01-zuordnungen/index.html#sec-dreisatz">Thema 1</a> den Dreisatz — jede Prozentaufgabe lässt sich damit auch ohne Formel lösen.</p>
+  </section>
+
+  <!-- 1. Grundwert, Prozentsatz, Prozentwert -->
+  <section class="card" id="sec-grundbegriffe">
+    <h2>1. Die drei Größen der Prozentrechnung</h2>
+    <p>Ein Pullover kostet <strong>80 €</strong> und wird um <strong>25 %</strong> reduziert. Die Ersparnis beträgt <strong>20 €</strong>. In diesem einen Satz stecken alle drei Größen — und der häufigste Fehler ist, sie zu verwechseln.</p>
+    <div class="definition-box">
+      <span class="box-label">Die drei Größen</span>
+      <strong>Grundwert G</strong> — das Ganze, worauf sich die Prozente beziehen (hier: 80 €). Er entspricht <strong>100 %</strong>.<br>
+      <strong>Prozentsatz p&nbsp;%</strong> — der Anteil in Hundertsteln (hier: 25 %).<br>
+      <strong>Prozentwert W</strong> — der zum Prozentsatz gehörende Teil in derselben Einheit wie G (hier: 20 €).<br>
+      <span class="progress-note">1 % = 1 : 100 = 0,01. Deshalb gilt <strong>W = G · p : 100</strong>.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Grundwert G: <input type="range" id="gb-g" min="20" max="400" step="20" value="80" style="vertical-align:middle;width:10rem"> <span id="gb-g-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>Prozentsatz p&nbsp;%: <input type="range" id="gb-p" min="5" max="100" step="5" value="25" style="vertical-align:middle;width:10rem"> <span id="gb-p-anzeige" style="font-weight:800;color:#b3261e"></span></label>
+      </div>
+      <div class="geo-wrap" id="gb-mount"></div>
+      <div class="pz-karten" id="gb-karten"></div>
+      <div class="pz-rechnung" id="gb-bilanz"></div>
+      <div id="gb-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — 100 % ist nicht immer der größere der beiden Preise</span>
+      Der Grundwert ist die Größe, auf die sich die Prozentangabe <em>bezieht</em>. Bei „25 % Rabatt auf 80 €“ ist G = 80 € der alte Preis. Bei „der Preis ist um 25 % <em>gestiegen</em> auf 80 €“ ist G dagegen der <em>alte</em>, unbekannte Preis — die 80 € sind dann 125 %. Wer hier den falschen Wert als 100 % nimmt, rechnet die ganze Aufgabe falsch. Frage immer zuerst: <strong>Wovon</strong> sind es Prozent?
+    </div>
+    <div class="quiz" id="quiz-grundbegriffe"></div>
+  </section>
+
+  <!-- 2. Die drei Grundaufgaben -->
+  <section class="card" id="sec-grundaufgaben">
+    <h2>2. Die drei Grundaufgaben</h2>
+    <p>Zwischen G, p und W besteht <em>eine</em> Beziehung. Kennt man zwei der drei Größen, ist die dritte festgelegt. Daraus ergeben sich genau drei Aufgabentypen.</p>
+    <div class="definition-box">
+      <span class="box-label">Die drei Formeln — alle aus einer</span>
+      <strong>W = G · p : 100</strong> &nbsp;(Prozentwert gesucht)<br>
+      <strong>G = W · 100 : p</strong> &nbsp;(Grundwert gesucht)<br>
+      <strong>p = W · 100 : G</strong> &nbsp;(Prozentsatz gesucht)<br>
+      <span class="progress-note">Man muss sie nicht auswendig lernen: Wer W : G = p : 100 im Kopf hat, kann jede der drei durch Umstellen gewinnen.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Gesucht ist:
+          <select id="ga-typ" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="W">der Prozentwert W</option>
+            <option value="G">der Grundwert G</option>
+            <option value="p">der Prozentsatz p&nbsp;%</option>
+          </select>
+        </label>
+        <label>Aufgabe: <input type="range" id="ga-nr" min="0" max="3" step="1" value="0" style="vertical-align:middle;width:8rem"> <span id="ga-nr-anzeige" class="term"></span></label>
+      </div>
+      <div class="pz-schalter" id="ga-schalter"></div>
+      <div id="ga-frage" class="event-result"></div>
+      <div class="pz-schritte" id="ga-schritte"></div>
+      <div class="pz-rechnung" id="ga-bilanz"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Dreisatz oder Formel — beides führt zum Ziel</span>
+      Der <strong>Dreisatz</strong> geht über 1 %: erst durch p teilen, dann mit 100 multiplizieren (oder umgekehrt). Die <strong>Formel</strong> fasst genau diese beiden Schritte zusammen. Wer unsicher ist, welche Formel gilt, schreibt den Dreisatz hin — er verrät die Formel von selbst.
+    </div>
+    <div class="quiz" id="quiz-grundaufgaben"></div>
+  </section>
+
+  <!-- 3. Prozentuale Veränderung -->
+  <section class="card" id="sec-veraenderung">
+    <h2>3. Veränderungen: der Wachstumsfaktor</h2>
+    <p>Steigt ein Preis um 20 %, so sind es danach <strong>120 %</strong> des alten Preises. Statt „Prozentwert ausrechnen und addieren“ multipliziert man deshalb gleich mit <strong>1,2</strong> — dem <strong>Wachstumsfaktor</strong>.</p>
+    <div class="definition-box">
+      <span class="box-label">Vermehrter und verminderter Grundwert</span>
+      Zunahme um p&nbsp;%: &nbsp;<strong>G<sub>neu</sub> = G · (1 + p : 100)</strong><br>
+      Abnahme um p&nbsp;%: &nbsp;<strong>G<sub>neu</sub> = G · (1 − p : 100)</strong><br>
+      <span class="progress-note">Der Klammerausdruck heißt <strong>Wachstumsfaktor q</strong>. Rückwärts wird durch ihn <em>dividiert</em>: G = G<sub>neu</sub> : q.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Ausgangswert G: <input type="range" id="vv-g" min="20" max="400" step="20" value="200" style="vertical-align:middle;width:9rem"> <span id="vv-g-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>Veränderung p&nbsp;%: <input type="range" id="vv-p" min="5" max="60" step="5" value="20" style="vertical-align:middle;width:9rem"> <span id="vv-p-anzeige" style="font-weight:800;color:#b3261e"></span></label>
+        <label>Richtung:
+          <select id="vv-richtung" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+            <option value="auf">Zunahme (+)</option>
+            <option value="ab">Abnahme (−)</option>
+          </select>
+        </label>
+      </div>
+      <div class="geo-wrap" id="vv-mount"></div>
+      <div class="pz-karten" id="vv-karten"></div>
+      <div class="pz-rechnung" id="vv-bilanz"></div>
+      <div id="vv-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Auf und Ab heben sich nicht auf</span>
+      Ein Preis steigt um 20 % und fällt danach um 20 %. Er ist <em>nicht</em> wieder der alte: 1,2 · 0,8 = <strong>0,96</strong>, es fehlen 4 %. Der Grund: Die zweite Prozentangabe bezieht sich auf den <em>neuen</em>, größeren Grundwert. Prozentangaben darf man deshalb <strong>nie addieren oder subtrahieren</strong> — man <strong>multipliziert die Faktoren</strong>.
+    </div>
+    <div class="quiz" id="quiz-veraenderung"></div>
+  </section>
+
+  <!-- 4. Zinsrechnung -->
+  <section class="card" id="sec-zinsen">
+    <h2>4. Zinsrechnung</h2>
+    <p>Die Zinsrechnung ist Prozentrechnung mit neuen Namen: Das <strong>Kapital K</strong> ist der Grundwert, der <strong>Zinssatz p&nbsp;%</strong> der Prozentsatz, die <strong>Zinsen Z</strong> sind der Prozentwert. Neu ist nur die <strong>Zeit</strong>.</p>
+    <div class="definition-box">
+      <span class="box-label">Jahres-, Monats- und Tageszinsen</span>
+      Ein Jahr: &nbsp;<strong>Z = K · p : 100</strong><br>
+      m Monate: &nbsp;<strong>Z = K · p : 100 · m : 12</strong><br>
+      t Tage: &nbsp;<strong>Z = K · p : 100 · t : 360</strong><br>
+      <span class="progress-note">In der Bankrechnung hat das Zinsjahr <strong>360 Tage</strong> und jeder Monat <strong>30 Tage</strong> — deshalb kommen bei Tageszinsen glatte Zahlen heraus.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Kapital K: <input type="range" id="zi-k" min="500" max="10000" step="500" value="3000" style="vertical-align:middle;width:9rem"> <span id="zi-k-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>Zinssatz p&nbsp;%: <input type="range" id="zi-p" min="5" max="80" step="5" value="25" style="vertical-align:middle;width:9rem"> <span id="zi-p-anzeige" style="font-weight:800;color:#b3261e"></span></label>
+        <label>Laufzeit: <input type="range" id="zi-m" min="1" max="12" step="1" value="12" style="vertical-align:middle;width:9rem"> <span id="zi-m-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+      </div>
+      <div class="geo-wrap" id="zi-mount"></div>
+      <div class="pz-karten" id="zi-karten"></div>
+      <div class="pz-rechnung" id="zi-bilanz"></div>
+      <div id="zi-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Woran man die gesuchte Größe erkennt</span>
+      <strong>„Wie viel Zinsen?“</strong> → Z gesucht, Formel direkt anwenden.<br>
+      <strong>„Welches Kapital war angelegt?“</strong> → K gesucht, durch p : 100 (und den Zeitanteil) dividieren.<br>
+      <strong>„Zu welchem Zinssatz?“</strong> → p gesucht: p = Z · 100 : K, bei Teiljahren zusätzlich durch den Zeitanteil teilen.
+    </div>
+    <div class="quiz" id="quiz-zinsen"></div>
+  </section>
+
+  <!-- 5. Zinseszins -->
+  <section class="card" id="sec-zinseszins">
+    <h2>5. Zinseszins</h2>
+    <p>Bleiben die Zinsen auf dem Konto, so werden sie im nächsten Jahr <em>mitverzinst</em>. Aus dem Wachstumsfaktor aus Abschnitt 3 wird dann eine <strong>Potenz</strong>: Jedes Jahr wird erneut mit demselben q multipliziert.</p>
+    <div class="definition-box">
+      <span class="box-label">Zinseszinsformel</span>
+      <strong>K<sub>n</sub> = K<sub>0</sub> · q<sup>n</sup></strong> &nbsp;mit&nbsp; <strong>q = 1 + p : 100</strong><br>
+      <span class="progress-note">K<sub>0</sub> ist das Startkapital, n die Anzahl der Jahre, K<sub>n</sub> das Endkapital. Ohne Zinseszins wären es dagegen nur K<sub>0</sub> · (1 + n · p : 100).</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Startkapital K₀: <input type="range" id="ze-k" min="500" max="5000" step="500" value="2000" style="vertical-align:middle;width:9rem"> <span id="ze-k-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>Zinssatz p&nbsp;%: <input type="range" id="ze-p" min="1" max="15" step="1" value="5" style="vertical-align:middle;width:9rem"> <span id="ze-p-anzeige" style="font-weight:800;color:#b3261e"></span></label>
+        <label>Jahre n: <input type="range" id="ze-n" min="1" max="20" step="1" value="10" style="vertical-align:middle;width:9rem"> <span id="ze-n-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+      </div>
+      <div class="geo-wrap" id="ze-mount"></div>
+      <div class="pz-legende">
+        <span><i style="background:#6d28d9"></i> mit Zinseszins</span>
+        <span><i style="background:#b3650a"></i> ohne Zinseszins (nur Startkapital verzinst)</span>
+      </div>
+      <div class="pz-karten" id="ze-karten"></div>
+      <div class="pz-rechnung" id="ze-bilanz"></div>
+      <div id="ze-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — n Jahre sind nicht n · p Prozent</span>
+      5 % über 10 Jahre ergeben <strong>nicht</strong> 50 % Zuwachs, sondern 1,05<sup>10</sup> ≈ 1,629, also rund 63 %. Der Unterschied wächst mit jedem Jahr, weil die Zinsen selbst wieder Zinsen tragen. Umgekehrt gilt: Wer nach dem Startkapital fragt, muss <strong>durch</strong> q<sup>n</sup> dividieren — nicht den Zuwachs abziehen.
+    </div>
+    <div class="quiz" id="quiz-zinseszins"></div>
+  </section>
+
+  <!-- 6. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>6. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../../01-groessen-und-rechnen/03-brueche-und-dezimalzahlen/index.html#sec-anteil">Brüche und Dezimalzahlen</a> — „p %“ ist nur eine andere Schreibweise für den Bruch p : 100 und die Dezimalzahl 0,0p. Deshalb sind 25 %, ¼ und 0,25 dieselbe Zahl.</li>
+      <li><strong>Baut auf:</strong> <a href="../01-zuordnungen/index.html#sec-proportional">Proportionale Zuordnungen</a> — „x % von G“ ist die proportionale Zuordnung p ↦ W mit dem Faktor G : 100. Jede der drei Grundaufgaben ist deshalb auch ein <a href="../01-zuordnungen/index.html#sec-dreisatz">Dreisatz</a>.</li>
+      <li><strong>Baut auf:</strong> <a href="../../01-groessen-und-rechnen/05-multiplizieren-dividieren/index.html#sec-division">Multiplizieren und Dividieren</a> — der Übergang vom Grundwert zum vermehrten Grundwert ist eine Multiplikation, der Weg zurück die zugehörige Division. Genau deshalb heben sich +20 % und −20 % nicht auf.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../../02-geometrie/08-aehnlichkeit/index.html">Ähnlichkeit</a> — der Wachstumsfaktor q wirkt auf Preise wie der Streckfaktor k auf Längen. Zwei Vergrößerungen hintereinander ergeben auch dort das <em>Produkt</em> der Faktoren, nicht ihre Summe.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../../03-daten-und-zufall/01-daten-und-haeufigkeiten/index.html#sec-urliste">Relative Häufigkeiten</a> — sie werden fast immer in Prozent angegeben. Der Grundwert ist dort der Stichprobenumfang n.</li>
+      <li><strong>Führt weiter zu:</strong> Den <strong>linearen Funktionen</strong> — die Zinsen ohne Zinseszins wachsen linear: K + n · Z ist eine Gerade mit der Steigung Z.</li>
+      <li><strong>Führt weiter zu:</strong> Den <strong>Exponentialfunktionen</strong> — K<sub>n</sub> = K<sub>0</sub> · q<sup>n</sup> ist die Grundgleichung exponentiellen Wachstums. Zinseszins, Bevölkerungswachstum und radioaktiver Zerfall folgen alle demselben Bauplan; nur das q unterscheidet sich.</li>
+      <li><strong>Führt weiter zu:</strong> Den <strong>Potenzen und Wurzeln</strong> — will man aus K<sub>0</sub>, K<sub>n</sub> und n den Zinssatz bestimmen, muss man die n-te Wurzel aus dem Quotienten ziehen.</li>
+    </ul>
+  </section>
+
+  <!-- 7. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>7. Formelsammlung</h2>
+    <p>Die drei Größen, alle drei Grundaufgaben, der Wachstumsfaktor mit Hin- und Rückweg, die Zinsformeln für Jahr, Monat und Tag sowie der Zinseszins — mit Zeichnungen, Beispielen und typischen Fehlern auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 8. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>8. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit und ohne Prozentzeichen. Wo gerundet werden soll, steht es in der Aufgabe.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 4 Gleichungen, Zuordnungen und Funktionen</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
