@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lineare Funktionen</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">4 Gleichungen, Zuordnungen und Funktionen</a><span class="sep">/</span>
+  5 Lineare Funktionen
+</nav>
+<header class="page-header">
+  <h1>Lineare Funktionen</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Ein Taxi verlangt 3,50 € Grundpreis und 2,00 € je Kilometer. Damit steht der Preis für <em>jede</em> Strecke fest — und zwar durch eine einzige Vorschrift: <strong>f(x) = 2 · x + 3,5</strong>. Solche Vorschriften heißen <strong>lineare Funktionen</strong>, und ihr Graph ist immer eine Gerade. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>entscheiden, ob eine Zuordnung eine <span class="term">Funktion</span> ist — mit dem Blick aufs Bild</li>
+      <li>an <strong>y = m · x + b</strong> ablesen, was die <span class="term">Steigung m</span> und der <span class="term">y-Achsenabschnitt b</span> mit der Geraden machen</li>
+      <li>die Steigung aus zwei Punkten mit dem <span class="term">Steigungsdreieck</span> berechnen</li>
+      <li>eine <span class="term">Funktionsgleichung aufstellen</span> — aus zwei Punkten oder aus Punkt und Steigung</li>
+      <li><span class="term">Nullstelle</span> und <span class="term">Schnittpunkt</span> zweier Geraden bestimmen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../01-zuordnungen/index.html#sec-proportional">Thema 1</a> die proportionale Zuordnung (das ist der Fall b = 0), aus <a href="../03-gleichungen/index.html#sec-loesen">Thema 3</a> das Lösen linearer Gleichungen und aus <a href="../../02-geometrie/01-grundbegriffe/index.html#sec-koordinaten">Kapitel 2</a> das Koordinatensystem.</p>
+  </section>
+
+  <!-- 1. Der Funktionsbegriff -->
+  <section class="card" id="sec-funktion">
+    <h2>1. Was ist eine Funktion?</h2>
+    <p>Eine <strong>Funktion</strong> ist eine Zuordnung mit einer strengen Zusatzbedingung: Zu jedem x gehört <strong>genau ein</strong> y. Nicht mehr und nicht weniger. Diese Bedingung sieht man dem Graphen sofort an.</p>
+    <div class="definition-box">
+      <span class="box-label">Funktion, Funktionswert, Schreibweise</span>
+      Eine <strong>Funktion f</strong> ordnet jedem x aus der Definitionsmenge <strong>genau einen</strong> Wert zu.<br>
+      Dieser Wert heißt <strong>Funktionswert</strong> und wird <strong>f(x)</strong> geschrieben — gelesen „f von x“.<br>
+      <span class="progress-note"><strong>Senkrechtentest:</strong> Legt man eine senkrechte Gerade über den Graphen, so darf sie ihn an <em>keiner</em> Stelle mehr als einmal treffen.</span>
+    </div>
+    <div class="widget">
+      <div class="lf-schalter" id="fu-schalter"></div>
+      <div class="btn-row">
+        <label>Senkrechte bei x = <input type="range" id="fu-x" min="-6" max="6" step="1" value="2" style="vertical-align:middle;width:10rem"> <span id="fu-x-anzeige" style="font-weight:800;color:#b3261e"></span></label>
+      </div>
+      <div class="geo-wrap" id="fu-mount"></div>
+      <div class="lf-karten" id="fu-karten"></div>
+      <div class="lf-rechnung" id="fu-bilanz"></div>
+      <div id="fu-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — f(x) ist kein Produkt</span>
+      <strong>f(x)</strong> heißt nicht „f mal x“. Die Klammer sagt: <em>Setze x in die Funktion f ein.</em> Deshalb ist f(3) eine <strong>Zahl</strong> — der Funktionswert an der Stelle 3 — und nicht das Dreifache von f. Und: Zwei verschiedene x <em>dürfen</em> denselben Wert haben (f(2) = f(5) ist erlaubt); verboten ist nur, dass <em>ein</em> x zwei Werte hat.
+    </div>
+    <div class="quiz" id="quiz-funktion"></div>
+  </section>
+
+  <!-- 2. Die Gerade y = mx + b -->
+  <section class="card" id="sec-gerade">
+    <h2>2. Die Gerade y = m · x + b</h2>
+    <p>Jede lineare Funktion hat die Form <strong>f(x) = m · x + b</strong>. Die beiden Zahlen m und b legen die Gerade vollständig fest — und man sieht ihnen an, was sie tun.</p>
+    <div class="definition-box">
+      <span class="box-label">Steigung und y-Achsenabschnitt</span>
+      <strong>b</strong> ist der <strong>y-Achsenabschnitt</strong>: die Höhe, in der die Gerade die y-Achse schneidet. Es ist genau f(0).<br>
+      <strong>m</strong> ist die <strong>Steigung</strong>: Geht man 1 nach rechts, so geht es um m nach oben (bei negativem m: nach unten).<br>
+      <span class="progress-note">m &gt; 0 → die Gerade steigt · m &lt; 0 → sie fällt · m = 0 → sie verläuft waagerecht.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Steigung m: <input type="range" id="ge-m" min="-6" max="6" step="1" value="2" style="vertical-align:middle;width:10rem"> <span id="ge-m-anzeige" style="font-weight:800;color:#b3650a"></span></label>
+        <label>y-Achsenabschnitt b: <input type="range" id="ge-b" min="-6" max="6" step="1" value="-3" style="vertical-align:middle;width:10rem"> <span id="ge-b-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+      </div>
+      <div class="lf-gleichung" id="ge-gleichung"></div>
+      <div class="geo-wrap" id="ge-mount"></div>
+      <table class="lf-tabelle" id="ge-tabelle"></table>
+      <div class="lf-karten" id="ge-karten"></div>
+      <div class="lf-rechnung" id="ge-bilanz"></div>
+      <div id="ge-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Woran man m in der Wertetabelle erkennt</span>
+      Wächst x jeweils um 1, so wächst y jeweils um <strong>denselben</strong> Betrag — und dieser Betrag <em>ist</em> die Steigung m. Genau daran erkennt man eine lineare Funktion in einer Tabelle: <strong>gleiche Schritte in x, gleiche Schritte in y</strong>. Bei b = 0 ist die Funktion sogar <a href="../01-zuordnungen/index.html#sec-proportional">proportional</a>.
+    </div>
+    <div class="quiz" id="quiz-gerade"></div>
+  </section>
+
+  <!-- 3. Steigung aus zwei Punkten -->
+  <section class="card" id="sec-steigung">
+    <h2>3. Die Steigung aus zwei Punkten</h2>
+    <p>Kennt man zwei Punkte der Geraden, so ist die Steigung festgelegt. Man liest sie am <strong>Steigungsdreieck</strong> ab: wie weit nach rechts, wie weit nach oben.</p>
+    <div class="definition-box">
+      <span class="box-label">Steigungsformel</span>
+      Für zwei Punkte <strong>P(x₁ | y₁)</strong> und <strong>Q(x₂ | y₂)</strong> mit x₁ ≠ x₂ gilt<br>
+      <strong>m = (y₂ − y₁) : (x₂ − x₁)</strong>&nbsp;, kurz <strong>m = Δy : Δx</strong><br>
+      <span class="progress-note">Δy heißt <em>Höhenunterschied</em>, Δx <em>waagerechter Abstand</em>. Die Reihenfolge der Punkte ist gleichgültig — werden beide Differenzen vertauscht, kürzen sich die Vorzeichen weg.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>P: x₁ = <input type="range" id="st-x1" min="-6" max="5" step="1" value="-2" style="vertical-align:middle;width:7rem"> <span id="st-x1-anzeige" style="font-weight:800;color:#157347"></span></label>
+        <label>y₁ = <input type="range" id="st-y1" min="-8" max="8" step="1" value="-1" style="vertical-align:middle;width:7rem"> <span id="st-y1-anzeige" style="font-weight:800;color:#157347"></span></label>
+        <label>Q: x₂ = <input type="range" id="st-x2" min="-5" max="6" step="1" value="2" style="vertical-align:middle;width:7rem"> <span id="st-x2-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>y₂ = <input type="range" id="st-y2" min="-8" max="8" step="1" value="5" style="vertical-align:middle;width:7rem"> <span id="st-y2-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+      </div>
+      <div class="geo-wrap" id="st-mount"></div>
+      <div class="lf-schritte" id="st-schritte"></div>
+      <div class="lf-karten" id="st-karten"></div>
+      <div class="lf-rechnung" id="st-bilanz"></div>
+      <div id="st-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Δy gehört nach oben</span>
+      In der Formel steht <strong>Δy durch Δx</strong>, nicht umgekehrt. Merkhilfe: Die Steigung sagt, <em>wie viel Höhe man pro Schritt nach rechts gewinnt</em> — Höhe pro Schritt, also y je x. Und: Bei <strong>x₁ = x₂</strong> gibt es keine Steigung, denn man müsste durch 0 teilen. Eine senkrechte Gerade ist deshalb <em>keine</em> Funktion.
+    </div>
+    <div class="quiz" id="quiz-steigung"></div>
+  </section>
+
+  <!-- 4. Funktionsgleichung aufstellen -->
+  <section class="card" id="sec-aufstellen">
+    <h2>4. Die Funktionsgleichung aufstellen</h2>
+    <p>Zwei Angaben genügen, um m und b zu bestimmen — und damit die ganze Gerade. Welche zwei Angaben es sind, ändert nur die Reihenfolge der Schritte.</p>
+    <div class="definition-box">
+      <span class="box-label">Zwei Wege zum selben Ziel</span>
+      <strong>Aus Punkt und Steigung:</strong> m ist bekannt. Setze den Punkt in y = m · x + b ein und löse nach b auf.<br>
+      <strong>Aus zwei Punkten:</strong> Berechne zuerst m mit der Steigungsformel, dann weiter wie oben.<br>
+      <span class="progress-note">Zum Schluss immer die <strong>Probe</strong>: Beide gegebenen Punkte müssen die Gleichung erfüllen.</span>
+    </div>
+    <div class="widget">
+      <div class="lf-schalter" id="af-schalter"></div>
+      <div class="btn-row">
+        <label>Aufgabe: <input type="range" id="af-nr" min="0" max="3" step="1" value="0" style="vertical-align:middle;width:8rem"> <span id="af-nr-anzeige" class="term"></span></label>
+      </div>
+      <div id="af-aufgabe" class="event-result"></div>
+      <div class="geo-wrap" id="af-mount"></div>
+      <div class="lf-schritte" id="af-schritte"></div>
+      <div class="lf-gleichung" id="af-gleichung"></div>
+      <div class="lf-rechnung" id="af-bilanz"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Der Zusammenhang mit den Gleichungen</span>
+      „Setze den Punkt ein und löse nach b auf“ ist nichts Neues: Es ist eine <a href="../03-gleichungen/index.html#sec-loesen">lineare Gleichung mit einer Unbekannten</a>, hier heißt die Unbekannte nur b statt x. Wer Abschnitt 3 dort beherrscht, kann diesen Schritt bereits.
+    </div>
+    <div class="quiz" id="quiz-aufstellen"></div>
+  </section>
+
+  <!-- 5. Nullstelle und Schnittpunkt -->
+  <section class="card" id="sec-schnitt">
+    <h2>5. Nullstelle und Schnittpunkt</h2>
+    <p>Zwei Fragen tauchen bei linearen Funktionen immer wieder auf: <em>Wo schneidet die Gerade die x-Achse?</em> und <em>Wo schneiden sich zwei Geraden?</em> Beide führen auf eine Gleichung — und die kannst du schon lösen.</p>
+    <div class="definition-box">
+      <span class="box-label">Nullstelle und Schnittpunkt</span>
+      Die <strong>Nullstelle</strong> ist die Stelle x₀ mit <strong>f(x₀) = 0</strong>. Man löst m · x + b = 0, also <strong>x₀ = −b : m</strong>.<br>
+      Der <strong>Schnittpunkt</strong> zweier Geraden ist die Stelle, an der beide Funktionswerte gleich sind: <strong>f(x) = g(x)</strong>.<br>
+      <span class="progress-note">Sind die Steigungen gleich, so sind die Geraden <strong>parallel</strong> — es gibt keinen Schnittpunkt, außer die Geraden sind identisch.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>g: m₁ = <input type="range" id="sn-m1" min="-4" max="4" step="1" value="2" style="vertical-align:middle;width:7rem"> <span id="sn-m1-anzeige" style="font-weight:800;color:#157347"></span></label>
+        <label>b₁ = <input type="range" id="sn-b1" min="-6" max="6" step="1" value="-4" style="vertical-align:middle;width:7rem"> <span id="sn-b1-anzeige" style="font-weight:800;color:#157347"></span></label>
+        <label>h: m₂ = <input type="range" id="sn-m2" min="-4" max="4" step="1" value="-1" style="vertical-align:middle;width:7rem"> <span id="sn-m2-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>b₂ = <input type="range" id="sn-b2" min="-6" max="6" step="1" value="2" style="vertical-align:middle;width:7rem"> <span id="sn-b2-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+      </div>
+      <div class="lf-gleichung" id="sn-gleichung"></div>
+      <div class="geo-wrap" id="sn-mount"></div>
+      <div class="lf-schritte" id="sn-schritte"></div>
+      <div class="lf-karten" id="sn-karten"></div>
+      <div class="lf-rechnung" id="sn-bilanz"></div>
+      <div id="sn-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Nullstelle ist eine Zahl, der Schnittpunkt ein Punkt</span>
+      Die <strong>Nullstelle</strong> ist eine <em>x-Koordinate</em>: x₀ = 2. Der zugehörige Punkt auf dem Graphen ist (2 | 0). Beim <strong>Schnittpunkt</strong> dagegen gehören beide Koordinaten zur Antwort — erst x aus der Gleichung, dann y durch Einsetzen in <em>eine</em> der beiden Funktionen. Setze zur Probe in die <em>andere</em> ein: Es muss dasselbe herauskommen.
+    </div>
+    <div class="quiz" id="quiz-schnitt"></div>
+  </section>
+
+  <!-- 6. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>6. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../01-zuordnungen/index.html#sec-proportional">Proportionale Zuordnungen</a> — sie sind genau die linearen Funktionen mit b = 0. Der Proportionalitätsfaktor k <em>ist</em> die Steigung m, und der Graph ist die Ursprungsgerade.</li>
+      <li><strong>Baut auf:</strong> <a href="../03-gleichungen/index.html#sec-loesen">Lineare Gleichungen</a> — Nullstelle und Schnittpunkt sind nichts anderes als gelöste Gleichungen. Umgekehrt ist die Lösung von m₁x + b₁ = m₂x + b₂ die x-Koordinate des Schnittpunkts.</li>
+      <li><strong>Baut auf:</strong> <a href="../04-terme/index.html#sec-term">Terme und Termwerte</a> — m · x + b ist ein Term, und f(x) zu berechnen heißt, seinen Wert an der Stelle x zu bestimmen.</li>
+      <li><strong>Baut auf:</strong> <a href="../../02-geometrie/01-grundbegriffe/index.html#sec-koordinaten">Das Koordinatensystem</a> — ohne es gäbe es kein Bild der Funktion.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../02-prozent-und-zinsrechnung/index.html#sec-zinsen">Zinsen ohne Zinseszins</a> — K + n · Z ist eine lineare Funktion der Jahre n mit dem Achsenabschnitt K und der Steigung Z. Deshalb liegen dort die Säulenspitzen auf einer Geraden.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../../02-geometrie/08-aehnlichkeit/index.html">Ähnlichkeit</a> — alle Steigungsdreiecke einer Geraden sind zueinander ähnlich. Genau deshalb ist die Steigung an jeder Stelle dieselbe, egal wie groß man das Dreieck zeichnet.</li>
+      <li><strong>Führt weiter zu:</strong> Den <strong>linearen Gleichungssystemen</strong> — zwei Geraden, zwei Gleichungen. Schnittpunkt, Parallelität und Identität sind dort die drei Lösungsfälle.</li>
+      <li><strong>Führt weiter zu:</strong> Den <strong>quadratischen Funktionen</strong> — dort ist der Graph eine Parabel statt einer Geraden, und es kann zwei Nullstellen geben, eine oder keine.</li>
+      <li><strong>Führt weiter zu:</strong> Den <strong>Exponentialfunktionen</strong> — dort wächst y nicht um einen festen <em>Betrag</em> je Schritt, sondern um einen festen <em>Faktor</em>. Der Vergleich beider Wachstumsarten ist der Kern des Themas.</li>
+    </ul>
+  </section>
+
+  <!-- 7. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>7. Formelsammlung</h2>
+    <p>Der Funktionsbegriff mit Senkrechtentest, die Bedeutung von m und b, die Steigungsformel mit Steigungsdreieck, beide Wege zur Funktionsgleichung sowie Nullstelle und Schnittpunkt — mit Zeichnungen, Beispielen und typischen Fehlern auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 8. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>8. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gesucht ist jeweils eine <strong>Zahl</strong>. Alle Aufgaben auf dieser Seite haben ganzzahlige Lösungen; negative Zahlen schreibst du mit einem Minuszeichen davor.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 4 Gleichungen, Zuordnungen und Funktionen</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
