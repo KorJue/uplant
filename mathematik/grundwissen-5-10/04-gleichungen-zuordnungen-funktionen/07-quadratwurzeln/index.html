@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quadratwurzeln</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">4 Gleichungen, Zuordnungen und Funktionen</a><span class="sep">/</span>
+  7 Quadratwurzeln
+</nav>
+<header class="page-header">
+  <h1>Quadratwurzeln</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Ein quadratisches Beet hat 20 m² Fläche. Wie lang ist seine Seite? Gesucht ist eine Zahl, deren <em>Quadrat</em> 20 ergibt — und die ist keine der bekannten Zahlen: Sie liegt zwischen 4 und 5 und lässt sich als Bruch überhaupt nicht schreiben. Solche Zahlen heißen <strong>Quadratwurzeln</strong>. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>erklären, was <span class="term">√a</span> bedeutet — und warum es nur <em>eine</em> Wurzel gibt</li>
+      <li>eine Wurzel zwischen zwei ganzen Zahlen <span class="term">einschachteln</span> und stellenweise genauer machen</li>
+      <li>sagen, was eine <span class="term">irrationale Zahl</span> ist und wie die Zahlbereiche zusammenhängen</li>
+      <li>mit den Regeln <span class="term">√(a · b) = √a · √b</span> und <span class="term">√(a : b) = √a : √b</span> rechnen — und die Falle bei der Summe umgehen</li>
+      <li><span class="term">teilweise wurzelziehen</span>: aus √72 wird 6√2</li>
+      <li>mit Wurzeln <span class="term">Längen berechnen</span>, etwa die Diagonale eines Rechtecks</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../../02-geometrie/09-pythagoras/index.html#sec-satz">Kapitel 2</a> den Satz des Pythagoras, aus <a href="../04-terme/index.html#sec-binomisch">Thema 4</a> die Potenzschreibweise und aus <a href="../../01-groessen-und-rechnen/03-brueche-und-dezimalzahlen/index.html#sec-dezimal">Kapitel 1</a> die Brüche und Dezimalzahlen.</p>
+  </section>
+
+  <!-- 1. Was ist eine Quadratwurzel? -->
+  <section class="card" id="sec-begriff">
+    <h2>1. Was ist eine Quadratwurzel?</h2>
+    <p>Das Quadrieren macht aus einer Seitenlänge einen Flächeninhalt. Das Wurzelziehen macht es rückgängig: Aus dem Flächeninhalt wird wieder die Seitenlänge.</p>
+    <div class="definition-box">
+      <span class="box-label">Quadratwurzel</span>
+      Für eine Zahl a ≥ 0 ist <strong>√a</strong> diejenige <strong>nichtnegative</strong> Zahl, deren Quadrat a ist:<br>
+      <strong>(√a)² = a</strong> &nbsp;und&nbsp; <strong>√a ≥ 0</strong>.<br>
+      Die Zahl a unter dem Wurzelzeichen heißt <strong>Radikand</strong>.<br>
+      <span class="progress-note">Aus negativen Zahlen kann man keine Quadratwurzel ziehen: Ein Quadrat ist nie negativ.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Flächeninhalt a = <input type="range" id="bg-a" min="0" max="144" step="1" value="49" style="vertical-align:middle;width:14rem"> <span id="bg-a-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+      </div>
+      <div class="wr-gleichung" id="bg-gleichung"></div>
+      <div class="geo-wrap" id="bg-mount"></div>
+      <div class="wr-karten" id="bg-karten"></div>
+      <div class="wr-rechnung" id="bg-bilanz"></div>
+      <div id="bg-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — √9 ist 3, nicht ±3</span>
+      Zwar gilt 3² = 9 <em>und</em> (−3)² = 9, aber <strong>√9 = 3</strong>. Das Wurzelzeichen bezeichnet immer nur die <em>nichtnegative</em> Lösung; sonst wäre √9 keine eindeutige Zahl, und man könnte mit ihr nicht rechnen. Zwei Lösungen hat dagegen die <em>Gleichung</em> x² = 9, nämlich x = 3 und x = −3. Der Unterschied ist wichtig: <strong>√(x²) = |x|</strong>, nicht x.
+    </div>
+    <div class="quiz" id="quiz-begriff"></div>
+  </section>
+
+  <!-- 2. Einschachteln -->
+  <section class="card" id="sec-einschachteln">
+    <h2>2. Wurzeln einschachteln</h2>
+    <p>Ist der Radikand keine Quadratzahl, so ist die Wurzel keine ganze Zahl. Ihren Wert findet man trotzdem — indem man ihn immer enger einschließt.</p>
+    <div class="definition-box">
+      <span class="box-label">Intervallschachtelung</span>
+      Man sucht zwei benachbarte Quadratzahlen mit <strong>n² &lt; a &lt; (n + 1)²</strong>. Dann liegt √a zwischen <strong>n</strong> und <strong>n + 1</strong>.<br>
+      Danach probiert man die Zehntel, dann die Hundertstel, und so fort.<br>
+      <span class="progress-note">Das Verfahren bricht nie ab, wenn a keine Quadratzahl ist — und genau das ist der Grund, warum solche Wurzeln keine Brüche sein können.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Radikand a = <input type="range" id="es-a" min="2" max="120" step="1" value="20" style="vertical-align:middle;width:13rem"> <span id="es-a-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>Genauigkeit: <input type="range" id="es-stellen" min="0" max="3" step="1" value="1" style="vertical-align:middle;width:8rem"> <span id="es-stellen-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+      </div>
+      <div class="geo-wrap" id="es-mount"></div>
+      <div class="wr-schritte" id="es-schritte"></div>
+      <div class="wr-karten" id="es-karten"></div>
+      <div class="wr-rechnung" id="es-bilanz"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Der Taschenrechner rundet</span>
+      Zeigt der Rechner √2 = 1,414213562, so ist das <strong>nicht</strong> der genaue Wert, sondern eine Näherung: 1,414213562² = 1,999999998… ≠ 2. Deshalb schreibt man in einer Rechnung so lange wie möglich <strong>√2</strong> und rundet erst am Ende. Zwischen exakten Werten steht ein Gleichheitszeichen, zwischen Wert und Näherung ein <strong>≈</strong>.
+    </div>
+    <div class="quiz" id="quiz-einschachteln"></div>
+  </section>
+
+  <!-- 3. Irrationale Zahlen -->
+  <section class="card" id="sec-irrational">
+    <h2>3. Irrationale Zahlen</h2>
+    <p>Mit den Wurzeln betritt man einen neuen Zahlbereich. √2 lässt sich <em>überhaupt nicht</em> als Bruch schreiben — und das lässt sich beweisen.</p>
+    <div class="definition-box">
+      <span class="box-label">Rational und irrational</span>
+      Eine Zahl heißt <strong>rational</strong>, wenn sie sich als Bruch zweier ganzer Zahlen schreiben lässt. Ihre Dezimaldarstellung bricht ab oder ist periodisch.<br>
+      Eine Zahl heißt <strong>irrational</strong>, wenn das <em>nicht</em> geht. Ihre Dezimaldarstellung ist unendlich und nicht periodisch.<br>
+      <span class="progress-note">Rationale und irrationale Zahlen zusammen bilden die <strong>reellen Zahlen ℝ</strong>. √a ist genau dann rational, wenn a eine Quadratzahl ist.</span>
+    </div>
+    <div class="widget">
+      <div class="wr-schalter" id="ir-schalter"></div>
+      <div class="geo-wrap" id="ir-mount"></div>
+      <div class="wr-rechnung" id="ir-bilanz"></div>
+      <div id="ir-text" class="event-result"></div>
+      <div class="wr-bereiche" id="ir-bereiche"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Warum √2 kein Bruch sein kann</span>
+      Angenommen, √2 = p : q mit einem <em>vollständig gekürzten</em> Bruch. Quadrieren ergibt 2q² = p². Also ist p² gerade, also ist p gerade, also p = 2r. Einsetzen: 2q² = 4r², also q² = 2r² — also ist auch q gerade. Damit wären p und q beide durch 2 teilbar, der Bruch war aber gekürzt. Ein Widerspruch: Die Annahme muss falsch sein. Dieser <strong>Widerspruchsbeweis</strong> ist einer der ältesten der Mathematik.
+    </div>
+    <div class="quiz" id="quiz-irrational"></div>
+  </section>
+
+  <!-- 4. Rechenregeln -->
+  <section class="card" id="sec-regeln">
+    <h2>4. Rechnen mit Wurzeln</h2>
+    <p>Für Produkte und Quotienten darf man die Wurzel auseinanderziehen. Für Summen und Differenzen <em>nicht</em> — das ist der häufigste Fehler überhaupt.</p>
+    <div class="definition-box">
+      <span class="box-label">Die zwei Regeln — und die Nicht-Regel</span>
+      <strong>√(a · b) = √a · √b</strong> &nbsp;für a ≥ 0, b ≥ 0<br>
+      <strong>√(a : b) = √a : √b</strong> &nbsp;für a ≥ 0, b &gt; 0<br>
+      <span class="progress-note">Dagegen ist <strong>√(a + b) ≠ √a + √b</strong>. Ein einziges Gegenbeispiel genügt, um das zu zeigen — probiere es unten aus.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a = <input type="range" id="rg-a" min="1" max="64" step="1" value="9" style="vertical-align:middle;width:11rem"> <span id="rg-a-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>b = <input type="range" id="rg-b" min="1" max="64" step="1" value="16" style="vertical-align:middle;width:11rem"> <span id="rg-b-anzeige" style="font-weight:800;color:#157347"></span></label>
+      </div>
+      <table class="wr-tabelle" id="rg-tabelle"></table>
+      <div class="geo-wrap" id="rg-mount"></div>
+      <div class="wr-rechnung" id="rg-bilanz"></div>
+      <div id="rg-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Wurzeln addieren geht nur bei gleichem Radikanden</span>
+      <strong>√2 + √2 = 2√2</strong> ist richtig — das ist dasselbe wie x + x = 2x. Aber <strong>√2 + √3</strong> lässt sich <em>nicht</em> zusammenfassen; das Ergebnis ist keine Wurzel aus 5. Wurzeln verhalten sich beim Addieren wie <a href="../04-terme/index.html#sec-zusammenfassen">gleichartige Summanden</a>: Nur was denselben Radikanden hat, darf man verrechnen.
+    </div>
+    <div class="quiz" id="quiz-regeln"></div>
+  </section>
+
+  <!-- 5. Teilweises Wurzelziehen -->
+  <section class="card" id="sec-teilweise">
+    <h2>5. Teilweise wurzelziehen</h2>
+    <p>Steckt in einem Radikanden eine Quadratzahl, so darf man sie herausziehen. Das Ergebnis ist kürzer und lässt sich mit anderen Wurzeln vergleichen.</p>
+    <div class="definition-box">
+      <span class="box-label">So geht es</span>
+      <strong>1.</strong> Suche die <em>größte</em> Quadratzahl, die im Radikanden als Faktor steckt.<br>
+      <strong>2.</strong> Zerlege: √72 = √(36 · 2).<br>
+      <strong>3.</strong> Ziehe die Wurzel aus der Quadratzahl und schreibe sie vor die Wurzel: √36 · √2 = <strong>6√2</strong>.<br>
+      <span class="progress-note">Rückwärts geht es genauso: 6√2 = √(36 · 2) = √72. Damit kann man Wurzeln der Größe nach vergleichen.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Radikand = <input type="range" id="tw-a" min="8" max="200" step="1" value="72" style="vertical-align:middle;width:14rem"> <span id="tw-a-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+      </div>
+      <div class="wr-gleichung" id="tw-gleichung"></div>
+      <div class="geo-wrap" id="tw-mount"></div>
+      <div class="wr-schritte" id="tw-schritte"></div>
+      <div class="wr-karten" id="tw-karten"></div>
+      <div class="wr-rechnung" id="tw-bilanz"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Wozu das gut ist</span>
+      Erstens wird die Rechnung kürzer: √8 + √18 sieht nach zwei fremden Zahlen aus, wird aber zu 2√2 + 3√2 = 5√2. Zweitens erkennt man Gleichheit: √50 und 5√2 sind dieselbe Zahl. Drittens braucht man es bei der <strong>Lösung quadratischer Gleichungen</strong>, wo unter der Wurzel oft eine Zahl mit Quadratanteil steht.
+    </div>
+    <div class="quiz" id="quiz-teilweise"></div>
+  </section>
+
+  <!-- 6. Längen berechnen -->
+  <section class="card" id="sec-laengen">
+    <h2>6. Längen mit Wurzeln berechnen</h2>
+    <p>Der Satz des Pythagoras liefert immer ein <em>Quadrat</em> der gesuchten Länge. Die Länge selbst bekommt man erst durch das Wurzelziehen.</p>
+    <div class="definition-box">
+      <span class="box-label">Vom Flächensatz zur Länge</span>
+      Im rechtwinkligen Dreieck gilt a² + b² = c², also <strong>c = √(a² + b²)</strong>.<br>
+      Für ein Rechteck mit den Seiten a und b ist die <strong>Diagonale d = √(a² + b²)</strong>.<br>
+      <span class="progress-note">Die Wurzel steht über der <em>ganzen Summe</em> — und √(a² + b²) ist nicht a + b. Genau hier rächt sich die Nicht-Regel aus Abschnitt 4.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Breite a = <input type="range" id="ln-a" min="1" max="12" step="1" value="3" style="vertical-align:middle;width:10rem"> <span id="ln-a-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>Höhe b = <input type="range" id="ln-b" min="1" max="12" step="1" value="4" style="vertical-align:middle;width:10rem"> <span id="ln-b-anzeige" style="font-weight:800;color:#157347"></span></label>
+      </div>
+      <div class="geo-wrap" id="ln-mount"></div>
+      <div class="wr-schritte" id="ln-schritte"></div>
+      <div class="wr-karten" id="ln-karten"></div>
+      <div class="wr-rechnung" id="ln-bilanz"></div>
+      <div id="ln-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — erst addieren, dann wurzeln</span>
+      Bei a = 3 und b = 4 ist d = √(9 + 16) = √25 = 5. Wer stattdessen √9 + √16 rechnet, erhält 3 + 4 = 7 — und das ist der Umweg über zwei Seiten des Rechtecks, nicht die Diagonale. Die Diagonale ist immer <em>kürzer</em> als der Weg um die Ecke, aber <em>länger</em> als jede einzelne Seite.
+    </div>
+    <div class="quiz" id="quiz-laengen"></div>
+  </section>
+
+  <!-- 7. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>7. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../../02-geometrie/09-pythagoras/index.html#sec-satz">Dem Satz des Pythagoras</a> — er liefert c², und erst die Wurzel liefert c. Historisch war das der Anlass, überhaupt neue Zahlen einzuführen: Die Diagonale des Einheitsquadrats ist √2.</li>
+      <li><strong>Baut auf:</strong> <a href="../../01-groessen-und-rechnen/03-brueche-und-dezimalzahlen/index.html#sec-umwandeln">Brüchen und Dezimalzahlen</a> — abbrechend oder periodisch heißt rational. Die Dezimaldarstellung von √2 ist beides nicht.</li>
+      <li><strong>Baut auf:</strong> <a href="../../01-groessen-und-rechnen/06-erweiterung-des-zahlenbereichs/index.html#sec-zahlbereiche">Der Erweiterung des Zahlenbereichs</a> — von ℕ zu ℤ, von ℤ zu ℚ, und nun von ℚ zu ℝ. Jedes Mal wird eine Rechnung möglich, die vorher nicht ging.</li>
+      <li><strong>Baut auf:</strong> <a href="../04-terme/index.html#sec-zusammenfassen">Dem Zusammenfassen gleichartiger Terme</a> — 2√3 + 5√3 = 7√3 funktioniert genau wie 2x + 5x = 7x. Der Radikand spielt die Rolle der Variablen.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../../02-geometrie/10-kreisberechnungen/index.html#sec-rueckwaerts">Kreisberechnungen</a> — aus A = π · r² folgt r = √(A : π). Auch hier macht die Wurzel eine Flächenformel rückgängig.</li>
+      <li><strong>Führt weiter zu:</strong> Den <strong>quadratischen Gleichungen</strong> — x² = c hat für c &gt; 0 die beiden Lösungen √c und −√c. In der pq-Formel steht die Wurzel im Zentrum, und ihr Radikand entscheidet, wie viele Lösungen es gibt.</li>
+      <li><strong>Führt weiter zu:</strong> Den <strong>Potenzen mit rationalen Exponenten</strong> — √a ist dasselbe wie a<sup>1/2</sup>. Damit werden die Wurzelregeln zu Sonderfällen der Potenzgesetze.</li>
+      <li><strong>Führt weiter zu:</strong> Der <strong>Trigonometrie</strong> — die Werte sin 45° = √2 : 2 und sin 60° = √3 : 2 stammen aus dem halben Quadrat und dem halben gleichseitigen Dreieck.</li>
+    </ul>
+  </section>
+
+  <!-- 8. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>8. Formelsammlung</h2>
+    <p>Die Definition der Quadratwurzel, das Einschachteln, die Zahlbereiche, beide Rechenregeln samt der Falle bei der Summe, das teilweise Wurzelziehen und die Anwendung auf Längen — mit Zeichnungen, Beispielen und typischen Fehlern auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 9. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>9. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gesucht ist jeweils eine <strong>Zahl</strong>. Alle Aufgaben auf dieser Seite haben ganzzahlige Lösungen; negative Zahlen schreibst du mit einem Minuszeichen davor.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 4 Gleichungen, Zuordnungen und Funktionen</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
