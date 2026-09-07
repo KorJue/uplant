@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quadratische Funktionen und Gleichungen</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">4 Gleichungen, Zuordnungen und Funktionen</a><span class="sep">/</span>
+  8 Quadratische Funktionen und Gleichungen
+</nav>
+<header class="page-header">
+  <h1>Quadratische Funktionen und Gleichungen</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Ein Ball fliegt, ein Zaun soll die größte Fläche einschließen, ein Gewinn soll am höchsten sein: Immer taucht dieselbe Kurve auf — die <strong>Parabel</strong>. Sie gehört zu Funktionen mit einem <strong>x²</strong>, und mit ihnen kommt auch eine neue Art von Gleichung. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>die <span class="term">Normalparabel</span> y = x² zeichnen und ihre Symmetrie nutzen</li>
+      <li>an der <span class="term">Scheitelform</span> y = a(x − d)² + e ablesen, wie die Parabel liegt und wie sie geformt ist</li>
+      <li>mit der <span class="term">quadratischen Ergänzung</span> von der allgemeinen Form zur Scheitelform kommen</li>
+      <li>quadratische Gleichungen mit der <span class="term">pq-Formel</span> lösen</li>
+      <li>an der <span class="term">Diskriminante</span> erkennen, ob es zwei, eine oder keine Lösung gibt</li>
+      <li>mit dem Scheitel <span class="term">größte und kleinste Werte</span> bestimmen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../04-terme/index.html#sec-binomisch">Thema 4</a> die binomischen Formeln, aus <a href="../05-lineare-funktionen/index.html#sec-funktion">Thema 5</a> den Funktionsbegriff und aus <a href="../07-quadratwurzeln/index.html#sec-begriff">Thema 7</a> die Quadratwurzel.</p>
+  </section>
+
+  <!-- 1. Die Normalparabel -->
+  <section class="card" id="sec-normalparabel">
+    <h2>1. Die Normalparabel y = x²</h2>
+    <p>Die einfachste quadratische Funktion ordnet jedem x sein Quadrat zu. Ihr Graph heißt <strong>Normalparabel</strong> — und alle anderen Parabeln entstehen aus ihr.</p>
+    <div class="definition-box">
+      <span class="box-label">Quadratische Funktion und Parabel</span>
+      Eine Funktion mit der Gleichung <strong>f(x) = ax² + bx + c</strong> und <strong>a ≠ 0</strong> heißt <strong>quadratisch</strong>. Ihr Graph ist eine <strong>Parabel</strong>.<br>
+      Die <strong>Normalparabel</strong> ist der Sonderfall <strong>y = x²</strong>.<br>
+      <span class="progress-note">Sie ist <strong>symmetrisch zur y-Achse</strong>: f(−x) = f(x). Ihr tiefster Punkt ist der <strong>Scheitel</strong> S(0 | 0).</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Stelle x = <input type="range" id="np-x" min="-4" max="4" step="1" value="2" style="vertical-align:middle;width:12rem"> <span id="np-x-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+      </div>
+      <div class="geo-wrap" id="np-mount"></div>
+      <table class="qf-tabelle" id="np-tabelle"></table>
+      <div class="qf-karten" id="np-karten"></div>
+      <div class="qf-rechnung" id="np-bilanz"></div>
+      <div id="np-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — x² wächst nicht gleichmäßig</span>
+      Bei einer <a href="../05-lineare-funktionen/index.html#sec-gerade">linearen Funktion</a> gehört zu jedem Schritt nach rechts derselbe Höhenschritt. Bei der Parabel nicht: Von x = 1 auf x = 2 steigt y um 3, von x = 2 auf x = 3 um 5, dann um 7. Deshalb ist der Graph <em>keine</em> Gerade, sondern wird immer steiler. Und: <strong>y ist nie negativ</strong>, denn ein Quadrat ist nie negativ.
+    </div>
+    <div class="quiz" id="quiz-normalparabel"></div>
+  </section>
+
+  <!-- 2. Die Scheitelform -->
+  <section class="card" id="sec-scheitelform">
+    <h2>2. Die Scheitelform</h2>
+    <p>Drei Zahlen genügen, um jede Parabel zu beschreiben: eine für die Form, zwei für die Lage. Man sieht ihnen direkt an, was sie tun.</p>
+    <div class="definition-box">
+      <span class="box-label">Scheitelform</span>
+      <strong>f(x) = a · (x − d)² + e</strong><br>
+      <strong>S(d | e)</strong> ist der <strong>Scheitel</strong>, die Gerade x = d die <strong>Symmetrieachse</strong>.<br>
+      <strong>a</strong> formt die Parabel: <strong>a &gt; 0</strong> nach oben geöffnet (Scheitel ist Minimum), <strong>a &lt; 0</strong> nach unten (Maximum). <strong>|a| &gt; 1</strong> schmaler, <strong>|a| &lt; 1</strong> breiter als die Normalparabel.<br>
+      <span class="progress-note">Vorsicht beim Vorzeichen: In (x − d)² steht ein Minus. Für S(−3 | 2) lautet die Gleichung y = a(x + 3)² + 2.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a = <input type="range" id="sf-a" min="-3" max="3" step="0.5" value="1" style="vertical-align:middle;width:9rem"> <span id="sf-a-anzeige" style="font-weight:800;color:#157347"></span></label>
+        <label>d = <input type="range" id="sf-d" min="-5" max="5" step="1" value="2" style="vertical-align:middle;width:9rem"> <span id="sf-d-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+        <label>e = <input type="range" id="sf-e" min="-6" max="6" step="1" value="-3" style="vertical-align:middle;width:9rem"> <span id="sf-e-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+      </div>
+      <div class="qf-gleichung" id="sf-gleichung"></div>
+      <div class="geo-wrap" id="sf-mount"></div>
+      <div class="qf-karten" id="sf-karten"></div>
+      <div class="qf-rechnung" id="sf-bilanz"></div>
+      <div id="sf-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Warum das Minus die Parabel nach rechts schiebt</span>
+      In (x − 3)² wird der Klammerinhalt genau dann 0, wenn x = 3 ist. Der tiefste Punkt der Normalparabel — dort, wo das Quadrat 0 wird — wandert also an die Stelle 3. Allgemein: Der Scheitel liegt dort, wo die Klammer verschwindet, und das ist bei <strong>x = d</strong>. Ein Plus in der Klammer verschiebt entsprechend nach <em>links</em>.
+    </div>
+    <div class="quiz" id="quiz-scheitelform"></div>
+  </section>
+
+  <!-- 3. Quadratische Ergänzung -->
+  <section class="card" id="sec-ergaenzung">
+    <h2>3. Die quadratische Ergänzung</h2>
+    <p>Meist ist eine Parabel in der Form x² + px + q gegeben. Um den Scheitel zu sehen, formt man sie in die Scheitelform um — mit einem Trick aus den binomischen Formeln.</p>
+    <div class="definition-box">
+      <span class="box-label">So geht es</span>
+      <strong>1.</strong> Die halbe Zahl vor dem x bilden: <strong>p : 2</strong>.<br>
+      <strong>2.</strong> Ihr Quadrat <strong>(p : 2)²</strong> addieren <em>und</em> gleich wieder subtrahieren — der Term bleibt derselbe.<br>
+      <strong>3.</strong> Die ersten drei Summanden mit der binomischen Formel zusammenfassen: <strong>x² + px + (p:2)² = (x + p:2)²</strong>.<br>
+      <span class="progress-note">Ergebnis: <strong>x² + px + q = (x + p:2)² − (p:2)² + q</strong>, also S(−p:2 | q − (p:2)²).</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <button class="btn" id="qe-neu">🎲 Neues Beispiel</button>
+        <button class="btn" id="qe-schritt">Schritt weiter ▸</button>
+        <button class="btn" id="qe-alle">Alle Schritte</button>
+      </div>
+      <div class="qf-gleichung" id="qe-gleichung"></div>
+      <div class="qf-schritte" id="qe-schritte"></div>
+      <div class="geo-wrap" id="qe-mount"></div>
+      <div class="qf-rechnung" id="qe-bilanz"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — addieren <em>und</em> subtrahieren</span>
+      Man darf nicht einfach (p : 2)² dazuschreiben, sonst hat man den Term verändert. Es muss im selben Schritt wieder abgezogen werden: <strong>+ (p:2)² − (p:2)²</strong> ist zusammen 0. Der Term bleibt gleich, nur seine <em>Gestalt</em> ändert sich — genau wie beim <a href="../04-terme/index.html#sec-zusammenfassen">Umformen von Termen</a>.
+    </div>
+    <div class="quiz" id="quiz-ergaenzung"></div>
+  </section>
+
+  <!-- 4. Die pq-Formel -->
+  <section class="card" id="sec-pq">
+    <h2>4. Quadratische Gleichungen und die pq-Formel</h2>
+    <p>Die Nullstellen einer Parabel sind die Lösungen einer Gleichung mit x². Für die Normalform gibt es dafür eine fertige Formel.</p>
+    <div class="definition-box">
+      <span class="box-label">Normalform und pq-Formel</span>
+      Jede quadratische Gleichung lässt sich auf die <strong>Normalform x² + px + q = 0</strong> bringen — notfalls durch Teilen durch den Faktor vor x².<br>
+      Dann gilt die <strong>pq-Formel</strong>:<br>
+      <strong>x<sub>1,2</sub> = −p : 2 ± √((p : 2)² − q)</strong><br>
+      <span class="progress-note">Erst die Normalform, dann die Formel. Steht vor dem x² noch eine Zahl, muss zuerst durch sie geteilt werden.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <button class="btn" id="pq-neu">🎲 Neues Beispiel</button>
+        <button class="btn" id="pq-schritt">Schritt weiter ▸</button>
+        <button class="btn" id="pq-alle">Alle Schritte</button>
+      </div>
+      <div class="qf-gleichung" id="pq-gleichung"></div>
+      <div class="qf-schritte" id="pq-schritte"></div>
+      <div class="geo-wrap" id="pq-mount"></div>
+      <div class="qf-rechnung" id="pq-bilanz"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Woher die Formel kommt</span>
+      Sie ist nichts anderes als die quadratische Ergänzung aus Abschnitt 3, einmal allgemein durchgerechnet: Aus x² + px + q = 0 wird (x + p:2)² = (p:2)² − q. Zieht man daraus die Wurzel, so gibt es <em>zwei</em> Möglichkeiten — die positive und die negative —, und genau das ist das ± in der Formel. Wer die Ergänzung beherrscht, braucht die Formel nicht auswendig zu lernen; sie ist nur die Abkürzung.
+    </div>
+    <div class="quiz" id="quiz-pq"></div>
+  </section>
+
+  <!-- 5. Die Diskriminante -->
+  <section class="card" id="sec-diskriminante">
+    <h2>5. Zwei, eine oder keine Lösung</h2>
+    <p>Unter der Wurzel der pq-Formel steht eine Zahl, die alles entscheidet. Man sieht ihr Ergebnis der Parabel direkt an.</p>
+    <div class="definition-box">
+      <span class="box-label">Die Diskriminante D</span>
+      <strong>D = (p : 2)² − q</strong> — die Zahl unter der Wurzel.<br>
+      <strong>D &gt; 0:</strong> zwei Lösungen. Die Parabel schneidet die x-Achse zweimal.<br>
+      <strong>D = 0:</strong> eine Lösung. Die Parabel <em>berührt</em> die x-Achse — im Scheitel.<br>
+      <strong>D &lt; 0:</strong> keine Lösung. Die Parabel trifft die x-Achse nicht; aus einer negativen Zahl gibt es keine Wurzel.<br>
+      <span class="progress-note">„Keine Lösung“ heißt nicht „Rechenfehler“ — es ist eine vollständige Antwort: L = { }.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>p = <input type="range" id="di-p" min="-8" max="8" step="2" value="-2" style="vertical-align:middle;width:10rem"> <span id="di-p-anzeige" style="font-weight:800;color:#b3650a"></span></label>
+        <label>q = <input type="range" id="di-q" min="-9" max="9" step="1" value="-3" style="vertical-align:middle;width:10rem"> <span id="di-q-anzeige" style="font-weight:800;color:#b3650a"></span></label>
+      </div>
+      <div class="qf-gleichung" id="di-gleichung"></div>
+      <div class="geo-wrap" id="di-mount"></div>
+      <div class="qf-schritte" id="di-schritte"></div>
+      <div class="qf-faelle" id="di-faelle"></div>
+      <div id="di-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — D = 0 heißt <em>eine</em> Lösung, nicht keine</span>
+      Bei D = 0 ist die Wurzel 0, und aus x = −p:2 ± 0 wird ein einziger Wert. Die Parabel berührt die x-Achse dort mit ihrem Scheitel. Man sagt auch: eine <strong>doppelte</strong> Lösung. Verwechsle das nicht mit D &lt; 0, wo es gar keine gibt.
+    </div>
+    <div class="quiz" id="quiz-diskriminante"></div>
+  </section>
+
+  <!-- 6. Größte und kleinste Werte -->
+  <section class="card" id="sec-extremwert">
+    <h2>6. Größte und kleinste Werte</h2>
+    <p>Weil die Parabel genau einen höchsten oder tiefsten Punkt hat, beantwortet der Scheitel eine ganze Klasse von Fragen: Wann ist etwas am größten?</p>
+    <div class="definition-box">
+      <span class="box-label">Der Scheitel als Extremwert</span>
+      Bei <strong>a &gt; 0</strong> ist der Scheitel der <strong>tiefste</strong> Punkt: e ist der <strong>kleinste</strong> Funktionswert.<br>
+      Bei <strong>a &lt; 0</strong> ist er der <strong>höchste</strong>: e ist der <strong>größte</strong> Funktionswert.<br>
+      <span class="progress-note">Angenommen wird dieser Wert an der Stelle x = d — die Antwort besteht also immer aus zwei Angaben: <em>wo</em> und <em>wie groß</em>.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Zaunlänge: <input type="range" id="ex-u" min="12" max="40" step="4" value="24" style="vertical-align:middle;width:10rem"> <span id="ex-u-anzeige" style="font-weight:800;color:#1d4ed8"></span> m</label>
+        <label>Breite x = <input type="range" id="ex-x" min="1" max="19" step="1" value="4" style="vertical-align:middle;width:10rem"> <span id="ex-x-anzeige" style="font-weight:800;color:#157347"></span> m</label>
+      </div>
+      <div id="ex-aufgabe" class="event-result"></div>
+      <div class="geo-wrap" id="ex-mount"></div>
+      <div class="qf-schritte" id="ex-schritte"></div>
+      <div class="qf-karten" id="ex-karten"></div>
+      <div class="qf-rechnung" id="ex-bilanz"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Der Weg bei jeder Extremwertaufgabe</span>
+      <strong>1.</strong> Eine Größe als x wählen. <strong>2.</strong> Die gesuchte Größe als Term in x aufschreiben. <strong>3.</strong> Den Term auf die Scheitelform bringen. <strong>4.</strong> Den Scheitel ablesen und im Sachzusammenhang antworten — mit Einheit. Schritt 2 ist der eigentliche Denkschritt; danach ist es Rechnen wie in Abschnitt 3.
+    </div>
+    <div class="quiz" id="quiz-extremwert"></div>
+  </section>
+
+  <!-- 7. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>7. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../04-terme/index.html#sec-binomisch">Den binomischen Formeln</a> — die quadratische Ergänzung ist die erste binomische Formel, rückwärts gelesen. Ohne sie gäbe es keine pq-Formel.</li>
+      <li><strong>Baut auf:</strong> <a href="../07-quadratwurzeln/index.html#sec-begriff">Der Quadratwurzel</a> — sie steht im Zentrum der pq-Formel. Das ± kommt daher, dass x² = c für c &gt; 0 zwei Lösungen hat, und „keine Lösung“ daher, dass aus einer negativen Zahl keine Wurzel zu ziehen ist.</li>
+      <li><strong>Baut auf:</strong> <a href="../05-lineare-funktionen/index.html#sec-funktion">Den linearen Funktionen</a> — Funktionsbegriff, Wertetabelle und Graph sind dieselben Werkzeuge. Neu ist allein, dass der Graph gekrümmt ist.</li>
+      <li><strong>Baut auf:</strong> <a href="../03-gleichungen/index.html#sec-umformen">Den Äquivalenzumformungen</a> — die Normalform entsteht durch Sortieren und Teilen, genau wie bei linearen Gleichungen.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../06-lineare-gleichungssysteme/index.html#sec-gleichsetzen">Dem Gleichsetzungsverfahren</a> — schneidet man eine Parabel mit einer Geraden, so führt das Gleichsetzen auf eine quadratische Gleichung. Zwei, ein oder kein Schnittpunkt: dieselben drei Fälle.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../../02-geometrie/02-flaeche-umfang/index.html">Flächen und Umfängen</a> — der Flächeninhalt eines Rechtecks mit festem Umfang ist eine quadratische Funktion seiner Breite. Das Quadrat ist darin der Scheitel.</li>
+      <li><strong>Führt weiter zu:</strong> Den <strong>Potenzfunktionen</strong> — nach x² kommen x³, x⁴ und die Frage, wie viele Nullstellen eine Funktion höchstens haben kann.</li>
+      <li><strong>Führt weiter zu:</strong> Der <strong>Differentialrechnung</strong> — dort findet man Hoch- und Tiefpunkte auch dann, wenn keine Scheitelform mehr weiterhilft. Der Scheitel ist der erste Extremwert, den man ganz ohne sie bestimmen kann.</li>
+    </ul>
+  </section>
+
+  <!-- 8. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>8. Formelsammlung</h2>
+    <p>Normalparabel und Scheitelform, die quadratische Ergänzung Schritt für Schritt, die pq-Formel mit ihrer Herleitung, die drei Fälle der Diskriminante und der Scheitel als Extremwert — mit Zeichnungen, Beispielen und typischen Fehlern auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 9. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>9. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gesucht ist jeweils eine <strong>Zahl</strong>. Alle Aufgaben auf dieser Seite haben ganzzahlige Lösungen; negative Zahlen schreibst du mit einem Minuszeichen davor.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 4 Gleichungen, Zuordnungen und Funktionen</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
