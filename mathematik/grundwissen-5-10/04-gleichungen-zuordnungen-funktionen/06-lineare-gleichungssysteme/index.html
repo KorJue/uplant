@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lineare Gleichungssysteme</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">4 Gleichungen, Zuordnungen und Funktionen</a><span class="sep">/</span>
+  6 Lineare Gleichungssysteme
+</nav>
+<header class="page-header">
+  <h1>Lineare Gleichungssysteme</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Zwei Erwachsene und drei Kinder zahlen zusammen 31 €, ein Erwachsener und fünf Kinder zahlen 33 €. Wie teuer ist eine einzelne Karte? Eine Gleichung genügt hier nicht — es sind <em>zwei</em> Unbekannte im Spiel, und deshalb braucht man auch <strong>zwei</strong> Gleichungen. Zusammen bilden sie ein <strong>lineares Gleichungssystem</strong>. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>ein Gleichungssystem <span class="term">grafisch</span> deuten — als zwei Geraden und ihren Schnittpunkt</li>
+      <li>mit dem <span class="term">Gleichsetzungsverfahren</span> rechnen</li>
+      <li>mit dem <span class="term">Einsetzungsverfahren</span> rechnen</li>
+      <li>mit dem <span class="term">Additionsverfahren</span> rechnen und wissen, wann welches am schnellsten ist</li>
+      <li>die drei <span class="term">Lösungsfälle</span> unterscheiden: genau eine Lösung, keine, unendlich viele</li>
+      <li>aus einem Sachzusammenhang ein Gleichungssystem <span class="term">aufstellen</span></li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../03-gleichungen/index.html#sec-umformen">Thema 3</a> die Äquivalenzumformungen, aus <a href="../04-terme/index.html#sec-ausmultiplizieren">Thema 4</a> das Ausmultiplizieren und aus <a href="../05-lineare-funktionen/index.html#sec-schnitt">Thema 5</a> den Schnittpunkt zweier Geraden.</p>
+  </section>
+
+  <!-- 1. Was ist ein Gleichungssystem? -->
+  <section class="card" id="sec-system">
+    <h2>1. Was ist ein Gleichungssystem?</h2>
+    <p>Eine Gleichung mit zwei Unbekannten hat unendlich viele Lösungen — jedes Zahlenpaar auf einer ganzen Geraden. Erst eine <strong>zweite</strong> Bedingung engt die Auswahl ein.</p>
+    <div class="definition-box">
+      <span class="box-label">Lineares Gleichungssystem und Lösung</span>
+      Zwei lineare Gleichungen mit denselben zwei Unbekannten x und y bilden ein <strong>lineares Gleichungssystem</strong> (kurz LGS).<br>
+      Eine <strong>Lösung</strong> ist ein <strong>Zahlenpaar (x | y)</strong>, das <em>beide</em> Gleichungen erfüllt — nicht nur eine.<br>
+      <span class="progress-note">Grafisch: Jede Gleichung ist eine Gerade. Die Lösung ist der <strong>Schnittpunkt</strong> — der einzige Punkt, der auf beiden Geraden liegt.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Probe mit x = <input type="range" id="sy-x" min="-4" max="6" step="1" value="1" style="vertical-align:middle;width:9rem"> <span id="sy-x-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+        <label>y = <input type="range" id="sy-y" min="-4" max="6" step="1" value="1" style="vertical-align:middle;width:9rem"> <span id="sy-y-anzeige" style="font-weight:800;color:#b3650a"></span></label>
+      </div>
+      <div class="lgs-system" id="sy-system"></div>
+      <div class="geo-wrap" id="sy-mount"></div>
+      <div class="lgs-schritte" id="sy-probe"></div>
+      <div class="lgs-karten" id="sy-karten"></div>
+      <div id="sy-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — eine Lösung ist ein <em>Paar</em></span>
+      Die Antwort auf ein Gleichungssystem lautet nie „x = 4“, sondern immer „<strong>x = 4 und y = 3</strong>“, kurz (4 | 3). Wer nur x angibt, hat die Aufgabe halb gelöst. Und: Ein Paar, das nur <em>eine</em> der beiden Gleichungen erfüllt, ist <strong>keine</strong> Lösung des Systems — deshalb gehört die Probe immer in <em>beide</em> Gleichungen.
+    </div>
+    <div class="quiz" id="quiz-system"></div>
+  </section>
+
+  <!-- 2. Gleichsetzungsverfahren -->
+  <section class="card" id="sec-gleichsetzen">
+    <h2>2. Das Gleichsetzungsverfahren</h2>
+    <p>Sind beide Gleichungen nach derselben Unbekannten aufgelöst, so sind ihre rechten Seiten für die Lösung gleich groß. Genau das nutzt dieses Verfahren.</p>
+    <div class="definition-box">
+      <span class="box-label">So geht es</span>
+      <strong>1.</strong> Beide Gleichungen nach <em>derselben</em> Unbekannten auflösen, meist nach y.<br>
+      <strong>2.</strong> Die beiden rechten Seiten <strong>gleichsetzen</strong> — es entsteht eine Gleichung mit nur noch <em>einer</em> Unbekannten.<br>
+      <strong>3.</strong> Diese Gleichung lösen, den Wert in eine der beiden Ausgangsgleichungen einsetzen, den zweiten Wert berechnen, Probe.<br>
+      <span class="progress-note">Grafisch heißt Gleichsetzen: <em>Wo sind beide y-Werte gleich?</em> — genau im Schnittpunkt.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <button class="btn" id="gs-neu">🎲 Neues Beispiel</button>
+        <button class="btn" id="gs-schritt">Schritt weiter ▸</button>
+        <button class="btn" id="gs-alle">Alle Schritte</button>
+      </div>
+      <div class="lgs-system" id="gs-system"></div>
+      <div class="lgs-schritte" id="gs-schritte"></div>
+      <div class="geo-wrap" id="gs-mount"></div>
+      <div class="lgs-rechnung" id="gs-bilanz"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Warum das erlaubt ist</span>
+      Aus y = 2x − 1 und y = −x + 5 folgt 2x − 1 = −x + 5, weil beide Terme <em>denselben</em> Wert y beschreiben. Das ist die Transitivität der Gleichheit: Ist a = b und b = c, so ist a = c. Danach ist es eine gewöhnliche <a href="../03-gleichungen/index.html#sec-loesen">lineare Gleichung mit einer Unbekannten</a>.
+    </div>
+    <div class="quiz" id="quiz-gleichsetzen"></div>
+  </section>
+
+  <!-- 3. Einsetzungsverfahren -->
+  <section class="card" id="sec-einsetzen">
+    <h2>3. Das Einsetzungsverfahren</h2>
+    <p>Manchmal ist nur <em>eine</em> Gleichung bequem nach einer Unbekannten aufgelöst. Dann setzt man diesen Term in die andere Gleichung ein.</p>
+    <div class="definition-box">
+      <span class="box-label">So geht es</span>
+      <strong>1.</strong> <em>Eine</em> Gleichung nach <em>einer</em> Unbekannten auflösen — am besten dort, wo der Koeffizient 1 oder −1 ist.<br>
+      <strong>2.</strong> Den erhaltenen Term in die <strong>andere</strong> Gleichung einsetzen, und zwar überall dort, wo diese Unbekannte steht.<br>
+      <strong>3.</strong> Lösen, zurückeinsetzen, Probe.<br>
+      <span class="progress-note">Der eingesetzte Term kommt in <strong>Klammern</strong> — sonst geht beim Ausmultiplizieren ein Vorzeichen verloren.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <button class="btn" id="es-neu">🎲 Neues Beispiel</button>
+        <button class="btn" id="es-schritt">Schritt weiter ▸</button>
+        <button class="btn" id="es-alle">Alle Schritte</button>
+      </div>
+      <div class="lgs-system" id="es-system"></div>
+      <div class="lgs-schritte" id="es-schritte"></div>
+      <div class="lgs-rechnung" id="es-bilanz"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — nicht in dieselbe Gleichung einsetzen</span>
+      Setzt man den Term in <em>dieselbe</em> Gleichung zurück, aus der er stammt, so entsteht eine wahre, aber nutzlose Aussage wie 5 = 5. Kein Fehler, aber auch kein Fortschritt: Die zweite Information wurde nicht benutzt. Eingesetzt wird immer in die <strong>andere</strong> Gleichung.
+    </div>
+    <div class="quiz" id="quiz-einsetzen"></div>
+  </section>
+
+  <!-- 4. Additionsverfahren -->
+  <section class="card" id="sec-addieren">
+    <h2>4. Das Additionsverfahren</h2>
+    <p>Addiert man zwei Gleichungen Seite für Seite, so entsteht wieder eine gültige Gleichung. Richtet man es so ein, dass sich eine Unbekannte dabei weghebt, ist man mit einem Schlag fertig.</p>
+    <div class="definition-box">
+      <span class="box-label">So geht es</span>
+      <strong>1.</strong> Eine oder beide Gleichungen so mit einer Zahl <strong>multiplizieren</strong>, dass die Koeffizienten <em>einer</em> Unbekannten entgegengesetzt gleich werden (etwa +6 und −6).<br>
+      <strong>2.</strong> Beide Gleichungen <strong>addieren</strong>: links plus links, rechts plus rechts. Die Unbekannte fällt weg.<br>
+      <strong>3.</strong> Lösen, zurückeinsetzen, Probe.<br>
+      <span class="progress-note">Das kleinste gemeinsame Vielfache der beiden Koeffizienten sagt, womit man multiplizieren muss.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <button class="btn" id="ad-neu">🎲 Neues Beispiel</button>
+        <button class="btn" id="ad-schritt">Schritt weiter ▸</button>
+        <button class="btn" id="ad-alle">Alle Schritte</button>
+      </div>
+      <div class="lgs-schalter" id="ad-schalter"></div>
+      <div class="lgs-system" id="ad-system"></div>
+      <div class="lgs-schritte" id="ad-schritte"></div>
+      <div class="lgs-rechnung" id="ad-bilanz"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Welches Verfahren wann?</span>
+      Alle drei führen zum selben Ergebnis — sie unterscheiden sich nur im Aufwand. <strong>Gleichsetzen</strong>, wenn beide Gleichungen schon nach y aufgelöst sind. <strong>Einsetzen</strong>, wenn irgendwo eine Unbekannte allein oder mit dem Koeffizienten 1 steht. <strong>Addieren</strong>, wenn beide Gleichungen in der Form ax + by = c stehen — vor allem, wenn ein Koeffizientenpaar schon entgegengesetzt gleich ist.
+    </div>
+    <div class="quiz" id="quiz-addieren"></div>
+  </section>
+
+  <!-- 5. Die drei Lösungsfälle -->
+  <section class="card" id="sec-faelle">
+    <h2>5. Die drei Lösungsfälle</h2>
+    <p>Nicht jedes Gleichungssystem hat genau eine Lösung. Zwei Geraden in einer Ebene können sich schneiden, parallel liegen — oder aufeinanderfallen.</p>
+    <div class="definition-box">
+      <span class="box-label">Was am Ende der Rechnung steht</span>
+      <strong>Genau eine Lösung:</strong> Man erhält x = Zahl. Die Geraden schneiden sich; die Steigungen sind verschieden.<br>
+      <strong>Keine Lösung:</strong> Alle Unbekannten fallen weg, übrig bleibt eine <em>falsche</em> Aussage wie 0 = 7. Die Geraden sind parallel.<br>
+      <strong>Unendlich viele Lösungen:</strong> Alle Unbekannten fallen weg, übrig bleibt eine <em>wahre</em> Aussage wie 0 = 0. Die Geraden sind identisch.<br>
+      <span class="progress-note">Entscheidend sind die Steigungen: verschieden → ein Schnittpunkt. Gleich und verschiedene Achsenabschnitte → parallel. Gleich und gleicher Achsenabschnitt → dieselbe Gerade.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Gleichung II — Steigung m₂: <input type="range" id="fa-m2" min="-3" max="3" step="1" value="-1" style="vertical-align:middle;width:8rem"> <span id="fa-m2-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>y-Achsenabschnitt b₂: <input type="range" id="fa-b2" min="-6" max="6" step="1" value="5" style="vertical-align:middle;width:8rem"> <span id="fa-b2-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+      </div>
+      <div class="lgs-system" id="fa-system"></div>
+      <div class="geo-wrap" id="fa-mount"></div>
+      <div class="lgs-schritte" id="fa-schritte"></div>
+      <div class="lgs-faelle" id="fa-faelle"></div>
+      <div id="fa-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — „0 = 0“ heißt nicht „x = 0“</span>
+      Wenn beim Rechnen alle x und y verschwinden, ist <em>keine</em> Zahl herausgekommen — das Ergebnis ist eine Aussage über das ganze System. <strong>0 = 0</strong> bedeutet: Jedes Paar auf der Geraden löst das System. <strong>0 = 7</strong> bedeutet: gar keines. Beides sind vollständige Antworten, keine Rechenfehler.
+    </div>
+    <div class="quiz" id="quiz-faelle"></div>
+  </section>
+
+  <!-- 6. Aufstellen -->
+  <section class="card" id="sec-aufstellen">
+    <h2>6. Ein Gleichungssystem aufstellen</h2>
+    <p>Der schwierigste Schritt steht am Anfang: aus einem Text zwei Gleichungen machen. Danach ist es reine Rechenarbeit.</p>
+    <div class="definition-box">
+      <span class="box-label">Vier Schritte vom Text zur Lösung</span>
+      <strong>1.</strong> <strong>Benennen:</strong> Was ist gesucht? Zwei Größen bekommen Namen — „x sei der Preis einer Erwachsenenkarte in Euro“.<br>
+      <strong>2.</strong> <strong>Übersetzen:</strong> Jede Angabe des Textes wird zu einer Gleichung. Zwei Unbekannte brauchen zwei Angaben.<br>
+      <strong>3.</strong> <strong>Rechnen:</strong> mit dem passenden Verfahren.<br>
+      <strong>4.</strong> <strong>Antworten:</strong> in einem Satz, mit Einheit — und vorher die Probe am <em>Text</em>, nicht nur an den Gleichungen.
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Aufgabe: <input type="range" id="au-nr" min="0" max="3" step="1" value="0" style="vertical-align:middle;width:8rem"> <span id="au-nr-anzeige" class="term"></span></label>
+      </div>
+      <div id="au-text" class="event-result"></div>
+      <div class="lgs-system" id="au-system"></div>
+      <div class="lgs-schritte" id="au-schritte"></div>
+      <div class="lgs-rechnung" id="au-bilanz"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Die Probe gehört an den Text</span>
+      Rechenfehler findet die Probe in den Gleichungen. Einen Fehler beim <em>Aufstellen</em> findet sie nicht — die falschen Gleichungen sind ja in sich stimmig. Deshalb am Ende zurück zum Text: Passen 2 Erwachsene und 3 Kinder wirklich auf 31 €? Ergibt eine negative Kartenzahl Sinn?
+    </div>
+    <div class="quiz" id="quiz-aufstellen"></div>
+  </section>
+
+  <!-- 7. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>7. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../03-gleichungen/index.html#sec-umformen">Äquivalenzumformungen</a> — jeder Schritt in jedem der drei Verfahren ist eine solche Umformung. Neu ist nur, dass man zwei Gleichungen gleichzeitig im Blick behält.</li>
+      <li><strong>Baut auf:</strong> <a href="../05-lineare-funktionen/index.html#sec-schnitt">Lineare Funktionen</a> — jede Gleichung ax + by = c beschreibt eine Gerade. Das Lösen des Systems ist die Suche nach ihrem Schnittpunkt, und die drei Lösungsfälle sind die drei möglichen Lagen zweier Geraden.</li>
+      <li><strong>Baut auf:</strong> <a href="../04-terme/index.html#sec-ausmultiplizieren">Terme</a> — beim Einsetzungsverfahren wird ein ganzer Term in eine Klammer eingesetzt und ausmultipliziert. Ohne die Klammer geht das Vorzeichen verloren.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../02-prozent-und-zinsrechnung/index.html#sec-grundaufgaben">Mischungsaufgaben</a> — „so viel Prozent von der einen und so viel von der anderen Sorte“ führt auf zwei Gleichungen: eine für die Menge, eine für den Gehalt.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../../02-geometrie/01-grundbegriffe/index.html#sec-koordinaten">Das Koordinatensystem</a> — ein Zahlenpaar (x | y) ist zugleich Lösung und Punkt. Erst diese Doppeldeutung macht das grafische Verfahren möglich.</li>
+      <li><strong>Führt weiter zu:</strong> Systemen mit <strong>drei</strong> Unbekannten — dort wird jede Gleichung zu einer Ebene, und man beseitigt die Unbekannten der Reihe nach mit demselben Additionsverfahren.</li>
+      <li><strong>Führt weiter zu:</strong> Den <strong>quadratischen Gleichungen</strong> — schneidet man eine Gerade mit einer Parabel, so führt das Gleichsetzen auf eine quadratische Gleichung. Es kann dann zwei, einen oder keinen Schnittpunkt geben.</li>
+      <li><strong>Führt weiter zu:</strong> Der <strong>linearen Optimierung</strong> und der <strong>analytischen Geometrie</strong>, in denen Systeme mit vielen Gleichungen planmäßig gelöst werden.</li>
+    </ul>
+  </section>
+
+  <!-- 8. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>8. Formelsammlung</h2>
+    <p>Die Bedeutung der Lösung als Zahlenpaar, alle drei Verfahren in je einem durchgerechneten Beispiel, die drei Lösungsfälle mit Bild und Rechnung sowie der Weg vom Text zum Gleichungssystem — mit Zeichnungen und typischen Fehlern auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 9. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>9. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gesucht ist jeweils eine <strong>Zahl</strong>. Alle Aufgaben auf dieser Seite haben ganzzahlige Lösungen; negative Zahlen schreibst du mit einem Minuszeichen davor.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 4 Gleichungen, Zuordnungen und Funktionen</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
