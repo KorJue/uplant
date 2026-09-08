@@ -613,6 +613,17 @@ function mountUebungsaufgaben(container, defs) {
 
 // ---------- Aufgaben-Definitionen ----------
 
+// Fehlerhinweise vergleichen die Eingabe mit dem Wert, der bei einem
+// bestimmten Fehler herauskäme. Ein Vergleich mit === trifft dabei nicht
+// zuverlässig: 18 · 10⁻⁴ ergibt in Gleitkommaarithmetik nicht dieselbe Zahl
+// wie die eingetippte 0,0018, und der Hinweis bliebe stumm. Verglichen wird
+// deshalb mit einer relativen Schranke.
+function trifft(val, soll) {
+  return Number.isFinite(val) && Number.isFinite(soll)
+    && Math.abs(val - soll) <= 1e-9 * Math.max(1, Math.abs(soll));
+}
+
+
 function generateAufgabe1() {
   // Radius ↔ Durchmesser. Beim Weg von d nach r wird d gerade gewählt,
   // damit das Ergebnis ganzzahlig bleibt.
@@ -627,11 +638,11 @@ function generateAufgabe1() {
     tolerance: 0.01,
     placeholder: nachD ? "Durchmesser in cm" : "Radius in cm",
     hinweis: (raw, val) =>
-      val === (nachD ? r : d)
+      trifft(val, nachD ? r : d)
         ? nachD
           ? "Das ist der <strong>Radius</strong>, der schon gegeben war. Der Durchmesser ist <strong>doppelt</strong> so lang: d = 2 · r."
           : "Das ist der <strong>Durchmesser</strong>, der schon gegeben war. Der Radius ist die <strong>Hälfte</strong>: r = d : 2."
-        : val === (nachD ? r / 2 : d * 2)
+        : trifft(val, nachD ? r / 2 : d * 2)
           ? "Du hast in die falsche Richtung gerechnet. Der Durchmesser ist immer <strong>größer</strong> als der Radius, nie kleiner."
           : "",
     musterloesungHtml: nachD
@@ -735,9 +746,9 @@ function generateAufgabe4() {
       // Der Rest wird zuerst geprüft: Er ist der häufigste Fehler und kann bei
       // teil : gesamt = 1 : 3 zahlengleich mit der 180°-Rechnung sein.
       if (val === 360 - winkel) return "Das ist der Winkel des <strong>Rests</strong> — also aller anderen. Gefragt war der Ausschnitt für die genannte Gruppe.";
-      if (val === teil * (100 / gesamt)) return "Das ist der Anteil in <strong>Prozent</strong>. Ein Kreisdiagramm teilt aber den Vollwinkel auf — gerechnet wird mit <strong>360°</strong>, nicht mit 100.";
-      if (val === teil * (180 / gesamt)) return "Du hast mit 180° gerechnet. Ein <em>ganzer</em> Kreis hat aber <strong>360°</strong>; 180° wäre nur der halbe Kreis.";
-      if (val === (gesamt / teil) * 360) return "Du hast Teil und Ganzes vertauscht. Der Anteil ist <strong>Teil : Ganzes</strong>, also die kleinere Zahl geteilt durch die größere.";
+      if (trifft(val, teil * (100 / gesamt))) return "Das ist der Anteil in <strong>Prozent</strong>. Ein Kreisdiagramm teilt aber den Vollwinkel auf — gerechnet wird mit <strong>360°</strong>, nicht mit 100.";
+      if (trifft(val, teil * (180 / gesamt))) return "Du hast mit 180° gerechnet. Ein <em>ganzer</em> Kreis hat aber <strong>360°</strong>; 180° wäre nur der halbe Kreis.";
+      if (trifft(val, (gesamt / teil) * 360)) return "Du hast Teil und Ganzes vertauscht. Der Anteil ist <strong>Teil : Ganzes</strong>, also die kleinere Zahl geteilt durch die größere.";
       return "";
     },
     musterloesungHtml:

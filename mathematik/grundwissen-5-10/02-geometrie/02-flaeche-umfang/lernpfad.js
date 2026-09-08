@@ -494,6 +494,17 @@ function mountUebungsaufgaben(container, defs) {
 
 // ---------- Aufgaben-Definitionen ----------
 
+// Fehlerhinweise vergleichen die Eingabe mit dem Wert, der bei einem
+// bestimmten Fehler herauskäme. Ein Vergleich mit === trifft dabei nicht
+// zuverlässig: 18 · 10⁻⁴ ergibt in Gleitkommaarithmetik nicht dieselbe Zahl
+// wie die eingetippte 0,0018, und der Hinweis bliebe stumm. Verglichen wird
+// deshalb mit einer relativen Schranke.
+function trifft(val, soll) {
+  return Number.isFinite(val) && Number.isFinite(soll)
+    && Math.abs(val - soll) <= 1e-9 * Math.max(1, Math.abs(soll));
+}
+
+
 function generateAufgabe1() {
   const a = randInt(3, 15);
   // Bei (3|6), (4|4) und (6|3) hätten A und u dieselbe Maßzahl — dann könnte man
@@ -548,10 +559,10 @@ function generateAufgabe2() {
     hinweis: (raw, val) => {
       // Der klassische Fehler: mit dem Längenfaktor 10 statt dem Flächenfaktor 100 rechnen
       const mitLaengenfaktor = wert * Math.pow(10, diff / 2);
-      if (val === mitLaengenfaktor) {
+      if (trifft(val, mitLaengenfaktor)) {
         return `Du hast mit dem Faktor der <strong>Längen</strong> gerechnet. Bei Flächen ist jede Stufe <strong>100</strong> groß, nicht 10 — denn ein Quadrat wächst in zwei Richtungen.`;
       }
-      if (val === wert * Math.pow(10, -diff)) {
+      if (trifft(val, wert * Math.pow(10, -diff))) {
         return "Die Richtung stimmt nicht: Zu einer <strong>kleineren</strong> Einheit wird die Maßzahl größer, zu einer <strong>größeren</strong> kleiner.";
       }
       return "";

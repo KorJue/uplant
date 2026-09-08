@@ -648,6 +648,17 @@ function mountUebungsaufgaben(container, defs) {
 
 // ---------- Aufgaben-Definitionen ----------
 
+// Fehlerhinweise vergleichen die Eingabe mit dem Wert, der bei einem
+// bestimmten Fehler herauskäme. Ein Vergleich mit === trifft dabei nicht
+// zuverlässig: 18 · 10⁻⁴ ergibt in Gleitkommaarithmetik nicht dieselbe Zahl
+// wie die eingetippte 0,0018, und der Hinweis bliebe stumm. Verglichen wird
+// deshalb mit einer relativen Schranke.
+function trifft(val, soll) {
+  return Number.isFinite(val) && Number.isFinite(soll)
+    && Math.abs(val - soll) <= 1e-9 * Math.max(1, Math.abs(soll));
+}
+
+
 function generateAufgabe1() {
   const a = randInt(2, 12);
   const b = randInt(2, 10);
@@ -727,10 +738,10 @@ function generateAufgabe2() {
     hinweis: (raw, val) => {
       // Der klassische Fehler: mit dem Flächenfaktor 100 statt dem Raumfaktor 1000 rechnen
       const mitFlaechenfaktor = runter ? wert * Math.pow(10, (paar.diff / 3) * 2) : wert / Math.pow(10, (paar.diff / 3) * 2);
-      if (paar.diff % 3 === 0 && val === mitFlaechenfaktor && val !== ergebnis) {
+      if (paar.diff % 3 === 0 && trifft(val, mitFlaechenfaktor) && !trifft(val, ergebnis)) {
         return "Du hast mit dem Faktor der <strong>Flächen</strong> gerechnet. Bei Volumen ist jede Stufe <strong>1000</strong> groß, nicht 100 — ein Würfel wächst in drei Richtungen.";
       }
-      if (val === (runter ? wert / faktor : wert * faktor)) {
+      if (trifft(val, runter ? wert / faktor : wert * faktor)) {
         return "Die Richtung stimmt nicht: Zu einer <strong>kleineren</strong> Einheit wird die Maßzahl größer, zu einer <strong>größeren</strong> kleiner.";
       }
       return "";
