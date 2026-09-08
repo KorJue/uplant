@@ -98,10 +98,22 @@ function bruchHtml(obenHtml, untenHtml) {
   return `<span class="tf-bruch"><span class="oben">${obenHtml}</span><span class="unten">${untenHtml}</span></span>`;
 }
 function ggT(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { const h = a % b; a = b; b = h; } return a; }
+// Eine runde Schrittweite für eine Achse mit frei gewähltem Wertebereich.
+// Eine reine Division durch die Zahl der Linien ergäbe Beschriftungen wie
+// 17, 34, 51 — richtig, aber auf keiner Skala üblich.
+function schrittweite(spanne, ziel = 6) {
+  const roh = spanne / ziel;
+  const zehner = Math.pow(10, Math.floor(Math.log10(roh)));
+  for (const f of [1, 2, 2.5, 5]) if (roh <= f * zehner) return f * zehner;
+  return 10 * zehner;
+}
 // Ein Faktor 1 wird nicht geschrieben — "1x" ist keine übliche Schreibweise.
 function faktorHtml(b) { return b === 1 ? "" : num(b, 1) + " · "; }
 // "x − −45°" wäre falsch geschrieben; das Vorzeichen gehört vor die Zahl.
 function summand(v, stellen = 0) { return `${v < 0 ? "−" : "+"} ${num(Math.abs(v), stellen)}`; }
+// In einer Summe oder Differenz bekommt eine negative Zahl Klammern:
+// "(2,5 + −0,5) : 2" wäre falsch geschrieben, "(2,5 + (−0,5)) : 2" ist richtig.
+function klammer(x, stellen = 0) { return x < 0 ? `(${num(x, stellen)})` : num(x, stellen); }
 
 // ---------- Winkelfunktionen im Gradmaß ----------
 
@@ -309,9 +321,12 @@ function ekBild(a) {
   for (let k = 0; k < 4; k++) {
     svg.appendChild(sektor(EK_CX, EK_CY, EK_R, k * 90, (k + 1) * 90, "tf-quadrant" + (q === k + 1 ? " aktiv" : "")));
   }
+  // Die Ziffern sitzen dicht am Rand: Weiter innen verdeckten die Hilfslinie
+  // zur y-Achse und die Wertbeschriftungen gerade die Ziffer des Quadranten,
+  // in dem der Punkt liegt.
   for (let k = 0; k < 4; k++) {
     const m = (k + 0.5) * 90;
-    svg.appendChild(svgText(EK_CX + EK_R * 0.8 * cosG(m), EK_CY - EK_R * 0.8 * sinG(m) + 4, ROEMISCH[k + 1], { class: "tf-quadranttext" }));
+    svg.appendChild(svgText(EK_CX + EK_R * 0.86 * cosG(m), EK_CY - EK_R * 0.86 * sinG(m) + 4, ROEMISCH[k + 1], { class: "tf-quadranttext" }));
   }
 
   // Achsen mit den Marken bei ±1
@@ -597,10 +612,16 @@ function kuBild(x0, mitKos) {
       : "Links der Kreis, rechts die abgewickelte Welle: die Höhe des Punktes wird zur Kurve",
     { class: "tf-titel" }));
   const oben = 34, hoehe = 2.8 * KU_R, links = 186, breite = 356;
+  // Die y-Beschriftung wird hier unterdrückt (100 ist kein Vielfaches der
+  // Schrittweite) und rechts der Achse neu gesetzt: Links davon verläuft die
+  // Verbindungslinie vom Kreis zur Kurve und striche die Zahlen durch.
   const g = koordinaten(svg, {
     links, oben, breite, hoehe, xMin: -90, xMax: 450, yMin: -1.4, yMax: 1.4,
-    xSchritt: 90, ySchritt: 0.5, yBeschriftung: 1, yFormat: (y) => num(y, 1),
+    xSchritt: 90, ySchritt: 0.5, yBeschriftung: 100,
   });
+  for (const w of [1, -1]) {
+    svg.appendChild(svgText(g.px(0) + 7, g.py(w) + 4, num(w), { class: "tf-achsentext", "text-anchor": "start" }));
+  }
   const cy = g.py(0), cx = 76;
 
   // --- Der Kreis links, im selben Höhenmaßstab wie die Kurve
@@ -628,12 +649,13 @@ function kuBild(x0, mitKos) {
     if (xk === x0) continue;
     svg.appendChild(svgEl("circle", { cx: g.px(xk).toFixed(2), cy: g.py(yk).toFixed(2), r: 3.5, class: "tf-punkt wert" }));
   }
-  // Die Beschriftung weicht dorthin aus, wo die Kurve tiefer verläuft: bei
-  // steigender Kurve nach links, bei fallender nach rechts. An den Rändern
-  // entscheidet der Platz, damit der Text nicht in den Kreis oder aus dem Bild
-  // hinausragt.
-  const rechts = g.px(x0) < links + 84 ? true : g.px(x0) > links + breite - 84 ? false : cosG(x0) < 0;
-  punktZeichnen(svg, g, x0, s0, "wert", `sin ${num(x0)}° ${zeichen(s0, 2)} ${num(s0, 2)}`, rechts, s0 >= 0);
+  punktZeichnen(svg, g, x0, s0, "wert", null);
+  // Der abgelesene Wert steht in dem Streifen zwischen y = 1 und dem oberen
+  // Bildrand. Dort ist immer Platz, denn höher als 1 kommt keine der beiden
+  // Kurven — eine mitwandernde Beschriftung liefe dagegen zwangsläufig
+  // irgendwann quer durch die Kurve.
+  svg.appendChild(svgText(g.px(450) - 4, oben + 14,
+    `sin ${num(x0)}° ${zeichen(s0, 2)} ${num(s0, 2)}`, { class: "tf-punkttext wert", "text-anchor": "end" }));
   return svg;
 }
 
@@ -846,13 +868,12 @@ function vsBild(a, b, c, d) {
   if (xMax <= VS_XMAX) punktZeichnen(svg, g, xMax, d + a, "zeit", `Max ${num(d + a, 1)}`, xMax < 400, true);
   const xMin2 = c + 3 * p / 4;
   if (xMin2 <= VS_XMAX) punktZeichnen(svg, g, xMin2, d - a, "zeit", `Min ${num(d - a, 1)}`, xMin2 < 400, false);
-  // Links vom Pfeil steht die Beschriftung über dem fallenden Ast der Kurve,
-  // rechts liefe sie mitten durch den steigenden. Am linken Bildrand bleibt nur
-  // die rechte Seite.
-  const platzLinks = g.px(c) > VS_LINKS + 76;
-  masspfeil(svg, g.px(c), g.py(d), g.px(c), g.py(d + a), "amplitude", `a = ${num(a, 1)}`,
-    platzLinks ? -9 : 9, 0, platzLinks ? "end" : "start");
-  // Wie in Abschnitt 4: unter der Zeichenfläche, nicht quer durch die Wellentäler.
+  // Einen Amplitudenpfeil gibt es hier bewusst nicht: Er müsste bei x = c
+  // stehen, und dort kreuzte seine Beschriftung je nach c die y-Achse oder den
+  // steigenden Ast der Kurve. Die Amplitude ist ohnehin dreifach ablesbar — als
+  // Abstand der Mittellinie von den beiden Hüllgeraden, an den beschrifteten
+  // Extrempunkten und auf der Kennzahlenkarte. Abschnitt 4 zeigt den Pfeil.
+  // Der Periodenpfeil liegt unter der Zeichenfläche, nicht quer durch die Wellentäler.
   if (c + p <= VS_XMAX) {
     const yPfeil = VS_OBEN + VS_HOEHE + 34;
     masspfeil(svg, g.px(c), yPfeil, g.px(c + p), yPfeil, "periode", `p = ${num(p, 1)}°`, 0, 13);
@@ -885,7 +906,7 @@ function renderVerschiebung() {
     schrittZeile(`Amplitude: <span class="av">${num(a, 1)}</span> — die Kurve reicht von ` +
       `<span class="av">${num(tief, 1)}</span> bis <span class="av">${num(hoch, 1)}</span>`,
       "d ∓ a", "",
-      `Kontrolle: (${num(hoch, 1)} + ${num(tief, 1)}) : 2 = ${num(d, 1)} = d und (${num(hoch, 1)} − ${num(tief, 1)}) : 2 = ${num(a, 1)} = a.`),
+      `Kontrolle: (${num(hoch, 1)} + ${klammer(tief, 1)}) : 2 = ${num(d, 1)} = d und (${num(hoch, 1)} − ${klammer(tief, 1)}) : 2 = ${num(a, 1)} = a.`),
     schrittZeile(`Periode: p = ${bruchHtml("360°", num(b, 1))} ${zeichen(p, 1)} <span class="pv">${num(p, 1)}°</span>`,
       "aus b", ""),
     schrittZeile(`Verschiebung: c = <span class="wv">${num(c)}°</span> nach ${c < 0 ? "links" : "rechts"}`,
@@ -912,8 +933,8 @@ function renderVerschiebung() {
     `<strong>Probe am Maximum:</strong> f(${num(c + p / 4, 1)}°) = ${num(a, 1)} · sin(${num(b, 1)} · ` +
     `${num(p / 4, 1)}°) + ${num(d, 1)} = ${num(a, 1)} · sin 90° + ${num(d, 1)} ${zeichen(probe, 1)} ` +
     `<span class="wp">${num(probe, 1)}</span> ✓<br>` +
-    `<strong>Rückwärts aus einem Graphen:</strong> d = (${num(hoch, 1)} + ${num(tief, 1)}) : 2 = <span class="ws">${num(d, 1)}</span>, ` +
-    `a = (${num(hoch, 1)} − ${num(tief, 1)}) : 2 = <span class="wa">${num(a, 1)}</span>, ` +
+    `<strong>Rückwärts aus einem Graphen:</strong> d = (${num(hoch, 1)} + ${klammer(tief, 1)}) : 2 = <span class="ws">${num(d, 1)}</span>, ` +
+    `a = (${num(hoch, 1)} − ${klammer(tief, 1)}) : 2 = <span class="wa">${num(a, 1)}</span>, ` +
     `b = 360° : ${num(p, 1)}° ${zeichen(b, 1)} <span class="wp">${num(b, 1)}</span>, und c ist die Stelle des steigenden ` +
     `Schnittpunkts mit der Mittellinie: <span class="ww">${num(c)}°</span>.<br>` +
     (b === 1
@@ -1013,7 +1034,7 @@ function anBild(m) {
   const f = (x) => m.a * sinG((360 / m.p) * (x - m.c)) + m.d;
   const xMax = 2 * m.p;
   const yMax = (m.d + m.a) * 1.2;
-  const schritt = Math.max(1, Math.round(yMax / 6));
+  const schritt = schrittweite(yMax);
   const g = koordinaten(svg, {
     links: 60, oben: 30, breite: 442, hoehe: 200, xMin: 0, xMax, yMin: 0, yMax,
     xSchritt: m.p / 4, xBeschriftung: m.p / 2, ySchritt: schritt, yBeschriftung: schritt,
@@ -1049,9 +1070,9 @@ function anBaue() {
 
   const schritte = [
     schrittZeile(m.text, "Aufgabe"),
-    schrittZeile(`d = ${bruchHtml(`${num(m.d + m.a, 2)} + ${num(m.d - m.a, 2)}`, "2")} = <span class="sv">${num(m.d, 2)} ${m.yEinheit}</span>`,
+    schrittZeile(`d = ${bruchHtml(`${num(m.d + m.a, 2)} + ${klammer(m.d - m.a, 2)}`, "2")} = <span class="sv">${num(m.d, 2)} ${m.yEinheit}</span>`,
       "Mittellinie", "", m.hoechst + " Die Mittellinie liegt genau dazwischen."),
-    schrittZeile(`a = ${bruchHtml(`${num(m.d + m.a, 2)} − ${num(m.d - m.a, 2)}`, "2")} = <span class="av">${num(m.a, 2)} ${m.yEinheit}</span>`,
+    schrittZeile(`a = ${bruchHtml(`${num(m.d + m.a, 2)} − ${klammer(m.d - m.a, 2)}`, "2")} = <span class="av">${num(m.a, 2)} ${m.yEinheit}</span>`,
       "Amplitude", "", "Die halbe Spannweite zwischen größtem und kleinstem Wert."),
     schrittZeile(`p = <span class="pv">${num(m.p, 1)} ${m.xEinheit}</span> &nbsp;→&nbsp; b = ${bruchHtml("360°", num(m.p, 1))} ` +
       `${zeichen(b, 3)} <span class="pv">${num(b, 3)}</span>`,
@@ -1320,8 +1341,8 @@ function generateAufgabe3() {
       `<strong>Merksatz:</strong> Der Hochpunkt liegt eine Viertelperiode nach c: &nbsp; x<sub>Hoch</sub> = c + p : 4<br>` +
       `<strong>Nach c auflösen:</strong> c = x<sub>Hoch</sub> − p : 4 = ${num(xm)}° − ${num(p / 4)}° = <strong>${num(xm - p / 4)}°</strong>` +
       (xm - p / 4 < 0 ? `<br><strong>In den Bereich schieben:</strong> ${num(xm - p / 4)}° + ${num(p)}° = <strong>${num(c)}°</strong> — eine ganze Periode ändert die Kurve nicht.` : ``) + `<br>` +
-      `<strong>Die übrigen Parameter:</strong> d = (${num(hoch)} + ${num(tief)}) : 2 = ${num(d)}, ` +
-      `a = (${num(hoch)} − ${num(tief)}) : 2 = ${num(a)}, b = 360° : ${num(p)}° = ${num(b, 3)}<br>` +
+      `<strong>Die übrigen Parameter:</strong> d = (${num(hoch)} + ${klammer(tief)}) : 2 = ${num(d)}, ` +
+      `a = (${num(hoch)} − ${klammer(tief)}) : 2 = ${num(a)}, b = 360° : ${num(p)}° = ${num(b, 3)}<br>` +
       `<strong>Fertige Gleichung:</strong> f(x) = ${num(a)} · sin(${num(b, 3)} · (x − ${num(c)}°)) + ${num(d)}<br>` +
       `<em>Probe:</em> f(${num(xm)}°) = ${num(a)} · sin(${num(b, 3)} · ${num(((xm - c) % p + p) % p)}°) + ${num(d)} = ` +
       `${num(a)} · sin 90° + ${num(d)} = ${num(hoch)} ✓`,

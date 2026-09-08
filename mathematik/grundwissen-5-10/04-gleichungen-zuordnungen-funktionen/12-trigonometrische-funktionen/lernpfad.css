@@ -326,7 +326,6 @@
 .tf-quadrant { stroke: none; fill: #6d28d9; fill-opacity: 0.07; }
 .tf-quadrant.aktiv { fill-opacity: 0.2; }
 .tf-quadranttext { font-size: 11px; font-weight: 800; fill: #6d28d9; }
-:root[data-theme="dark"] .tf-quadranttext { fill: #c4a7ff; }
 
 /* Kurven */
 .tf-kurve { fill: none; stroke: #157347; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
@@ -357,20 +356,13 @@
 .tf-punkttext.kos { fill: #b3650a; }
 .tf-punkttext.marke { fill: #6d28d9; }
 .tf-punkttext.zeit { fill: #b3261e; }
-/* Violett und Dunkelrot verschwinden auf dunklem Grund — in einer Zeichnung
-   gibt es keinen Kartenhintergrund mehr, der die Farbe abhebt. */
-:root[data-theme="dark"] .tf-punkttext.marke { fill: #c4a7ff; }
-:root[data-theme="dark"] .tf-punkttext.zeit { fill: #ff8a8a; }
 
 /* Beschriftungen im Bild */
 .tf-winkeltext { font-size: 11.5px; font-weight: 800; fill: #6d28d9; }
-:root[data-theme="dark"] .tf-winkeltext { fill: #c4a7ff; }
 .tf-sinustext { font-size: 11.5px; font-weight: 800; fill: #157347; }
 .tf-kosinustext { font-size: 11.5px; font-weight: 800; fill: #b3650a; }
 .tf-marketext { font-size: 11px; font-weight: 800; fill: #b3261e; }
-:root[data-theme="dark"] .tf-marketext { fill: #ff8a8a; }
 .tf-amplitudentext { font-size: 11px; font-weight: 800; fill: #1d4ed8; }
-:root[data-theme="dark"] .tf-amplitudentext { fill: #8ab4ff; }
 
 /* Gleichung in Anzeigegröße */
 .tf-gleichung {
@@ -505,3 +497,75 @@
 
 /* Zusammengehörige Faktoren nie umbrechen */
 .nw { white-space: nowrap; }
+
+
+/* ---------- Dunkelmodus: die fünf Farben aufhellen ----------
+
+   Die Farben oben sind für hellen Grund gewählt. Auf #1c2128 hat etwa das
+   Grün #157347 nur noch einen Leuchtdichteabstand von 29 (nötig sind gut 45),
+   das Violett sogar nur 21 — beides ist dort kaum noch zu lesen. Deshalb
+   bekommt jede der fünf Farben eine helle Entsprechung, und zwar für Text,
+   Flächen und Linien gemeinsam, damit Zeichnung und Fließtext dieselbe
+   Zuordnung behalten. */
+
+:root[data-theme="dark"] .tf-sinustext,
+:root[data-theme="dark"] .tf-punkttext.wert,
+:root[data-theme="dark"] .tf-saeulentext.sin,
+:root[data-theme="dark"] .tf-gleichung .sv,
+:root[data-theme="dark"] .tf-schritte .gl .sv,
+:root[data-theme="dark"] .tf-rechnung .ws,
+:root[data-theme="dark"] .tf-karte.s .wert,
+:root[data-theme="dark"] .tf-tabelle td.s { color: #6fd68f; fill: #6fd68f; }
+
+:root[data-theme="dark"] .tf-kosinustext,
+:root[data-theme="dark"] .tf-punkttext.kos,
+:root[data-theme="dark"] .tf-gleichung .kv,
+:root[data-theme="dark"] .tf-schritte .gl .kv,
+:root[data-theme="dark"] .tf-rechnung .wk,
+:root[data-theme="dark"] .tf-karte.k .wert,
+:root[data-theme="dark"] .tf-tabelle td.k { color: #ffbf6e; fill: #ffbf6e; }
+
+:root[data-theme="dark"] .tf-winkeltext,
+:root[data-theme="dark"] .tf-quadranttext,
+:root[data-theme="dark"] .tf-punkttext.marke,
+:root[data-theme="dark"] .tf-gleichung .wv,
+:root[data-theme="dark"] .tf-schritte .gl .wv,
+:root[data-theme="dark"] .tf-rechnung .ww,
+:root[data-theme="dark"] .tf-karte.w .wert,
+:root[data-theme="dark"] .tf-tabelle td.w { color: #c4a7ff; fill: #c4a7ff; }
+
+:root[data-theme="dark"] .tf-marketext,
+:root[data-theme="dark"] .tf-punkttext.zeit,
+:root[data-theme="dark"] .tf-gleichung .pv,
+:root[data-theme="dark"] .tf-schritte .gl .pv,
+:root[data-theme="dark"] .tf-rechnung .wp,
+:root[data-theme="dark"] .tf-karte.p .wert { color: #ff8a8a; fill: #ff8a8a; }
+
+:root[data-theme="dark"] .tf-amplitudentext,
+:root[data-theme="dark"] .tf-gleichung .av,
+:root[data-theme="dark"] .tf-schritte .gl .av,
+:root[data-theme="dark"] .tf-rechnung .wa,
+:root[data-theme="dark"] .tf-karte.a .wert { color: #8ab4ff; fill: #8ab4ff; }
+
+/* Linien und Flächen in den Zeichnungen */
+:root[data-theme="dark"] .tf-kurve,
+:root[data-theme="dark"] .tf-sinus { stroke: #6fd68f; }
+:root[data-theme="dark"] .tf-kurve.kos,
+:root[data-theme="dark"] .tf-kurve.kosblass,
+:root[data-theme="dark"] .tf-kosinus { stroke: #ffbf6e; }
+:root[data-theme="dark"] .tf-kurve.grund,
+:root[data-theme="dark"] .tf-radius,
+:root[data-theme="dark"] .tf-winkelbogen { stroke: #c4a7ff; }
+:root[data-theme="dark"] .tf-bogen,
+:root[data-theme="dark"] .tf-strecke,
+:root[data-theme="dark"] .tf-periode { stroke: #ff8a8a; }
+:root[data-theme="dark"] .tf-mittellinie,
+:root[data-theme="dark"] .tf-huelle,
+:root[data-theme="dark"] .tf-amplitude { stroke: #8ab4ff; }
+:root[data-theme="dark"] .tf-punkt.wert { fill: #6fd68f; }
+:root[data-theme="dark"] .tf-punkt.kos { fill: #ffbf6e; }
+:root[data-theme="dark"] .tf-punkt.marke { fill: #c4a7ff; }
+:root[data-theme="dark"] .tf-punkt.zeit { fill: #ff8a8a; }
+:root[data-theme="dark"] .tf-pfeilkopf { fill: #ff8a8a; }
+:root[data-theme="dark"] .tf-pfeilkopf.amp { fill: #8ab4ff; }
+:root[data-theme="dark"] .tf-quadrant { fill: #c4a7ff; }
