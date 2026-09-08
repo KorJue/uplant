@@ -399,3 +399,45 @@
 
 /* Strichliste: Fünferbündel werden durchgestrichen dargestellt */
 .da-tabelle td.strich .fuenf { text-decoration: line-through; margin-right: 0.4em; }
+
+/* ---------- Dunkelmodus: Textfarben aufhellen (erzeugt von tools/dunkelmodus-farben.py) ---------- */
+
+/* Die Farben oben sind für hellen Grund gewählt. Auf #1c2128 hat etwa das
+   Grün #157347 nur noch einen Leuchtdichteabstand von 29 (nötig sind gut 45),
+   das Violett 21 und Fast-Schwarz 2. Die folgenden Regeln setzen dieselben
+   Selektoren im Dunkelmodus auf die helle Entsprechung; sie stehen am Ende
+   der Datei, damit sie bei gleicher Spezifität gewinnen. */
+
+:root[data-theme="dark"] .quiz-opt.correct { color: #6fd68f; }
+:root[data-theme="dark"] .quiz-opt.wrong { color: #ff8a8a; }
+:root[data-theme="dark"] .quiz-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .quiz-feedback.err { color: #ff8a8a; }
+:root[data-theme="dark"] .exercise-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .exercise-feedback.err { color: #ff8a8a; }
+:root[data-theme="dark"] .definition-box .box-label, :root[data-theme="dark"] .wissen-box .box-label { color: #ff8a8a; }
+:root[data-theme="dark"] .beispiel-box .box-label { color: #6fd68f; }
+:root[data-theme="dark"] .schwierigkeit-badge.einfach { color: #6fd68f; }
+:root[data-theme="dark"] .schwierigkeit-badge.mittel { color: #8ab4ff; }
+:root[data-theme="dark"] .schwierigkeit-badge.schwierig { color: #ffbf6e; }
+:root[data-theme="dark"] .schwierigkeit-badge.komplex { color: #ff8a8a; }
+:root[data-theme="dark"] .aufgabe-feedback .status.ok { color: #6fd68f; }
+:root[data-theme="dark"] .aufgabe-feedback .status.err { color: #ff8a8a; }
+:root[data-theme="dark"] .achtung-box .box-label { color: #ffbf6e; }
+:root[data-theme="dark"] .da-wert.markiert { color: #8ab4ff; }
+:root[data-theme="dark"] .da-wert.ausreisser { color: #ffbf6e; }
+:root[data-theme="dark"] .da-tabelle td.abs { color: #8ab4ff; }
+:root[data-theme="dark"] .da-tabelle td.rel { color: #c4a7ff; }
+:root[data-theme="dark"] .da-saeulentext { fill: #8ab4ff; }
+:root[data-theme="dark"] .da-sektortext { fill: #e6e8eb; }
+:root[data-theme="dark"] .da-mittel-text { fill: #ff8a8a; }
+:root[data-theme="dark"] .da-median-text { fill: #6fd68f; }
+:root[data-theme="dark"] .da-spanne-text { fill: #ffbf6e; }
+:root[data-theme="dark"] .da-karte.mittel .wert { color: #ff8a8a; }
+:root[data-theme="dark"] .da-karte.median .wert { color: #6fd68f; }
+:root[data-theme="dark"] .da-karte.modal .wert { color: #c4a7ff; }
+:root[data-theme="dark"] .da-karte.spanne .wert { color: #ffbf6e; }
+:root[data-theme="dark"] .da-bilanz .wa { color: #8ab4ff; }
+:root[data-theme="dark"] .da-bilanz .wr { color: #c4a7ff; }
+:root[data-theme="dark"] .da-bilanz .wm { color: #ff8a8a; }
+:root[data-theme="dark"] .da-bilanz .wz { color: #6fd68f; }
+:root[data-theme="dark"] .da-bilanz .wo { color: #ffbf6e; }

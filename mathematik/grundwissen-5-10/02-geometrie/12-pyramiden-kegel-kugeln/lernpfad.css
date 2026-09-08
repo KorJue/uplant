@@ -864,3 +864,88 @@
 }
 .py-fuellsaeule .inhalt { position: absolute; left: 0; right: 0; bottom: 0; background: #1d4ed8; opacity: 0.35; }
 .py-fuellsaeule .wert { font-weight: 800; margin-top: 0.25rem; }
+
+/* ---------- Dunkelmodus: Textfarben aufhellen (erzeugt von tools/dunkelmodus-farben.py) ---------- */
+
+/* Die Farben oben sind für hellen Grund gewählt. Auf #1c2128 hat etwa das
+   Grün #157347 nur noch einen Leuchtdichteabstand von 29 (nötig sind gut 45),
+   das Violett 21 und Fast-Schwarz 2. Die folgenden Regeln setzen dieselben
+   Selektoren im Dunkelmodus auf die helle Entsprechung; sie stehen am Ende
+   der Datei, damit sie bei gleicher Spezifität gewinnen. */
+
+:root[data-theme="dark"] .quiz-opt.correct { color: #6fd68f; }
+:root[data-theme="dark"] .quiz-opt.wrong { color: #ff8a8a; }
+:root[data-theme="dark"] .quiz-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .quiz-feedback.err { color: #ff8a8a; }
+:root[data-theme="dark"] .exercise-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .exercise-feedback.err { color: #ff8a8a; }
+:root[data-theme="dark"] .definition-box .box-label, :root[data-theme="dark"] .wissen-box .box-label { color: #ff8a8a; }
+:root[data-theme="dark"] .beispiel-box .box-label { color: #6fd68f; }
+:root[data-theme="dark"] .schwierigkeit-badge.einfach { color: #6fd68f; }
+:root[data-theme="dark"] .schwierigkeit-badge.mittel { color: #8ab4ff; }
+:root[data-theme="dark"] .schwierigkeit-badge.schwierig { color: #ffbf6e; }
+:root[data-theme="dark"] .schwierigkeit-badge.komplex { color: #ff8a8a; }
+:root[data-theme="dark"] .aufgabe-feedback .status.ok { color: #6fd68f; }
+:root[data-theme="dark"] .aufgabe-feedback .status.err { color: #ff8a8a; }
+:root[data-theme="dark"] .achtung-box .box-label { color: #ffbf6e; }
+:root[data-theme="dark"] .bruch-zaehler-farbe { color: #8ab4ff; }
+:root[data-theme="dark"] .reste-tabelle td.wiederholung { color: #ff8a8a; }
+:root[data-theme="dark"] .schriftlich-tabelle td.uebertrag { color: #ff8a8a; }
+:root[data-theme="dark"] .fr-falsch .fr-kopf { color: #ff8a8a; }
+:root[data-theme="dark"] .fr-richtig .fr-kopf { color: #6fd68f; }
+:root[data-theme="dark"] /* ---------- Kürzen vor dem Multiplizieren ---------- */ .gekuerzt { color: #ff8a8a; }
+:root[data-theme="dark"] .ersatz { color: #6fd68f; }
+:root[data-theme="dark"] .verschiebung-pfeil { color: #ff8a8a; }
+:root[data-theme="dark"] .zg-label.a { fill: #8ab4ff; }
+:root[data-theme="dark"] .zg-label.erg { fill: #c4a7ff; }
+:root[data-theme="dark"] .zg-betrag-text { fill: #ffbf6e; }
+:root[data-theme="dark"] .vz-tabelle td.plus { color: #6fd68f; }
+:root[data-theme="dark"] .vz-tabelle td.minus { color: #ff8a8a; }
+:root[data-theme="dark"] .geo-punkt-name { fill: #ff8a8a; }
+:root[data-theme="dark"] .geo-mass-text { fill: #ffbf6e; }
+:root[data-theme="dark"] .wk-text { fill: #c4a7ff; }
+:root[data-theme="dark"] .wk-scheitel-name { fill: #ff8a8a; }
+:root[data-theme="dark"] /* Zwei Größen, :root[data-theme="dark"] die man leicht verwechselt — deshalb konsequent farbcodiert: Flächeninhalt blau (die Fläche), :root[data-theme="dark"] Umfang orange (der Rand). */ .legende-flaeche { color: #8ab4ff; }
+:root[data-theme="dark"] .legende-umfang { color: #ffbf6e; }
+:root[data-theme="dark"] .groessen-karte.flaeche .wert { color: #8ab4ff; }
+:root[data-theme="dark"] .groessen-karte.umfang .wert { color: #ffbf6e; }
+:root[data-theme="dark"] .iso-tabelle tr.maximum td { color: #6fd68f; }
+:root[data-theme="dark"] .fe-groesser { color: #ff8a8a; }
+:root[data-theme="dark"] .fe-kleiner { color: #6fd68f; }
+:root[data-theme="dark"] .legende-radius { color: #6fd68f; }
+:root[data-theme="dark"] .legende-durchmesser { color: #ffbf6e; }
+:root[data-theme="dark"] .winkel-name { fill: #c4a7ff; }
+:root[data-theme="dark"] .geo-skala-text-aussen { fill: #ff8a8a; }
+:root[data-theme="dark"] .geo-skala-text-innen { fill: #6fd68f; }
+:root[data-theme="dark"] .ablesung-richtig { color: #6fd68f; }
+:root[data-theme="dark"] .ablesung-falsch { color: #ff8a8a; }
+:root[data-theme="dark"] .wf-nummer.hervor { fill: #8ab4ff; }
+:root[data-theme="dark"] .wf-nummer.hervor2 { fill: #6fd68f; }
+:root[data-theme="dark"] .paar-gleich { color: #6fd68f; }
+:root[data-theme="dark"] .paar-ergaenzt { color: #ffbf6e; }
+:root[data-theme="dark"] .name-alpha { fill: #8ab4ff; }
+:root[data-theme="dark"] .name-beta { fill: #6fd68f; }
+:root[data-theme="dark"] .name-gamma { fill: #ffbf6e; }
+:root[data-theme="dark"] .beziehung-liste li.aktiv { color: #8ab4ff; }
+:root[data-theme="dark"] .name-aussen { fill: #c4a7ff; }
+:root[data-theme="dark"] .k-name-neu { fill: #c4a7ff; }
+:root[data-theme="dark"] .schritt-liste li.aktuell::before { color: #c4a7ff; }
+:root[data-theme="dark"] .kongruenz-karte.ja { color: #6fd68f; }
+:root[data-theme="dark"] .kongruenz-karte.nein { color: #ff8a8a; }
+:root[data-theme="dark"] .kongruenz-karte.ja .kuerzel { color: #6fd68f; }
+:root[data-theme="dark"] .kongruenz-karte.nein .kuerzel { color: #ff8a8a; }
+:root[data-theme="dark"] .du-urteil.ja { color: #6fd68f; }
+:root[data-theme="dark"] .du-urteil.nein { color: #ff8a8a; }
+:root[data-theme="dark"] .py-name-g { fill: #6fd68f; }
+:root[data-theme="dark"] .py-name-h { fill: #ff8a8a; }
+:root[data-theme="dark"] .py-name-s { fill: #c4a7ff; }
+:root[data-theme="dark"] .py-name-r { fill: #8ab4ff; }
+:root[data-theme="dark"] .py-name-m { fill: #ffbf6e; }
+:root[data-theme="dark"] .py-bilanz .wg { color: #6fd68f; }
+:root[data-theme="dark"] .py-bilanz .wh { color: #ff8a8a; }
+:root[data-theme="dark"] .py-bilanz .ws { color: #c4a7ff; }
+:root[data-theme="dark"] .py-bilanz .wr { color: #8ab4ff; }
+:root[data-theme="dark"] .py-bilanz .wm { color: #ffbf6e; }
+:root[data-theme="dark"] .py-koerper-karte:hover { color: #ffbf6e; }
+:root[data-theme="dark"] .py-koerper-karte.aktiv { color: #ffbf6e; }
+:root[data-theme="dark"] .py-vergleich td.drittel { color: #ffbf6e; }
