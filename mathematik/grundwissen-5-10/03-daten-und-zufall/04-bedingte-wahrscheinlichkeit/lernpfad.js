@@ -771,7 +771,12 @@ function generateAufgabe1() {
       (100 * x.zeileA) / x.n,        // P(A)
       (100 * x.spalteB) / x.n,       // P(B)
     ],
-    kandidaten[0]
+    kandidaten[0],
+    // Die Hinweise vergleichen mit einer Toleranz von 0,05 Prozentpunkten.
+    // Mit einer engeren Schranke hier wären zwei Werte zwar rechnerisch
+    // verschieden, träfen aber trotzdem denselben Hinweis — die Diagnose
+    // stimmte dann nicht mehr zur Eingabe.
+    0.05
   );
   const k = pick(AUFGABEN_KONTEXTE);
   const antwort = (100 * t.ab) / t.spalteB;
@@ -814,7 +819,8 @@ function generateAufgabe2() {
       (100 * x.spalteB) / x.n,
       (100 * x.anb) / x.zeileA,
     ],
-    kandidaten[0]
+    kandidaten[0],
+    0.05   // dieselbe Toleranz, mit der die Hinweise vergleichen
   );
   const k = pick(AUFGABEN_KONTEXTE);
   const antwort = (100 * t.ab) / t.zeileA;
@@ -918,10 +924,17 @@ function generateAufgabe4() {
       (100 * c.richtig) / c.kranke,               // die Verwechslung: P(+|krank)
       c.quote,                                    // Fehlalarmquote
       (100 * c.kranke) / c.bevoelkerung,          // Anteil Kranker
+      (100 * c.richtig) / c.bevoelkerung,         // durch die ganze Stadt geteilt
       (100 * c.gesamt) / c.bevoelkerung,          // Anteil positiv Getesteter
       100 - c.proz,
     ],
-    kandidaten[0]
+    kandidaten[0],
+    // Kranke und richtig Erkannte liegen nahe beieinander; durch 10 000
+    // geteilt unterscheiden sich ihre Anteile oft um weniger als die 0,05
+    // Prozentpunkte, mit denen die Hinweise vergleichen. Ohne diese Schranke
+    // bekäme „durch die ganze Stadt geteilt“ den Hinweis für den Anteil der
+    // Kranken — eine Aussage, die für die Eingabe gar nicht zutrifft.
+    0.05
   );
   const { bevoelkerung, kranke, richtig, falsch, gesamt, proz: antwort } = wahl;
   const gesunde = bevoelkerung - kranke;
