@@ -22,8 +22,10 @@ function zahlen(text) {
   return (roh.match(/-?\d+(?:,\d+)?/g) || []).map((s) => parseFloat(s.replace(",", ".")));
 }
 
+// Zahlen werden in deutscher Schreibweise eingegeben; Zeichenketten — etwa
+// ein Bruch „3/4“ — gehen unverändert durch.
 function deutsch(x) {
-  return String(x).replace(".", ",");
+  return typeof x === "number" ? String(x).replace(".", ",") : String(x);
 }
 
 async function oeffneAufgabe(page, nr) {
@@ -45,12 +47,16 @@ async function antworte(page, box, wert) {
 
 // Treibt eine Aufgabe über viele Runden.
 //
-//   deute(frage) → null (unlesbar) oder
+//   deute(frage, roh) → null (unlesbar) oder
 //     { richtig, toleranz?, falsch?: [[wert, musterImHinweis], …], pruefe?(frage, rueckmeldung) }
+//
+// `roh` stammt aus dem optionalen `liesRoh(page, box)`. Es wird gebraucht, wo
+// die Aufgabe Brüche als übereinandergesetzte Elemente zeigt: Im reinen Text
+// stünde dann nur „3 4“, und Zähler und Nenner wären nicht zu unterscheiden.
 //
 // `mindestensVerschieden` ist die Streuungsschranke; sie gehört im Aufrufer
 // ausgerechnet und kommentiert (E − 3σ), nicht geraten.
-async function pruefeAufgabe(page, bericht, { nr, name, runden = 40, mindestensVerschieden, deute }) {
+async function pruefeAufgabe(page, bericht, { nr, name, runden = 40, mindestensVerschieden, deute, liesRoh }) {
   const box = await oeffneAufgabe(page, nr);
   const stufe = (await page.locator(`${box} .schwierigkeit-badge`).innerText()).trim().toLowerCase();
   bericht.pruefe(stufe === STUFEN[nr - 1], `${name}: Stufe „${stufe}“ statt „${STUFEN[nr - 1]}“`);
@@ -59,7 +65,8 @@ async function pruefeAufgabe(page, bericht, { nr, name, runden = 40, mindestensV
   for (let i = 0; i < runden; i++) {
     const frage = await wuerfle(page, box);
     gesehen.add(frage);
-    const d = deute(frage);
+    const roh = liesRoh ? await liesRoh(page, box) : null;
+    const d = deute(frage, roh);
     if (!d) { bericht.pruefe(false, `${name}: Aufgabe nicht lesbar — „${frage}“`); continue; }
 
     const rueck = await antworte(page, box, d.richtig);
@@ -69,8 +76,12 @@ async function pruefeAufgabe(page, bericht, { nr, name, runden = 40, mindestensV
     if (d.pruefe) d.pruefe(frage, rueck);
 
     for (const [falsch, muster] of d.falsch || []) {
-      if (!Number.isFinite(falsch)) continue;
-      if (Math.abs(falsch - d.richtig) < (d.toleranz ?? 0.5)) continue;   // fällt mit der Lösung zusammen
+      if (falsch === null || falsch === undefined) continue;
+      if (typeof falsch === "number" && !Number.isFinite(falsch)) continue;
+      // Fällt ein Fehlerwert mit der Lösung zusammen, taugt er nicht als Probe.
+      if (typeof falsch === "number" && typeof d.richtig === "number"
+          && Math.abs(falsch - d.richtig) < (d.toleranz ?? 0.5)) continue;
+      if (typeof falsch === "string" && falsch === String(d.richtig)) continue;
       const r = await antworte(page, box, falsch);
       bericht.pruefe(r.includes("Noch nicht richtig"),
         `${name}: die falsche Antwort ${falsch} wird anerkannt — „${frage}“`);
