@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Formelsammlung — Trigonometrische Funktionen</title>
+<style>
+  @page { size: A4 landscape; margin: 5.5mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    color: #1f2328;
+    font-size: 8.1px;
+    line-height: 1.33;
+  }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  h1 {
+    font-size: 12.4px; margin: 0 0 1.4mm; padding-bottom: 0.8mm;
+    border-bottom: 1.6px solid #1d4ed8; color: #1d4ed8; letter-spacing: 0.01em;
+  }
+  h1 .klein { font-size: 8.4px; font-weight: 400; color: #5b6570; float: right; margin-top: 2px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2.1mm; align-items: start; }
+  .box {
+    border: 0.9px solid #c9d0d8; border-radius: 2mm; padding: 1.5mm 1.8mm;
+    background: #ffffff; break-inside: avoid;
+  }
+  .box.wide { grid-column: span 2; }
+  .box.full { grid-column: span 3; }
+  .box h2 {
+    font-size: 8.6px; margin: 0 0 1.1mm; color: #1d4ed8;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .box.warn { border-color: #e3b341; background: #fffaf0; }
+  .box.warn h2 { color: #8a5b0a; }
+  .box.merk { border-color: #7ec699; background: #f4fbf6; }
+  .box.merk h2 { color: #0f5132; }
+  p { margin: 0 0 0.9mm; }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 0.9mm; padding-left: 3.4mm; }
+  li { margin-bottom: 0.4mm; }
+  .f { font-family: "Cambria Math", Cambria, Georgia, serif; font-size: 9.2px; }
+  .zentral { text-align: center; }
+  .gross { font-size: 10.4px; font-weight: 700; }
+  .sin { color: #157347; font-weight: 700; }
+  .cos { color: #b3650a; font-weight: 700; }
+  .win { color: #6d28d9; font-weight: 700; }
+  .amp { color: #1d4ed8; font-weight: 700; }
+  .per { color: #b3261e; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { border: 0.7px solid #c9d0d8; padding: 0.5mm 0.6mm; text-align: center; }
+  th { background: #eef2f6; font-weight: 700; font-size: 7.4px; }
+  td { font-size: 7.6px; }
+  td.b { font-weight: 700; }
+  figure { margin: 0.8mm 0 0; }
+  figure svg { display: block; width: 100%; height: auto; }
+  .m70 { max-width: 70%; margin: 0.8mm auto 0; }
+  .m80 { max-width: 80%; margin: 0.8mm auto 0; }
+  .m88 { max-width: 88%; margin: 0.8mm auto 0; }
+  .m62 { max-width: 62%; margin: 0.8mm auto 0; }
+  .m72 { max-width: 72%; margin: 0.8mm auto 0; }
+  .m55 { max-width: 55%; margin: 0.8mm auto 0; }
+  .bu { font-size: 7.1px; color: #5b6570; text-align: center; margin-top: 0.5mm; }
+  .rechnung { background: #f4f6f8; border-radius: 1.2mm; padding: 1mm 1.2mm; margin: 0.8mm 0 0; }
+  .schritt { display: flex; gap: 1.2mm; margin-bottom: 0.5mm; }
+  .schritt b { flex: 0 0 3.6mm; color: #1d4ed8; }
+  .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ===================== Seite 1 ===================== -->
+<div class="page">
+  <h1>Trigonometrische Funktionen — Grundlagen<span class="klein">Grundwissen Klasse 5–10 · Kapitel 4, Thema 12</span></h1>
+  <div class="grid">
+
+    <div class="box merk">
+      <h2>Definition am Einheitskreis</h2>
+      <p>Der <b>Einheitskreis</b> ist der Kreis um den Ursprung mit dem Radius <span class="f">r = 1</span>. Dreht man den Radius um den Winkel <span class="win f">α</span> gegen den Uhrzeigersinn von der positiven x-Achse aus, so liegt sein Endpunkt bei</p>
+      <p class="zentral f gross">P(<span class="cos">cos α</span> | <span class="sin">sin α</span>)</p>
+      <p><span class="cos">Kosinus</span> = x-Koordinate (waagerecht), <span class="sin">Sinus</span> = y-Koordinate (senkrecht). Damit ist jeder Winkel erlaubt, auch 150°, 270° oder 1000°.</p>
+      <figure class="m80">[[FIG1]]</figure>
+    </div>
+
+    <div class="box wide">
+      <h2>Die Sinus- und die Kosinuskurve</h2>
+      <figure class="m80">[[FIG2]]</figure>
+      <table style="margin-top:1mm">
+        <tr><th>x</th><th>0°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th><th>120°</th><th>135°</th><th>150°</th><th>180°</th><th>210°</th><th>225°</th><th>240°</th><th>270°</th><th>300°</th><th>315°</th><th>330°</th><th>360°</th></tr>
+        <tr><th>sin x</th><td class="b">0</td><td>0,5</td><td>0,71</td><td>0,87</td><td class="b">1</td><td>0,87</td><td>0,71</td><td>0,5</td><td class="b">0</td><td>−0,5</td><td>−0,71</td><td>−0,87</td><td class="b">−1</td><td>−0,87</td><td>−0,71</td><td>−0,5</td><td class="b">0</td></tr>
+        <tr><th>cos x</th><td class="b">1</td><td>0,87</td><td>0,71</td><td>0,5</td><td class="b">0</td><td>−0,5</td><td>−0,71</td><td>−0,87</td><td class="b">−1</td><td>−0,87</td><td>−0,71</td><td>−0,5</td><td class="b">0</td><td>0,5</td><td>0,71</td><td>0,87</td><td class="b">1</td></tr>
+      </table>
+      <p class="bu">Exakt: sin 30° = ½ · sin 45° = ½√2 · sin 60° = ½√3. Für den Kosinus dieselben Werte in umgekehrter Reihenfolge.</p>
+    </div>
+
+    <div class="box">
+      <h2>Vorzeichen und Bezugswinkel</h2>
+      <p>Das Vorzeichen liest man an der Richtung ab, in die der Punkt vom Ursprung aus liegt.</p>
+      <table>
+        <tr><th>Quadrant</th><th>I<br>0–90°</th><th>II<br>90–180°</th><th>III<br>180–270°</th><th>IV<br>270–360°</th></tr>
+        <tr><th>sin</th><td class="b" style="color:#157347">+</td><td class="b" style="color:#157347">+</td><td class="b" style="color:#157347">−</td><td class="b" style="color:#157347">−</td></tr>
+        <tr><th>cos</th><td class="b" style="color:#b3650a">+</td><td class="b" style="color:#b3650a">−</td><td class="b" style="color:#b3650a">−</td><td class="b" style="color:#b3650a">+</td></tr>
+      </table>
+      <p style="margin-top:1mm">Der <b>Bezugswinkel</b> ist der spitze Winkel zur x-Achse. Über ihn führt jede Rechnung in den ersten Quadranten zurück:</p>
+      <p class="f">II: 180° − α &nbsp;·&nbsp; III: α − 180° &nbsp;·&nbsp; IV: 360° − α</p>
+      <p><b>Beispiel:</b> <span class="f">sin 210° = −sin 30° = −0,5</span>, denn 210° − 180° = 30°, und im III. Quadranten ist der Sinus negativ.</p>
+    </div>
+
+    <div class="box">
+      <h2>Bogenmaß</h2>
+      <p>Das Bogenmaß ist die Bogenlänge am Einheitskreis. Der ganze Kreis hat den Umfang 2π:</p>
+      <p class="zentral f gross">360° ↔ 2π &nbsp;&nbsp; 180° ↔ π</p>
+      <p class="zentral f"><span class="win">x</span> = α · π : 180 &nbsp;&nbsp;·&nbsp;&nbsp; α = <span class="win">x</span> · 180 : π</p>
+      <figure>[[FIG5]]</figure>
+      <table style="margin-top:1mm">
+        <tr><th>Grad</th><td>30°</td><td>45°</td><td>60°</td><td>90°</td><td>180°</td><td>270°</td><td>360°</td></tr>
+        <tr><th>Bogen</th><td class="b">π : 6</td><td class="b">π : 4</td><td class="b">π : 3</td><td class="b">π : 2</td><td class="b">π</td><td class="b">3π : 2</td><td class="b">2π</td></tr>
+      </table>
+    </div>
+
+    <div class="box merk">
+      <h2>Grundeigenschaften von sin und cos</h2>
+      <ul>
+        <li><b>Wertebereich:</b> −1 ≤ sin x ≤ 1 und −1 ≤ cos x ≤ 1</li>
+        <li><b>Periode:</b> 360° — <span class="f">sin(x + 360°) = sin x</span></li>
+        <li><b>Nullstellen von sin:</b> alle Vielfachen von 180°</li>
+        <li><b>Nullstellen von cos:</b> 90° + k · 180°</li>
+        <li><b>Hochpunkte von sin:</b> 90° + k · 360° &nbsp; <b>Tiefpunkte:</b> 270° + k · 360°</li>
+        <li><b>Symmetrie:</b> <span class="f">sin(−x) = −sin x</span> (punktsymmetrisch), <span class="f">cos(−x) = cos x</span> (achsensymmetrisch)</li>
+        <li><b>Verschiebung:</b> <span class="f">cos x = sin(x + 90°)</span></li>
+        <li><b>Trigonometrischer Pythagoras:</b> <span class="f">sin²α + cos²α = 1</span></li>
+      </ul>
+    </div>
+
+    <div class="box warn full">
+      <h2>Typische Fehler</h2>
+      <ul>
+        <li><b>sin(a + b) ≠ sin a + sin b.</b> sin(30° + 60°) = 1, aber 0,5 + 0,866 = 1,366.</li>
+        <li><b>sin(2x) ≠ 2 · sin x.</b> sin 60° ≈ 0,866, aber 2 · sin 30° = 1.</li>
+        <li><b>sin²x</b> bedeutet (sin x)², nicht sin(x²).</li>
+        <li><b>Vorzeichen weglassen.</b> Am Kreis ist sin α eine Koordinate, kein Längenverhältnis — sin 210° = −0,5.</li>
+        <li><b>DEG statt RAD.</b> Im RAD-Modus ist sin(30) ≈ −0,988, nicht 0,5.</li>
+        <li><b>sin x ≈ x</b> gilt nur für <i>kleine</i> Winkel im Bogenmaß: bei 60° sind es 0,866 gegen 1,047 — 17 % daneben.</li>
+      </ul>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Grundwissen Mathematik Klasse 5–10 · Seite 1 von 2</p>
+</div>
+
+<!-- ===================== Seite 2 ===================== -->
+<div class="page">
+  <h1>Die allgemeine Sinusfunktion<span class="klein">f(x) = a · sin(b · (x − c)) + d</span></h1>
+  <div class="grid">
+
+    <div class="box full merk">
+      <h2>Die vier Parameter</h2>
+      <figure class="m72">[[FIG3]]</figure>
+    </div>
+
+    <div class="box">
+      <h2>Was jeder Parameter tut</h2>
+      <ul>
+        <li><span class="amp">|a|</span> = <b>Amplitude</b>: der halbe Abstand zwischen Hoch- und Tiefpunkt. Negatives a spiegelt zusätzlich an der x-Achse.</li>
+        <li><span class="per">b</span> bestimmt die <b>Periode</b>: <span class="f">p = 360° : |b|</span>. Größeres b → kürzere Periode.</li>
+        <li><span class="win">c</span> = <b>Verschiebung nach rechts</b>. Bei x = c kreuzt die Kurve <i>steigend</i> die Mittellinie.</li>
+        <li><span class="sin">d</span> = <b>Verschiebung nach oben</b>; die Gerade y = d ist die <b>Mittellinie</b>.</li>
+      </ul>
+      <p><b>Merke:</b> Maximum bei <span class="f">c + p : 4</span>, Minimum bei <span class="f">c + 3p : 4</span>, Nullstellen der Mittellinie alle <span class="f">p : 2</span>.</p>
+      <p><b>Beispiel:</b> <span class="f">2 · sin x</span> hat die doppelte Höhe, <span class="f">sin(3x)</span> die dritte Periode: 120° statt 360°.</p>
+    </div>
+
+    <div class="box">
+      <h2>Aus dem Graphen zur Gleichung</h2>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span><span class="sin">d</span> = (Maximum + Minimum) : 2</span></div>
+        <div class="schritt"><b>2.</b><span><span class="amp">a</span> = (Maximum − Minimum) : 2</span></div>
+        <div class="schritt"><b>3.</b><span><span class="per">p</span> = Abstand zweier gleichartiger Stellen, dann <span class="f">b = 360° : p</span></span></div>
+        <div class="schritt"><b>4.</b><span><span class="win">c</span> = steigender Schnittpunkt mit der Mittellinie, oder <span class="f">c = x<sub>Max</sub> − p : 4</span></span></div>
+      </div>
+      <p style="margin-top:1mm"><b>Beispiel:</b> Maximum 8 bei x = 105°, Minimum 2, Periode 180°.</p>
+      <p class="f">d = (8 + 2) : 2 = 5 &nbsp;·&nbsp; a = (8 − 2) : 2 = 3</p>
+      <p class="f">b = 360° : 180° = 2 &nbsp;·&nbsp; c = 105° − 45° = 60°</p>
+      <p class="f zentral gross">f(x) = 3 · sin(2 · (x − 60°)) + 5</p>
+    </div>
+
+    <div class="box warn">
+      <h2>Achtung — die Klammer entscheidet</h2>
+      <p><span class="f">sin(2 · (x − 30°))</span> ist um <b>30°</b> nach rechts verschoben.</p>
+      <p><span class="f">sin(2x − 30°)</span> dagegen <b>nicht</b>: Erst ausklammern,</p>
+      <p class="f zentral">2x − 30° = 2 · (x − 15°),</p>
+      <p>also nur <b>15°</b>. Der Wert von c lässt sich erst ablesen, wenn b vor der Klammer steht.</p>
+      <p style="margin-top:1mm"><b>Weiter:</b> Die Periode ist 360° <b>geteilt</b> durch b, nicht mal b. Probe: x = 360° : b einsetzen — das Argument muss 360° ergeben.</p>
+    </div>
+
+    <div class="box wide">
+      <h2>Periodische Vorgänge beschreiben</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2mm;align-items:start">
+        <div>
+          <p><b>Der Weg bei jeder Sachaufgabe</b></p>
+          <div class="rechnung">
+            <div class="schritt"><b>1.</b><span>Größten und kleinsten Wert dem Text entnehmen → <span class="sin">d</span> und <span class="amp">a</span>.</span></div>
+            <div class="schritt"><b>2.</b><span>Dauer einer Wiederholung ablesen → <span class="per">p</span>, daraus <span class="f">b = 360° : p</span>.</span></div>
+            <div class="schritt"><b>3.</b><span>Bekannte Stelle nutzen: <span class="f">c = x<sub>Max</sub> − p : 4</span> oder <span class="f">c = x<sub>Min</sub> + p : 4</span>.</span></div>
+            <div class="schritt"><b>4.</b><span>Probe: einen bekannten Wert einsetzen.</span></div>
+          </div>
+          <p style="margin-top:1mm"><b>Die Einheit der x-Achse muss zur Periode passen</b> — Sekunden beim Riesenrad, Tage bei der Tageslänge, Stunden bei den Gezeiten.</p>
+          <p><b>Grenze des Modells:</b> Der Sinus schwingt ewig exakt gleich — echte Gezeiten und Tageslängen weichen leicht ab.</p>
+        </div>
+        <div>
+          <figure>[[FIG4]]</figure>
+        </div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Vom Dreieck zum Kreis — was bleibt</h2>
+      <p>Im rechtwinkligen Dreieck (Thema 10) gilt weiterhin</p>
+      <p class="f zentral"><span class="sin">sin α</span> = Gegenkathete : Hypotenuse<br><span class="cos">cos α</span> = Ankathete : Hypotenuse</p>
+      <p>Am Einheitskreis ist die Hypotenuse 1, deshalb sind die Katheten selbst die Funktionswerte. Die Kreisdefinition ist die Erweiterung, kein Ersatz.</p>
+      <p><b>Neu ist die Periodizität:</b> Eine Gleichung wie <span class="f">sin x = 0,5</span> hat in 0° ≤ x &lt; 360° <b>zwei</b> Lösungen (30° und 150°) und über alle Winkel hinweg unendlich viele: <span class="f">30° + k · 360°</span> und <span class="f">150° + k · 360°</span>.</p>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Grundwissen Mathematik Klasse 5–10 · Seite 2 von 2</p>
+</div>
+
+</body>
+</html>

@@ -111,6 +111,11 @@ function schrittweite(spanne, ziel = 6) {
 function faktorHtml(b) { return b === 1 ? "" : num(b, 1) + " · "; }
 // "x − −45°" wäre falsch geschrieben; das Vorzeichen gehört vor die Zahl.
 function summand(v, stellen = 0) { return `${v < 0 ? "−" : "+"} ${num(Math.abs(v), stellen)}`; }
+// Das Quadrat einer negativen Zahl braucht Klammern: „−0,5²“ liest sich als
+// −(0,5²) und wäre damit das Gegenteil des Gemeinten.
+function quadrat(x, stellen) {
+  return (x < 0 ? `(${num(x, stellen)})` : num(x, stellen)) + "²";
+}
 // In einer Summe oder Differenz bekommt eine negative Zahl Klammern:
 // "(2,5 + −0,5) : 2" wäre falsch geschrieben, "(2,5 + (−0,5)) : 2" ist richtig.
 function klammer(x, stellen = 0) { return x < 0 ? `(${num(x, stellen)})` : num(x, stellen); }
@@ -434,7 +439,7 @@ function renderEinheitskreis() {
         (q === 1 ? ` (im ersten Quadranten ist das der Winkel selbst)` : ``) + `. Für ihn gilt ` +
         `sin ${num(bez)}° ${zeichen(Math.abs(s), 4)} ${num(Math.abs(s), 4)} und cos ${num(bez)}° ${zeichen(Math.abs(c), 4)} ${num(Math.abs(c), 4)}; ` +
         `die Vorzeichen liefert dann der Quadrant.<br>`) +
-    `<strong>sin²α + cos²α:</strong> <span class="ws">${num(s, 4)}²</span> + <span class="wk">${num(c, 4)}²</span> ` +
+    `<strong>sin²α + cos²α:</strong> <span class="ws">${quadrat(s, 4)}</span> + <span class="wk">${quadrat(c, 4)}</span> ` +
     `${zeichen(s * s + c * c, 4)} <span class="wp">${num(s * s + c * c, 4)}</span> — der Satz des Pythagoras im Dreieck mit der Hypotenuse 1.<br>` +
     (exS !== null
       ? `<strong>Exakte Werte:</strong> sin ${num(a)}° = <span class="ws">${exS}</span> und cos ${num(a)}° = <span class="wk">${exC}</span>. ` +
@@ -655,7 +660,7 @@ function kuBild(x0, mitKos) {
   // Kurven — eine mitwandernde Beschriftung liefe dagegen zwangsläufig
   // irgendwann quer durch die Kurve.
   svg.appendChild(svgText(g.px(450) - 4, oben + 14,
-    `sin ${num(x0)}° ${zeichen(s0, 2)} ${num(s0, 2)}`, { class: "tf-punkttext wert", "text-anchor": "end" }));
+    `sin(${num(x0)}°) ${zeichen(s0, 2)} ${num(s0, 2)}`, { class: "tf-punkttext wert", "text-anchor": "end" }));
   return svg;
 }
 
@@ -692,13 +697,13 @@ function renderKurven() {
 
   document.getElementById("ku-bilanz").innerHTML =
     `<strong>Periode 360°:</strong> sin(${num(x0)}° + 360°) = sin ${num(x0 + 360)}° ` +
-    `${zeichen(sinG(x0 + 360), 4)} <span class="ws">${num(sinG(x0 + 360), 4)}</span> — derselbe Wert wie sin ${num(x0)}°. ` +
+    `${zeichen(sinG(x0 + 360), 4)} <span class="ws">${num(sinG(x0 + 360), 4)}</span> — derselbe Wert wie sin(${num(x0)}°). ` +
     `Nach einer vollen Umdrehung steht der Punkt wieder genau dort.<br>` +
-    `<strong>Punktsymmetrie des Sinus:</strong> sin(−${num(x0)}°) ${zeichen(sinG(-x0), 4)} ` +
-    `<span class="ws">${num(sinG(-x0), 4)}</span> = −sin ${num(x0)}°. Spiegeln an der x-Achse kippt nur die Höhe.<br>` +
-    `<strong>Achsensymmetrie des Kosinus:</strong> cos(−${num(x0)}°) ${zeichen(cosG(-x0), 4)} ` +
-    `<span class="wk">${num(cosG(-x0), 4)}</span> = cos ${num(x0)}°. Beim Spiegeln bleibt die x-Koordinate unverändert.<br>` +
-    `<strong>Der Zusammenhang der beiden Kurven:</strong> cos ${num(x0)}° ${zeichen(c, 4)} <span class="wk">${num(c, 4)}</span> ` +
+    `<strong>Punktsymmetrie des Sinus:</strong> sin(${num(-x0)}°) ${zeichen(sinG(-x0), 4)} ` +
+    `<span class="ws">${num(sinG(-x0), 4)}</span> = −sin(${num(x0)}°). Spiegeln an der x-Achse kippt nur die Höhe.<br>` +
+    `<strong>Achsensymmetrie des Kosinus:</strong> cos(${num(-x0)}°) ${zeichen(cosG(-x0), 4)} ` +
+    `<span class="wk">${num(cosG(-x0), 4)}</span> = cos(${num(x0)}°). Beim Spiegeln bleibt die x-Koordinate unverändert.<br>` +
+    `<strong>Der Zusammenhang der beiden Kurven:</strong> cos(${num(x0)}°) ${zeichen(c, 4)} <span class="wk">${num(c, 4)}</span> ` +
     `und sin(${num(x0)}° + 90°) = sin ${num(x0 + 90)}° ${zeichen(sinG(x0 + 90), 4)} <span class="ws">${num(sinG(x0 + 90), 4)}</span> — ` +
     `dieselbe Zahl. Die Kosinuskurve ist die um 90° nach links geschobene Sinuskurve.`;
 
@@ -713,7 +718,7 @@ function renderKurven() {
         : r === 270
           ? `<span class="tf-urteil nein">Tiefpunkt bei x = ${num(x0)}°</span> ` +
             `Kleiner als −1 wird der Sinus nie — der untere Kreisrand ist die Grenze.`
-          : `<span class="tf-urteil ${s > 0 ? "ja" : "nein"}">sin ${num(x0)}° ${zeichen(s, 3)} ${num(s, 3)}</span> ` +
+          : `<span class="tf-urteil ${s > 0 ? "ja" : "nein"}">sin(${num(x0)}°) ${zeichen(s, 3)} ${num(s, 3)}</span> ` +
             `Die Kurve ${(r > 90 && r < 270) ? "fällt" : "steigt"} hier gerade — auf dem Kreis wandert der Punkt ` +
             `${(r > 90 && r < 270) ? "nach unten" : "nach oben"}.`;
 }
@@ -931,7 +936,7 @@ function renderVerschiebung() {
     `gestreckt, dann mit <span class="wp">${num(b, 1)}</span> in der Breite gestaucht, dann um <span class="ww">${num(Math.abs(c))}°</span> nach ` +
     `${c < 0 ? "links" : "rechts"} und schließlich um <span class="ws">${num(Math.abs(d), 1)}</span> nach ${d < 0 ? "unten" : "oben"} geschoben.<br>` +
     `<strong>Probe am Maximum:</strong> f(${num(c + p / 4, 1)}°) = ${num(a, 1)} · sin(${num(b, 1)} · ` +
-    `${num(p / 4, 1)}°) + ${num(d, 1)} = ${num(a, 1)} · sin 90° + ${num(d, 1)} ${zeichen(probe, 1)} ` +
+    `${num(p / 4, 1)}°) ${summand(d, 1)} = ${num(a, 1)} · sin 90° ${summand(d, 1)} ${zeichen(probe, 1)} ` +
     `<span class="wp">${num(probe, 1)}</span> ✓<br>` +
     `<strong>Rückwärts aus einem Graphen:</strong> d = (${num(hoch, 1)} + ${klammer(tief, 1)}) : 2 = <span class="ws">${num(d, 1)}</span>, ` +
     `a = (${num(hoch, 1)} − ${klammer(tief, 1)}) : 2 = <span class="wa">${num(a, 1)}</span>, ` +
