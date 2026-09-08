@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trigonometrische Funktionen</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">4 Gleichungen, Zuordnungen und Funktionen</a><span class="sep">/</span>
+  12 Trigonometrische Funktionen
+</nav>
+<header class="page-header">
+  <h1>Trigonometrische Funktionen</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>In <a href="../10-trigonometrie/index.html">Thema 10</a> waren Sinus und Kosinus <em>Seitenverhältnisse</em> im rechtwinkligen Dreieck — und damit nur für Winkel zwischen 0° und 90° erklärt. Hier lösen wir sie vom Dreieck: Am <strong>Einheitskreis</strong> bekommt jeder Winkel einen Sinus- und einen Kosinuswert, auch 150°, 270° oder 1000°. Aus der Zuordnung „Winkel → Sinuswert“ wird dadurch eine <strong>Funktion</strong> — und ihr Graph ist die Welle, mit der man alles Wiederkehrende beschreibt. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>Sinus und Kosinus am <span class="term">Einheitskreis</span> für jeden Winkel ablesen und ihre Vorzeichen in den vier Quadranten begründen</li>
+      <li>zwischen <span class="term">Gradmaß und Bogenmaß</span> umrechnen</li>
+      <li>die <span class="term">Sinus- und Kosinuskurve</span> zeichnen und ihre Nullstellen, Hoch- und Tiefpunkte angeben</li>
+      <li>bei <strong>f(x) = a · sin(b · (x − c)) + d</strong> jeden Parameter deuten: <span class="term">Amplitude, Periode, Verschiebung</span></li>
+      <li>aus einem Graphen die Funktionsgleichung ablesen — und umgekehrt</li>
+      <li><span class="term">periodische Vorgänge</span> wie Riesenrad, Tageslänge und Gezeiten mit einer Sinusfunktion beschreiben</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../10-trigonometrie/index.html#sec-einheitskreis">Thema 10</a> den Einheitskreis, aus <a href="../../02-geometrie/10-kreisberechnungen/index.html#sec-ausschnitt">Kapitel 2, Thema 10</a> die Bogenlänge und aus <a href="../08-quadratische-funktionen/index.html#sec-scheitelform">Thema 8</a> die Idee, wie Parameter einen Graphen strecken und verschieben.</p>
+  </section>
+
+  <!-- 1. Sinus und Kosinus am Einheitskreis -->
+  <section class="card" id="sec-einheitskreis">
+    <h2>1. Sinus und Kosinus am Einheitskreis</h2>
+    <p>Der Trick, mit dem Sinus und Kosinus für <em>jeden</em> Winkel erklärt werden: Man legt das rechtwinklige Dreieck in einen Kreis mit dem Radius 1 und schaut nur noch auf die Koordinaten eines Punktes.</p>
+    <div class="definition-box">
+      <span class="box-label">Definition am Einheitskreis</span>
+      Der <strong>Einheitskreis</strong> ist der Kreis um den Ursprung mit dem Radius <strong>r = 1</strong>. Dreht man den Radius um den Winkel <strong>α</strong> gegen den Uhrzeigersinn von der positiven x-Achse aus, so landet sein Endpunkt bei<br>
+      <strong>P(cos α | sin α)</strong>.<br>
+      Der <strong>Kosinus</strong> ist also die <strong>x-Koordinate</strong>, der <strong>Sinus</strong> die <strong>y-Koordinate</strong> dieses Punktes.<br>
+      <span class="progress-note">Für 0° &lt; α &lt; 90° ist das genau die alte Definition: Im Dreieck mit der Hypotenuse 1 ist sin α = Gegenkathete : 1 = Gegenkathete, und die Gegenkathete ist hier die Höhe des Punktes, also seine y-Koordinate. Die neue Definition sagt dasselbe — sie hört nur bei 90° nicht auf.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Winkel α = <input type="range" id="ek-a" min="0" max="360" step="5" value="35" style="vertical-align:middle;width:18rem"> <span id="ek-a-anzeige" style="font-weight:800;color:#6d28d9"></span>°</label>
+      </div>
+      <div class="tf-gleichung" id="ek-gleichung"></div>
+      <div class="geo-wrap" id="ek-mount"></div>
+      <div class="tf-karten" id="ek-karten"></div>
+      <div class="tf-tabelle-wrap"><table class="tf-tabelle" id="ek-tabelle"></table></div>
+      <div class="tf-rechnung" id="ek-bilanz"></div>
+      <div id="ek-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Der „trigonometrische Pythagoras“</span>
+      Der Punkt P(cos α | sin α) liegt auf einem Kreis mit dem Radius 1. Nach dem <a href="../../02-geometrie/09-pythagoras/index.html#sec-satz">Satz des Pythagoras</a> ist sein Abstand vom Ursprung <span class="nw">√(cos²α + sin²α)</span> — und der ist 1. Daraus folgt für <em>jeden</em> Winkel:<br>
+      <strong>sin²α + cos²α = 1</strong><br>
+      Kennt man einen der beiden Werte, so kennt man damit auch den anderen bis auf das Vorzeichen — und das Vorzeichen liefert der Quadrant.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — sin α ist keine Länge mehr</span>
+      Im Dreieck war sin α ein Verhältnis zweier Längen und deshalb immer positiv. Am Einheitskreis ist sin α eine <em>Koordinate</em>, und Koordinaten dürfen negativ sein: sin 210° = −0,5. Wer beim Rechnen am Kreis Vorzeichen weglässt, bekommt systematisch falsche Ergebnisse. Die Werte bleiben aber immer zwischen −1 und 1, denn weiter als bis zum Rand kommt der Punkt nicht.
+    </div>
+    <div class="quiz" id="quiz-einheitskreis"></div>
+  </section>
+
+  <!-- 2. Das Bogenmaß -->
+  <section class="card" id="sec-bogenmass">
+    <h2>2. Das Bogenmaß</h2>
+    <p>360 Grad für eine volle Drehung ist eine reine Verabredung aus Babylon. Es geht auch ohne willkürliche Zahl — man misst den Winkel dann mit einer Länge.</p>
+    <div class="definition-box">
+      <span class="box-label">Bogenmaß</span>
+      Das <strong>Bogenmaß</strong> eines Winkels ist die Länge des zugehörigen Bogens auf dem <strong>Einheitskreis</strong>. Seine Einheit heißt <strong>Radiant (rad)</strong>, wird aber meist weggelassen.<br>
+      Der ganze Kreis hat den Umfang 2πr = <strong>2π</strong>. Also entsprechen <strong>360° ↔ 2π</strong> und <strong>180° ↔ π</strong>.<br>
+      <strong>Umrechnung:</strong> &nbsp; x = α · π : 180 &nbsp;&nbsp; und &nbsp;&nbsp; α = x · 180 : π<br>
+      <span class="progress-note">Merkwerte: 30° = π:6, 45° = π:4, 60° = π:3, 90° = π:2, 180° = π, 270° = 3π:2.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Winkel α = <input type="range" id="bm-a" min="0" max="360" step="15" value="60" style="vertical-align:middle;width:18rem"> <span id="bm-a-anzeige" style="font-weight:800;color:#6d28d9"></span>°</label>
+      </div>
+      <div class="tf-gleichung" id="bm-gleichung"></div>
+      <div class="geo-wrap" id="bm-mount"></div>
+      <div class="tf-schritte" id="bm-schritte"></div>
+      <div class="tf-karten" id="bm-karten"></div>
+      <div class="tf-rechnung" id="bm-bilanz"></div>
+      <div id="bm-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Warum man sich diese Mühe macht</span>
+      Das Bogenmaß ist eine <strong>reine Zahl</strong>: eine Länge geteilt durch eine Länge. Deshalb darf man sin x mit x selbst vergleichen — und für kleine x gilt sogar <strong>sin x ≈ x</strong>. Für x = 0,1 ist sin x ≈ 0,0998, für x = 0,01 ist sin x ≈ 0,0099998. Im Gradmaß wäre das sinnlos, denn sin 10° ≈ 0,17 hat mit der Zahl 10 nichts zu tun. Alle Formeln der Oberstufe zu Ableitung und Integral der Sinusfunktion gelten nur im Bogenmaß.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der Taschenrechner rechnet in dem Modus, in dem er steht</span>
+      Steht der Rechner auf <strong>RAD</strong> und man tippt sin(30), so erhält man nicht 0,5, sondern <strong>−0,988</strong> — der Rechner hat 30 <em>Radiant</em> gelesen, also gut viereinhalb volle Umdrehungen. Umgekehrt liefert sin(π) im <strong>DEG</strong>-Modus 0,0548 statt 0. Vor jeder Rechnung mit Winkeln lohnt die Kontrolle in der Anzeige: DEG oder RAD.
+    </div>
+    <div class="quiz" id="quiz-bogenmass"></div>
+  </section>
+
+  <!-- 3. Die Sinus- und die Kosinuskurve -->
+  <section class="card" id="sec-kurven">
+    <h2>3. Die Sinus- und die Kosinuskurve</h2>
+    <p>Trägt man den Winkel nach rechts und den Sinuswert nach oben ab, so wickelt sich der Kreis zu einer Welle ab — dem Graphen der Sinusfunktion.</p>
+    <div class="definition-box">
+      <span class="box-label">Die Sinusfunktion</span>
+      <strong>f(x) = sin x</strong> ordnet jedem Winkel x seinen Sinuswert zu. Ihr Graph heißt <strong>Sinuskurve</strong>.<br>
+      <strong>Wertebereich:</strong> −1 ≤ sin x ≤ 1 &nbsp;·&nbsp; <strong>Periode:</strong> 360° &nbsp;·&nbsp; <strong>Nullstellen:</strong> 0°, 180°, 360°, … also alle Vielfachen von 180°<br>
+      <strong>Hochpunkte</strong> bei 90° + k · 360°, <strong>Tiefpunkte</strong> bei 270° + k · 360°.<br>
+      <span class="progress-note">Die Kosinuskurve sieht genauso aus, nur um 90° nach links verschoben: <strong>cos x = sin(x + 90°)</strong>. Sie beginnt bei 1 statt bei 0.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Winkel x = <input type="range" id="ku-x" min="-90" max="450" step="5" value="60" style="vertical-align:middle;width:20rem"> <span id="ku-x-anzeige" style="font-weight:800;color:#6d28d9"></span>°</label>
+        <label><input type="checkbox" id="ku-kos"> Kosinuskurve mitzeichnen</label>
+      </div>
+      <div class="tf-gleichung" id="ku-gleichung"></div>
+      <div class="geo-wrap" id="ku-mount"></div>
+      <div class="tf-tabelle-wrap"><table class="tf-tabelle" id="ku-tabelle"></table></div>
+      <div class="tf-karten" id="ku-karten"></div>
+      <div class="tf-rechnung" id="ku-bilanz"></div>
+      <div id="ku-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Zwei Symmetrien, die man ablesen kann</span>
+      Die Sinuskurve ist <strong>punktsymmetrisch zum Ursprung</strong>: <strong>sin(−x) = −sin x</strong>. Dreht man den Radius um denselben Winkel nach unten statt nach oben, so kippt nur das Vorzeichen der Höhe.<br>
+      Die Kosinuskurve ist <strong>achsensymmetrisch zur y-Achse</strong>: <strong>cos(−x) = cos x</strong>. Die x-Koordinate ändert sich beim Spiegeln an der x-Achse nämlich gar nicht.<br>
+      Beide Kurven wiederholen sich nach 360°: <strong>sin(x + 360°) = sin x</strong> — nach einer vollen Umdrehung steht der Punkt wieder an derselben Stelle des Kreises.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — sin(a + b) ist nicht sin a + sin b</span>
+      Der Sinus ist keine „Rechenoperation, die man ausmultiplizieren darf“. sin(30° + 60°) = sin 90° = 1, aber sin 30° + sin 60° = 0,5 + 0,866 = <strong>1,366</strong>. Ebenso ist sin(2x) <em>nicht</em> 2 · sin x: sin 60° ≈ 0,866, aber 2 · sin 30° = 1. Und sin²x bedeutet (sin x)², nicht sin(x²).
+    </div>
+    <div class="quiz" id="quiz-kurven"></div>
+  </section>
+
+  <!-- 4. Amplitude und Periode -->
+  <section class="card" id="sec-amplitude">
+    <h2>4. Amplitude und Periode: f(x) = a · sin(b · x)</h2>
+    <p>Zwei Zahlen genügen, um aus der Grundwelle jede gewünschte Höhe und jede gewünschte Wiederholdauer zu machen.</p>
+    <div class="definition-box">
+      <span class="box-label">Die beiden Streckfaktoren</span>
+      <strong>a</strong> streckt in <em>y</em>-Richtung: Die Kurve läuft zwischen <strong>−|a|</strong> und <strong>|a|</strong>. Die Zahl <strong>|a|</strong> heißt <strong>Amplitude</strong>.<br>
+      <strong>b</strong> staucht in <em>x</em>-Richtung: Die <strong>Periode</strong> ist <strong>p = 360° : |b|</strong>.<br>
+      <span class="progress-note">Wichtig ist die Richtung: Ein <em>größeres</em> b macht die Periode <em>kürzer</em> — die Kurve schwingt schneller, weil das Argument b · x schneller wächst. Bei b = 3 durchläuft die Welle im selben Abschnitt drei volle Schwingungen. Ist a negativ, wird die Kurve zusätzlich an der x-Achse gespiegelt; die Amplitude bleibt |a|.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Amplitude a = <input type="range" id="ap-a" min="-30" max="30" step="5" value="20" style="vertical-align:middle;width:12rem"> <span id="ap-a-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>Faktor b = <input type="range" id="ap-b" min="5" max="40" step="5" value="10" style="vertical-align:middle;width:12rem"> <span id="ap-b-anzeige" style="font-weight:800;color:#b3261e"></span></label>
+      </div>
+      <div class="tf-gleichung" id="ap-gleichung"></div>
+      <div class="geo-wrap" id="ap-mount"></div>
+      <div class="tf-schritte" id="ap-schritte"></div>
+      <div class="tf-karten" id="ap-karten"></div>
+      <div class="tf-rechnung" id="ap-bilanz"></div>
+      <div id="ap-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Periode ist 360° : b, nicht 360° · b</span>
+      Der häufigste Fehler in diesem Abschnitt. Eine Probe schützt davor: Bei f(x) = sin(2x) ist f(180°) = sin 360° = 0 — nach 180° ist die Welle schon einmal ganz durchlaufen. Die Periode ist also 180° = 360° : 2 und nicht 720°. Wer unsicher ist, setzt einfach x = 360° : b ein und prüft, ob das Argument gerade 360° ergibt.
+    </div>
+    <div class="quiz" id="quiz-amplitude"></div>
+  </section>
+
+  <!-- 5. Verschiebung -->
+  <section class="card" id="sec-verschiebung">
+    <h2>5. Die allgemeine Sinusfunktion f(x) = a · sin(b · (x − c)) + d</h2>
+    <p>Zwei weitere Zahlen schieben die fertige Welle an die richtige Stelle — nach rechts und nach oben.</p>
+    <div class="definition-box">
+      <span class="box-label">Alle vier Parameter auf einen Blick</span>
+      <strong>f(x) = a · sin(b · (x − c)) + d</strong><br>
+      <strong>|a|</strong> = <strong>Amplitude</strong>, der halbe Abstand zwischen Hoch- und Tiefpunkt<br>
+      <strong>b</strong> bestimmt die <strong>Periode p = 360° : |b|</strong><br>
+      <strong>c</strong> = <strong>Verschiebung nach rechts</strong> (Phasenverschiebung)<br>
+      <strong>d</strong> = <strong>Verschiebung nach oben</strong>; die Gerade y = d ist die <strong>Mittellinie</strong><br>
+      <span class="progress-note">Ablesen aus einem Graphen: d = (Maximum + Minimum) : 2, a = (Maximum − Minimum) : 2, p = Abstand zweier gleichartiger Stellen und daraus b = 360° : p, und c ist die Stelle, an der die Kurve steigend die Mittellinie kreuzt.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a = <input type="range" id="vs-a" min="5" max="30" step="5" value="15" style="vertical-align:middle;width:8rem"> <span id="vs-a-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>b = <input type="range" id="vs-b" min="5" max="30" step="5" value="10" style="vertical-align:middle;width:8rem"> <span id="vs-b-anzeige" style="font-weight:800;color:#b3261e"></span></label>
+        <label>c = <input type="range" id="vs-c" min="-180" max="180" step="15" value="45" style="vertical-align:middle;width:10rem"> <span id="vs-c-anzeige" style="font-weight:800;color:#6d28d9"></span>°</label>
+        <label>d = <input type="range" id="vs-d" min="-20" max="40" step="5" value="10" style="vertical-align:middle;width:9rem"> <span id="vs-d-anzeige" style="font-weight:800;color:#157347"></span></label>
+      </div>
+      <div class="tf-gleichung" id="vs-gleichung"></div>
+      <div class="geo-wrap" id="vs-mount"></div>
+      <div class="tf-schritte" id="vs-schritte"></div>
+      <div class="tf-karten" id="vs-karten"></div>
+      <div class="tf-rechnung" id="vs-bilanz"></div>
+      <div id="vs-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Klammer entscheidet über die Verschiebung</span>
+      In <strong>sin(2 · (x − 30°))</strong> wird die Kurve um 30° nach rechts geschoben. In <strong>sin(2x − 30°)</strong> dagegen <em>nicht</em>: Dort muss man erst ausklammern, <span class="nw">2x − 30° = 2 · (x − 15°)</span>, und die Verschiebung beträgt nur <strong>15°</strong>. Der Wert von c lässt sich also erst ablesen, wenn b vor der Klammer steht. Und wie bei den <a href="../08-quadratische-funktionen/index.html#sec-scheitelform">quadratischen Funktionen</a> gilt: <strong>Minus</strong> in der Klammer heißt Verschiebung nach <strong>rechts</strong>.
+    </div>
+    <div class="quiz" id="quiz-verschiebung"></div>
+  </section>
+
+  <!-- 6. Periodische Vorgänge -->
+  <section class="card" id="sec-anwendungen">
+    <h2>6. Periodische Vorgänge beschreiben</h2>
+    <p>Alles, was sich in gleichen Abständen wiederholt, lässt sich mit einer Sinusfunktion beschreiben — man muss nur die vier Parameter aus dem Sachtext holen.</p>
+    <div class="definition-box">
+      <span class="box-label">Der Weg bei jeder Sachaufgabe</span>
+      <strong>1.</strong> <strong>d</strong> = Mittelwert aus größtem und kleinstem Wert (die Mittellinie).<br>
+      <strong>2.</strong> <strong>a</strong> = halbe Differenz aus größtem und kleinstem Wert (die Amplitude).<br>
+      <strong>3.</strong> <strong>p</strong> = Dauer einer Wiederholung ablesen, daraus <strong>b = 360° : p</strong>.<br>
+      <strong>4.</strong> <strong>c</strong> = die Stelle bestimmen, an der der Vorgang die Mittellinie <em>steigend</em> kreuzt.<br>
+      <span class="progress-note">Praktisch: Ein Maximum liegt immer bei c + p : 4, ein Minimum bei c + 3p : 4. Kennt man die Lage des Maximums, so ist c = Maximumstelle − p : 4.</span>
+    </div>
+    <div class="widget">
+      <div class="tf-schalter" id="an-schalter"></div>
+      <div class="btn-row">
+        <button class="btn" id="an-neu">🎲 Neue Zahlen</button>
+        <button class="btn" id="an-schritt">Schritt weiter ▸</button>
+        <button class="btn" id="an-alle">Alle Schritte</button>
+      </div>
+      <div class="tf-gleichung" id="an-gleichung"></div>
+      <div class="geo-wrap" id="an-mount"></div>
+      <div class="tf-schritte" id="an-schritte"></div>
+      <div class="tf-rechnung" id="an-bilanz"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Einheit der x-Achse muss zur Periode passen</span>
+      Beim Riesenrad zählt x <em>Sekunden</em>, bei der Tageslänge <em>Tage</em>, bei den Gezeiten <em>Stunden</em>. In b = 360° : p muss p in genau dieser Einheit stehen. Wer die Umlaufdauer in Minuten abliest, die x-Achse aber in Sekunden führt, bekommt eine Kurve, die sechzigmal zu langsam schwingt. Und: Ein Sinusmodell ist immer eine <em>Näherung</em> — echte Gezeiten und echte Tageslängen weichen leicht von der reinen Welle ab.
+    </div>
+    <div class="quiz" id="quiz-anwendungen"></div>
+  </section>
+
+  <!-- 7. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>7. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../10-trigonometrie/index.html#sec-einheitskreis">Dem Einheitskreis aus Thema 10</a> — dort diente er dazu, die Werte für 0° bis 90° zu veranschaulichen. Hier wird er zur <em>Definition</em>: Erst durch ihn haben auch 150° und 300° einen Sinus.</li>
+      <li><strong>Baut auf:</strong> <a href="../../02-geometrie/09-pythagoras/index.html#sec-satz">Dem Satz des Pythagoras</a> — angewandt auf den Punkt P(cos α | sin α) mit dem Abstand 1 vom Ursprung liefert er unmittelbar sin²α + cos²α = 1.</li>
+      <li><strong>Baut auf:</strong> <a href="../../02-geometrie/10-kreisberechnungen/index.html#sec-ausschnitt">Der Bogenlänge</a> — das Bogenmaß ist nichts anderes als die Bogenlänge am Kreis mit r = 1, also b = 2πr · α : 360° mit r = 1.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../08-quadratische-funktionen/index.html#sec-scheitelform">Den Parametern der Parabel</a> — a streckt, das Minus in der Klammer verschiebt nach rechts, die additive Konstante hebt den Graphen. Dieselben vier Bewegungen wirken hier auf die Welle statt auf die Parabel.</li>
+      <li><strong>Im Gegensatz zu:</strong> <a href="../11-exponentialfunktionen/index.html#sec-funktion">Der Exponentialfunktion</a> — sie wächst über alle Grenzen, die Sinusfunktion bleibt zwischen −1 und 1 gefangen und kehrt immer wieder zum Ausgangswert zurück. Unbegrenztes Wachstum gegen ewige Wiederkehr.</li>
+      <li><strong>Neu gegenüber allem bisher:</strong> Die <strong>Periodizität</strong>. Eine Gerade, eine Parabel, eine Exponentialkurve nehmen jeden Wert höchstens ein- oder zweimal an. Die Sinusfunktion nimmt jeden Wert zwischen −1 und 1 <em>unendlich oft</em> an — deshalb hat eine Gleichung wie sin x = 0,5 unendlich viele Lösungen.</li>
+      <li><strong>Führt weiter zu:</strong> Den <strong>Additionstheoremen</strong> — Formeln wie sin(x + y) = sin x · cos y + cos x · sin y, die genau die Lücke füllen, die die Achtung-Box in Abschnitt 3 aufgezeigt hat.</li>
+      <li><strong>Führt weiter zu:</strong> Der <strong>Analysis der Oberstufe</strong> — im Bogenmaß ist die Ableitung von sin x gerade cos x. Die beiden Funktionen gehen beim Ableiten ineinander über, und genau deshalb beschreiben sie jede Schwingung, von der Pendeluhr bis zum Wechselstrom.</li>
+    </ul>
+  </section>
+
+  <!-- 8. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>8. Formelsammlung</h2>
+    <p>Die Definition am Einheitskreis mit den Vorzeichen der vier Quadranten, die Umrechnung ins Bogenmaß, die Sinus- und Kosinuskurve mit allen ausgezeichneten Stellen, die vier Parameter der allgemeinen Sinusfunktion und der Weg vom Sachtext zur Gleichung — mit Zeichnungen, Beispielen und typischen Fehlern auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 9. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>9. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Winkel gibst du in Grad an, ohne das Gradzeichen. Wo gerundet werden soll, steht es in der Aufgabe — und genau so wird auch geprüft. Das Komma schreibst du als Komma.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 4 Gleichungen, Zuordnungen und Funktionen</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
