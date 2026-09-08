@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trigonometrie</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">4 Gleichungen, Zuordnungen und Funktionen</a><span class="sep">/</span>
+  10 Trigonometrie
+</nav>
+<header class="page-header">
+  <h1>Trigonometrie</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Wie hoch ist ein Turm, den man nicht besteigen kann? Wie steil ist eine Straße? Mit dem <a href="../../02-geometrie/09-pythagoras/index.html#sec-satz">Satz des Pythagoras</a> allein kommt man nicht weiter — man braucht den Zusammenhang zwischen <strong>Winkeln</strong> und <strong>Seitenlängen</strong>. Genau den liefert die Trigonometrie. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li><span class="term">Sinus, Kosinus und Tangens</span> am rechtwinkligen Dreieck bilden und erklären, warum sie nur vom Winkel abhängen</li>
+      <li>aus einem Winkel und einer Seite die <span class="term">fehlenden Seiten berechnen</span></li>
+      <li>aus zwei Seiten den <span class="term">Winkel bestimmen</span> — mit den Umkehrtasten des Taschenrechners</li>
+      <li>die <span class="term">exakten Werte</span> für 30°, 45° und 60° herleiten statt sie auswendig zu lernen</li>
+      <li>Sinus und Kosinus am <span class="term">Einheitskreis</span> auch für Winkel über 90° erklären</li>
+      <li>Höhen, Entfernungen und <span class="term">Steigungen</span> in Sachaufgaben berechnen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../../02-geometrie/08-aehnlichkeit/index.html#sec-aehnlich">Geometrie 8</a> die Ähnlichkeit, aus <a href="../../02-geometrie/09-pythagoras/index.html#sec-satz">Geometrie 9</a> den Satz des Pythagoras und aus <a href="../07-quadratwurzeln/index.html#sec-teilweise">Thema 7</a> das teilweise Wurzelziehen.</p>
+  </section>
+
+  <!-- 1. Die Seitenverhältnisse -->
+  <section class="card" id="sec-verhaeltnisse">
+    <h2>1. Sinus, Kosinus und Tangens</h2>
+    <p>Vergrößert man ein rechtwinkliges Dreieck, so werden alle Seiten länger — aber ihre <em>Verhältnisse</em> bleiben gleich. Diese Verhältnisse hängen nur vom Winkel ab, und genau das macht sie so nützlich.</p>
+    <div class="definition-box">
+      <span class="box-label">Die drei Seitenverhältnisse</span>
+      Im rechtwinkligen Dreieck heißt die längste Seite <strong>Hypotenuse</strong>. Zum Winkel α gehören die <strong>Gegenkathete</strong> (sie liegt α gegenüber) und die <strong>Ankathete</strong> (sie liegt an α an).<br>
+      <strong>sin α = Gegenkathete : Hypotenuse</strong><br>
+      <strong>cos α = Ankathete : Hypotenuse</strong><br>
+      <strong>tan α = Gegenkathete : Ankathete</strong><br>
+      <span class="progress-note">Welche Kathete Gegen- und welche Ankathete ist, hängt davon ab, <em>von welchem Winkel aus</em> man schaut. Vertauscht man α mit β, so vertauschen sich auch die beiden Katheten — und damit sin und cos.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Winkel α = <input type="range" id="vh-alpha" min="10" max="80" step="5" value="35" style="vertical-align:middle;width:11rem"> <span id="vh-alpha-anzeige" style="font-weight:800;color:#6d28d9"></span>°</label>
+        <label>Vergrößerungsfaktor k = <input type="range" id="vh-k" min="13" max="25" step="1" value="18" style="vertical-align:middle;width:10rem"> <span id="vh-k-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+      </div>
+      <div class="geo-wrap" id="vh-mount"></div>
+      <table class="tr-tabelle" id="vh-tabelle"></table>
+      <div class="tr-karten" id="vh-karten"></div>
+      <div class="tr-rechnung" id="vh-bilanz"></div>
+      <div id="vh-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Warum die Verhältnisse nur vom Winkel abhängen</span>
+      Zwei rechtwinklige Dreiecke mit demselben Winkel α stimmen in <em>zwei</em> Winkeln überein — im rechten und in α. Nach dem <a href="../../02-geometrie/08-aehnlichkeit/index.html#sec-aehnlich">Ähnlichkeitssatz</a> sind sie damit ähnlich, und ähnliche Dreiecke haben gleiche Seitenverhältnisse. Deshalb ist sin α eine Zahl, die <strong>allein</strong> vom Winkel abhängt — man kann sie ein für alle Mal in eine Tabelle schreiben, und genau das steht im Taschenrechner.
+    </div>
+    <div class="quiz" id="quiz-verhaeltnisse"></div>
+  </section>
+
+  <!-- 2. Seiten berechnen -->
+  <section class="card" id="sec-seiten">
+    <h2>2. Seiten berechnen</h2>
+    <p>Kennt man einen Winkel und eine Seite, so liegen die beiden anderen Seiten fest. Die ganze Kunst besteht darin, die passende der drei Formeln auszuwählen.</p>
+    <div class="definition-box">
+      <span class="box-label">So findest du die richtige Formel</span>
+      <strong>1.</strong> Die drei Seiten vom Winkel α aus benennen: Hypotenuse, Gegenkathete, Ankathete.<br>
+      <strong>2.</strong> Ankreuzen, welche Seite <em>gegeben</em> und welche <em>gesucht</em> ist.<br>
+      <strong>3.</strong> Die Formel wählen, in der genau diese beiden vorkommen — die dritte Seite braucht man nicht.<br>
+      <span class="progress-note">Steht die gesuchte Seite im Zähler, wird multipliziert: a = c · sin α. Steht sie im Nenner, wird dividiert: c = a : sin α.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <button class="btn" id="sb-neu">🎲 Neue Aufgabe</button>
+        <button class="btn" id="sb-schritt">Schritt weiter ▸</button>
+        <button class="btn" id="sb-alle">Alle Schritte</button>
+      </div>
+      <div class="tr-gleichung" id="sb-gleichung"></div>
+      <div class="geo-wrap" id="sb-mount"></div>
+      <div class="tr-schritte" id="sb-schritte"></div>
+      <div class="tr-rechnung" id="sb-bilanz"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der Taschenrechner muss auf DEG stehen</span>
+      Winkel lassen sich in <strong>Grad</strong> (DEG) oder im <strong>Bogenmaß</strong> (RAD) angeben. Steht der Rechner auf RAD, liefert er für sin 30° nicht 0,5, sondern −0,988. Das ist kein Rechenfehler, sondern eine andere Einheit — wie Meter und Fuß. <strong>Prüfe im Zweifel mit sin 30°:</strong> Kommt 0,5 heraus, stimmt die Einstellung.
+    </div>
+    <div class="quiz" id="quiz-seiten"></div>
+  </section>
+
+  <!-- 3. Winkel berechnen -->
+  <section class="card" id="sec-winkel">
+    <h2>3. Winkel berechnen</h2>
+    <p>Umgekehrt geht es auch: Aus zwei Seiten lässt sich der Winkel bestimmen. Dafür hat der Taschenrechner drei Umkehrtasten.</p>
+    <div class="definition-box">
+      <span class="box-label">Die Umkehrfunktionen</span>
+      Ist das Seitenverhältnis bekannt, liefert die Umkehrfunktion den Winkel:<br>
+      <strong>sin α = 0,5 &nbsp;→&nbsp; α = sin<sup>−1</sup>(0,5) = 30°</strong><br>
+      Die Tasten heißen je nach Rechner <strong>sin<sup>−1</sup>, cos<sup>−1</sup>, tan<sup>−1</sup></strong> oder <strong>arcsin, arccos, arctan</strong> — meist über die Zweitbelegung.<br>
+      <span class="progress-note">Die hochgestellte −1 bedeutet hier <em>Umkehrfunktion</em>, nicht Kehrwert. sin<sup>−1</sup>(x) ist etwas ganz anderes als 1 : sin(x).</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Gegenkathete a = <input type="range" id="wi-a" min="1" max="12" step="1" value="4" style="vertical-align:middle;width:10rem"> <span id="wi-a-anzeige" style="font-weight:800;color:#157347"></span> cm</label>
+        <label>Ankathete b = <input type="range" id="wi-b" min="1" max="12" step="1" value="7" style="vertical-align:middle;width:10rem"> <span id="wi-b-anzeige" style="font-weight:800;color:#b3650a"></span> cm</label>
+      </div>
+      <div class="tr-gleichung" id="wi-gleichung"></div>
+      <div class="geo-wrap" id="wi-mount"></div>
+      <div class="tr-schritte" id="wi-schritte"></div>
+      <div class="tr-karten" id="wi-karten"></div>
+      <div class="tr-rechnung" id="wi-bilanz"></div>
+      <div id="wi-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Drei Wege, ein Ergebnis</span>
+      Sind beide Katheten bekannt, so liefert der Tangens den Winkel am schnellsten — man braucht die Hypotenuse gar nicht. Wer sie trotzdem über <a href="../../02-geometrie/09-pythagoras/index.html#sec-satz">Pythagoras</a> ausrechnet, kann anschließend genauso gut mit Sinus oder Kosinus arbeiten und erhält denselben Winkel. Das ist eine gute <strong>Probe</strong>: Drei verschiedene Rechnungen, dasselbe Ergebnis.
+    </div>
+    <div class="quiz" id="quiz-winkel"></div>
+  </section>
+
+  <!-- 4. Besondere Winkel -->
+  <section class="card" id="sec-besondere">
+    <h2>4. Die Werte für 30°, 45° und 60°</h2>
+    <p>Für drei Winkel lassen sich die Werte exakt angeben — ganz ohne Taschenrechner. Man muss sie nicht auswendig lernen, sondern nur zwei Dreiecke kennen.</p>
+    <div class="definition-box">
+      <span class="box-label">Die exakten Werte</span>
+      <strong>sin 30° = 1 : 2</strong> &nbsp;·&nbsp; <strong>sin 45° = √2 : 2</strong> &nbsp;·&nbsp; <strong>sin 60° = √3 : 2</strong><br>
+      <strong>cos 30° = √3 : 2</strong> &nbsp;·&nbsp; <strong>cos 45° = √2 : 2</strong> &nbsp;·&nbsp; <strong>cos 60° = 1 : 2</strong><br>
+      Sie kommen aus dem <strong>halben Quadrat</strong> (45°) und dem <strong>halben gleichseitigen Dreieck</strong> (30° und 60°).<br>
+      <span class="progress-note">Außerdem gilt für <em>jeden</em> Winkel: <strong>sin² α + cos² α = 1</strong> und <strong>tan α = sin α : cos α</strong>.</span>
+    </div>
+    <div class="widget">
+      <div class="tr-schalter" id="bw-schalter"></div>
+      <div class="tr-gleichung" id="bw-gleichung"></div>
+      <div class="geo-wrap" id="bw-mount"></div>
+      <div class="tr-schritte" id="bw-schritte"></div>
+      <table class="tr-tabelle" id="bw-tabelle"></table>
+      <div class="tr-rechnung" id="bw-bilanz"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Woher sin² α + cos² α = 1 kommt</span>
+      Im rechtwinkligen Dreieck ist sin α = a : c und cos α = b : c. Also ist sin² α + cos² α = (a² + b²) : c². Nach dem <a href="../../02-geometrie/09-pythagoras/index.html#sec-satz">Satz des Pythagoras</a> ist a² + b² = c², und damit steht dort c² : c² = <strong>1</strong>. Der „trigonometrische Pythagoras“ ist also der gewöhnliche Pythagoras, durch c² geteilt. Deshalb gilt er für jeden Winkel — nicht nur für die drei besonderen.
+    </div>
+    <div class="quiz" id="quiz-besondere"></div>
+  </section>
+
+  <!-- 5. Der Einheitskreis -->
+  <section class="card" id="sec-einheitskreis">
+    <h2>5. Sinus und Kosinus am Einheitskreis</h2>
+    <p>Im Dreieck gibt es nur Winkel zwischen 0° und 90°. Was aber ist sin 150°? Die Antwort gibt ein Kreis mit dem Radius 1.</p>
+    <div class="definition-box">
+      <span class="box-label">Die Erklärung am Einheitskreis</span>
+      Man zeichnet einen Kreis mit dem Radius <strong>1</strong> um den Ursprung und trägt den Winkel α von der positiven x-Achse aus <strong>gegen den Uhrzeigersinn</strong> ab. Der so entstehende Punkt P hat die Koordinaten<br>
+      <strong>P(cos α | sin α)</strong>.<br>
+      <span class="progress-note">Für α zwischen 0° und 90° ist das genau die alte Erklärung: Im Dreieck mit der Hypotenuse 1 ist die Gegenkathete sin α und die Ankathete cos α. Für größere Winkel ist es die <em>Erweiterung</em> — und dort werden die Werte auch negativ.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Winkel α = <input type="range" id="ek-alpha" min="0" max="360" step="5" value="55" style="vertical-align:middle;width:15rem"> <span id="ek-alpha-anzeige" style="font-weight:800;color:#6d28d9"></span>°</label>
+      </div>
+      <div class="tr-gleichung" id="ek-gleichung"></div>
+      <div class="geo-wrap" id="ek-mount"></div>
+      <div class="tr-karten" id="ek-karten"></div>
+      <div class="tr-rechnung" id="ek-bilanz"></div>
+      <div id="ek-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — sin<sup>−1</sup> liefert nur <em>eine</em> Lösung</span>
+      Aus sin α = 0,5 folgt am Einheitskreis <strong>α = 30° oder α = 150°</strong> — beide Punkte liegen gleich hoch. Der Taschenrechner nennt aber nur die 30°. Bei einer Aufgabe im rechtwinkligen Dreieck ist das richtig, denn dort ist α &lt; 90°. Sobald größere Winkel vorkommen können, muss man die zweite Lösung <strong>180° − α</strong> selbst dazunehmen.
+    </div>
+    <div class="quiz" id="quiz-einheitskreis"></div>
+  </section>
+
+  <!-- 6. Anwendungen -->
+  <section class="card" id="sec-anwendungen">
+    <h2>6. Höhen, Entfernungen und Steigungen</h2>
+    <p>Jetzt zahlt sich das aus: Man misst eine Strecke und einen Winkel — und rechnet aus, was man nicht messen kann.</p>
+    <div class="definition-box">
+      <span class="box-label">Der Weg bei jeder Sachaufgabe</span>
+      <strong>1.</strong> Eine Skizze zeichnen und den rechten Winkel suchen.<br>
+      <strong>2.</strong> Die gegebenen Stücke eintragen und das gesuchte benennen.<br>
+      <strong>3.</strong> Vom betrachteten Winkel aus die Seiten benennen und die Formel wählen.<br>
+      <strong>4.</strong> Rechnen, runden und <em>im Sachzusammenhang</em> antworten — mit Einheit.<br>
+      <span class="progress-note">Bei der <strong>Steigung</strong> einer Straße gilt: Steigung in Prozent = tan α · 100 %. Eine Steigung von 100 % bedeutet also 45°, nicht „senkrecht“.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Abstand d = <input type="range" id="aw-d" min="10" max="120" step="5" value="45" style="vertical-align:middle;width:11rem"> <span id="aw-d-anzeige" style="font-weight:800;color:#b3650a"></span> m</label>
+        <label>Höhenwinkel α = <input type="range" id="aw-alpha" min="10" max="70" step="1" value="32" style="vertical-align:middle;width:11rem"> <span id="aw-alpha-anzeige" style="font-weight:800;color:#6d28d9"></span>°</label>
+      </div>
+      <div id="aw-aufgabe" class="event-result"></div>
+      <div class="geo-wrap" id="aw-mount"></div>
+      <div class="tr-schritte" id="aw-schritte"></div>
+      <div class="tr-karten" id="aw-karten"></div>
+      <div class="tr-rechnung" id="aw-bilanz"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Augenhöhe gehört dazu</span>
+      Wer den Höhenwinkel mit einem Messgerät in <strong>1,60 m</strong> Augenhöhe misst, berechnet mit tan α nur die Höhe <em>über der Augenhöhe</em>. Die gemessenen 1,60 m müssen am Ende <strong>addiert</strong> werden. Dieser Zusatzschritt wird häufig vergessen — und die Antwort ist dann um eine ganze Körperlänge zu klein.
+    </div>
+    <div class="quiz" id="quiz-anwendungen"></div>
+  </section>
+
+  <!-- 7. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>7. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../../02-geometrie/08-aehnlichkeit/index.html#sec-aehnlich">Der Ähnlichkeit</a> — sie ist der Grund, warum sin α überhaupt eine wohldefinierte Zahl ist. Ohne sie hinge das Seitenverhältnis von der Größe des Dreiecks ab, und eine Tabelle wäre unmöglich.</li>
+      <li><strong>Baut auf:</strong> <a href="../../02-geometrie/09-pythagoras/index.html#sec-satz">Dem Satz des Pythagoras</a> — er liefert die dritte Seite, wenn zwei bekannt sind, und er ist zugleich der Beweis für sin² α + cos² α = 1.</li>
+      <li><strong>Baut auf:</strong> <a href="../07-quadratwurzeln/index.html#sec-teilweise">Dem teilweisen Wurzelziehen</a> — die exakten Werte √2 : 2 und √3 : 2 entstehen aus den halbierten Grundfiguren und werden erst durch Umformen so kurz.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../05-lineare-funktionen/index.html#sec-steigung">Der Steigung einer Geraden</a> — die Steigung m ist nichts anderes als der Tangens des Steigungswinkels: m = tan α. Das Steigungsdreieck <em>ist</em> ein rechtwinkliges Dreieck.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../01-zuordnungen/index.html#sec-proportional">Der Proportionalität</a> — bei festem Winkel ist die Gegenkathete proportional zur Hypotenuse, und sin α ist der Proportionalitätsfaktor.</li>
+      <li><strong>Werkzeug für:</strong> <a href="../../02-geometrie/07-flaechenberechnungen/index.html">Flächenberechnungen</a> — die Höhe eines Dreiecks lässt sich aus einer Seite und einem Winkel bestimmen; daraus wird die Formel A = ½ · a · b · sin γ.</li>
+      <li><strong>Führt weiter zu:</strong> Dem <strong>Sinus- und dem Kosinussatz</strong> — mit ihnen rechnet man auch in Dreiecken <em>ohne</em> rechten Winkel. Der Kosinussatz ist die Verallgemeinerung des Satzes von Pythagoras.</li>
+      <li><strong>Führt weiter zu:</strong> Den <strong>trigonometrischen Funktionen</strong> — lässt man den Winkel am Einheitskreis immer weiter laufen, so entsteht aus sin α eine periodische Funktion, mit der man Schwingungen beschreibt.</li>
+    </ul>
+  </section>
+
+  <!-- 8. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>8. Formelsammlung</h2>
+    <p>Die drei Seitenverhältnisse mit der Benennung am Dreieck, die Auswahl der richtigen Formel, die Umkehrfunktionen, die exakten Werte für 30°, 45° und 60° samt ihrer Herleitung, der Einheitskreis und die Sachaufgaben — mit Zeichnungen, Beispielen und typischen Fehlern auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 9. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>9. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Bei der Trigonometrie geht die Rechnung selten glatt auf. Deshalb steht in jeder Aufgabe, auf welche Genauigkeit du <strong>runden</strong> sollst — und genau so wird auch geprüft. Das Komma schreibst du als Komma.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 4 Gleichungen, Zuordnungen und Funktionen</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
