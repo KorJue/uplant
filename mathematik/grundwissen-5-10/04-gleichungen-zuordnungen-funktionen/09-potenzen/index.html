@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Potenzen</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">4 Gleichungen, Zuordnungen und Funktionen</a><span class="sep">/</span>
+  9 Potenzen
+</nav>
+<header class="page-header">
+  <h1>Potenzen</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Der Durchmesser der Erde beträgt 12 742 000 m, ein Bakterium misst 0,000 002 m. Solche Zahlen will niemand mit der Hand abzählen — mit <strong>Potenzen</strong> schreibt man sie kurz, und mit den <strong>Potenzgesetzen</strong> rechnet man mit ihnen, ohne eine einzige Null zu verlieren. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>eine <span class="term">Potenz</span> als Kurzschreibweise für ein Produkt gleicher Faktoren lesen und ihr Vorzeichen sicher bestimmen</li>
+      <li>mit den fünf <span class="term">Potenzgesetzen</span> Terme zusammenfassen</li>
+      <li>erklären, warum a<sup>0</sup> = 1 und a<sup>−n</sup> = 1 : a<sup>n</sup> gelten muss</li>
+      <li>große und kleine Zahlen in <span class="term">wissenschaftlicher Schreibweise</span> angeben und mit ihnen rechnen</li>
+      <li>die <span class="term">Potenzfunktionen</span> y = x<sup>n</sup> unterscheiden und ihre Symmetrie begründen</li>
+      <li>die <span class="term">n-te Wurzel</span> als Umkehrung des Potenzierens benutzen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../04-terme/index.html#sec-struktur">Thema 4</a> den Termaufbau, aus <a href="../07-quadratwurzeln/index.html#sec-begriff">Thema 7</a> die Quadratwurzel und aus <a href="../05-lineare-funktionen/index.html#sec-funktion">Thema 5</a> den Funktionsbegriff.</p>
+  </section>
+
+  <!-- 1. Was eine Potenz ist -->
+  <section class="card" id="sec-begriff">
+    <h2>1. Was eine Potenz ist</h2>
+    <p>Für 3 + 3 + 3 + 3 schreibt man kurz 4 · 3. Genau dieselbe Abkürzung gibt es eine Stufe höher: für 3 · 3 · 3 · 3 schreibt man 3<sup>4</sup>.</p>
+    <div class="definition-box">
+      <span class="box-label">Potenz, Basis, Exponent</span>
+      Für eine natürliche Zahl n ≥ 1 ist <strong>a<sup>n</sup> = a · a · … · a</strong> mit <strong>n</strong> Faktoren.<br>
+      <strong>a</strong> heißt <strong>Basis</strong>, <strong>n</strong> heißt <strong>Exponent</strong>, das Ergebnis heißt <strong>Potenzwert</strong>.<br>
+      Gesprochen: „a hoch n“. Für n = 2 sagt man auch „a Quadrat“, für n = 3 „a hoch drei“.<br>
+      <span class="progress-note">Der Exponent zählt die <em>Faktoren</em>, nicht die Multiplikationszeichen: In a<sup>4</sup> stehen vier a und nur drei Malpunkte.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Basis a = <input type="range" id="bg-a" min="-4" max="4" step="1" value="3" style="vertical-align:middle;width:10rem"> <span id="bg-a-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>Exponent n = <input type="range" id="bg-n" min="1" max="5" step="1" value="3" style="vertical-align:middle;width:10rem"> <span id="bg-n-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+      </div>
+      <div class="pt-gleichung" id="bg-gleichung"></div>
+      <div class="geo-wrap" id="bg-mount"></div>
+      <table class="pt-tabelle" id="bg-tabelle"></table>
+      <div class="pt-karten" id="bg-karten"></div>
+      <div class="pt-rechnung" id="bg-bilanz"></div>
+      <div id="bg-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — (−2)<sup>4</sup> und −2<sup>4</sup> sind verschieden</span>
+      In <strong>(−2)<sup>4</sup></strong> ist die ganze Zahl −2 die Basis: (−2)·(−2)·(−2)·(−2) = <strong>+16</strong>. In <strong>−2<sup>4</sup></strong> gehört das Minus <em>nicht</em> zur Basis; potenziert wird nur die 2, und das Minus bleibt davor stehen: −(2·2·2·2) = <strong>−16</strong>. Merke: <strong>Potenzieren geht vor Vorzeichen</strong> — wer die negative Zahl potenzieren will, muss sie einklammern.<br>
+      Und noch ein Klassiker: a<sup>n</sup> ist <em>nicht</em> a · n. Schon 2<sup>10</sup> = 1024, aber 2 · 10 = 20.
+    </div>
+    <div class="quiz" id="quiz-begriff"></div>
+  </section>
+
+  <!-- 2. Die Potenzgesetze -->
+  <section class="card" id="sec-gesetze">
+    <h2>2. Die Potenzgesetze</h2>
+    <p>Man muss keine Regel auswendig lernen, um Potenzen zusammenzufassen — es genügt, die Faktoren aufzuschreiben und abzuzählen. Genau daraus entstehen die fünf Gesetze.</p>
+    <div class="definition-box">
+      <span class="box-label">Die fünf Potenzgesetze</span>
+      Für a, b ≠ 0 und ganze Zahlen m, n gilt:<br>
+      <strong>(1) a<sup>m</sup> · a<sup>n</sup> = a<sup>m+n</sup></strong> — gleiche Basis, Exponenten <em>addieren</em><br>
+      <strong>(2) a<sup>m</sup> : a<sup>n</sup> = a<sup>m−n</sup></strong> — gleiche Basis, Exponenten <em>subtrahieren</em><br>
+      <strong>(3) (a<sup>m</sup>)<sup>n</sup> = a<sup>m·n</sup></strong> — Potenz einer Potenz, Exponenten <em>multiplizieren</em><br>
+      <strong>(4) a<sup>n</sup> · b<sup>n</sup> = (a · b)<sup>n</sup></strong> — gleicher Exponent, Basen multiplizieren<br>
+      <strong>(5) a<sup>n</sup> : b<sup>n</sup> = (a : b)<sup>n</sup></strong> — gleicher Exponent, Basen dividieren<br>
+      <span class="progress-note">Bei (1) bis (3) muss die <strong>Basis</strong> gleich sein, bei (4) und (5) der <strong>Exponent</strong>. Passt weder das eine noch das andere, gibt es kein Gesetz — dann bleibt der Term so stehen.</span>
+    </div>
+    <div class="widget">
+      <div class="pt-schalter" id="gz-schalter"></div>
+      <div class="btn-row">
+        <button class="btn" id="gz-neu">🎲 Neues Beispiel</button>
+        <button class="btn" id="gz-schritt">Schritt weiter ▸</button>
+        <button class="btn" id="gz-alle">Alle Schritte</button>
+      </div>
+      <div class="pt-gleichung" id="gz-gleichung"></div>
+      <div class="pt-schritte" id="gz-schritte"></div>
+      <div class="geo-wrap" id="gz-mount"></div>
+      <div class="pt-rechnung" id="gz-bilanz"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — a<sup>2</sup> · a<sup>3</sup> ist nicht a<sup>6</sup></span>
+      Beim Multiplizieren werden die Exponenten <strong>addiert</strong>, nicht multipliziert: a<sup>2</sup> · a<sup>3</sup> = a<sup>5</sup>. Multipliziert wird nur bei der <em>Potenz einer Potenz</em>: (a<sup>2</sup>)<sup>3</sup> = a<sup>6</sup>. Der Unterschied ist leicht zu sehen, wenn man die Faktoren hinschreibt: (aa)(aaa) sind fünf Stück, (aa)(aa)(aa) sind sechs.<br>
+      Und: <strong>a<sup>3</sup> + a<sup>3</sup> = 2a<sup>3</sup></strong>, nicht a<sup>6</sup>. Für das <em>Addieren</em> von Potenzen gibt es kein Gesetz — hier <a href="../04-terme/index.html#sec-zusammenfassen">fasst man gleichartige Glieder zusammen</a> wie bei jedem anderen Term.
+    </div>
+    <div class="quiz" id="quiz-gesetze"></div>
+  </section>
+
+  <!-- 3. Der Exponent 0 und negative Exponenten -->
+  <section class="card" id="sec-ganzzahlig">
+    <h2>3. Null und negative Exponenten</h2>
+    <p>Was soll a<sup>0</sup> sein — ein Produkt aus null Faktoren? Die Definition wird nicht geraten: Sie ist die einzige, bei der Gesetz (2) auch dann noch stimmt, wenn oben ein kleinerer Exponent steht als unten.</p>
+    <div class="definition-box">
+      <span class="box-label">Potenzen mit ganzzahligen Exponenten</span>
+      Für a ≠ 0 gilt:<br>
+      <strong>a<sup>0</sup> = 1</strong> und <strong>a<sup>−n</sup> = 1 : a<sup>n</sup></strong><br>
+      <span class="progress-note">Ein <em>negativer Exponent</em> bedeutet also nicht, dass die Potenz negativ wird: 2<sup>−3</sup> = 1 : 8 = 0,125 ist positiv. Er bedeutet „Kehrwert“. Nur 0<sup>0</sup> und 0<sup>−n</sup> bleiben undefiniert, denn durch 0 darf man nicht teilen.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Basis a = <input type="range" id="gz2-a" min="2" max="10" step="1" value="2" style="vertical-align:middle;width:10rem"> <span id="gz2-a-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>Exponent n = <input type="range" id="gz2-n" min="-4" max="4" step="1" value="0" style="vertical-align:middle;width:12rem"> <span id="gz2-n-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+      </div>
+      <div class="pt-gleichung" id="gz2-gleichung"></div>
+      <div class="geo-wrap" id="gz2-mount"></div>
+      <table class="pt-tabelle" id="gz2-tabelle"></table>
+      <div class="pt-karten" id="gz2-karten"></div>
+      <div class="pt-rechnung" id="gz2-bilanz"></div>
+      <div id="gz2-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Warum a<sup>0</sup> = 1 sein <em>muss</em></span>
+      Nach Gesetz (2) ist a<sup>3</sup> : a<sup>3</sup> = a<sup>3−3</sup> = a<sup>0</sup>. Nun ist aber jede Zahl durch sich selbst geteilt 1, also a<sup>3</sup> : a<sup>3</sup> = 1. Beide Rechnungen müssen dasselbe ergeben — deshalb bleibt für a<sup>0</sup> nur der Wert 1 übrig.<br>
+      Genauso bei den negativen Exponenten: a<sup>2</sup> : a<sup>5</sup> = a<sup>−3</sup> nach dem Gesetz, und Kürzen ergibt 1 : a<sup>3</sup>. Man nennt dieses Vorgehen das <strong>Permanenzprinzip</strong>: Eine Schreibweise wird so erweitert, dass die bisherigen Regeln <em>weiter</em> gelten. Genauso ist es beim <a href="../../01-groessen-und-rechnen/06-erweiterung-des-zahlenbereichs/index.html">Erweitern des Zahlenbereichs</a> gelaufen.
+    </div>
+    <div class="quiz" id="quiz-ganzzahlig"></div>
+  </section>
+
+  <!-- 4. Zehnerpotenzen -->
+  <section class="card" id="sec-zehnerpotenzen">
+    <h2>4. Zehnerpotenzen und wissenschaftliche Schreibweise</h2>
+    <p>Unser Stellenwertsystem ist von Grund auf in Zehnerpotenzen gebaut. Deshalb lässt sich mit ihnen jede noch so große oder kleine Zahl handlich schreiben.</p>
+    <div class="definition-box">
+      <span class="box-label">Wissenschaftliche Schreibweise</span>
+      Jede Zahl außer 0 lässt sich schreiben als <strong>z · 10<sup>n</sup></strong> mit <strong>1 ≤ z &lt; 10</strong> und ganzem n.<br>
+      <strong>n &gt; 0:</strong> das Komma wandert um n Stellen nach <strong>rechts</strong> — die Zahl ist groß.<br>
+      <strong>n &lt; 0:</strong> das Komma wandert um |n| Stellen nach <strong>links</strong> — die Zahl ist klein.<br>
+      <span class="progress-note">Der Exponent n gibt die <strong>Größenordnung</strong> an. Zwei Zahlen mit demselben n liegen im selben Bereich, ein n mehr bedeutet zehnmal so groß.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>z = <input type="range" id="zp-z" min="10" max="99" step="1" value="24" style="vertical-align:middle;width:11rem"> <span id="zp-z-anzeige" style="font-weight:800;color:#157347"></span></label>
+        <label>n = <input type="range" id="zp-n" min="-9" max="12" step="1" value="7" style="vertical-align:middle;width:12rem"> <span id="zp-n-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+      </div>
+      <div class="pt-gleichung" id="zp-gleichung"></div>
+      <div class="geo-wrap" id="zp-mount"></div>
+      <div class="pt-schritte" id="zp-schritte"></div>
+      <div class="pt-karten" id="zp-karten"></div>
+      <div class="pt-rechnung" id="zp-bilanz"></div>
+      <div id="zp-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — nach dem Rechnen noch einmal hinsehen</span>
+      Multipliziert man (4 · 10<sup>5</sup>) · (5 · 10<sup>3</sup>), so ergibt sich zunächst 20 · 10<sup>8</sup>. Das ist zwar richtig gerechnet, aber <em>keine</em> wissenschaftliche Schreibweise, denn 20 liegt nicht zwischen 1 und 10. Es fehlt ein letzter Schritt: 20 · 10<sup>8</sup> = 2 · 10<sup>1</sup> · 10<sup>8</sup> = <strong>2 · 10<sup>9</sup></strong>. Bei einer Division kann es umgekehrt kommen — aus 0,5 · 10<sup>4</sup> wird 5 · 10<sup>3</sup>.
+    </div>
+    <div class="quiz" id="quiz-zehnerpotenzen"></div>
+  </section>
+
+  <!-- 5. Potenzfunktionen -->
+  <section class="card" id="sec-potenzfunktionen">
+    <h2>5. Die Potenzfunktionen y = x<sup>n</sup></h2>
+    <p>Lässt man in x<sup>n</sup> nicht den Exponenten, sondern die Basis laufen, so entsteht eine Funktion. Ihr Graph verrät sofort, ob der Exponent gerade oder ungerade ist.</p>
+    <div class="definition-box">
+      <span class="box-label">Potenzfunktion</span>
+      <strong>f(x) = x<sup>n</sup></strong> mit natürlichem n ≥ 1 heißt <strong>Potenzfunktion</strong>.<br>
+      <strong>n gerade:</strong> f(−x) = f(x) — der Graph ist <strong>achsensymmetrisch zur y-Achse</strong>, alle Werte sind ≥ 0. Die Kurve heißt <em>parabelartig</em>.<br>
+      <strong>n ungerade:</strong> f(−x) = −f(x) — der Graph ist <strong>punktsymmetrisch zum Ursprung</strong>, negative x liefern negative Werte.<br>
+      <span class="progress-note">Alle diese Graphen gehen durch (0 | 0) und (1 | 1). Für gerades n zusätzlich durch (−1 | 1), für ungerades n durch (−1 | −1).</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>n = <input type="range" id="pf-n" min="1" max="6" step="1" value="3" style="vertical-align:middle;width:11rem"> <span id="pf-n-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+        <label>Stelle x = <input type="range" id="pf-x" min="-16" max="16" step="1" value="15" style="vertical-align:middle;width:11rem"> <span id="pf-x-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+      </div>
+      <div class="pt-gleichung" id="pf-gleichung"></div>
+      <div class="geo-wrap" id="pf-mount"></div>
+      <div class="pt-karten" id="pf-karten"></div>
+      <div class="pt-rechnung" id="pf-bilanz"></div>
+      <div id="pf-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Warum gerade und ungerade sich so verschieden verhalten</span>
+      Setzt man −x ein, so entsteht (−x)<sup>n</sup> = (−1)<sup>n</sup> · x<sup>n</sup>. Und (−1)<sup>n</sup> ist +1, wenn n gerade ist, und −1, wenn n ungerade ist — die Minuszeichen heben sich paarweise auf oder eben nicht. Genau daher kommt der Namensunterschied: Die eine Sorte spiegelt sich an der y-Achse, die andere dreht sich um den Ursprung. Für n = 2 ist das die <a href="../08-quadratische-funktionen/index.html#sec-normalparabel">Normalparabel</a>, für n = 1 die <a href="../05-lineare-funktionen/index.html#sec-gerade">Ursprungsgerade</a> y = x.
+    </div>
+    <div class="quiz" id="quiz-potenzfunktionen"></div>
+  </section>
+
+  <!-- 6. n-te Wurzeln -->
+  <section class="card" id="sec-wurzeln">
+    <h2>6. Die n-te Wurzel</h2>
+    <p>Die Quadratwurzel macht das Quadrieren rückgängig. Dasselbe gibt es für jeden Exponenten — und damit auch eine Antwort auf die Frage, was a<sup>1/n</sup> bedeuten soll.</p>
+    <div class="definition-box">
+      <span class="box-label">n-te Wurzel und Stammbruch-Exponent</span>
+      Für a ≥ 0 und n ≥ 2 ist <strong><sup>n</sup>√a</strong> diejenige <strong>nicht negative</strong> Zahl, deren n-te Potenz a ergibt: (<sup>n</sup>√a)<sup>n</sup> = a.<br>
+      Man schreibt dafür auch <strong>a<sup>1/n</sup> = <sup>n</sup>√a</strong>.<br>
+      <span class="progress-note">Diese Schreibweise ist kein neuer Einfall, sondern erzwungen: Nach Gesetz (3) wäre (a<sup>1/n</sup>)<sup>n</sup> = a<sup>1</sup> = a — und genau das leistet die n-te Wurzel.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Radikand a = <input type="range" id="wz-a" min="1" max="20" step="1" value="8" style="vertical-align:middle;width:11rem"> <span id="wz-a-anzeige" style="font-weight:800;color:#157347"></span></label>
+        <label>Wurzelexponent n = <input type="range" id="wz-n" min="2" max="5" step="1" value="3" style="vertical-align:middle;width:9rem"> <span id="wz-n-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+      </div>
+      <div class="pt-gleichung" id="wz-gleichung"></div>
+      <div class="geo-wrap" id="wz-mount"></div>
+      <div class="pt-schritte" id="wz-schritte"></div>
+      <div class="pt-karten" id="wz-karten"></div>
+      <div class="pt-rechnung" id="wz-bilanz"></div>
+      <div id="wz-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Wurzel und Gleichung sind nicht dasselbe</span>
+      <strong><sup>4</sup>√16 = 2</strong>, denn die Wurzel ist als die <em>nicht negative</em> Lösung festgelegt. Die <em>Gleichung</em> x<sup>4</sup> = 16 hat dagegen <strong>zwei</strong> Lösungen: x = 2 und x = −2, weil auch (−2)<sup>4</sup> = 16 ist. Für ungerades n gibt es dagegen nur eine Lösung: x<sup>3</sup> = 8 hat allein x = 2. Genau derselbe Unterschied wie bei der <a href="../07-quadratwurzeln/index.html#sec-begriff">Quadratwurzel</a> und der Gleichung x² = 9.
+    </div>
+    <div class="quiz" id="quiz-wurzeln"></div>
+  </section>
+
+  <!-- 7. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>7. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../../01-groessen-und-rechnen/05-multiplizieren-dividieren/index.html">Der Multiplikation</a> — die Potenz ist zur Multiplikation dasselbe wie die Multiplikation zur Addition: eine Kurzschreibweise für viele gleiche Rechenschritte.</li>
+      <li><strong>Baut auf:</strong> <a href="../07-quadratwurzeln/index.html#sec-begriff">Der Quadratwurzel</a> — sie ist der Fall n = 2 der n-ten Wurzel. Auch die Regeln √(a·b) = √a · √b sind nichts anderes als Gesetz (4), rückwärts gelesen.</li>
+      <li><strong>Baut auf:</strong> <a href="../../01-groessen-und-rechnen/06-erweiterung-des-zahlenbereichs/index.html">Der Erweiterung des Zahlenbereichs</a> — a<sup>0</sup> = 1 und a<sup>−n</sup> = 1 : a<sup>n</sup> entstehen nach demselben Permanenzprinzip, mit dem seinerzeit die negativen Zahlen eingeführt wurden.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../08-quadratische-funktionen/index.html#sec-normalparabel">Der Normalparabel</a> — sie ist die Potenzfunktion mit n = 2. Die höheren Potenzfunktionen sehen ihr ähnlich, sind aber in der Nähe von 0 flacher und außerhalb steiler.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../../02-geometrie/12-pyramiden-kegel-kugeln/index.html">Volumenformeln</a> — bei jeder Streckung mit dem Faktor k wächst eine Länge mit k<sup>1</sup>, eine Fläche mit k<sup>2</sup> und ein Volumen mit k<sup>3</sup>. Der Exponent ist die Zahl der Dimensionen.</li>
+      <li><strong>Werkzeug für:</strong> <a href="../02-prozent-und-zinsrechnung/index.html#sec-zinseszins">Den Zinseszins</a> — dort steht der Wachstumsfaktor genau deshalb in einer Potenz, weil er in jedem Jahr erneut angewendet wird.</li>
+      <li><strong>Führt weiter zu:</strong> Den <strong>Exponentialfunktionen</strong> — dort wandert das x vom Fuß in den Exponenten. Aus x<sup>3</sup> wird 3<sup>x</sup>, und aus gleichmäßigem Wachstum wird Verdopplung um Verdopplung.</li>
+      <li><strong>Führt weiter zu:</strong> Dem <strong>Logarithmus</strong> — er beantwortet die Frage „welcher Exponent?“, so wie die Wurzel die Frage „welche Basis?“ beantwortet. Zwei Umkehrungen derselben Rechnung.</li>
+    </ul>
+  </section>
+
+  <!-- 8. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>8. Formelsammlung</h2>
+    <p>Der Potenzbegriff mit den Vorzeichenfallen, alle fünf Potenzgesetze mit Faktorenketten, die Begründung für a<sup>0</sup> = 1 und a<sup>−n</sup>, die wissenschaftliche Schreibweise mit Größenordnungen, die Potenzfunktionen und die n-te Wurzel — mit Zeichnungen, Beispielen und typischen Fehlern auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 9. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>9. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gesucht ist jeweils eine <strong>Zahl</strong>. Alle Aufgaben auf dieser Seite haben ganzzahlige Lösungen; negative Zahlen schreibst du mit einem Minuszeichen davor.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 4 Gleichungen, Zuordnungen und Funktionen</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
