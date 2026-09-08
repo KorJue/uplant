@@ -505,6 +505,17 @@ function mountUebungsaufgaben(container, defs) {
 
 // ---------- Aufgaben-Definitionen ----------
 
+// Fehlerhinweise vergleichen die Eingabe mit dem Wert, der bei einem
+// bestimmten Fehler herauskäme. Ein Vergleich mit === trifft dabei nicht
+// zuverlässig: 7/10 · 360 ergibt 252,00000000000003, und wer den Rest zu 360°
+// nennt, tippt 108 — der Hinweis bliebe stumm. Verglichen wird deshalb mit
+// einer relativen Schranke.
+function trifft(val, soll) {
+  return Number.isFinite(val) && Number.isFinite(soll)
+    && Math.abs(val - soll) <= 1e-6 * Math.max(1, Math.abs(soll));
+}
+
+
 function generateAufgabe1() {
   // Summe zweier ganzer Zahlen, mindestens eine negativ.
   const a = randInt(-12, 12);
@@ -516,7 +527,7 @@ function generateAufgabe1() {
     correct: erg,
     tolerance: 0.5,
     placeholder: "Ergebnis",
-    hinweis: (raw, val) => (val === a - b ? "Achte auf das Vorzeichen: Hier wird <strong>addiert</strong>, nicht subtrahiert." : ""),
+    hinweis: (raw, val) => (trifft(val, a - b) ? "Achte auf das Vorzeichen: Hier wird <strong>addiert</strong>, nicht subtrahiert." : ""),
     musterloesungHtml:
       (b < 0
         ? `Eine negative Zahl zu addieren heißt, nach links zu gehen: ${zahl(a)} + ${inKlammern(b)} = ${zahl(a)} − ${Math.abs(b)} = <strong>${zahl(erg)}</strong>`
@@ -536,7 +547,7 @@ function generateAufgabe2() {
     tolerance: 0.5,
     placeholder: "Ergebnis",
     hinweis: (raw, val) =>
-      val === a + b
+      trifft(val, a + b)
         ? "Du hast die beiden Minuszeichen zusammengezogen wie eines. <strong>Subtrahieren heißt, die Gegenzahl zu addieren</strong> — aus − (−b) wird + b."
         : "",
     musterloesungHtml:
@@ -559,7 +570,7 @@ function generateAufgabe3() {
     correct: erg,
     tolerance: 0.5,
     placeholder: "Ergebnis",
-    hinweis: (raw, val) => (val === -erg ? "Der Betrag stimmt — nur das <strong>Vorzeichen</strong> nicht. Zähle die negativen Faktoren: eine gerade Anzahl ergibt Plus, eine ungerade Minus." : ""),
+    hinweis: (raw, val) => (trifft(val, -erg) ? "Der Betrag stimmt — nur das <strong>Vorzeichen</strong> nicht. Zähle die negativen Faktoren: eine gerade Anzahl ergibt Plus, eine ungerade Minus." : ""),
     musterloesungHtml:
       `① Vorzeichen bestimmen: Es sind <strong>${anzahlNegativ}</strong> negative Faktoren, also eine ${anzahlNegativ % 2 === 0 ? "gerade" : "ungerade"} Anzahl ⇒ das Ergebnis ist <strong>${anzahlNegativ % 2 === 0 ? "positiv" : "negativ"}</strong>.<br>` +
       `② Beträge multiplizieren: ${f[0]} · ${f[1]} · ${f[2]} = ${f[0] * f[1] * f[2]}<br>` +
@@ -587,7 +598,7 @@ function generateAufgabe4() {
     correct: erg,
     tolerance: 0.5,
     placeholder: "Ergebnis in " + kontext.einh,
-    hinweis: (raw, val) => (val === start + x - y ? "Achte auf die Reihenfolge der Richtungen: zuerst geht es <strong>nach unten</strong>, danach wieder hinauf." : ""),
+    hinweis: (raw, val) => (trifft(val, start + x - y) ? "Achte auf die Reihenfolge der Richtungen: zuerst geht es <strong>nach unten</strong>, danach wieder hinauf." : ""),
     musterloesungHtml:
       `① ${zahl(start)} − ${x} = <strong>${zahl(zwischen)}</strong><br>` +
       `② ${zahl(zwischen)} + ${y} = <strong>${zahl(erg)}</strong><br>` +

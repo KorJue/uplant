@@ -23,9 +23,12 @@ function zahlen(text) {
 }
 
 // Zahlen werden in deutscher Schreibweise eingegeben; Zeichenketten — etwa
-// ein Bruch „3/4“ — gehen unverändert durch.
+// ein Bruch „3/4“ — gehen unverändert durch. Gerundet wird auf sechs Stellen:
+// Ein Mensch tippt „108“, nicht „108,00000000000003“, und die Seite muss mit
+// dieser Eingabe zurechtkommen.
 function deutsch(x) {
-  return typeof x === "number" ? String(x).replace(".", ",") : String(x);
+  if (typeof x !== "number") return String(x);
+  return String(Number(x.toFixed(6))).replace(".", ",");
 }
 
 async function oeffneAufgabe(page, nr) {
@@ -75,17 +78,26 @@ async function pruefeAufgabe(page, bericht, { nr, name, runden = 40, mindestensV
     bericht.pruefe(rueck.includes("Musterlösung"), `${name}: keine Musterlösung — „${frage}“`);
     if (d.pruefe) d.pruefe(frage, rueck);
 
+    // Die Fehlerwerte stehen in der Reihenfolge, in der die Seite ihre Hinweise
+    // prüft. Fallen zwei Fehler auf dieselbe Zahl — bei α = β sind „nur α
+    // abgezogen“ und „nur β abgezogen“ dieselbe Antwort —, nennt die Seite den
+    // zuerst geprüften. Dann wird nur noch die Zurückweisung verlangt, nicht
+    // mehr der bestimmte Hinweis.
+    const schonGeprueft = [];
     for (const [falsch, muster] of d.falsch || []) {
       if (falsch === null || falsch === undefined) continue;
       if (typeof falsch === "number" && !Number.isFinite(falsch)) continue;
+      const eps = d.toleranz ?? 0.5;
+      const gleich = (a, b) => (typeof a === "number" && typeof b === "number"
+        ? Math.abs(a - b) < eps : String(a) === String(b));
       // Fällt ein Fehlerwert mit der Lösung zusammen, taugt er nicht als Probe.
-      if (typeof falsch === "number" && typeof d.richtig === "number"
-          && Math.abs(falsch - d.richtig) < (d.toleranz ?? 0.5)) continue;
-      if (typeof falsch === "string" && falsch === String(d.richtig)) continue;
+      if (gleich(falsch, d.richtig)) continue;
+      const verdeckt = schonGeprueft.some((f) => gleich(f, falsch));
+      schonGeprueft.push(falsch);
       const r = await antworte(page, box, falsch);
       bericht.pruefe(r.includes("Noch nicht richtig"),
         `${name}: die falsche Antwort ${falsch} wird anerkannt — „${frage}“`);
-      if (muster) {
+      if (muster && !verdeckt) {
         bericht.pruefe(r.includes(muster),
           `${name}: bei der Eingabe ${falsch} fehlt der Hinweis „${muster}“ — „${frage}“`);
       }

@@ -768,6 +768,17 @@ function mountUebungsaufgaben(container, defs) {
 
 // ---------- Aufgaben-Definitionen ----------
 
+// Fehlerhinweise vergleichen die Eingabe mit dem Wert, der bei einem
+// bestimmten Fehler herauskäme. Ein Vergleich mit === trifft dabei nicht
+// zuverlässig: 7/10 · 360 ergibt 252,00000000000003, und wer den Rest zu 360°
+// nennt, tippt 108 — der Hinweis bliebe stumm. Verglichen wird deshalb mit
+// einer relativen Schranke.
+function trifft(val, soll) {
+  return Number.isFinite(val) && Number.isFinite(soll)
+    && Math.abs(val - soll) <= 1e-6 * Math.max(1, Math.abs(soll));
+}
+
+
 function generateAufgabe1() {
   // Kürzeste ganzzahlige dritte Seite. Die Seiten werden verschieden gewählt,
   // damit |a − b| + 1 nicht mit dem trivialen Wert 1 zusammenfällt.
@@ -783,10 +794,10 @@ function generateAufgabe1() {
     tolerance: 0.01,
     placeholder: "c in cm",
     hinweis: (raw, val) => {
-      if (val === Math.abs(a - b)) return `Bei c = ${Math.abs(a - b)} cm wäre a genau so lang wie b + c — dann entsteht eine <strong>Strecke</strong>, kein Dreieck. Die Ungleichung verlangt „echt kleiner“, also muss c mindestens 1 cm größer sein.`;
-      if (val === a + b) return "Das ist die <strong>Summe</strong> der beiden Seiten — die obere Schranke, und auch die wird nicht erreicht. Gefragt ist die <em>untere</em> Grenze.";
-      if (val === a + b - 1) return "Das ist die <strong>längste</strong> mögliche dritte Seite. Gefragt ist die kürzeste.";
-      if (val === 1) return "So kurz darf c nicht sein: Dann wäre die längere der beiden gegebenen Seiten länger als die anderen beiden zusammen.";
+      if (trifft(val, Math.abs(a - b))) return `Bei c = ${Math.abs(a - b)} cm wäre a genau so lang wie b + c — dann entsteht eine <strong>Strecke</strong>, kein Dreieck. Die Ungleichung verlangt „echt kleiner“, also muss c mindestens 1 cm größer sein.`;
+      if (trifft(val, a + b)) return "Das ist die <strong>Summe</strong> der beiden Seiten — die obere Schranke, und auch die wird nicht erreicht. Gefragt ist die <em>untere</em> Grenze.";
+      if (trifft(val, a + b - 1)) return "Das ist die <strong>längste</strong> mögliche dritte Seite. Gefragt ist die kürzeste.";
+      if (trifft(val, 1)) return "So kurz darf c nicht sein: Dann wäre die längere der beiden gegebenen Seiten länger als die anderen beiden zusammen.";
       return "";
     },
     musterloesungHtml:
@@ -814,10 +825,10 @@ function generateAufgabe2() {
     tolerance: 0.01,
     placeholder: "Winkel in Grad",
     hinweis: (raw, val) => {
-      if (val === (nachSpitze ? basis : spitze)) return "Das ist der Winkel, der schon gegeben war.";
-      if (nachSpitze && val === 180 - basis) return `Du hast nur <strong>einen</strong> Basiswinkel abgezogen. Im gleichschenkligen Dreieck sind <strong>beide</strong> Basiswinkel ${basis}° groß.`;
-      if (!nachSpitze && val === 180 - spitze) return `Das sind <strong>beide</strong> Basiswinkel zusammen. Gefragt ist <em>ein</em> Basiswinkel — also noch durch 2 teilen.`;
-      if (val === 90 - basis || val === 90 - spitze) return "Die Winkelsumme im Dreieck ist 180°, nicht 90°.";
+      if (trifft(val, (nachSpitze ? basis : spitze))) return "Das ist der Winkel, der schon gegeben war.";
+      if (nachSpitze && trifft(val, 180 - basis)) return `Du hast nur <strong>einen</strong> Basiswinkel abgezogen. Im gleichschenkligen Dreieck sind <strong>beide</strong> Basiswinkel ${basis}° groß.`;
+      if (!nachSpitze && trifft(val, 180 - spitze)) return `Das sind <strong>beide</strong> Basiswinkel zusammen. Gefragt ist <em>ein</em> Basiswinkel — also noch durch 2 teilen.`;
+      if (trifft(val, 90 - basis) || trifft(val, 90 - spitze)) return "Die Winkelsumme im Dreieck ist 180°, nicht 90°.";
       return "";
     },
     musterloesungHtml: nachSpitze
@@ -847,10 +858,10 @@ function generateAufgabe3() {
     tolerance: 0.01,
     placeholder: "Anzahl",
     hinweis: (raw, val) => {
-      if (val === anzahl + 1) return `Du hast eine Grenze zu viel mitgezählt. Weder c = ${Math.abs(a - b)} noch c = ${a + b} ergibt ein Dreieck — beide Randwerte fallen weg.`;
-      if (val === anzahl + 2) return `Beide Randwerte sind mitgezählt. Weder c = ${Math.abs(a - b)} noch c = ${a + b} ergibt ein Dreieck: Dort läge C auf der Geraden AB.`;
-      if (val === bis) return "Das ist der <strong>größte</strong> mögliche Wert für c, nicht die Anzahl der Möglichkeiten.";
-      if (val === a + b) return "Das ist a + b. Gefragt ist, wie viele ganze Zahlen zwischen den beiden Grenzen liegen.";
+      if (trifft(val, anzahl + 1)) return `Du hast eine Grenze zu viel mitgezählt. Weder c = ${Math.abs(a - b)} noch c = ${a + b} ergibt ein Dreieck — beide Randwerte fallen weg.`;
+      if (trifft(val, anzahl + 2)) return `Beide Randwerte sind mitgezählt. Weder c = ${Math.abs(a - b)} noch c = ${a + b} ergibt ein Dreieck: Dort läge C auf der Geraden AB.`;
+      if (trifft(val, bis)) return "Das ist der <strong>größte</strong> mögliche Wert für c, nicht die Anzahl der Möglichkeiten.";
+      if (trifft(val, a + b)) return "Das ist a + b. Gefragt ist, wie viele ganze Zahlen zwischen den beiden Grenzen liegen.";
       return "";
     },
     musterloesungHtml:
@@ -882,9 +893,9 @@ function generateAufgabe4() {
     tolerance: 0.01,
     placeholder: "∠ADC in Grad",
     hinweis: (raw, val) => {
-      if (val === halb) return `Das ist der halbe Winkel γ, also ∠ACD = ${halb}°. Der ist nur ein Zwischenschritt — gesucht ist der Winkel bei <strong>D</strong>.`;
-      if (val === beta) return `Das ist β, der Winkel bei B — zugleich das Ergebnis, wenn man das <em>ganze</em> γ abzieht. Im Teildreieck ACD liegt aber nur die <strong>Hälfte</strong> von γ.`;
-      if (val === alpha + halb) return "Du hast die beiden bekannten Winkel addiert. Gesucht ist, was bis 180° fehlt.";
+      if (trifft(val, halb)) return `Das ist der halbe Winkel γ, also ∠ACD = ${halb}°. Der ist nur ein Zwischenschritt — gesucht ist der Winkel bei <strong>D</strong>.`;
+      if (trifft(val, beta)) return `Das ist β, der Winkel bei B — zugleich das Ergebnis, wenn man das <em>ganze</em> γ abzieht. Im Teildreieck ACD liegt aber nur die <strong>Hälfte</strong> von γ.`;
+      if (trifft(val, alpha + halb)) return "Du hast die beiden bekannten Winkel addiert. Gesucht ist, was bis 180° fehlt.";
       return "";
     },
     musterloesungHtml:

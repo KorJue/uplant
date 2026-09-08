@@ -37,10 +37,7 @@ async function aufgaben(page) {
         falsch: [
           [nachVolumen ? O : V, nachVolumen ? "Das ist der Oberflächeninhalt" : "Das ist das Volumen"],
           [a * b + a * c + b * c, "zweimal"],
-          // Bei manchen Kanten — etwa 2, 5 und 6 — ist die Kantensumme
-          // zahlengleich mit der halben Oberfläche. Die Seite nennt dann den
-          // zuerst geprüften Fehler; beide Hinweise wären dort richtig.
-          [4 * (a + b + c) === a * b + a * c + b * c ? null : 4 * (a + b + c), "Kantensumme"],
+          [4 * (a + b + c), "Kantensumme"],
         ],
       };
     },
