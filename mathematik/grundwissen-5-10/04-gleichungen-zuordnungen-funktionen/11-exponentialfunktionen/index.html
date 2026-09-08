@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exponentialfunktionen</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">Grundwissen Klasse 5-10</a><span class="sep">/</span>
+  <a href="../index.html">4 Gleichungen, Zuordnungen und Funktionen</a><span class="sep">/</span>
+  11 Exponentialfunktionen
+</nav>
+<header class="page-header">
+  <h1>Exponentialfunktionen</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Visualisierung und endet mit einer kurzen Kontrollfrage.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Ein Guthaben mit Zinseszins, eine Bakterienkultur, ein zerfallendes Isotop, der Wertverlust eines Autos: Sie alle ändern sich nicht um einen festen <em>Betrag</em> je Schritt, sondern um einen festen <em>Faktor</em>. Das ist <strong>exponentielles Wachstum</strong> — und es sieht am Anfang harmlos aus. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>an einer Wertetabelle entscheiden, ob ein Wachstum <span class="term">linear oder exponentiell</span> ist</li>
+      <li>mit <strong>f(x) = a · q<sup>x</sup></strong> arbeiten und <span class="term">Anfangswert a</span> und <span class="term">Wachstumsfaktor q</span> deuten</li>
+      <li>zwischen <span class="term">Prozentsatz und Wachstumsfaktor</span> hin- und herrechnen</li>
+      <li><span class="term">Verdopplungszeit und Halbwertszeit</span> bestimmen</li>
+      <li>erklären, warum exponentielles Wachstum jedes <span class="term">Potenzwachstum</span> überholt</li>
+      <li>Sachaufgaben zu Zinseszins, Zerfall und Wertverlust rechnen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../09-potenzen/index.html#sec-gesetze">Thema 9</a> die Potenzgesetze, aus <a href="../02-prozent-und-zinsrechnung/index.html#sec-zinseszins">Thema 2</a> den Zinseszins und aus <a href="../05-lineare-funktionen/index.html#sec-gerade">Thema 5</a> die lineare Funktion als Vergleich.</p>
+  </section>
+
+  <!-- 1. Linear oder exponentiell? -->
+  <section class="card" id="sec-wachstum">
+    <h2>1. Linear oder exponentiell?</h2>
+    <p>Beide Wachstumsarten sehen in einer Tabelle zunächst ähnlich aus. Der Unterschied zeigt sich, sobald man von Zeile zu Zeile rechnet — und zwar auf zwei verschiedene Arten.</p>
+    <div class="definition-box">
+      <span class="box-label">Der Unterschied in einem Satz</span>
+      <strong>Linear:</strong> Bei jedem Schritt kommt derselbe <strong>Betrag</strong> dazu. Die <em>Differenzen</em> benachbarter Werte sind gleich.<br>
+      <strong>Exponentiell:</strong> Bei jedem Schritt wird mit demselben <strong>Faktor</strong> multipliziert. Die <em>Quotienten</em> benachbarter Werte sind gleich.<br>
+      <span class="progress-note">Der Test für eine Wertetabelle: Bilde beide Spalten. Bleibt die Differenz konstant, ist es linear. Bleibt der Quotient konstant, ist es exponentiell. Bleibt keines von beidem konstant, ist es weder das eine noch das andere.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Anfangswert a = <input type="range" id="wa-a" min="10" max="100" step="10" value="50" style="vertical-align:middle;width:10rem"> <span id="wa-a-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>Wachstumsfaktor q = <input type="range" id="wa-q" min="11" max="20" step="1" value="15" style="vertical-align:middle;width:10rem"> <span id="wa-q-anzeige" style="font-weight:800;color:#b3650a"></span></label>
+      </div>
+      <div class="ex-gleichung" id="wa-gleichung"></div>
+      <div class="geo-wrap" id="wa-mount"></div>
+      <table class="ex-tabelle" id="wa-tabelle"></table>
+      <div class="ex-karten" id="wa-karten"></div>
+      <div class="ex-rechnung" id="wa-bilanz"></div>
+      <div id="wa-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — „wächst um 20 %“ ist nicht linear</span>
+      Wer <em>jedes Jahr 20 € dazubekommt</em>, wächst linear. Wer <em>jedes Jahr 20 % dazubekommt</em>, wächst exponentiell — denn 20 % von einem größeren Bestand sind mehr als 20 % von einem kleineren. Ein Prozentsatz ist immer ein Faktor, nie ein Betrag. Genau das ist der Unterschied zwischen <a href="../02-prozent-und-zinsrechnung/index.html#sec-zinsen">einfachen Zinsen</a> und <a href="../02-prozent-und-zinsrechnung/index.html#sec-zinseszins">Zinseszins</a>.
+    </div>
+    <div class="quiz" id="quiz-wachstum"></div>
+  </section>
+
+  <!-- 2. Die Exponentialfunktion -->
+  <section class="card" id="sec-funktion">
+    <h2>2. Die Exponentialfunktion f(x) = a · q<sup>x</sup></h2>
+    <p>Zwei Zahlen genügen, um jedes exponentielle Wachstum zu beschreiben: der Wert am Anfang und der Faktor je Schritt.</p>
+    <div class="definition-box">
+      <span class="box-label">Exponentialfunktion</span>
+      <strong>f(x) = a · q<sup>x</sup></strong> mit <strong>a ≠ 0</strong> und <strong>q &gt; 0</strong>, <strong>q ≠ 1</strong>.<br>
+      <strong>a</strong> ist der <strong>Anfangswert</strong>: f(0) = a · q<sup>0</sup> = a · 1 = a.<br>
+      <strong>q</strong> ist der <strong>Wachstumsfaktor</strong>: Von f(x) zu f(x + 1) wird mit q multipliziert.<br>
+      <span class="progress-note">Neu gegenüber den <a href="../09-potenzen/index.html#sec-potenzfunktionen">Potenzfunktionen</a>: Dort stand x <em>unten</em> (x³), hier steht es <strong>oben</strong> im Exponenten (3<sup>x</sup>). Das ist ein völlig anderes Verhalten.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a = <input type="range" id="fu-a" min="1" max="8" step="1" value="2" style="vertical-align:middle;width:9rem"> <span id="fu-a-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>q = <input type="range" id="fu-q" min="4" max="30" step="1" value="15" style="vertical-align:middle;width:11rem"> <span id="fu-q-anzeige" style="font-weight:800;color:#b3650a"></span></label>
+        <label>Stelle x = <input type="range" id="fu-x" min="-2" max="6" step="1" value="3" style="vertical-align:middle;width:9rem"> <span id="fu-x-anzeige" style="font-weight:800;color:#157347"></span></label>
+      </div>
+      <div class="ex-gleichung" id="fu-gleichung"></div>
+      <div class="geo-wrap" id="fu-mount"></div>
+      <div class="ex-karten" id="fu-karten"></div>
+      <div class="ex-rechnung" id="fu-bilanz"></div>
+      <div id="fu-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Warum der Graph die x-Achse nie erreicht</span>
+      q<sup>x</sup> ist als Potenz einer <em>positiven</em> Zahl immer positiv — auch für negative x, denn dort steht nach <a href="../09-potenzen/index.html#sec-ganzzahlig">der Regel für negative Exponenten</a> ein Kehrwert, und Kehrwerte positiver Zahlen sind wieder positiv. Deshalb ist a · q<sup>x</sup> für a &gt; 0 nie 0 und nie negativ: Der Graph nähert sich der x-Achse beliebig weit an, berührt sie aber nicht. Man nennt die x-Achse deshalb <strong>Asymptote</strong>. Eine Exponentialfunktion hat <strong>keine Nullstelle</strong>.
+    </div>
+    <div class="quiz" id="quiz-funktion"></div>
+  </section>
+
+  <!-- 3. Prozentsatz und Wachstumsfaktor -->
+  <section class="card" id="sec-prozent">
+    <h2>3. Prozentsatz und Wachstumsfaktor</h2>
+    <p>In Sachaufgaben steht fast nie der Faktor, sondern ein Prozentsatz. Zwischen beiden umzurechnen ist der erste Schritt jeder Lösung.</p>
+    <div class="definition-box">
+      <span class="box-label">Die Umrechnung</span>
+      <strong>Zunahme um p %:</strong> &nbsp; q = 1 + p : 100 &nbsp; (q &gt; 1)<br>
+      <strong>Abnahme um p %:</strong> &nbsp; q = 1 − p : 100 &nbsp; (0 &lt; q &lt; 1)<br>
+      <span class="progress-note">Umgekehrt: Aus q liest man den Prozentsatz als <strong>p = (q − 1) · 100</strong> ab. Ist q &gt; 1, ist p positiv (Zunahme); ist q &lt; 1, ist p negativ (Abnahme).</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Änderung p = <input type="range" id="pr-p" min="-60" max="100" step="5" value="20" style="vertical-align:middle;width:14rem"> <span id="pr-p-anzeige" style="font-weight:800;color:#b3650a"></span> %</label>
+        <label>Schritte n = <input type="range" id="pr-n" min="1" max="12" step="1" value="5" style="vertical-align:middle;width:9rem"> <span id="pr-n-anzeige" style="font-weight:800;color:#157347"></span></label>
+      </div>
+      <div class="ex-gleichung" id="pr-gleichung"></div>
+      <div class="geo-wrap" id="pr-mount"></div>
+      <div class="ex-schritte" id="pr-schritte"></div>
+      <div class="ex-karten" id="pr-karten"></div>
+      <div class="ex-rechnung" id="pr-bilanz"></div>
+      <div id="pr-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — 20 % rauf und 20 % runter ist nicht null</span>
+      Steigt ein Preis von 100 € um 20 % auf 120 € und fällt danach wieder um 20 %, so landet er bei <strong>96 €</strong>, nicht bei 100 €. Der Grund: Die zweiten 20 % werden vom <em>größeren</em> Betrag genommen. In Faktoren: 1,2 · 0,8 = <strong>0,96</strong> — und das ist eine Abnahme um 4 %. Faktoren werden multipliziert, Prozentsätze <em>nicht</em> addiert.
+    </div>
+    <div class="quiz" id="quiz-prozent"></div>
+  </section>
+
+  <!-- 4. Verdopplungszeit und Halbwertszeit -->
+  <section class="card" id="sec-zeiten">
+    <h2>4. Verdopplungszeit und Halbwertszeit</h2>
+    <p>Eine überraschende Eigenschaft: Die Zeit bis zur Verdopplung ist immer dieselbe — ganz gleich, wann man zu messen beginnt.</p>
+    <div class="definition-box">
+      <span class="box-label">Verdopplungszeit und Halbwertszeit</span>
+      Die <strong>Verdopplungszeit</strong> ist die Anzahl der Schritte, nach der sich der Bestand verdoppelt hat: <strong>q<sup>T</sup> = 2</strong>.<br>
+      Die <strong>Halbwertszeit</strong> ist entsprechend die Zeit bis zur Halbierung: <strong>q<sup>T</sup> = 0,5</strong>.<br>
+      <span class="progress-note">Beide hängen <em>nur</em> von q ab, nicht vom Anfangswert. Von 100 auf 200 dauert es genauso lange wie von 5000 auf 10 000 — das ist der Kern des exponentiellen Wachstums.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Änderung p = <input type="range" id="ze-p" min="-40" max="60" step="2" value="20" style="vertical-align:middle;width:13rem"> <span id="ze-p-anzeige" style="font-weight:800;color:#b3650a"></span> % je Schritt</label>
+        <label>Anfangswert a = <input type="range" id="ze-a" min="20" max="200" step="20" value="80" style="vertical-align:middle;width:9rem"> <span id="ze-a-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+      </div>
+      <div class="ex-gleichung" id="ze-gleichung"></div>
+      <div class="geo-wrap" id="ze-mount"></div>
+      <div class="ex-schritte" id="ze-schritte"></div>
+      <div class="ex-karten" id="ze-karten"></div>
+      <div class="ex-rechnung" id="ze-bilanz"></div>
+      <div id="ze-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Wie man die Zeit ohne Logarithmus findet</span>
+      Gesucht ist das kleinste n mit q<sup>n</sup> ≥ 2. Man kann es <strong>schrittweise ausprobieren</strong>: q, q², q³, … bis der Wert 2 überschreitet. Das ist mühsam, aber es geht immer und man versteht dabei, was passiert.<br>
+      Genau für diese Frage gibt es in der Oberstufe ein eigenes Werkzeug, den <strong>Logarithmus</strong>: Er beantwortet die Frage „welcher Exponent?“ in einem Schritt, so wie die <a href="../09-potenzen/index.html#sec-wurzeln">Wurzel</a> die Frage „welche Basis?“ beantwortet.
+    </div>
+    <div class="quiz" id="quiz-zeiten"></div>
+  </section>
+
+  <!-- 5. Exponentiell schlägt jede Potenz -->
+  <section class="card" id="sec-vergleich">
+    <h2>5. Exponentiell schlägt jede Potenz</h2>
+    <p>Am Anfang wirkt 2<sup>x</sup> harmlos: x² ist lange Zeit größer. Aber nur eine Weile.</p>
+    <div class="definition-box">
+      <span class="box-label">Die Aussage</span>
+      Für jedes noch so große n gilt: Ab einer bestimmten Stelle ist <strong>q<sup>x</sup></strong> (mit q &gt; 1) <strong>größer als x<sup>n</sup></strong> — und bleibt es.<br>
+      <span class="progress-note">Das ist kein Zufall, sondern der Grund, warum man exponentielles Wachstum ernst nehmen muss: Es holt jeden Vorsprung auf, wenn man ihm nur genug Schritte lässt.</span>
+    </div>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Stelle x = <input type="range" id="vg-x" min="0" max="12" step="1" value="4" style="vertical-align:middle;width:13rem"> <span id="vg-x-anzeige" style="font-weight:800;color:#b3650a"></span></label>
+      </div>
+      <div class="ex-gleichung" id="vg-gleichung"></div>
+      <div class="geo-wrap" id="vg-mount"></div>
+      <table class="ex-tabelle" id="vg-tabelle"></table>
+      <div class="ex-karten" id="vg-karten"></div>
+      <div class="ex-rechnung" id="vg-bilanz"></div>
+      <div id="vg-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der erste Eindruck täuscht</span>
+      Wer nur die Werte bis x = 3 anschaut, hält x² für das schnellere Wachstum: 9 gegen 8. Bei x = 4 herrscht Gleichstand (16 gegen 16), und ab x = 5 zieht 2<sup>x</sup> davon und kommt nie wieder zurück. Bei x = 20 steht es <strong>400 gegen über eine Million</strong>. Aus wenigen Anfangswerten auf das weitere Wachstum zu schließen, ist deshalb bei Exponentialfunktionen besonders riskant.
+    </div>
+    <div class="quiz" id="quiz-vergleich"></div>
+  </section>
+
+  <!-- 6. Anwendungen -->
+  <section class="card" id="sec-anwendungen">
+    <h2>6. Zinseszins, Zerfall und Wertverlust</h2>
+    <p>Drei ganz verschiedene Sachverhalte, ein einziges Rechenmodell — nur der Faktor q ist jeweils ein anderer.</p>
+    <div class="definition-box">
+      <span class="box-label">Der Weg bei jeder Sachaufgabe</span>
+      <strong>1.</strong> Anfangswert <strong>a</strong> aus dem Text lesen.<br>
+      <strong>2.</strong> Den Prozentsatz finden und in den Faktor <strong>q</strong> umrechnen — Zunahme oder Abnahme?<br>
+      <strong>3.</strong> Die Anzahl der Schritte <strong>n</strong> bestimmen (Jahre, Tage, Stunden — die Einheit muss zum Prozentsatz passen).<br>
+      <strong>4.</strong> <strong>a · q<sup>n</sup></strong> berechnen, sinnvoll runden und im Sachzusammenhang antworten.<br>
+      <span class="progress-note">Schritt 3 wird am häufigsten falsch gemacht: Bei „4 % pro Jahr über 3 Jahre“ ist n = 3, bei „2 % pro Monat über 3 Jahre“ ist n = 36.</span>
+    </div>
+    <div class="widget">
+      <div class="ex-schalter" id="an-schalter"></div>
+      <div class="btn-row">
+        <button class="btn" id="an-neu">🎲 Neue Zahlen</button>
+        <button class="btn" id="an-schritt">Schritt weiter ▸</button>
+        <button class="btn" id="an-alle">Alle Schritte</button>
+      </div>
+      <div class="ex-gleichung" id="an-gleichung"></div>
+      <div class="geo-wrap" id="an-mount"></div>
+      <div class="ex-schritte" id="an-schritte"></div>
+      <div class="ex-rechnung" id="an-bilanz"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — exponentielle Modelle gelten nicht ewig</span>
+      Eine Bakterienkultur, die sich alle 20 Minuten verdoppelt, hätte nach zwei Tagen mehr Masse als die Erde. Das passiert natürlich nicht: Irgendwann geht das Futter aus. Ein exponentielles Modell beschreibt die <strong>Anfangsphase</strong> gut und wird danach falsch. Beim Rechnen mit solchen Aufgaben gehört deshalb immer die Frage dazu, <em>wie lange</em> das Modell überhaupt gelten kann.
+    </div>
+    <div class="quiz" id="quiz-anwendungen"></div>
+  </section>
+
+  <!-- 7. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>7. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../09-potenzen/index.html#sec-gesetze">Den Potenzgesetzen</a> — dass q<sup>m</sup> · q<sup>n</sup> = q<sup>m+n</sup> ist, heißt hier: Zwei Wachstumsphasen hintereinander ergeben zusammen die Summe der Schritte. Und q<sup>0</sup> = 1 ist der Grund, warum f(0) = a gilt.</li>
+      <li><strong>Baut auf:</strong> <a href="../02-prozent-und-zinsrechnung/index.html#sec-zinseszins">Dem Zinseszins</a> — die Formel K<sub>n</sub> = K<sub>0</sub> · q<sup>n</sup> ist genau f(x) = a · q<sup>x</sup>, nur mit anderen Buchstaben. Die Exponentialfunktion ist die allgemeine Fassung.</li>
+      <li><strong>Baut auf:</strong> <a href="../09-potenzen/index.html#sec-ganzzahlig">Den negativen Exponenten</a> — sie geben den Werten <em>vor</em> dem Startzeitpunkt einen Sinn: f(−1) = a : q ist der Bestand einen Schritt zuvor.</li>
+      <li><strong>Im Gegensatz zu:</strong> <a href="../05-lineare-funktionen/index.html#sec-gerade">Der linearen Funktion</a> — dort kommt je Schritt ein fester <em>Betrag</em> dazu, hier ein fester <em>Faktor</em>. Konstante Differenzen gegen konstante Quotienten.</li>
+      <li><strong>Im Gegensatz zu:</strong> <a href="../09-potenzen/index.html#sec-potenzfunktionen">Den Potenzfunktionen</a> — bei x<sup>n</sup> steht das x unten, bei q<sup>x</sup> oben. Die Exponentialfunktion überholt auf Dauer jede Potenzfunktion, so groß n auch sein mag.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="../01-zuordnungen/index.html#sec-antiproportional">Der antiproportionalen Zuordnung</a> — auch dort nähert sich der Graph einer Achse, ohne sie zu erreichen. Solche Geraden heißen <strong>Asymptoten</strong>.</li>
+      <li><strong>Führt weiter zu:</strong> Dem <strong>Logarithmus</strong> — er beantwortet die Frage „nach wie vielen Schritten?“, also q<sup>n</sup> = c nach n aufgelöst. Er ist die Umkehrung des Potenzierens nach dem <em>Exponenten</em>, so wie die Wurzel die Umkehrung nach der <em>Basis</em> ist.</li>
+      <li><strong>Führt weiter zu:</strong> Der <strong>e-Funktion</strong> — dem Sonderfall q = e ≈ 2,718, mit dem in Naturwissenschaft und Analysis fast ausschließlich gerechnet wird, weil sich diese Funktion beim Ableiten selbst reproduziert.</li>
+    </ul>
+  </section>
+
+  <!-- 8. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>8. Formelsammlung</h2>
+    <p>Der Unterschied zwischen linearem und exponentiellem Wachstum, die Funktion a · q<sup>x</sup> mit ihrem Graphen, die Umrechnung zwischen Prozentsatz und Faktor, Verdopplungs- und Halbwertszeit, der Vergleich mit den Potenzfunktionen und die drei Anwendungstypen — mit Zeichnungen, Beispielen und typischen Fehlern auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 9. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>9. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Wo gerundet werden soll, steht es in der Aufgabe — und genau so wird auch geprüft. Das Komma schreibst du als Komma.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 4 Gleichungen, Zuordnungen und Funktionen</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
