@@ -42,7 +42,12 @@ function el(tag, attrs = {}, children = []) {
 }
 function num(x, digits = 4) {
   // In einer Funktionsgleichung steht ein Minuszeichen, kein Bindestrich.
-  return x.toLocaleString("de-DE", { maximumFractionDigits: digits }).replace("-", "−");
+  // Außerdem: −b : m ergibt für b = 0 die negative Null, und die erschiene
+  // sonst als „−0“. Deshalb wird erst auf die Anzeigegenauigkeit gerundet und
+  // dann über das Vorzeichen entschieden — was als 0 erscheint, ist eine 0.
+  const gerundet = Number(x.toFixed(Math.min(20, digits)));
+  const z = gerundet === 0 ? 0 : x;
+  return z.toLocaleString("de-DE", { maximumFractionDigits: digits }).replace("-", "−");
 }
 function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];

@@ -49,6 +49,12 @@ function num(x, digits = 4) {
   return z.toLocaleString("de-DE", { maximumFractionDigits: digits }).replace("-", "−");
 }
 // Ist der angezeigte Wert bei dieser Stellenzahl exakt, steht dort "=", sonst "≈".
+// Das Quadrat einer negativen Zahl braucht Klammern: „−0,5²“ liest sich als
+// −(0,5²) und wäre damit das Gegenteil des Gemeinten.
+function quadrat(x, stellen) {
+  return (x < 0 ? `(${num(x, stellen)})` : num(x, stellen)) + "²";
+}
+
 function zeichen(x, stellen) {
   return Math.abs(Number(x.toFixed(stellen)) - x) < 1e-12 ? "=" : "≈";
 }
@@ -760,7 +766,7 @@ function renderEinheitskreis() {
     `<strong>Am Kreis abgelesen:</strong> Die <span class="wa">Breite</span> des Punktes ist cos α ${zeichen(c, 4)} ${num(c, 4)}, ` +
     `seine <span class="wg">Höhe</span> ist sin α ${zeichen(s, 4)} ${num(s, 4)}.<br>` +
     `<strong>Der trigonometrische Pythagoras gilt weiter:</strong> ` +
-    `<span class="ww">${num(s, 4)}² + ${num(c, 4)}² = ${num(s * s + c * c, 4)}</span> — der Radius ist ja 1.<br>` +
+    `<span class="ww">${quadrat(s, 4)} + ${quadrat(c, 4)} = ${num(s * s + c * c, 4)}</span> — der Radius ist ja 1.<br>` +
     `<strong>Gleiche Höhe, anderer Winkel:</strong> <span class="wg">sin ${num(spiegel)}° ${zeichen(sinG(spiegel), 4)} ${num(sinG(spiegel), 4)}</span> ` +
     `stimmt mit sin ${num(alpha)}° überein, denn ${num(spiegel)}° = 180° − ${num(alpha)}°. ` +
     `<strong>Gleiche Breite:</strong> <span class="wa">cos ${num(spiegel2)}° ${zeichen(cosG(spiegel2), 4)} ${num(cosG(spiegel2), 4)}</span>, ` +
