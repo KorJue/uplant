@@ -648,6 +648,17 @@ function mountUebungsaufgaben(container, defs) {
 
 // ---------- Aufgaben-Definitionen ----------
 
+// Fehlerhinweise vergleichen die Eingabe mit dem Wert, der bei einem
+// bestimmten Fehler herauskäme. Ein Vergleich mit === trifft dabei nicht
+// zuverlässig: 18 · 10⁻⁴ ergibt in Gleitkommaarithmetik nicht dieselbe Zahl
+// wie die eingetippte 0,0018, und der Hinweis bliebe stumm. Verglichen wird
+// deshalb mit einer relativen Schranke.
+function trifft(val, soll) {
+  return Number.isFinite(val) && Number.isFinite(soll)
+    && Math.abs(val - soll) <= 1e-6 * Math.max(1, Math.abs(soll));
+}
+
+
 function generateAufgabe1() {
   const a = randInt(2, 12);
   const b = randInt(2, 10);
@@ -666,13 +677,13 @@ function generateAufgabe1() {
     tolerance: 0.01,
     placeholder: nachVolumen ? "Volumen in cm³" : "Oberflächeninhalt in cm²",
     hinweis: (raw, val) =>
-      val === (nachVolumen ? O : V)
+      trifft(val, (nachVolumen ? O : V))
         ? nachVolumen
           ? "Das ist der <strong>Oberflächeninhalt</strong> (in cm²). Gefragt ist das Volumen: V = a · b · c."
           : "Das ist das <strong>Volumen</strong> (in cm³). Gefragt ist die Oberfläche: O = 2 · (a·b + a·c + b·c)."
-        : val === a * b + a * c + b * c
+        : trifft(val, a * b + a * c + b * c)
           ? "Du hast die drei verschiedenen Rechtecke addiert, aber die Verdopplung vergessen: Jede Fläche kommt am Quader <strong>zweimal</strong> vor."
-          : val === 4 * (a + b + c)
+          : trifft(val, 4 * (a + b + c))
             ? "Das ist die <strong>Kantensumme</strong> (in cm) — die Länge aller zwölf Kanten zusammen."
             : "",
     musterloesungHtml: nachVolumen
@@ -727,10 +738,10 @@ function generateAufgabe2() {
     hinweis: (raw, val) => {
       // Der klassische Fehler: mit dem Flächenfaktor 100 statt dem Raumfaktor 1000 rechnen
       const mitFlaechenfaktor = runter ? wert * Math.pow(10, (paar.diff / 3) * 2) : wert / Math.pow(10, (paar.diff / 3) * 2);
-      if (paar.diff % 3 === 0 && val === mitFlaechenfaktor && val !== ergebnis) {
+      if (paar.diff % 3 === 0 && trifft(val, mitFlaechenfaktor) && !trifft(val, ergebnis)) {
         return "Du hast mit dem Faktor der <strong>Flächen</strong> gerechnet. Bei Volumen ist jede Stufe <strong>1000</strong> groß, nicht 100 — ein Würfel wächst in drei Richtungen.";
       }
-      if (val === (runter ? wert / faktor : wert * faktor)) {
+      if (trifft(val, runter ? wert / faktor : wert * faktor)) {
         return "Die Richtung stimmt nicht: Zu einer <strong>kleineren</strong> Einheit wird die Maßzahl größer, zu einer <strong>größeren</strong> kleiner.";
       }
       return "";
@@ -759,11 +770,11 @@ function generateAufgabe3() {
     tolerance: 0.01,
     placeholder: "Volumen in cm³",
     hinweis: (raw, val) =>
-      val === a * b * c
+      trifft(val, a * b * c)
         ? "Das ist das Volumen des <strong>vollen</strong> Quaders. Der herausgeschnittene Block muss noch abgezogen werden."
-        : val === d * b * e
+        : trifft(val, d * b * e)
           ? "Das ist nur das Volumen des <strong>weggeschnittenen</strong> Blocks. Gefragt ist, was übrig bleibt."
-          : val === w.O
+          : trifft(val, w.O)
             ? "Das ist der <strong>Oberflächeninhalt</strong> (in cm²). Gefragt ist das Volumen in cm³."
             : "",
     musterloesungHtml:
@@ -797,12 +808,12 @@ function generateAufgabe4() {
     tolerance: 0.01,
     placeholder: "Kosten in €",
     hinweis: (raw, val) => {
-      if (val === 2 * (a * b + a * c + b * c) * preis)
+      if (trifft(val, 2 * (a * b + a * c + b * c) * preis))
         return "Du hast die <strong>volle</strong> Oberfläche gerechnet. Das Becken hat keinen Deckel — die obere Fläche fällt weg.";
-      if (val === a * b * c * preis)
+      if (trifft(val, a * b * c * preis))
         return "Du hast mit dem <strong>Volumen</strong> gerechnet. Der Preis gilt „je Quadratmeter“, also für eine Fläche, nicht für einen Rauminhalt.";
-      if (val === O) return "Das ist der Flächeninhalt in m² — richtig gerechnet, aber der Preis fehlt noch.";
-      if (val === a * b * c) return "Das ist das Volumen in m³. Gefragt sind die Kosten für die <strong>Fläche</strong> von Boden und Wänden.";
+      if (trifft(val, O)) return "Das ist der Flächeninhalt in m² — richtig gerechnet, aber der Preis fehlt noch.";
+      if (trifft(val, a * b * c)) return "Das ist das Volumen in m³. Gefragt sind die Kosten für die <strong>Fläche</strong> von Boden und Wänden.";
       return "";
     },
     musterloesungHtml:

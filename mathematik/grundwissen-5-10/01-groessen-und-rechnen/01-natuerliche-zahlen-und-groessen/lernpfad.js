@@ -555,7 +555,7 @@ function initQuizzes() {
     q: "Auf dem Zahlenstrahl steht 45 links von 76. Welche Aussage stimmt?",
     options: ["45 > 76", "45 < 76", "45 = 76", "Man kann es nicht sagen"],
     correct: 1,
-    explain: "Weiter links bedeutet kleiner: 45 < 76.",
+    explain: "Auf dem Zahlenstrahl wachsen die Zahlen nach rechts. Was weiter links steht, ist also kleiner: 45 < 76. Das Zeichen < zeigt dabei immer zur kleineren Zahl. Gleich sind zwei Zahlen nur, wenn sie an derselben Stelle stehen — hier liegen sie sichtbar auseinander.",
   });
   mountQuiz(document.getElementById("quiz-groessen"), {
     q: "Du rechnest 3,4 m in cm um. Was musst du tun?",

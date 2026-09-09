@@ -649,6 +649,17 @@ function mountUebungsaufgaben(container, defs) {
 
 // ---------- Aufgaben-Definitionen ----------
 
+// Fehlerhinweise vergleichen die Eingabe mit dem Wert, der bei einem
+// bestimmten Fehler herauskäme. Ein Vergleich mit === trifft dabei nicht
+// zuverlässig: 7/10 · 360 ergibt 252,00000000000003, und wer den Rest zu 360°
+// nennt, tippt 108 — der Hinweis bliebe stumm. Verglichen wird deshalb mit
+// einer relativen Schranke.
+function trifft(val, soll) {
+  return Number.isFinite(val) && Number.isFinite(soll)
+    && Math.abs(val - soll) <= 1e-6 * Math.max(1, Math.abs(soll));
+}
+
+
 function generateAufgabe1() {
   // Am Geradenkreuz. 90° wird ausgeschlossen: Dort wären Scheitel- und Nebenwinkel
   // zahlengleich, und die beiden Regeln ließen sich nicht auseinanderhalten.
@@ -664,13 +675,13 @@ function generateAufgabe1() {
     tolerance: 0.01,
     placeholder: "Winkel in Grad",
     hinweis: (raw, val) => {
-      if (val === (nachScheitel ? 180 - alpha : alpha)) {
+      if (trifft(val, (nachScheitel ? 180 - alpha : alpha))) {
         return nachScheitel
           ? `Das ist der <strong>Nebenwinkel</strong>. Scheitelwinkel liegen sich gegenüber und sind <strong>gleich groß</strong> wie α.`
           : `Das ist α selbst — der <strong>Scheitelwinkel</strong>. Der Nebenwinkel liegt daneben und ergänzt α zu <strong>180°</strong>.`;
       }
-      if (val === 360 - alpha) return "Am Geradenkreuz ergänzen sich <em>benachbarte</em> Winkel zu 180°, nicht zu 360°. 360° wäre einmal ganz herum.";
-      if (val === 90 - alpha) return "Zu 90° ergänzen sich <em>komplementäre</em> Winkel. Nebenwinkel liegen an einer Geraden und ergänzen sich zu 180°.";
+      if (trifft(val, 360 - alpha)) return "Am Geradenkreuz ergänzen sich <em>benachbarte</em> Winkel zu 180°, nicht zu 360°. 360° wäre einmal ganz herum.";
+      if (trifft(val, 90 - alpha)) return "Zu 90° ergänzen sich <em>komplementäre</em> Winkel. Nebenwinkel liegen an einer Geraden und ergänzen sich zu 180°.";
       return "";
     },
     musterloesungHtml: nachScheitel
@@ -702,13 +713,13 @@ function generateAufgabe2() {
     tolerance: 0.01,
     placeholder: "Winkel in Grad",
     hinweis: (raw, val) => {
-      if (val === (art.gleich ? 180 - alpha : alpha)) {
+      if (trifft(val, (art.gleich ? 180 - alpha : alpha))) {
         return art.gleich
           ? `${art.name} sind an Parallelen <strong>gleich groß</strong> (${art.figur}-Figur). Zu 180° ergänzen sich nur die <strong>Nachbarwinkel</strong> (U-Figur).`
           : `Nachbarwinkel liegen zwischen den Parallelen auf <strong>derselben</strong> Seite und ergänzen sich zu <strong>180°</strong>. Gleich groß wären Stufen- und Wechselwinkel.`;
       }
-      if (val === 360 - alpha) return "An Parallelen geht es um 180°, nicht um 360°. Der Vollwinkel spielt hier keine Rolle.";
-      if (val === 90 - alpha) return "Zu 90° ergänzt wird hier nichts. Die einzige Ergänzung in diesem Thema geht auf 180°.";
+      if (trifft(val, 360 - alpha)) return "An Parallelen geht es um 180°, nicht um 360°. Der Vollwinkel spielt hier keine Rolle.";
+      if (trifft(val, 90 - alpha)) return "Zu 90° ergänzt wird hier nichts. Die einzige Ergänzung in diesem Thema geht auf 180°.";
       return "";
     },
     musterloesungHtml:
@@ -734,10 +745,10 @@ function generateAufgabe3() {
     tolerance: 0.01,
     placeholder: "γ in Grad",
     hinweis: (raw, val) => {
-      if (val === alpha + beta) return `Das ist die <strong>Summe</strong> der beiden gegebenen Winkel. Gesucht ist, was bis 180° noch <em>fehlt</em>: 180° − ${alpha}° − ${beta}°.`;
-      if (val === 360 - alpha - beta) return "Im <strong>Dreieck</strong> ist die Winkelsumme 180°, nicht 360°. Auf 360° kommt erst das Viereck.";
-      if (val === 180 - alpha) return `Du hast nur α abgezogen. Es müssen <strong>beide</strong> gegebenen Winkel abgezogen werden.`;
-      if (val === 180 - beta) return `Du hast nur β abgezogen. Es müssen <strong>beide</strong> gegebenen Winkel abgezogen werden.`;
+      if (trifft(val, alpha + beta)) return `Das ist die <strong>Summe</strong> der beiden gegebenen Winkel. Gesucht ist, was bis 180° noch <em>fehlt</em>: 180° − ${alpha}° − ${beta}°.`;
+      if (trifft(val, 360 - alpha - beta)) return "Im <strong>Dreieck</strong> ist die Winkelsumme 180°, nicht 360°. Auf 360° kommt erst das Viereck.";
+      if (trifft(val, 180 - alpha)) return `Du hast nur α abgezogen. Es müssen <strong>beide</strong> gegebenen Winkel abgezogen werden.`;
+      if (trifft(val, 180 - beta)) return `Du hast nur β abgezogen. Es müssen <strong>beide</strong> gegebenen Winkel abgezogen werden.`;
       return "";
     },
     musterloesungHtml:
@@ -764,10 +775,10 @@ function generateAufgabe4() {
     tolerance: 0.01,
     placeholder: "γ in Grad",
     hinweis: (raw, val) => {
-      if (val === beta) return `Das ist <strong>β</strong>, der Innenwinkel bei B (180° − ${aussen}° = ${beta}°). Der ist nur der Zwischenschritt — gesucht ist γ.`;
-      if (val === aussen) return "Das ist der Außenwinkel selbst, der schon gegeben war.";
-      if (val === 180 - alpha - aussen) return `Du hast den <strong>Außenwinkel</strong> wie einen Innenwinkel behandelt. Erst muss daraus β = 180° − ${aussen}° = ${beta}° werden.`;
-      if (val === aussen + alpha) return "Du hast addiert statt subtrahiert. Der Außenwinkel <em>ist</em> bereits die Summe α + γ — gesucht ist davon der Anteil γ.";
+      if (trifft(val, beta)) return `Das ist <strong>β</strong>, der Innenwinkel bei B (180° − ${aussen}° = ${beta}°). Der ist nur der Zwischenschritt — gesucht ist γ.`;
+      if (trifft(val, aussen)) return "Das ist der Außenwinkel selbst, der schon gegeben war.";
+      if (trifft(val, 180 - alpha - aussen)) return `Du hast den <strong>Außenwinkel</strong> wie einen Innenwinkel behandelt. Erst muss daraus β = 180° − ${aussen}° = ${beta}° werden.`;
+      if (trifft(val, aussen + alpha)) return "Du hast addiert statt subtrahiert. Der Außenwinkel <em>ist</em> bereits die Summe α + γ — gesucht ist davon der Anteil γ.";
       return "";
     },
     musterloesungHtml:

@@ -1038,7 +1038,11 @@ function generateAufgabe3() {
   const { a, f, k, ende } = kd;
   const gesamt = ende / a;
   return {
-    promptHtml: `Ein Bestand wächst exponentiell von <strong>${num(a)}</strong> auf <strong>${num(ende)}</strong> ` +
+    // Drei der sieben Faktoren sind kleiner als 1. „Wächst“ wäre dann falsch:
+    // Der Bestand nimmt ab, und die Musterlösung sagt das am Ende auch. Der
+    // Fachbegriff bleibt „Wachstumsfaktor q“ — er heißt so auch für q < 1 —,
+    // aber der Satz muss beschreiben, was wirklich geschieht.
+    promptHtml: `Ein Bestand ${f.q > 1 ? "wächst" : "fällt"} exponentiell von <strong>${num(a)}</strong> auf <strong>${num(ende)}</strong> ` +
       `in <strong>${num(k)} Schritten</strong>.<br>Wie groß ist der <strong>Wachstumsfaktor q</strong> je Schritt? ` +
       `<em>Runde auf zwei Stellen nach dem Komma.</em>`,
     correct: Math.round(f.q * 100) / 100,

@@ -569,3 +569,66 @@
 :root[data-theme="dark"] .tf-pfeilkopf { fill: #ff8a8a; }
 :root[data-theme="dark"] .tf-pfeilkopf.amp { fill: #8ab4ff; }
 :root[data-theme="dark"] .tf-quadrant { fill: #c4a7ff; }
+
+/* ---------- Dunkelmodus: Textfarben aufhellen (erzeugt von tools/dunkelmodus-farben.py) ---------- */
+
+/* Die Farben oben sind für hellen Grund gewählt. Auf #1c2128 hat etwa das
+   Grün #157347 nur noch einen Leuchtdichteabstand von 29 (nötig sind gut 45),
+   das Violett 21 und Fast-Schwarz 2. Die folgenden Regeln setzen dieselben
+   Selektoren im Dunkelmodus auf die helle Entsprechung; sie stehen am Ende
+   der Datei, damit sie bei gleicher Spezifität gewinnen. */
+
+:root[data-theme="dark"] .quiz-opt.correct { color: #6fd68f; }
+:root[data-theme="dark"] .quiz-opt.wrong { color: #ff8a8a; }
+:root[data-theme="dark"] .quiz-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .quiz-feedback.err { color: #ff8a8a; }
+:root[data-theme="dark"] .exercise-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .exercise-feedback.err { color: #ff8a8a; }
+:root[data-theme="dark"] .definition-box .box-label, :root[data-theme="dark"] .wissen-box .box-label { color: #ff8a8a; }
+:root[data-theme="dark"] .beispiel-box .box-label { color: #6fd68f; }
+:root[data-theme="dark"] .schwierigkeit-badge.einfach { color: #6fd68f; }
+:root[data-theme="dark"] .schwierigkeit-badge.mittel { color: #8ab4ff; }
+:root[data-theme="dark"] .schwierigkeit-badge.schwierig { color: #ffbf6e; }
+:root[data-theme="dark"] .schwierigkeit-badge.komplex { color: #ff8a8a; }
+:root[data-theme="dark"] .aufgabe-feedback .status.ok { color: #6fd68f; }
+:root[data-theme="dark"] .aufgabe-feedback .status.err { color: #ff8a8a; }
+:root[data-theme="dark"] .achtung-box .box-label { color: #ffbf6e; }
+:root[data-theme="dark"] .tf-quadranttext { fill: #c4a7ff; }
+:root[data-theme="dark"] .tf-punkt.wert { fill: #6fd68f; }
+:root[data-theme="dark"] .tf-punkttext.wert { fill: #6fd68f; }
+:root[data-theme="dark"] .tf-punkttext.kos { fill: #ffbf6e; }
+:root[data-theme="dark"] .tf-punkttext.marke { fill: #c4a7ff; }
+:root[data-theme="dark"] .tf-punkttext.zeit { fill: #ff8a8a; }
+:root[data-theme="dark"] /* Beschriftungen im Bild */ .tf-winkeltext { fill: #c4a7ff; }
+:root[data-theme="dark"] .tf-sinustext { fill: #6fd68f; }
+:root[data-theme="dark"] .tf-kosinustext { fill: #ffbf6e; }
+:root[data-theme="dark"] .tf-marketext { fill: #ff8a8a; }
+:root[data-theme="dark"] .tf-amplitudentext { fill: #8ab4ff; }
+:root[data-theme="dark"] .tf-gleichung .sv { color: #6fd68f; }
+:root[data-theme="dark"] .tf-gleichung .kv { color: #ffbf6e; }
+:root[data-theme="dark"] .tf-gleichung .wv { color: #c4a7ff; }
+:root[data-theme="dark"] .tf-gleichung .av { color: #8ab4ff; }
+:root[data-theme="dark"] .tf-gleichung .pv { color: #ff8a8a; }
+:root[data-theme="dark"] .tf-schritte .zeile.fertig { color: #6fd68f; }
+:root[data-theme="dark"] .tf-schritte .zeile.warnung { color: #ffbf6e; }
+:root[data-theme="dark"] .tf-schritte .gl .sv { color: #6fd68f; }
+:root[data-theme="dark"] .tf-schritte .gl .kv { color: #ffbf6e; }
+:root[data-theme="dark"] .tf-schritte .gl .wv { color: #c4a7ff; }
+:root[data-theme="dark"] .tf-schritte .gl .av { color: #8ab4ff; }
+:root[data-theme="dark"] .tf-schritte .gl .pv { color: #ff8a8a; }
+:root[data-theme="dark"] .tf-tabelle td.s { color: #6fd68f; }
+:root[data-theme="dark"] .tf-tabelle td.k { color: #ffbf6e; }
+:root[data-theme="dark"] .tf-tabelle td.w { color: #c4a7ff; }
+:root[data-theme="dark"] .tf-karte.s .wert { color: #6fd68f; }
+:root[data-theme="dark"] .tf-karte.k .wert { color: #ffbf6e; }
+:root[data-theme="dark"] .tf-karte.w .wert { color: #c4a7ff; }
+:root[data-theme="dark"] .tf-karte.a .wert { color: #8ab4ff; }
+:root[data-theme="dark"] .tf-karte.p .wert { color: #ff8a8a; }
+:root[data-theme="dark"] .tf-rechnung .ws { color: #6fd68f; }
+:root[data-theme="dark"] .tf-rechnung .wk { color: #ffbf6e; }
+:root[data-theme="dark"] .tf-rechnung .ww { color: #c4a7ff; }
+:root[data-theme="dark"] .tf-rechnung .wa { color: #8ab4ff; }
+:root[data-theme="dark"] .tf-rechnung .wp { color: #ff8a8a; }
+:root[data-theme="dark"] .tf-urteil.ja { color: #6fd68f; }
+:root[data-theme="dark"] .tf-urteil.nein { color: #ff8a8a; }
+:root[data-theme="dark"] .tf-urteil.eins { color: #ffc078; }

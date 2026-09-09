@@ -26,6 +26,7 @@ const path = require("path");
 const { neuerBericht } = require("./lib/pruefen");
 const { starteBrowser, neueSeite, oeffne, reglerListe, setzeRegler, widgetText } = require("./lib/seite");
 const { pruefeNotation, pruefeTexte, seitentexte } = require("./lib/notation");
+const { pruefeKontrast } = require("./lib/kontrast");
 const { alleThemen } = require("./lib/themen");
 
 const b = neuerBericht(80);
@@ -209,6 +210,19 @@ function pruefeFormelsammlung(thema) {
     pruefeFormelsammlung(t);
   }
   await page.close();
+
+  // Zweiter Durchgang im Dunkelmodus: Farben, die für hellen Grund gewählt
+  // wurden, verschwinden dort. Geprüft wird nur der Kontrast — die Rechnungen
+  // hängen nicht vom Farbschema ab.
+  const dunkel = await neueSeite(browser, { dunkel: true });
+  for (const t of themen) {
+    await oeffne(dunkel, t.pfad);
+    const gesetzt = await dunkel.evaluate(() => document.documentElement.getAttribute("data-theme"));
+    b.pruefe(gesetzt === "dark", `${t.name}: Dunkelmodus nicht aktiv`);
+    await pruefeKontrast(dunkel, b, `${t.name} dunkel`);
+    for (const s of dunkel.stoerungen) b.pruefe(false, `${t.name} dunkel: ${s}`);
+  }
+  await dunkel.close();
   await browser.close();
   b.abschluss();
 })();

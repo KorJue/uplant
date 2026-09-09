@@ -169,3 +169,21 @@ input[type="search"] {
 .access-locked-msg a {
   color: var(--accent);
 }
+
+/* ---------- Dunkelmodus: Farben, die im SVG als Attribut stehen ---------- */
+
+/* Einige Zeichnungen setzen die Farbe unmittelbar am Element (fill="#b3261e")
+   statt über eine Klasse. Auf dunklem Grund bleibt davon zu wenig übrig — das
+   Fast-Schwarz #1f2933 kommt dort auf einen Leuchtdichteabstand von 2. Eine
+   CSS-Regel gewinnt gegen ein Präsentationsattribut, deshalb genügt hier eine
+   Zuordnung nach dem Attributwert. Die Ersatzfarben sind dieselben wie in den
+   Stylesheets der Lernpfade. */
+
+:root[data-theme="dark"] svg [fill="#157347"] { fill: #6fd68f; }
+:root[data-theme="dark"] svg [fill="#6d28d9"] { fill: #c4a7ff; }
+:root[data-theme="dark"] svg [fill="#b3261e"] { fill: #ff8a8a; }
+:root[data-theme="dark"] svg [fill="#1d4ed8"] { fill: #8ab4ff; }
+:root[data-theme="dark"] svg [fill="#2563eb"] { fill: #8ab4ff; }
+:root[data-theme="dark"] svg [fill="#b3650a"] { fill: #ffbf6e; }
+:root[data-theme="dark"] svg [fill="#1f2933"] { fill: #e6e8eb; }
+:root[data-theme="dark"] svg [fill="#1f2328"] { fill: #e6e8eb; }

@@ -482,3 +482,56 @@
   font-variant-numeric: tabular-nums;
   color: #6d28d9;
 }
+
+/* ---------- Dunkelmodus: Textfarben aufhellen (erzeugt von tools/dunkelmodus-farben.py) ---------- */
+
+/* Die Farben oben sind für hellen Grund gewählt. Auf #1c2128 hat etwa das
+   Grün #157347 nur noch einen Leuchtdichteabstand von 29 (nötig sind gut 45),
+   das Violett 21 und Fast-Schwarz 2. Die folgenden Regeln setzen dieselben
+   Selektoren im Dunkelmodus auf die helle Entsprechung; sie stehen am Ende
+   der Datei, damit sie bei gleicher Spezifität gewinnen. */
+
+:root[data-theme="dark"] .quiz-opt.correct { color: #6fd68f; }
+:root[data-theme="dark"] .quiz-opt.wrong { color: #ff8a8a; }
+:root[data-theme="dark"] .quiz-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .quiz-feedback.err { color: #ff8a8a; }
+:root[data-theme="dark"] .exercise-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .exercise-feedback.err { color: #ff8a8a; }
+:root[data-theme="dark"] .definition-box .box-label, :root[data-theme="dark"] .wissen-box .box-label { color: #ff8a8a; }
+:root[data-theme="dark"] .beispiel-box .box-label { color: #6fd68f; }
+:root[data-theme="dark"] .schwierigkeit-badge.einfach { color: #6fd68f; }
+:root[data-theme="dark"] .schwierigkeit-badge.mittel { color: #8ab4ff; }
+:root[data-theme="dark"] .schwierigkeit-badge.schwierig { color: #ffbf6e; }
+:root[data-theme="dark"] .schwierigkeit-badge.komplex { color: #ff8a8a; }
+:root[data-theme="dark"] .aufgabe-feedback .status.ok { color: #6fd68f; }
+:root[data-theme="dark"] .aufgabe-feedback .status.err { color: #ff8a8a; }
+:root[data-theme="dark"] .achtung-box .box-label { color: #ffbf6e; }
+:root[data-theme="dark"] .gl-waagetext.links { fill: #6fd68f; }
+:root[data-theme="dark"] .gl-waagetext.rechts { fill: #8ab4ff; }
+:root[data-theme="dark"] .gl-waagetext.gleich { fill: #6fd68f; }
+:root[data-theme="dark"] .gl-waagetext.ungleich { fill: #ff8a8a; }
+:root[data-theme="dark"] .gl-gleichung .ls { color: #6fd68f; }
+:root[data-theme="dark"] .gl-gleichung .rs { color: #8ab4ff; }
+:root[data-theme="dark"] .gl-gleichung .xv { color: #c4a7ff; }
+:root[data-theme="dark"] .gl-gleichung .lo { color: #ff8a8a; }
+:root[data-theme="dark"] .gl-protokoll .zeile.neu { color: #ffbf6e; }
+:root[data-theme="dark"] .gl-protokoll .zeile.fertig { color: #6fd68f; }
+:root[data-theme="dark"] .gl-protokoll .gl .ls { color: #6fd68f; }
+:root[data-theme="dark"] .gl-protokoll .gl .rs { color: #8ab4ff; }
+:root[data-theme="dark"] .gl-protokoll .gl .xv { color: #c4a7ff; }
+:root[data-theme="dark"] .gl-protokoll .op { color: #ffbf6e; }
+:root[data-theme="dark"] .gl-urteil.eine { color: #6fd68f; }
+:root[data-theme="dark"] .gl-urteil.keine { color: #ff8a8a; }
+:root[data-theme="dark"] .gl-schnitttext { fill: #ff8a8a; }
+:root[data-theme="dark"] .gl-karte.l .wert { color: #6fd68f; }
+:root[data-theme="dark"] .gl-karte.r .wert { color: #8ab4ff; }
+:root[data-theme="dark"] .gl-karte.x .wert { color: #c4a7ff; }
+:root[data-theme="dark"] .gl-karte.o .wert { color: #ffbf6e; }
+:root[data-theme="dark"] .gl-karte.loesung .wert { color: #ff8a8a; }
+:root[data-theme="dark"] .gl-rechnung .wl { color: #6fd68f; }
+:root[data-theme="dark"] .gl-rechnung .wr { color: #8ab4ff; }
+:root[data-theme="dark"] .gl-rechnung .wx { color: #c4a7ff; }
+:root[data-theme="dark"] .gl-rechnung .wo { color: #ffbf6e; }
+:root[data-theme="dark"] .gl-rechnung .wg { color: #ff8a8a; }
+:root[data-theme="dark"] .gl-ops button { color: #ffbf6e; }
+:root[data-theme="dark"] .gl-uebersetzung .mathe { color: #c4a7ff; }

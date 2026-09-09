@@ -327,6 +327,8 @@
 .qf-punkt.offen { fill: var(--card-bg); stroke: var(--muted); stroke-width: 2.2; }
 .qf-punkttext {
   font-size: 11px; font-weight: 800; font-variant-numeric: tabular-nums;
+  /* Ohne fill erbt SVG-Text Schwarz — im Dunkelmodus unsichtbar. */
+  fill: var(--text);
   paint-order: stroke; stroke: var(--card-bg); stroke-width: 3.5px; stroke-linejoin: round;
 }
 .qf-punkttext.scheitel { fill: #6d28d9; }
@@ -470,3 +472,62 @@
 
 /* Zusammengehörige Faktoren nie umbrechen */
 .nw { white-space: nowrap; }
+
+/* ---------- Dunkelmodus: Textfarben aufhellen (erzeugt von tools/dunkelmodus-farben.py) ---------- */
+
+/* Die Farben oben sind für hellen Grund gewählt. Auf #1c2128 hat etwa das
+   Grün #157347 nur noch einen Leuchtdichteabstand von 29 (nötig sind gut 45),
+   das Violett 21 und Fast-Schwarz 2. Die folgenden Regeln setzen dieselben
+   Selektoren im Dunkelmodus auf die helle Entsprechung; sie stehen am Ende
+   der Datei, damit sie bei gleicher Spezifität gewinnen. */
+
+:root[data-theme="dark"] .quiz-opt.correct { color: #6fd68f; }
+:root[data-theme="dark"] .quiz-opt.wrong { color: #ff8a8a; }
+:root[data-theme="dark"] .quiz-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .quiz-feedback.err { color: #ff8a8a; }
+:root[data-theme="dark"] .exercise-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .exercise-feedback.err { color: #ff8a8a; }
+:root[data-theme="dark"] .definition-box .box-label, :root[data-theme="dark"] .wissen-box .box-label { color: #ff8a8a; }
+:root[data-theme="dark"] .beispiel-box .box-label { color: #6fd68f; }
+:root[data-theme="dark"] .schwierigkeit-badge.einfach { color: #6fd68f; }
+:root[data-theme="dark"] .schwierigkeit-badge.mittel { color: #8ab4ff; }
+:root[data-theme="dark"] .schwierigkeit-badge.schwierig { color: #ffbf6e; }
+:root[data-theme="dark"] .schwierigkeit-badge.komplex { color: #ff8a8a; }
+:root[data-theme="dark"] .aufgabe-feedback .status.ok { color: #6fd68f; }
+:root[data-theme="dark"] .aufgabe-feedback .status.err { color: #ff8a8a; }
+:root[data-theme="dark"] .achtung-box .box-label { color: #ffbf6e; }
+:root[data-theme="dark"] .qf-punkt.wert { fill: #6fd68f; }
+:root[data-theme="dark"] .qf-punkttext.scheitel { fill: #c4a7ff; }
+:root[data-theme="dark"] .qf-punkttext.null { fill: #ff8a8a; }
+:root[data-theme="dark"] .qf-punkttext.wert { fill: #6fd68f; }
+:root[data-theme="dark"] .qf-gleichung .av { color: #6fd68f; }
+:root[data-theme="dark"] .qf-gleichung .dv { color: #c4a7ff; }
+:root[data-theme="dark"] .qf-gleichung .ev { color: #c4a7ff; }
+:root[data-theme="dark"] .qf-gleichung .pv { color: #ffbf6e; }
+:root[data-theme="dark"] .qf-gleichung .qv { color: #ffbf6e; }
+:root[data-theme="dark"] .qf-gleichung .nv { color: #ff8a8a; }
+:root[data-theme="dark"] .qf-gleichung .dis { color: #8ab4ff; }
+:root[data-theme="dark"] .qf-schritte .zeile.fertig { color: #6fd68f; }
+:root[data-theme="dark"] .qf-schritte .zeile.warnung { color: #ffbf6e; }
+:root[data-theme="dark"] .qf-schritte .gl .pv { color: #ffbf6e; }
+:root[data-theme="dark"] .qf-schritte .gl .qv { color: #ffbf6e; }
+:root[data-theme="dark"] .qf-schritte .gl .nv { color: #ff8a8a; }
+:root[data-theme="dark"] .qf-schritte .gl .dv { color: #c4a7ff; }
+:root[data-theme="dark"] .qf-schritte .gl .dis { color: #8ab4ff; }
+:root[data-theme="dark"] .qf-tabelle td.x { color: #8ab4ff; }
+:root[data-theme="dark"] .qf-tabelle td.y { color: #6fd68f; }
+:root[data-theme="dark"] .qf-tabelle td.scheitel { color: #c4a7ff; }
+:root[data-theme="dark"] .qf-karte.s .wert { color: #c4a7ff; }
+:root[data-theme="dark"] .qf-karte.n .wert { color: #ff8a8a; }
+:root[data-theme="dark"] .qf-karte.a .wert { color: #6fd68f; }
+:root[data-theme="dark"] .qf-karte.d .wert { color: #8ab4ff; }
+:root[data-theme="dark"] .qf-karte.p .wert { color: #ffbf6e; }
+:root[data-theme="dark"] .qf-rechnung .ws { color: #c4a7ff; }
+:root[data-theme="dark"] .qf-rechnung .wn { color: #ff8a8a; }
+:root[data-theme="dark"] .qf-rechnung .wa { color: #6fd68f; }
+:root[data-theme="dark"] .qf-rechnung .wd { color: #8ab4ff; }
+:root[data-theme="dark"] .qf-rechnung .wp { color: #ffbf6e; }
+:root[data-theme="dark"] .qf-urteil.ja { color: #6fd68f; }
+:root[data-theme="dark"] .qf-urteil.nein { color: #ff8a8a; }
+:root[data-theme="dark"] .qf-urteil.eins { color: #ffc078; }
+:root[data-theme="dark"] .qf-fall.aktiv { color: #8ab4ff; }

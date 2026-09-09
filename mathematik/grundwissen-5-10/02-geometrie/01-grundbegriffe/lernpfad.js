@@ -558,6 +558,17 @@ function mountUebungsaufgaben(container, defs) {
 
 // ---------- Aufgaben-Definitionen ----------
 
+// Fehlerhinweise vergleichen die Eingabe mit dem Wert, der bei einem
+// bestimmten Fehler herauskäme. Ein Vergleich mit === trifft dabei nicht
+// zuverlässig: 7/10 · 360 ergibt 252,00000000000003, und wer den Rest zu 360°
+// nennt, tippt 108 — der Hinweis bliebe stumm. Verglichen wird deshalb mit
+// einer relativen Schranke.
+function trifft(val, soll) {
+  return Number.isFinite(val) && Number.isFinite(soll)
+    && Math.abs(val - soll) <= 1e-6 * Math.max(1, Math.abs(soll));
+}
+
+
 function generateAufgabe1() {
   // Winkelart zu einer Gradzahl bestimmen — die Antwort ist eine Zahl, damit sie prüfbar bleibt:
   // gefragt wird nach der Ergänzung zum rechten bzw. gestreckten Winkel.
@@ -643,7 +654,7 @@ function generateAufgabe3() {
       tolerance: 0.05,
       placeholder: "Abstand",
       hinweis: (raw, val) =>
-        val === Math.abs(px - lage)
+        trifft(val, Math.abs(px - lage))
           ? "Du hast die x-Koordinate verwendet. Bei einer <strong>waagerechten</strong> Geraden führt das Lot senkrecht nach oben oder unten — es zählt also die <strong>y</strong>-Koordinate."
           : "",
       musterloesungHtml:
@@ -660,7 +671,7 @@ function generateAufgabe3() {
     tolerance: 0.05,
     placeholder: "Abstand",
     hinweis: (raw, val) =>
-      val === Math.abs(py - lage)
+      trifft(val, Math.abs(py - lage))
         ? "Du hast die y-Koordinate verwendet. Bei einer <strong>senkrechten</strong> Geraden führt das Lot waagerecht — es zählt also die <strong>x</strong>-Koordinate."
         : "",
     musterloesungHtml:
@@ -692,9 +703,9 @@ function generateAufgabe4() {
     tolerance: 0.05,
     placeholder: "Umfang in cm",
     hinweis: (raw, val) =>
-      val === breite + hoehe
+      trifft(val, breite + hoehe)
         ? "Du hast nur eine Länge und eine Breite addiert. Der Umfang umfasst <strong>alle vier</strong> Seiten — jede Länge kommt zweimal vor."
-        : val === breite * hoehe
+        : trifft(val, breite * hoehe)
           ? "Das ist der Flächeninhalt. Gefragt ist der <strong>Umfang</strong>, also die Summe aller Seitenlängen."
           : "",
     musterloesungHtml:

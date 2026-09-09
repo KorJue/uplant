@@ -544,6 +544,17 @@ function mountUebungsaufgaben(container, defs) {
 
 // ---------- Aufgaben-Definitionen ----------
 
+// Fehlerhinweise vergleichen die Eingabe mit dem Wert, der bei einem
+// bestimmten Fehler herauskäme. Ein Vergleich mit === trifft dabei nicht
+// zuverlässig: 18 · 10⁻⁴ ergibt in Gleitkommaarithmetik nicht dieselbe Zahl
+// wie die eingetippte 0,0018, und der Hinweis bliebe stumm. Verglichen wird
+// deshalb mit einer relativen Schranke.
+function trifft(val, soll) {
+  return Number.isFinite(val) && Number.isFinite(soll)
+    && Math.abs(val - soll) <= 1e-6 * Math.max(1, Math.abs(soll));
+}
+
+
 function generateAufgabe1() {
   // Parallelogramm oder Dreieck. Die schräge Seite wird als Ablenkung mitgeliefert —
   // wer sie statt der Höhe nimmt, bekommt einen gezielten Hinweis.
@@ -566,13 +577,13 @@ function generateAufgabe1() {
     tolerance: 0.01,
     placeholder: "Flächeninhalt in cm²",
     hinweis: (raw, val) => {
-      if (val === (istDreieck ? (g * b) / 2 : g * b))
+      if (trifft(val, istDreieck ? (g * b) / 2 : g * b))
         return `Du hast mit der <strong>schrägen Seite</strong> gerechnet. Die Höhe ist der <em>senkrechte</em> Abstand — hier h = ${h} cm, nicht ${b} cm.`;
-      if (istDreieck && val === g * h)
+      if (istDreieck && trifft(val, g * h))
         return `Das ist die Fläche des <strong>Parallelogramms</strong> mit denselben Maßen. Ein Dreieck ist genau die <strong>Hälfte</strong> davon.`;
-      if (!istDreieck && val === (g * h) / 2)
+      if (!istDreieck && trifft(val, (g * h) / 2))
         return `Du hast halbiert. Die Hälfte gehört zum <strong>Dreieck</strong> — beim Parallelogramm ist A = g · h ohne Halbierung.`;
-      if (val === 2 * (g + h)) return "Das ist der Umfang eines Rechtecks mit diesen Maßen. Gefragt ist der Flächeninhalt.";
+      if (trifft(val, 2 * (g + h))) return "Das ist der Umfang eines Rechtecks mit diesen Maßen. Gefragt ist der Flächeninhalt.";
       return "";
     },
     musterloesungHtml: istDreieck
@@ -599,10 +610,10 @@ function generateAufgabe2() {
     tolerance: 0.01,
     placeholder: "Flächeninhalt in cm²",
     hinweis: (raw, val) => {
-      if (val === (a + c) * h) return `Du hast die Halbierung vergessen. ${(a + c)} · ${h} = ${(a + c) * h} cm² ist die Fläche des <strong>Parallelogramms</strong> aus Trapez und gedrehter Kopie — das Trapez ist die Hälfte.`;
-      if (val === a * h) return `Du hast nur mit a gerechnet. In die Formel gehen <strong>beide</strong> parallelen Seiten ein: ½ · (a + c) · h.`;
-      if (val === (a * h) / 2) return `Du hast nur mit a gerechnet — das wäre ein Dreieck. Beim Trapez zählen <strong>beide</strong> parallelen Seiten: ½ · (a + c) · h.`;
-      if (val === a + c + h) return "Du hast die drei Angaben addiert. Gesucht ist eine Fläche, also ein Produkt.";
+      if (trifft(val, (a + c) * h)) return `Du hast die Halbierung vergessen. ${(a + c)} · ${h} = ${(a + c) * h} cm² ist die Fläche des <strong>Parallelogramms</strong> aus Trapez und gedrehter Kopie — das Trapez ist die Hälfte.`;
+      if (trifft(val, a * h)) return `Du hast nur mit a gerechnet. In die Formel gehen <strong>beide</strong> parallelen Seiten ein: ½ · (a + c) · h.`;
+      if (trifft(val, (a * h) / 2)) return `Du hast nur mit a gerechnet — das wäre ein Dreieck. Beim Trapez zählen <strong>beide</strong> parallelen Seiten: ½ · (a + c) · h.`;
+      if (trifft(val, a + c + h)) return "Du hast die drei Angaben addiert. Gesucht ist eine Fläche, also ein Produkt.";
       return "";
     },
     musterloesungHtml:
@@ -632,9 +643,9 @@ function generateAufgabe3() {
       tolerance: 0.01,
       placeholder: "c in cm",
       hinweis: (raw, val) => {
-        if (val === summe) return `Das ist <strong>a + c</strong>. Davon muss a = ${a} cm noch abgezogen werden.`;
-        if (val === (2 * A) / h - 2 * a) return "Du hast a zweimal abgezogen. Aus ½ · (a + c) · h = A folgt a + c = 2A : h, davon einmal a abziehen.";
-        if (val === A / h) return "Du hast die Halbierung vergessen. Aus A = ½ · (a + c) · h folgt zuerst a + c = <strong>2A</strong> : h.";
+        if (trifft(val, summe)) return `Das ist <strong>a + c</strong>. Davon muss a = ${a} cm noch abgezogen werden.`;
+        if (trifft(val, (2 * A) / h - 2 * a)) return "Du hast a zweimal abgezogen. Aus ½ · (a + c) · h = A folgt a + c = 2A : h, davon einmal a abziehen.";
+        if (trifft(val, A / h)) return "Du hast die Halbierung vergessen. Aus A = ½ · (a + c) · h folgt zuerst a + c = <strong>2A</strong> : h.";
         return "";
       },
       musterloesungHtml:
@@ -657,10 +668,10 @@ function generateAufgabe3() {
     tolerance: 0.01,
     placeholder: "h in cm",
     hinweis: (raw, val) => {
-      if (istDreieck && val === A / g) return `Du hast die Halbierung vergessen. Aus A = ½ · g · h folgt h = <strong>2A</strong> : g, nicht A : g.`;
-      if (!istDreieck && val === (2 * A) / g) return `Hier gibt es keine Halbierung: Beim Parallelogramm gilt A = g · h, also h = A : g.`;
-      if (val === A - g) return "Fläche und Länge lassen sich nicht subtrahieren — cm² minus cm ergibt nichts. Die Umkehrung der Multiplikation ist die <strong>Division</strong>.";
-      if (val === A * g) return "Du hast multipliziert. Gesucht ist die Umkehrung: geteilt wird.";
+      if (istDreieck && trifft(val, A / g)) return `Du hast die Halbierung vergessen. Aus A = ½ · g · h folgt h = <strong>2A</strong> : g, nicht A : g.`;
+      if (!istDreieck && trifft(val, (2 * A) / g)) return `Hier gibt es keine Halbierung: Beim Parallelogramm gilt A = g · h, also h = A : g.`;
+      if (trifft(val, A - g)) return "Fläche und Länge lassen sich nicht subtrahieren — cm² minus cm ergibt nichts. Die Umkehrung der Multiplikation ist die <strong>Division</strong>.";
+      if (trifft(val, A * g)) return "Du hast multipliziert. Gesucht ist die Umkehrung: geteilt wird.";
       return "";
     },
     musterloesungHtml: istDreieck
@@ -694,12 +705,12 @@ function generateAufgabe4() {
     tolerance: 0.01,
     placeholder: "Kosten in €",
     hinweis: (raw, val) => {
-      if (val === (aR + b * hD) * preis)
+      if (trifft(val, (aR + b * hD) * preis))
         return `Beim Giebel fehlt die <strong>Halbierung</strong>: Ein Dreieck hat ½ · g · h, nicht g · h. ` +
           `Gerechnet hast du damit die ganze Wand als <em>ein</em> Rechteck der vollen Höhe.`;
-      if (val === aR * preis) return `Du hast nur das <strong>Rechteck</strong> gerechnet. Das Giebeldreieck von ${num(aD, 2)} m² kommt noch dazu.`;
-      if (val === aD * preis) return `Du hast nur das <strong>Giebeldreieck</strong> gerechnet. Das Rechteck von ${aR} m² fehlt noch.`;
-      if (val === A) return `Das ist die Fläche in m² — richtig gerechnet, aber der Preis von ${preis} € je m² fehlt noch.`;
+      if (trifft(val, aR * preis)) return `Du hast nur das <strong>Rechteck</strong> gerechnet. Das Giebeldreieck von ${num(aD, 2)} m² kommt noch dazu.`;
+      if (trifft(val, aD * preis)) return `Du hast nur das <strong>Giebeldreieck</strong> gerechnet. Das Rechteck von ${aR} m² fehlt noch.`;
+      if (trifft(val, A)) return `Das ist die Fläche in m² — richtig gerechnet, aber der Preis von ${preis} € je m² fehlt noch.`;
       return "";
     },
     musterloesungHtml:

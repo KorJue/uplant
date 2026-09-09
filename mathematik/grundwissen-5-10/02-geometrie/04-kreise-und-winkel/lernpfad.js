@@ -613,6 +613,17 @@ function mountUebungsaufgaben(container, defs) {
 
 // ---------- Aufgaben-Definitionen ----------
 
+// Fehlerhinweise vergleichen die Eingabe mit dem Wert, der bei einem
+// bestimmten Fehler herauskäme. Ein Vergleich mit === trifft dabei nicht
+// zuverlässig: 18 · 10⁻⁴ ergibt in Gleitkommaarithmetik nicht dieselbe Zahl
+// wie die eingetippte 0,0018, und der Hinweis bliebe stumm. Verglichen wird
+// deshalb mit einer relativen Schranke.
+function trifft(val, soll) {
+  return Number.isFinite(val) && Number.isFinite(soll)
+    && Math.abs(val - soll) <= 1e-6 * Math.max(1, Math.abs(soll));
+}
+
+
 function generateAufgabe1() {
   // Radius ↔ Durchmesser. Beim Weg von d nach r wird d gerade gewählt,
   // damit das Ergebnis ganzzahlig bleibt.
@@ -627,11 +638,11 @@ function generateAufgabe1() {
     tolerance: 0.01,
     placeholder: nachD ? "Durchmesser in cm" : "Radius in cm",
     hinweis: (raw, val) =>
-      val === (nachD ? r : d)
+      trifft(val, nachD ? r : d)
         ? nachD
           ? "Das ist der <strong>Radius</strong>, der schon gegeben war. Der Durchmesser ist <strong>doppelt</strong> so lang: d = 2 · r."
           : "Das ist der <strong>Durchmesser</strong>, der schon gegeben war. Der Radius ist die <strong>Hälfte</strong>: r = d : 2."
-        : val === (nachD ? r / 2 : d * 2)
+        : trifft(val, nachD ? r / 2 : d * 2)
           ? "Du hast in die falsche Richtung gerechnet. Der Durchmesser ist immer <strong>größer</strong> als der Radius, nie kleiner."
           : "",
     musterloesungHtml: nachD
@@ -663,11 +674,11 @@ function generateAufgabe2() {
     tolerance: 0.01,
     placeholder: "β in Grad",
     hinweis: (raw, val) => {
-      if (val === alpha) return `Das ist der Winkel α, der schon gegeben war. Gesucht ist der <strong>Rest</strong> bis ${ziel}°.`;
-      if (val === ziel) return `Das ist der ganze ${zielName}. Davon muss α = ${alpha}° noch abgezogen werden.`;
-      if (val === alpha + ziel) return `Du hast addiert statt subtrahiert. Die beiden Winkel <em>zusammen</em> ergeben ${ziel}° — der gesuchte ist die <strong>Differenz</strong>.`;
-      if (val === 180 - alpha && ziel !== 180) return `Du hast zu 180° ergänzt. Gefragt war aber der ${zielName} mit ${ziel}°.`;
-      if (val === 90 - alpha && ziel !== 90) return `Du hast zu 90° ergänzt. Gefragt war aber der ${zielName} mit ${ziel}°.`;
+      if (trifft(val, alpha)) return `Das ist der Winkel α, der schon gegeben war. Gesucht ist der <strong>Rest</strong> bis ${ziel}°.`;
+      if (trifft(val, ziel)) return `Das ist der ganze ${zielName}. Davon muss α = ${alpha}° noch abgezogen werden.`;
+      if (trifft(val, alpha + ziel)) return `Du hast addiert statt subtrahiert. Die beiden Winkel <em>zusammen</em> ergeben ${ziel}° — der gesuchte ist die <strong>Differenz</strong>.`;
+      if (trifft(val, 180 - alpha) && ziel !== 180) return `Du hast zu 180° ergänzt. Gefragt war aber der ${zielName} mit ${ziel}°.`;
+      if (trifft(val, 90 - alpha) && ziel !== 90) return `Du hast zu 90° ergänzt. Gefragt war aber der ${zielName} mit ${ziel}°.`;
       return "";
     },
     musterloesungHtml:
@@ -694,11 +705,11 @@ function generateAufgabe3() {
     tolerance: 0.01,
     placeholder: "Winkel in Grad",
     hinweis: (raw, val) =>
-      val === andere
+      trifft(val, andere)
         ? `Das ist die Ablesung auf der <strong>anderen</strong> Skala. Ein ${spitz ? "spitzer" : "stumpfer"} Winkel ist ${spitz ? "kleiner" : "größer"} als 90° — also kann es ${andere}° nicht sein.`
-        : val === klein + gross
+        : trifft(val, klein + gross)
           ? "Du hast die beiden Ablesungen addiert. Sie ergeben immer 180°, weil es dieselbe Stelle auf zwei Skalen ist — gesucht ist aber nur eine davon."
-          : val === gross - klein
+          : trifft(val, gross - klein)
             ? "Die Differenz der beiden Ablesungen hilft nicht weiter. Gesucht ist eine der beiden Zahlen selbst — die Winkelart entscheidet welche."
             : "",
     musterloesungHtml:
@@ -734,10 +745,10 @@ function generateAufgabe4() {
     hinweis: (raw, val) => {
       // Der Rest wird zuerst geprüft: Er ist der häufigste Fehler und kann bei
       // teil : gesamt = 1 : 3 zahlengleich mit der 180°-Rechnung sein.
-      if (val === 360 - winkel) return "Das ist der Winkel des <strong>Rests</strong> — also aller anderen. Gefragt war der Ausschnitt für die genannte Gruppe.";
-      if (val === teil * (100 / gesamt)) return "Das ist der Anteil in <strong>Prozent</strong>. Ein Kreisdiagramm teilt aber den Vollwinkel auf — gerechnet wird mit <strong>360°</strong>, nicht mit 100.";
-      if (val === teil * (180 / gesamt)) return "Du hast mit 180° gerechnet. Ein <em>ganzer</em> Kreis hat aber <strong>360°</strong>; 180° wäre nur der halbe Kreis.";
-      if (val === (gesamt / teil) * 360) return "Du hast Teil und Ganzes vertauscht. Der Anteil ist <strong>Teil : Ganzes</strong>, also die kleinere Zahl geteilt durch die größere.";
+      if (trifft(val, 360 - winkel)) return "Das ist der Winkel des <strong>Rests</strong> — also aller anderen. Gefragt war der Ausschnitt für die genannte Gruppe.";
+      if (trifft(val, teil * (100 / gesamt))) return "Das ist der Anteil in <strong>Prozent</strong>. Ein Kreisdiagramm teilt aber den Vollwinkel auf — gerechnet wird mit <strong>360°</strong>, nicht mit 100.";
+      if (trifft(val, teil * (180 / gesamt))) return "Du hast mit 180° gerechnet. Ein <em>ganzer</em> Kreis hat aber <strong>360°</strong>; 180° wäre nur der halbe Kreis.";
+      if (trifft(val, (gesamt / teil) * 360)) return "Du hast Teil und Ganzes vertauscht. Der Anteil ist <strong>Teil : Ganzes</strong>, also die kleinere Zahl geteilt durch die größere.";
       return "";
     },
     musterloesungHtml:

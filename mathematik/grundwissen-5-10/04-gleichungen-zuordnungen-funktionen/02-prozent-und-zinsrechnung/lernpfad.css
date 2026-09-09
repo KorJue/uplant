@@ -433,3 +433,51 @@
 .pz-legende { display: flex; flex-wrap: wrap; gap: 0.9rem; margin: 0.5rem 0 0; font-size: 0.86rem; color: var(--muted); }
 .pz-legende span { display: inline-flex; align-items: center; gap: 0.35rem; }
 .pz-legende i { width: 0.9rem; height: 0.9rem; border-radius: 3px; display: inline-block; }
+
+/* ---------- Dunkelmodus: Textfarben aufhellen (erzeugt von tools/dunkelmodus-farben.py) ---------- */
+
+/* Die Farben oben sind für hellen Grund gewählt. Auf #1c2128 hat etwa das
+   Grün #157347 nur noch einen Leuchtdichteabstand von 29 (nötig sind gut 45),
+   das Violett 21 und Fast-Schwarz 2. Die folgenden Regeln setzen dieselben
+   Selektoren im Dunkelmodus auf die helle Entsprechung; sie stehen am Ende
+   der Datei, damit sie bei gleicher Spezifität gewinnen. */
+
+:root[data-theme="dark"] .quiz-opt.correct { color: #6fd68f; }
+:root[data-theme="dark"] .quiz-opt.wrong { color: #ff8a8a; }
+:root[data-theme="dark"] .quiz-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .quiz-feedback.err { color: #ff8a8a; }
+:root[data-theme="dark"] .exercise-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .exercise-feedback.err { color: #ff8a8a; }
+:root[data-theme="dark"] .definition-box .box-label, :root[data-theme="dark"] .wissen-box .box-label { color: #ff8a8a; }
+:root[data-theme="dark"] .beispiel-box .box-label { color: #6fd68f; }
+:root[data-theme="dark"] .schwierigkeit-badge.einfach { color: #6fd68f; }
+:root[data-theme="dark"] .schwierigkeit-badge.mittel { color: #8ab4ff; }
+:root[data-theme="dark"] .schwierigkeit-badge.schwierig { color: #ffbf6e; }
+:root[data-theme="dark"] .schwierigkeit-badge.komplex { color: #ff8a8a; }
+:root[data-theme="dark"] .aufgabe-feedback .status.ok { color: #6fd68f; }
+:root[data-theme="dark"] .aufgabe-feedback .status.err { color: #ff8a8a; }
+:root[data-theme="dark"] .achtung-box .box-label { color: #ffbf6e; }
+:root[data-theme="dark"] .pz-streifentext.w { fill: #6fd68f; }
+:root[data-theme="dark"] .pz-streifentext.g { fill: #8ab4ff; }
+:root[data-theme="dark"] .pz-streifentext.p { fill: #ff8a8a; }
+:root[data-theme="dark"] .pz-streifentext.z { fill: #c4a7ff; }
+:root[data-theme="dark"] .pz-faktortext { fill: #c4a7ff; }
+:root[data-theme="dark"] .pz-faktortext.ab { fill: #ffbf6e; }
+:root[data-theme="dark"] .pz-tabelle td.g { color: #8ab4ff; }
+:root[data-theme="dark"] .pz-tabelle td.w { color: #6fd68f; }
+:root[data-theme="dark"] .pz-tabelle td.p { color: #ff8a8a; }
+:root[data-theme="dark"] .pz-tabelle td.z { color: #c4a7ff; }
+:root[data-theme="dark"] .pz-schritte .links { color: #ff8a8a; }
+:root[data-theme="dark"] .pz-schritte .rechts { color: #8ab4ff; }
+:root[data-theme="dark"] .pz-schritte.getauscht .links { color: #8ab4ff; }
+:root[data-theme="dark"] .pz-schritte.getauscht .rechts { color: #ff8a8a; }
+:root[data-theme="dark"] .pz-karte.g .wert { color: #8ab4ff; }
+:root[data-theme="dark"] .pz-karte.w .wert { color: #6fd68f; }
+:root[data-theme="dark"] .pz-karte.p .wert { color: #ff8a8a; }
+:root[data-theme="dark"] .pz-karte.z .wert { color: #c4a7ff; }
+:root[data-theme="dark"] .pz-karte.f .wert { color: #ffbf6e; }
+:root[data-theme="dark"] .pz-rechnung .wg { color: #8ab4ff; }
+:root[data-theme="dark"] .pz-rechnung .ww { color: #6fd68f; }
+:root[data-theme="dark"] .pz-rechnung .wp { color: #ff8a8a; }
+:root[data-theme="dark"] .pz-rechnung .wz { color: #c4a7ff; }
+:root[data-theme="dark"] .pz-rechnung .wf { color: #ffbf6e; }

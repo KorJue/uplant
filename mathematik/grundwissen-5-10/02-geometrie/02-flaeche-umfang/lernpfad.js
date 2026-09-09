@@ -494,6 +494,17 @@ function mountUebungsaufgaben(container, defs) {
 
 // ---------- Aufgaben-Definitionen ----------
 
+// Fehlerhinweise vergleichen die Eingabe mit dem Wert, der bei einem
+// bestimmten Fehler herauskäme. Ein Vergleich mit === trifft dabei nicht
+// zuverlässig: 18 · 10⁻⁴ ergibt in Gleitkommaarithmetik nicht dieselbe Zahl
+// wie die eingetippte 0,0018, und der Hinweis bliebe stumm. Verglichen wird
+// deshalb mit einer relativen Schranke.
+function trifft(val, soll) {
+  return Number.isFinite(val) && Number.isFinite(soll)
+    && Math.abs(val - soll) <= 1e-6 * Math.max(1, Math.abs(soll));
+}
+
+
 function generateAufgabe1() {
   const a = randInt(3, 15);
   // Bei (3|6), (4|4) und (6|3) hätten A und u dieselbe Maßzahl — dann könnte man
@@ -509,11 +520,11 @@ function generateAufgabe1() {
     tolerance: 0.01,
     placeholder: nachFlaeche ? "Flächeninhalt in cm²" : "Umfang in cm",
     hinweis: (raw, val) =>
-      val === (nachFlaeche ? u : A)
+      trifft(val, (nachFlaeche ? u : A))
         ? nachFlaeche
           ? "Das ist der <strong>Umfang</strong>. Gefragt ist der Flächeninhalt: A = a · b."
           : "Das ist der <strong>Flächeninhalt</strong>. Gefragt ist der Umfang: u = 2 · (a + b)."
-        : val === a + b
+        : trifft(val, a + b)
           ? "Du hast nur einmal Länge plus Breite gerechnet. Der Umfang umfasst <strong>alle vier</strong> Seiten."
           : "",
     musterloesungHtml: nachFlaeche
@@ -548,10 +559,10 @@ function generateAufgabe2() {
     hinweis: (raw, val) => {
       // Der klassische Fehler: mit dem Längenfaktor 10 statt dem Flächenfaktor 100 rechnen
       const mitLaengenfaktor = wert * Math.pow(10, diff / 2);
-      if (val === mitLaengenfaktor) {
+      if (trifft(val, mitLaengenfaktor)) {
         return `Du hast mit dem Faktor der <strong>Längen</strong> gerechnet. Bei Flächen ist jede Stufe <strong>100</strong> groß, nicht 10 — denn ein Quadrat wächst in zwei Richtungen.`;
       }
-      if (val === wert * Math.pow(10, -diff)) {
+      if (trifft(val, wert * Math.pow(10, -diff))) {
         return "Die Richtung stimmt nicht: Zu einer <strong>kleineren</strong> Einheit wird die Maßzahl größer, zu einer <strong>größeren</strong> kleiner.";
       }
       return "";
@@ -578,11 +589,11 @@ function generateAufgabe3() {
     tolerance: 0.01,
     placeholder: "Flächeninhalt in cm²",
     hinweis: (raw, val) =>
-      val === a * b
+      trifft(val, a * b)
         ? "Das ist die Fläche des <strong>vollen</strong> Rechtecks. Der Ausschnitt muss noch abgezogen werden."
-        : val === c * d
+        : trifft(val, c * d)
           ? "Das ist nur die Fläche des <strong>Ausschnitts</strong>. Gefragt ist die Fläche, die übrig bleibt."
-          : val === 2 * (a + b)
+          : trifft(val, 2 * (a + b))
             ? "Das ist der <strong>Umfang</strong> des umschließenden Rechtecks. Gefragt ist der Flächeninhalt."
             : "",
     musterloesungHtml:
@@ -617,9 +628,9 @@ function generateAufgabe4() {
     tolerance: 0.01,
     placeholder: "Gesamtkosten in €",
     hinweis: (raw, val) => {
-      if (val === kostenZaun) return "Das sind nur die Kosten für den <strong>Zaun</strong>. Der Rasen kommt noch dazu.";
-      if (val === kostenRasen) return "Das sind nur die Kosten für den <strong>Rasen</strong>. Der Zaun kommt noch dazu.";
-      if (val === A * preisZaun + u * preisRasen)
+      if (trifft(val, kostenZaun)) return "Das sind nur die Kosten für den <strong>Zaun</strong>. Der Rasen kommt noch dazu.";
+      if (trifft(val, kostenRasen)) return "Das sind nur die Kosten für den <strong>Rasen</strong>. Der Zaun kommt noch dazu.";
+      if (trifft(val, A * preisZaun + u * preisRasen))
         return "Du hast die beiden Preise vertauscht: Der Zaun wird nach dem <strong>Umfang</strong> (in m) berechnet, der Rasen nach dem <strong>Flächeninhalt</strong> (in m²).";
       return "";
     },
