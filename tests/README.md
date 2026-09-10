@@ -28,7 +28,8 @@ das vorinstallierte Chromium unter `/opt/pw-browsers/chromium`
 | --- | --- |
 | `test-seiten-gesamt.js` | Jede Seite des Bereichs lädt in hellem und dunklem Modus ohne Skript- oder Konsolenfehler; jeder interne Verweis und jede Sprungmarke lösen auf. |
 | `test-alle-themen.js` | Die Zusagen, die für **jedes** Thema gelten: Regler lügen nicht, keine verbotene Schreibweise an keiner Reglerstellung, Quizze mit genau einer richtigen Antwort, vier gestaffelte Aufgaben mit ausreichender Streuung und Musterlösung, gefüllte Zeichenflächen, vorhandene Formelsammlung. |
-| `themen/test-*.js` | Der Fachinhalt eines einzelnen Themas — für jedes der 34 Themen eine Datei, benannt nach seinem Verzeichnis. |
+| `themen/test-*.js` | Der Fachinhalt eines einzelnen Grundwissen-Themas — für jedes der 34 Themen eine Datei, benannt nach seinem Verzeichnis. |
+| `klasse-8/test-*.js` | Der Fachinhalt einer Klasse-8-Seite. Diese Seiten haben keinen gemeinsamen Bauplan, deshalb bringt jede Datei ihr eigenes Gerüst mit — bis hin zur Konstruktion mit echten Mausklicks auf die Zeichenfläche. |
 
 `lib/` enthält die geteilten Bausteine:
 
@@ -65,6 +66,17 @@ Vorbild ist `themen/test-trigonometrische-funktionen.js`. Bewährt haben sich:
   zusammen, bekäme eine falsche Rechnung ein ✓; fallen zwei Fehlerwerte
   zusammen, wäre die Diagnose mehrdeutig. Und wo die Hinweise mit einer
   Toleranz vergleichen, muss die Kollisionsprüfung dieselbe Toleranz benutzen.
+* **Konstruktionen wirklich konstruieren.** Wo eine Seite Zirkel und Lineal
+  anbietet, wird die Konstruktion mit `page.mouse.click` durchgeführt und
+  anschließend aus dem SVG zurückgelesen — mitsamt einer falschen Zirkelweite
+  und einem Rückgängig-Schritt, damit auch die Ablehnung geprüft ist.
+  `page.mouse.click` rollt die Seite **nicht** von selbst zum Ziel; die
+  Zeichenfläche gehört vor jedem Klick über `scrollIntoView` ins Bild, sonst
+  landet der Klick außerhalb des Fensters und geht stumm verloren.
+* **Beschriftungen über ihre Gruppe zuordnen.** Den Namen eines Punktes nicht
+  über den nächstgelegenen Text raten — liegen zwei Punkte dicht beieinander,
+  vertauscht das die Zuordnung. Die Seite umschließt jeden Punkt samt
+  Beschriftung mit einer Gruppe, die den Namen als Attribut trägt.
 * **Playwright in dieser Fassung** behandelt eine Zeichenkette als
   `pageFunction` wie einen *Ausdruck*, nicht wie eine Funktion. Messhelfer
   werden deshalb einmal über `eval` auf `window` gelegt und danach aus echten

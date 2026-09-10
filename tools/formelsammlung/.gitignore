@@ -1,0 +1,5 @@
+# Erzeugnisse des Bauwegs — sie entstehen bei jedem Lauf neu.
+__pycache__/
+*-figuren.txt
+formelsammlung-*.html
+!formelsammlung-*-quelle.html
