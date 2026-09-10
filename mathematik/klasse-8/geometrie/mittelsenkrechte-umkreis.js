@@ -22,7 +22,7 @@ setupTrianglePage({
     "Konstruiere für jede der drei Seiten die Mittelsenkrechte: Zirkel in beide Endpunkte der Seite einstechen (Radius größer als die halbe Seitenlänge) und die beiden Schnittpunkte der Bögen verbinden.",
     "Alle drei Mittelsenkrechten schneiden sich in einem Punkt — dem Umkreismittelpunkt M. (Konstruieren muss man nur zwei davon, die dritte geht automatisch durch M. Als Kontrolle zeichnet man sie trotzdem gern.)",
     "Zirkel in M einstechen, Radius bis zu einem der Eckpunkte einstellen, und den Umkreis durch A, B und C zeichnen.",
-    "<strong>Probiere aus:</strong> Ziehe C so, dass das Dreieck stumpfwinklig wird — M wandert aus dem Dreieck heraus. Bei genau einem rechten Winkel liegt M auf der Mitte der längsten Seite: Der Umkreis hat sie dann als Durchmesser (Satz des Thales).",
+    "<strong>Probiere aus:</strong> Ziehe C so, dass das Dreieck stumpfwinklig wird — M wandert aus dem Dreieck heraus. Bei genau einem rechten Winkel liegt M auf der Mitte der längsten Seite: Der Umkreis hat sie dann als Durchmesser — das ist der <a href=\"satz-des-thales.html\">Satz des Thales</a>.",
   ],
 
   drawStage(layerConstruct, layerCenters, pts, count, showArcs) {

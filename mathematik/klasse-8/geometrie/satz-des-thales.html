@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Satz des Thales</title>
+<script src="../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../assets/site.css">
+<link rel="stylesheet" href="geometrie.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../index.html">Klasse 8</a><span class="sep">/</span>
+  <a href="index.html">Geometrie</a><span class="sep">/</span>
+  6 Satz des Thales
+</nav>
+<header class="page-header">
+  <h1>Satz des Thales</h1>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer beweglichen Zeichnung und endet mit einer kurzen Kontrollfrage. In der Mitte konstruierst du selbst — mit Zirkel und Lineal.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Ein Halbkreis und ein Punkt darauf — mehr braucht es nicht, um einen <strong>rechten Winkel</strong> zu erzeugen, ohne ihn zu messen. Das ist der Satz des Thales: einer der ältesten Sätze der Mathematik und zugleich einer der nützlichsten, weil er das Konstruieren rechter Winkel überhaupt erst bequem macht. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>den <span class="term">Satz des Thales</span> aussprechen und an einer Zeichnung zeigen</li>
+      <li>begründen, <em>warum</em> er gilt — mit zwei gleichschenkligen Dreiecken und der Winkelsumme</li>
+      <li>die <span class="term">Umkehrung</span> nutzen: Der Thaleskreis ist die Menge <em>aller</em> Punkte, die eine Strecke unter 90° sehen</li>
+      <li>den <span class="term">Thaleskreis</span> mit Zirkel und Lineal konstruieren</li>
+      <li>mit ihm <span class="term">Tangenten</span> an einen Kreis legen und Längen berechnen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="grundkonstruktionen.html">Thema 1</a> die Mittelsenkrechte, aus <a href="mittelsenkrechte-umkreis.html">Thema 2</a> den Umkreis und aus dem Grundwissen die <a href="../../grundwissen-5-10/02-geometrie/05-winkelbetrachtungen/index.html#sec-dreieck">Winkelsumme im Dreieck</a> sowie den <a href="../../grundwissen-5-10/02-geometrie/09-pythagoras/index.html#sec-satz">Satz des Pythagoras</a>.</p>
+  </section>
+
+  <!-- 1. Die Entdeckung -->
+  <section class="card" id="sec-satz">
+    <h2>1. Die Entdeckung: der rechte Winkel im Halbkreis</h2>
+    <p>Zeichne einen Halbkreis über einer Strecke AB und setze einen Punkt C irgendwo auf den Bogen. Verbinde ihn mit A und mit B. Verschiebe C mit dem Regler entlang des Bogens und beobachte den Winkel bei C.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Lage von C: <input type="range" id="hk-phi" min="10" max="170" step="5" value="55" style="vertical-align:middle;width:12rem"> <span id="hk-phi-anzeige" style="font-weight:800"></span></label>
+        <label><input type="checkbox" id="hk-radien"> Radien MA, MB und MC zeigen</label>
+      </div>
+      <div class="th-wrap" id="hk-mount"></div>
+      <div class="th-bilanz" id="hk-bilanz"></div>
+      <div id="hk-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Satz des Thales</span>
+      Liegt der Punkt <span class="th-name-g">C</span> auf einem Kreis mit dem <strong>Durchmesser</strong> <span class="th-name-c">AB</span>, so ist das Dreieck ABC bei C <strong>rechtwinklig</strong>.<br>
+      Kurz: <strong>Der Winkel im Halbkreis ist ein rechter Winkel.</strong> Die Strecke AB ist dann die <span class="term">Hypotenuse</span>, der Kreis heißt <span class="term">Thaleskreis</span> über AB.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — es muss der Durchmesser sein</span>
+      Der Satz gilt nur, wenn AB wirklich <strong>durch den Mittelpunkt</strong> geht. Bei einer beliebigen Sehne ist der Winkel bei C zwar für alle C auf demselben Bogen gleich groß (Umfangswinkelsatz), aber eben nicht 90°.
+    </div>
+    <div class="quiz" id="quiz-satz"></div>
+  </section>
+
+  <!-- 2. Der Beweis -->
+  <section class="card" id="sec-beweis">
+    <h2>2. Warum gilt der Satz?</h2>
+    <p>Der Beweis braucht nur einen zusätzlichen Strich: die Verbindung <span class="th-name-r">MC</span> zum Mittelpunkt. Dadurch zerfällt das Dreieck in <strong>zwei gleichschenklige Dreiecke</strong> — denn MA, MB und MC sind alle drei Radien und damit gleich lang.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Lage von C: <input type="range" id="bw-phi" min="20" max="160" step="10" value="60" style="vertical-align:middle;width:12rem"> <span id="bw-phi-anzeige" style="font-weight:800"></span></label>
+      </div>
+      <div class="th-wrap" id="bw-mount"></div>
+      <div class="th-bilanz" id="bw-bilanz"></div>
+      <div id="bw-text" class="event-result"></div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Der Beweis in vier Zeilen</span>
+      <strong>1.</strong> MA = MC = r, also ist das Dreieck AMC gleichschenklig: die Basiswinkel bei A und bei C sind beide <span class="th-name-a">α</span>.<br>
+      <strong>2.</strong> MB = MC = r, also ist auch BMC gleichschenklig: die Basiswinkel bei B und bei C sind beide <span class="th-name-b">β</span>.<br>
+      <strong>3.</strong> Der Winkel bei C setzt sich aus beiden zusammen: <span class="th-name-g">γ</span> = <span class="th-name-a">α</span> + <span class="th-name-b">β</span>.<br>
+      <strong>4.</strong> Winkelsumme im Dreieck ABC: <span class="th-name-a">α</span> + <span class="th-name-b">β</span> + <span class="th-name-g">γ</span> = 180°. Mit Zeile 3 wird daraus 2 · <span class="th-name-g">γ</span> = 180°, also <strong><span class="th-name-g">γ</span> = 90°</strong>.&nbsp;∎
+    </div>
+    <p class="hinweis-box">💡 Beachte, was der Beweis <em>nicht</em> braucht: keine Rechnung mit Längen, keinen Pythagoras, keine Messung. Nur „gleich lange Schenkel ⇒ gleiche Basiswinkel“ und die Winkelsumme. Genau deshalb war er schon vor 2600 Jahren möglich.</p>
+    <div class="quiz" id="quiz-beweis"></div>
+  </section>
+
+  <!-- 3. Die Umkehrung -->
+  <section class="card" id="sec-umkehrung">
+    <h2>3. Die Umkehrung: der Thaleskreis als Ortslinie</h2>
+    <p>Der Satz gilt auch andersherum — und das ist der eigentlich nützliche Teil: <strong>Ist der Winkel bei C ein rechter, so liegt C auf dem Thaleskreis über AB.</strong> Damit ist der Kreis nicht bloß eine Linie, auf der zufällig 90° herauskommt, sondern die Menge <em>aller</em> solchen Punkte. Verschiebe C mit den beiden Reglern nach innen und nach außen.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Richtung: <input type="range" id="uk-phi" min="20" max="160" step="10" value="70" style="vertical-align:middle;width:10rem"> <span id="uk-phi-anzeige" style="font-weight:800"></span></label>
+        <label>Abstand von M: <input type="range" id="uk-d" min="40" max="170" step="5" value="100" style="vertical-align:middle;width:10rem"> <span id="uk-d-anzeige" class="th-name-r"></span></label>
+      </div>
+      <div class="th-wrap" id="uk-mount"></div>
+      <div class="th-bilanz" id="uk-bilanz"></div>
+      <div class="th-urteil" id="uk-urteil"></div>
+      <div id="uk-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Umkehrung des Satzes von Thales</span>
+      Ist das Dreieck ABC bei C rechtwinklig, so liegt C auf dem Kreis mit dem Durchmesser AB.<br>
+      Zwei Folgerungen, die man ständig braucht:<br>
+      • Der <strong>Umkreismittelpunkt</strong> eines rechtwinkligen Dreiecks ist die <strong>Mitte der Hypotenuse</strong>.<br>
+      • Der Umkreisradius ist <strong>halb so lang wie die Hypotenuse</strong>: r = c : 2.
+    </div>
+    <div class="quiz" id="quiz-umkehrung"></div>
+  </section>
+
+  <!-- 4. Konstruieren -->
+  <section class="card" id="sec-konstruktion">
+    <h2>4. Konstruieren mit Zirkel und Lineal</h2>
+    <p>Der Thaleskreis ist der Kreis <em>um die Mitte</em> von AB mit der <em>halben</em> Strecke als Radius. Die Mitte darf dabei nicht geschätzt werden — sie wird konstruiert, mit der Mittelsenkrechten aus <a href="grundkonstruktionen.html">Thema 1</a>. Sieh dir zuerst die Anleitung an und konstruiere dann selbst.</p>
+
+    <div class="th-konstruktion">
+      <div class="geo-mode-tabs" id="phase-tabs">
+        <button type="button" class="geo-mode-tab geo-mode-tab-active" data-phase="guided">1. Anleitung ansehen</button>
+        <button type="button" class="geo-mode-tab" data-phase="free">2. Selbst konstruieren</button>
+      </div>
+
+      <div id="guided-controls">
+        <div class="geo-mode-tabs" id="count-tabs">
+          <button type="button" class="geo-mode-tab geo-mode-tab-active" data-count="1">1. Mittelsenkrechte → M</button>
+          <button type="button" class="geo-mode-tab" data-count="2">2. Thaleskreis um M</button>
+          <button type="button" class="geo-mode-tab" data-count="3">3. Punkt C und rechter Winkel</button>
+        </div>
+      </div>
+
+      <div class="geo-layout">
+        <div class="geo-canvas-col">
+          <div class="geo-canvas-wrap">
+            <svg id="geo-svg" class="geo-svg" viewBox="0 0 600 420">
+              <g id="layer-construct"></g>
+              <g id="layer-figure"></g>
+              <g id="layer-centers"></g>
+              <g id="layer-user"></g>
+              <g id="layer-vertices"></g>
+            </svg>
+          </div>
+          <div class="geo-zoom-row">
+            <button type="button" class="geo-btn geo-zoom-btn" id="btn-zoom">⛶ Zeichenfläche vergrößern</button>
+          </div>
+          <div class="geo-toggle-row" id="guided-toggle-row">
+            <label><input type="checkbox" id="toggle-arcs" checked> Zirkelbögen (Konstruktion) anzeigen</label>
+          </div>
+          <div class="geo-toolbar" id="guided-toolbar">
+            <button type="button" class="geo-btn" id="btn-new-segment">🎲 Neue Strecke</button>
+          </div>
+          <div id="free-controls" hidden>
+            <div class="geo-toolbar">
+              <button type="button" class="geo-btn" id="btn-tool-circle">◯ Zirkel</button>
+              <button type="button" class="geo-btn" id="btn-tool-line">／ Lineal</button>
+              <button type="button" class="geo-btn" id="btn-undo">↩ Rückgängig</button>
+              <button type="button" class="geo-btn" id="btn-clear">🗑 Zurücksetzen</button>
+              <button type="button" class="geo-btn geo-btn-primary" id="btn-check">✓ Prüfen</button>
+              <button type="button" class="geo-btn" id="btn-hint">💡 Tipp</button>
+              <button type="button" class="geo-btn" id="btn-new-segment-free">🎲 Neue Strecke</button>
+            </div>
+            <div class="geo-toggle-row">
+              <label title="Wie beim echten Zirkel: einmal eingestellt, bleibt der Radius gleich — du klickst dann nur noch den Einstichpunkt an.">
+                <input type="checkbox" id="chk-lock-radius"> 🔒 Zirkel-Radius beibehalten (nicht verstellen)
+              </label>
+              <button type="button" class="geo-btn geo-btn-small" id="btn-reset-radius" hidden>🔄 Radius neu einstellen</button>
+            </div>
+            <p class="geo-pending-status" id="pending-status" hidden></p>
+            <p class="geo-radius-status" id="radius-status" hidden></p>
+          </div>
+          <div class="geo-feedback" id="feedback-box" hidden></div>
+          <div class="geo-legend">
+            <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#d64545"></span>Mittelsenkrechte</span>
+            <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#2563eb"></span>Thaleskreis</span>
+            <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#6d28d9"></span>Dreieck ABC</span>
+          </div>
+        </div>
+
+        <div class="geo-side-col">
+          <div class="geo-instruction-box" id="instruction-box"></div>
+          <ol class="geo-steps" id="steps-list"></ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="hinweis-box">💡 Ziehe die Punkte A und B mit der Maus oder dem Finger — die ganze Konstruktion passt sich sofort an. Während des freien Konstruierens sind sie gesperrt, damit deine eigene Zeichnung nicht nebenbei ungültig wird.</div>
+  </section>
+
+  <!-- 5. Anwendung: Tangenten -->
+  <section class="card" id="sec-tangenten">
+    <h2>5. Anwendung: Tangenten an einen Kreis</h2>
+    <p>Eine <span class="term">Tangente</span> berührt einen Kreis in genau einem Punkt T, und dort steht sie <strong>senkrecht auf dem Radius</strong> MT. Wer von einem Punkt P außerhalb eine Tangente legen will, sucht also einen Punkt T mit ∡MTP = 90° — und alle solchen Punkte liegen auf dem Thaleskreis über MP. Genau das ist die Konstruktion.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Radius r = <input type="range" id="tg-r" min="2" max="6" step="1" value="3" style="vertical-align:middle;width:8rem"> <span id="tg-r-anzeige" class="th-name-r"></span></label>
+        <label>Abstand MP = d = <input type="range" id="tg-d" min="5" max="12" step="1" value="8" style="vertical-align:middle;width:8rem"> <span id="tg-d-anzeige" class="th-name-c"></span></label>
+        <label><input type="checkbox" id="tg-thales" checked> Thaleskreis über MP zeigen</label>
+      </div>
+      <div class="th-wrap" id="tg-mount"></div>
+      <div class="th-bilanz" id="tg-bilanz"></div>
+      <div id="tg-text" class="event-result"></div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Konstruktion in drei Schritten</span>
+      <strong>1.</strong> Mitte Z der Strecke MP konstruieren (Mittelsenkrechte).<br>
+      <strong>2.</strong> Thaleskreis um Z durch M und P zeichnen. Er schneidet den gegebenen Kreis in T₁ und T₂.<br>
+      <strong>3.</strong> Die Geraden PT₁ und PT₂ sind die beiden Tangenten. Denn T₁ und T₂ liegen auf dem Thaleskreis über MP, also ist ∡MT₁P = ∡MT₂P = 90° — und ein Radius, auf dem die Gerade senkrecht steht, bedeutet Berührung.
+    </div>
+    <div class="hinweis-box">💡 Die Tangentenlänge folgt dann aus dem <a href="../../grundwissen-5-10/02-geometrie/09-pythagoras/index.html#sec-satz">Satz des Pythagoras</a> im rechtwinkligen Dreieck MTP: <strong>PT = √(d² − r²)</strong>. Beide Tangentenabschnitte sind gleich lang — die Figur ist an der Geraden MP gespiegelt.</div>
+    <div class="quiz" id="quiz-tangenten"></div>
+  </section>
+
+  <!-- 6. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>6. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../../grundwissen-5-10/02-geometrie/05-winkelbetrachtungen/index.html#sec-dreieck">Winkelsumme im Dreieck</a> und dem <a href="../../grundwissen-5-10/02-geometrie/05-winkelbetrachtungen/index.html#sec-dreieck">Basiswinkelsatz</a> — der ganze Beweis besteht aus nichts anderem.</li>
+      <li><strong>Baut auf:</strong> <a href="grundkonstruktionen.html">Der Mittelsenkrechten</a> — ohne sie lässt sich die Mitte der Strecke nicht konstruieren, und ohne die Mitte gibt es keinen Thaleskreis.</li>
+      <li><strong>Ist ein Sonderfall:</strong> Der <span class="term">Umfangswinkelsatz</span> sagt, dass alle Punkte eines Kreisbogens dieselbe Sehne unter demselben Winkel sehen — und dass dieser Umfangswinkel halb so groß ist wie der Mittelpunktswinkel. Beim Durchmesser ist der Mittelpunktswinkel gestreckt (180°), der Umfangswinkel also 90°. Der Satz des Thales ist genau dieser Fall.</li>
+      <li><strong>Ergänzt:</strong> <a href="mittelsenkrechte-umkreis.html">Mittelsenkrechte und Umkreis</a> — der Umkreismittelpunkt eines rechtwinkligen Dreiecks liegt nicht irgendwo, sondern genau auf der Mitte der Hypotenuse. Ziehe dort C so, dass der Winkel rechtwinklig wird, und beobachte M.</li>
+      <li><strong>Arbeitet zusammen mit:</strong> <a href="../../grundwissen-5-10/02-geometrie/09-pythagoras/index.html#sec-satz">Dem Satz des Pythagoras</a>. Thales <em>liefert</em> den rechten Winkel, Pythagoras <em>rechnet</em> damit: Wer C auf dem Thaleskreis über AB findet, darf sofort a² + b² = c² ansetzen.</li>
+      <li><strong>Führt weiter zu:</strong> Der Tangentenkonstruktion und damit zu allem, was mit Berührung zu tun hat — Riemenlängen, Sichtweiten, Kreise, die einander berühren.</li>
+      <li><strong>Führt weiter zu:</strong> <a href="../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/10-trigonometrie/index.html#sec-verhaeltnisse">Der Trigonometrie</a>: In jedem Thales-Dreieck über dem Durchmesser 2r gilt a = 2r · sin α — die Kurzform des Sinussatzes, und der Grund, warum dort überhaupt ein Umkreisradius auftaucht.</li>
+      <li><strong>Führt weiter zu:</strong> Der <a href="../../grundwissen-5-10/02-geometrie/08-aehnlichkeit/index.html#sec-saetze">Ähnlichkeit</a> und der Satzgruppe: Die Höhe auf die Hypotenuse zerlegt das Thales-Dreieck in zwei zum Ganzen ähnliche Teildreiecke — daraus folgen Kathetensatz und Höhensatz.</li>
+    </ul>
+  </section>
+
+  <!-- 7. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>7. Formelsammlung</h2>
+    <p>Satz, Beweis, Umkehrung, Konstruktion und die Tangentenaufgabe — mit gerechneten Zeichnungen, drei Musterrechnungen und den typischen Fehlern auf zwei Seiten. Zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="satz-des-thales.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 8. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>8. Übungsaufgaben</h2>
+    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
+    <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit. Alle Ergebnisse gehen glatt auf.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="index.html">Zurück zu Geometrie</a></p>
+  <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="satz-des-thales.js?v=1"></script>
+</body>
+</html>
