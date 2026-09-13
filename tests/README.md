@@ -51,15 +51,24 @@ Vorbild ist `themen/test-trigonometrische-funktionen.js`. Bewährt haben sich:
   Grundlinienversatz von wenigen Pixeln.
 * **Aufgaben von beiden Seiten prüfen.** Die richtige Antwort muss anerkannt
   werden, und jeder vorgesehene Fehlerwert muss genau seinen Hinweis auslösen.
-* **Streuungsschranken ausrechnen, nicht raten.** Bei `n` gleich
-  wahrscheinlichen Kandidaten und `k` Zügen ist der Erwartungswert der
-  verschiedenen Aufgaben `E = n · (1 − (1 − 1/n)^k)`; die Schranke gehört auf
-  `E − 3σ`, und die Rechnung gehört als Kommentar daneben. Zieht der Generator
-  *hierarchisch* — erst den Nenner, dann den Zähler — oder siebt er mit
-  `ohneKollision()` vor, so gilt die gleichmäßige Formel nicht; dann wird die
-  Kandidatenmenge nachgebildet und die Verteilung simuliert. Bei Verteilungen
-  mit langem linkem Rand ist das Quantil 10⁻⁴ die ehrlichere Schranke als
-  `E − 3σ`.
+* **Streuungsschranken messen, nicht rechnen.** Wie viele verschiedene Aufgaben
+  ein Generator hergibt, lässt sich am Papier fast nie richtig abschätzen:
+  `ohneKollision()` siebt einen guten Teil der Kandidatenliste weg, und wo
+  hierarchisch gezogen wird — erst der Nenner, dann der Zähler —, sind die
+  Kandidaten nicht gleich wahrscheinlich. Schranken aus der Länge der
+  Kandidatenliste liegen deshalb regelmäßig zu hoch; der Gesamtlauf schlägt
+  dann hin und wieder an einer Stelle fehl, an der nichts kaputt ist.
+
+  ```bash
+  node tests/werkzeug-streuung.js [Namensfilter]
+  ```
+
+  Das Werkzeug würfelt jede Aufgabe 200-mal, rechnet aus der Zahl der
+  verschiedenen Aufgaben die Größe `n` der wirklich gezogenen Menge zurück
+  (Sammelbilderproblem: `E = n · (1 − (1 − 1/n)^z)`) und simuliert daraus das
+  **10⁻⁴-Quantil** — vorsichtshalber für `0,8 · n`, weil die Schätzung selbst
+  streut. Dieser Wert gehört in `mindestensVerschieden`, die Messung als
+  Kommentar daneben.
 * **Die Zusagen des Generators mitprüfen.** Wo eine Aufgabe ihre Parameter so
   wählt, dass Lösung und Fehlerwerte paarweise verschieden bleiben, gehört
   genau das in jede Runde geprüft: Fällt ein Fehlerwert mit der Lösung

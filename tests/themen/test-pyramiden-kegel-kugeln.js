@@ -119,12 +119,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — Oberfläche einer quadratischen Pyramide. Die Maße stammen aus
-  // pythagoreischen Tripeln, von denen der Generator die kollisionsfreien
-  // auswählt; es bleiben 6 Fassungen. Bei 30 Zügen E = 6,0 und σ = 0,2, der
-  // beobachtete Kleinstwert liegt bei 4 — Schranke 4.
+  // Aufgabe 2 — Oberfläche einer quadratischen Pyramide. Gemessen mit
+  // tests/werkzeug-streuung.js: 6 verschiedene in 200 Würfen, zurückgerechnet also rund 6
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 3.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Pyramidenoberfläche", runden: 30, mindestensVerschieden: 4,
+    nr: 2, name: "A2 Pyramidenoberfläche", runden: 30, mindestensVerschieden: 3,
     deute: (frage) => {
       const m = frage.match(/a = (\d+) cm.*?h = (\d+) cm/);
       if (!m) return null;
@@ -155,10 +155,13 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — Mantelfläche eines Kegels, ebenfalls aus den kollisionsfreien
-  // Tripeln; hier bleiben 5 Fassungen (E = 5,0, σ = 0,1) — Schranke 4.
+  // Aufgabe 3 — Mantelfläche eines Kegels, ebenfalls aus den kollisionsfreien Tripeln; hier
+  // bleiben 5 Fassungen (E = 5,0, σ = 0,1) — Schranke 4. Gemessen mit
+  // tests/werkzeug-streuung.js: 5 verschiedene in 200 Würfen, zurückgerechnet also rund 5
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 3.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Kegelmantel", runden: 30, mindestensVerschieden: 4,
+    nr: 3, name: "A3 Kegelmantel", runden: 30, mindestensVerschieden: 3,
     deute: (frage) => {
       const m = frage.match(/r = (\d+) cm.*?h = (\d+) cm/);
       if (!m) return null;

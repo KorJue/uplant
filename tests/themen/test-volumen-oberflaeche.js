@@ -22,9 +22,11 @@ const EXP = { "mm³": -9, "cm³": -6, "dm³": -3, "m³": 0, ml: -6, l: -3, hl: -
 const ohnePunkte = (s) => Number(String(s).replace(/\./g, "").replace(",", "."));
 
 async function aufgaben(page) {
-  // Aufgabe 1 — Quader: Volumen oder Oberfläche. 11 · 9 · 8 Kantentripel × 2 Fragen.
+  // Aufgabe 1 — Quader: Volumen oder Oberfläche. Gemessen mit tests/werkzeug-streuung.js: 190
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 1923 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 26.
   await pruefeAufgabe(page, bericht, {
-    nr: 1, name: "A1 Quader", runden: 30, mindestensVerschieden: 28,
+    nr: 1, name: "A1 Quader", runden: 30, mindestensVerschieden: 26,
     deute: (frage) => {
       const m = frage.match(/Kanten (\d+) cm, (\d+) cm und (\d+) cm/);
       if (!m) return null;
@@ -43,9 +45,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — Raum- und Hohlmaße umrechnen.
+  // Aufgabe 2 — Raum- und Hohlmaße umrechnen. Gemessen mit tests/werkzeug-streuung.js: 142
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 273 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 22.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Raummaße", runden: 30, mindestensVerschieden: 25,
+    nr: 2, name: "A2 Raummaße", runden: 30, mindestensVerschieden: 22,
     deute: (frage) => {
       const m = frage.match(/Rechne um: ([\d.,]+) (mm³|cm³|dm³|m³|ml|l|hl) = \? (mm³|cm³|dm³|m³|ml|l|hl)/);
       if (!m) return null;
@@ -85,9 +89,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — Becken ohne Deckel: Boden und vier Wände.
+  // Aufgabe 4 — Becken ohne Deckel: Boden und vier Wände. Gemessen mit
+  // tests/werkzeug-streuung.js: 192 verschiedene in 200 Würfen, zurückgerechnet also rund 2421
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Becken auskleiden", runden: 30, mindestensVerschieden: 28,
+    nr: 4, name: "A4 Becken auskleiden", runden: 30, mindestensVerschieden: 27,
     deute: (frage) => {
       const m = frage.match(/innen (\d+) m lang, (\d+) m breit und (\d+) m tief.*?(\d+) € je Quadratmeter/);
       if (!m) return null;

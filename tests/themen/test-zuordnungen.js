@@ -111,10 +111,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — antiproportionaler Dreisatz. 363 Tripel × 3 Kontexte;
-  // bei 30 Zügen ≈ 0,4 Doppel — Schranke 27.
+  // Aufgabe 2 — antiproportionaler Dreisatz. Gemessen mit tests/werkzeug-streuung.js: 177
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 798 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 25.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 antiproportionaler Dreisatz", runden: 30, mindestensVerschieden: 27,
+    nr: 2, name: "A2 antiproportionaler Dreisatz", runden: 30, mindestensVerschieden: 25,
     deute: (frage) => {
       const m = frage.match(/^(\d+) \D+ (\d+) (Tage|Stunden)[\s\S]*?brauchen (\d+) /);
       if (!m) return null;
@@ -142,10 +143,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — Art bestimmen und ergänzen. 53 zulässige Tabellen; bei 30
-  // Zügen ist E = 23,1 und σ = 1,9, die Schranke E − 3σ liegt bei 17.
+  // Aufgabe 3 — Art bestimmen und ergänzen. Gemessen mit tests/werkzeug-streuung.js: 52
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 53 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 15.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Art bestimmen", runden: 30, mindestensVerschieden: 17,
+    nr: 3, name: "A3 Art bestimmen", runden: 30, mindestensVerschieden: 15,
     liesRoh: (page2, box) => page2.evaluate((sel) => {
       const t = document.querySelector(`${sel} .aufgabe-prompt table.zo-tabelle`);
       if (!t) return null;

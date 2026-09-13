@@ -35,12 +35,11 @@ async function bruchdaten(page, box) {
 }
 
 async function aufgaben(page) {
-  // Aufgabe 1 — Bruch mal natürliche Zahl. 8 Nenner × (n−1) Zähler × 5
-  // Faktoren; der Nenner wird zuerst gezogen, deshalb ist die Verteilung
-  // ungleich. Mit p(n, z, k) = 1/(8 · (n−1) · 5) ist bei 30 Zügen E = 27,4 und
-  // σ = 1,3 — Schranke E − 3σ ≈ 23.
+  // Aufgabe 1 — Bruch mal natürliche Zahl. Gemessen mit tests/werkzeug-streuung.js: 126
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 198 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 21.
   await pruefeAufgabe(page, bericht, {
-    nr: 1, name: "A1 Bruch mal Zahl", runden: 30, mindestensVerschieden: 23, liesRoh: bruchdaten,
+    nr: 1, name: "A1 Bruch mal Zahl", runden: 30, mindestensVerschieden: 21, liesRoh: bruchdaten,
     deute: (frage, roh) => {
       if (!roh || roh.brueche.length !== 1) return null;
       const { z, n } = roh.brueche[0];

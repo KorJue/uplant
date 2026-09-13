@@ -30,11 +30,12 @@ const minus = (s) => s.replace(/−/g, "-");
 const zahl = (s) => Number(minus(s).replace(",", "."));
 
 async function aufgaben(page) {
-  // Aufgabe 1 — Kathete aus Hypotenuse und Funktionswert. 2 Funktionen × 6
-  // Werte × 4 Hypotenusen = 48 Fassungen; bei 30 Zügen ist E = 20,6 und
-  // σ = 1,7 — Schranke E − 3σ = 15.
+  // Aufgabe 1 — Kathete aus Hypotenuse und Funktionswert. Gemessen mit
+  // tests/werkzeug-streuung.js: 47 verschiedene in 200 Würfen, zurückgerechnet also rund 48
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 14.
   await pruefeAufgabe(page, bericht, {
-    nr: 1, name: "A1 Kathete", runden: 30, mindestensVerschieden: 15,
+    nr: 1, name: "A1 Kathete", runden: 30, mindestensVerschieden: 14,
     deute: (frage) => {
       const m = frage.match(/c = (\d+) cm.*?(sin|cos) α = ([\d,]+).*?Wie lang ist die (Gegenkathete|Ankathete)/);
       if (!m) return null;
@@ -66,10 +67,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — die richtige Formel wählen und umstellen. 6 Paare × 13 Winkel
-  // × 7 Längen = 546 Fassungen; Doppel sind bei 30 Zügen selten — Schranke 26.
+  // Aufgabe 2 — die richtige Formel wählen und umstellen. Gemessen mit
+  // tests/werkzeug-streuung.js: 151 verschiedene in 200 Würfen, zurückgerechnet also rund 337
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 23.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Formel wählen", runden: 30, mindestensVerschieden: 26,
+    nr: 2, name: "A2 Formel wählen", runden: 30, mindestensVerschieden: 23,
     deute: (frage) => {
       const m = frage.match(/α = (\d+)°.*?(Hypotenuse c|Gegenkathete a|Ankathete b) = (\d+) cm.*?Wie lang ist die (Hypotenuse c|Gegenkathete a|Ankathete b)/);
       if (!m) return null;
@@ -120,10 +123,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — Winkel aus beiden Katheten. 15 · 15 − 15 = 210 Paare;
-  // Doppel sind bei 30 Zügen selten — Schranke 26.
+  // Aufgabe 3 — Winkel aus beiden Katheten. Gemessen mit tests/werkzeug-streuung.js: 130
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 213 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 22.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Winkel bestimmen", runden: 30, mindestensVerschieden: 26,
+    nr: 3, name: "A3 Winkel bestimmen", runden: 30, mindestensVerschieden: 22,
     deute: (frage) => {
       const m = frage.match(/Gegenkathete a = (\d+) cm.*?Ankathete b = (\d+) cm/);
       if (!m) return null;
@@ -151,10 +155,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — Turmhöhe mit Augenhöhe. 21 Winkel × 15 Abstände = 315
-  // Fassungen; Doppel sind bei 30 Zügen selten — Schranke 26.
+  // Aufgabe 4 — Turmhöhe mit Augenhöhe. Gemessen mit tests/werkzeug-streuung.js: 142
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 273 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 22.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Turmhöhe", runden: 30, mindestensVerschieden: 26,
+    nr: 4, name: "A4 Turmhöhe", runden: 30, mindestensVerschieden: 22,
     deute: (frage) => {
       const m = frage.match(/(\d+) m vom Fuß.*?(\d+)°/);
       if (!m) return null;

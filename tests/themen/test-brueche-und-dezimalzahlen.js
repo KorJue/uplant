@@ -58,10 +58,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — Anteil einer Größe. 24 Brüche × 4 Einheiten × 37 Werte = 3552
-  // Kandidaten; bei 30 Zügen sind 30·29/(2·3552) ≈ 0,12 Doppel zu erwarten.
+  // Aufgabe 2 — Anteil einer Größe. Gemessen mit tests/werkzeug-streuung.js: 193 verschiedene
+  // in 200 Würfen, zurückgerechnet also rund 2776 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Anteil einer Größe", runden: 30, mindestensVerschieden: 28, liesRoh: brueche,
+    nr: 2, name: "A2 Anteil einer Größe", runden: 30, mindestensVerschieden: 27, liesRoh: brueche,
     deute: (frage, roh) => {
       if (!roh || roh.brueche.length < 1) return null;
       const [z, n] = roh.brueche[0];
@@ -76,10 +77,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — Dezimalzahl als Bruch. 23 abbrechende Brüche; bei 30 Zügen
-  // ist E = 23·(1 − (22/23)^30) = 16,9 und σ = 1,58 — Schranke ≈ 12.
+  // Aufgabe 3 — Dezimalzahl als Bruch. Gemessen mit tests/werkzeug-streuung.js: 23 verschiedene
+  // in 200 Würfen, zurückgerechnet also rund 23 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 10.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Dezimalzahl als Bruch", runden: 30, mindestensVerschieden: 12,
+    nr: 3, name: "A3 Dezimalzahl als Bruch", runden: 30, mindestensVerschieden: 10,
     deute: (frage) => {
       const m = frage.match(/Dezimalzahl (\d+),(\d+) als/);
       if (!m) return null;
@@ -95,10 +97,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — Anteil vom Anteil. 8 · 6 · 8 · 3 = 1152 Kandidaten;
-  // bei 30 Zügen sind 30·29/(2·1152) ≈ 0,38 Doppel zu erwarten.
+  // Aufgabe 4 — Anteil vom Anteil. Gemessen mit tests/werkzeug-streuung.js: 184 verschiedene in
+  // 200 Würfen, zurückgerechnet also rund 1177 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 26.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Anteil vom Anteil", runden: 30, mindestensVerschieden: 27, liesRoh: brueche,
+    nr: 4, name: "A4 Anteil vom Anteil", runden: 30, mindestensVerschieden: 26, liesRoh: brueche,
     deute: (frage, roh) => {
       if (!roh || roh.brueche.length < 2) return null;
       const [[z1, n1], [z2, n2]] = roh.brueche;

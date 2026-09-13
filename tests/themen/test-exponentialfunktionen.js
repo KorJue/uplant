@@ -22,10 +22,11 @@ const minus = (s) => s.replace(/−/g, "-");
 const zahl = (s) => Number(minus(s).replace(/\.(?=\d{3}\b)/g, "").replace(",", "."));
 
 async function aufgaben(page) {
-  // Aufgabe 1 — a · qᵏ ausrechnen. Mehrere hundert Fassungen; Doppel sind bei
-  // 30 Zügen selten — Schranke 26.
+  // Aufgabe 1 — a · qᵏ ausrechnen. Gemessen mit tests/werkzeug-streuung.js: 120 verschiedene in
+  // 200 Würfen, zurückgerechnet also rund 177 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 21.
   await pruefeAufgabe(page, bericht, {
-    nr: 1, name: "A1 Wachstumsfaktor anwenden", runden: 30, mindestensVerschieden: 26,
+    nr: 1, name: "A1 Wachstumsfaktor anwenden", runden: 30, mindestensVerschieden: 21,
     deute: (frage) => {
       const m = frage.match(/beginnt bei ([\d.]+).*?q = ([\d,]+).*?nach (\d+) Schritten/);
       if (!m) return null;
@@ -89,9 +90,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — den Faktor aus Anfang und Ende zurückrechnen. Schranke 26.
+  // Aufgabe 3 — den Faktor aus Anfang und Ende zurückrechnen. Gemessen mit
+  // tests/werkzeug-streuung.js: 111 verschiedene in 200 Würfen, zurückgerechnet also rund 151
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 20.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Faktor bestimmen", runden: 30, mindestensVerschieden: 26,
+    nr: 3, name: "A3 Faktor bestimmen", runden: 30, mindestensVerschieden: 20,
     deute: (frage) => {
       const m = frage.match(/Bestand (wächst|fällt) exponentiell von ([\d.]+) auf ([\d.]+) in (\d+) Schritten/);
       if (!m) return null;
@@ -126,10 +130,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — Halbwertszeit als kleinste ganze Schrittzahl. 33 Prozentsätze;
-  // bei 30 Zügen ist E = 22,3 und σ = 1,8 — Schranke E − 3σ = 16.
+  // Aufgabe 4 — Halbwertszeit als kleinste ganze Schrittzahl. Gemessen mit
+  // tests/werkzeug-streuung.js: 33 verschiedene in 200 Würfen, zurückgerechnet also rund 33
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 12.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Halbwertszeit", runden: 30, mindestensVerschieden: 16,
+    nr: 4, name: "A4 Halbwertszeit", runden: 30, mindestensVerschieden: 12,
     deute: (frage) => {
       const m = frage.match(/täglich um (\d+) %/);
       if (!m) return null;

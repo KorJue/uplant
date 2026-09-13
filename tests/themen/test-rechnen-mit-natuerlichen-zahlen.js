@@ -20,11 +20,11 @@ const SEITE = "/mathematik/grundwissen-5-10/01-groessen-und-rechnen/02-rechnen-m
 const ohnePunkte = (s) => Number(String(s).replace(/\./g, ""));
 
 async function aufgaben(page) {
-  // Aufgabe 1 — Vorfahrtsregeln. 8·8·8 Zahlentripel × 2 Formen = 1024
-  // Kandidaten; bei 30 Zügen sind 30·29/(2·1024) ≈ 0,42 Doppel zu erwarten
-  // (Poisson, σ ≈ 0,65). Schranke 30 − (0,42 + 3σ) ≈ 27.
+  // Aufgabe 1 — Vorfahrtsregeln. Gemessen mit tests/werkzeug-streuung.js: 182 verschiedene in
+  // 200 Würfen, zurückgerechnet also rund 1039 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 26.
   await pruefeAufgabe(page, bericht, {
-    nr: 1, name: "A1 Vorfahrtsregeln", runden: 30, mindestensVerschieden: 27,
+    nr: 1, name: "A1 Vorfahrtsregeln", runden: 30, mindestensVerschieden: 26,
     deute: (frage) => {
       const klammer = frage.match(/Berechne: \((\d+) \+ (\d+)\) · (\d+)/);
       if (klammer) {
@@ -46,9 +46,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — schriftliche Addition. 8000² Paare: Doppel praktisch ausgeschlossen.
+  // Aufgabe 2 — schriftliche Addition. Gemessen mit tests/werkzeug-streuung.js: in 200 Würfen
+  // kein einziges Doppel, die Menge ist also viele Tausend groß. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 25 Zügen, vorsichtshalber für 0,8 · n gerechnet — 22.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 schriftliche Addition", runden: 25, mindestensVerschieden: 25,
+    nr: 2, name: "A2 schriftliche Addition", runden: 25, mindestensVerschieden: 22,
     deute: (frage) => {
       const m = frage.match(/Berechne schriftlich: ([\d.]+) \+ ([\d.]+)/);
       if (!m) return null;
@@ -61,10 +63,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — Umkehraufgabe. Minuend und Differenz sind vierstellig,
-  // Doppel praktisch ausgeschlossen.
+  // Aufgabe 3 — Umkehraufgabe. Gemessen mit tests/werkzeug-streuung.js: in 200 Würfen kein
+  // einziges Doppel, die Menge ist also viele Tausend groß. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 25 Zügen, vorsichtshalber für 0,8 · n gerechnet — 22.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Subtrahend gesucht", runden: 25, mindestensVerschieden: 25,
+    nr: 3, name: "A3 Subtrahend gesucht", runden: 25, mindestensVerschieden: 22,
     deute: (frage) => {
       const m = frage.match(/Minuend ([\d.]+), die Differenz ([\d.]+)/);
       if (!m) return null;
@@ -81,10 +84,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — Sachaufgabe mit Rest. 5·21·14·8 = 11 760 Kandidaten;
-  // 25·24/(2·11 760) ≈ 0,026 Doppel zu erwarten.
+  // Aufgabe 4 — Sachaufgabe mit Rest. Gemessen mit tests/werkzeug-streuung.js: 197 verschiedene
+  // in 200 Würfen, zurückgerechnet also rund 6567 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 25 Zügen, vorsichtshalber für 0,8 · n gerechnet — 23.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 volle Packungen", runden: 25, mindestensVerschieden: 24,
+    nr: 4, name: "A4 volle Packungen", runden: 25, mindestensVerschieden: 23,
     deute: (frage) => {
       const m = frage.match(/an (\d+) Tagen je (\d+) Teile\. (\d+) Teile davon sind fehlerhaft.*je (\d+) Stück/);
       if (!m) return null;

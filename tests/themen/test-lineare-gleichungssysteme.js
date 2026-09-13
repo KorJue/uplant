@@ -47,10 +47,11 @@ function loese(g1, g2) {
 }
 
 async function aufgaben(page) {
-  // Aufgabe 1 — Gleichsetzungsverfahren. Die Kandidatenliste ist groß;
-  // Doppel sind bei 30 Zügen praktisch ausgeschlossen.
+  // Aufgabe 1 — Gleichsetzungsverfahren. Gemessen mit tests/werkzeug-streuung.js: 180
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 928 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 25.
   await pruefeAufgabe(page, bericht, {
-    nr: 1, name: "A1 Gleichsetzen", runden: 30, mindestensVerschieden: 28,
+    nr: 1, name: "A1 Gleichsetzen", runden: 30, mindestensVerschieden: 25,
     deute: (frage) => {
       const t = minus(frage);
       const m = t.match(/I: (y = .+?) II: (y = .+?) Wie groß/);
@@ -82,9 +83,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — Einsetzungsverfahren; gefragt ist y.
+  // Aufgabe 2 — Einsetzungsverfahren; gefragt ist y. Gemessen mit tests/werkzeug-streuung.js:
+  // 199 verschiedene in 200 Würfen, zurückgerechnet also rund 19834 Kandidaten. Die Schranke
+  // ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Einsetzen", runden: 30, mindestensVerschieden: 28,
+    nr: 2, name: "A2 Einsetzen", runden: 30, mindestensVerschieden: 27,
     deute: (frage) => {
       const t = minus(frage);
       const m = t.match(/I: (.+?) II: (.+?) Wie groß/);
@@ -118,9 +121,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — Additionsverfahren; gefragt ist x.
+  // Aufgabe 3 — Additionsverfahren; gefragt ist x. Gemessen mit tests/werkzeug-streuung.js: 199
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 19834 Kandidaten. Die Schranke ist
+  // das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Additionsverfahren", runden: 30, mindestensVerschieden: 28,
+    nr: 3, name: "A3 Additionsverfahren", runden: 30, mindestensVerschieden: 27,
     deute: (frage) => {
       const t = minus(frage);
       const m = t.match(/I: (.+?) II: (.+?) Wie groß/);
@@ -152,9 +157,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — Sachaufgabe: zwei Preise aus zwei Bestellungen.
+  // Aufgabe 4 — Sachaufgabe: zwei Preise aus zwei Bestellungen. Gemessen mit
+  // tests/werkzeug-streuung.js: 199 verschiedene in 200 Würfen, zurückgerechnet also rund 19834
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 zwei Preise", runden: 30, mindestensVerschieden: 28,
+    nr: 4, name: "A4 zwei Preise", runden: 30, mindestensVerschieden: 27,
     deute: (frage) => {
       // Beide Sätze nennen ihre drei Zahlen in derselben Reihenfolge:
       // Anzahl der ersten Sorte, Anzahl der zweiten, Gesamtpreis.

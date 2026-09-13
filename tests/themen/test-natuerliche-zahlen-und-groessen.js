@@ -27,10 +27,11 @@ function rundeAuf(n, stelle) {
 const STELLEN = { Zehner: 10, Hunderter: 100, Tausender: 1000 };
 
 async function aufgaben(page) {
-  // Aufgabe 1 — Runden. 98 000 Zahlen × 3 Stellen: In 40 Zügen ist praktisch
-  // jede Aufgabe neu, erwartete Doppel 40·39/(2·294 000) ≈ 0,003.
+  // Aufgabe 1 — Runden. Gemessen mit tests/werkzeug-streuung.js: in 200 Würfen kein einziges
+  // Doppel, die Menge ist also viele Tausend groß. Die Schranke ist das simulierte 10⁻⁴-Quantil
+  // bei 40 Zügen, vorsichtshalber für 0,8 · n gerechnet — 37.
   await pruefeAufgabe(page, bericht, {
-    nr: 1, name: "A1 Runden", runden: 40, mindestensVerschieden: 38,
+    nr: 1, name: "A1 Runden", runden: 40, mindestensVerschieden: 37,
     deute: (frage) => {
       const m = frage.match(/Runde ([\d.]+) auf (Zehner|Hunderter|Tausender) genau/);
       if (!m) return null;
@@ -50,9 +51,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — Stellenwerte. 9 · 10⁵ Kandidaten, Doppel praktisch ausgeschlossen.
+  // Aufgabe 2 — Stellenwerte. Gemessen mit tests/werkzeug-streuung.js: in 200 Würfen kein
+  // einziges Doppel, die Menge ist also viele Tausend groß. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Stellenwerte", runden: 30, mindestensVerschieden: 29,
+    nr: 2, name: "A2 Stellenwerte", runden: 30, mindestensVerschieden: 27,
     deute: (frage) => {
       const m = frage.match(/aus (\d+) Hunderttausendern, (\d+) Zehntausendern, (\d+) Tausendern, (\d+) Hundertern, (\d+) Zehnern und (\d+) Einern/);
       if (!m) return null;
@@ -67,10 +70,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — Größen addieren. 9 · 49 = 441 Kandidaten; bei 30 Zügen sind
-  // 30·29/(2·441) ≈ 1,0 Doppel zu erwarten (Poisson, σ = 1,0).
+  // Aufgabe 3 — Größen addieren. Gemessen mit tests/werkzeug-streuung.js: 166 verschiedene in
+  // 200 Würfen, zurückgerechnet also rund 517 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 24.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Größen addieren", runden: 30, mindestensVerschieden: 25,
+    nr: 3, name: "A3 Größen addieren", runden: 30, mindestensVerschieden: 24,
     deute: (frage) => {
       const m = frage.match(/wiegt leer (\d+) t\. Er wird mit ([\d.]+) kg/);
       if (!m) return null;
@@ -83,9 +87,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — kombiniert. 8 · 36 · 6 · 171 = 295 488 Kandidaten.
+  // Aufgabe 4 — kombiniert. Gemessen mit tests/werkzeug-streuung.js: in 200 Würfen kein
+  // einziges Doppel, die Menge ist also viele Tausend groß. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 kombiniert", runden: 30, mindestensVerschieden: 29,
+    nr: 4, name: "A4 kombiniert", runden: 30, mindestensVerschieden: 27,
     deute: (frage) => {
       const m = frage.match(/stehen (\d+) Kisten mit je (\d+) kg und (\d+) Kisten mit je (\d+) kg/);
       if (!m) return null;
