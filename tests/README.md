@@ -73,6 +73,12 @@ Vorbild ist `themen/test-trigonometrische-funktionen.js`. Bewährt haben sich:
   `page.mouse.click` rollt die Seite **nicht** von selbst zum Ziel; die
   Zeichenfläche gehört vor jedem Klick über `scrollIntoView` ins Bild, sonst
   landet der Klick außerhalb des Fensters und geht stumm verloren.
+* **Figuren mit Lücken von beiden Seiten prüfen.** Wo eine Aufgabe die gesuchten
+  Größen als ①②③ in die Zeichnung schreibt, gehören drei Dinge geprüft: dass die
+  richtigen Werte anerkannt werden, dass ein einzelner falscher Wert auffällt —
+  und dass die **Zeichnung wirklich zeigt, wovon die Aufgabe spricht**. Dafür
+  werden die Linien aus dem SVG zurückgelesen und die Winkel daraus gemessen;
+  eine Figur, die 25° behauptet und 30° zeichnet, fällt sonst niemandem auf.
 * **Beschriftungen über ihre Gruppe zuordnen.** Den Namen eines Punktes nicht
   über den nächstgelegenen Text raten — liegen zwei Punkte dicht beieinander,
   vertauscht das die Zuordnung. Die Seite umschließt jeden Punkt samt
