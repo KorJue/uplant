@@ -274,7 +274,8 @@ const K2 = (() => {
         ok: true,
         msg:
           "Richtig konstruiert! C liegt auf dem Thaleskreis, also ist der Winkel bei C ein rechter; und C hat von B den Abstand a. " +
-          "Beides zusammen legt das Dreieck fest. Die zweite Kathete ergibt sich dann aus b = √(c² − a²).",
+          "Beides zusammen legt das Dreieck fest: Der Thaleskreis gibt den Winkel, der Kreis um B die Länge. " +
+          "Miss die zweite Kathete nach — ausrechnen lässt sie sich erst in Klasse 9 mit dem Satz des Pythagoras.",
       };
     },
   };
@@ -345,15 +346,16 @@ const K3 = (() => {
         msg:
           "Richtig konstruiert! T₁ und T₂ liegen auf beiden Kreisen zugleich: auf k, also sind MT₁ und MT₂ Radien — und auf dem Thaleskreis über MP, " +
           "also ist ∡MT₁P = ∡MT₂P = 90°. Eine Gerade, die auf einem Radius senkrecht steht und ihn im Kreispunkt trifft, berührt den Kreis. " +
-          "Beide Tangentenabschnitte sind übrigens gleich lang: PT = √(d² − r²).",
+          "Beide Tangentenabschnitte sind übrigens gleich lang — die Figur ist an der Geraden MP gespiegelt.",
       };
     },
   };
 })();
 
-// Aufgabe 4 — Dreieck aus den beiden Hypotenusenabschnitten p und q.
-// Hier zeigt sich der Höhensatz als Konstruktion: Das Lot im Punkt H trifft den Thaleskreis
-// genau in der Höhe h = √(p · q).
+// Aufgabe 4 — Dreieck aus den beiden Hypotenusenabschnitten p und q. Zwei Bedingungen treffen
+// sich in C: der rechte Winkel (Thaleskreis) und die Lage über H (das Lot). Dass die Höhe dabei
+// das geometrische Mittel von p und q ist, gehört zum Höhensatz und damit in Klasse 9 — hier
+// wird es weder gebraucht noch behauptet.
 const K4 = (() => {
   const A = GC.pt(150, 250), H = GC.pt(270, 250), B = GC.pt(450, 250);   // q = 120, p = 180
   const M = GC.mid(A, B), r = GC.dist(A, B) / 2;
@@ -419,8 +421,9 @@ const K4 = (() => {
         ok: true,
         msg:
           "Richtig konstruiert! Der rechte Winkel bei C kommt vom Thaleskreis, die Lage von C vom Lot in H. " +
-          "Nebenbei hast du den „Höhensatz“ gezeichnet: Die Höhe CH ist genau h = √(p · q) lang — das geometrische Mittel " +
-          "der beiden Abschnitte. Miss nach: CH muss zwischen q und p liegen, hier also zwischen dem kürzeren und dem längeren Abschnitt.",
+          "Zwei Bedingungen treffen sich in C: Auf dem Thaleskreis ist der Winkel bei C ein rechter, und auf dem Lot in H " +
+          "liegt C senkrecht über dem vorgegebenen Fußpunkt. Miss nach: Die Höhe CH liegt zwischen q und p — je ähnlicher " +
+          "die beiden Abschnitte sind, desto höher wird C.",
       };
     },
   };
@@ -514,8 +517,9 @@ const K5 = (() => {
   };
 })();
 
-// Aufgabe 6 — Dreieck aus c und b, dazu die Höhe. Die Brücke zur Satzgruppe des Pythagoras:
-// Die Höhe zerlegt das Thales-Dreieck in zwei zum Ganzen ähnliche Teildreiecke.
+// Aufgabe 6 — Dreieck aus c und b, dazu die Höhe. Die Konstruktion setzt drei Werkzeuge
+// hintereinander: Thaleskreis, Längenabtrag und Lot. Dass die Höhe das Dreieck in zwei zum
+// Ganzen ähnliche Teile zerlegt, ist der Anfang der Satzgruppe — Stoff der Klasse 9.
 const K6 = (() => {
   const A = GC.pt(170, 270), B = GC.pt(430, 270);        // c = 260
   const M = GC.mid(A, B), r = 130;
@@ -530,7 +534,7 @@ const K6 = (() => {
     stufe: "komplex",
     aufgabe:
       "Gegeben sind die <strong>Hypotenuse c = AB</strong> und die Kathete <strong>b = AC</strong> (die Strecke oben links). " +
-      "Konstruiere zuerst das Dreieck und danach die <strong>Höhe von C auf AB</strong>. Sie zerlegt das Dreieck in zwei Teildreiecke, die zum ganzen ähnlich sind.",
+      "Konstruiere zuerst das Dreieck und danach die <strong>Höhe von C auf AB</strong>. Sie teilt die Hypotenuse in zwei Abschnitte — miss sie nach.",
     schritte: [
       "Thaleskreis über AB konstruieren.",
       "Zirkel auf b stellen, in <strong>A</strong> einstechen, Kreis zeichnen — er schneidet den Thaleskreis in <strong>C</strong>.",
@@ -590,9 +594,10 @@ const K6 = (() => {
       return {
         ok: true,
         msg:
-          "Richtig konstruiert! Die Höhe teilt die Hypotenuse in die Abschnitte p und q. Weil alle drei Dreiecke denselben Winkelsatz erfüllen, " +
-          "sind sie zueinander ähnlich — daraus folgen der Höhensatz h² = p · q und der Kathetensatz b² = c · q. " +
-          "Miss nach: Mit b : c = 3 : 5 muss q genau 3 : 5 von b sein.",
+          "Richtig konstruiert! Drei Werkzeuge hintereinander: der Thaleskreis für den rechten Winkel, der Zirkel für die Länge b, " +
+          "das Lot für die Höhe. Sieh dir die drei Dreiecke an — ABC, AHC und CHB: Alle drei haben einen rechten Winkel, und " +
+          "die spitzen Winkel kommen in allen dreien wieder vor. Warum das so ist und was man damit rechnen kann, ist der Anfang " +
+          "der Satzgruppe des Pythagoras in Klasse 9.",
       };
     },
   };
@@ -1039,26 +1044,25 @@ function mountR2(container) {
   return { felder };
 }
 
-// ---------- Aufgabe R3: das ganze Thales-Dreieck ausrechnen ----------
+// ---------- Aufgabe R3: das Thales-Dreieck vermessen ----------
+//
+// Alle drei Seiten stehen in der Angabe — der Satz des Pythagoras wird also nicht gebraucht,
+// und keine Antwort verlangt eine Wurzel. Gerechnet wird mit dem, was der Satz des Thales
+// hergibt: Der rechte Winkel bei C macht die beiden Katheten zu Grundseite und Höhe
+// zueinander, und die Mitte der Hypotenuse ist der Umkreismittelpunkt.
 
 const R3 = (() => {
-  const c = 10, b = 6;                        // AC = b
-  const a = Math.sqrt(c * c - b * b);         // = 8
-  return {
-    c, b, a,
-    r: c / 2,
-    flaeche: (a * b) / 2,
-    h: (a * b) / c,
-    q: (b * b) / c,                            // AH, an b anliegend
-    p: (a * a) / c,                            // HB, an a anliegend
-  };
+  const c = 10, b = 6, a = 8;                  // AB, AC und BC — alle drei gegeben
+  return { c, b, a, r: c / 2, umfang: a + b + c, flaeche: (a * b) / 2, h: (a * b) / c };
 })();
 
 function zeichneR3() {
-  const W = 400, H = 288;
+  const W = 400, H = 268;
   const px = 30;
   const A = { x: 50, y: 200 }, B = { x: 50 + R3.c * px, y: 200 };
-  const H_ = { x: A.x + R3.q * px, y: A.y };
+  // Der Höhenfußpunkt liegt dort, wo das Lot von C auf AB trifft; für die Zeichnung genügt
+  // seine Lage, gerechnet wird auf der Seite nicht damit.
+  const H_ = { x: A.x + ((R3.b * R3.b) / R3.c) * px, y: A.y };
   const C = { x: H_.x, y: A.y - R3.h * px };
   const M = { x: (A.x + B.x) / 2, y: A.y };
   const svg = GS.svgEl("svg", { viewBox: `0 0 ${W} ${H}`, class: "th-figur", role: "img" });
@@ -1079,12 +1083,10 @@ function zeichneR3() {
   const e1 = GC.add(C, GC.scale(u1, s)), e2 = GC.add(C, GC.scale(u2, s)), ee = GC.add(e1, GC.scale(u2, s));
   zeichen("path", { d: `M ${e1.x.toFixed(1)} ${e1.y.toFixed(1)} L ${ee.x.toFixed(1)} ${ee.y.toFixed(1)} L ${e2.x.toFixed(1)} ${e2.y.toFixed(1)}`, class: "thf-rechter" });
 
-  beschrifte((A.x + C.x) / 2 - 24, (A.y + C.y) / 2 - 6, "b = 6", "thf-seitenname");
-  beschrifte((B.x + C.x) / 2 + 16, (B.y + C.y) / 2, "a", "thf-seitenname");
-  beschrifte((A.x + B.x) / 2, A.y + 62, "c = 10", "thf-seitenname");
+  beschrifte((A.x + C.x) / 2 - 30, (A.y + C.y) / 2 - 12, "b = 6", "thf-seitenname");
+  beschrifte((B.x + C.x) / 2 + 18, (B.y + C.y) / 2, "a = 8", "thf-seitenname");
   beschrifte(C.x + 12, (C.y + H_.y) / 2, "h", "thf-seitenname");
-  beschrifte((A.x + H_.x) / 2, A.y + 40, "q", "thf-seitenname");
-  beschrifte((H_.x + B.x) / 2, A.y + 40, "p", "thf-seitenname");
+  beschrifte((A.x + B.x) / 2, A.y + 40, "c = 10", "thf-seitenname");
 
   [[A, "A", -12, 18], [B, "B", 12, 18], [C, "C", 0, -10], [H_, "H", 0, 16], [M, "M", 0, -8]].forEach(([P, name, dx, dy]) => {
     zeichen("circle", { cx: P.x, cy: P.y, r: 3.2, class: "thf-punkt" });
@@ -1094,22 +1096,23 @@ function zeichneR3() {
 }
 
 const R3_FELDER = [
-  { name: "die zweite Kathete a = BC", soll: R3.a, einheit: "cm" },
+  { name: "den Winkel bei C", soll: 90, einheit: "Grad" },
   { name: "den Umkreisradius r", soll: R3.r, einheit: "cm" },
+  { name: "den Abstand MC", soll: R3.r, einheit: "cm" },
+  { name: "den Umfang des Dreiecks", soll: R3.umfang, einheit: "cm" },
   { name: "den Flächeninhalt des Dreiecks", soll: R3.flaeche, einheit: "cm²" },
   { name: "die Höhe h auf die Hypotenuse", soll: R3.h, einheit: "cm" },
-  { name: "den Abschnitt q = AH", soll: R3.q, einheit: "cm" },
-  { name: "den Abschnitt p = HB", soll: R3.p, einheit: "cm" },
 ];
 
 function mountR3(container) {
   const box = el("div", { class: "aufgabe-box" });
-  box.appendChild(el("h3", {}, ["Aufgabe 3 — das ganze Thales-Dreieck", el("span", { class: "schwierigkeit-badge komplex" }, "komplex")]));
+  box.appendChild(el("h3", {}, ["Aufgabe 3 — das Thales-Dreieck vermessen", el("span", { class: "schwierigkeit-badge komplex" }, "komplex")]));
   box.appendChild(
     el("p", {
       html:
-        "Über der Strecke AB mit <strong>AB = 10 cm</strong> wird der Thaleskreis gezeichnet; C liegt auf ihm, und <strong>AC = 6 cm</strong>. " +
-        "H ist der Fußpunkt der Höhe von C auf AB. Berechne der Reihe nach alle sechs Größen. Alle Ergebnisse gehen glatt auf.",
+        "Über der Strecke AB mit <strong>AB = 10 cm</strong> wird der Thaleskreis gezeichnet; C liegt auf ihm. " +
+        "Die beiden anderen Seiten sind <strong>AC = 6 cm</strong> und <strong>BC = 8 cm</strong>. H ist der Fußpunkt der Höhe von C auf AB. " +
+        "Bestimme der Reihe nach alle sechs Größen. Alle Ergebnisse gehen glatt auf.",
     }),
   );
 
@@ -1137,13 +1140,15 @@ function mountR3(container) {
     feedback.innerHTML =
       (alleOk ? `<div class="status ok">✓ Alles richtig!</div>` : `<div class="status err">✗ Noch nicht alles richtig.</div>`) +
       `<div class="musterloesung"><span class="ml-label">Rechenweg</span>` +
-      `<strong>1.</strong> C liegt auf dem Thaleskreis ⟹ γ = 90°, AB ist die Hypotenuse. Pythagoras: a² = 10² − 6² = 64, also <strong>a = 8 cm</strong>.<br>` +
-      `<strong>2.</strong> Der Umkreismittelpunkt ist die Mitte der Hypotenuse: <strong>r = 10 : 2 = 5 cm</strong>.<br>` +
-      `<strong>3.</strong> Die beiden Katheten stehen senkrecht aufeinander, sind also Grundseite und Höhe zueinander: A = (6 · 8) : 2 = <strong>24 cm²</strong>.<br>` +
-      `<strong>4.</strong> Derselbe Flächeninhalt über der Hypotenuse: (10 · h) : 2 = 24 ⟹ <strong>h = 4,8 cm</strong>.<br>` +
-      `<strong>5.</strong> Kathetensatz: b² = c · q ⟹ q = 36 : 10 = <strong>3,6 cm</strong>.<br>` +
-      `<strong>6.</strong> p = c − q = 10 − 3,6 = <strong>6,4 cm</strong> (Probe mit dem Kathetensatz: a² = 64 = 10 · 6,4 ✓).<br>` +
-      `<em>Probe zum Höhensatz:</em> h² = p · q ⟹ 4,8² = 23,04 und 6,4 · 3,6 = 23,04 ✓</div>`;
+      `<strong>1.</strong> C liegt auf dem Thaleskreis über AB ⟹ der Winkel bei C ist <strong>90°</strong>. AB ist die Hypotenuse.<br>` +
+      `<strong>2.</strong> Der Umkreismittelpunkt ist die Mitte der Hypotenuse: <strong>r = 10 cm : 2 = 5 cm</strong>.<br>` +
+      `<strong>3.</strong> C liegt auf diesem Kreis, also ist <strong>MC = r = 5 cm</strong> — ganz gleich, wie das Dreieck geformt ist.<br>` +
+      `<strong>4.</strong> Umfang: 6 + 8 + 10 = <strong>24 cm</strong>.<br>` +
+      `<strong>5.</strong> Weil der Winkel bei C ein rechter ist, stehen die beiden Katheten senkrecht aufeinander — die eine ist Grundseite, die andere die zugehörige Höhe:<br>` +
+      `A = (6 · 8) : 2 = <strong>24 cm²</strong><br>` +
+      `<strong>6.</strong> Dieselbe Fläche noch einmal, jetzt mit AB als Grundseite: (10 · h) : 2 = 24, also <strong>h = 4,8 cm</strong>.<br>` +
+      `<em>Kontrolle:</em> h = 4,8 cm ist kleiner als der Radius 5 cm — höher als bis zur Mitte des Bogens kommt C nie.<br>` +
+      `<em>Zufall?</em> Dass Umfang und Flächenmaßzahl beide 24 sind, ist einer: Die Einheiten sind verschieden (cm und cm²).</div>`;
   });
 
   container.appendChild(box);
@@ -1171,8 +1176,11 @@ export const HEFT_AUFGABEN = [
       "Dreieck ABC zeichnen und den rechten Winkel bei C mit dem Geodreieck kontrollieren.",
     ],
     kontrolle:
-      "Der Winkel bei C muss <strong>90°</strong> sein. Nachrechnen: a = BC = √(7² − 4²) = √33 ≈ <strong>5,74 cm</strong>; der Umkreisradius ist <strong>r = 3,5 cm</strong>. " +
-      "Miss BC nach — auf einen halben Millimeter genau sollte es passen.",
+      "Prüfe den Winkel bei C mit dem Geodreieck: Er muss <strong>90°</strong> sein.<br>" +
+      "Miss MA, MB und MC nach — alle drei müssen <strong>3,5 cm</strong> lang sein, denn sie sind Radien desselben Kreises. " +
+      "Das ist die beste Kontrolle für die Konstruktion: Stimmt einer der drei nicht, sitzt M nicht richtig.<br>" +
+      "Für BC liefert eine saubere Zeichnung etwa <strong>5,7 cm</strong>. Ausrechnen lässt sich diese Länge erst in Klasse 9 " +
+      "mit dem Satz des Pythagoras — hier wird sie gemessen.",
   },
   {
     titel: "Aufgabe 2 — aus c und der Höhe bzw. aus p und q",
@@ -1188,9 +1196,13 @@ export const HEFT_AUFGABEN = [
       "Beide Dreiecke zeichnen und die Höhe h<sub>c</sub> jeweils einzeichnen.",
     ],
     kontrolle:
-      "<strong>a)</strong> Miss die beiden Abschnitte: p + q = 6 cm und p · q = h² = 6,25 cm². Es muss <strong>p ≈ 4,66 cm</strong> und <strong>q ≈ 1,34 cm</strong> herauskommen (oder umgekehrt).<br>" +
-      "<strong>b)</strong> Es muss <strong>h<sub>c</sub> = √(2 · 4,5) = √9 = 3 cm</strong> sein — eine glatte Zahl, gut zum Nachmessen. Die Katheten: a = √(c · p) = √13 ≈ <strong>3,61 cm</strong> und b = √(c · q) = √29,25 ≈ <strong>5,41 cm</strong>. " +
-      "Probe: 3,61² + 5,41² = 13,03 + 29,27 ≈ 42,3 = 6,5². ✓",
+      "<strong>Für beide Teilaufgaben:</strong> Prüfe mit dem Geodreieck, dass der Winkel bei C wirklich <strong>90°</strong> ist, und miss MC nach — " +
+      "es muss genauso lang sein wie MA und MB.<br>" +
+      "<strong>a)</strong> Der Thaleskreis hat r = 3 cm. Miss die beiden Hypotenusenabschnitte: Zusammen müssen sie wieder <strong>6 cm</strong> ergeben; " +
+      "einzeln kommt etwa <strong>4,7 cm</strong> und <strong>1,3 cm</strong> heraus (welcher wo liegt, hängt davon ab, welchen der beiden Schnittpunkte du als C genommen hast). " +
+      "Beide Lösungen sind richtig — sie sind spiegelbildlich zueinander.<br>" +
+      "<strong>b)</strong> Die Hypotenuse ist c = 2 cm + 4,5 cm = <strong>6,5 cm</strong>, der Thaleskreis hat also r = 3,25 cm. " +
+      "Miss die Höhe: etwa <strong>3 cm</strong>. Die beiden Katheten: etwa <strong>3,6 cm</strong> und <strong>5,4 cm</strong>.",
   },
   {
     titel: "Aufgabe 3 — wann gibt es überhaupt eine Lösung?",

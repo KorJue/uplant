@@ -119,7 +119,7 @@
           <table style="margin-top:0.8mm">
             <tr><th>Lage von C</th><th>Abstand MC</th><th>Winkel γ bei C</th><th>Beispiel mit A(−5|0), B(5|0), r = 5</th></tr>
             <tr><td class="b" style="color:#b3261e">innerhalb</td><td class="f">MC &lt; r</td><td class="b" style="color:#b3261e">γ &gt; 90°</td><td class="l">C(0|3): MC = 3 &lt; 5 — stumpfwinklig</td></tr>
-            <tr><td class="b" style="color:#157347">auf dem Kreis</td><td class="f">MC = r</td><td class="b" style="color:#157347">γ = 90°</td><td class="l">C(3|4): MC = √(9 + 16) = 5 — rechtwinklig</td></tr>
+            <tr><td class="b" style="color:#157347">auf dem Kreis</td><td class="f">MC = r</td><td class="b" style="color:#157347">γ = 90°</td><td class="l">C(0|5): MC = 5 — rechtwinklig</td></tr>
             <tr><td class="b" style="color:#1d4ed8">außerhalb</td><td class="f">MC &gt; r</td><td class="b" style="color:#1d4ed8">γ &lt; 90°</td><td class="l">C(0|8): MC = 8 &gt; 5 — spitzwinklig</td></tr>
           </table>
           <p style="margin-top:0.8mm"><b>So prüft man rechnerisch, ob ein Dreieck rechtwinklig ist:</b> Mitte der längsten Seite bestimmen, Abstand zur dritten Ecke messen und mit der halben Seitenlänge vergleichen.</p>
@@ -138,7 +138,7 @@
 
 <!-- ===================== Seite 2 ===================== -->
 <div class="page">
-  <h1>Rechnen mit dem Thaleskreis<span class="klein">Tangenten, Pythagoras und Musterrechnungen</span></h1>
+  <h1>Rechnen und Konstruieren mit dem Thaleskreis<span class="klein">Winkel, Längen, Tangenten — ohne Pythagoras</span></h1>
   <div class="grid">
 
     <div class="box wide">
@@ -151,9 +151,14 @@
             <div class="schritt"><b>2.</b><span>Kreis um <span class="kr">Z</span> durch M und P zeichnen. Er schneidet den gegebenen Kreis in T₁ und T₂.</span></div>
             <div class="schritt"><b>3.</b><span>Die Geraden PT₁ und PT₂ sind die beiden Tangenten.</span></div>
           </div>
-          <p style="margin-top:1mm"><b>Tangentenlänge</b> — Pythagoras im Dreieck MTP mit der Hypotenuse <span class="f">d = MP</span>:</p>
-          <p class="zentral f gross">PT = √(d² − r²)</p>
-          <p>Beide Abschnitte sind gleich lang: Die Figur ist an der Geraden MP gespiegelt. Von P aus gibt es genau <b>zwei</b> Tangenten, solange d &gt; r ist; für d = r nur eine (P liegt auf dem Kreis), für d &lt; r keine.</p>
+          <p style="margin-top:1mm"><b>Wie viele Tangenten gibt es?</b> Das entscheidet allein die Lage von P:</p>
+          <table>
+            <tr><th>Lage von P</th><th>Abstand d = MP</th><th>Tangenten von P aus</th></tr>
+            <tr><td class="l b">außerhalb</td><td class="f">d &gt; r</td><td class="b" style="color:#157347">zwei</td></tr>
+            <tr><td class="l b">auf dem Kreis</td><td class="f">d = r</td><td class="b" style="color:#b3650a">genau eine</td></tr>
+            <tr><td class="l b">innerhalb</td><td class="f">d &lt; r</td><td class="b" style="color:#b3261e">keine</td></tr>
+          </table>
+          <p style="margin-top:1mm">Beide Tangentenabschnitte sind <b>gleich lang</b>: Die Figur ist an der Geraden MP gespiegelt. Nachmessen genügt — ausrechnen lässt sich PT erst in Klasse 9.</p>
         </div>
         <div>
           <figure class="m88">[[FIG5]]</figure>
@@ -162,54 +167,53 @@
       </div>
     </div>
 
-    <div class="box">
-      <h2>Rechnen im Thales-Dreieck</h2>
-      <p>Thales <i>liefert</i> den rechten Winkel, Pythagoras <i>rechnet</i> damit. Mit der Hypotenuse <span class="kr">c = AB = 2r</span> und den Katheten a = BC, b = AC gilt:</p>
+    <div class="box merk">
+      <h2>Was sich hier schon rechnen lässt</h2>
+      <p>Der rechte Winkel bei C und die Radien des Thaleskreises reichen für vieles aus — <b>ohne</b> den Satz des Pythagoras:</p>
       <ul>
-        <li><span class="f">a² + b² = c²</span> &nbsp;(Pythagoras)</li>
-        <li><span class="f">r = c : 2</span> &nbsp;(Umkreisradius)</li>
-        <li><span class="f">A = a · b : 2</span> &nbsp;(Flächeninhalt)</li>
-        <li>Höhe h auf die Hypotenuse mit den Abschnitten p und q: <span class="f">h² = p · q</span>, <span class="f">a² = c · p</span>, <span class="f">b² = c · q</span></li>
-        <li>Am höchsten wird C in der Mitte des Bogens: <span class="f">h<sub>max</sub> = r</span>; dann ist das Dreieck gleichschenklig mit <span style="white-space:nowrap"><span class="al">α</span> = <span class="be">β</span> = 45°</span>.</li>
+        <li><span class="f"><span class="al">α</span> + <span class="be">β</span> = 90°</span> — die beiden spitzen Winkel ergänzen sich, weil γ schon 90° verbraucht.</li>
+        <li><span class="f"><span class="ra">r</span> = <span class="kr">c</span> : 2</span> und <span class="f"><span class="ra">MC = r</span></span> — für <i>jedes</i> C auf dem Kreis, gleich welcher Form.</li>
+        <li>Winkel am Mittelpunkt: <span class="f">∡AMC = 180° − 2<span class="al">α</span></span> und <span class="f">∡CMB = 2<span class="al">α</span></span>.</li>
+        <li>Fläche aus den Katheten: <span class="f">A = a · b : 2</span> — die eine ist Grundseite, die andere die zugehörige Höhe, denn sie stehen senkrecht aufeinander.</li>
+        <li>Höhe auf die Hypotenuse über dieselbe Fläche: <span class="f">(c · h) : 2 = A</span>, also <span class="f">h = a · b : c</span>.</li>
+        <li>Die größte mögliche Höhe ist <span class="f">h<sub>max</sub> = r = c : 2</span> — dann liegt C über M, und es ist <span class="al">α</span> = <span class="be">β</span> = 45°.</li>
       </ul>
-      <p style="margin-top:1mm"><b>Brücke zur Trigonometrie:</b> <span class="f">a = 2r · sin <span class="al">α</span></span> und <span class="f">b = 2r · sin <span class="be">β</span></span> — der Sinussatz in seiner kürzesten Form.</p>
     </div>
 
     <div class="box">
-      <h2>Musterrechnung 1 — fehlende Kathete</h2>
-      <p><b>Gegeben:</b> Halbkreis über AB mit AB = 10 cm, C auf dem Bogen, AC = 6 cm. <b>Gesucht:</b> BC, Umkreisradius, Flächeninhalt.</p>
+      <h2>Musterrechnung 1 — alle Winkel</h2>
+      <p><b>Gegeben:</b> C liegt auf dem Thaleskreis über AB, MC ist eingezeichnet, und der Winkel bei A misst <span class="al">α = 25°</span>. <b>Gesucht:</b> alle übrigen Winkel.</p>
       <div class="rechnung">
-        <div class="schritt"><b>1.</b><span>C liegt auf dem Thaleskreis über AB ⟹ <span class="ga">γ</span> = 90°, AB ist die Hypotenuse.</span></div>
-        <div class="schritt"><b>2.</b><span><span class="f">BC² = AB² − AC² = 10² − 6² = 100 − 36 = 64</span></span></div>
-        <div class="schritt"><b>3.</b><span><span class="f">BC = √64 = 8 cm</span></span></div>
-        <div class="schritt"><b>4.</b><span><span class="f">r = c : 2 = 10 : 2 = 5 cm</span></span></div>
-        <div class="schritt"><b>5.</b><span><span class="f">A = 6 · 8 : 2 = 24 cm²</span></span></div>
+        <div class="schritt"><b>1.</b><span>C liegt auf dem Thaleskreis ⟹ <span class="ga">γ = 90°</span>.</span></div>
+        <div class="schritt"><b>2.</b><span><span class="al">α</span> + <span class="be">β</span> = 90° ⟹ <span class="be">β = 65°</span></span></div>
+        <div class="schritt"><b>3.</b><span>AMC ist gleichschenklig (MA = MC = r) ⟹ bei C steht ebenfalls 25°.</span></div>
+        <div class="schritt"><b>4.</b><span>Winkelsumme in AMC: ∡AMC = 180° − 2 · 25° = <b>130°</b></span></div>
+        <div class="schritt"><b>5.</b><span>Nebenwinkel: ∡CMB = 180° − 130° = <b>50°</b></span></div>
       </div>
-      <p style="margin-top:1mm"><b>Probe:</b> 6² + 8² = 36 + 64 = 100 = 10². ✓ Die Hypotenuse wird <b>abgezogen</b>, nie addiert.</p>
+      <p style="margin-top:1mm"><b>Probe:</b> BMC ist ebenfalls gleichschenklig: 65° + 65° + 50° = 180°. ✓</p>
     </div>
 
     <div class="box">
-      <h2>Musterrechnung 2 — Tangentenlänge</h2>
-      <p><b>Gegeben:</b> Kreis um M mit r = 5 cm, ein Punkt P mit MP = 13 cm. <b>Gesucht:</b> die Länge der Tangentenabschnitte PT.</p>
+      <h2>Musterrechnung 2 — Radius, Fläche und Höhe</h2>
+      <p><b>Gegeben:</b> AB = 10 cm, AC = 6 cm, BC = 8 cm, C auf dem Thaleskreis. <b>Gesucht:</b> Umkreisradius, Fläche und die Höhe auf AB.</p>
       <div class="rechnung">
-        <div class="schritt"><b>1.</b><span>T liegt auf dem Thaleskreis über MP ⟹ ∡MTP = 90°.</span></div>
-        <div class="schritt"><b>2.</b><span>Im Dreieck MTP ist MP = 13 cm die Hypotenuse, MT = r = 5 cm eine Kathete.</span></div>
-        <div class="schritt"><b>3.</b><span><span class="f">PT² = d² − r² = 13² − 5² = 169 − 25 = 144</span></span></div>
-        <div class="schritt"><b>4.</b><span><span class="f">PT = √144 = 12 cm</span> — beide Abschnitte sind gleich lang.</span></div>
+        <div class="schritt"><b>1.</b><span>C liegt auf dem Thaleskreis ⟹ <span class="ga">γ = 90°</span>, AB ist die Hypotenuse.</span></div>
+        <div class="schritt"><b>2.</b><span><span class="f">r = 10 cm : 2 = <b>5 cm</b></span> — und ebenso ist MC = 5 cm.</span></div>
+        <div class="schritt"><b>3.</b><span>Die Katheten stehen senkrecht aufeinander: <span class="f">A = (6 · 8) : 2 = <b>24 cm²</b></span></span></div>
+        <div class="schritt"><b>4.</b><span>Dieselbe Fläche über AB: <span class="f">(10 · h) : 2 = 24 ⟹ h = <b>4,8 cm</b></span></span></div>
       </div>
-      <p style="margin-top:1mm"><b>Kontrolle:</b> d &gt; r, also gibt es zwei Tangenten. Und PT &lt; d, wie es sein muss — eine Kathete ist kürzer als die Hypotenuse.</p>
+      <p style="margin-top:1mm"><b>Kontrolle:</b> h = 4,8 cm ist kleiner als der Radius 5 cm — höher als bis zur Mitte des Bogens kommt C nie.</p>
     </div>
 
     <div class="box">
-      <h2>Musterrechnung 3 — ist das Dreieck rechtwinklig?</h2>
-      <p><b>Gegeben:</b> A(−6|0), B(6|0) und C(3,6|4,8). <b>Gesucht:</b> Liegt bei C ein rechter Winkel?</p>
+      <h2>Musterrechnung 3 — Konstruktion aus p und q</h2>
+      <p><b>Gegeben:</b> die beiden Hypotenusenabschnitte q = AH = 4,5 cm und p = HB = 2 cm. <b>Gesucht:</b> das Dreieck ABC mit γ = 90°.</p>
       <div class="rechnung">
-        <div class="schritt"><b>1.</b><span>Mitte von AB: <span class="ra">M(0|0)</span>, halbe Länge <span class="f">r = 12 : 2 = 6</span>.</span></div>
-        <div class="schritt"><b>2.</b><span><span class="f">MC = √(3,6² + 4,8²) = √(12,96 + 23,04) = √36 = 6</span></span></div>
-        <div class="schritt"><b>3.</b><span>MC = r ⟹ C liegt auf dem Thaleskreis ⟹ <span class="ga">γ = 90°</span>.</span></div>
+        <div class="schritt"><b>1.</b><span>Auf einer Geraden nacheinander abtragen: A, dann H (4,5 cm), dann B (weitere 2 cm). Damit ist <span class="f">c = 6,5 cm</span>.</span></div>
+        <div class="schritt"><b>2.</b><span>Thaleskreis über AB konstruieren: Mittelsenkrechte → M, dann Kreis um M durch A (<span class="f">r = 3,25 cm</span>).</span></div>
+        <div class="schritt"><b>3.</b><span>In H das <b>Lot</b> auf AB errichten; wo es den Kreis trifft, liegt <span class="ga">C</span>. Dann A mit C und B mit C verbinden.</span></div>
       </div>
-      <p style="margin-top:1mm"><b>Probe:</b> AC² = 9,6² + 4,8² = 115,2 und BC² = 2,4² + 4,8² = 28,8; zusammen 144 = 12² = AB². ✓</p>
-      <p>Wäre MC kleiner als 6, läge C innen und γ wäre größer als 90°; wäre MC größer, läge C außen und γ kleiner.</p>
+      <p style="margin-top:1mm"><b>Kontrolle:</b> Winkel bei C prüfen (90°), MC nachmessen (3,25 cm). Die Höhe misst etwa 3 cm.</p>
     </div>
 
     <div class="box merk wide">
@@ -224,27 +228,31 @@
     <div class="box">
       <h2>Wozu man den Thaleskreis benutzt</h2>
       <ul>
-        <li><b>Rechte Winkel konstruieren</b> — nur mit Zirkel und Lineal, ohne Geodreieck.</li>
+        <li><b>Rechte Winkel konstruieren</b> — nur mit Zirkel und Lineal.</li>
         <li><b>Tangenten</b> von einem äußeren Punkt an einen Kreis legen.</li>
-        <li><b>Dreiecke konstruieren</b>, von denen die Hypotenuse und eine weitere Größe bekannt sind.</li>
-        <li><b>Ähnlichkeit und Satzgruppe:</b> Die Höhe auf die Hypotenuse zerlegt das Thales-Dreieck in zwei zum Ganzen ähnliche Teildreiecke; daraus folgen Höhen- und Kathetensatz.</li>
+        <li><b>Dreiecke konstruieren</b> aus der Hypotenuse und einer weiteren Größe.</li>
+        <li><b>Prüfen, ob ein Winkel rechtwinklig ist</b> — MC gegen r vergleichen.</li>
       </ul>
-      <p style="margin-top:1mm"><b>Historisch:</b> Thales von Milet (um 600 v. Chr.) gilt als der erste, der einen mathematischen Satz nicht nur benutzte, sondern <i>bewies</i> — mit genau den vier Zeilen von Seite 1.</p>
+      <p style="margin-top:1mm"><b>Historisch:</b> Thales von Milet (um 600 v. Chr.) gilt als der erste, der einen Satz nicht nur benutzte, sondern <i>bewies</i>.</p>
     </div>
-
 
     <div class="box warn full">
       <h2>Typische Fehler</h2>
       <ul>
         <li><b>Sehne statt Durchmesser.</b> Der Satz gilt nur, wenn AB wirklich <i>durch M</i> geht. Bei einer beliebigen Sehne ist der Winkel bei C zwar für alle C auf demselben Bogen gleich groß, aber eben nicht 90°.</li>
-        <li><b>Den rechten Winkel an die falsche Ecke setzen.</b> Er liegt bei <span class="ga">C</span> auf dem Kreis; A und B sind die Endpunkte des Durchmessers. Die Hypotenuse ist stets der Durchmesser.</li>
+        <li><b>Den rechten Winkel an die falsche Ecke setzen.</b> Er liegt bei <span class="ga">C</span>; die Hypotenuse ist stets der Durchmesser AB.</li>
         <li><b>Radius und Durchmesser verwechseln.</b> Der Thaleskreis über AB hat den Radius <span class="f">AB : 2</span>. Wer AB als Zirkelweite nimmt, zeichnet einen Kreis mit dem doppelten Radius.</li>
-        <li><b>Die Mitte schätzen.</b> M wird mit der Mittelsenkrechten <i>konstruiert</i>; nach Augenmaß gesetzt, ist der Winkel bei C nur zufällig 90°.</li>
+        <li><b>Die Mitte schätzen.</b> M wird mit der Mittelsenkrechten <i>konstruiert</i>; nach Augenmaß gesetzt, ist der Winkel bei C nur zufällig 90°. Und <b>C = A oder C = B</b> ist kein Dreieck — alle übrigen Punkte des Kreises sind erlaubt.</li>
         <li><b>Satz und Umkehrung verwechseln.</b> Satz: C liegt auf dem Kreis ⟹ γ = 90°. Umkehrung: γ = 90° ⟹ C liegt auf dem Kreis. Hier gelten beide Richtungen — selbstverständlich ist das nicht.</li>
-        <li><b>C = A oder C = B zulassen.</b> Dann entsteht kein Dreieck. Alle übrigen Punkte des Kreises sind erlaubt.</li>
-        <li><b>PT = √(d² + r²) rechnen.</b> Im Dreieck MTP ist <span class="f">d = MP</span> die <i>Hypotenuse</i>, r und PT sind die Katheten — es wird also <b>subtrahiert</b>: <span class="f">PT = √(d² − r²)</span>.</li>
+        <li><b>Eine Kathete als Höhe zu AB nehmen.</b> Senkrecht aufeinander stehen die beiden <i>Katheten</i> — zur Grundseite AB gehört eine ganz andere Höhe, nämlich der Abstand von C zu AB.</li>
       </ul>
     </div>
+
+    <div class="box full" style="border-style:dashed;background:#f7f8fa">
+      <h2 style="color:#5b6570">Ausblick auf Klasse 9 — was dann dazukommt</h2>
+      <p>Der Satz des Thales <b>liefert</b> den rechten Winkel. Sobald der <b>Satz des Pythagoras</b> und die <b>Quadratwurzel</b> dazukommen, lässt sich damit auch rechnen: <span class="f">a² + b² = c²</span> — aus zwei Seiten die dritte, die bisher gemessen wurde. Die <b>Tangentenlänge</b> folgt genauso, denn im Dreieck MTP ist d = MP die Hypotenuse: <span class="f">PT² = d² − r²</span>. Und die Höhe zerlegt das Thales-Dreieck in zwei zum Ganzen ähnliche Teildreiecke — daraus folgen <b>Höhensatz</b> <span class="f">h² = p · q</span> und <b>Kathetensatz</b> <span class="f">a² = c · p</span>, <span class="f">b² = c · q</span>. In Klasse 10 kommt die <b>Trigonometrie</b> hinzu: <span class="f">a = 2r · sin α</span>.</p>
+    </div>
+
   </div>
   <p class="fuss">uplant · Mathematik Klasse 8 · Geometrie · Seite 2 von 2</p>
 </div>

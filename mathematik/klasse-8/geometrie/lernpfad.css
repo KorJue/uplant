@@ -387,6 +387,29 @@
   stroke-dasharray: none;
 }
 
+/* Ausblick auf spätere Jahrgangsstufen. Bewusst anders als die Merkboxen: Was hier steht,
+   gehört zum Zusammenhang, wird aber weder vorausgesetzt noch geübt. */
+.ausblick-box {
+  background: var(--bg);
+  border: 1px dashed var(--border);
+  border-left: 4px solid var(--muted);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin: 0.9rem 0;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+.ausblick-box .box-label {
+  display: block;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+  color: var(--muted);
+}
+.ausblick-box strong { color: var(--text); }
+
 /* ---------- Die Übungsaufgaben ---------- */
 
 /* Werkbank der Konstruktionsaufgaben: Umschalter, Titel, Aufgabentext. */
