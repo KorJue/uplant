@@ -223,7 +223,7 @@ def fig_tangenten():
     t.append(f'<circle cx="{T2[0]:.2f}" cy="{T2[1]:.2f}" r="2.1" fill="{SCHWARZ}"/>')
     t.append(txt(T2[0] - 8, T2[1] + 10, "T₂", SCHWARZ, 7.4, 700))
     t.append(txt(Z[0] + 4, Z[1] - d / 2 - 5, "Thaleskreis über MP", BLAU, 6.8, 700))
-    t.append(txt(B / 2, H - 5, "PT = √(d² − r²)", GRUEN, 8.2, 700))
+    t.append(txt(B / 2, H - 5, "∡MT₁P = ∡MT₂P = 90°  —  darum berühren PT₁ und PT₂", GRUEN, 7.6, 700))
     return svg(B, H, t)
 
 

@@ -240,7 +240,8 @@ async function konstruktionen(page, pruefe) {
     await lineal(page, B, C);
     rueck = await pruefeKnopf(page);
     pruefe(await istGruen(page), `K4: die fertige Konstruktion wird anerkannt — „${rueck.slice(0, 60)}…“`);
-    pruefe(rueck.includes("Höhensatz"), "K4: die Rückmeldung nennt den Höhensatz");
+    pruefe(rueck.includes("Miss nach"), "K4: die Rückmeldung schickt zum Nachmessen statt zum Höhensatz (Klasse 9)");
+    pruefe(!rueck.includes("√"), "K4: die Rückmeldung kommt ohne Wurzel aus");
   }
 
   // --- Aufgabe 5: Dreieck aus c und h_c ---
@@ -301,7 +302,8 @@ async function konstruktionen(page, pruefe) {
     pruefe(Math.abs(gefaellt.F.x - H.x) < 0.01, `K6: der Fußpunkt des Lots liegt bei x = ${gefaellt.F.x.toFixed(1)} (erwartet ${H.x.toFixed(1)})`);
     rueck = await pruefeKnopf(page);
     pruefe(await istGruen(page), `K6: die fertige Konstruktion wird anerkannt — „${rueck.slice(0, 60)}…“`);
-    pruefe(rueck.includes("Kathetensatz"), "K6: die Rückmeldung nennt Höhen- und Kathetensatz");
+    pruefe(rueck.includes("Klasse 9"), "K6: die Rückmeldung verweist die Satzgruppe auf Klasse 9");
+    pruefe(!rueck.includes("√"), "K6: die Rückmeldung kommt ohne Wurzel aus");
   }
 
   // Der Umschalter räumt die eigene Zeichnung ab — sonst stünde die alte Konstruktion
@@ -432,15 +434,16 @@ async function rechenaufgaben(page, pruefe) {
     pruefe(weg.includes("Umfangswinkelsatz"), "R2: der Rechenweg nennt den Umfangswinkelsatz");
   }
 
-  // --- Aufgabe 3: das ganze Thales-Dreieck ---
+  // --- Aufgabe 3: das Thales-Dreieck vermessen ---
   {
     const box = "#rechen-mount .aufgabe-box:nth-of-type(3)";
-    // Unabhängig nachgerechnet aus c = 10 und b = 6.
-    const c = 10, b = 6;
-    const a = Math.sqrt(c * c - b * b);
-    const soll = [a, c / 2, (a * b) / 2, (a * b) / c, (b * b) / c, (a * a) / c];
-    pruefe(Math.abs(soll[3] * soll[3] - soll[4] * soll[5]) < 1e-9, `R3: Höhensatz h² = p · q — ${(soll[3] * soll[3]).toFixed(4)}`);
-    pruefe(Math.abs(soll[4] + soll[5] - c) < 1e-9, "R3: p + q ergibt die Hypotenuse");
+    // Unabhängig nachgerechnet: Alle drei Seiten stehen in der Angabe, es wird nichts gewurzelt.
+    const c = 10, b = 6, a = 8;
+    pruefe(a * a + b * b === c * c, `R3: ${a}, ${b}, ${c} bilden ein rechtwinkliges Dreieck`);
+    const flaeche = (a * b) / 2, h = (a * b) / c, r = c / 2;
+    const soll = [90, r, r, a + b + c, flaeche, h];
+    pruefe(Math.abs(h - 4.8) < 1e-9, `R3: die Höhe ist ${h} und geht glatt auf`);
+    pruefe(h < r, `R3: die Höhe ${h} bleibt unter dem Radius ${r}`);
 
     const f = await page.evaluate((sel) => {
       const svg = document.querySelector(sel + " .th-figur");
@@ -455,9 +458,9 @@ async function rechenaufgaben(page, pruefe) {
     const H = f.hoehe.a.y < f.hoehe.b.y ? f.hoehe.b : f.hoehe.a;
     pruefe(Math.abs(winkelBei(C, A, B) - 90) < 0.3, `R3: die Zeichnung zeigt bei C ${winkelBei(C, A, B).toFixed(1)}°`);
     const massstab = abst(A, B) / c;
-    pruefe(Math.abs(abst(A, C) / massstab - b) < 0.1, `R3: die Zeichnung zeigt b = ${(abst(A, C) / massstab).toFixed(2)} (Aufgabe: 6)`);
-    pruefe(Math.abs(abst(A, H) / massstab - soll[4]) < 0.1, `R3: die Zeichnung zeigt q = ${(abst(A, H) / massstab).toFixed(2)} (gerechnet: ${soll[4]})`);
-    pruefe(Math.abs(abst(C, H) / massstab - soll[3]) < 0.1, `R3: die Zeichnung zeigt h = ${(abst(C, H) / massstab).toFixed(2)} (gerechnet: ${soll[3]})`);
+    pruefe(Math.abs(abst(A, C) / massstab - b) < 0.1, `R3: die Zeichnung zeigt b = ${(abst(A, C) / massstab).toFixed(2)} (Angabe: 6)`);
+    pruefe(Math.abs(abst(B, C) / massstab - a) < 0.1, `R3: die Zeichnung zeigt a = ${(abst(B, C) / massstab).toFixed(2)} (Angabe: 8)`);
+    pruefe(Math.abs(abst(C, H) / massstab - h) < 0.1, `R3: die Zeichnung zeigt h = ${(abst(C, H) / massstab).toFixed(2)} (gerechnet: ${h})`);
 
     const eingaben = await page.$$(box + " .th-luecken-liste input");
     pruefe(eingaben.length === 6, `R3: ${eingaben.length} Lücken (erwartet 6)`);
@@ -467,7 +470,7 @@ async function rechenaufgaben(page, pruefe) {
     pruefe(rueck.includes("Alles richtig"), `R3: die richtigen Werte werden anerkannt — „${rueck}“`);
 
     // Ein einzelner Fehler darf nicht durchrutschen.
-    await eingaben[0].fill("7");
+    await eingaben[5].fill("5");
     await page.locator(box + " .btn-primary").click();
     rueck = await text(page, box + " .aufgabe-feedback .status");
     pruefe(rueck.includes("Noch nicht"), `R3: ein falscher Wert fällt auf — „${rueck}“`);
@@ -490,21 +493,26 @@ async function heftaufgaben(page, pruefe) {
 
   const kontrollen = await page.$$eval("#heft-mount details > div", (d) => d.map((x) => x.textContent.replace(/\s+/g, " ")));
 
-  // Aufgabe 1: c = 7, b = 4 ⟹ a = √33.
-  const a1 = Math.sqrt(7 * 7 - 4 * 4);
-  pruefe(Math.abs(a1 - 5.745) < 0.001, `Heft 1: a = √33 = ${a1.toFixed(3)}`);
-  pruefe(kontrollen[0].includes("5,74"), "Heft 1: die Selbstkontrolle nennt die Sollänge 5,74 cm");
-  pruefe(kontrollen[0].includes("3,5 cm"), "Heft 1: die Selbstkontrolle nennt den Umkreisradius 3,5 cm");
+  // Aufgabe 1: Kontrolliert wird über die drei gleich langen Radien und das Geodreieck —
+  // die Länge BC steht nur als Messwert da. Ausrechnen ginge nur mit Pythagoras und Wurzel,
+  // und beides ist in Klasse 8 noch nicht bekannt.
+  pruefe(Math.abs(Math.sqrt(7 * 7 - 4 * 4) - 5.745) < 0.001, `Heft 1: BC misst ${Math.sqrt(33).toFixed(2)} cm — als Messwert, nicht als Rechnung`);
+  pruefe(kontrollen[0].includes("3,5 cm"), "Heft 1: die Selbstkontrolle nennt die drei gleich langen Radien mit 3,5 cm");
+  pruefe(kontrollen[0].includes("5,7"), "Heft 1: die Selbstkontrolle nennt den Messwert für BC");
+  pruefe(kontrollen[0].includes("Geodreieck"), "Heft 1: die Selbstkontrolle verlangt die Winkelprobe mit dem Geodreieck");
 
-  // Aufgabe 2 a): c = 6, h = 2,5 ⟹ p + q = 6, p · q = 6,25.
+  // Aufgabe 2 a): c = 6, h = 2,5 ⟹ die Abschnitte ergänzen sich zu 6 cm.
   const wurzel = Math.sqrt(9 - 6.25);
-  pruefe(Math.abs(3 + wurzel - 4.658) < 0.001 && Math.abs(3 - wurzel - 1.342) < 0.001, `Heft 2a: die Abschnitte sind ${(3 + wurzel).toFixed(3)} und ${(3 - wurzel).toFixed(3)}`);
-  pruefe(kontrollen[1].includes("4,66") && kontrollen[1].includes("1,34"), "Heft 2a: die Selbstkontrolle nennt beide Abschnitte");
-  // Aufgabe 2 b): p = 2, q = 4,5 ⟹ c = 6,5, h = 3, a = √13, b = √29,25.
-  pruefe(Math.abs(Math.sqrt(2 * 4.5) - 3) < 1e-12, "Heft 2b: h = √(p · q) = 3 geht glatt auf");
-  pruefe(Math.abs(Math.sqrt(6.5 * 2) - 3.606) < 0.001, `Heft 2b: a = √(c · p) = ${Math.sqrt(6.5 * 2).toFixed(3)}`);
-  pruefe(Math.abs(Math.sqrt(6.5 * 4.5) - 5.408) < 0.001, `Heft 2b: b = √(c · q) = ${Math.sqrt(6.5 * 4.5).toFixed(3)}`);
-  pruefe(kontrollen[1].includes("3,61") && kontrollen[1].includes("5,41"), "Heft 2b: die Selbstkontrolle nennt beide Katheten");
+  pruefe(Math.abs(3 + wurzel + (3 - wurzel) - 6) < 1e-12, "Heft 2a: die beiden Abschnitte ergänzen sich zur Hypotenuse");
+  pruefe(Math.abs(3 + wurzel - 4.658) < 0.001 && Math.abs(3 - wurzel - 1.342) < 0.001,
+    `Heft 2a: die Abschnitte messen ${(3 + wurzel).toFixed(1)} und ${(3 - wurzel).toFixed(1)} cm`);
+  pruefe(kontrollen[1].includes("4,7") && kontrollen[1].includes("1,3"), "Heft 2a: die Selbstkontrolle nennt beide Messwerte");
+  pruefe(kontrollen[1].includes("6 cm"), "Heft 2a: die Selbstkontrolle nennt die Summe der beiden Abschnitte");
+  // Aufgabe 2 b): p = 2, q = 4,5 ⟹ c = 6,5.
+  pruefe(2 + 4.5 === 6.5, "Heft 2b: p + q ergibt die Hypotenuse 6,5 cm");
+  pruefe(Math.abs(Math.sqrt(2 * 4.5) - 3) < 1e-12, `Heft 2b: die Höhe misst 3 cm`);
+  pruefe(kontrollen[1].includes("6,5 cm"), "Heft 2b: die Selbstkontrolle nennt die Hypotenuse");
+  pruefe(kontrollen[1].includes("3,6") && kontrollen[1].includes("5,4"), "Heft 2b: die Selbstkontrolle nennt beide Katheten als Messwerte");
 
   // Aufgabe 3: Grenzfall h = c : 2 und der unmögliche Fall h > c : 2.
   pruefe(Math.abs(2.5 - 5 / 2) < 1e-12, "Heft 3a: h_c = 2,5 cm ist genau der Radius des Thaleskreises");
@@ -512,6 +520,33 @@ async function heftaufgaben(page, pruefe) {
   pruefe(kontrollen[2].includes("genau eine"), "Heft 3a: die Selbstkontrolle nennt den Grenzfall mit genau einer Lösung");
   pruefe(kontrollen[2].includes("keine"), "Heft 3b: die Selbstkontrolle nennt den unmöglichen Fall");
   pruefe(kontrollen[2].includes("45°"), "Heft 3a: die Selbstkontrolle nennt das gleichschenklige Dreieck mit 45°");
+}
+
+// ---------- Keine Wurzeln in Klasse 8 ----------
+//
+// Quadratwurzeln und der Satz des Pythagoras stehen erst in Klasse 9 an. Auf dieser Seite darf
+// deshalb keine Aufgabe eine Wurzel verlangen. Genannt werden darf beides — aber nur dort, wo
+// es ausdrücklich als Ausblick gekennzeichnet ist.
+
+async function wurzelfrei(page, pruefe) {
+  const abschnitte = ["sec-konstruktionsaufgaben", "sec-uebungen", "sec-heft"];
+  for (const id of abschnitte) {
+    const roh = await page.evaluate((sel) => {
+      const el = document.getElementById(sel).cloneNode(true);
+      el.querySelectorAll(".ausblick-box").forEach((a) => a.remove());
+      return el.innerText.replace(/\s+/g, " ");
+    }, id);
+    const treffer = roh.match(/√[^ ]*/g) || [];
+    pruefe(treffer.length === 0, `${id}: die Seite verlangt eine Wurzel — „${treffer.join(", ")}“`);
+  }
+  // Auch die Rückmeldungen der Konstruktionsaufgaben dürfen keine verlangen. Sie erscheinen
+  // erst nach dem Prüfen, deshalb wird jede Aufgabe einmal leer geprüft und einmal getippt.
+  for (const id of ["k1", "k2", "k3", "k4", "k5", "k6"]) {
+    await waehleAufgabe(page, id);
+    await page.locator("#ka-hint").click();
+    const rueck = await text(page, "#ka-feedback");
+    pruefe(!rueck.includes("√"), `Konstruktion ${id}: der Tipp enthält eine Wurzel — „${rueck.slice(0, 70)}…“`);
+  }
 }
 
 // ---------- Lauf ----------
@@ -525,6 +560,8 @@ async function heftaufgaben(page, pruefe) {
   await konstruktionen(page, pruefe);
   await rechenaufgaben(page, pruefe);
   await heftaufgaben(page, pruefe);
+
+  await wurzelfrei(page, pruefe);
 
   pruefe(page.stoerungen.length === 0, `Keine Skript- oder Konsolenfehler (${page.stoerungen.join(" | ") || "keine"})`);
 

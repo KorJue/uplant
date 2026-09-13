@@ -360,15 +360,15 @@ async function tangenten(page) {
       pruefe(stand === dEff, `Tangenten: r = ${r}, d = ${d} — der Regler steht auf ${stand}, gerechnet wird mit ${dEff}`);
       const wo = `r = ${r}, d = ${dEff}`;
 
-      const t2 = q2(dEff) - q2(r);
-      const t = Math.sqrt(t2);
+      // Nur zur Kontrolle der Zeichnung — auf der Seite wird diese Länge nicht ausgerechnet.
+      const t = Math.sqrt(q2(dEff) - q2(r));
 
       const bilanz = await text(page, "#tg-bilanz");
-      pruefe(bilanz.includes(`d² − r² = ${de(q2(dEff))} − ${de(q2(r))} = ${de(t2)}`),
-        `Tangenten: ${wo} — die Rechnung PT² = d² − r² fehlt — „${bilanz}“`);
-      const zeichen = Number.isInteger(t) ? "=" : "≈";
-      pruefe(bilanz.includes(`PT = √${de(t2)} ${zeichen} ${de(t, 2)}`),
-        `Tangenten: ${wo} — PT steht nicht als „√${de(t2)} ${zeichen} ${de(t, 2)}“ — „${bilanz}“`);
+      pruefe(bilanz.includes("90°"), `Tangenten: ${wo} — die Bilanz nennt den rechten Winkel nicht — „${bilanz}“`);
+      pruefe(bilanz.includes("Thaleskreis über MP"), `Tangenten: ${wo} — die Bilanz nennt den Thaleskreis nicht — „${bilanz}“`);
+      pruefe(bilanz.includes("berührt"), `Tangenten: ${wo} — die Bilanz begründet die Berührung nicht — „${bilanz}“`);
+      // In Klasse 8 sind Quadratwurzeln noch nicht bekannt: Die Bilanz darf keine verlangen.
+      pruefe(!bilanz.includes("√"), `Tangenten: ${wo} — die Bilanz rechnet mit einer Wurzel — „${bilanz}“`);
 
       // Die Zeichnung: Liegen die Berührpunkte wirklich auf beiden Kreisen, und steht der
       // Radius dort wirklich senkrecht auf der Tangente?
@@ -452,90 +452,104 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — die fehlende Kathete. 7 Tripel × 3 Vielfache × 2 Lagen = 42 Fassungen;
-  // bei 30 Zügen E = 21,6 und σ = 1,8 — Schranke 16.
+  // Aufgabe 2 — Umkreisradius und Hypotenuse, in beiden Richtungen. 18 Längen × 2 Richtungen
+  // = 36 Fassungen, gefiltert. Gemessen mit tests/werkzeug-streuung.js: das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen liegt bei 15.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 fehlende Kathete", runden: 30, mindestensVerschieden: 16,
+    nr: 2, name: "A2 Umkreisradius", runden: 30, mindestensVerschieden: 15,
     deute: (frage) => {
-      const m = frage.match(/AB = (\d+) cm.*?AC ist (\d+) cm/);
+      const nachRadius = /AB ist (\d+) cm/.test(frage);
+      if (nachRadius) {
+        const c = Number(frage.match(/AB ist (\d+) cm/)[1]);
+        return {
+          richtig: c / 2,
+          toleranz: 0.005,
+          falsch: [[c, "ganze"], [c * 2, "verdoppelt statt halbiert"]],
+          pruefe: (f, rueck) => {
+            pruefe(c % 2 === 0, `A2: AB = ${c} cm halbiert sich nicht glatt — „${f}“`);
+            pruefe(rueck.includes("Mitte der Hypotenuse"),
+              `A2: die Musterlösung nennt den Umkreismittelpunkt nicht — „${f}“`);
+            // Keine Aufgabe dieser Seite darf eine Wurzel verlangen — Klasse 9.
+            pruefe(!/√|Wurzel/.test(f + rueck), `A2: in Aufgabe oder Lösung steht eine Wurzel — „${f}“`);
+          },
+        };
+      }
+      const m = frage.match(/Radius ([\d,]+) cm/);
       if (!m) return null;
-      const c = Number(m[1]), b = Number(m[2]);
-      const a = Math.sqrt(q2(c) - q2(b));
+      const r = Number(m[1].replace(",", "."));
       return {
-        richtig: a,
+        richtig: 2 * r,
         toleranz: 0.005,
-        falsch: [
-          [c - b, "Längen"],
-          [q2(c) - q2(b), "Quadratwurzel"],
-          [Math.sqrt(q2(c) + q2(b)), "addiert"],
-          [c / 2, "Radius"],
-        ],
+        falsch: [[r, "gegebene"], [r / 2, "halbiert statt verdoppelt"]],
         pruefe: (f, rueck) => {
-          pruefe(Number.isInteger(a), `A2: √(${c}² − ${b}²) = ${a} ist nicht ganzzahlig — „${f}“`);
-          pruefe(b < c, `A2: die Kathete ${b} ist nicht kürzer als der Durchmesser ${c} — „${f}“`);
-          pruefe(rueck.includes("Thales"), `A2: die Musterlösung begründet den rechten Winkel nicht — „${f}“`);
-          pruefe(rueck.includes("Hypotenuse"), `A2: die Musterlösung benennt AB nicht als Hypotenuse — „${f}“`);
+          pruefe(rueck.includes("Durchmesser"), `A2: die Musterlösung nennt AB nicht als Durchmesser — „${f}“`);
+          pruefe(!/√|Wurzel/.test(f + rueck), `A2: in Aufgabe oder Lösung steht eine Wurzel — „${f}“`);
         },
       };
     },
   });
 
-  // Aufgabe 3 — Tangentenlänge. Ebenfalls 42 Fassungen — Schranke 16.
+  // Aufgabe 3 — die Winkel am Mittelpunkt, die Beweisfigur. 12 Winkel × 2 Ziele = 24
+  // Fassungen, gefiltert. Gemessen: das simulierte 10⁻⁴-Quantil bei 30 Zügen liegt bei 11.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Tangentenlänge", runden: 30, mindestensVerschieden: 16,
+    nr: 3, name: "A3 Winkel am Mittelpunkt", runden: 30, mindestensVerschieden: 11,
     deute: (frage) => {
-      const m = frage.match(/r = (\d+) cm.*?liegt (\d+) cm von M/);
-      if (!m) return null;
-      const r = Number(m[1]), d = Number(m[2]);
-      const t = Math.sqrt(q2(d) - q2(r));
+      const m = frage.match(/α = (\d+)°/);
+      const z = frage.match(/Wie groß ist der Winkel ∡(AMC|CMB)/);
+      if (!m || !z) return null;
+      const alpha = Number(m[1]);
+      const amc = 180 - 2 * alpha, cmb = 2 * alpha;
+      const nachAMC = z[1] === "AMC";
       return {
-        richtig: t,
+        richtig: nachAMC ? amc : cmb,
         toleranz: 0.005,
         falsch: [
-          [d - r, "Längen"],
-          [q2(d) - q2(r), "Quadratwurzel"],
-          [Math.sqrt(q2(d) + q2(r)), "addiert"],
-          [d / 2, "Thaleskreises"],
+          [nachAMC ? cmb : amc, "andere"],
+          [alpha, "gegebene Winkel bei A"],
+          [90 - alpha, "Winkel bei B"],
+          [90, "Winkel bei C"],
         ],
         pruefe: (f, rueck) => {
-          pruefe(Number.isInteger(t), `A3: √(${d}² − ${r}²) = ${t} ist nicht ganzzahlig — „${f}“`);
-          pruefe(d > r, `A3: P liegt mit ${d} nicht außerhalb des Kreises (r = ${r}) — „${f}“`);
-          // Der Grund für den rechten Winkel gehört in die Musterlösung, nicht nur die Rechnung.
-          pruefe(rueck.includes("senkrecht auf dem Radius"),
-            `A3: die Musterlösung begründet den rechten Winkel bei T nicht — „${f}“`);
-          pruefe(rueck.includes("Thaleskreis über MP"),
-            `A3: die Musterlösung stellt den Zusammenhang zur Konstruktion nicht her — „${f}“`);
+          pruefe(alpha !== 45, `A3: bei α = 45° fielen ∡AMC und ∡CMB zusammen — „${f}“`);
+          pruefe(amc + cmb === 180, `A3: ∡AMC und ∡CMB ergänzen sich nicht zu 180° — „${f}“`);
+          // Der Basiswinkelsatz ist der Kern; ohne ihn ist die Lösung nur eine Formel.
+          pruefe(rueck.includes("gleichschenklig"), `A3: die Musterlösung begründet nicht über das gleichschenklige Dreieck — „${f}“`);
+          pruefe(rueck.includes("Nebenwinkel"), `A3: die Musterlösung erklärt den zweiten Winkel bei M nicht — „${f}“`);
+          pruefe(!/√|Wurzel/.test(f + rueck), `A3: in Aufgabe oder Lösung steht eine Wurzel — „${f}“`);
         },
       };
     },
   });
 
-  // Aufgabe 4 — Flächeninhalt aus dem Halbkreis. 42 Fassungen — Schranke 16.
+  // Aufgabe 4 — die Höhe auf die Hypotenuse über den Flächeninhalt. Alle drei Seiten stehen in
+  // der Angabe, gerechnet wird nur mit der Fläche. Glatt geht die Höhe nur bei den Vielfachen
+  // von (3, 4, 5) und (7, 24, 25) auf; es bleiben 26 Fassungen, und das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen liegt bei 11.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Flächeninhalt", runden: 30, mindestensVerschieden: 16,
+    nr: 4, name: "A4 Höhe über die Fläche", runden: 30, mindestensVerschieden: 11,
     deute: (frage) => {
-      const m = frage.match(/AB = (\d+) cm.*?AC misst (\d+) cm/);
+      const m = frage.match(/AB = (\d+) cm.*?AC = (\d+) cm.*?BC = (\d+) cm/);
       if (!m) return null;
-      const c = Number(m[1]), b = Number(m[2]);
-      const a = Math.sqrt(q2(c) - q2(b));
+      const c = Number(m[1]), b = Number(m[2]), a = Number(m[3]);
+      const flaeche = (a * b) / 2;
       return {
-        richtig: (a * b) / 2,
+        richtig: (a * b) / c,
         toleranz: 0.005,
         falsch: [
-          // Mit der Hypotenuse als Grundseite und einer Kathete als Höhe gerechnet.
-          [(c * b) / 2, "keine Höhe"],
+          [flaeche, "Flächeninhalt"],
           [a * b, "Halbierung vergessen"],
-          [a, "zweite Kathete"],
+          [c / 2, "Radius"],
+          [(a + b) / 2, "Mittelwert"],
         ],
         pruefe: (f, rueck) => {
-          pruefe(Number.isInteger(a), `A4: die zweite Kathete ${a} ist nicht ganzzahlig — „${f}“`);
-          // Die Fläche liegt stets unter der des halben Umkreises — eine grobe Plausibilität.
-          pruefe((a * b) / 2 < (Math.PI * q2(c / 2)) / 2,
-            `A4: die Dreiecksfläche ${(a * b) / 2} übertrifft den Halbkreis — „${f}“`);
-          pruefe(rueck.includes("Thales"), `A4: die Musterlösung begründet den rechten Winkel nicht — „${f}“`);
-          // Der eigentliche Denkschritt: Die beiden Katheten sind Grundseite und Höhe zueinander.
+          // Die Angabe muss vollständig sein: Ohne die dritte Seite bräuchte man Pythagoras.
+          pruefe(q2(a) + q2(b) === q2(c), `A4: ${a}, ${b}, ${c} bilden kein rechtwinkliges Dreieck — „${f}“`);
+          pruefe(Number.isInteger(((a * b) / c) * 100), `A4: die Höhe ${(a * b) / c} ist nicht glatt — „${f}“`);
+          // Die Höhe kann nie über den Radius hinausreichen.
+          pruefe((a * b) / c <= c / 2 + 1e-9, `A4: die Höhe ${(a * b) / c} übertrifft den Radius ${c / 2} — „${f}“`);
           pruefe(rueck.includes("senkrecht aufeinander"),
             `A4: die Musterlösung sagt nicht, warum die Katheten Grundseite und Höhe sind — „${f}“`);
+          pruefe(!/√|Wurzel/.test(f + rueck), `A4: in Aufgabe oder Lösung steht eine Wurzel — „${f}“`);
         },
       };
     },

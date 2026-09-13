@@ -24,7 +24,7 @@ import { drawMittelsenkrechte } from "./constructions.js?v=22";
 import { setupFreeConstruction } from "./free-ui.js?v=22";
 import { setupCanvasZoom } from "./canvas-zoom.js?v=22";
 import { THALES_TASK } from "./thales-construct.js?v=1";
-import { mountKonstruktionsAufgaben, mountRechenAufgaben, mountHeftAufgaben } from "./thales-aufgaben.js?v=1";
+import { mountKonstruktionsAufgaben, mountRechenAufgaben, mountHeftAufgaben } from "./thales-aufgaben.js?v=2";
 
 "use strict";
 
@@ -649,8 +649,9 @@ function renderTangenten() {
   document.getElementById("tg-r-anzeige").textContent = "r = " + num(r);
   document.getElementById("tg-d-anzeige").textContent = "d = " + num(d);
 
-  const t2 = quadrat(d) - quadrat(r); // PT² — exakt ganzzahlig
-  const t = Math.sqrt(t2);
+  // Nur für die Lage der Berührpunkte gebraucht, nicht für eine Rechnung auf der Seite:
+  // Die Tangentenlänge selbst gehört zum Satz des Pythagoras und damit in Klasse 9.
+  const t = Math.sqrt(quadrat(d) - quadrat(r));
 
   const W = 560, H = 320;
   // Die Figur reicht in der Breite von M − r bis P. In der Höhe zählt nicht nur der gegebene
@@ -697,16 +698,15 @@ function renderTangenten() {
   mount.appendChild(svg);
 
   document.getElementById("tg-bilanz").innerHTML =
-    `Im Dreieck MTP ist der Winkel bei T ein rechter — denn T liegt auf dem <span class="wc">Thaleskreis über MP</span>. ` +
-    `<span class="wc">MP = d</span> ist dort die Hypotenuse.<br>` +
-    `<span class="wa">PT</span>² = d² − r² = ${num(quadrat(d))} − ${num(quadrat(r))} = <strong>${num(t2)}</strong><br>` +
-    `<span class="wa">PT = √${num(t2)} ${zeichen(t, 2)} ${num(t, 2)}</span><br>` +
-    `Probe: PT² + r² = ${num(t2)} + ${num(quadrat(r))} = ${num(t2 + quadrat(r))} = d² ✓`;
+    `<span class="wr">T₁</span> und <span class="wr">T₂</span> liegen auf <strong>beiden</strong> Kreisen: auf dem gegebenen Kreis k, also sind ` +
+    `<span class="wr">MT₁</span> und <span class="wr">MT₂</span> Radien — und auf dem <span class="wc">Thaleskreis über MP</span>, ` +
+    `also ist der Winkel bei T ein rechter.<br>` +
+    `∡MT₁P = ∡MT₂P = <span class="wg">90°</span> — und eine Gerade, die im Kreispunkt senkrecht auf dem Radius steht, <strong>berührt</strong> den Kreis.<br>` +
+    `Verschiebe P: Der rechte Winkel bleibt, solange P außerhalb liegt.`;
 
   document.getElementById("tg-text").textContent =
-    Number.isInteger(t)
-      ? `Hier geht es glatt auf: r = ${num(r)}, PT = ${num(t)} und d = ${num(d)} bilden ein pythagoreisches Tripel.`
-      : "Beide Tangentenabschnitte sind gleich lang — die ganze Figur ist an der Geraden MP gespiegelt.";
+    "Beide Tangentenabschnitte sind gleich lang — die ganze Figur ist an der Geraden MP gespiegelt. " +
+    "Ausmessen lässt sich PT hier, ausrechnen erst in Klasse 9 mit dem Satz des Pythagoras.";
 }
 
 // ================= Quizze =================
@@ -857,8 +857,9 @@ function mountUebungsaufgaben(container, defs) {
 
 // ---------- Aufgaben-Definitionen ----------
 
-// Pythagoreische Grundtripel. Vielfache davon sind wieder Tripel — dadurch lassen sich die
-// Zahlen variieren, ohne dass eine Wurzel jemals irrational würde.
+// Pythagoreische Grundtripel. Gebraucht werden sie nur noch, damit in Aufgabe 4 alle drei
+// Seiten und die Höhe glatte Zahlen sind — gerechnet wird auf dieser Seite nirgends mit dem
+// Satz des Pythagoras: Er steht ebenso wie das Wurzelziehen erst in Klasse 9 an.
 const TRIPEL = [
   [3, 4, 5], [5, 12, 13], [8, 15, 17], [7, 24, 25], [20, 21, 29], [9, 40, 41], [12, 35, 37],
 ];
@@ -898,61 +899,63 @@ function generateAufgabe1() {
   };
 }
 
-// Aufgabe 2 — fehlende Kathete im Thales-Dreieck.
+// Aufgabe 2 — Umkreisradius und Hypotenuse. Beide Richtungen derselben Einsicht: Der
+// Umkreismittelpunkt eines rechtwinkligen Dreiecks ist die Mitte der Hypotenuse, sein Radius
+// also die halbe Hypotenuse. Gerechnet wird nur halbiert oder verdoppelt.
 const A2_KANDIDATEN = (() => {
   const liste = [];
-  for (const [x, y, z] of TRIPEL) {
-    for (let t = 1; t <= 3; t++) {
-      liste.push({ b: x * t, a: y * t, c: z * t });
-      liste.push({ b: y * t, a: x * t, c: z * t });
-    }
+  for (let c = 6; c <= 40; c += 2) {
+    liste.push({ richtung: "radius", c, r: c / 2 });
+    liste.push({ richtung: "hypotenuse", c, r: c / 2 });
   }
   return liste;
 })();
 
 function generateAufgabe2() {
-  const k = ohneKollision(
-    A2_KANDIDATEN,
-    (v) => [v.a, v.c - v.b, quadrat(v.c) - quadrat(v.b), Math.sqrt(quadrat(v.c) + quadrat(v.b)), v.c / 2],
-    A2_KANDIDATEN[0],
-  );
-  const { a, b, c } = k;
+  const k = ohneKollision(A2_KANDIDATEN, (v) => [v.c, v.r, v.c * 2, v.r / 2], A2_KANDIDATEN[0]);
+  const { richtung, c, r } = k;
+  const nachRadius = richtung === "radius";
+  const loesung = nachRadius ? r : c;
   return {
-    promptHtml:
-      `Über der Strecke AB mit <strong>AB = ${num(c)} cm</strong> wird der Thaleskreis gezeichnet. ` +
-      `Der Punkt C liegt auf dem Kreis, und die Strecke <strong>AC ist ${num(b)} cm</strong> lang.<br>` +
-      `<strong>Wie lang ist die Strecke BC?</strong> Antwort in Zentimetern.`,
-    correct: a,
+    promptHtml: nachRadius
+      ? `Ein Dreieck ABC hat bei C einen <strong>rechten Winkel</strong>; die Seite <strong>AB ist ${num(c)} cm</strong> lang.<br>` +
+        `<strong>Wie weit ist C von der Mitte der Strecke AB entfernt?</strong> Antwort in Zentimetern.`
+      : `Ein Dreieck ABC hat bei C einen <strong>rechten Winkel</strong>. Sein <strong>Umkreis hat den Radius ${num(r)} cm</strong>.<br>` +
+        `<strong>Wie lang ist die Seite AB?</strong> Antwort in Zentimetern.`,
+    correct: loesung,
     tolerance: 0.01,
-    placeholder: "BC in cm",
+    placeholder: nachRadius ? "Abstand in cm" : "AB in cm",
     hinweis: (raw, val) => {
-      if (trifft(val, c - b))
-        return `Du hast die <strong>Längen</strong> voneinander abgezogen. Subtrahiert werden aber die <em>Quadrate</em>: BC² = AB² − AC².`;
-      if (trifft(val, quadrat(c) - quadrat(b)))
-        return `${num(quadrat(c) - quadrat(b))} ist bereits <strong>BC²</strong>. Es fehlt noch die Quadratwurzel.`;
-      if (trifft(val, Math.sqrt(quadrat(c) + quadrat(b))))
-        return `Du hast <strong>addiert</strong>. AB ist hier der Durchmesser und damit die <em>Hypotenuse</em> — die längste Seite. Gesucht ist eine Kathete, also wird subtrahiert.`;
-      if (trifft(val, c / 2))
-        return `${num(c / 2)} cm ist der <strong>Radius</strong> des Thaleskreises. Er ist zwar die halbe Hypotenuse, aber nicht die gesuchte Kathete.`;
-      return `Der Thaleskreis liefert den rechten Winkel bei C. AB ist die Hypotenuse: BC² = AB² − AC².`;
+      if (nachRadius && trifft(val, c))
+        return `${num(c)} cm ist die <strong>ganze</strong> Strecke AB. Gefragt ist der Abstand bis zu ihrer <em>Mitte</em> — also die Hälfte.`;
+      if (!nachRadius && trifft(val, r))
+        return `${num(r)} cm ist der <strong>gegebene</strong> Radius. Die Hypotenuse ist doppelt so lang, denn sie ist der Durchmesser des Umkreises.`;
+      if (trifft(val, nachRadius ? c * 2 : r / 2))
+        return `Du hast in die falsche Richtung gerechnet: ${nachRadius ? "verdoppelt statt halbiert" : "halbiert statt verdoppelt"}.`;
+      if (trifft(val, nachRadius ? c / 4 : c * 2))
+        return `Zweimal halbiert bzw. zweimal verdoppelt — einmal genügt.`;
+      return `Nach der Umkehrung des Satzes von Thales liegt C auf dem Kreis über AB. Sein Mittelpunkt ist die Mitte von AB, sein Radius die halbe Hypotenuse.`;
     },
-    musterloesungHtml:
-      `<strong>1. Satz des Thales:</strong> C liegt auf dem Thaleskreis über AB ⟹ der Winkel bei C ist 90°. Damit ist <strong>AB die Hypotenuse</strong>.<br>` +
-      `<strong>2. Satz des Pythagoras:</strong> BC² = AB² − AC² = ${num(quadrat(c))} − ${num(quadrat(b))} = <strong>${num(quadrat(a))}</strong><br>` +
-      `<strong>3. Wurzel ziehen:</strong> BC = √${num(quadrat(a))} = <strong>${num(a)} cm</strong><br>` +
-      `<em>Probe:</em> ${num(b)}² + ${num(a)}² = ${num(quadrat(b))} + ${num(quadrat(a))} = ${num(quadrat(c))} = ${num(c)}² ✓`,
+    musterloesungHtml: nachRadius
+      ? `<strong>1. Umkehrung des Satzes von Thales:</strong> Der Winkel bei C ist ein rechter, also liegt C auf dem Thaleskreis über AB.<br>` +
+        `<strong>2. Mittelpunkt:</strong> Der Mittelpunkt dieses Kreises ist die <strong>Mitte der Hypotenuse</strong> — genau der Punkt, von dem der Abstand gesucht ist.<br>` +
+        `<strong>3. Radius:</strong> MC = r = AB : 2 = ${num(c)} cm : 2 = <strong>${num(r)} cm</strong><br>` +
+        `<em>Merke:</em> Der Abstand hängt nicht davon ab, wie flach oder steil das Dreieck ist — er ist immer die halbe Hypotenuse.`
+      : `<strong>1. Umkehrung des Satzes von Thales:</strong> Der Winkel bei C ist ein rechter, also ist AB der <strong>Durchmesser</strong> des Umkreises.<br>` +
+        `<strong>2. Durchmesser:</strong> AB = 2 · r = 2 · ${num(r)} cm = <strong>${num(c)} cm</strong><br>` +
+        `<em>Merke:</em> Umkreismittelpunkt ist die Mitte der Hypotenuse, der Umkreisradius die halbe Hypotenuse — beim rechtwinkligen Dreieck liegt M also auf dem Rand.`,
   };
 }
 
-// Aufgabe 3 — Tangentenlänge. Radius und Tangentenabschnitt sind die Katheten, der Abstand MP
-// ist die Hypotenuse; aus einem Tripel wird also alles ganzzahlig.
+// Aufgabe 3 — die Winkel am Mittelpunkt. Das ist die Beweisfigur: Der Strich MC zerlegt das
+// Dreieck in zwei gleichschenklige Teile, und der Winkel bei M ist der Außenwinkel des einen.
+// Gefragt wird abwechselnd nach ∡AMC und nach ∡CMB.
 const A3_KANDIDATEN = (() => {
   const liste = [];
-  for (const [x, y, z] of TRIPEL) {
-    for (let t = 1; t <= 3; t++) {
-      liste.push({ r: x * t, pt: y * t, d: z * t });
-      liste.push({ r: y * t, pt: x * t, d: z * t });
-    }
+  for (let a = 15; a <= 75; a += 5) {
+    if (a === 45) continue;      // sonst fielen ∡AMC und ∡CMB zusammen
+    liste.push({ alpha: a, ziel: "AMC" });
+    liste.push({ alpha: a, ziel: "CMB" });
   }
   return liste;
 })();
@@ -960,86 +963,112 @@ const A3_KANDIDATEN = (() => {
 function generateAufgabe3() {
   const k = ohneKollision(
     A3_KANDIDATEN,
-    (v) => [v.pt, v.d - v.r, quadrat(v.d) - quadrat(v.r), Math.sqrt(quadrat(v.d) + quadrat(v.r)), v.d / 2],
+    (v) => [180 - 2 * v.alpha, 2 * v.alpha, v.alpha, 90 - v.alpha, 90],
     A3_KANDIDATEN[0],
   );
-  const { r, pt, d } = k;
+  const { alpha, ziel } = k;
+  const beta = 90 - alpha;
+  const amc = 180 - 2 * alpha, cmb = 2 * alpha;
+  const nachAMC = ziel === "AMC";
+  const loesung = nachAMC ? amc : cmb;
   return {
     promptHtml:
-      `Ein Kreis hat den Mittelpunkt M und den Radius <strong>r = ${num(r)} cm</strong>. ` +
-      `Der Punkt P liegt <strong>${num(d)} cm</strong> von M entfernt.<br>` +
-      `Von P aus wird eine <strong>Tangente</strong> an den Kreis gelegt; sie berührt ihn im Punkt T.<br>` +
-      `<strong>Wie lang ist die Strecke PT?</strong> Antwort in Zentimetern.`,
-    correct: pt,
+      `Über der Strecke AB wird der Thaleskreis mit dem Mittelpunkt <strong>M</strong> gezeichnet; C liegt auf dem Kreis, und <strong>MC ist eingezeichnet</strong>.<br>` +
+      `Der Winkel bei A ist <strong>α = ${num(alpha)}°</strong>.<br>` +
+      `<strong>Wie groß ist der Winkel ${nachAMC ? "∡AMC" : "∡CMB"}?</strong> Antwort in Grad, ohne Gradzeichen.`,
+    correct: loesung,
     tolerance: 0.01,
-    placeholder: "PT in cm",
+    placeholder: "Winkel in Grad",
     hinweis: (raw, val) => {
-      if (trifft(val, d - r))
-        return `Du hast die <strong>Längen</strong> subtrahiert. ${num(d - r)} cm ist der kürzeste Weg von P zum Kreisrand, nicht die Tangente — sie läuft schräg am Kreis vorbei bis zum Berührpunkt.`;
-      if (trifft(val, quadrat(d) - quadrat(r)))
-        return `${num(quadrat(d) - quadrat(r))} ist bereits <strong>PT²</strong>. Es fehlt noch die Quadratwurzel.`;
-      if (trifft(val, Math.sqrt(quadrat(d) + quadrat(r))))
-        return `Du hast <strong>addiert</strong>. Im Dreieck MTP ist MP = ${num(d)} cm die <em>Hypotenuse</em> (ihm gegenüber liegt der rechte Winkel bei T) — also wird subtrahiert.`;
-      if (trifft(val, d / 2))
-        return `${num(d / 2)} cm ist der Radius des <strong>Thaleskreises</strong> über MP. Der hilft beim Konstruieren der Tangente, ist aber nicht ihre Länge.`;
-      return `Im Berührpunkt steht die Tangente senkrecht auf dem Radius. Pythagoras im Dreieck MTP mit der Hypotenuse MP: PT² = d² − r².`;
+      if (trifft(val, nachAMC ? cmb : amc))
+        return `Das ist der <strong>andere</strong> Winkel bei M: ${nachAMC ? "∡CMB" : "∡AMC"}. Beide zusammen ergeben 180°, denn A, M und B liegen auf einer Geraden.`;
+      if (trifft(val, alpha))
+        return `${num(alpha)}° ist der gegebene Winkel bei A. Er ist zwar auch der Basiswinkel bei C im Dreieck AMC — aber nicht der Winkel an dessen Spitze M.`;
+      if (trifft(val, beta))
+        return `${num(beta)}° ist der Winkel bei B. Gefragt ist ein Winkel bei <strong>M</strong>.`;
+      if (trifft(val, 90))
+        return `90° ist der Winkel bei C. Bei M steht nur dann ein rechter Winkel, wenn C genau über der Mitte liegt — also bei α = 45°.`;
+      return `MA = MC = r macht das Dreieck AMC gleichschenklig: Bei A und bei C steht je α. Die Winkelsumme liefert ∡AMC, und ∡CMB ist sein Nebenwinkel.`;
     },
     musterloesungHtml:
-      `<strong>1. Rechter Winkel:</strong> Im Berührpunkt steht die Tangente senkrecht auf dem Radius, also ist ∡MTP = 90°. ` +
-      `Genau deshalb liegt T auf dem <strong>Thaleskreis über MP</strong> — so wird die Tangente konstruiert.<br>` +
-      `<strong>2. Satz des Pythagoras</strong> im Dreieck MTP, Hypotenuse MP:<br>` +
-      `PT² = MP² − r² = ${num(quadrat(d))} − ${num(quadrat(r))} = <strong>${num(quadrat(pt))}</strong><br>` +
-      `<strong>3. Wurzel ziehen:</strong> PT = √${num(quadrat(pt))} = <strong>${num(pt)} cm</strong><br>` +
-      `<em>Probe:</em> ${num(pt)}² + ${num(r)}² = ${num(quadrat(pt))} + ${num(quadrat(r))} = ${num(quadrat(d))} = ${num(d)}² ✓ &nbsp; ` +
-      `Die zweite Tangente von P aus ist genau gleich lang.`,
+      `<strong>1. Gleichschenkliges Dreieck:</strong> MA = MC = r, also hat AMC bei A und bei C denselben Winkel α = ${num(alpha)}°.<br>` +
+      `<strong>2. Winkelsumme in AMC:</strong> ∡AMC = 180° − 2 · ${num(alpha)}° = <strong>${num(amc)}°</strong><br>` +
+      `<strong>3. Nebenwinkel:</strong> A, M und B liegen auf einer Geraden, also ∡CMB = 180° − ${num(amc)}° = <strong>${num(cmb)}°</strong><br>` +
+      `<em>Gesucht war ${nachAMC ? "∡AMC" : "∡CMB"}:</em> <strong>${num(loesung)}°</strong><br>` +
+      `<em>Probe über das zweite Teildreieck:</em> BMC ist ebenfalls gleichschenklig, seine Basiswinkel sind je β = 90° − ${num(alpha)}° = ${num(beta)}°, ` +
+      `und ${num(beta)}° + ${num(beta)}° + ${num(cmb)}° = 180° ✓`,
   };
 }
 
-// Aufgabe 4 — Flächeninhalt des Thales-Dreiecks. Der springende Punkt: Weil der rechte Winkel
-// bei C liegt, sind die beiden KATHETEN Grundseite und Höhe zueinander — eine zusätzliche Höhe
-// muss gar nicht bestimmt werden.
-const A4_KANDIDATEN = A2_KANDIDATEN;
+// Aufgabe 4 — die Höhe auf die Hypotenuse, über den Flächeninhalt. Beide Katheten sind gegeben,
+// gerechnet wird nur mit der Fläche: Dasselbe Dreieck, zweimal als Grundseite mal Höhe gelesen.
+// Die Zahlen stammen aus pythagoreischen Tripeln, damit die Höhe glatt aufgeht.
+//
+// Glatt geht die Höhe nur auf, wenn die Hypotenuse ein Teiler von 100 · a · b ist — das trifft
+// von den Tripeln oben nur (3, 4, 5) und (7, 24, 25) samt ihren Vielfachen. Dafür sind bei
+// beiden ALLE Vielfachen brauchbar, solange das Dreieck nicht ins Riesenhafte wächst.
+const A4_KANDIDATEN = (() => {
+  const liste = [];
+  for (const [x, y, z] of TRIPEL) {
+    for (let t = 1; t <= 12; t++) {
+      const c = z * t;
+      if (c > 70) continue;
+      for (const [a, b] of [[y * t, x * t], [x * t, y * t]]) {
+        const h = (a * b) / c;
+        if (Math.round(h * 100) !== h * 100) continue;
+        // Höhe und Radius dürfen nicht dicht beieinanderliegen: Bei 3/4/5 wären es 2,4 und 2,5,
+        // und der Hinweis „das ist der Radius“ träfe eine Zahl, die kaum zu unterscheiden ist.
+        if (Math.abs(h - c / 2) < 0.2) continue;
+        liste.push({ a, b, c, h });
+      }
+    }
+  }
+  return liste;
+})();
 
 function generateAufgabe4() {
   const k = ohneKollision(
     A4_KANDIDATEN,
-    (v) => [(v.a * v.b) / 2, (v.c * v.b) / 2, v.a * v.b, v.a],
+    (v) => [v.h, (v.a * v.b) / 2, v.a * v.b, v.c / 2, (v.a + v.b) / 2],
     A4_KANDIDATEN[0],
   );
-  const { a, b, c } = k;
+  const { a, b, c, h } = k;
   const flaeche = (a * b) / 2;
   return {
     promptHtml:
-      `Aus einer halbkreisförmigen Blechplatte mit dem <strong>Durchmesser AB = ${num(c)} cm</strong> wird ein Dreieck ABC ausgeschnitten. ` +
-      `Die Ecke <strong>C liegt auf dem Halbkreisbogen</strong>, und die Seite <strong>AC misst ${num(b)} cm</strong>.<br>` +
-      `<strong>Wie groß ist der Flächeninhalt des Dreiecks?</strong> Antwort in Quadratzentimetern.`,
-    correct: flaeche,
+      `Über der Strecke AB mit <strong>AB = ${num(c)} cm</strong> wird der Thaleskreis gezeichnet; C liegt auf ihm. ` +
+      `Die beiden anderen Seiten sind <strong>AC = ${num(b)} cm</strong> und <strong>BC = ${num(a)} cm</strong>.<br>` +
+      `<strong>Wie hoch liegt C über der Strecke AB?</strong> Gemeint ist die Höhe auf AB. Antwort in Zentimetern.`,
+    correct: h,
     tolerance: 0.01,
-    placeholder: "Fläche in cm²",
+    placeholder: "Höhe in cm",
     hinweis: (raw, val) => {
-      if (trifft(val, (c * b) / 2))
-        return `Du hast AB als Grundseite und AC als Höhe genommen. AC ist aber <strong>keine Höhe zu AB</strong> — eine Höhe müsste senkrecht auf AB stehen, und AC tut das nicht. Senkrecht aufeinander stehen hier die beiden <em>Katheten</em>.`;
+      if (trifft(val, flaeche))
+        return `${num(flaeche)} cm² ist der <strong>Flächeninhalt</strong> des Dreiecks — ein Zwischenergebnis. Aus ihm folgt die Höhe erst, wenn du ihn noch einmal als „AB mal Höhe durch 2“ liest.`;
       if (trifft(val, a * b))
-        return `Du hast die <strong>Halbierung vergessen</strong>. Das Dreieck ist die Hälfte des Rechtecks aus den beiden Katheten: A = (${num(b)} · ${num(a)}) : 2.`;
-      if (trifft(val, a))
-        return `${num(a)} cm ist erst die zweite Kathete <strong>BC</strong> — ein Zwischenergebnis. Damit ist die Fläche noch nicht ausgerechnet.`;
-      return `Zwei Schritte: erst BC mit dem Satz des Pythagoras, dann die Fläche aus den beiden Katheten.`;
+        return `Du hast die <strong>Halbierung vergessen</strong>. ${num(a)} · ${num(b)} ist die Fläche des Rechtecks aus beiden Katheten, das Dreieck ist halb so groß.`;
+      if (trifft(val, c / 2))
+        return `${num(c / 2)} cm ist der <strong>Radius</strong> des Thaleskreises. So hoch läge C nur, wenn es genau über der Mitte von AB stünde — das ist die größtmögliche Höhe, aber nicht diese hier.`;
+      if (trifft(val, (a + b) / 2))
+        return `Der Mittelwert der beiden Katheten ist nicht die Höhe. Rechne über den Flächeninhalt.`;
+      return `Weil der Winkel bei C ein rechter ist, sind die beiden Katheten Grundseite und Höhe zueinander. Damit lässt sich die Fläche ausrechnen — und dieselbe Fläche noch einmal mit AB als Grundseite.`;
     },
     musterloesungHtml:
-      `<strong>1. Satz des Thales:</strong> C liegt auf dem Halbkreis über AB ⟹ der Winkel bei C ist 90°.<br>` +
-      `<strong>2. Zweite Kathete (Pythagoras):</strong> BC² = ${num(c)}² − ${num(b)}² = ${num(quadrat(c))} − ${num(quadrat(b))} = ${num(quadrat(a))}, also BC = <strong>${num(a)} cm</strong><br>` +
-      `<strong>3. Flächeninhalt:</strong> Weil der rechte Winkel bei C liegt, stehen die beiden Katheten senkrecht aufeinander — die eine ist Grundseite, die andere ist die zugehörige Höhe:<br>` +
+      `<strong>1. Satz des Thales:</strong> C liegt auf dem Thaleskreis über AB ⟹ der Winkel bei C ist 90°. Die beiden Seiten AC und BC stehen also <strong>senkrecht aufeinander</strong>.<br>` +
+      `<strong>2. Fläche über die Katheten:</strong> Damit ist die eine Grundseite und die andere die zugehörige Höhe:<br>` +
       `A = (${num(b)} · ${num(a)}) : 2 = <strong>${num(flaeche)} cm²</strong><br>` +
-      `<em>Merke:</em> Zur Grundseite AB gehörte eine ganz andere Höhe, nämlich der Abstand von C zur Strecke AB. Mit AC als Höhe zu AB zu rechnen wäre falsch.`,
+      `<strong>3. Dieselbe Fläche über AB:</strong> A = (AB · h) : 2, also (${num(c)} · h) : 2 = ${num(flaeche)}<br>` +
+      `<strong>4. Auflösen:</strong> h = 2 · ${num(flaeche)} : ${num(c)} = <strong>${num(h)} cm</strong><br>` +
+      `<em>Kontrolle:</em> Die Höhe ist kleiner als der Radius ${num(c / 2)} cm — höher als bis zur Mitte des Bogens kommt C nie.`,
   };
 }
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — der zweite spitze Winkel", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — die fehlende Kathete", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Länge einer Tangente", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Flächeninhalt aus dem Halbkreis", generate: generateAufgabe4 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Umkreisradius und Hypotenuse", generate: generateAufgabe2 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — die Winkel am Mittelpunkt", generate: generateAufgabe3 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 4 — wie hoch liegt C?", generate: generateAufgabe4 },
   ]);
 }
 
