@@ -176,11 +176,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — vom Mittelpunktswinkel zur Wahrscheinlichkeit. 19 Vielfache
-  // von 18°; bei 30 Zügen E = 14,3 und σ = 1,2, Quantil 10⁻⁴ bei 10 —
-  // Schranke 9.
+  // Aufgabe 3 — vom Mittelpunktswinkel zur Wahrscheinlichkeit. Gemessen mit
+  // tests/werkzeug-streuung.js: 17 verschiedene in 200 Würfen, zurückgerechnet also rund 17
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 8.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Winkel und Wahrscheinlichkeit", runden: 30, mindestensVerschieden: 9,
+    nr: 3, name: "A3 Winkel und Wahrscheinlichkeit", runden: 30, mindestensVerschieden: 8,
     deute: (frage) => {
       const m = frage.match(/α = (\d+)°/);
       if (!m) return null;

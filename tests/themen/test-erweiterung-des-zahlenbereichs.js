@@ -24,11 +24,12 @@ function zahlenAusTerm(text) {
 }
 
 async function aufgaben(page) {
-  // Aufgabe 1 — Summe mit mindestens einem negativen Summanden.
-  // 25 · 25 = 625 Paare, davon werden die rein positiven umgelenkt; bei 30
-  // Zügen sind 30·29/(2·625) ≈ 0,70 Doppel zu erwarten (Poisson, σ = 0,83).
+  // Aufgabe 1 — Summe mit mindestens einem negativen Summanden. Gemessen mit
+  // tests/werkzeug-streuung.js: 161 verschiedene in 200 Würfen, zurückgerechnet also rund 442
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 24.
   await pruefeAufgabe(page, bericht, {
-    nr: 1, name: "A1 Summe", runden: 30, mindestensVerschieden: 26,
+    nr: 1, name: "A1 Summe", runden: 30, mindestensVerschieden: 24,
     deute: (frage) => {
       const m = frage.replace(/−/g, "-").match(/Berechne: (-?\d+) \+ \(?(-?\d+)\)?/);
       if (!m) return null;
@@ -41,10 +42,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — Subtraktion einer negativen Zahl: die Stelle, an der aus zwei
-  // Minuszeichen ein Plus wird. 25 · 12 = 300 Paare.
+  // Aufgabe 2 — Subtraktion einer negativen Zahl: die Stelle, an der aus zwei Minuszeichen ein
+  // Plus wird. Gemessen mit tests/werkzeug-streuung.js: 141 verschiedene in 200 Würfen,
+  // zurückgerechnet also rund 267 Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei
+  // 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 22.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Minus vor Minus", runden: 30, mindestensVerschieden: 24,
+    nr: 2, name: "A2 Minus vor Minus", runden: 30, mindestensVerschieden: 22,
     deute: (frage) => {
       const m = frage.replace(/−/g, "-").match(/Berechne: (-?\d+) - \((-?\d+)\)/);
       if (!m) return null;
@@ -82,10 +85,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — Sachaufgabe: erst hinunter, dann hinauf.
-  // 26 Startwerte × 16 × 19 × 3 Kontexte = 23 712 Kandidaten.
+  // Aufgabe 4 — Sachaufgabe: erst hinunter, dann hinauf. Gemessen mit
+  // tests/werkzeug-streuung.js: 199 verschiedene in 200 Würfen, zurückgerechnet also rund 19834
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Sachaufgabe", runden: 30, mindestensVerschieden: 28,
+    nr: 4, name: "A4 Sachaufgabe", runden: 30, mindestensVerschieden: 27,
     deute: (frage) => {
       // Alle drei Kontexte nennen genau drei Zahlen in derselben Reihenfolge:
       // Ausgangswert, Abnahme, Zunahme. Ein Muster je Kontext wäre unnötig

@@ -17,9 +17,11 @@ const { pruefe } = bericht;
 const SEITE = "/mathematik/grundwissen-5-10/02-geometrie/06-konstruktionen/index.html";
 
 async function aufgaben(page) {
-  // Aufgabe 1 — kürzeste ganzzahlige dritte Seite. 12 × 12 Paare ohne a = b.
+  // Aufgabe 1 — kürzeste ganzzahlige dritte Seite. Gemessen mit tests/werkzeug-streuung.js: 105
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 136 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 20.
   await pruefeAufgabe(page, bericht, {
-    nr: 1, name: "A1 Dreiecksungleichung", runden: 30, mindestensVerschieden: 22,
+    nr: 1, name: "A1 Dreiecksungleichung", runden: 30, mindestensVerschieden: 20,
     deute: (frage) => {
       const m = frage.match(/a = (\d+) cm.*?b = (\d+) cm/);
       if (!m) return null;
@@ -76,9 +78,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — Anzahl der ganzzahligen dritten Seiten: 2·min(a, b) − 1.
+  // Aufgabe 3 — Anzahl der ganzzahligen dritten Seiten: 2·min(a, b) − 1. Gemessen mit
+  // tests/werkzeug-streuung.js: 111 verschiedene in 200 Würfen, zurückgerechnet also rund 151
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 20.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Anzahl der Möglichkeiten", runden: 30, mindestensVerschieden: 22,
+    nr: 3, name: "A3 Anzahl der Möglichkeiten", runden: 30, mindestensVerschieden: 20,
     deute: (frage) => {
       const m = frage.match(/a = (\d+) cm.*?b = (\d+) cm/);
       if (!m) return null;
@@ -99,9 +104,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — Winkelhalbierende: ∠ADC = 180° − α − γ/2.
+  // Aufgabe 4 — Winkelhalbierende: ∠ADC = 180° − α − γ/2. Gemessen mit
+  // tests/werkzeug-streuung.js: 82 verschiedene in 200 Würfen, zurückgerechnet also rund 93
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 18.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Winkelhalbierende", runden: 30, mindestensVerschieden: 22,
+    nr: 4, name: "A4 Winkelhalbierende", runden: 30, mindestensVerschieden: 18,
     deute: (frage) => {
       const m = frage.match(/α = (\d+)° und γ = (\d+)°/);
       if (!m) return null;

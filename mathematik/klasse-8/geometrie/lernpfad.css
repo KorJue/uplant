@@ -387,10 +387,160 @@
   stroke-dasharray: none;
 }
 
+/* ---------- Die Übungsaufgaben ---------- */
+
+/* Werkbank der Konstruktionsaufgaben: Umschalter, Titel, Aufgabentext. */
+.th-aufgabe-titel {
+  margin: 0 0 0.4rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 1.05rem;
+}
+.th-konstruktion > .aufgabe-prompt { margin: 0 0 0.8rem; }
+.th-varianten { margin-bottom: 0.8rem; }
+
+/* Vorgegebene Maßstrecken („trage diese Länge ab“) — dieselbe Farbe wie die Vorgabe selbst,
+   aber dicker, damit sie nicht wie eine schon fertige Dreiecksseite wirken. */
+.geo-segment.th-mass {
+  stroke-width: 4;
+  stroke-linecap: butt;
+}
+.th-mass-name {
+  font-size: 15px;
+  font-weight: 700;
+  font-family: "Cambria Math", Cambria, serif;
+  fill: var(--text);
+}
+/* Ein vorgegebener Kreis (Aufgabe 3) ist Teil der Angabe, nicht der eigenen Konstruktion. */
+.geo-circle.th-gegeben-kreis {
+  stroke: var(--text);
+  stroke-width: 2;
+}
+
+/* Figuren mit Lücken (Winkelaufgaben). */
+.th-figur-wrap {
+  max-width: 460px;
+  margin: 0.8rem auto;
+}
+.th-figur {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.thf-kreis { fill: none; stroke: #1d4ed8; stroke-width: 1.6; }
+.thf-durchmesser { stroke: #1d4ed8; stroke-width: 2.4; stroke-linecap: round; }
+.thf-seite { stroke: var(--text); stroke-width: 2; stroke-linecap: round; }
+.thf-radius { stroke: #6d28d9; stroke-width: 2; stroke-linecap: round; }
+.thf-bogen { fill: none; stroke: #b3650a; stroke-width: 1.4; }
+.thf-rechter { fill: none; stroke: #b3261e; stroke-width: 1.6; }
+.thf-punkt { fill: var(--text); }
+.thf-punktname {
+  font-size: 14px;
+  font-weight: 700;
+  font-family: "Cambria Math", Cambria, serif;
+  fill: var(--text);
+}
+.thf-seitenname {
+  font-size: 12.5px;
+  font-weight: 600;
+  font-family: "Cambria Math", Cambria, serif;
+  fill: var(--muted);
+}
+.thf-marke {
+  font-size: 13px;
+  font-weight: 700;
+  font-family: "Cambria Math", Cambria, serif;
+  fill: #b3650a;
+}
+.thf-luecke { fill: #1d4ed8; font-size: 15px; }
+.thf-richtig { fill: #157347; }
+.thf-falsch { fill: #b3261e; }
+
+.th-figur-unterschrift {
+  margin: 0.2rem 0 0;
+  text-align: center;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* Die nummerierten Eingabefelder unter der Figur. */
+.th-luecken-liste {
+  list-style: none;
+  padding: 0;
+  margin: 0.6rem 0 0;
+  display: grid;
+  gap: 0.45rem;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+}
+.th-luecken-liste li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: space-between;
+  font-size: 0.95rem;
+}
+.th-luecken-liste input {
+  width: 6.5rem;
+  flex: 0 0 auto;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: var(--card-bg);
+  color: var(--text);
+}
+.th-feld-ok { border-color: #157347 !important; background: #e7f6ec !important; }
+.th-feld-fehler { border-color: #b3261e !important; background: #fdecec !important; }
+
+/* Zwischenüberschrift innerhalb eines Aufgabenabschnitts. */
+.th-block-titel {
+  margin: 1.8rem 0 0.3rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border);
+  font-size: 1.1rem;
+}
+
+/* Aufgaben fürs Heft: Arbeitsanweisung plus zugeklappte Selbstkontrolle. */
+.th-heft-label {
+  margin: 0.8rem 0 0.2rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+.th-heft .geo-steps { margin: 0; }
+.th-kontrolle {
+  margin-top: 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  background: var(--bg);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+.th-kontrolle summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--accent-dark);
+}
+.th-kontrolle > div { margin-top: 0.6rem; }
+
 /* ---------- Dunkler Modus ---------- */
 
 :root[data-theme="dark"] .th-flaeche { background: #10141a; }
 :root[data-theme="dark"] .geo-construct.th-schenkel { stroke: #c4a7ff; }
+:root[data-theme="dark"] .thf-kreis,
+:root[data-theme="dark"] .thf-durchmesser { stroke: #8ab4ff; }
+:root[data-theme="dark"] .thf-radius { stroke: #c4a7ff; }
+:root[data-theme="dark"] .thf-bogen { stroke: #ffbf6e; }
+:root[data-theme="dark"] .thf-rechter { stroke: #ff8a8a; }
+:root[data-theme="dark"] .thf-marke { fill: #ffbf6e; }
+:root[data-theme="dark"] .thf-luecke { fill: #8ab4ff; }
+:root[data-theme="dark"] .thf-richtig { fill: #6fd68f; }
+:root[data-theme="dark"] .thf-falsch { fill: #ff8a8a; }
+:root[data-theme="dark"] .th-feld-ok { border-color: #6fd68f !important; background: #17321f !important; }
+:root[data-theme="dark"] .th-feld-fehler { border-color: #ff8a8a !important; background: #3a1f1f !important; }
 :root[data-theme="dark"] .th-bilanz .wa, :root[data-theme="dark"] .th-name-a { color: #6fd68f; }
 :root[data-theme="dark"] .th-bilanz .wb, :root[data-theme="dark"] .th-name-b { color: #ffbf6e; }
 :root[data-theme="dark"] .th-bilanz .wc, :root[data-theme="dark"] .th-name-c { color: #8ab4ff; }

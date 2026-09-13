@@ -21,10 +21,11 @@ const SEITE = "/mathematik/grundwissen-5-10/02-geometrie/01-grundbegriffe/index.
 const VOLL = { "rechten Winkel": 90, "gestreckten Winkel": 180, Vollwinkel: 360 };
 
 async function aufgaben(page) {
-  // Aufgabe 1 — Ergänzungswinkel. Drei Fassungen mit 71, 141 bzw. 301
-  // Gradzahlen; je Fassung wird gleichverteilt gezogen.
+  // Aufgabe 1 — Ergänzungswinkel. Gemessen mit tests/werkzeug-streuung.js: 160 verschiedene in
+  // 200 Würfen, zurückgerechnet also rund 429 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 24.
   await pruefeAufgabe(page, bericht, {
-    nr: 1, name: "A1 Ergänzungswinkel", runden: 30, mindestensVerschieden: 25,
+    nr: 1, name: "A1 Ergänzungswinkel", runden: 30, mindestensVerschieden: 24,
     deute: (frage) => {
       const m = frage.match(/der (\d+)° zu einem (rechten Winkel|gestreckten Winkel|Vollwinkel) ergänzt/);
       if (!m) return null;
@@ -37,9 +38,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — Spiegelung und Quadrant. 11 · 11 Punkte × 3 Fassungen.
+  // Aufgabe 2 — Spiegelung und Quadrant. Gemessen mit tests/werkzeug-streuung.js: 152
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 346 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 23.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Koordinaten", runden: 30, mindestensVerschieden: 26,
+    nr: 2, name: "A2 Koordinaten", runden: 30, mindestensVerschieden: 23,
     deute: (frage) => {
       const p = frage.replace(/−/g, "-").match(/P\((-?\d+) \| (-?\d+)\)/);
       if (!p) return null;

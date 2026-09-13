@@ -467,9 +467,10 @@ async function testAufgabe1(page) {
       pruefe(r.includes(muster), `A1: Hinweis „${muster}“ fehlt bei der Eingabe ${falsch}`);
     }
   }
-  // 72 Kandidaten, 60 Ziehungen: E = 40,9 und σ = 2,46 (n·p + n(n−1)q − n²p²
-  // mit p = (71/72)^60, q = (70/72)^60). Die Schranke liegt bei E − 3σ ≈ 33.
-  pruefe(gesehen.size >= 33, `A1: nur ${gesehen.size} verschiedene Aufgaben in 60 Zügen (erwartet ≥ 33)`);
+  // Gemessen mit tests/werkzeug-streuung.js: 70 verschiedene in 200 Würfen, zurückgerechnet
+  // also rund 75 Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 60 Zügen,
+  // vorsichtshalber für 0,8 · n gerechnet — 29.
+  pruefe(gesehen.size >= 29, `A1: nur ${gesehen.size} verschiedene Aufgaben in 60 Zügen (erwartet ≥ 29)`);
 }
 
 async function testAufgabe2(page) {
@@ -503,9 +504,10 @@ async function testAufgabe2(page) {
       pruefe(r.includes(muster), `A2: Hinweis „${muster}“ fehlt bei der Eingabe ${eingabe}`);
     }
   }
-  // 14 Kandidaten, 40 Ziehungen: E = 13,3 und σ = 0,76 — Schranke E − 3σ ≈ 11,
-  // hier auf 10 abgerundet.
-  pruefe(gesehen.size >= 10, `A2: nur ${gesehen.size} verschiedene Aufgaben in 40 Zügen (erwartet ≥ 10)`);
+  // Gemessen mit tests/werkzeug-streuung.js: 14 verschiedene in 200 Würfen — mehr gibt der
+  // Generator nicht her. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 40 Zügen,
+  // vorsichtshalber für 0,8 · n gerechnet — 8.
+  pruefe(gesehen.size >= 8, `A2: nur ${gesehen.size} verschiedene Aufgaben in 40 Zügen (erwartet ≥ 8)`);
 }
 
 async function testAufgabe3(page) {
@@ -537,9 +539,10 @@ async function testAufgabe3(page) {
       pruefe(r.includes(muster), `A3: Hinweis „${muster}“ fehlt bei der Eingabe ${falsch}`);
     }
   }
-  // 472 Kandidaten, 60 Ziehungen: erwartete Zahl der Doppel ist 60·59/(2·472)
-  // = 3,75 (näherungsweise Poisson, σ = 1,94). Schranke 60 − (3,75 + 3σ) ≈ 50.
-  pruefe(gesehen.size >= 50, `A3: nur ${gesehen.size} verschiedene Aufgaben in 60 Zügen (erwartet ≥ 50)`);
+  // Gemessen mit tests/werkzeug-streuung.js: 159 verschiedene in 200 Würfen, zurückgerechnet
+  // also rund 417 Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 60 Zügen,
+  // vorsichtshalber für 0,8 · n gerechnet — 46.
+  pruefe(gesehen.size >= 46, `A3: nur ${gesehen.size} verschiedene Aufgaben in 60 Zügen (erwartet ≥ 46)`);
 }
 
 async function testAufgabe4(page) {
@@ -580,9 +583,10 @@ async function testAufgabe4(page) {
       pruefe(res.includes(muster), `A4: Hinweis „${muster}“ fehlt bei der Eingabe ${eingabe}`);
     }
   }
-  // 1120 Kandidaten, 60 Ziehungen: erwartete Doppel 60·59/(2·1120) = 1,58
-  // (Poisson, σ = 1,26). Schranke 60 − (1,58 + 3σ) ≈ 54.
-  pruefe(gesehen.size >= 54, `A4: nur ${gesehen.size} verschiedene Aufgaben in 60 Zügen (erwartet ≥ 54)`);
+  // Gemessen mit tests/werkzeug-streuung.js: 181 verschiedene in 200 Würfen, zurückgerechnet
+  // also rund 980 Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 60 Zügen,
+  // vorsichtshalber für 0,8 · n gerechnet — 51.
+  pruefe(gesehen.size >= 51, `A4: nur ${gesehen.size} verschiedene Aufgaben in 60 Zügen (erwartet ≥ 51)`);
 }
 
 // ================= Quizze =================

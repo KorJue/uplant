@@ -21,12 +21,11 @@ const SEITE = "/mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktione
 const istQuadrat = (n) => Number.isInteger(Math.sqrt(n));
 
 async function aufgaben(page) {
-  // Aufgabe 1 — Quadratzahlen von 4 bis 625. Von den 24 Kandidaten fallen die
-  // beiden weg, bei denen zwei Ablenker zusammenfielen (n = 2: a = 2n; n = 4:
-  // a/2 = 2n), es bleiben 22. Bei 30 Zügen ist E = 16,5 und σ = 1,4 —
-  // Schranke E − 3σ = 12.
+  // Aufgabe 1 — Quadratzahlen von 4 bis 625. Gemessen mit tests/werkzeug-streuung.js: 22
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 22 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 9.
   await pruefeAufgabe(page, bericht, {
-    nr: 1, name: "A1 Wurzel ziehen", runden: 30, mindestensVerschieden: 12,
+    nr: 1, name: "A1 Wurzel ziehen", runden: 30, mindestensVerschieden: 9,
     deute: (frage) => {
       const m = frage.match(/Berechne √([\d.]+)/);
       if (!m) return null;
@@ -53,10 +52,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — Wurzel zwischen zwei ganzen Zahlen einschachteln. 184
-  // Radikanden; Doppel sind bei 30 Zügen selten — Schranke 25.
+  // Aufgabe 2 — Wurzel zwischen zwei ganzen Zahlen einschachteln. Gemessen mit
+  // tests/werkzeug-streuung.js: 113 verschiedene in 200 Würfen, zurückgerechnet also rund 156
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 20.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 einschachteln", runden: 30, mindestensVerschieden: 25,
+    nr: 2, name: "A2 einschachteln", runden: 30, mindestensVerschieden: 20,
     deute: (frage) => {
       const m = frage.match(/liegt √([\d.]+)/);
       if (!m) return null;
@@ -85,10 +86,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — teilweise Wurzelziehen. Mehrere hundert Radikanden;
-  // Doppel sind bei 30 Zügen selten — Schranke 26.
+  // Aufgabe 3 — teilweise Wurzelziehen. Gemessen mit tests/werkzeug-streuung.js: 122
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 184 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 21.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 teilweise Wurzel", runden: 30, mindestensVerschieden: 26,
+    nr: 3, name: "A3 teilweise Wurzel", runden: 30, mindestensVerschieden: 21,
     deute: (frage) => {
       const m = frage.match(/√([\d.]+) = c · √([\d.]+)/);
       if (!m) return null;

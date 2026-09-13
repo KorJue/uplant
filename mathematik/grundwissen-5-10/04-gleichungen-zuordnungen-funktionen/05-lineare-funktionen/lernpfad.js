@@ -1001,6 +1001,16 @@ function generateAufgabe3() {
   };
 }
 
+// Die Umformungen, mit denen beide Seiten sortiert werden. Abgezogen wird jeweils der Term
+// selbst — steht dort eine negative Zahl, heißt das ADDIEREN. „| − −3x“ wäre keine
+// Schreibweise, und „| − 0“ keine Umformung; beides entfällt.
+function sortierSchritt(m2, b1) {
+  const teile = [];
+  if (m2 !== 0) teile.push(`| ${m2 > 0 ? "−" : "+"} ${num(Math.abs(m2))}x`);
+  if (b1 !== 0) teile.push(`| ${b1 > 0 ? "−" : "+"} ${num(Math.abs(b1))}`);
+  return teile.length ? teile.join(" und ") : "nichts zu tun — die Gleichung steht schon sortiert";
+}
+
 // Aufgabe 4 — Schnittpunkt zweier Geraden, gesucht ist die y-Koordinate.
 // Damit ist der zweite Schritt (Einsetzen) Teil der Aufgabe und nicht nur
 // das Lösen der Gleichung.
@@ -1055,7 +1065,7 @@ function generateAufgabe4() {
     },
     musterloesungHtml:
       `<strong>1. Gleichsetzen:</strong> ${num(m1)}x${anhang(b1)} = ${num(m2)}x${anhang(b2)}<br>` +
-      `<strong>2. Sortieren:</strong> | − ${num(m2)}x und | ${b1 >= 0 ? "−" : "+"} ${num(Math.abs(b1))} →&nbsp; ` +
+      `<strong>2. Sortieren:</strong> ${sortierSchritt(m2, b1)} →&nbsp; ` +
       `${faktor(`${num(m1 - m2)}x = ${num(b2 - b1)}`)}<br>` +
       `<strong>3. Teilen:</strong> | : ${num(m1 - m2)} →&nbsp; x = <strong>${num(xs)}</strong><br>` +
       `<strong>4. y berechnen:</strong> g(${num(xs)}) = ${faktor(`${num(m1)} · (${num(xs)})`)}${anhang(b1)} = <strong>${num(ys)}</strong><br>` +

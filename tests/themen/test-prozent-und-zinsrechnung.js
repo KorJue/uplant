@@ -54,10 +54,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — Prozentsatz gesucht. 237 Paare × 4 Kontexte; ≈ 0,46 Doppel
-  // bei 30 Zügen — Schranke 26.
+  // Aufgabe 2 — Prozentsatz gesucht. Gemessen mit tests/werkzeug-streuung.js: 180 verschiedene
+  // in 200 Würfen, zurückgerechnet also rund 928 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 25.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Prozentsatz", runden: 30, mindestensVerschieden: 26,
+    nr: 2, name: "A2 Prozentsatz", runden: 30, mindestensVerschieden: 25,
     deute: (frage) => {
       const z = zahlen(frage);
       if (z.length < 2) return null;

@@ -124,10 +124,11 @@ async function mittelwerte(page) {
 
 // ── Die Übungsaufgaben ─────────────────────────────────────────────────────
 async function aufgaben(page) {
-  // Aufgabe 1 — relative Häufigkeit. 3 Umfragegrößen × 4 Farben × bis zu 47
-  // Häufigkeiten; bei 30 Zügen sind kaum Doppel zu erwarten (Schranke 25).
+  // Aufgabe 1 — relative Häufigkeit. Gemessen mit tests/werkzeug-streuung.js: 140 verschiedene
+  // in 200 Würfen, zurückgerechnet also rund 262 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 22.
   await pruefeAufgabe(page, bericht, {
-    nr: 1, name: "A1 relative Häufigkeit", runden: 30, mindestensVerschieden: 25,
+    nr: 1, name: "A1 relative Häufigkeit", runden: 30, mindestensVerschieden: 22,
     deute: (frage) => {
       const m = frage.match(/unter (\d+) Personen nannten (\d+) die Farbe/);
       if (!m) return null;
@@ -151,10 +152,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — arithmetisches Mittel. Die Werte sind eine zufällige Auswahl
-  // aus 28 Zahlen; verschiedene Fassungen sind praktisch sicher.
+  // Aufgabe 2 — arithmetisches Mittel. Gemessen mit tests/werkzeug-streuung.js: in 200 Würfen
+  // kein einziges Doppel, die Menge ist also viele Tausend groß. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 arithmetisches Mittel", runden: 30, mindestensVerschieden: 29,
+    nr: 2, name: "A2 arithmetisches Mittel", runden: 30, mindestensVerschieden: 27,
     deute: (frage) => {
       const m = frage.match(/Bei (\d+) Messungen wurden diese Werte notiert: (.*?) Wie groß/);
       if (!m) return null;
@@ -179,9 +181,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — Median bei gerader Anzahl.
+  // Aufgabe 3 — Median bei gerader Anzahl. Gemessen mit tests/werkzeug-streuung.js: in 200
+  // Würfen kein einziges Doppel, die Menge ist also viele Tausend groß. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Median", runden: 30, mindestensVerschieden: 29,
+    nr: 3, name: "A3 Median", runden: 30, mindestensVerschieden: 27,
     deute: (frage) => {
       const m = frage.match(/Diese (\d+) Werte wurden erhoben: (.*?) Wie groß/);
       if (!m) return null;
@@ -216,9 +220,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — der fehlende Wert bei vorgegebenem Durchschnitt.
+  // Aufgabe 4 — der fehlende Wert bei vorgegebenem Durchschnitt. Gemessen mit
+  // tests/werkzeug-streuung.js: in 200 Würfen kein einziges Doppel, die Menge ist also viele
+  // Tausend groß. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber
+  // für 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 fehlender Wert", runden: 30, mindestensVerschieden: 29,
+    nr: 4, name: "A4 fehlender Wert", runden: 30, mindestensVerschieden: 27,
     deute: (frage) => {
       const m = frage.match(/Durchschnitt aller (\d+) Punktzahlen ist (\d+).*?bekannt: (.*?) Wie viele/);
       if (!m) return null;

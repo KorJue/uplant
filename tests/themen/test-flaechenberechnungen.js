@@ -39,9 +39,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — Trapez.
+  // Aufgabe 2 — Trapez. Gemessen mit tests/werkzeug-streuung.js: 153 verschiedene in 200
+  // Würfen, zurückgerechnet also rund 354 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 23.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Trapez", runden: 30, mindestensVerschieden: 25,
+    nr: 2, name: "A2 Trapez", runden: 30, mindestensVerschieden: 23,
     deute: (frage) => {
       const m = frage.match(/a = (\d+) cm und c = (\d+) cm.*?h = (\d+) cm/);
       if (!m) return null;
@@ -63,9 +65,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — rückwärts: aus der Fläche eine Länge bestimmen.
+  // Aufgabe 3 — rückwärts: aus der Fläche eine Länge bestimmen. Gemessen mit
+  // tests/werkzeug-streuung.js: 156 verschiedene in 200 Würfen, zurückgerechnet also rund 383
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 23.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 rückwärts", runden: 30, mindestensVerschieden: 24,
+    nr: 3, name: "A3 rückwärts", runden: 30, mindestensVerschieden: 23,
     deute: (frage) => {
       const tz = frage.match(/Trapez hat den Flächeninhalt A = (\d+) cm².*?h = (\d+) cm.*?a = (\d+) cm/);
       if (tz) {

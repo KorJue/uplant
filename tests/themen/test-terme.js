@@ -20,10 +20,11 @@ const SEITE = "/mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktione
 const minus = (s) => s.replace(/−/g, "-");
 
 async function aufgaben(page) {
-  // Aufgabe 1 — Termwert einsetzen. 3 · 10 · 8 · 8 Kandidaten, gefiltert;
-  // Doppel sind bei 30 Zügen praktisch ausgeschlossen — Schranke 28.
+  // Aufgabe 1 — Termwert einsetzen. Gemessen mit tests/werkzeug-streuung.js: 174 verschiedene
+  // in 200 Würfen, zurückgerechnet also rund 698 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 25.
   await pruefeAufgabe(page, bericht, {
-    nr: 1, name: "A1 Termwert", runden: 30, mindestensVerschieden: 28,
+    nr: 1, name: "A1 Termwert", runden: 30, mindestensVerschieden: 25,
     deute: (frage) => {
       const m = minus(frage).match(/von (-?\d*)x² ([+-]) (\d+)x ([+-]) (\d+) für x = (-?\d+)/);
       if (!m) return null;
@@ -94,11 +95,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — binomische Formeln rückwärts. 4 Formen × 14 Zahlen = 56
-  // Fassungen; bei 30 Zügen ist E = 24,0 und σ = 1,8, die Schranke E − 3σ
-  // liegt bei 18.
+  // Aufgabe 3 — binomische Formeln rückwärts. Gemessen mit tests/werkzeug-streuung.js: 55
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 57 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 15.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 binomische Formeln", runden: 30, mindestensVerschieden: 18,
+    nr: 3, name: "A3 binomische Formeln", runden: 30, mindestensVerschieden: 15,
     deute: (frage) => {
       const t = minus(frage);
       // 3. binomische Formel: x² − b² = (x + □)(x − □)
@@ -148,10 +149,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — Term aus einer geometrischen Situation. 7 · 5 · 10 Kandidaten,
-  // gefiltert; Doppel sind bei 30 Zügen selten — Schranke 24.
+  // Aufgabe 4 — Term aus einer geometrischen Situation. Gemessen mit
+  // tests/werkzeug-streuung.js: 121 verschiedene in 200 Würfen, zurückgerechnet also rund 180
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 21.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Flächenzuwachs", runden: 30, mindestensVerschieden: 24,
+    nr: 4, name: "A4 Flächenzuwachs", runden: 30, mindestensVerschieden: 21,
     deute: (frage) => {
       const m = frage.match(/(\d+) cm länger[\s\S]*?um (\d+) cm[\s\S]*?x = (\d+) cm/);
       if (!m) return null;

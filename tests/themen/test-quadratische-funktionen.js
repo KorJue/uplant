@@ -34,10 +34,11 @@ function normalform(s) {
 }
 
 async function aufgaben(page) {
-  // Aufgabe 1 — Scheitel aus der Scheitelform ablesen. 6 · 12 · 16 = 1152
-  // Fassungen; Doppel sind bei 30 Zügen praktisch ausgeschlossen.
+  // Aufgabe 1 — Scheitel aus der Scheitelform ablesen. Gemessen mit tests/werkzeug-streuung.js:
+  // 179 verschiedene in 200 Würfen, zurückgerechnet also rund 880 Kandidaten. Die Schranke ist
+  // das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 25.
   await pruefeAufgabe(page, bericht, {
-    nr: 1, name: "A1 Scheitelform", runden: 30, mindestensVerschieden: 28,
+    nr: 1, name: "A1 Scheitelform", runden: 30, mindestensVerschieden: 25,
     deute: (frage) => {
       const m = minus(frage).match(/f\(x\) = (-?\d* ?·? ?)?\(x ([+-]) (\d+)\)² ([+-]) (\d+)/);
       if (!m) return null;
@@ -65,11 +66,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — quadratisch ergänzen, gefragt ist die y-Koordinate. 102
-  // Kandidaten, gefiltert; bei 30 Zügen ist E = 26,1 und σ = 1,4, die
-  // Schranke liegt bei 20.
+  // Aufgabe 2 — quadratisch ergänzen, gefragt ist die y-Koordinate. Gemessen mit
+  // tests/werkzeug-streuung.js: 50 verschiedene in 200 Würfen, zurückgerechnet also rund 51
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 15.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 quadratisch ergänzen", runden: 30, mindestensVerschieden: 20,
+    nr: 2, name: "A2 quadratisch ergänzen", runden: 30, mindestensVerschieden: 15,
     deute: (frage) => {
       const m = minus(frage).match(/f\(x\) = (x².*?)\s*\./);
       const roh = m ? normalform(m[1]) : null;
@@ -101,11 +103,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — pq-Formel, gefragt ist die größere Lösung. 34 Kandidaten mit
-  // zwei verschiedenen Nullstellen; bei 30 Zügen ist E = 20,1 und σ = 1,8,
-  // die Schranke E − 3σ liegt bei 14.
+  // Aufgabe 3 — pq-Formel, gefragt ist die größere Lösung. Gemessen mit
+  // tests/werkzeug-streuung.js: 22 verschiedene in 200 Würfen, zurückgerechnet also rund 22
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 10.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 pq-Formel", runden: 30, mindestensVerschieden: 14,
+    nr: 3, name: "A3 pq-Formel", runden: 30, mindestensVerschieden: 10,
     deute: (frage) => {
       const m = minus(frage).match(/Löse mit der pq-Formel: (x².*?) = 0/);
       const roh = m ? normalform(m[1]) : null;
@@ -145,10 +148,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — größte Rechteckfläche bei gegebenem Umfang. 17 Zaunlängen;
-  // bei 30 Zügen ist E = 14,3 und σ = 1,3 — Schranke E − 3σ = 10.
+  // Aufgabe 4 — größte Rechteckfläche bei gegebenem Umfang. Gemessen mit
+  // tests/werkzeug-streuung.js: 17 verschiedene in 200 Würfen, zurückgerechnet also rund 17
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 8.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 größte Fläche", runden: 30, mindestensVerschieden: 10,
+    nr: 4, name: "A4 größte Fläche", runden: 30, mindestensVerschieden: 8,
     deute: (frage) => {
       const m = frage.match(/(\d+) m<?\/?strong>? langer Zaun|(\d+) m langer Zaun/);
       const U = Number((m && (m[1] || m[2])) || (frage.match(/(\d+) m/) || [])[1]);

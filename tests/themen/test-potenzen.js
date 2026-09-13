@@ -27,12 +27,11 @@ function potenz(a, n) {
 }
 
 async function aufgaben(page) {
-  // Aufgabe 1 — Potenzwert. 8 Basen × 3 Exponenten; die beiden Fälle, in denen
-  // aⁿ mit a · n oder mit −aⁿ zusammenfiele (2² und (−2)²), siebt der
-  // Generator aus, es bleiben 22. Bei 30 Zügen ist E = 16,6 und σ = 1,5 —
-  // Schranke E − 3σ = 12.
+  // Aufgabe 1 — Potenzwert. Gemessen mit tests/werkzeug-streuung.js: 22 verschiedene in 200
+  // Würfen, zurückgerechnet also rund 22 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 10.
   await pruefeAufgabe(page, bericht, {
-    nr: 1, name: "A1 Potenzwert", runden: 30, mindestensVerschieden: 12,
+    nr: 1, name: "A1 Potenzwert", runden: 30, mindestensVerschieden: 10,
     deute: (frage) => {
       const m = minus(frage).match(/Berechne \(?(-?\d+)\)?(\d)/);
       if (!m) return null;
@@ -62,10 +61,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — die drei Potenzgesetze hintereinander. 175 zulässige
-  // Exponentenpaare; bei 30 Zügen ist E = 27,6 und σ = 1,4 — Schranke 23.
+  // Aufgabe 2 — die drei Potenzgesetze hintereinander. Gemessen mit tests/werkzeug-streuung.js:
+  // 120 verschiedene in 200 Würfen, zurückgerechnet also rund 177 Kandidaten. Die Schranke ist
+  // das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 21.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Potenzgesetze", runden: 30, mindestensVerschieden: 23,
+    nr: 2, name: "A2 Potenzgesetze", runden: 30, mindestensVerschieden: 21,
     deute: (frage) => {
       const m = frage.match(/\(a(\d)\)(\d) · a(\d) : a(\d)/);
       if (!m) return null;
@@ -97,10 +97,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — negativer Exponent als Kehrwert. 24 Fassungen; bei 30 Zügen
-  // ist E = 17,3 und σ = 1,6 — Schranke E − 3σ = 12.
+  // Aufgabe 3 — negativer Exponent als Kehrwert. Gemessen mit tests/werkzeug-streuung.js: 24
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 24 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 10.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 negativer Exponent", runden: 30, mindestensVerschieden: 12,
+    nr: 3, name: "A3 negativer Exponent", runden: 30, mindestensVerschieden: 10,
     deute: (frage) => {
       const m = frage.match(/(\d+)n · (\d+)(\d) = 1 : ([\d.]+)/);
       if (!m) return null;
@@ -132,10 +133,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — dritte Wurzel aus einer Zehnerpotenz. 16 Fassungen; bei 30
-  // Zügen ist E = 13,7 und σ = 1,2 — Schranke E − 3σ = 10.
+  // Aufgabe 4 — dritte Wurzel aus einer Zehnerpotenz. Gemessen mit tests/werkzeug-streuung.js:
+  // 16 verschiedene in 200 Würfen, zurückgerechnet also rund 16 Kandidaten. Die Schranke ist
+  // das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 8.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 dritte Wurzel", runden: 30, mindestensVerschieden: 10,
+    nr: 4, name: "A4 dritte Wurzel", runden: 30, mindestensVerschieden: 8,
     deute: (frage) => {
       const m = minus(frage).match(/fasst ([\d,]+) · 10(\d+) mm³/);
       if (!m) return null;

@@ -24,6 +24,7 @@ import { drawMittelsenkrechte } from "./constructions.js?v=22";
 import { setupFreeConstruction } from "./free-ui.js?v=22";
 import { setupCanvasZoom } from "./canvas-zoom.js?v=22";
 import { THALES_TASK } from "./thales-construct.js?v=1";
+import { mountKonstruktionsAufgaben, mountRechenAufgaben, mountHeftAufgaben } from "./thales-aufgaben.js?v=1";
 
 "use strict";
 
@@ -1056,3 +1057,6 @@ renderTangenten();
 setupKonstruktion();
 initQuizzes();
 initExercises();
+mountKonstruktionsAufgaben(document.getElementById("ka-mount"));
+mountRechenAufgaben(document.getElementById("rechen-mount"));
+mountHeftAufgaben(document.getElementById("heft-mount"));

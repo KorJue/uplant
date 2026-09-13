@@ -106,11 +106,11 @@ async function umkehrung(page) {
 
 // ── Die Übungsaufgaben ─────────────────────────────────────────────────────
 async function aufgaben(page) {
-  // Aufgabe 1 — Hypotenuse. 7 Grundtripel × 3 Vielfache × 2 Reihenfolgen der
-  // Katheten = 42 gleich wahrscheinliche Fassungen; bei 30 Zügen ist E = 21,6
-  // und σ = 1,8, das Quantil 10⁻⁴ liegt bei 15 — Schranke 14.
+  // Aufgabe 1 — Hypotenuse. Gemessen mit tests/werkzeug-streuung.js: 40 verschiedene in 200
+  // Würfen, zurückgerechnet also rund 40 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 13.
   await pruefeAufgabe(page, bericht, {
-    nr: 1, name: "A1 Hypotenuse", runden: 30, mindestensVerschieden: 14,
+    nr: 1, name: "A1 Hypotenuse", runden: 30, mindestensVerschieden: 13,
     deute: (frage) => {
       const m = frage.match(/a = (\d+) cm.*?b = (\d+) cm/);
       if (!m) return null;
@@ -134,9 +134,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — fehlende Kathete, gleiche Kandidatenmenge wie A1.
+  // Aufgabe 2 — fehlende Kathete, gleiche Kandidatenmenge wie A1. Gemessen mit
+  // tests/werkzeug-streuung.js: 41 verschiedene in 200 Würfen, zurückgerechnet also rund 41
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 13.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Kathete", runden: 30, mindestensVerschieden: 14,
+    nr: 2, name: "A2 Kathete", runden: 30, mindestensVerschieden: 13,
     deute: (frage) => {
       const m = frage.match(/c = (\d+) cm.*?a = (\d+) cm/);
       if (!m) return null;
@@ -216,10 +219,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — Raumdiagonale. 8 Quader × 3 Vielfache = 24 Fassungen; bei 30
-  // Zügen E = 17,3 und σ = 1,6, Quantil 10⁻⁴ bei 12 — Schranke 11.
+  // Aufgabe 4 — Raumdiagonale. Gemessen mit tests/werkzeug-streuung.js: 24 verschiedene in 200
+  // Würfen, zurückgerechnet also rund 24 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 10.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Raumdiagonale", runden: 30, mindestensVerschieden: 11,
+    nr: 4, name: "A4 Raumdiagonale", runden: 30, mindestensVerschieden: 10,
     deute: (frage) => {
       const m = frage.match(/(\d+) cm lang, (\d+) cm breit und (\d+) cm hoch/);
       if (!m) return null;

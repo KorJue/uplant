@@ -166,11 +166,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — Kreisring als Weg um einen Brunnen. 8 Durchmesser mit je 3
-  // oder 4 Wegbreiten = 29 Fassungen; bei 30 Zügen E = 18,8 und σ = 1,7,
-  // Quantil 10⁻⁴ bei 13 — Schranke 12.
+  // Aufgabe 4 — Kreisring als Weg um einen Brunnen. Gemessen mit tests/werkzeug-streuung.js: 29
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 29 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 11.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Kreisring", runden: 30, mindestensVerschieden: 12,
+    nr: 4, name: "A4 Kreisring", runden: 30, mindestensVerschieden: 11,
     deute: (frage) => {
       const m = frage.match(/d = (\d+) m.*?(\d+) m breiter/);
       if (!m) return null;

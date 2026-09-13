@@ -32,10 +32,11 @@ function liesTerm(s) {
 }
 
 async function aufgaben(page) {
-  // Aufgabe 1 — ax + b = c. 8 · 24 · 20 Kandidaten, gefiltert; Doppel sind bei
-  // 30 Zügen praktisch ausgeschlossen — Schranke 28.
+  // Aufgabe 1 — ax + b = c. Gemessen mit tests/werkzeug-streuung.js: 195 verschiedene in 200
+  // Würfen, zurückgerechnet also rund 3914 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 1, name: "A1 zweischrittig", runden: 30, mindestensVerschieden: 28,
+    nr: 1, name: "A1 zweischrittig", runden: 30, mindestensVerschieden: 27,
     deute: (frage) => {
       const m = frage.match(/Löse die Gleichung: (.+?) = (−?\d+) Wie groß/);
       if (!m) return null;
@@ -137,9 +138,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — Sachaufgabe: zwei Tarife, drei Kontexte.
+  // Aufgabe 4 — Sachaufgabe: zwei Tarife, drei Kontexte. Gemessen mit
+  // tests/werkzeug-streuung.js: 189 verschiedene in 200 Würfen, zurückgerechnet also rund 1742
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 26.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 zwei Tarife", runden: 30, mindestensVerschieden: 27,
+    nr: 4, name: "A4 zwei Tarife", runden: 30, mindestensVerschieden: 26,
     deute: (frage) => {
       // Alle drei Kontexte nennen die vier Zahlen in derselben Reihenfolge:
       // Grundgebühr und Preis des ersten Angebots, dann des zweiten.

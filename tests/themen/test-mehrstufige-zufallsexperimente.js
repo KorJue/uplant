@@ -81,12 +81,11 @@ async function zuruecklegen(page) {
 
 // ── Die Übungsaufgaben ─────────────────────────────────────────────────────
 async function aufgaben(page) {
-  // Aufgabe 1 — Zahl der Pfade. 17 Kombinationen aus 6 Experimenten und den
-  // Stufenzahlen 2 bis 4, gefiltert; simuliert man den Generator, ist bei 30
-  // Zügen E = 11,1 und σ = 0,8, der beobachtete Kleinstwert liegt bei 8 —
-  // Schranke 7.
+  // Aufgabe 1 — Zahl der Pfade. Gemessen mit tests/werkzeug-streuung.js: 12 verschiedene in 200
+  // Würfen, zurückgerechnet also rund 12 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 6.
   await pruefeAufgabe(page, bericht, {
-    nr: 1, name: "A1 Pfadzahl", runden: 30, mindestensVerschieden: 7,
+    nr: 1, name: "A1 Pfadzahl", runden: 30, mindestensVerschieden: 6,
     deute: (frage) => {
       const m = frage.match(/(\d+)-mal nacheinander.*?Jede Stufe hat (\d+) mögliche/);
       if (!m) return null;
@@ -142,10 +141,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — beide Pfadregeln ohne Zurücklegen. 29 zulässige Urnen; bei 30
-  // Zügen E = 13,7 und σ = 1,2, Kleinstwert 10 — Schranke 9.
+  // Aufgabe 3 — beide Pfadregeln ohne Zurücklegen. Gemessen mit tests/werkzeug-streuung.js: 16
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 16 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 8.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 beide Pfadregeln", runden: 30, mindestensVerschieden: 9,
+    nr: 3, name: "A3 beide Pfadregeln", runden: 30, mindestensVerschieden: 8,
     deute: (frage) => {
       const m = frage.match(/(\d+) rote.*?(\d+) blaue/);
       if (!m) return null;
@@ -174,10 +174,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — zweistufiger Baum mit ungleichen Ästen. 252 Zahlentripel × 3
-  // Kontexte; bei 30 Zügen E = 28,3 und σ = 1,2, Kleinstwert 24 — Schranke 23.
+  // Aufgabe 4 — zweistufiger Baum mit ungleichen Ästen. Gemessen mit
+  // tests/werkzeug-streuung.js: 143 verschiedene in 200 Würfen, zurückgerechnet also rund 279
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 22.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 ungleiche Äste", runden: 30, mindestensVerschieden: 23,
+    nr: 4, name: "A4 ungleiche Äste", runden: 30, mindestensVerschieden: 22,
     deute: (frage) => {
       // Alle drei Kontexte nennen die drei Prozentsätze in derselben
       // Reihenfolge: Gewicht des ersten Zweigs, dann seine beiden Trefferraten.

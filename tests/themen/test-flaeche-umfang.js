@@ -21,9 +21,11 @@ const EXP = { "mm²": -6, "cm²": -4, "dm²": -2, "m²": 0, a: 2, ha: 4, "km²":
 const ohnePunkte = (s) => Number(String(s).replace(/\./g, "").replace(",", "."));
 
 async function aufgaben(page) {
-  // Aufgabe 1 — Rechteck: Fläche oder Umfang. 13 Längen × 11 Breiten × 2 Fragen.
+  // Aufgabe 1 — Rechteck: Fläche oder Umfang. Gemessen mit tests/werkzeug-streuung.js: 144
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 286 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 22.
   await pruefeAufgabe(page, bericht, {
-    nr: 1, name: "A1 Rechteck", runden: 30, mindestensVerschieden: 27,
+    nr: 1, name: "A1 Rechteck", runden: 30, mindestensVerschieden: 22,
     deute: (frage) => {
       const m = frage.match(/(\d+) cm lang und (\d+) cm breit/);
       if (!m) return null;
@@ -41,10 +43,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — Flächeneinheiten umrechnen. Der springende Punkt: Jede Stufe
-  // ist 100 groß, nicht 10.
+  // Aufgabe 2 — Flächeneinheiten umrechnen. Gemessen mit tests/werkzeug-streuung.js: 166
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 517 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 24.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Flächeneinheiten", runden: 30, mindestensVerschieden: 25,
+    nr: 2, name: "A2 Flächeneinheiten", runden: 30, mindestensVerschieden: 24,
     deute: (frage) => {
       const m = frage.match(/Rechne um: ([\d.,]+) (mm²|cm²|dm²|m²|a|ha|km²) = \? (mm²|cm²|dm²|m²|a|ha|km²)/);
       if (!m) return null;
@@ -64,9 +67,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — L-Form: volles Rechteck minus Ausschnitt.
+  // Aufgabe 3 — L-Form: volles Rechteck minus Ausschnitt. Gemessen mit
+  // tests/werkzeug-streuung.js: 190 verschiedene in 200 Würfen, zurückgerechnet also rund 1923
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 26.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 L-Form", runden: 30, mindestensVerschieden: 27,
+    nr: 3, name: "A3 L-Form", runden: 30, mindestensVerschieden: 26,
     deute: (frage) => {
       const m = frage.match(/Rechteck von (\d+) cm × (\d+) cm, aus dem an einer Ecke ein Rechteck von (\d+) cm × (\d+) cm/);
       if (!m) return null;
@@ -83,9 +89,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — Zaun nach Umfang, Rasen nach Fläche.
+  // Aufgabe 4 — Zaun nach Umfang, Rasen nach Fläche. Gemessen mit tests/werkzeug-streuung.js:
+  // 199 verschiedene in 200 Würfen, zurückgerechnet also rund 19834 Kandidaten. Die Schranke
+  // ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Zaun und Rasen", runden: 30, mindestensVerschieden: 28,
+    nr: 4, name: "A4 Zaun und Rasen", runden: 30, mindestensVerschieden: 27,
     deute: (frage) => {
       const m = frage.match(/(\d+) m lang und (\d+) m breit.*?\((\d+) € je Meter\).*?\((\d+) € je Quadratmeter\)/);
       if (!m) return null;

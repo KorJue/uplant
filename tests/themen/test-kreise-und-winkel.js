@@ -13,11 +13,11 @@ const { pruefe } = bericht;
 const SEITE = "/mathematik/grundwissen-5-10/02-geometrie/04-kreise-und-winkel/index.html";
 
 async function aufgaben(page) {
-  // Aufgabe 1 — Radius und Durchmesser. Die Fassung wird zuerst gezogen,
-  // danach der Wert: 39 Radien mit je 1/78, 24 Durchmesser mit je 1/48.
-  // Damit ist bei 30 Zügen E = 23,8 und σ = 1,83 — Schranke 18.
+  // Aufgabe 1 — Radius und Durchmesser. Gemessen mit tests/werkzeug-streuung.js: 56
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 58 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 15.
   await pruefeAufgabe(page, bericht, {
-    nr: 1, name: "A1 Radius und Durchmesser", runden: 30, mindestensVerschieden: 18,
+    nr: 1, name: "A1 Radius und Durchmesser", runden: 30, mindestensVerschieden: 15,
     deute: (frage) => {
       const m = frage.match(/(Radius|Durchmesser) [rd] = (\d+) cm/);
       if (!m) return null;
@@ -34,12 +34,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — Ergänzungswinkel zu 90°, 180° oder 360°. Das Ziel wird zuerst
-  // gezogen, deshalb tragen die 17 Winkel zu 90° zusammen genauso viel
-  // Wahrscheinlichkeit wie die 71 zu 360°. Mit der tatsächlichen Verteilung
-  // (120 Paare) ist bei 30 Zügen E = 25,4 und σ = 1,79 — Schranke 20.
+  // Aufgabe 2 — Ergänzungswinkel zu 90°, 180° oder 360°. Gemessen mit
+  // tests/werkzeug-streuung.js: 85 verschiedene in 200 Würfen, zurückgerechnet also rund 97
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 18.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Ergänzungswinkel", runden: 30, mindestensVerschieden: 20,
+    nr: 2, name: "A2 Ergänzungswinkel", runden: 30, mindestensVerschieden: 18,
     deute: (frage) => {
       const m = frage.match(/\((\d+)°\)\. Der eine ist α = (\d+)°/);
       if (!m) return null;
@@ -56,11 +56,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — die richtige Skala des Geodreiecks wählen. 32 Winkel (90°
-  // wird auf 95° umgelenkt, das deshalb doppelt vorkommt); bei 30 Zügen ist
-  // E = 19,5 und σ = 1,76 — Schranke 14.
+  // Aufgabe 3 — die richtige Skala des Geodreiecks wählen. Gemessen mit
+  // tests/werkzeug-streuung.js: 32 verschiedene in 200 Würfen, zurückgerechnet also rund 32
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 12.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Geodreieck ablesen", runden: 30, mindestensVerschieden: 14,
+    nr: 3, name: "A3 Geodreieck ablesen", runden: 30, mindestensVerschieden: 12,
     deute: (frage) => {
       const m = frage.match(/Skala (\d+)°, auf der anderen (\d+)°.*?(spitzen|stumpfen)/);
       if (!m) return null;
@@ -82,9 +83,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — Mittelpunktswinkel im Kreisdiagramm.
+  // Aufgabe 4 — Mittelpunktswinkel im Kreisdiagramm. Gemessen mit tests/werkzeug-streuung.js:
+  // 170 verschiedene in 200 Würfen, zurückgerechnet also rund 596 Kandidaten. Die Schranke ist
+  // das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 24.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Kreisdiagramm", runden: 30, mindestensVerschieden: 27,
+    nr: 4, name: "A4 Kreisdiagramm", runden: 30, mindestensVerschieden: 24,
     deute: (frage) => {
       const m = frage.match(/Von (\d+) .*? (\d+)\. Wie groß/);
       if (!m) return null;

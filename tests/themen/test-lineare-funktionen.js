@@ -21,10 +21,11 @@ const SEITE = "/mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktione
 const minus = (s) => s.replace(/−/g, "-");
 
 async function aufgaben(page) {
-  // Aufgabe 1 — Funktionswert einsetzen. 12 Steigungen × 18 Achsenabschnitte ×
-  // 14 Stellen, gefiltert; Doppel sind bei 30 Zügen praktisch ausgeschlossen.
+  // Aufgabe 1 — Funktionswert einsetzen. Gemessen mit tests/werkzeug-streuung.js: 188
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 1592 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 26.
   await pruefeAufgabe(page, bericht, {
-    nr: 1, name: "A1 Funktionswert", runden: 30, mindestensVerschieden: 28,
+    nr: 1, name: "A1 Funktionswert", runden: 30, mindestensVerschieden: 26,
     deute: (frage) => {
       const m = minus(frage).match(/f\(x\) = (-?\d+)x ([+-]) (\d+) Berechne f\((-?\d+)\)/);
       if (!m) return null;
@@ -53,9 +54,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — Steigung aus zwei Punkten.
+  // Aufgabe 2 — Steigung aus zwei Punkten. Gemessen mit tests/werkzeug-streuung.js: 186
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 1355 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 26.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Steigung", runden: 30, mindestensVerschieden: 28,
+    nr: 2, name: "A2 Steigung", runden: 30, mindestensVerschieden: 26,
     deute: (frage) => {
       const m = minus(frage).match(/P\((-?\d+) \| (-?\d+)\) und Q\((-?\d+) \| (-?\d+)\)/);
       if (!m) return null;
@@ -85,9 +88,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — von zwei Punkten zur Funktionsgleichung und zurück.
+  // Aufgabe 3 — von zwei Punkten zur Funktionsgleichung und zurück. Gemessen mit
+  // tests/werkzeug-streuung.js: 199 verschiedene in 200 Würfen, zurückgerechnet also rund 19834
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Gleichung aufstellen", runden: 30, mindestensVerschieden: 28,
+    nr: 3, name: "A3 Gleichung aufstellen", runden: 30, mindestensVerschieden: 27,
     deute: (frage) => {
       const m = minus(frage).match(/P\((-?\d+) \| (-?\d+)\) und Q\((-?\d+) \| (-?\d+)\)\. Berechne f\((-?\d+)\)/);
       if (!m) return null;
@@ -117,9 +123,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — Schnittpunkt zweier Geraden.
+  // Aufgabe 4 — Schnittpunkt zweier Geraden. Gemessen mit tests/werkzeug-streuung.js: 190
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 1923 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 26.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Schnittpunkt", runden: 30, mindestensVerschieden: 28,
+    nr: 4, name: "A4 Schnittpunkt", runden: 30, mindestensVerschieden: 26,
     deute: (frage) => {
       const m = minus(frage).match(/g\(x\) = (-?\d+)x ([+-]) (\d+) und h\(x\) = (-?\d+)x ([+-]) (\d+)/);
       if (!m) return null;

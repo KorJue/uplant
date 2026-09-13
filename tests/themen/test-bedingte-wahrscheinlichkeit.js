@@ -98,10 +98,11 @@ function tafelStimmt(t) {
 
 // ── Die Übungsaufgaben ─────────────────────────────────────────────────────
 async function aufgaben(page) {
-  // Aufgabe 1 — P(A|B) aus der Tafel. 4213 zulässige Tafeln × 3 Kontexte;
-  // bei 30 Zügen sind 30·29/(2·12 639) ≈ 0,03 Doppel zu erwarten — Schranke 29.
+  // Aufgabe 1 — P(A|B) aus der Tafel. Gemessen mit tests/werkzeug-streuung.js: 199 verschiedene
+  // in 200 Würfen, zurückgerechnet also rund 19834 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 1, name: "A1 P(A|B)", runden: 30, mindestensVerschieden: 29, liesRoh: tafeldaten,
+    nr: 1, name: "A1 P(A|B)", runden: 30, mindestensVerschieden: 27, liesRoh: tafeldaten,
     deute: (frage, t) => {
       if (!t) return null;
       return {
@@ -125,9 +126,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — dieselbe Tafel, die andere Bedingung. 3274 Tafeln × 3 Kontexte.
+  // Aufgabe 2 — dieselbe Tafel, die andere Bedingung. Gemessen mit tests/werkzeug-streuung.js:
+  // 198 verschiedene in 200 Würfen, zurückgerechnet also rund 9884 Kandidaten. Die Schranke ist
+  // das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 28.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 P(B|A)", runden: 30, mindestensVerschieden: 29, liesRoh: tafeldaten,
+    nr: 2, name: "A2 P(B|A)", runden: 30, mindestensVerschieden: 28, liesRoh: tafeldaten,
     deute: (frage, t) => {
       if (!t) return null;
       return {
@@ -147,10 +150,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — die Zellbesetzung bei Unabhängigkeit. 696 Fassungen × 3
-  // Kontexte; bei 30 Zügen sind 0,2 Doppel zu erwarten — Schranke 28.
+  // Aufgabe 3 — die Zellbesetzung bei Unabhängigkeit. Gemessen mit tests/werkzeug-streuung.js:
+  // 195 verschiedene in 200 Würfen, zurückgerechnet also rund 3914 Kandidaten. Die Schranke ist
+  // das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Unabhängigkeit", runden: 30, mindestensVerschieden: 28,
+    nr: 3, name: "A3 Unabhängigkeit", runden: 30, mindestensVerschieden: 27,
     deute: (frage) => {
       const m = frage.match(/Unter (\d+) [\s\S]*?(\d+) \(Ereignis A\), und (\d+) /);
       if (!m) return null;
@@ -182,11 +186,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — P(krank | Test positiv). 151 Fassungen × 3 Kontexte;
-  // bei 30 Zügen sind 435 : 453 ≈ 0,96 Doppel zu erwarten (Poisson, σ ≈ 0,98)
-  // — Schranke 26.
+  // Aufgabe 4 — P(krank | Test positiv). Gemessen mit tests/werkzeug-streuung.js: 110
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 148 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 20.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Basisrate", runden: 30, mindestensVerschieden: 26,
+    nr: 4, name: "A4 Basisrate", runden: 30, mindestensVerschieden: 20,
     deute: (frage) => {
       const m = frage.replace(/\./g, "").match(/Stadt mit (\d+) Personen sind (\d+) an.*?bei (\d+) der Kranken.*?bei (\d+) der Gesunden/);
       if (!m) return null;

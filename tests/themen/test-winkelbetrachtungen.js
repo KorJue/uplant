@@ -44,9 +44,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — Winkel an Parallelen. 29 Winkel × 3 Arten = 87 Fassungen.
+  // Aufgabe 2 — Winkel an Parallelen. Gemessen mit tests/werkzeug-streuung.js: 74 verschiedene
+  // in 200 Würfen, zurückgerechnet also rund 81 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 17.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Winkel an Parallelen", runden: 30, mindestensVerschieden: 20,
+    nr: 2, name: "A2 Winkel an Parallelen", runden: 30, mindestensVerschieden: 17,
     deute: (frage) => {
       const m = frage.match(/α = (\d+)°.*?(Stufenwinkel|Wechselwinkel|Nachbarwinkel)/);
       if (!m) return null;
@@ -63,9 +65,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — Winkelsumme im Dreieck.
+  // Aufgabe 3 — Winkelsumme im Dreieck. Gemessen mit tests/werkzeug-streuung.js: 160
+  // verschiedene in 200 Würfen, zurückgerechnet also rund 429 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 24.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Winkelsumme", runden: 30, mindestensVerschieden: 26,
+    nr: 3, name: "A3 Winkelsumme", runden: 30, mindestensVerschieden: 24,
     deute: (frage) => {
       const m = frage.match(/α = (\d+)° und β = (\d+)°/);
       if (!m) return null;
@@ -84,11 +88,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — Außenwinkelsatz: der Außenwinkel bei B ist α + γ.
-  // α und γ je gleichverteilt aus 13 Werten, also 169 Paare; bei 30 Zügen ist
-  // E = 27,5 und σ = 1,18 — Schranke 23.
+  // Aufgabe 4 — Außenwinkelsatz: der Außenwinkel bei B ist α + γ. Gemessen mit
+  // tests/werkzeug-streuung.js: 115 verschiedene in 200 Würfen, zurückgerechnet also rund 162
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 20.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Außenwinkel", runden: 30, mindestensVerschieden: 23,
+    nr: 4, name: "A4 Außenwinkel", runden: 30, mindestensVerschieden: 20,
     deute: (frage) => {
       const m = frage.match(/α = (\d+)°.*?Außenwinkel bei B beträgt (\d+)°/);
       if (!m) return null;
