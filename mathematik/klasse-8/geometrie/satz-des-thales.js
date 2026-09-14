@@ -16,7 +16,7 @@
 // anderes behauptet als der Satz.
 //
 // Durchgehende Farbcodierung: Winkel α (bei A) grün, Winkel β (bei B) orange, der rechte
-// Winkel γ (bei C) rot, Durchmesser/Hypotenuse blau, Radien violett.
+// Winkel γ (bei C) rot, Durchmesser AB blau, Radien violett.
 
 import * as GC from "./geo-core.js?v=22";
 import * as GS from "./geo-svg.js?v=22";
@@ -24,7 +24,7 @@ import { drawMittelsenkrechte } from "./constructions.js?v=22";
 import { setupFreeConstruction } from "./free-ui.js?v=22";
 import { setupCanvasZoom } from "./canvas-zoom.js?v=22";
 import { THALES_TASK } from "./thales-construct.js?v=1";
-import { mountKonstruktionsAufgaben, mountRechenAufgaben, mountHeftAufgaben } from "./thales-aufgaben.js?v=2";
+import { mountKonstruktionsAufgaben, mountRechenAufgaben, mountHeftAufgaben } from "./thales-aufgaben.js?v=3";
 
 "use strict";
 
@@ -769,7 +769,7 @@ function initQuizzes() {
     options: ["12 cm", "6 cm", "Das hängt davon ab, wie flach oder steil das Dreieck ist.", "3 cm"],
     correct: 1,
     explain:
-      "Nach der Umkehrung liegt C auf dem Thaleskreis über AB. Dessen Mittelpunkt ist die Mitte von AB, sein Radius die halbe Hypotenuse — also 6 cm, und zwar unabhängig von der Form des Dreiecks. Genau deshalb ist die Mitte der Hypotenuse der Umkreismittelpunkt.",
+      "Nach der Umkehrung liegt C auf dem Thaleskreis über AB. Dessen Mittelpunkt ist die Mitte von AB, sein Radius die halbe Strecke — also 6 cm, und zwar unabhängig von der Form des Dreiecks. Genau deshalb ist die Mitte der längsten Seite der Umkreismittelpunkt.",
   });
 
   mountQuiz(document.getElementById("quiz-tangenten"), {
@@ -899,14 +899,15 @@ function generateAufgabe1() {
   };
 }
 
-// Aufgabe 2 — Umkreisradius und Hypotenuse. Beide Richtungen derselben Einsicht: Der
-// Umkreismittelpunkt eines rechtwinkligen Dreiecks ist die Mitte der Hypotenuse, sein Radius
-// also die halbe Hypotenuse. Gerechnet wird nur halbiert oder verdoppelt.
+// Aufgabe 2 — Umkreisradius und längste Seite. Beide Richtungen derselben Einsicht: Der
+// Umkreismittelpunkt eines rechtwinkligen Dreiecks ist die Mitte der Seite, die dem rechten
+// Winkel gegenüberliegt; sein Radius ist die Hälfte davon. Gerechnet wird nur halbiert oder
+// verdoppelt — die Namen „Hypotenuse“ und „Kathete“ kommen erst in Klasse 9 dazu.
 const A2_KANDIDATEN = (() => {
   const liste = [];
   for (let c = 6; c <= 40; c += 2) {
     liste.push({ richtung: "radius", c, r: c / 2 });
-    liste.push({ richtung: "hypotenuse", c, r: c / 2 });
+    liste.push({ richtung: "seite", c, r: c / 2 });
   }
   return liste;
 })();
@@ -929,21 +930,21 @@ function generateAufgabe2() {
       if (nachRadius && trifft(val, c))
         return `${num(c)} cm ist die <strong>ganze</strong> Strecke AB. Gefragt ist der Abstand bis zu ihrer <em>Mitte</em> — also die Hälfte.`;
       if (!nachRadius && trifft(val, r))
-        return `${num(r)} cm ist der <strong>gegebene</strong> Radius. Die Hypotenuse ist doppelt so lang, denn sie ist der Durchmesser des Umkreises.`;
+        return `${num(r)} cm ist der <strong>gegebene</strong> Radius. Die Seite AB ist doppelt so lang, denn sie ist der Durchmesser des Umkreises.`;
       if (trifft(val, nachRadius ? c * 2 : r / 2))
         return `Du hast in die falsche Richtung gerechnet: ${nachRadius ? "verdoppelt statt halbiert" : "halbiert statt verdoppelt"}.`;
       if (trifft(val, nachRadius ? c / 4 : c * 2))
         return `Zweimal halbiert bzw. zweimal verdoppelt — einmal genügt.`;
-      return `Nach der Umkehrung des Satzes von Thales liegt C auf dem Kreis über AB. Sein Mittelpunkt ist die Mitte von AB, sein Radius die halbe Hypotenuse.`;
+      return `Nach der Umkehrung des Satzes von Thales liegt C auf dem Kreis über AB. Sein Mittelpunkt ist die Mitte von AB, sein Radius die halbe Strecke AB.`;
     },
     musterloesungHtml: nachRadius
       ? `<strong>1. Umkehrung des Satzes von Thales:</strong> Der Winkel bei C ist ein rechter, also liegt C auf dem Thaleskreis über AB.<br>` +
-        `<strong>2. Mittelpunkt:</strong> Der Mittelpunkt dieses Kreises ist die <strong>Mitte der Hypotenuse</strong> — genau der Punkt, von dem der Abstand gesucht ist.<br>` +
+        `<strong>2. Mittelpunkt:</strong> Der Mittelpunkt dieses Kreises ist die <strong>Mitte von AB</strong> — genau der Punkt, von dem der Abstand gesucht ist.<br>` +
         `<strong>3. Radius:</strong> MC = r = AB : 2 = ${num(c)} cm : 2 = <strong>${num(r)} cm</strong><br>` +
-        `<em>Merke:</em> Der Abstand hängt nicht davon ab, wie flach oder steil das Dreieck ist — er ist immer die halbe Hypotenuse.`
+        `<em>Merke:</em> Der Abstand hängt nicht davon ab, wie flach oder steil das Dreieck ist — er ist immer die Hälfte der längsten Seite.`
       : `<strong>1. Umkehrung des Satzes von Thales:</strong> Der Winkel bei C ist ein rechter, also ist AB der <strong>Durchmesser</strong> des Umkreises.<br>` +
         `<strong>2. Durchmesser:</strong> AB = 2 · r = 2 · ${num(r)} cm = <strong>${num(c)} cm</strong><br>` +
-        `<em>Merke:</em> Umkreismittelpunkt ist die Mitte der Hypotenuse, der Umkreisradius die halbe Hypotenuse — beim rechtwinkligen Dreieck liegt M also auf dem Rand.`,
+        `<em>Merke:</em> Der Umkreismittelpunkt ist die Mitte der längsten Seite, der Umkreisradius die Hälfte davon — beim rechtwinkligen Dreieck liegt M also auf dem Rand.`,
   };
 }
 
@@ -1000,11 +1001,11 @@ function generateAufgabe3() {
   };
 }
 
-// Aufgabe 4 — die Höhe auf die Hypotenuse, über den Flächeninhalt. Beide Katheten sind gegeben,
+// Aufgabe 4 — die Höhe auf AB, über den Flächeninhalt. Alle drei Seiten sind gegeben,
 // gerechnet wird nur mit der Fläche: Dasselbe Dreieck, zweimal als Grundseite mal Höhe gelesen.
 // Die Zahlen stammen aus pythagoreischen Tripeln, damit die Höhe glatt aufgeht.
 //
-// Glatt geht die Höhe nur auf, wenn die Hypotenuse ein Teiler von 100 · a · b ist — das trifft
+// Glatt geht die Höhe nur auf, wenn die längste Seite ein Teiler von 100 · a · b ist — das trifft
 // von den Tripeln oben nur (3, 4, 5) und (7, 24, 25) samt ihren Vielfachen. Dafür sind bei
 // beiden ALLE Vielfachen brauchbar, solange das Dreieck nicht ins Riesenhafte wächst.
 const A4_KANDIDATEN = (() => {
@@ -1046,16 +1047,16 @@ function generateAufgabe4() {
       if (trifft(val, flaeche))
         return `${num(flaeche)} cm² ist der <strong>Flächeninhalt</strong> des Dreiecks — ein Zwischenergebnis. Aus ihm folgt die Höhe erst, wenn du ihn noch einmal als „AB mal Höhe durch 2“ liest.`;
       if (trifft(val, a * b))
-        return `Du hast die <strong>Halbierung vergessen</strong>. ${num(a)} · ${num(b)} ist die Fläche des Rechtecks aus beiden Katheten, das Dreieck ist halb so groß.`;
+        return `Du hast die <strong>Halbierung vergessen</strong>. ${num(a)} · ${num(b)} ist die Fläche des Rechtecks aus den beiden kürzeren Seiten, das Dreieck ist halb so groß.`;
       if (trifft(val, c / 2))
         return `${num(c / 2)} cm ist der <strong>Radius</strong> des Thaleskreises. So hoch läge C nur, wenn es genau über der Mitte von AB stünde — das ist die größtmögliche Höhe, aber nicht diese hier.`;
       if (trifft(val, (a + b) / 2))
-        return `Der Mittelwert der beiden Katheten ist nicht die Höhe. Rechne über den Flächeninhalt.`;
-      return `Weil der Winkel bei C ein rechter ist, sind die beiden Katheten Grundseite und Höhe zueinander. Damit lässt sich die Fläche ausrechnen — und dieselbe Fläche noch einmal mit AB als Grundseite.`;
+        return `Der Mittelwert der beiden kürzeren Seiten ist nicht die Höhe. Rechne über den Flächeninhalt.`;
+      return `Weil der Winkel bei C ein rechter ist, stehen die Seiten AC und BC senkrecht aufeinander — sie sind also Grundseite und Höhe zueinander. Damit lässt sich die Fläche ausrechnen, und dieselbe Fläche noch einmal mit AB als Grundseite.`;
     },
     musterloesungHtml:
       `<strong>1. Satz des Thales:</strong> C liegt auf dem Thaleskreis über AB ⟹ der Winkel bei C ist 90°. Die beiden Seiten AC und BC stehen also <strong>senkrecht aufeinander</strong>.<br>` +
-      `<strong>2. Fläche über die Katheten:</strong> Damit ist die eine Grundseite und die andere die zugehörige Höhe:<br>` +
+      `<strong>2. Fläche über AC und BC:</strong> Damit ist die eine Grundseite und die andere die zugehörige Höhe:<br>` +
       `A = (${num(b)} · ${num(a)}) : 2 = <strong>${num(flaeche)} cm²</strong><br>` +
       `<strong>3. Dieselbe Fläche über AB:</strong> A = (AB · h) : 2, also (${num(c)} · h) : 2 = ${num(flaeche)}<br>` +
       `<strong>4. Auflösen:</strong> h = 2 · ${num(flaeche)} : ${num(c)} = <strong>${num(h)} cm</strong><br>` +
@@ -1066,7 +1067,7 @@ function generateAufgabe4() {
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — der zweite spitze Winkel", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Umkreisradius und Hypotenuse", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Umkreisradius und längste Seite", generate: generateAufgabe2 },
     { schwierigkeit: "schwierig", titel: "Aufgabe 3 — die Winkel am Mittelpunkt", generate: generateAufgabe3 },
     { schwierigkeit: "komplex", titel: "Aufgabe 4 — wie hoch liegt C?", generate: generateAufgabe4 },
   ]);

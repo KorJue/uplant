@@ -447,12 +447,13 @@ async function aufgaben(page) {
           // Der Thales-Schritt muss in der Musterlösung stehen, nicht nur die Winkelsumme.
           pruefe(rueck.includes("Thales") && rueck.includes("γ = 90°"),
             `A1: die Musterlösung begründet den rechten Winkel nicht — „${f}“`);
+          pruefe(!/Kathete|Hypotenuse/i.test(f + rueck), `A1: „Kathete“ oder „Hypotenuse“ kommt erst in Klasse 9 — „${f}“`);
         },
       };
     },
   });
 
-  // Aufgabe 2 — Umkreisradius und Hypotenuse, in beiden Richtungen. 18 Längen × 2 Richtungen
+  // Aufgabe 2 — Umkreisradius und längste Seite, in beiden Richtungen. 18 Längen × 2 Richtungen
   // = 36 Fassungen, gefiltert. Gemessen mit tests/werkzeug-streuung.js: das simulierte
   // 10⁻⁴-Quantil bei 30 Zügen liegt bei 15.
   await pruefeAufgabe(page, bericht, {
@@ -467,7 +468,7 @@ async function aufgaben(page) {
           falsch: [[c, "ganze"], [c * 2, "verdoppelt statt halbiert"]],
           pruefe: (f, rueck) => {
             pruefe(c % 2 === 0, `A2: AB = ${c} cm halbiert sich nicht glatt — „${f}“`);
-            pruefe(rueck.includes("Mitte der Hypotenuse"),
+            pruefe(rueck.includes("Mitte von AB"),
               `A2: die Musterlösung nennt den Umkreismittelpunkt nicht — „${f}“`);
             // Keine Aufgabe dieser Seite darf eine Wurzel verlangen — Klasse 9.
             pruefe(!/√|Wurzel/.test(f + rueck), `A2: in Aufgabe oder Lösung steht eine Wurzel — „${f}“`);
@@ -484,6 +485,7 @@ async function aufgaben(page) {
         pruefe: (f, rueck) => {
           pruefe(rueck.includes("Durchmesser"), `A2: die Musterlösung nennt AB nicht als Durchmesser — „${f}“`);
           pruefe(!/√|Wurzel/.test(f + rueck), `A2: in Aufgabe oder Lösung steht eine Wurzel — „${f}“`);
+          pruefe(!/Kathete|Hypotenuse/i.test(f + rueck), `A2: „Kathete“ oder „Hypotenuse“ kommt erst in Klasse 9 — „${f}“`);
         },
       };
     },
@@ -516,12 +518,13 @@ async function aufgaben(page) {
           pruefe(rueck.includes("gleichschenklig"), `A3: die Musterlösung begründet nicht über das gleichschenklige Dreieck — „${f}“`);
           pruefe(rueck.includes("Nebenwinkel"), `A3: die Musterlösung erklärt den zweiten Winkel bei M nicht — „${f}“`);
           pruefe(!/√|Wurzel/.test(f + rueck), `A3: in Aufgabe oder Lösung steht eine Wurzel — „${f}“`);
+          pruefe(!/Kathete|Hypotenuse/i.test(f + rueck), `A3: „Kathete“ oder „Hypotenuse“ kommt erst in Klasse 9 — „${f}“`);
         },
       };
     },
   });
 
-  // Aufgabe 4 — die Höhe auf die Hypotenuse über den Flächeninhalt. Alle drei Seiten stehen in
+  // Aufgabe 4 — die Höhe auf AB über den Flächeninhalt. Alle drei Seiten stehen in
   // der Angabe, gerechnet wird nur mit der Fläche. Glatt geht die Höhe nur bei den Vielfachen
   // von (3, 4, 5) und (7, 24, 25) auf; es bleiben 26 Fassungen, und das simulierte
   // 10⁻⁴-Quantil bei 30 Zügen liegt bei 11.
@@ -548,8 +551,9 @@ async function aufgaben(page) {
           // Die Höhe kann nie über den Radius hinausreichen.
           pruefe((a * b) / c <= c / 2 + 1e-9, `A4: die Höhe ${(a * b) / c} übertrifft den Radius ${c / 2} — „${f}“`);
           pruefe(rueck.includes("senkrecht aufeinander"),
-            `A4: die Musterlösung sagt nicht, warum die Katheten Grundseite und Höhe sind — „${f}“`);
+            `A4: die Musterlösung sagt nicht, warum AC und BC Grundseite und Höhe sind — „${f}“`);
           pruefe(!/√|Wurzel/.test(f + rueck), `A4: in Aufgabe oder Lösung steht eine Wurzel — „${f}“`);
+          pruefe(!/Kathete|Hypotenuse/i.test(f + rueck), `A4: „Kathete“ oder „Hypotenuse“ kommt erst in Klasse 9 — „${f}“`);
         },
       };
     },

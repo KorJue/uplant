@@ -209,11 +209,11 @@ const K1 = {
   },
 };
 
-// Aufgabe 2 — rechtwinkliges Dreieck aus Hypotenuse und einer Kathete.
+// Aufgabe 2 — rechtwinkliges Dreieck aus der Strecke AB und einer weiteren Seite.
 // Der Thaleskreis liefert den rechten Winkel, der Kreis um B die Länge a. C ist ihr Schnittpunkt.
 const K2 = (() => {
   const A = GC.pt(180, 270), B = GC.pt(420, 270);       // c = 240
-  const aLang = 144;                                     // Kathete a = BC
+  const aLang = 144;                                     // die Seite a = BC
   const M = GC.mid(A, B), r = 120;
   const C = schnittOben(M, r, B, aLang)[0];              // der Punkt oberhalb von AB
   const massA = GC.pt(70, 80), massB = GC.pt(70 + aLang, 80);
@@ -223,7 +223,7 @@ const K2 = (() => {
     titel: "Aufgabe 2 — rechtwinkliges Dreieck aus c und a",
     stufe: "einfach",
     aufgabe:
-      "Gegeben sind die <strong>Hypotenuse c = AB</strong> und die Länge der Kathete <strong>a = BC</strong> (die einzelne Strecke oben links). " +
+      "Gegeben sind die <strong>Strecke c = AB</strong> — über ihr entsteht der Thaleskreis — und die Länge der Seite <strong>a = BC</strong> (die einzelne Strecke oben links). " +
       "Konstruiere das Dreieck ABC mit dem rechten Winkel bei C.",
     schritte: [
       "Thaleskreis über AB konstruieren (Mittelsenkrechte → M, dann Kreis um M durch A). Auf ihm liegen <em>alle</em> Punkte mit ∡ACB = 90°.",
@@ -266,7 +266,7 @@ const K2 = (() => {
           ok: false,
           msg:
             "Es fehlt der Kreis um „B“ mit dem Radius a. Stelle den Zirkel genau auf die vorgegebene Strecke a ein (oben links), " +
-            "steche in B ein und zeichne den Kreis — er trägt die Kathete a von B aus ab und trifft den Thaleskreis im gesuchten Punkt C.",
+            "steche in B ein und zeichne den Kreis — er trägt die Länge a von B aus ab und trifft den Thaleskreis im gesuchten Punkt C.",
         };
       if (!a.seiten.AC || !a.seiten.BC)
         return { ok: false, msg: "Der Punkt C steht — jetzt fehlen noch die Dreiecksseiten: die Geraden durch A und C sowie durch B und C." };
@@ -275,7 +275,7 @@ const K2 = (() => {
         msg:
           "Richtig konstruiert! C liegt auf dem Thaleskreis, also ist der Winkel bei C ein rechter; und C hat von B den Abstand a. " +
           "Beides zusammen legt das Dreieck fest: Der Thaleskreis gibt den Winkel, der Kreis um B die Länge. " +
-          "Miss die zweite Kathete nach — ausrechnen lässt sie sich erst in Klasse 9 mit dem Satz des Pythagoras.",
+          "Miss die dritte Seite nach — ausrechnen lässt sie sich erst in Klasse 9 mit dem Satz des Pythagoras.",
       };
     },
   };
@@ -352,7 +352,7 @@ const K3 = (() => {
   };
 })();
 
-// Aufgabe 4 — Dreieck aus den beiden Hypotenusenabschnitten p und q. Zwei Bedingungen treffen
+// Aufgabe 4 — Dreieck aus den beiden Abschnitten p und q, in die H die Strecke AB teilt. Zwei Bedingungen treffen
 // sich in C: der rechte Winkel (Thaleskreis) und die Lage über H (das Lot). Dass die Höhe dabei
 // das geometrische Mittel von p und q ist, gehört zum Höhensatz und damit in Klasse 9 — hier
 // wird es weder gebraucht noch behauptet.
@@ -367,7 +367,7 @@ const K4 = (() => {
     titel: "Aufgabe 4 — rechtwinkliges Dreieck aus p und q",
     stufe: "schwierig",
     aufgabe:
-      "Auf der Geraden sind die beiden <strong>Hypotenusenabschnitte</strong> abgetragen: q = AH und p = HB. Der Punkt <strong>H</strong> ist also der Fußpunkt der Höhe. " +
+      "Auf der Geraden sind die beiden <strong>Abschnitte</strong> abgetragen, in die der Höhenfußpunkt die Strecke AB teilt: q = AH und p = HB. " +
       "Konstruiere das rechtwinklige Dreieck ABC mit γ = 90°.",
     schritte: [
       "Thaleskreis über der ganzen Strecke <strong>AB</strong> konstruieren (Mittelsenkrechte → M, dann Kreis um M durch A).",
@@ -416,7 +416,7 @@ const K4 = (() => {
             "und verbinde ihre Schnittpunkte — die Verbindung steht senkrecht auf AB und geht durch H. Wo sie den Thaleskreis trifft, liegt C.",
         };
       if (!a.seiten.AC || !a.seiten.BC)
-        return { ok: false, msg: "C steht — jetzt fehlen noch die beiden Katheten: die Geraden durch A und C sowie durch B und C." };
+        return { ok: false, msg: "C steht — jetzt fehlen noch die beiden anderen Seiten: die Geraden durch A und C sowie durch B und C." };
       return {
         ok: true,
         msg:
@@ -429,7 +429,7 @@ const K4 = (() => {
   };
 })();
 
-// Aufgabe 5 — Dreieck aus Hypotenuse und Höhe. Die Höhe steht schon senkrecht in A: Das
+// Aufgabe 5 — Dreieck aus der Strecke AB und der Höhe. Die Höhe steht schon senkrecht in A: Das
 // Abtragen einer Länge auf ein selbst errichtetes Lot wäre eine Konstruktion für sich und
 // lenkt vom Kern ab. Der bleibt anspruchsvoll genug — die PARALLELE im Abstand h muss
 // konstruiert werden, und sie trifft den Thaleskreis zweimal.
@@ -446,7 +446,7 @@ const K5 = (() => {
     titel: "Aufgabe 5 — rechtwinkliges Dreieck aus c und h_c",
     stufe: "schwierig",
     aufgabe:
-      "Gegeben sind die <strong>Hypotenuse c = AB</strong> und die <strong>Höhe h<sub>c</sub></strong> — sie ist in A bereits senkrecht auf AB angetragen und endet im Punkt <strong>P</strong>. " +
+      "Gegeben sind die <strong>Strecke c = AB</strong> und die <strong>Höhe h<sub>c</sub></strong> — sie ist in A bereits senkrecht auf AB angetragen und endet im Punkt <strong>P</strong>. " +
       "Konstruiere ein rechtwinkliges Dreieck ABC mit γ = 90°, dessen Höhe auf AB genau h<sub>c</sub> lang ist.",
     schritte: [
       "Thaleskreis über AB konstruieren — auf ihm liegen alle Punkte mit einem rechten Winkel über AB.",
@@ -502,7 +502,7 @@ const K5 = (() => {
         return {
           ok: false,
           msg: a.halb
-            ? "Eine Kathete steht schon. Es fehlt die zweite — beide Seiten müssen zu „demselben“ Schnittpunkt C führen."
+            ? "Eine Seite steht schon. Es fehlt die zweite — beide müssen zu „demselben“ Schnittpunkt C führen."
             : "Die Parallele schneidet den Thaleskreis in zwei Punkten; wähle einen davon als C und ziehe die Geraden durch A und C sowie durch B und C.",
         };
       return {
@@ -530,11 +530,11 @@ const K6 = (() => {
   return {
     id: "k6",
     kurz: "6. Höhe im Dreieck",
-    titel: "Aufgabe 6 — Dreieck aus c und b, dazu die Höhe auf die Hypotenuse",
+    titel: "Aufgabe 6 — Dreieck aus c und b, dazu die Höhe auf AB",
     stufe: "komplex",
     aufgabe:
-      "Gegeben sind die <strong>Hypotenuse c = AB</strong> und die Kathete <strong>b = AC</strong> (die Strecke oben links). " +
-      "Konstruiere zuerst das Dreieck und danach die <strong>Höhe von C auf AB</strong>. Sie teilt die Hypotenuse in zwei Abschnitte — miss sie nach.",
+      "Gegeben sind die <strong>Strecke c = AB</strong> und die Seite <strong>b = AC</strong> (die Strecke oben links). " +
+      "Konstruiere zuerst das Dreieck und danach die <strong>Höhe von C auf AB</strong>. Sie teilt die Strecke AB in zwei Abschnitte — miss sie nach.",
     schritte: [
       "Thaleskreis über AB konstruieren.",
       "Zirkel auf b stellen, in <strong>A</strong> einstechen, Kreis zeichnen — er schneidet den Thaleskreis in <strong>C</strong>.",
@@ -1048,8 +1048,8 @@ function mountR2(container) {
 //
 // Alle drei Seiten stehen in der Angabe — der Satz des Pythagoras wird also nicht gebraucht,
 // und keine Antwort verlangt eine Wurzel. Gerechnet wird mit dem, was der Satz des Thales
-// hergibt: Der rechte Winkel bei C macht die beiden Katheten zu Grundseite und Höhe
-// zueinander, und die Mitte der Hypotenuse ist der Umkreismittelpunkt.
+// hergibt: Der rechte Winkel bei C macht die Seiten AC und BC zu Grundseite und Höhe
+// zueinander, und die Mitte der längsten Seite ist der Umkreismittelpunkt.
 
 const R3 = (() => {
   const c = 10, b = 6, a = 8;                  // AB, AC und BC — alle drei gegeben
@@ -1083,7 +1083,7 @@ function zeichneR3() {
   const e1 = GC.add(C, GC.scale(u1, s)), e2 = GC.add(C, GC.scale(u2, s)), ee = GC.add(e1, GC.scale(u2, s));
   zeichen("path", { d: `M ${e1.x.toFixed(1)} ${e1.y.toFixed(1)} L ${ee.x.toFixed(1)} ${ee.y.toFixed(1)} L ${e2.x.toFixed(1)} ${e2.y.toFixed(1)}`, class: "thf-rechter" });
 
-  beschrifte((A.x + C.x) / 2 - 30, (A.y + C.y) / 2 - 12, "b = 6", "thf-seitenname");
+  beschrifte((A.x + C.x) / 2 + 16, (A.y + C.y) / 2 + 6, "b = 6", "thf-seitenname");
   beschrifte((B.x + C.x) / 2 + 18, (B.y + C.y) / 2, "a = 8", "thf-seitenname");
   beschrifte(C.x + 12, (C.y + H_.y) / 2, "h", "thf-seitenname");
   beschrifte((A.x + B.x) / 2, A.y + 40, "c = 10", "thf-seitenname");
@@ -1095,13 +1095,17 @@ function zeichneR3() {
   return svg;
 }
 
+// Die letzten beiden Größen sind Zugaben: Der Flächeninhalt (*) verlangt den Gedanken, dass
+// die beiden Seiten am rechten Winkel Grundseite und Höhe zueinander sind, und die Höhe (**)
+// setzt darauf noch einen zweiten Schritt. Wer nur den Thaleskreis üben will, lässt sie leer —
+// die Aufgabe gilt trotzdem als gelöst.
 const R3_FELDER = [
   { name: "den Winkel bei C", soll: 90, einheit: "Grad" },
   { name: "den Umkreisradius r", soll: R3.r, einheit: "cm" },
   { name: "den Abstand MC", soll: R3.r, einheit: "cm" },
   { name: "den Umfang des Dreiecks", soll: R3.umfang, einheit: "cm" },
-  { name: "den Flächeninhalt des Dreiecks", soll: R3.flaeche, einheit: "cm²" },
-  { name: "die Höhe h auf die Hypotenuse", soll: R3.h, einheit: "cm" },
+  { name: "den Flächeninhalt des Dreiecks", soll: R3.flaeche, einheit: "cm²", stern: "*" },
+  { name: "die Höhe h auf die Strecke AB", soll: R3.h, einheit: "cm", stern: "**" },
 ];
 
 function mountR3(container) {
@@ -1112,39 +1116,62 @@ function mountR3(container) {
       html:
         "Über der Strecke AB mit <strong>AB = 10 cm</strong> wird der Thaleskreis gezeichnet; C liegt auf ihm. " +
         "Die beiden anderen Seiten sind <strong>AC = 6 cm</strong> und <strong>BC = 8 cm</strong>. H ist der Fußpunkt der Höhe von C auf AB. " +
-        "Bestimme der Reihe nach alle sechs Größen. Alle Ergebnisse gehen glatt auf.",
+        "Bestimme der Reihe nach die gesuchten Größen. Alle Ergebnisse gehen glatt auf.",
     }),
   );
 
   const figurEl = el("div", { class: "th-figur-wrap" });
   figurEl.appendChild(zeichneR3());
   const liste = el("ol", { class: "th-luecken-liste" });
+  const legende = el("p", {
+    class: "th-legende",
+    html: "<strong>*</strong> und <strong>**</strong> sind Zugaben — die Aufgabe kann auch ohne diese beiden Antworten abgegeben werden.",
+  });
   const btnPruefen = el("button", { type: "button", class: "btn btn-primary" }, "Prüfen");
   const feedback = el("div", { class: "aufgabe-feedback" });
   box.appendChild(figurEl);
   box.appendChild(liste);
+  box.appendChild(legende);
   box.appendChild(el("div", { class: "btn-row" }, btnPruefen));
   box.appendChild(feedback);
 
   const felder = R3_FELDER.map((f, i) => ({ ...f, nr: i + 1, input: el("input", { type: "text", inputmode: "decimal", placeholder: f.einheit }) }));
-  felder.forEach((f) => liste.appendChild(el("li", {}, [f.name + " (in " + f.einheit + "): ", f.input])));
-
+  felder.forEach((f) =>
+    liste.appendChild(
+      el("li", { class: f.stern ? "th-zugabe" : "" }, [
+        f.stern ? el("span", { class: "th-stern" }, f.stern + " ") : null,
+        f.name + " (in " + f.einheit + "): ",
+        f.input,
+      ]),
+    ),
+  );
   btnPruefen.addEventListener("click", () => {
     let alleOk = true;
+    let offen = 0;
     felder.forEach((f) => {
+      // Ein leer gelassenes Zugabefeld ist kein Fehler: Die Legende sagt zu, dass es genügt,
+      // die übrigen Größen zu bestimmen. Gewertet wird nur, was wirklich eingetragen wurde.
+      const leer = f.input.value.trim() === "";
+      if (f.stern && leer) {
+        offen++;
+        f.input.classList.remove("th-feld-ok", "th-feld-fehler");
+        return;
+      }
       const ok = Math.abs(zahlAus(f.input.value) - f.soll) < 0.05;
       if (!ok) alleOk = false;
       f.input.classList.toggle("th-feld-ok", ok);
       f.input.classList.toggle("th-feld-fehler", !ok);
     });
     feedback.innerHTML =
-      (alleOk ? `<div class="status ok">✓ Alles richtig!</div>` : `<div class="status err">✗ Noch nicht alles richtig.</div>`) +
+      (alleOk
+        ? `<div class="status ok">✓ Richtig!${offen ? ` Die ${offen === 1 ? "mit Sternchen markierte Größe hast du" : "beiden Zugaben hast du"} offengelassen — das ist in Ordnung. Im Rechenweg stehen sie trotzdem.` : " Alles bestimmt, auch die beiden Zugaben."}</div>`
+        : `<div class="status err">✗ Noch nicht alles richtig.</div>`) +
       `<div class="musterloesung"><span class="ml-label">Rechenweg</span>` +
-      `<strong>1.</strong> C liegt auf dem Thaleskreis über AB ⟹ der Winkel bei C ist <strong>90°</strong>. AB ist die Hypotenuse.<br>` +
-      `<strong>2.</strong> Der Umkreismittelpunkt ist die Mitte der Hypotenuse: <strong>r = 10 cm : 2 = 5 cm</strong>.<br>` +
+      `<strong>1.</strong> C liegt auf dem Thaleskreis über AB ⟹ der Winkel bei C ist <strong>90°</strong>. AB ist der Durchmesser und damit die längste Seite.<br>` +
+      `<strong>2.</strong> Der Umkreismittelpunkt ist die Mitte von AB: <strong>r = 10 cm : 2 = 5 cm</strong>.<br>` +
       `<strong>3.</strong> C liegt auf diesem Kreis, also ist <strong>MC = r = 5 cm</strong> — ganz gleich, wie das Dreieck geformt ist.<br>` +
       `<strong>4.</strong> Umfang: 6 + 8 + 10 = <strong>24 cm</strong>.<br>` +
-      `<strong>5.</strong> Weil der Winkel bei C ein rechter ist, stehen die beiden Katheten senkrecht aufeinander — die eine ist Grundseite, die andere die zugehörige Höhe:<br>` +
+      `<strong>5.</strong> Weil der Winkel bei C ein rechter ist, stehen AC und BC senkrecht aufeinander — die eine ist Grundseite, die andere die zugehörige Höhe:<br>` +
       `A = (6 · 8) : 2 = <strong>24 cm²</strong><br>` +
       `<strong>6.</strong> Dieselbe Fläche noch einmal, jetzt mit AB als Grundseite: (10 · h) : 2 = 24, also <strong>h = 4,8 cm</strong>.<br>` +
       `<em>Kontrolle:</em> h = 4,8 cm ist kleiner als der Radius 5 cm — höher als bis zur Mitte des Bogens kommt C nie.<br>` +
@@ -1191,18 +1218,18 @@ export const HEFT_AUFGABEN = [
     schritte: [
       "<strong>Zu a):</strong> AB = 6 cm zeichnen, Thaleskreis über AB konstruieren (r = 3 cm).",
       "<strong>Zu a):</strong> Im Abstand 2,5 cm eine <em>Parallele</em> zu AB ziehen — dafür in A das Lot auf AB errichten, 2,5 cm abtragen und durch diesen Punkt die Parallele legen. Wo sie den Kreis schneidet, liegt C (zwei Lösungen, spiegelbildlich).",
-      "<strong>Zu b):</strong> Auf einer Geraden nacheinander q = 4,5 cm und p = 2 cm abtragen: A, dann H, dann B. Die Hypotenuse ist also c = 6,5 cm.",
+      "<strong>Zu b):</strong> Auf einer Geraden nacheinander q = 4,5 cm und p = 2 cm abtragen: A, dann H, dann B. Die Strecke AB ist also c = 6,5 cm lang.",
       "<strong>Zu b):</strong> Thaleskreis über AB konstruieren, in H das Lot auf AB errichten — es trifft den Kreis in C.",
       "Beide Dreiecke zeichnen und die Höhe h<sub>c</sub> jeweils einzeichnen.",
     ],
     kontrolle:
       "<strong>Für beide Teilaufgaben:</strong> Prüfe mit dem Geodreieck, dass der Winkel bei C wirklich <strong>90°</strong> ist, und miss MC nach — " +
       "es muss genauso lang sein wie MA und MB.<br>" +
-      "<strong>a)</strong> Der Thaleskreis hat r = 3 cm. Miss die beiden Hypotenusenabschnitte: Zusammen müssen sie wieder <strong>6 cm</strong> ergeben; " +
+      "<strong>a)</strong> Der Thaleskreis hat r = 3 cm. Miss die beiden Abschnitte, in die der Höhenfußpunkt AB teilt: Zusammen müssen sie wieder <strong>6 cm</strong> ergeben; " +
       "einzeln kommt etwa <strong>4,7 cm</strong> und <strong>1,3 cm</strong> heraus (welcher wo liegt, hängt davon ab, welchen der beiden Schnittpunkte du als C genommen hast). " +
       "Beide Lösungen sind richtig — sie sind spiegelbildlich zueinander.<br>" +
-      "<strong>b)</strong> Die Hypotenuse ist c = 2 cm + 4,5 cm = <strong>6,5 cm</strong>, der Thaleskreis hat also r = 3,25 cm. " +
-      "Miss die Höhe: etwa <strong>3 cm</strong>. Die beiden Katheten: etwa <strong>3,6 cm</strong> und <strong>5,4 cm</strong>.",
+      "<strong>b)</strong> Die Strecke AB ist c = 2 cm + 4,5 cm = <strong>6,5 cm</strong> lang, der Thaleskreis hat also r = 3,25 cm. " +
+      "Miss die Höhe: etwa <strong>3 cm</strong>. Die beiden anderen Seiten: etwa <strong>3,6 cm</strong> und <strong>5,4 cm</strong>.",
   },
   {
     titel: "Aufgabe 3 — wann gibt es überhaupt eine Lösung?",
@@ -1211,7 +1238,7 @@ export const HEFT_AUFGABEN = [
       "Versuche, ein rechtwinkliges Dreieck ABC (γ = 90°) zu konstruieren:<br>" +
       "<strong>a)</strong> c = 5 cm, h<sub>c</sub> = 2,5 cm &nbsp;&nbsp; <strong>b)</strong> c = 5 cm, h<sub>c</sub> = 3 cm<br>" +
       "Zeichne beide Versuche ins Heft und <strong>begründe schriftlich</strong>, was jeweils passiert. Formuliere danach eine Regel: " +
-      "Für welche Höhen h<sub>c</sub> gibt es bei gegebener Hypotenuse c eine Lösung — und wie viele?",
+      "Für welche Höhen h<sub>c</sub> gibt es bei gegebener Strecke c = AB eine Lösung — und wie viele?",
     schritte: [
       "Für beide Teilaufgaben AB = 5 cm zeichnen und den Thaleskreis über AB konstruieren (r = 2,5 cm).",
       "Jeweils die Parallele zu AB im Abstand h<sub>c</sub> ziehen.",
