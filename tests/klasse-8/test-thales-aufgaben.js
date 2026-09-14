@@ -234,7 +234,7 @@ async function konstruktionen(page, pruefe) {
 
     await lot(page, H, { x: 1, y: 0 }, 70, 90);
     rueck = await pruefeKnopf(page);
-    pruefe(rueck.includes("Katheten"), `K4: das Lot steht, es fehlen die Katheten — „${rueck.slice(0, 60)}…“`);
+    pruefe(rueck.includes("beiden anderen Seiten"), `K4: das Lot steht, es fehlen die Dreiecksseiten — „${rueck.slice(0, 60)}…“`);
 
     await lineal(page, A, C);
     await lineal(page, B, C);
@@ -266,7 +266,7 @@ async function konstruktionen(page, pruefe) {
 
     await lineal(page, A, C2);
     rueck = await pruefeKnopf(page);
-    pruefe(rueck.includes("zweite"), `K5: mit nur einer Kathete bleibt die Aufgabe offen — „${rueck.slice(0, 70)}…“`);
+    pruefe(rueck.includes("zweite"), `K5: mit nur einer Seite bleibt die Aufgabe offen — „${rueck.slice(0, 70)}…“`);
 
     await lineal(page, B, C2);
     rueck = await pruefeKnopf(page);
@@ -282,9 +282,9 @@ async function konstruktionen(page, pruefe) {
     const H = { x: C.x, y: A.y };
     pruefe(Math.abs(abst(A, C) - bLang) < 0.5, `K6: der Sollpunkt C hat von A den Abstand b = ${bLang}`);
     pruefe(Math.abs(winkelBei(C, A, B) - 90) < 0.01, `K6: im Sollpunkt C misst der Winkel ${winkelBei(C, A, B).toFixed(2)}°`);
-    // Kathetensatz als unabhängige Gegenrechnung: b² = c · q.
+    // Der Kathetensatz (Klasse 9) dient hier nur der Prüfung als unabhängige Gegenrechnung: b² = c · q.
     const q = abst(A, H), c = abst(A, B);
-    pruefe(Math.abs(bLang * bLang - c * q) < 1, `K6: Kathetensatz b² = c · q — ${(bLang * bLang).toFixed(0)} gegen ${(c * q).toFixed(0)}`);
+    pruefe(Math.abs(bLang * bLang - c * q) < 1, `K6: die Sollpunkte erfüllen b² = c · q — ${(bLang * bLang).toFixed(0)} gegen ${(c * q).toFixed(0)}`);
 
     const w = 190;
     await mittelsenkrechte(page, A, B, w, { x: A.x + w, y: A.y }, { x: B.x, y: B.y - w });
@@ -464,18 +464,49 @@ async function rechenaufgaben(page, pruefe) {
 
     const eingaben = await page.$$(box + " .th-luecken-liste input");
     pruefe(eingaben.length === 6, `R3: ${eingaben.length} Lücken (erwartet 6)`);
-    for (let i = 0; i < eingaben.length; i++) await eingaben[i].fill(String(soll[i]).replace(".", ","));
+
+    // Die beiden letzten Größen sind als Zugabe markiert; die Legende sagt zu, dass die
+    // Aufgabe auch ohne sie abgegeben werden darf.
+    const sterne = await page.$$eval(box + " .th-luecken-liste .th-stern", (e) => e.map((x) => x.textContent.trim()));
+    pruefe(sterne.join(",") === "*,**", `R3: die Zugaben tragen die Sternchen * und ** (gefunden: ${sterne.join(", ") || "keine"})`);
+    const markierteZeilen = await page.$$eval(box + " .th-luecken-liste li", (lis) =>
+      lis.map((li, i) => (li.querySelector(".th-stern") ? i + 1 : 0)).filter(Boolean));
+    pruefe(markierteZeilen.join(",") === "5,6", `R3: markiert sind die Felder ${markierteZeilen.join(", ")} (erwartet 5 und 6)`);
+    const legende = await text(page, box + " .th-legende");
+    pruefe(legende.includes("*") && legende.includes("**") && /ohne diese beiden Antworten/.test(legende),
+      `R3: die Legende erklärt die Sternchen nicht — „${legende}“`);
+
+    // Nur die vier Pflichtfelder ausfüllen — das muss als gelöst gelten.
+    for (let i = 0; i < 4; i++) await eingaben[i].fill(String(soll[i]).replace(".", ","));
     await page.locator(box + " .btn-primary").click();
     let rueck = await text(page, box + " .aufgabe-feedback .status");
-    pruefe(rueck.includes("Alles richtig"), `R3: die richtigen Werte werden anerkannt — „${rueck}“`);
+    pruefe(rueck.includes("Richtig") && !rueck.includes("Noch nicht"),
+      `R3: ohne die beiden Zugaben gilt die Aufgabe als gelöst — „${rueck}“`);
+    pruefe(rueck.includes("offengelassen"), `R3: die Rückmeldung erwähnt die offengelassenen Zugaben — „${rueck}“`);
+    let markiert = await page.$$eval(box + " .th-feld-fehler", (e) => e.length);
+    pruefe(markiert === 0, `R3: die leeren Zugabefelder werden nicht als Fehler markiert (${markiert})`);
 
-    // Ein einzelner Fehler darf nicht durchrutschen.
+    // Mit allen sechs Werten ebenfalls.
+    for (let i = 4; i < 6; i++) await eingaben[i].fill(String(soll[i]).replace(".", ","));
+    await page.locator(box + " .btn-primary").click();
+    rueck = await text(page, box + " .aufgabe-feedback .status");
+    pruefe(rueck.includes("Richtig") && rueck.includes("auch die beiden Zugaben"),
+      `R3: mit allen sechs Werten wird das ausdrücklich anerkannt — „${rueck}“`);
+
+    // Eine falsch ausgefüllte Zugabe zählt dagegen sehr wohl.
     await eingaben[5].fill("5");
     await page.locator(box + " .btn-primary").click();
     rueck = await text(page, box + " .aufgabe-feedback .status");
-    pruefe(rueck.includes("Noch nicht"), `R3: ein falscher Wert fällt auf — „${rueck}“`);
-    const markiert = await page.$$eval(box + " .th-feld-fehler", (e) => e.length);
+    pruefe(rueck.includes("Noch nicht"), `R3: eine falsch ausgefüllte Zugabe fällt auf — „${rueck}“`);
+    markiert = await page.$$eval(box + " .th-feld-fehler", (e) => e.length);
     pruefe(markiert === 1, `R3: genau ein Feld ist als falsch markiert (${markiert})`);
+
+    // Und ein falsches Pflichtfeld erst recht.
+    await eingaben[5].fill("");
+    await eingaben[1].fill("7");
+    await page.locator(box + " .btn-primary").click();
+    rueck = await text(page, box + " .aufgabe-feedback .status");
+    pruefe(rueck.includes("Noch nicht"), `R3: ein falsches Pflichtfeld fällt auf — „${rueck}“`);
   }
 }
 
@@ -503,16 +534,16 @@ async function heftaufgaben(page, pruefe) {
 
   // Aufgabe 2 a): c = 6, h = 2,5 ⟹ die Abschnitte ergänzen sich zu 6 cm.
   const wurzel = Math.sqrt(9 - 6.25);
-  pruefe(Math.abs(3 + wurzel + (3 - wurzel) - 6) < 1e-12, "Heft 2a: die beiden Abschnitte ergänzen sich zur Hypotenuse");
+  pruefe(Math.abs(3 + wurzel + (3 - wurzel) - 6) < 1e-12, "Heft 2a: die beiden Abschnitte ergänzen sich zur Strecke AB");
   pruefe(Math.abs(3 + wurzel - 4.658) < 0.001 && Math.abs(3 - wurzel - 1.342) < 0.001,
     `Heft 2a: die Abschnitte messen ${(3 + wurzel).toFixed(1)} und ${(3 - wurzel).toFixed(1)} cm`);
   pruefe(kontrollen[1].includes("4,7") && kontrollen[1].includes("1,3"), "Heft 2a: die Selbstkontrolle nennt beide Messwerte");
   pruefe(kontrollen[1].includes("6 cm"), "Heft 2a: die Selbstkontrolle nennt die Summe der beiden Abschnitte");
   // Aufgabe 2 b): p = 2, q = 4,5 ⟹ c = 6,5.
-  pruefe(2 + 4.5 === 6.5, "Heft 2b: p + q ergibt die Hypotenuse 6,5 cm");
+  pruefe(2 + 4.5 === 6.5, "Heft 2b: p + q ergibt die Strecke AB mit 6,5 cm");
   pruefe(Math.abs(Math.sqrt(2 * 4.5) - 3) < 1e-12, `Heft 2b: die Höhe misst 3 cm`);
-  pruefe(kontrollen[1].includes("6,5 cm"), "Heft 2b: die Selbstkontrolle nennt die Hypotenuse");
-  pruefe(kontrollen[1].includes("3,6") && kontrollen[1].includes("5,4"), "Heft 2b: die Selbstkontrolle nennt beide Katheten als Messwerte");
+  pruefe(kontrollen[1].includes("6,5 cm"), "Heft 2b: die Selbstkontrolle nennt die Länge von AB");
+  pruefe(kontrollen[1].includes("3,6") && kontrollen[1].includes("5,4"), "Heft 2b: die Selbstkontrolle nennt beide Seiten als Messwerte");
 
   // Aufgabe 3: Grenzfall h = c : 2 und der unmögliche Fall h > c : 2.
   pruefe(Math.abs(2.5 - 5 / 2) < 1e-12, "Heft 3a: h_c = 2,5 cm ist genau der Radius des Thaleskreises");
@@ -522,30 +553,40 @@ async function heftaufgaben(page, pruefe) {
   pruefe(kontrollen[2].includes("45°"), "Heft 3a: die Selbstkontrolle nennt das gleichschenklige Dreieck mit 45°");
 }
 
-// ---------- Keine Wurzeln in Klasse 8 ----------
+// ---------- Was in Klasse 8 noch nicht zur Verfügung steht ----------
 //
-// Quadratwurzeln und der Satz des Pythagoras stehen erst in Klasse 9 an. Auf dieser Seite darf
-// deshalb keine Aufgabe eine Wurzel verlangen. Genannt werden darf beides — aber nur dort, wo
-// es ausdrücklich als Ausblick gekennzeichnet ist.
+// Quadratwurzeln und der Satz des Pythagoras stehen erst in Klasse 9 an, und mit ihnen die
+// Namen „Kathete“ und „Hypotenuse“. Auf dieser Seite darf deshalb keine Aufgabe eine Wurzel
+// verlangen und keine die beiden Begriffe benutzen. Genannt werden dürfen sie — aber nur dort,
+// wo es ausdrücklich als Ausblick gekennzeichnet ist.
 
-async function wurzelfrei(page, pruefe) {
-  const abschnitte = ["sec-konstruktionsaufgaben", "sec-uebungen", "sec-heft"];
-  for (const id of abschnitte) {
+const VERBOTEN = [
+  { muster: /√[^ ]*/g, was: "eine Wurzel" },
+  { muster: /Kathete\w*|Hypotenuse\w*/gi, was: "„Kathete“ oder „Hypotenuse“" },
+];
+
+async function klasse8Sprache(page, pruefe) {
+  for (const id of ["sec-konstruktionsaufgaben", "sec-uebungen", "sec-heft"]) {
     const roh = await page.evaluate((sel) => {
       const el = document.getElementById(sel).cloneNode(true);
       el.querySelectorAll(".ausblick-box").forEach((a) => a.remove());
       return el.innerText.replace(/\s+/g, " ");
     }, id);
-    const treffer = roh.match(/√[^ ]*/g) || [];
-    pruefe(treffer.length === 0, `${id}: die Seite verlangt eine Wurzel — „${treffer.join(", ")}“`);
+    for (const { muster, was } of VERBOTEN) {
+      const treffer = roh.match(muster) || [];
+      pruefe(treffer.length === 0, `${id}: die Seite benutzt ${was} — „${treffer.join(", ")}“`);
+    }
   }
-  // Auch die Rückmeldungen der Konstruktionsaufgaben dürfen keine verlangen. Sie erscheinen
-  // erst nach dem Prüfen, deshalb wird jede Aufgabe einmal leer geprüft und einmal getippt.
+  // Auch die Rückmeldungen der Konstruktionsaufgaben. Sie erscheinen erst nach dem Prüfen,
+  // deshalb wird für jede Aufgabe einmal der Tipp geholt.
   for (const id of ["k1", "k2", "k3", "k4", "k5", "k6"]) {
     await waehleAufgabe(page, id);
     await page.locator("#ka-hint").click();
     const rueck = await text(page, "#ka-feedback");
-    pruefe(!rueck.includes("√"), `Konstruktion ${id}: der Tipp enthält eine Wurzel — „${rueck.slice(0, 70)}…“`);
+    for (const { muster, was } of VERBOTEN) {
+      const treffer = rueck.match(muster) || [];
+      pruefe(treffer.length === 0, `Konstruktion ${id}: der Tipp benutzt ${was} — „${rueck.slice(0, 70)}…“`);
+    }
   }
 }
 
@@ -561,7 +602,7 @@ async function wurzelfrei(page, pruefe) {
   await rechenaufgaben(page, pruefe);
   await heftaufgaben(page, pruefe);
 
-  await wurzelfrei(page, pruefe);
+  await klasse8Sprache(page, pruefe);
 
   pruefe(page.stoerungen.length === 0, `Keine Skript- oder Konsolenfehler (${page.stoerungen.join(" | ") || "keine"})`);
 

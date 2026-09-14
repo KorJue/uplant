@@ -515,6 +515,20 @@
   background: var(--card-bg);
   color: var(--text);
 }
+/* Zugabefelder: Ihr Sternchen verweist auf die Legende darunter. */
+.th-stern {
+  font-weight: 700;
+  color: var(--accent-dark);
+  /* Bei einem zweizeiligen Eintrag gehört das Sternchen an die erste Zeile, nicht in die Mitte. */
+  align-self: flex-start;
+}
+.th-legende {
+  margin: 0.6rem 0 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+.th-legende strong { color: var(--accent-dark); }
+
 .th-feld-ok { border-color: #157347 !important; background: #e7f6ec !important; }
 .th-feld-fehler { border-color: #b3261e !important; background: #fdecec !important; }
 
