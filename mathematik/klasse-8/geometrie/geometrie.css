@@ -102,10 +102,15 @@
   width: 100%;
   height: 100%;
 }
+/* Steht die Anleitung unter der Zeichenfläche (Hochformat), bekommt sie nur so viel Höhe, wie der
+   aktuelle Schritt braucht — die vollständige Schrittliste darunter wird gescrollt. Mit den
+   vorherigen 26vh nahm sie auf dem iPad hoch 281 von 1080 Bildpunkten ein, und genau die fehlten
+   der Zeichenfläche. Die Rückmeldung zur Konstruktion steht nicht hier, sondern unter der
+   Zeichenfläche, und bleibt darum immer sichtbar. */
 .card.geo-fullscreen .geo-side-col {
   flex: 0 0 auto;
   min-width: 0;
-  max-height: 26vh;
+  max-height: min(26vh, 9.5rem);
   overflow: auto;
 }
 /* Im Querformat (iPad quer, Beamer) steht die Anleitung neben der Zeichenfläche. */
@@ -121,6 +126,101 @@
 
 .geo-zoom-row {
   margin: 0.6rem 0 0;
+}
+
+/* Im Vollbild zurückgetretene Nebensachen: Überschrift, Erklärtext, Hinweiskästen, Quiz.
+   Sie kosten sonst genau die Höhe, die die Zeichenfläche gewinnen soll. */
+.geo-vollbild-aus {
+  display: none !important;
+}
+
+/* Der Knopf zum Beenden hängt im Vollbild fest in der Ecke — unabhängig davon, wie viel
+   Inhalt darüber liegt oder wohin gescrollt wurde. Vorher stand er im Fluss unterhalb der
+   Zeichenfläche und konnte aus dem Bild geschoben werden; auf dem iPad war das Vollbild
+   dann nicht mehr zu verlassen. */
+.card.geo-fullscreen .geo-zoom-row {
+  position: fixed;
+  top: 0.4rem;
+  right: 0.4rem;
+  z-index: 210;
+  margin: 0;
+}
+.card.geo-fullscreen .geo-zoom-btn {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.85rem;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.18);
+}
+/* Der Knopf für die Anleitung gehört zum Vollbild und ist sonst unsichtbar. Die Auswahl nennt
+   bewusst zwei Klassen: .geo-btn setzt weiter unten display: inline-block, und bei gleicher
+   Spezifität gewänne die spätere Regel — der Knopf stünde dann auch außerhalb des Vollbilds da,
+   wo er nichts bewirkt. */
+.geo-zoom-row .geo-anleitung-btn {
+  display: none;
+}
+.card.geo-fullscreen .geo-zoom-row .geo-anleitung-btn {
+  display: inline-block;
+}
+.card.geo-fullscreen .geo-zoom-row {
+  display: flex;
+  gap: 0.4rem;
+}
+/* Damit die Umschalter in der obersten Zeile nicht unter den Knöpfen verschwinden. */
+.card.geo-fullscreen .geo-mode-tabs:first-child {
+  padding-right: 19rem;
+}
+/* Auf schmalen Geräten reicht die Breite dafür nicht — dort bekommen die Knöpfe eine eigene
+   Zeile über dem Arbeitsbereich. */
+@media (max-width: 720px) {
+  .card.geo-fullscreen {
+    padding-top: 2.8rem;
+  }
+  .card.geo-fullscreen .geo-mode-tabs:first-child {
+    padding-right: 0;
+  }
+}
+
+/* Die Umschalter bleiben im Vollbild einzeilig und werden seitlich gewischt. Umbrechend
+   brauchten sie auf einem schmalen Gerät bis zu 380 von 844 Bildpunkten Höhe — mehr als die
+   Zeichenfläche selbst. */
+.card.geo-fullscreen .geo-mode-tabs {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.card.geo-fullscreen .geo-mode-tab {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/* Zwischenebenen zwischen Karte und Zeichenfläche geben die Höhe weiter. Ohne das bliebe eine
+   tiefer verschachtelte Werkbank (Satz des Thales, Abschnitt 8) auf ihrer Inhaltshöhe stehen. */
+.card.geo-fullscreen .geo-vollbild-pfad {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* Ohne Anleitung: Die Zeichenfläche bekommt die Höhe, die sonst der Text unter ihr belegt. */
+.card.geo-fullscreen.geo-ohne-anleitung .geo-side-col {
+  display: none;
+}
+
+/* Im Vollbild zählt jeder Bildpunkt Höhe — Umschalter und Werkzeuge rücken enger zusammen. */
+.card.geo-fullscreen .geo-mode-tab,
+.card.geo-fullscreen .geo-toolbar .geo-btn {
+  padding: 0.3rem 0.65rem;
+  font-size: 0.85rem;
+}
+.card.geo-fullscreen .geo-toolbar,
+.card.geo-fullscreen .geo-toggle-row {
+  gap: 0.3rem;
+  margin: 0;
+}
+.card.geo-fullscreen .geo-toggle-row label,
+.card.geo-fullscreen .geo-legend {
+  font-size: 0.8rem;
 }
 
 body.geo-fullscreen-active {
