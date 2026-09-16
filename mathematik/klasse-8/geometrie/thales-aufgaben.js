@@ -17,12 +17,12 @@
 // läuft. Nur der Thaleskreis verlangt zusätzlich die Mittelsenkrechte — sein Mittelpunkt darf
 // nicht geschätzt werden, das ist der fachliche Kern des Themas.
 
-import * as GC from "./geo-core.js?v=22";
-import * as GS from "./geo-svg.js?v=22";
-import { lineThroughBoth } from "./check-helpers.js?v=22";
-import { bester, findMediatriceAlle, circlesAt, pairPoints } from "./tri-construct.js?v=22";
-import { setupFreeConstruction } from "./free-ui.js?v=22";
-import { setupCanvasZoom } from "./canvas-zoom.js?v=22";
+import * as GC from "./geo-core.js?v=23";
+import * as GS from "./geo-svg.js?v=23";
+import { lineThroughBoth } from "./check-helpers.js?v=23";
+import { bester, findMediatriceAlle, circlesAt, pairPoints } from "./tri-construct.js?v=23";
+import { setupFreeConstruction } from "./free-ui.js?v=23";
+import { setupCanvasZoom } from "./canvas-zoom.js?v=23";
 
 // ---------- Helfer ----------
 
