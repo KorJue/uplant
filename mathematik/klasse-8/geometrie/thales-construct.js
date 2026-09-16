@@ -9,8 +9,8 @@
 // Mittelsenkrechte von AB. Sie liefert den Mittelpunkt M, und um M mit dem Radius MA liegt der
 // Thaleskreis. Genau diese Reihenfolge ist der Kern des Abschnitts: Ohne M kein Kreis.
 
-import * as GC from "./geo-core.js?v=22";
-import { bester, circlesAt, findMediatriceAlle, pairPoints } from "./tri-construct.js?v=22";
+import * as GC from "./geo-core.js?v=23";
+import { bester, circlesAt, findMediatriceAlle, pairPoints } from "./tri-construct.js?v=23";
 
 // Ein Ergebniskreis gilt als richtig, wenn sein Radius auf 5 % genau stimmt — dieselbe Schranke
 // wie beim Um- und Inkreis, damit ein von Hand gesetzter Kreis nicht an Pixeln scheitert.

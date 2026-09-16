@@ -18,13 +18,13 @@
 // Durchgehende Farbcodierung: Winkel α (bei A) grün, Winkel β (bei B) orange, der rechte
 // Winkel γ (bei C) rot, Durchmesser AB blau, Radien violett.
 
-import * as GC from "./geo-core.js?v=22";
-import * as GS from "./geo-svg.js?v=22";
-import { drawMittelsenkrechte } from "./constructions.js?v=22";
-import { setupFreeConstruction } from "./free-ui.js?v=22";
-import { setupCanvasZoom } from "./canvas-zoom.js?v=22";
-import { THALES_TASK } from "./thales-construct.js?v=1";
-import { mountKonstruktionsAufgaben, mountRechenAufgaben, mountHeftAufgaben } from "./thales-aufgaben.js?v=3";
+import * as GC from "./geo-core.js?v=23";
+import * as GS from "./geo-svg.js?v=23";
+import { drawMittelsenkrechte } from "./constructions.js?v=23";
+import { setupFreeConstruction } from "./free-ui.js?v=23";
+import { setupCanvasZoom } from "./canvas-zoom.js?v=23";
+import { THALES_TASK } from "./thales-construct.js?v=2";
+import { mountKonstruktionsAufgaben, mountRechenAufgaben, mountHeftAufgaben } from "./thales-aufgaben.js?v=4";
 
 "use strict";
 
