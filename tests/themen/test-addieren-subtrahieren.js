@@ -41,6 +41,15 @@ async function bruchdaten(page, box) {
   }, box);
 }
 
+// Die Beschriftungen der Eingabefelder. In ihnen steht bei den Ausfüllaufgaben ein Teil der
+// Angabe — etwa, bis zu welcher Menge ergänzt werden soll.
+async function feldnamen(page, box) {
+  return page.evaluate((sel) => ({
+    felder: [...document.querySelectorAll(`${sel} .aufgabe-feld-name`)].map((e) => e.innerText.replace(/\s+/g, " ").trim()),
+    text: document.querySelector(`${sel} .aufgabe-prompt`).innerText.replace(/\s+/g, " ").trim(),
+  }), box);
+}
+
 async function aufgaben(page) {
   // Aufgabe 1 — gleichnamig addieren. 7 Nenner mit je (n−2)(n−1)/2 Zählerpaaren,
   // zusammen 159 Kandidaten — aber nicht gleich wahrscheinlich: Der Nenner wird
@@ -67,10 +76,10 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — ungleichnamig addieren. 8·7 = 56 Nennerpaare mit jeweils
+  // Aufgabe 3 — ungleichnamig addieren. 8·7 = 56 Nennerpaare mit jeweils
   // mehreren Zählerpaaren; die Streuung liegt weit über der Schranke.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Hauptnenner", runden: 30, mindestensVerschieden: 20, liesRoh: bruchdaten,
+    nr: 3, name: "A3 Hauptnenner", runden: 30, mindestensVerschieden: 20, liesRoh: bruchdaten,
     deute: (frage, roh) => {
       if (!roh || roh.brueche.length < 2) return null;
       const [a, b] = roh.brueche;
@@ -92,9 +101,9 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — gemischte Zahlen subtrahieren, mit Entbündeln.
+  // Aufgabe 5 — gemischte Zahlen subtrahieren, mit Entbündeln.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 gemischte Zahlen", runden: 30, mindestensVerschieden: 20, liesRoh: bruchdaten,
+    nr: 5, name: "A5 gemischte Zahlen", runden: 30, mindestensVerschieden: 20, liesRoh: bruchdaten,
     deute: (frage, roh) => {
       if (!roh || roh.brueche.length < 2) return null;
       const [a, b] = roh.brueche;
@@ -113,9 +122,9 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — Sachaufgabe mit Bruch und Dezimalzahl.
+  // Aufgabe 7 — Sachaufgabe mit Bruch und Dezimalzahl.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Bruch und Dezimalzahl", runden: 30, mindestensVerschieden: 25, liesRoh: bruchdaten,
+    nr: 7, name: "A7 Bruch und Dezimalzahl", runden: 30, mindestensVerschieden: 25, liesRoh: bruchdaten,
     deute: (frage, roh) => {
       if (!roh || roh.brueche.length < 1) return null;
       const { z, n } = roh.brueche[0];
@@ -135,6 +144,104 @@ async function aufgaben(page) {
           [(gesamtZ - abZ) / 10, null],
           // Den Anteil als Rest genommen statt ihn abzuziehen.
           [abZ / 10, null],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 2 — gleichnamig subtrahieren. Gemessen mit tests/werkzeug-streuung.js: 78 verschiedene
+  // in 200 Würfen, zurückgerechnet rund 86 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 18.
+  await pruefeAufgabe(page, bericht, {
+    nr: 2, name: "A2 gleichnamig subtrahieren", runden: 30, mindestensVerschieden: 18, liesRoh: bruchdaten,
+    deute: (frage, roh) => {
+      if (!roh || roh.brueche.length < 2) return null;
+      const [a, b] = roh.brueche;
+      pruefe(a.n === b.n, `A2: die Nenner ${a.n} und ${b.n} sind verschieden — die Aufgabe soll gleichnamig sein`);
+      pruefe(a.z > b.z, `A2: ${a.z}/${a.n} − ${b.z}/${b.n} wäre negativ`);
+      const [zk, nk] = kuerze(a.z - b.z, a.n);
+      return {
+        richtig: `${zk}/${nk}`,
+        falsch: [
+          // Nenner mitsubtrahiert oder verdoppelt — der klassische Fehler.
+          [`${a.z - b.z}/${a.n * 2}`, "nur der Zähler"],
+          [zk === nk ? null : `${nk}/${zk}`, null],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 4 — Dezimalzahlen schriftlich. Gemessen mit tests/werkzeug-streuung.js: in 200 Würfen
+  // kein einziges Doppel (831 · 771 · 2 mögliche Aufgaben). Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen — 27.
+  await pruefeAufgabe(page, bericht, {
+    nr: 4, name: "A4 Dezimalzahlen schriftlich", runden: 30, mindestensVerschieden: 27,
+    deute: (frage) => {
+      const m = frage.match(/Berechne schriftlich: ([\d.,]+) ([+−]) ([\d.,]+)/);
+      if (!m) return null;
+      const zahl = (t) => Number(t.replace(/\./g, "").replace(",", "."));
+      const a = zahl(m[1]), b = zahl(m[3]), plus = m[2] === "+";
+      // In Hundertsteln rechnen, damit die Prüfung nicht selbst an der Gleitkommarechnung scheitert.
+      const aH = Math.round(a * 100), bH = Math.round(b * 100);
+      const ergH = plus ? aH + bH : aH - bH;
+      pruefe(ergH > 0, `A4: ${m[1]} ${m[2]} ${m[3]} wäre negativ`);
+      // Rechtsbündig statt am Komma ausgerichtet.
+      const falschRechts = (plus ? aH / 10 + bH : aH / 10 - bH) / 10;
+      return {
+        richtig: ergH / 100,
+        toleranz: 0.0005,
+        falsch: [[Math.abs(falschRechts - ergH / 100) > 0.001 ? falschRechts : null, "Komma"]],
+      };
+    },
+  });
+
+  // Aufgabe 6 — fehlender Summand. Gemessen mit tests/werkzeug-streuung.js: 131 verschiedene in
+  // 200 Würfen, zurückgerechnet rund 218 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 22.
+  await pruefeAufgabe(page, bericht, {
+    nr: 6, name: "A6 fehlender Summand", runden: 30, mindestensVerschieden: 22, liesRoh: bruchdaten,
+    deute: (frage, roh) => {
+      if (!roh || roh.brueche.length < 2) return null;
+      const [bekannt, summe] = roh.brueche;
+      const zH = summe.z * bekannt.n - bekannt.z * summe.n;
+      const nH = summe.n * bekannt.n;
+      pruefe(zH > 0, `A6: der gesuchte Summand wäre nicht positiv (${bekannt.z}/${bekannt.n} + ? = ${summe.z}/${summe.n})`);
+      const [zk, nk] = kuerze(zH, nH);
+      return {
+        richtig: `${zk}/${nk}`,
+        falsch: [
+          [`${summe.z}/${summe.n}`, "Summe selbst"],
+          // Zähler und Nenner getrennt subtrahiert — der nächstliegende Fehler.
+          [summe.n - bekannt.n > 0 && summe.z - bekannt.z > 0 ? `${summe.z - bekannt.z}/${summe.n - bekannt.n}` : null, null],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 8 — drei Mengen, zwei Schreibweisen (Aufgabe zum Ausfüllen). Gemessen mit
+  // tests/werkzeug-streuung.js: 197 verschiedene in 200 Würfen, zurückgerechnet rund 6567
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen — 27.
+  await pruefeAufgabe(page, bericht, {
+    nr: 8, name: "A8 drei Mengen", runden: 30, mindestensVerschieden: 27, liesRoh: feldnamen,
+    deute: (frage, roh) => {
+      const m = frage.match(/kommen ([\d.,]+) \S+ .*?, ([\d.,]+) \S+ .*? und ([\d.,]+) \S+ .*? zusammen/);
+      if (!m || !roh) return null;
+      const zahl = (t) => Math.round(Number(t.replace(",", ".")) * 10);   // in Zehnteln
+      const teile = [zahl(m[1]), zahl(m[2]), zahl(m[3])];
+      const summeZ = teile[0] + teile[1] + teile[2];
+      const zielMatch = (roh.felder[1] || "").match(/bis ([\d.,]+) \S+ fehlt/);
+      if (!zielMatch) return null;
+      const zielZ = Math.round(Number(zielMatch[1].replace(",", ".")) * 10);
+      pruefe(zielZ > summeZ, `A8: das Ziel ${zielZ / 10} liegt nicht über der Summe ${summeZ / 10}`);
+      const g = ggT(summeZ, 10);
+      return {
+        toleranz: 0.0005,
+        felder: [summeZ / 10, (zielZ - summeZ) / 10, `${summeZ / g}/${10 / g}`],
+        falschFelder: [
+          [0, (teile[0] + teile[1]) / 10, "dritte"],
+          [1, summeZ / 10, "Gesamtmenge"],
+          // Ungekürzt abgegeben — aber nur dann ein Fehler, wenn sich überhaupt kürzen lässt.
+          [2, g > 1 ? `${summeZ}/10` : null, "gekürzt"],
         ],
       };
     },

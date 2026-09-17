@@ -468,6 +468,11 @@ function generateAufgabe1() {
     tolerance: 0.5,
     placeholder: "Ergebnis",
     hinweis: (raw, val) => (trifft(val, a - b) ? "Achte auf das Vorzeichen: Hier wird <strong>addiert</strong>, nicht subtrahiert." : ""),
+    tipps: [
+      "Stell dir die Zahlengerade vor: Der erste Summand ist der Startpunkt.",
+      `Eine ${b < 0 ? "negative" : "positive"} Zahl zu addieren heißt, ${Math.abs(b)} Schritte nach ${b < 0 ? "links" : "rechts"} zu gehen.`,
+      `Start bei ${zahl(a)}, dann ${Math.abs(b)} Schritte nach ${b < 0 ? "links" : "rechts"}.`,
+    ],
     musterloesungHtml:
       (b < 0
         ? `Eine negative Zahl zu addieren heißt, nach links zu gehen: ${zahl(a)} + ${inKlammern(b)} = ${zahl(a)} − ${Math.abs(b)} = <strong>${zahl(erg)}</strong>`
@@ -490,6 +495,11 @@ function generateAufgabe2() {
       trifft(val, a + b)
         ? "Du hast die beiden Minuszeichen zusammengezogen wie eines. <strong>Subtrahieren heißt, die Gegenzahl zu addieren</strong> — aus − (−b) wird + b."
         : "",
+    tipps: [
+      "Subtrahieren heißt immer: die Gegenzahl addieren.",
+      `Die Gegenzahl von ${zahl(b)} ist ${Math.abs(b)}.`,
+      `Aus ${zahl(a)} − ${inKlammern(b)} wird also ${zahl(a)} + ${Math.abs(b)}.`,
+    ],
     musterloesungHtml:
       `Subtrahieren heißt, die Gegenzahl zu addieren. Die Gegenzahl von ${zahl(b)} ist ${Math.abs(b)}:<br>` +
       `${zahl(a)} − ${inKlammern(b)} = ${zahl(a)} + ${Math.abs(b)} = <strong>${zahl(erg)}</strong>`,
@@ -511,6 +521,11 @@ function generateAufgabe3() {
     tolerance: 0.5,
     placeholder: "Ergebnis",
     hinweis: (raw, val) => (trifft(val, -erg) ? "Der Betrag stimmt — nur das <strong>Vorzeichen</strong> nicht. Zähle die negativen Faktoren: eine gerade Anzahl ergibt Plus, eine ungerade Minus." : ""),
+    tipps: [
+      "Rechne in zwei Schritten: erst das Vorzeichen, dann die Beträge.",
+      "Zähle die negativen Faktoren: eine gerade Anzahl ergibt Plus, eine ungerade Minus.",
+      `Die Beträge sind ${f[0]}, ${f[1]} und ${f[2]}.`,
+    ],
     musterloesungHtml:
       `① Vorzeichen bestimmen: Es sind <strong>${anzahlNegativ}</strong> negative Faktoren, also eine ${anzahlNegativ % 2 === 0 ? "gerade" : "ungerade"} Anzahl ⇒ das Ergebnis ist <strong>${anzahlNegativ % 2 === 0 ? "positiv" : "negativ"}</strong>.<br>` +
       `② Beträge multiplizieren: ${f[0]} · ${f[1]} · ${f[2]} = ${f[0] * f[1] * f[2]}<br>` +
@@ -539,6 +554,11 @@ function generateAufgabe4() {
     tolerance: 0.5,
     placeholder: "Ergebnis in " + kontext.einh,
     hinweis: (raw, val) => (trifft(val, start + x - y) ? "Achte auf die Reihenfolge der Richtungen: zuerst geht es <strong>nach unten</strong>, danach wieder hinauf." : ""),
+    tipps: [
+      "Rechne Schritt für Schritt und schreibe den Zwischenwert auf.",
+      `Erster Schritt: ${zahl(start)} − ${x}.`,
+      "Der zweite Schritt geht wieder nach oben — er wird addiert.",
+    ],
     musterloesungHtml:
       `① ${zahl(start)} − ${x} = <strong>${zahl(zwischen)}</strong><br>` +
       `② ${zahl(zwischen)} + ${y} = <strong>${zahl(erg)}</strong><br>` +
@@ -546,12 +566,178 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 2 — Betrag und Gegenzahl. Zwei Felder, weil es zwei verschiedene Begriffe sind: Die
+// Gegenzahl behält den Abstand zur Null und wechselt die Seite, der Betrag ist der Abstand selbst.
+function generateAufgabe2b() {
+  const n = pick([-1, 1]) * randInt(2, 40);
+  return {
+    promptHtml: `Gegeben ist die Zahl <strong>${zahl(n)}</strong>.`,
+    felder: [
+      {
+        name: "ihre Gegenzahl", soll: -n, toleranz: 0.5,
+        hinweis: (roh, val) => (trifft(val, n) ? "Das ist die Zahl selbst. Die Gegenzahl liegt auf der <em>anderen</em> Seite der Null." : ""),
+      },
+      {
+        name: "ihr Betrag", soll: Math.abs(n), toleranz: 0.5,
+        hinweis: (roh, val) => (trifft(val, -Math.abs(n)) ? "Ein Betrag ist ein Abstand und deshalb nie negativ." : ""),
+      },
+    ],
+    tipps: [
+      "Die Gegenzahl entsteht durch einen Wechsel des Vorzeichens — der Abstand zur Null bleibt gleich.",
+      "Der Betrag ist der Abstand zur Null, ganz ohne Vorzeichen.",
+      `${zahl(n)} liegt ${Math.abs(n)} Schritte von der Null entfernt, auf der ${n < 0 ? "linken" : "rechten"} Seite.`,
+    ],
+    musterloesungHtml:
+      `Gegenzahl: Vorzeichen wechseln ⇒ <strong>${zahl(-n)}</strong><br>` +
+      `Betrag: Abstand zur Null ⇒ |${zahl(n)}| = <strong>${Math.abs(n)}</strong><br>` +
+      `<span class="progress-note">Beide Zahlen ${zahl(n)} und ${zahl(-n)} haben denselben Betrag — sie liegen nur auf verschiedenen Seiten der Null.</span>`,
+  };
+}
+
+// Aufgabe 4 — ordnen. Der typische Fehler ist, bei negativen Zahlen den Betrag zu vergleichen; die
+// Zahlen werden deshalb so gewählt, dass die betragsgrößte negative Zahl dabei ist.
+function generateAufgabe4b() {
+  const werte = new Set();
+  while (werte.size < 4) werte.add(randInt(-30, 25));
+  const liste = [...werte];
+  const kleinste = Math.min(...liste);
+  const betragsgroesste = liste.reduce((a, b) => (Math.abs(a) >= Math.abs(b) ? a : b));
+  return {
+    promptHtml:
+      `Welche dieser vier Zahlen ist die <strong>kleinste</strong>?<br>` +
+      `<span class="formula-block">${liste.map(zahl).join(" &nbsp;&nbsp; ")}</span>`,
+    correct: kleinste,
+    tolerance: 0.5,
+    placeholder: "Zahl",
+    hinweis: (roh, val) =>
+      trifft(val, Math.max(...liste))
+        ? "Das ist die größte Zahl."
+        : trifft(val, betragsgroesste) && betragsgroesste !== kleinste
+          ? "Hier wurde der <em>Betrag</em> verglichen. Bei negativen Zahlen ist die mit dem größeren Betrag die <strong>kleinere</strong>."
+          : "",
+    tipps: [
+      "Stelle dir die Zahlengerade vor: Je weiter links eine Zahl steht, desto kleiner ist sie.",
+      "Jede negative Zahl ist kleiner als jede positive — und kleiner als null.",
+      "Unter den negativen Zahlen ist die mit dem größten Betrag die kleinste.",
+    ],
+    musterloesungHtml:
+      `Der Größe nach geordnet: ${[...liste].sort((a, b) => a - b).map(zahl).join(" &lt; ")}<br>` +
+      `Die kleinste ist <strong>${zahl(kleinste)}</strong>.<br>` +
+      `<span class="progress-note">Auf der Zahlengeraden steht sie am weitesten links.</span>`,
+  };
+}
+
+// Aufgabe 6 — ein Term mit Punkt vor Strich in ℤ. Hier treffen zwei Regeln aufeinander: die
+// Vorzeichenregel beim Multiplizieren und die Rangfolge.
+function generateAufgabe6() {
+  const a = pick([-1, 1]) * randInt(2, 9);
+  const b = pick([-1, 1]) * randInt(2, 9);
+  const c = pick([-1, 1]) * randInt(3, 20);
+  const produkt = a * b;
+  const erg = produkt + c;
+  return {
+    promptHtml: `Berechne: ${zahl(a)} · ${inKlammern(b)} + ${inKlammern(c)}`,
+    correct: erg,
+    tolerance: 0.5,
+    placeholder: "Ergebnis",
+    hinweis: (roh, val) =>
+      trifft(val, a * (b + c))
+        ? "Punkt vor Strich: Das Produkt wird zuerst gerechnet, auch wenn die Summe daneben steht."
+        : trifft(val, -produkt + c)
+          ? "Das Vorzeichen des Produkts stimmt nicht: Gleiche Vorzeichen ergeben plus, verschiedene ergeben minus."
+          : "",
+    tipps: [
+      "Punkt vor Strich gilt auch mit negativen Zahlen: zuerst das Produkt.",
+      `Vorzeichenregel: ${zahl(a)} · ${inKlammern(b)} ist ${produkt >= 0 ? "positiv" : "negativ"}, denn die Vorzeichen sind ${a * b >= 0 ? "gleich" : "verschieden"}.`,
+      `Dann nur noch ${zahl(produkt)} + ${inKlammern(c)}.`,
+    ],
+    musterloesungHtml:
+      `① Punkt vor Strich: ${zahl(a)} · ${inKlammern(b)} = <strong>${zahl(produkt)}</strong> ` +
+      `(${a * b >= 0 ? "gleiche Vorzeichen ⇒ positiv" : "verschiedene Vorzeichen ⇒ negativ"})<br>` +
+      `② ${zahl(produkt)} + ${inKlammern(c)} = <strong>${zahl(erg)}</strong>`,
+  };
+}
+
+// Aufgabe 8 — ein Verlauf über mehrere Schritte, mit Höchst- und Tiefstwert. Das Ergebnis allein
+// verrät nicht, ob der Weg dorthin verstanden wurde; erst Tiefstwert und Spanne tun das.
+function generateAufgabe8() {
+  // Jeder Zusammenhang bringt seine eigenen Sätze mit — aus Bausteinen zusammengesetzt ergäbe das
+  // Sätze wie „Es gehen ein 4“.
+  const kontext = pick([
+    {
+      einh: "°C",
+      start: (v) => `Morgens werden <strong>${v} °C</strong> gemessen.`,
+      schritte: [(n) => `Bis Mittag steigt die Temperatur um <strong>${n}</strong> Grad`,
+                 (n) => `am Nachmittag fällt sie um <strong>${n}</strong> Grad`,
+                 (n) => `und in der Nacht noch einmal um <strong>${n}</strong> Grad`],
+    },
+    {
+      einh: "€",
+      start: (v) => `Ein Konto steht am Monatsanfang bei <strong>${v} €</strong>.`,
+      schritte: [(n) => `Es gehen <strong>${n} €</strong> ein`,
+                 (n) => `dann werden <strong>${n} €</strong> abgebucht`,
+                 (n) => `und noch einmal <strong>${n} €</strong> abgehoben`],
+    },
+    {
+      einh: "m",
+      start: (v) => `Ein Tauchboot befindet sich auf <strong>${v} m</strong> (unter dem Meeresspiegel negativ).`,
+      schritte: [(n) => `Es steigt um <strong>${n} m</strong>`,
+                 (n) => `taucht danach um <strong>${n} m</strong> ab`,
+                 (n) => `und geht noch einmal <strong>${n} m</strong> tiefer`],
+    },
+  ]);
+  const start = randInt(-12, 12);
+  const s1 = randInt(3, 15);
+  const s2 = randInt(4, 20);
+  const s3 = randInt(2, 14);
+  const v1 = start + s1;
+  const v2 = v1 - s2;
+  const v3 = v2 - s3;
+  const alle = [start, v1, v2, v3];
+  const tief = Math.min(...alle), hoch = Math.max(...alle);
+  return {
+    promptHtml:
+      `${kontext.start(zahl(start))} ` +
+      `${kontext.schritte[0](s1)}, ${kontext.schritte[1](s2)} ${kontext.schritte[2](s3)}.`,
+    felder: [
+      {
+        name: "der Wert am Ende", soll: v3, einheit: kontext.einh, toleranz: 0.5,
+        hinweis: (roh, val) => (trifft(val, start + s1 + s2 + s3) ? "Die beiden letzten Schritte gehen nach unten — sie werden abgezogen." : ""),
+      },
+      {
+        name: "der tiefste Wert, der dabei vorkommt", soll: tief, einheit: kontext.einh, toleranz: 0.5,
+        hinweis: (roh, val) => (trifft(val, hoch) ? "Das ist der höchste Wert." : ""),
+      },
+      {
+        name: "der Unterschied zwischen höchstem und tiefstem Wert", soll: hoch - tief, einheit: kontext.einh, toleranz: 0.5,
+        hinweis: (roh, val) => (val < 0 ? "Ein Unterschied ist ein Abstand und deshalb nie negativ." : ""),
+      },
+    ],
+    tipps: [
+      "Rechne Schritt für Schritt und schreibe jeden Zwischenwert auf.",
+      `Nach dem ersten Schritt: ${zahl(start)} + ${s1} = ${zahl(v1)}.`,
+      "Der Unterschied zweier Werte ist der größere minus der kleinere — auch wenn beide negativ sind.",
+    ],
+    musterloesungHtml:
+      `① ${zahl(start)} + ${s1} = <strong>${zahl(v1)}</strong><br>` +
+      `② ${zahl(v1)} − ${s2} = <strong>${zahl(v2)}</strong><br>` +
+      `③ ${zahl(v2)} − ${s3} = <strong>${zahl(v3)}</strong><br>` +
+      `Höchster Wert: ${zahl(hoch)}, tiefster Wert: ${zahl(tief)}<br>` +
+      `Unterschied: ${zahl(hoch)} − ${inKlammern(tief)} = <strong>${hoch - tief}</strong><br>` +
+      `<span class="progress-note">Der Unterschied ist die Länge der Strecke zwischen beiden Zahlen auf der Zahlengeraden.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — In ℤ addieren", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Eine negative Zahl subtrahieren", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Vorzeichenregeln bei mehreren Faktoren", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Mehrschrittige Sachaufgabe", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Betrag und Gegenzahl", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Eine negative Zahl subtrahieren", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Negative Zahlen ordnen", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Vorzeichenregeln bei mehreren Faktoren", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Punkt vor Strich in ℤ", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Mehrschrittige Sachaufgabe", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Ein Verlauf mit Höchst- und Tiefstwert", generate: generateAufgabe8 },
   ]);
 }
 

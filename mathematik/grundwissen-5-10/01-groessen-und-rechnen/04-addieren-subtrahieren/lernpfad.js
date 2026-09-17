@@ -38,6 +38,11 @@ function num(x, digits = 3) {
 function randInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
+// Dezimalzahl mit fester Stellenzahl — anders als num() bleibt die Null hinter dem Komma stehen,
+// und genau darauf kommt es beim stellengerechten Untereinanderschreiben an.
+function dez(x, stellen) {
+  return x.toFixed(stellen).replace(".", ",");
+}
 function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -529,6 +534,11 @@ function generateAufgabe1() {
       return !!b && b.z === k.z && b.n === k.n;
     },
     hinweis: bruchHinweis(k.z, k.n),
+    tipps: [
+      `Beide Brüche zählen dieselben Stücke — es sind ${n}-tel.`,
+      `Nur die Zähler addieren: ${z1} + ${z2}. Der Nenner ${n} bleibt stehen.`,
+      "Zum Schluss prüfen, ob sich das Ergebnis noch kürzen lässt.",
+    ],
     musterloesungHtml:
       `Beide Brüche sind gleichnamig (Nenner ${n}) — nur die Zähler addieren, Nenner bleibt:<br>` +
       `${bruchHtml(z1, n)} + ${bruchHtml(z2, n)} = ${bruchHtml(`${z1} + ${z2}`, n)} = ${bruchHtml(zSumme, n)}` +
@@ -562,6 +572,11 @@ function generateAufgabe2() {
       return !!b && b.z === k.z && b.n === k.n;
     },
     hinweis: bruchHinweis(k.z, k.n),
+    tipps: [
+      "Verschiedene Nenner heißt: verschieden große Stücke. Addieren lässt sich erst, wenn die Stücke gleich groß sind.",
+      `Ein gemeinsamer Nenner ist das kgV von ${n1} und ${n2}: ${hn}.`,
+      "Beide Brüche darauf erweitern, dann die Zähler addieren — und am Ende kürzen.",
+    ],
     musterloesungHtml:
       `① Hauptnenner: kgV(${n1}; ${n2}) = ${hn}<br>` +
       `② erweitern: ${bruchHtml(z1, n1)} = ${bruchHtml(z1 * (hn / n1), hn)} und ${bruchHtml(z2, n2)} = ${bruchHtml(z2 * (hn / n2), hn)}<br>` +
@@ -598,6 +613,11 @@ function generateAufgabe3() {
       if (b.z * k.n === k.z * b.n) return `Der <strong>Wert</strong> stimmt — kürze noch vollständig: ggT(${b.z}; ${b.n}) = ${ggT(b.z, b.n)}.`;
       return `Der Bruchteil ${bruchHtml(z1, n)} reicht nicht aus, um ${bruchHtml(z2, n)} abzuziehen — du musst ein Ganzes zerlegen (oder gleich mit unechten Brüchen rechnen).`;
     },
+    tipps: [
+      `Vergleiche zuerst die Bruchteile: Reicht ${bruchHtml(z1, n)} aus, um ${bruchHtml(z2, n)} abzuziehen?`,
+      "Wenn nicht, hilft der sichere Weg: beide gemischten Zahlen zuerst in unechte Brüche verwandeln.",
+      `${g1}${bruchHtml(z1, n)} = ${bruchHtml(u1, n)} — so lässt sich ohne Entbündeln rechnen.`,
+    ],
     musterloesungHtml:
       `Der Bruchteil ${bruchHtml(z1, n)} reicht nicht aus, um ${bruchHtml(z2, n)} abzuziehen. Sicherer Weg über unechte Brüche:<br>` +
       `① ${g1}${bruchHtml(z1, n)} = ${bruchHtml(`${g1} · ${n} + ${z1}`, n)} = ${bruchHtml(u1, n)} &nbsp;·&nbsp; ${g2}${bruchHtml(z2, n)} = ${bruchHtml(u2, n)}<br>` +
@@ -637,6 +657,17 @@ function generateAufgabe4() {
       `Wie viel bleibt übrig?`,
     correct: restZehntel / 10,
     tolerance: 0.001,
+    hinweis: (roh, val) =>
+      Math.abs(val - nachAnteil / 10) < 0.001
+        ? "Die zweite Menge ist noch nicht abgezogen."
+        : Math.abs(val - abZehntel / 10) < 0.001
+          ? "Das ist der Anteil, der weggeht — gefragt ist, was übrig bleibt."
+          : "",
+    tipps: [
+      "Zwei Mengen gehen weg: erst der Bruchteil, dann die zweite Angabe.",
+      `Der Bruchteil: ${bruchHtml(z1, n1)} von ${alsText(gesamtZehntel)}.`,
+      "Beides von der Gesamtmenge abziehen — am einfachsten alles als Dezimalzahl.",
+    ],
     placeholder: "z. B. 12,5",
     musterloesungHtml:
       `① ${bruchHtml(z1, n1)} von ${alsText(gesamtZehntel)}: ${alsText(gesamtZehntel)} : ${n1} = ${alsText(gesamtZehntel / n1)}, davon ${z1} ⇒ <strong>${alsText(abZehntel)}</strong><br>` +
@@ -647,12 +678,193 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 2 — gleichnamige Brüche subtrahieren, das Gegenstück zu Aufgabe 1. Der Minuend ist
+// konstruktiv größer als der Subtrahend: Negative Brüche kommen in diesem Thema noch nicht vor.
+function generateAufgabe2b() {
+  const n = pick([4, 5, 6, 8, 9, 10, 12]);
+  const z1 = randInt(2, n - 1);
+  const z2 = randInt(1, z1 - 1);
+  const k = kuerze(z1 - z2, n);
+  return {
+    promptHtml: `Berechne und kürze vollständig: ${bruchHtml(z1, n)} − ${bruchHtml(z2, n)}`,
+    placeholder: "z. B. 1/4",
+    check: (raw) => {
+      const b = parseBruchEingabe(raw);
+      return !!b && b.z === k.z && b.n === k.n;
+    },
+    hinweis: (raw) => {
+      const b = parseBruchEingabe(raw);
+      if (!b) return "Schreibe deine Antwort als Bruch in der Form <code>z/n</code>, z.&nbsp;B. <code>1/4</code>.";
+      if (b.z === z1 - z2 && b.n === n * 2) return "Beim Subtrahieren gleichnamiger Brüche wird <strong>nur der Zähler</strong> subtrahiert — der Nenner bleibt stehen.";
+      if (b.z * k.n === k.z * b.n) return `Der <strong>Wert</strong> stimmt — aber ${bruchHtml(b.z, b.n)} ist noch nicht vollständig gekürzt: ggT(${b.z}; ${b.n}) = ${ggT(b.z, b.n)}.`;
+      return "";
+    },
+    tipps: [
+      "Beide Brüche haben denselben Nenner — sie zählen dieselben Stücke.",
+      `Nur die Zähler subtrahieren: ${z1} − ${z2}. Der Nenner ${n} bleibt.`,
+      "Zum Schluss prüfen, ob sich das Ergebnis noch kürzen lässt.",
+    ],
+    musterloesungHtml:
+      `Gleicher Nenner ⇒ nur die Zähler subtrahieren:<br>` +
+      `${bruchHtml(z1, n)} − ${bruchHtml(z2, n)} = ${bruchHtml(z1 + " − " + z2, n)} = ${bruchHtml(z1 - z2, n)}` +
+      (k.g > 1 ? `<br>Kürzen mit ggT(${z1 - z2}; ${n}) = ${k.g}: ${bruchHtml(k.z, k.n, "gross")}` : `<br>${bruchHtml(k.z, k.n)} ist bereits vollständig gekürzt.`),
+  };
+}
+
+// Aufgabe 4 — Dezimalzahlen schriftlich. Der Fehler, den die Aufgabe abfragt, ist das rechtsbündige
+// Untereinanderschreiben: Wer nicht am Komma ausrichtet, addiert Zehntel zu Hundertsteln.
+function generateAufgabe4b() {
+  const plus = Math.random() < 0.5;
+  // In Hundertsteln gerechnet, damit nichts in der Gleitkommarechnung verrutscht.
+  const aH = randInt(150, 980) * 10 + randInt(0, 9) * 0;   // eine Nachkommastelle
+  const bH = randInt(120, 890);                            // zwei Nachkommastellen
+  const a = aH / 100, b = bH / 100;
+  const ergH = plus ? aH + bH : Math.max(aH, bH) - Math.min(aH, bH);
+  const links = plus ? a : Math.max(a, b), rechts = plus ? b : Math.min(a, b);
+  const correct = ergH / 100;
+  // Rechtsbündig statt am Komma ausgerichtet: Die Ziffern beider Zahlen werden ohne Komma
+  // untereinandergeschrieben und das Komma des ersten Summanden übernommen.
+  const ziffernA = Math.round(links * 10), ziffernB = Math.round(rechts * 100);
+  const falschRechtsbuendig = (plus ? ziffernA + ziffernB : ziffernA - ziffernB) / 10;
+  return {
+    promptHtml: `Berechne schriftlich: <strong>${dez(links, 1)} ${plus ? "+" : "−"} ${dez(rechts, 2)}</strong>`,
+    correct,
+    tolerance: 0.001,
+    placeholder: "Ergebnis",
+    hinweis: (roh, val) =>
+      Math.abs(val - falschRechtsbuendig) < 0.001
+        ? "Die Zahlen gehören am <strong>Komma</strong> untereinander, nicht rechtsbündig — sonst treffen Zehntel auf Hundertstel."
+        : "",
+    tipps: [
+      "Schreibe die Zahlen so untereinander, dass die <em>Kommas</em> genau übereinanderstehen.",
+      "Fehlende Nachkommastellen mit Nullen auffüllen — 3,5 ist dasselbe wie 3,50.",
+      "Dann stellenweise rechnen wie bei ganzen Zahlen; das Komma im Ergebnis steht an derselben Stelle.",
+    ],
+    musterloesungHtml:
+      `Kommas untereinander, mit Nullen aufgefüllt:<br>` +
+      `<span class="formula-block">${dez(links, 2)} ${plus ? "+" : "−"} ${dez(rechts, 2)} = <strong>${dez(correct, 2)}</strong></span>` +
+      `Überschlag zur Kontrolle: rund ${Math.round(links)} ${plus ? "+" : "−"} ${Math.round(rechts)} = ${plus ? Math.round(links) + Math.round(rechts) : Math.round(links) - Math.round(rechts)}`,
+  };
+}
+
+// Aufgabe 6 — den fehlenden Summanden bestimmen. Umkehraufgabe zu Aufgabe 3: Sie verlangt denselben
+// Hauptnenner, aber die Gleichung muss erst umgestellt werden.
+function generateAufgabe6() {
+  let n1, n2;
+  do {
+    n1 = pick([2, 3, 4, 5, 6, 8, 10, 12]);
+    n2 = pick([2, 3, 4, 5, 6, 8, 10, 12]);
+  } while (n1 === n2);
+  const hn = kgV(n1, n2);
+  const s1 = hn / n1, s2 = hn / n2;
+  // Erst den bekannten Summanden, dann den gesuchten so wählen, dass die Summe unter 1 bleibt.
+  const z1 = randInt(1, Math.max(1, Math.min(n1 - 1, Math.floor((hn - s2) / s1))));
+  const z2max = Math.min(n2 - 1, Math.floor((hn - 1 - z1 * s1) / s2));
+  const z2 = randInt(1, Math.max(1, z2max));
+  const summeZ = z1 * s1 + z2 * s2;
+  const summe = kuerze(summeZ, hn);
+  const gesucht = kuerze(z2 * s2, hn);
+  return {
+    promptHtml:
+      `Welcher Bruch fehlt? ${bruchHtml(z1, n1)} + <strong>?</strong> = ${bruchHtml(summe.z, summe.n)}` +
+      `<br><span class="progress-note">Antworte vollständig gekürzt.</span>`,
+    placeholder: "z. B. 1/6",
+    check: (raw) => {
+      const b = parseBruchEingabe(raw);
+      return !!b && b.z === gesucht.z && b.n === gesucht.n;
+    },
+    hinweis: (raw) => {
+      const b = parseBruchEingabe(raw);
+      if (!b) return "Schreibe deine Antwort als Bruch in der Form <code>z/n</code>, z.&nbsp;B. <code>1/6</code>.";
+      if (b.z * summe.n === summe.z * b.n) return "Das ist die Summe selbst — gesucht ist der fehlende Summand.";
+      if (b.z * gesucht.n === gesucht.z * b.n) return `Der <strong>Wert</strong> stimmt — aber ${bruchHtml(b.z, b.n)} ist noch nicht vollständig gekürzt.`;
+      return "";
+    },
+    tipps: [
+      "Stelle die Gleichung um: Der fehlende Summand ist Summe − bekannter Summand.",
+      `Beide auf den Hauptnenner kgV(${summe.n}; ${n1}) bringen.`,
+      "Dann nur noch die Zähler subtrahieren und am Ende kürzen.",
+    ],
+    musterloesungHtml:
+      `Umstellen: ? = ${bruchHtml(summe.z, summe.n)} − ${bruchHtml(z1, n1)}<br>` +
+      `① Hauptnenner ${hn}: ${bruchHtml(summe.z, summe.n)} = ${bruchHtml(summeZ, hn)} und ${bruchHtml(z1, n1)} = ${bruchHtml(z1 * s1, hn)}<br>` +
+      `② Zähler subtrahieren: ${bruchHtml(summeZ - z1 * s1, hn)}<br>` +
+      `③ kürzen ⇒ <strong>${bruchHtml(gesucht.z, gesucht.n, "gross")}</strong><br>` +
+      `Probe: ${bruchHtml(z1, n1)} + ${bruchHtml(gesucht.z, gesucht.n)} = ${bruchHtml(summe.z, summe.n)} ✓`,
+  };
+}
+
+// Aufgabe 8 — drei Mengen, zwei Schreibweisen, in drei Feldern. Der Kern des Abschnitts: Bruch und
+// Dezimalzahl sind dieselbe Zahl in anderer Schreibweise, und addieren lässt sich beides erst,
+// wenn man sich für eine entscheidet.
+function generateAufgabe8() {
+  // Alles in Zehnteln, damit jede Teilmenge glatt aufgeht. Viertel gehören deshalb NICHT in die
+  // Liste: 1/4 sind 2,5 Zehntel, und daraus wurde in der Anzeige „0,7.5“.
+  const [z1, n1] = pick([[1, 2], [1, 5], [2, 5], [3, 5], [3, 10], [7, 10]]);
+  const [z2, n2] = pick([[1, 2], [1, 5], [3, 10], [2, 5]]);
+  const teil1Zehntel = (10 / n1) * z1 * randInt(1, 3);
+  const teil2Zehntel = (10 / n2) * z2 * randInt(1, 3);
+  const dezZehntel = randInt(3, 25);
+  const summeZehntel = teil1Zehntel + teil2Zehntel + dezZehntel;
+  const alsText = (zehntel) => (zehntel % 10 === 0 ? String(zehntel / 10) : `${Math.floor(zehntel / 10)},${zehntel % 10}`);
+  const ziel = Math.ceil(summeZehntel / 10) * 10 + (summeZehntel % 10 === 0 ? 10 : 0);
+  const summeKuerzt = kuerze(summeZehntel, 10);
+  const kontext = pick([
+    { einheit: "Liter", teile: ["Saft", "Wasser", "Sirup"] },
+    { einheit: "Kilogramm", teile: ["Mehl", "Zucker", "Butter"] },
+    { einheit: "Meter", teile: ["rotes Band", "blaues Band", "Schnur"] },
+  ]);
+  return {
+    promptHtml:
+      `Für ein Rezept kommen <strong>${alsText(teil1Zehntel)} ${kontext.einheit} ${kontext.teile[0]}</strong>, ` +
+      `<strong>${alsText(teil2Zehntel)} ${kontext.einheit} ${kontext.teile[1]}</strong> und ` +
+      `<strong>${alsText(dezZehntel)} ${kontext.einheit} ${kontext.teile[2]}</strong> zusammen.`,
+    felder: [
+      {
+        name: "die Gesamtmenge als Dezimalzahl", soll: summeZehntel / 10, toleranz: 0.001,
+        hinweis: (roh, val) => (Math.abs(val - (teil1Zehntel + teil2Zehntel) / 10) < 0.001 ? "Die dritte Menge fehlt noch." : ""),
+      },
+      {
+        name: `wie viel noch bis ${ziel / 10} ${kontext.einheit} fehlt`, soll: (ziel - summeZehntel) / 10, toleranz: 0.001,
+        hinweis: (roh, val) => (Math.abs(val - summeZehntel / 10) < 0.001 ? "Das ist die Gesamtmenge. Gefragt ist, was noch fehlt." : ""),
+      },
+      {
+        name: "die Gesamtmenge als vollständig gekürzter Bruch (z/n)", platzhalter: "z. B. 7/5",
+        check: (raw) => {
+          const b = parseBruchEingabe(raw);
+          return !!b && b.z === summeKuerzt.z && b.n === summeKuerzt.n;
+        },
+        hinweis: (roh) => {
+          const b = parseBruchEingabe(roh);
+          if (!b) return "Schreibe diesen Wert als Bruch in der Form <code>z/n</code>.";
+          if (b.z * summeKuerzt.n === summeKuerzt.z * b.n) return `Der Wert stimmt — aber ${bruchHtml(b.z, b.n)} ist noch nicht vollständig gekürzt.`;
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Alle drei Mengen stehen schon als Dezimalzahlen da — so lassen sie sich direkt addieren.",
+      "Für die letzte Zeile: Eine Dezimalzahl mit einer Nachkommastelle sind Zehntel, der Nenner ist also 10.",
+      "Danach noch kürzen.",
+    ],
+    musterloesungHtml:
+      `① Summe: ${alsText(teil1Zehntel)} + ${alsText(teil2Zehntel)} + ${alsText(dezZehntel)} = <strong>${alsText(summeZehntel)}</strong><br>` +
+      `② Bis ${ziel / 10} fehlen: ${ziel / 10} − ${alsText(summeZehntel)} = <strong>${alsText(ziel - summeZehntel)}</strong><br>` +
+      `③ Als Bruch: ${alsText(summeZehntel)} = ${bruchHtml(summeZehntel, 10)}` +
+      (summeKuerzt.g > 1 ? ` = ${bruchHtml(summeKuerzt.z, summeKuerzt.n, "gross")} (gekürzt mit ${summeKuerzt.g})` : ` — bereits vollständig gekürzt`),
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Gleichnamige Brüche addieren", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Ungleichnamige Brüche addieren", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Gemischte Zahlen subtrahieren", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Sachaufgabe mit Bruch und Dezimalzahl", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Gleichnamige Brüche subtrahieren", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Ungleichnamige Brüche addieren", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Dezimalzahlen schriftlich", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Gemischte Zahlen subtrahieren", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Fehlenden Summanden finden", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Sachaufgabe mit Bruch und Dezimalzahl", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Drei Mengen, zwei Schreibweisen", generate: generateAufgabe8 },
   ]);
 }
 
