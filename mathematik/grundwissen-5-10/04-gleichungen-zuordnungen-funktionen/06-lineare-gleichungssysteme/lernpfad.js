@@ -13,6 +13,8 @@
 
 "use strict";
 
+import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=1";
+
 // ---------- Helfer ----------
 
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -797,72 +799,10 @@ function initAufstellen() {
 
 // ================= 7. Gestaffelte Übungsaufgaben =================
 
-function mountStaffelAufgabe(container, def) {
-  const box = el("div", { class: "aufgabe-box" });
-  box.appendChild(el("h3", {}, [def.titel, el("span", { class: "schwierigkeit-badge " + def.schwierigkeit }, def.schwierigkeit)]));
-  const promptEl = el("div", { class: "aufgabe-prompt" });
-  box.appendChild(promptEl);
-  const row = el("div", { class: "exercise-input-row" });
-  const input = el("input", { type: "text", placeholder: "Antwort" });
-  const btnPruefen = el("button", { type: "button", class: "btn btn-primary" }, "Prüfen");
-  const btnWuerfeln = el("button", { type: "button", class: "btn" }, "🎲 Neue Zahlen");
-  row.appendChild(input);
-  row.appendChild(btnPruefen);
-  row.appendChild(btnWuerfeln);
-  box.appendChild(row);
-  const feedback = el("div", { class: "aufgabe-feedback" });
-  box.appendChild(feedback);
-
-  let current;
-  function neueAufgabe() {
-    current = def.generate();
-    promptEl.innerHTML = current.promptHtml;
-    input.value = "";
-    input.placeholder = current.placeholder || "Antwort";
-    feedback.innerHTML = "";
-  }
-  btnPruefen.addEventListener("click", () => {
-    const raw = input.value.trim();
-    const val = parseFlexibleNumber(raw);
-    const tol = current.tolerance ?? 0.01;
-    const ok = !isNaN(val) && Math.abs(val - current.correct) < tol;
-    const hinweis = !ok && current.hinweis ? current.hinweis(raw, val) : "";
-    feedback.innerHTML =
-      (ok
-        ? `<div class="status ok">✓ Richtig!</div>`
-        : `<div class="status err">✗ Noch nicht richtig${raw ? " — deine Eingabe: " + raw : " — du hast noch keine Antwort eingetragen"}.</div>` +
-          (hinweis ? `<div style="margin-bottom:0.3rem">${hinweis}</div>` : "")) +
-      `<div class="musterloesung"><span class="ml-label">Musterlösung</span>${current.musterloesungHtml}</div>`;
-  });
-  btnWuerfeln.addEventListener("click", neueAufgabe);
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") btnPruefen.click();
-  });
-
-  neueAufgabe();
-  container.appendChild(box);
-}
-
-function mountUebungsaufgaben(container, defs) {
-  mountStaffelAufgabe(container, defs[0]);
-  const tabBar = el("div", { class: "schwierigkeit-tabs" });
-  const panel = el("div", { class: "schwierigkeit-tab-panel" });
-  container.appendChild(tabBar);
-  container.appendChild(panel);
-  const rest = defs.slice(1);
-  function showTab(idx) {
-    [...tabBar.children].forEach((b, i) => b.classList.toggle("active", i === idx));
-    panel.innerHTML = "";
-    mountStaffelAufgabe(panel, rest[idx]);
-  }
-  rest.forEach((d, i) => {
-    const label = d.schwierigkeit.charAt(0).toUpperCase() + d.schwierigkeit.slice(1);
-    const btn = el("button", { type: "button" }, label);
-    btn.addEventListener("click", () => showTab(i));
-    tabBar.appendChild(btn);
-  });
-  showTab(0);
-}
+// Die Werkbank für die Übungsaufgaben ist für alle Grundwissen-Seiten dieselbe und steht in
+// ../../aufgaben.js. Mitgegeben wird nur, wie DIESE Seite eine Eingabe als Zahl liest.
+const mountUebungsaufgaben = (container, defs) =>
+  mountUebungsaufgabenBasis(container, defs, { parse: parseFlexibleNumber });
 
 // ---------- Aufgaben-Definitionen ----------
 

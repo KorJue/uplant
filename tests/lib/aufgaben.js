@@ -31,19 +31,35 @@ function deutsch(x) {
   return String(Number(x.toFixed(6))).replace(".", ",");
 }
 
-async function oeffneAufgabe(page, nr) {
-  if (nr === 1) return "#exercises-mount > .aufgabe-box";
-  await page.locator(`#exercises-mount .schwierigkeit-tabs button:nth-child(${nr - 1})`).click();
-  return "#exercises-mount .schwierigkeit-tab-panel .aufgabe-box";
+// Die Aufgaben stehen in Reitern — je Stufe einer. Wie viele Aufgaben in einem Reiter liegen, wird
+// aus der Seite GELESEN und nicht angenommen: Der Übungsblock wächst von vier auf acht Aufgaben,
+// und beide Größen müssen sich prüfen lassen, solange nicht alle Seiten umgestellt sind.
+async function aufgabenProReiter(page) {
+  await page.locator("#exercises-mount .schwierigkeit-tabs button").first().click();
+  return page.locator("#exercises-mount .schwierigkeit-tab-panel .aufgabe-box").count();
+}
+
+async function oeffneAufgabe(page, nr, proReiter) {
+  const k = proReiter || (await aufgabenProReiter(page));
+  await page.locator("#exercises-mount .schwierigkeit-tabs button").nth(Math.floor((nr - 1) / k)).click();
+  return `#exercises-mount .schwierigkeit-tab-panel .aufgabe-box:nth-of-type(${((nr - 1) % k) + 1})`;
 }
 
 async function wuerfle(page, box) {
-  await page.locator(`${box} .btn:not(.btn-primary)`).click();
+  await page.locator(`${box} .btn-wuerfeln`).click();
   return (await page.locator(`${box} .aufgabe-prompt`).innerText()).replace(/\s+/g, " ").trim();
 }
 
 async function antworte(page, box, wert) {
   await page.locator(`${box} input`).fill(deutsch(wert));
+  await page.locator(`${box} .btn-primary`).click();
+  return (await page.locator(`${box} .aufgabe-feedback`).innerText()).replace(/\s+/g, " ").trim();
+}
+
+// Aufgaben zum Ausfüllen: Jedes Feld bekommt seinen Wert, dann wird geprüft.
+async function antworteFelder(page, box, werte) {
+  const felder = await page.locator(`${box} .aufgabe-feld input`).all();
+  for (let i = 0; i < felder.length; i++) await felder[i].fill(deutsch(werte[i]));
   await page.locator(`${box} .btn-primary`).click();
   return (await page.locator(`${box} .aufgabe-feedback`).innerText()).replace(/\s+/g, " ").trim();
 }
@@ -60,9 +76,11 @@ async function antworte(page, box, wert) {
 // `mindestensVerschieden` ist die Streuungsschranke; sie gehört im Aufrufer
 // ausgerechnet und kommentiert (E − 3σ), nicht geraten.
 async function pruefeAufgabe(page, bericht, { nr, name, runden = 40, mindestensVerschieden, deute, liesRoh }) {
-  const box = await oeffneAufgabe(page, nr);
+  const proReiter = await aufgabenProReiter(page);
+  const box = await oeffneAufgabe(page, nr, proReiter);
+  const soll = STUFEN[Math.floor((nr - 1) / proReiter)];
   const stufe = (await page.locator(`${box} .schwierigkeit-badge`).innerText()).trim().toLowerCase();
-  bericht.pruefe(stufe === STUFEN[nr - 1], `${name}: Stufe „${stufe}“ statt „${STUFEN[nr - 1]}“`);
+  bericht.pruefe(stufe === soll, `${name}: Stufe „${stufe}“ statt „${soll}“`);
 
   const gesehen = new Set();
   for (let i = 0; i < runden; i++) {
@@ -72,11 +90,30 @@ async function pruefeAufgabe(page, bericht, { nr, name, runden = 40, mindestensV
     const d = deute(frage, roh);
     if (!d) { bericht.pruefe(false, `${name}: Aufgabe nicht lesbar — „${frage}“`); continue; }
 
-    const rueck = await antworte(page, box, d.richtig);
+    // Eine Aufgabe zum Ausfüllen hat mehrere Felder; sie werden alle gefüllt und zusammen geprüft.
+    const rueck = d.felder
+      ? await antworteFelder(page, box, d.felder)
+      : await antworte(page, box, d.richtig);
     bericht.pruefe(rueck.includes("✓ Richtig"),
-      `${name}: die nachgerechnete Antwort ${d.richtig} wird nicht anerkannt — „${frage}“`);
+      `${name}: die nachgerechnete Antwort ${d.felder ? d.felder.join(" | ") : d.richtig} wird nicht anerkannt — „${frage}“`);
     bericht.pruefe(rueck.includes("Musterlösung"), `${name}: keine Musterlösung — „${frage}“`);
     if (d.pruefe) d.pruefe(frage, rueck);
+
+    // Bei mehreren Feldern wird jedes einzeln verdorben: Sonst bliebe unbemerkt, wenn die Seite
+    // nur eines davon wirklich prüft.
+    for (const [idx, wert, muster] of d.falschFelder || []) {
+      if (wert === null || wert === undefined || (typeof wert === "number" && !Number.isFinite(wert))) continue;
+      if (Math.abs(wert - d.felder[idx]) < (d.toleranz ?? 0.5)) continue;
+      const werte = d.felder.slice();
+      werte[idx] = wert;
+      const r = await antworteFelder(page, box, werte);
+      bericht.pruefe(r.includes("Noch nicht richtig"),
+        `${name}: im Feld ${idx + 1} wird ${wert} anerkannt — „${frage}“`);
+      if (muster) {
+        bericht.pruefe(r.includes(muster),
+          `${name}: im Feld ${idx + 1} fehlt bei ${wert} der Hinweis „${muster}“ — „${frage}“`);
+      }
+    }
 
     // Die Fehlerwerte stehen in der Reihenfolge, in der die Seite ihre Hinweise
     // prüft. Fallen zwei Fehler auf dieselbe Zahl — bei α = β sind „nur α
@@ -118,4 +155,4 @@ function streuung(n, k) {
   return { E, sigma: Math.sqrt(varianz), schranke: Math.floor(E - 3 * Math.sqrt(varianz)) };
 }
 
-module.exports = { oeffneAufgabe, wuerfle, antworte, pruefeAufgabe, zahl, zahlen, deutsch, streuung, STUFEN };
+module.exports = { oeffneAufgabe, aufgabenProReiter, wuerfle, antworte, antworteFelder, pruefeAufgabe, zahl, zahlen, deutsch, streuung, STUFEN };

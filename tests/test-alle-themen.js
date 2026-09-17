@@ -28,6 +28,7 @@ const { starteBrowser, neueSeite, oeffne, reglerListe, setzeRegler, widgetText }
 const { pruefeNotation, pruefeTexte, seitentexte } = require("./lib/notation");
 const { pruefeKontrast } = require("./lib/kontrast");
 const { alleThemen } = require("./lib/themen");
+const { oeffneAufgabe, aufgabenProReiter } = require("./lib/aufgaben");
 
 const b = neuerBericht(80);
 const NUR = process.env.UPLANT_THEMA || null;   // z. B. "04-.../12-..." zum Eingrenzen
@@ -115,26 +116,26 @@ async function pruefeAufgaben(page, thema) {
   const stufen = await page.evaluate(() =>
     [...document.querySelectorAll("#exercises-mount .schwierigkeit-badge")].map((e) => e.textContent.trim()));
   b.pruefe(stufen.includes("einfach"), `${thema}: keine Aufgabe der Stufe „einfach“ sichtbar`);
+  // Ein Reiter je Stufe — auch die einfachen Aufgaben stehen darin, seit es zwei je Stufe gibt.
   const reiter = await page.locator("#exercises-mount .schwierigkeit-tabs button").count();
-  b.pruefe(reiter === 3, `${thema}: ${reiter} Reiter für die weiteren Aufgaben statt 3`);
+  b.pruefe(reiter === 4, `${thema}: ${reiter} Reiter statt 4 (einer je Stufe)`);
 
-  for (let nr = 1; nr <= 4; nr++) {
-    let box;
-    if (nr === 1) box = "#exercises-mount > .aufgabe-box";
-    else {
-      await page.locator(`#exercises-mount .schwierigkeit-tabs button:nth-child(${nr - 1})`).click();
-      box = "#exercises-mount .schwierigkeit-tab-panel .aufgabe-box";
-    }
+  // Wie viele Aufgaben je Stufe stehen, verrät die Seite selbst: Der Übungsblock wächst von
+  // vier auf acht Aufgaben, und geprüft werden sollen immer alle.
+  const proReiter = await aufgabenProReiter(page);
+  for (let nr = 1; nr <= proReiter * 4; nr++) {
+    const box = await oeffneAufgabe(page, nr, proReiter);
     // Manche Themen setzen die Marke per CSS in Großbuchstaben; das ist eine
     // Gestaltungsfrage und keine inhaltliche.
+    const sollStufe = STUFEN[Math.floor((nr - 1) / proReiter)];
     const stufe = (await page.locator(`${box} .schwierigkeit-badge`).innerText()).trim().toLowerCase();
-    b.pruefe(stufe === STUFEN[nr - 1], `${thema}/Aufgabe ${nr}: Stufe „${stufe}“ statt „${STUFEN[nr - 1]}“`);
+    b.pruefe(stufe === sollStufe, `${thema}/Aufgabe ${nr}: Stufe „${stufe}“ statt „${sollStufe}“`);
 
     const gesehen = new Set();
     const RUNDEN = 30;
     for (let i = 0; i < RUNDEN; i++) {
       page.stoerungen.length = 0;
-      await page.locator(`${box} .btn:not(.btn-primary)`).click();
+      await page.locator(`${box} .btn-wuerfeln`).click();
       for (const s of page.stoerungen) b.pruefe(false, `${thema}/Aufgabe ${nr}: ${s}`);
       const frage = (await page.locator(`${box} .aufgabe-prompt`).innerText()).replace(/\s+/g, " ").trim();
       // „Berechne: 9 + 5 · 2“ ist eine vollständige Aufgabe; die Schranke soll
@@ -152,7 +153,7 @@ async function pruefeAufgaben(page, thema) {
     // Leere Eingabe: Die Seite muss die Musterlösung zeigen und darf nicht
     // behaupten, die Antwort sei richtig.
     page.stoerungen.length = 0;
-    await page.locator(`${box} input`).fill("");
+    for (const feld of await page.locator(`${box} input`).all()) await feld.fill("");
     await page.locator(`${box} .btn-primary`).click();
     const rueck = (await page.locator(`${box} .aufgabe-feedback`).innerText()).replace(/\s+/g, " ");
     for (const s of page.stoerungen) b.pruefe(false, `${thema}/Aufgabe ${nr}: ${s}`);
