@@ -30,6 +30,7 @@ const SEITEN = [
   ["alle-linien.html", "#btn-zoom", "#geo-svg"],
   ["raetsel.html", "#btn-zoom", "#geo-svg"],
   ["satz-des-thales.html", "#btn-zoom", "#geo-svg"],
+  ["satz-des-thales.html", "#tk-zoom", "#tk-svg"],
   ["satz-des-thales.html", "#ka-zoom", "#ka-svg"],
 ];
 
@@ -228,6 +229,18 @@ async function pruefeZirkelschlag(browser, pruefe, geraet, breite, hoehe) {
     await page.mouse.click(c.x, c.y);
     await page.waitForTimeout(80);
   }
+
+  // Nach dem Einstich erscheint die Statuszeile, und die Zeichenfläche wird dadurch niedriger.
+  // Auch dann muss die viewBox noch zur Fläche passen — sonst wäre der gewonnene Rand wieder
+  // verschenkt (und vor der Korrektur an toSvgPoint lag jeder dritte Zirkelschlag daneben).
+  const nachEinstich = await page.evaluate(() => {
+    const s = document.querySelector("#geo-svg");
+    const r = s.getBoundingClientRect();
+    const vb = s.viewBox.baseVal;
+    return { svg: r.width / r.height, vb: vb.width / vb.height };
+  });
+  pruefe(Math.abs(nachEinstich.vb - nachEinstich.svg) / nachEinstich.svg < 0.01,
+    `Zirkelschlag im Vollbild (${geraet}): nach dem Einstich passt die viewBox (${nachEinstich.vb.toFixed(3)}) nicht mehr zur Fläche (${nachEinstich.svg.toFixed(3)})`);
 
   // Der gezeichnete Kreis muss um den ersten Punkt liegen und durch den zweiten gehen.
   const kreise = await page.evaluate(() =>

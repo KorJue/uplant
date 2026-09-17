@@ -7,9 +7,9 @@
 // sie tatsächlich entstanden ist. Daraus ergibt sich beides — die Prüfung ("was fehlt noch?") und die
 // Darstellung (fertige Hilfskreise und ihre Schnittpunkte treten grau zurück).
 
-import * as GC from "./geo-core.js?v=23";
-import * as GS from "./geo-svg.js?v=23";
-import { lineThroughBoth, sameRadius, twoArcIntersections } from "./check-helpers.js?v=23";
+import * as GC from "./geo-core.js?v=24";
+import * as GS from "./geo-svg.js?v=24";
+import { lineThroughBoth, sameRadius, twoArcIntersections } from "./check-helpers.js?v=24";
 
 // Klick-/Prüftoleranz für "dieser Punkt ist gemeint" (SVG-Einheiten). Per Finger wird ungenauer
 // getroffen als mit der Maus, deshalb dort ein größerer Radius.

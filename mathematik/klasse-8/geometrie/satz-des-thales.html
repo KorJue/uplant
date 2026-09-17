@@ -205,6 +205,77 @@
       <strong>2.</strong> Thaleskreis um Z durch M und P zeichnen. Er schneidet den gegebenen Kreis in T₁ und T₂.<br>
       <strong>3.</strong> Die Geraden PT₁ und PT₂ sind die beiden Tangenten. Denn T₁ und T₂ liegen auf dem Thaleskreis über MP, also ist ∡MT₁P = ∡MT₂P = 90° — und ein Radius, auf dem die Gerade senkrecht steht, bedeutet Berührung.
     </div>
+    <p>Sieh dir die Konstruktion Schritt für Schritt an — und baue sie dann selbst mit Zirkel und Lineal. Ziehe dabei <strong>M</strong> oder <strong>P</strong>: Die Berührpunkte wandern mit, der rechte Winkel bei T bleibt.</p>
+
+    <div class="th-konstruktion">
+      <div class="geo-mode-tabs" id="tk-phase-tabs">
+        <button type="button" class="geo-mode-tab geo-mode-tab-active" data-phase="guided">1. Anleitung ansehen</button>
+        <button type="button" class="geo-mode-tab" data-phase="free">2. Selbst konstruieren</button>
+      </div>
+
+      <div id="tk-guided-controls">
+        <div class="geo-mode-tabs" id="tk-count-tabs">
+          <button type="button" class="geo-mode-tab geo-mode-tab-active" data-count="1">1. Mittelsenkrechte von MP → Z</button>
+          <button type="button" class="geo-mode-tab" data-count="2">2. Thaleskreis um Z → T₁, T₂</button>
+          <button type="button" class="geo-mode-tab" data-count="3">3. Tangenten PT₁ und PT₂</button>
+        </div>
+      </div>
+
+      <div class="geo-layout">
+        <div class="geo-canvas-col">
+          <div class="geo-canvas-wrap">
+            <svg id="tk-svg" class="geo-svg" viewBox="0 0 600 420">
+              <g id="tk-layer-construct"></g>
+              <g id="tk-layer-figure"></g>
+              <g id="tk-layer-centers"></g>
+              <g id="tk-layer-user"></g>
+              <g id="tk-layer-vertices"></g>
+            </svg>
+          </div>
+          <div class="geo-zoom-row">
+            <button type="button" class="geo-btn geo-zoom-btn" id="tk-zoom">⛶ Zeichenfläche vergrößern</button>
+          </div>
+          <div class="geo-toggle-row" id="tk-guided-toggle-row">
+            <label><input type="checkbox" id="tk-toggle-arcs" checked> Zirkelbögen (Konstruktion) anzeigen</label>
+          </div>
+          <div class="geo-toolbar" id="tk-guided-toolbar">
+            <button type="button" class="geo-btn" id="tk-new">🎲 Neue Lage</button>
+          </div>
+          <div id="tk-free-controls" hidden>
+            <div class="geo-toolbar">
+              <button type="button" class="geo-btn" id="tk-circle">◯ Zirkel</button>
+              <button type="button" class="geo-btn" id="tk-line">／ Lineal</button>
+              <button type="button" class="geo-btn" id="tk-undo">↩ Rückgängig</button>
+              <button type="button" class="geo-btn" id="tk-clear">🗑 Zurücksetzen</button>
+              <button type="button" class="geo-btn geo-btn-primary" id="tk-check">✓ Prüfen</button>
+              <button type="button" class="geo-btn" id="tk-hint">💡 Tipp</button>
+              <button type="button" class="geo-btn" id="tk-new-free">🎲 Neue Lage</button>
+            </div>
+            <div class="geo-toggle-row">
+              <label title="Wie beim echten Zirkel: einmal eingestellt, bleibt der Radius gleich — du klickst dann nur noch den Einstichpunkt an.">
+                <input type="checkbox" id="tk-lock"> 🔒 Zirkel-Radius beibehalten (nicht verstellen)
+              </label>
+              <button type="button" class="geo-btn geo-btn-small" id="tk-reset-radius" hidden>🔄 Radius neu einstellen</button>
+            </div>
+            <p class="geo-pending-status" id="tk-pending" hidden></p>
+            <p class="geo-radius-status" id="tk-radius" hidden></p>
+          </div>
+          <div class="geo-feedback" id="tk-feedback" hidden></div>
+          <div class="geo-legend">
+            <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#8a8f98"></span>Hilfsstrecke MP</span>
+            <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#d64545"></span>Mittelsenkrechte von MP</span>
+            <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#2563eb"></span>Thaleskreis über MP</span>
+            <span class="geo-legend-item"><span class="geo-legend-swatch" style="border-color:#6d28d9"></span>Tangenten und Radien</span>
+          </div>
+        </div>
+
+        <div class="geo-side-col">
+          <div class="geo-instruction-box" id="tk-instruction"></div>
+          <ol class="geo-steps" id="tk-steps"></ol>
+        </div>
+      </div>
+    </div>
+
     <div class="ausblick-box">
       <span class="box-label">Ausblick auf Klasse 9</span>
       <strong>Ausrechnen</strong> lässt sich die Tangentenlänge auch. Dann bekommen die Seiten eines rechtwinkligen Dreiecks auch Namen: Die längste heißt <strong>Hypotenuse</strong>, die beiden anderen <strong>Katheten</strong>. Im Dreieck MTP ist also MP die Hypotenuse, r und PT sind die Katheten. Wer den <a href="../../grundwissen-5-10/02-geometrie/09-pythagoras/index.html#sec-satz">Satz des Pythagoras</a> kennt, kommt damit auf PT² = d² − r². Um daraus PT selbst zu bekommen, braucht man die <a href="../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/07-quadratwurzeln/index.html">Quadratwurzel</a> — beides steht erst in Klasse 9 an. Für dieses Thema genügt die Konstruktion.
@@ -271,6 +342,6 @@
   <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="satz-des-thales.js?v=5"></script>
+<script type="module" src="satz-des-thales.js?v=6"></script>
 </body>
 </html>

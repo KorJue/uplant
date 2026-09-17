@@ -18,13 +18,13 @@
 // Durchgehende Farbcodierung: Winkel α (bei A) grün, Winkel β (bei B) orange, der rechte
 // Winkel γ (bei C) rot, Durchmesser AB blau, Radien violett.
 
-import * as GC from "./geo-core.js?v=23";
-import * as GS from "./geo-svg.js?v=23";
-import { drawMittelsenkrechte } from "./constructions.js?v=23";
-import { setupFreeConstruction } from "./free-ui.js?v=23";
-import { setupCanvasZoom } from "./canvas-zoom.js?v=23";
-import { THALES_TASK } from "./thales-construct.js?v=2";
-import { mountKonstruktionsAufgaben, mountRechenAufgaben, mountHeftAufgaben } from "./thales-aufgaben.js?v=4";
+import * as GC from "./geo-core.js?v=24";
+import * as GS from "./geo-svg.js?v=24";
+import { drawMittelsenkrechte } from "./constructions.js?v=24";
+import { setupFreeConstruction } from "./free-ui.js?v=24";
+import { setupCanvasZoom } from "./canvas-zoom.js?v=24";
+import { beschriftung, tangentenFigur, THALES_TASK, TANGENTEN_TASK } from "./thales-construct.js?v=3";
+import { mountKonstruktionsAufgaben, mountRechenAufgaben, mountHeftAufgaben } from "./thales-aufgaben.js?v=5";
 
 "use strict";
 
@@ -709,6 +709,269 @@ function renderTangenten() {
     "Ausmessen lässt sich PT hier, ausrechnen erst in Klasse 9 mit dem Satz des Pythagoras.";
 }
 
+// ---------- 5b. Die Tangenten selbst konstruieren ----------
+//
+// Aufgebaut wie Abschnitt 4: erst die Anleitung Schritt für Schritt ansehen, dann selbst mit
+// Zirkel und Lineal bauen. Geprüft wird mit demselben Modell wie Übungsaufgabe 3 in Abschnitt 8
+// (TANGENTEN_TASK) — dort liegt die Vorgabe fest, hier sind M und P ziehbar.
+
+const TK_R_MIN = 52, TK_R_MAX = 86;  // Radius des gegebenen Kreises k
+const TK_ABSTAND = 46;               // so weit muss P mindestens außerhalb von k liegen
+const TK_RAND = 10;                  // Sicherheitsabstand zum Rand der Zeichenfläche
+
+// Größtes t ∈ [0, 1], für das a + t·b noch zwischen lo und hi liegt.
+function tBis(a, b, lo, hi) {
+  let t = 1;
+  if (b > 1e-9) t = Math.min(t, (hi - a) / b);
+  if (b < -1e-9) t = Math.min(t, (lo - a) / b);
+  return Math.max(0, t);
+}
+
+// Der Thaleskreis über der Strecke vom Anker nach (Anker + t·v) wächst mit t. Gesucht ist das
+// größte t, bei dem er noch ganz auf die Fläche passt. Seine vier Randwerte sind linear in t
+// (Mittelpunkt Anker + t·v/2, Radius t·|v| : 2), das lässt sich also direkt ausrechnen — Ziehen
+// und Verwerfen wäre hier weder nötig noch verlässlich.
+function tThalesPasst(anker, v, W, H, rand) {
+  const L = Math.hypot(v.x, v.y);
+  if (L < 1e-9) return 0;
+  return Math.min(
+    tBis(anker.x, (v.x - L) / 2, rand, W - rand),
+    tBis(anker.x, (v.x + L) / 2, rand, W - rand),
+    tBis(anker.y, (v.y - L) / 2, rand, H - rand),
+    tBis(anker.y, (v.y + L) / 2, rand, H - rand),
+  );
+}
+
+// Eine Lage, bei der alles auf die Fläche passt: der Kreis k, der Punkt P außerhalb und der
+// Thaleskreis über MP. Konstruktiv statt durch Verwerfen: Der Thaleskreis liegt ganz in der
+// Kreisscheibe um M mit dem Radius d, also genügt „d ≤ Abstand von M zum Rand“.
+function zufallsLage(W, H) {
+  const r = TK_R_MIN + Math.random() * (TK_R_MAX - TK_R_MIN);
+  const randM = r + TK_ABSTAND + TK_RAND;
+  const M = { x: randM + Math.random() * (W - 2 * randM), y: randM + Math.random() * (H - 2 * randM) };
+  const platz = Math.min(M.x, W - M.x, M.y, H - M.y) - TK_RAND;
+  const dMin = r + TK_ABSTAND;
+  const d = dMin + Math.random() * Math.max(0, platz - dMin);
+  const winkel = Math.random() * 2 * Math.PI;
+  return { M, r, P: GC.add(M, { x: d * Math.cos(winkel), y: d * Math.sin(winkel) }) };
+}
+
+// Der gezogene Punkt, auf eine zulässige Lage zurückgeholt: erst in die Fläche, dann so weit an den
+// Anker heran, dass der Thaleskreis noch hineinpasst. Bleibt dabei zu wenig Abstand, kommt null
+// zurück — die Bewegung wird dann gar nicht übernommen, statt in eine Lage ohne Berührpunkte zu
+// führen.
+function zulaessigeLage(anker, roh, r, W, H, box) {
+  const p = GC.clampToBox(roh, W, H, box);
+  const v = GC.sub(p, anker);
+  const L = GC.len(v);
+  const d = tThalesPasst(anker, v, W, H, TK_RAND) * L;
+  if (d < r + TK_ABSTAND) return null;
+  return GC.add(anker, GC.scale(GC.norm(v), d));
+}
+
+// Ziehbare Vorgabe: der Kreismittelpunkt M und der äußere Punkt P.
+function setupZiehbareLage(svg, layer, W, H, start, onUpdate) {
+  const lage = { M: start.M, r: start.r, P: start.P };
+  const handles = {};
+  const state = { locked: false };
+
+  function beschrifte() {
+    // Beide Buchstaben zeigen voneinander weg; M zusätzlich über seinen Kreis hinaus.
+    richteBeschriftung(handles.M.g, GC.sub(lage.M, lage.P), lage.r + 14);
+    richteBeschriftung(handles.P.g, GC.sub(lage.P, lage.M));
+  }
+
+  function ziehe(key, x, y) {
+    if (state.locked) return;
+    const anker = key === "M" ? lage.P : lage.M;
+    const box = key === "M" ? lage.r + 12 : 22;
+    const neu = zulaessigeLage(anker, { x, y }, lage.r, W, H, box);
+    if (!neu) return;
+    lage[key] = neu;
+    handles[key].update(neu);
+    beschrifte();
+    onUpdate(lage);
+  }
+
+  ["M", "P"].forEach((key) => {
+    handles[key] = GS.drawDraggablePoint(svg, layer, lage[key], key, (x, y) => ziehe(key, x, y));
+  });
+  beschrifte();
+
+  return {
+    lage,
+    setLocked(locked) {
+      state.locked = locked;
+      Object.values(handles).forEach((h) => h.g.classList.toggle("geo-point-locked", locked));
+    },
+    randomize() {
+      const s = zufallsLage(W, H);
+      lage.M = s.M;
+      lage.r = s.r;
+      lage.P = s.P;
+      handles.M.update(lage.M);
+      handles.P.update(lage.P);
+      beschrifte();
+      onUpdate(lage);
+    },
+  };
+}
+
+const TK_NOTIZ = {
+  1: "Die Mittelsenkrechte von <strong>MP</strong> liefert die Mitte <strong>Z</strong> der Strecke MP. Geschätzt werden darf sie nicht — ein Thaleskreis um eine ungefähre Mitte ginge weder durch M noch durch P, und seine Schnittpunkte mit k wären keine Berührpunkte.",
+  2: "Der Kreis um Z durch M und P ist der <strong>Thaleskreis über MP</strong>. Auf ihm liegt jeder Punkt, der die Strecke MP unter einem rechten Winkel sieht. Wo er den gegebenen Kreis k schneidet, gilt beides zugleich: Der Punkt liegt auf k <em>und</em> sieht MP unter 90° — das sind die Berührpunkte <strong>T₁</strong> und <strong>T₂</strong>.",
+  3: "Die Geraden <strong>PT₁</strong> und <strong>PT₂</strong> sind die gesuchten Tangenten: Sie treffen k in einem Punkt, und dort stehen sie senkrecht auf dem Radius. Ziehe M oder P — die Berührpunkte wandern mit, der rechte Winkel bleibt.",
+};
+
+function setupTangentenKonstruktion() {
+  const svg = document.getElementById("tk-svg");
+  const layerFigure = document.getElementById("tk-layer-figure");
+  const layerConstruct = document.getElementById("tk-layer-construct");
+  const layerCenters = document.getElementById("tk-layer-centers");
+  const layerUser = document.getElementById("tk-layer-user");
+  const layerVertices = document.getElementById("tk-layer-vertices");
+  const toggleArcs = document.getElementById("tk-toggle-arcs");
+  const countTabs = document.getElementById("tk-count-tabs");
+  const phaseTabs = document.getElementById("tk-phase-tabs");
+  const instructionBox = document.getElementById("tk-instruction");
+  const stepsList = document.getElementById("tk-steps");
+  const guidedControls = document.getElementById("tk-guided-controls");
+  const guidedToggleRow = document.getElementById("tk-guided-toggle-row");
+  const guidedToolbar = document.getElementById("tk-guided-toolbar");
+  const freeControls = document.getElementById("tk-free-controls");
+
+  let phase = "guided";
+  let count = 1;
+
+  // Die Angabe: der gegebene Kreis mit seinem Namen. M und P selbst sind die Ziehpunkte und liegen
+  // auf einer eigenen Ebene — sonst verschwänden sie beim Neuzeichnen der Angabe.
+  function zeichneAngabe(lage) {
+    GS.drawCircle(layerFigure, lage.M, lage.r, "th-gegeben-kreis");
+    layerFigure.appendChild(beschriftung(lage.M.x, lage.M.y - lage.r - 10, "k"));
+  }
+
+  function renderGuided(lage) {
+    GS.clearEl(layerFigure);
+    GS.clearEl(layerConstruct);
+    GS.clearEl(layerCenters);
+    zeichneAngabe(lage);
+
+    const g = tangentenFigur(lage.M, lage.r, lage.P);
+    GS.drawSegment(layerConstruct, g.M, g.P, "th-hilfsstrecke");
+    drawMittelsenkrechte(layerConstruct, K_W, K_H, g.M, g.P, toggleArcs.checked);
+    // Durch Z laufen zwei Linien, und sie stehen senkrecht aufeinander: die Strecke MP und ihre
+    // Mittelsenkrechte. Der Buchstabe geht deshalb schräg dazwischen, sonst liegt er auf einer der
+    // beiden.
+    const langs = GC.norm(GC.sub(g.P, g.M));
+    let quer = GC.perp(langs);
+    if (quer.y > 0) quer = GC.scale(quer, -1);
+    richteBeschriftung(GS.drawPoint(layerCenters, g.Z, "Z"), GC.norm(GC.add(langs, GC.scale(quer, -1))));
+
+    if (count >= 2 && g.T1 && g.T2) {
+      GS.drawCircle(layerConstruct, g.Z, g.d / 2, "geo-circle geo-umkreis");
+      richteBeschriftung(GS.drawPoint(layerCenters, g.T1, "T₁"), GC.sub(g.T1, g.M));
+      richteBeschriftung(GS.drawPoint(layerCenters, g.T2, "T₂"), GC.sub(g.T2, g.M));
+    }
+    if (count >= 3 && g.T1 && g.T2) {
+      for (const T of [g.T1, g.T2]) {
+        GS.drawLine(layerConstruct, g.P, GC.sub(T, g.P), { w: K_W, h: K_H }, "geo-construct th-schenkel");
+        GS.drawSegment(layerConstruct, g.M, T, "geo-construct th-schenkel");
+        GS.drawRightAngleMarker(layerConstruct, T, g.M, g.P, "geo-hoehe");
+      }
+    }
+  }
+
+  function renderNote() {
+    instructionBox.innerHTML = `<p>${TK_NOTIZ[count]}</p><p class="geo-why">${TANGENTEN_TASK.why}</p>`;
+    stepsList.innerHTML = TANGENTEN_TASK.schritte.map((s) => `<li>${s}</li>`).join("");
+  }
+
+  const vorgabe = setupZiehbareLage(svg, layerVertices, K_W, K_H, zufallsLage(K_W, K_H), (lage) => {
+    if (phase === "guided") {
+      renderGuided(lage);
+    } else {
+      GS.clearEl(layerFigure);
+      zeichneAngabe(lage);
+    }
+  });
+
+  // Die Figur wird bei jedem Zugriff frisch aus der aktuellen Lage gerechnet: Beim Ziehen von M
+  // oder P wandern die Berührpunkte mit, und die Prüfung muss die neuen meinen.
+  const figur = () => tangentenFigur(vorgabe.lage.M, vorgabe.lage.r, vorgabe.lage.P);
+
+  const free = setupFreeConstruction({
+    svg,
+    layer: layerUser,
+    els: {
+      btnToolCircle: document.getElementById("tk-circle"),
+      btnToolLine: document.getElementById("tk-line"),
+      btnUndo: document.getElementById("tk-undo"),
+      btnClear: document.getElementById("tk-clear"),
+      btnCheck: document.getElementById("tk-check"),
+      btnHint: document.getElementById("tk-hint"),
+      chkLockRadius: document.getElementById("tk-lock"),
+      btnResetRadius: document.getElementById("tk-reset-radius"),
+      radiusStatus: document.getElementById("tk-radius"),
+      pendingStatus: document.getElementById("tk-pending"),
+      feedbackBox: document.getElementById("tk-feedback"),
+    },
+    model: () => TANGENTEN_TASK.analyse(free.tool, figur()),
+    check: () => TANGENTEN_TASK.pruefe(TANGENTEN_TASK.analyse(free.tool, figur())),
+  });
+
+  function enterFree() {
+    GS.clearEl(layerConstruct);
+    GS.clearEl(layerCenters);
+    GS.clearEl(layerFigure);
+    zeichneAngabe(vorgabe.lage);
+    instructionBox.innerHTML = `<p>${TANGENTEN_TASK.aufgabe}</p><p class="geo-why">${TANGENTEN_TASK.why}</p>`;
+    stepsList.innerHTML = TANGENTEN_TASK.schritte.map((s) => `<li>${s}</li>`).join("");
+    free.reset();
+  }
+
+  renderGuided(vorgabe.lage);
+  renderNote();
+
+  toggleArcs.addEventListener("change", () => renderGuided(vorgabe.lage));
+  document.getElementById("tk-new").addEventListener("click", () => vorgabe.randomize());
+  document.getElementById("tk-new-free").addEventListener("click", () => {
+    // Für das Neuwürfeln kurz entsperren — sonst bliebe die Lage stehen.
+    vorgabe.setLocked(false);
+    vorgabe.randomize();
+    vorgabe.setLocked(true);
+    enterFree();
+  });
+
+  countTabs.addEventListener("click", (e) => {
+    const btn = e.target.closest(".geo-mode-tab[data-count]");
+    if (!btn) return;
+    count = Number(btn.dataset.count);
+    [...countTabs.children].forEach((b) => b.classList.toggle("geo-mode-tab-active", b === btn));
+    renderGuided(vorgabe.lage);
+    renderNote();
+  });
+
+  phaseTabs.addEventListener("click", (e) => {
+    const btn = e.target.closest(".geo-mode-tab[data-phase]");
+    if (!btn) return;
+    phase = btn.dataset.phase;
+    [...phaseTabs.children].forEach((b) => b.classList.toggle("geo-mode-tab-active", b === btn));
+    guidedControls.hidden = phase !== "guided";
+    guidedToggleRow.hidden = phase !== "guided";
+    guidedToolbar.hidden = phase !== "guided";
+    freeControls.hidden = phase !== "free";
+    vorgabe.setLocked(phase === "free");
+    if (phase === "guided") {
+      renderGuided(vorgabe.lage);
+      renderNote();
+    } else {
+      enterFree();
+    }
+  });
+
+  setupCanvasZoom(document.getElementById("tk-zoom").closest(".card"), document.getElementById("tk-zoom"));
+}
+
 // ================= Quizze =================
 
 function mountQuiz(container, { q, options, correct, explain }) {
@@ -1085,6 +1348,7 @@ renderBeweis();
 renderUmkehrung();
 renderTangenten();
 setupKonstruktion();
+setupTangentenKonstruktion();
 initQuizzes();
 initExercises();
 mountKonstruktionsAufgaben(document.getElementById("ka-mount"));

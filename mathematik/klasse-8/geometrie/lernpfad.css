@@ -387,6 +387,17 @@
   stroke-dasharray: none;
 }
 
+/* Die Verbindung MP in der Tangentenkonstruktion ist eine Hilfslinie: Sie zeigt, worüber der
+   Thaleskreis entsteht, ist aber selbst nichts Konstruiertes. In Rot gestrichelt wäre sie von der
+   Mittelsenkrechten nicht zu unterscheiden — und ausgerechnet die beiden stehen hier senkrecht
+   aufeinander. */
+.geo-segment.th-hilfsstrecke {
+  stroke: var(--muted);
+  stroke-width: 1.6;
+  stroke-dasharray: 5 4;
+  stroke-linecap: butt;
+}
+
 /* Ausblick auf spätere Jahrgangsstufen. Bewusst anders als die Merkboxen: Was hier steht,
    gehört zum Zusammenhang, wird aber weder vorausgesetzt noch geübt. */
 .ausblick-box {

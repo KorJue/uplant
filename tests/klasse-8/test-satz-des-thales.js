@@ -16,6 +16,7 @@ const { starteBrowser, neueSeite, oeffne, setzeRegler, text } = require("../lib/
 const { pruefeNotation } = require("../lib/notation");
 const { pruefeKontrast } = require("../lib/kontrast");
 const { pruefeAufgabe } = require("../lib/aufgaben");
+const { neueWerkbank, kreisSchnitt } = require("../lib/konstruieren.js");
 
 const bericht = neuerBericht();
 const { pruefe } = bericht;
@@ -402,6 +403,214 @@ async function tangenten(page) {
   }
 }
 
+// ── Abschnitt 5b: die Tangenten selbst konstruieren ───────────────────────
+//
+// Geprüft wird beides: dass die geführte Anleitung in jeder Stufe genau das zeigt, was sie
+// ankündigt — und dass sich die Konstruktion wirklich ausführen lässt, Zirkelschlag für
+// Zirkelschlag, bis „Prüfen“ sie anerkennt. Die Sollpunkte rechnet diese Prüfung selbst aus der
+// Lage aus; aus der Seite kommen nur M, P und der Radius.
+
+// Die aktuelle Vorgabe, so wie die Zeichenfläche sie zeigt.
+async function tkLage(page) {
+  return page.evaluate(() => {
+    const punktMit = (name) => {
+      const g = [...document.querySelectorAll("#tk-layer-vertices .geo-point-draggable")]
+        .find((e) => e.querySelector("text") && e.querySelector("text").textContent === name);
+      if (!g) return null;
+      const dot = g.querySelector(".geo-point-dot");
+      return { x: +dot.getAttribute("cx"), y: +dot.getAttribute("cy") };
+    };
+    const k = document.querySelector("#tk-layer-figure circle.th-gegeben-kreis");
+    return { M: punktMit("M"), P: punktMit("P"), r: k ? +k.getAttribute("r") : null };
+  });
+}
+
+// Was die Zeichenfläche gerade zeigt — nach Bestandteilen getrennt.
+async function tkBild(page) {
+  return page.evaluate(() => {
+    const beschriftet = (name) => {
+      const t = [...document.querySelectorAll("#tk-layer-centers text")].find((e) => e.textContent === name);
+      return t ? { x: +t.getAttribute("x"), y: +t.getAttribute("y") } : null;
+    };
+    const linien = (sel) => [...document.querySelectorAll(sel)].map((l) => ({
+      a: { x: +l.getAttribute("x1"), y: +l.getAttribute("y1") },
+      b: { x: +l.getAttribute("x2"), y: +l.getAttribute("y2") },
+    }));
+    const thales = document.querySelector("#tk-layer-construct circle.geo-umkreis");
+    return {
+      mittelsenkrechte: document.querySelectorAll("#tk-layer-construct line.geo-mittelsenkrechte").length,
+      hilfsstrecke: document.querySelectorAll("#tk-layer-construct line.th-hilfsstrecke").length,
+      thales: thales ? { x: +thales.getAttribute("cx"), y: +thales.getAttribute("cy"), r: +thales.getAttribute("r") } : null,
+      tangenten: linien("#tk-layer-construct line.geo-line.th-schenkel"),
+      radien: document.querySelectorAll("#tk-layer-construct line.geo-segment.th-schenkel").length,
+      rechteWinkel: document.querySelectorAll("#tk-layer-construct .geo-rightangle").length,
+      Z: beschriftet("Z"),
+      T1: beschriftet("T₁"),
+      T2: beschriftet("T₂"),
+    };
+  });
+}
+
+// Abstand des Punktes p von der Geraden durch a und b.
+function abstandZurGeraden(p, a, b) {
+  const l = Math.hypot(b.x - a.x, b.y - a.y);
+  return Math.abs((b.x - a.x) * (a.y - p.y) - (a.x - p.x) * (b.y - a.y)) / l;
+}
+
+async function tangentenKonstruktion(page) {
+  const werkbank = neueWerkbank(page, {
+    svg: "tk-svg",
+    kreis: "#tk-circle",
+    linie: "#tk-line",
+    pruefen: "#tk-check",
+    rueckmeldung: "#tk-feedback",
+  });
+
+  // --- Die geführte Phase: Was jede Stufe zeigen muss.
+  for (const stufe of [1, 2, 3]) {
+    await page.locator(`#tk-count-tabs .geo-mode-tab[data-count="${stufe}"]`).click();
+    const lage = await tkLage(page);
+    const bild = await tkBild(page);
+    const wo = `Tangentenkonstruktion: Stufe ${stufe}`;
+    pruefe(!!(lage.M && lage.P && lage.r), `${wo} — M, P oder der Kreis k fehlen`);
+    if (!(lage.M && lage.P && lage.r)) return;
+
+    const d = Math.hypot(lage.P.x - lage.M.x, lage.P.y - lage.M.y);
+    const Z = { x: (lage.M.x + lage.P.x) / 2, y: (lage.M.y + lage.P.y) / 2 };
+    pruefe(d > lage.r + 1, `${wo} — P liegt nicht außerhalb des Kreises (d = ${de(d, 1)}, r = ${de(lage.r, 1)})`);
+    pruefe(bild.mittelsenkrechte === 1, `${wo} — ${bild.mittelsenkrechte} Mittelsenkrechte statt 1`);
+    pruefe(bild.hilfsstrecke === 1, `${wo} — ${bild.hilfsstrecke} Hilfsstrecken MP statt 1`);
+    pruefe(!!bild.Z, `${wo} — die Mitte Z ist nicht beschriftet`);
+
+    // Der Thaleskreis gehört ab Stufe 2 dazu — vorher darf er nicht dastehen.
+    pruefe(!!bild.thales === stufe >= 2, `${wo} — Thaleskreis ${bild.thales ? "steht schon" : "fehlt"}`);
+    if (bild.thales) {
+      pruefe(Math.hypot(bild.thales.x - Z.x, bild.thales.y - Z.y) < 0.5, `${wo} — der Thaleskreis sitzt nicht auf der Mitte von MP`);
+      pruefe(Math.abs(bild.thales.r - d / 2) < 0.5, `${wo} — sein Radius ist ${de(bild.thales.r, 1)} statt ${de(d / 2, 1)}`);
+    }
+    pruefe(!!bild.T1 === (stufe >= 2) && !!bild.T2 === (stufe >= 2), `${wo} — die Berührpunkte sind ${bild.T1 ? "schon" : "nicht"} beschriftet`);
+
+    // Die Tangenten und die Radien gehören zu Stufe 3 — und nur dorthin.
+    pruefe(bild.tangenten.length === (stufe >= 3 ? 2 : 0), `${wo} — ${bild.tangenten.length} Tangenten gezeichnet`);
+    pruefe(bild.radien === (stufe >= 3 ? 2 : 0), `${wo} — ${bild.radien} Radien gezeichnet`);
+    pruefe(bild.rechteWinkel === (stufe >= 3 ? 2 : 0), `${wo} — ${bild.rechteWinkel} rechte-Winkel-Marken`);
+
+    // Der fachliche Kern: Was da gezeichnet ist, muss den Kreis wirklich BERÜHREN — also durch P
+    // laufen und von M genau den Abstand r haben. Eine Gerade, die ihn schneidet, wäre keine
+    // Tangente, sähe aber fast genauso aus.
+    for (const [i, t] of bild.tangenten.entries()) {
+      pruefe(abstandZurGeraden(lage.P, t.a, t.b) < 0.5, `${wo} — Tangente ${i + 1} läuft nicht durch P`);
+      const abstand = abstandZurGeraden(lage.M, t.a, t.b);
+      pruefe(Math.abs(abstand - lage.r) < 0.5,
+        `${wo} — Tangente ${i + 1} hat von M den Abstand ${de(abstand, 2)} statt r = ${de(lage.r, 2)} (sie berührt den Kreis also nicht)`);
+    }
+  }
+
+  // --- Die gewürfelte Lage: Sie muss IMMER zulässig sein, nicht nur meistens. Geprüft wird an
+  // vierzig Würfen, ob P wirklich außerhalb des Kreises liegt und ob beide Kreise ganz auf die
+  // Fläche passen — ein Thaleskreis, der über den Rand hinausragt, versteckt einen Berührpunkt.
+  for (let wurf = 0; wurf < 40; wurf++) {
+    await page.locator("#tk-new").click();
+    const lage = await tkLage(page);
+    const bild = await tkBild(page);
+    const d = Math.hypot(lage.P.x - lage.M.x, lage.P.y - lage.M.y);
+    const wo = `Tangentenkonstruktion: Wurf ${wurf + 1}`;
+    pruefe(d > lage.r + 1, `${wo} — P liegt innerhalb von k (d = ${de(d, 1)}, r = ${de(lage.r, 1)})`);
+    const drin = (x, y, rad) => x - rad >= -0.5 && x + rad <= 600.5 && y - rad >= -0.5 && y + rad <= 420.5;
+    pruefe(drin(lage.M.x, lage.M.y, lage.r), `${wo} — der Kreis k ragt über den Rand hinaus`);
+    pruefe(!!bild.thales && drin(bild.thales.x, bild.thales.y, bild.thales.r),
+      `${wo} — der Thaleskreis ragt über den Rand hinaus`);
+    pruefe(bild.tangenten.length === 2 && bild.rechteWinkel === 2,
+      `${wo} — die Figur zeigt ${bild.tangenten.length} Tangenten und ${bild.rechteWinkel} rechte Winkel`);
+  }
+
+  // --- Ziehen: Die Vorgabe darf nie in eine Lage geraten, in der es keine Tangenten gibt.
+  const vorZiehen = await tkLage(page);
+  const griff = await page.evaluate(() => {
+    const g = [...document.querySelectorAll("#tk-layer-vertices .geo-point-draggable")]
+      .find((e) => e.querySelector("text").textContent === "P");
+    const dot = g.querySelector(".geo-point-dot");
+    return { x: +dot.getAttribute("cx"), y: +dot.getAttribute("cy") };
+  });
+  // Einmal mitten auf den Kreismittelpunkt ziehen — dorthin darf P nicht folgen.
+  await werkbank.klick(griff); // nur zum Scrollen an die richtige Stelle
+  await page.mouse.move(0, 0);
+  const rahmen = await page.evaluate(() => {
+    const svg = document.getElementById("tk-svg");
+    const r = svg.getBoundingClientRect();
+    const vb = svg.viewBox.baseVal;
+    return { left: r.left, top: r.top, breite: r.width, hoehe: r.height, vbB: vb.width, vbH: vb.height };
+  });
+  const aufSchirm = (p) => ({
+    x: rahmen.left + (p.x / rahmen.vbB) * rahmen.breite,
+    y: rahmen.top + (p.y / rahmen.vbH) * rahmen.hoehe,
+  });
+  const von = aufSchirm(griff), nach = aufSchirm(vorZiehen.M);
+  await page.mouse.move(von.x, von.y);
+  await page.mouse.down();
+  await page.mouse.move(nach.x, nach.y, { steps: 8 });
+  await page.mouse.up();
+  const nachZiehen = await tkLage(page);
+  const dNach = Math.hypot(nachZiehen.P.x - nachZiehen.M.x, nachZiehen.P.y - nachZiehen.M.y);
+  pruefe(dNach > nachZiehen.r + 1,
+    `Tangentenkonstruktion: nach dem Ziehen auf M liegt P mit dem Abstand ${de(dNach, 1)} bei r = ${de(nachZiehen.r, 1)} — es gäbe keine Berührpunkte mehr`);
+  const bildNach = await tkBild(page);
+  pruefe(bildNach.tangenten.length === 2, `Tangentenkonstruktion: nach dem Ziehen sind ${bildNach.tangenten.length} Tangenten gezeichnet`);
+  for (const t of bildNach.tangenten) {
+    const abstand = abstandZurGeraden(nachZiehen.M, t.a, t.b);
+    pruefe(Math.abs(abstand - nachZiehen.r) < 0.5, `Tangentenkonstruktion: nach dem Ziehen berührt eine Tangente den Kreis nicht (${de(abstand, 2)} statt ${de(nachZiehen.r, 2)})`);
+  }
+
+  // --- Die freie Phase: wirklich konstruieren, bis „Prüfen“ es anerkennt.
+  await page.locator('#tk-phase-tabs .geo-mode-tab[data-phase="free"]').click();
+  const lage = await tkLage(page);
+  const { M, P, r } = lage;
+  const d = Math.hypot(P.x - M.x, P.y - M.y);
+  const Z = { x: (M.x + P.x) / 2, y: (M.y + P.y) / 2 };
+  const richtung = { x: (P.x - M.x) / d, y: (P.y - M.y) / d };
+  const T = kreisSchnitt(M, r, Z, d / 2);
+
+  let rueck = await werkbank.pruefen();
+  pruefe(rueck.includes("Mittelsenkrechte"), `Tangentenkonstruktion: leere Zeichnung, aber die Rückmeldung lautet „${rueck}“`);
+
+  const weite = d * 0.62;
+  await werkbank.zirkel(M, { x: M.x + richtung.x * weite, y: M.y + richtung.y * weite });
+  await werkbank.zirkel(P, { x: P.x - richtung.x * weite, y: P.y - richtung.y * weite });
+  rueck = await werkbank.pruefen();
+  pruefe(rueck.includes("Mittelsenkrechte"), `Tangentenkonstruktion: nur Bögen gezeichnet, aber die Rückmeldung lautet „${rueck}“`);
+
+  const s = kreisSchnitt(M, weite, P, weite);
+  await werkbank.lineal(s[0], s[1]);
+  rueck = await werkbank.pruefen();
+  pruefe(rueck.includes("Thaleskreis"), `Tangentenkonstruktion: Mittelsenkrechte steht, aber die Rückmeldung lautet „${rueck}“`);
+
+  // Ein Kreis um Z mit falschem Radius muss als falscher Radius erkannt werden.
+  await werkbank.zirkel(Z, { x: Z.x + richtung.x * (d * 0.3), y: Z.y + richtung.y * (d * 0.3) });
+  rueck = await werkbank.pruefen();
+  pruefe(rueck.includes("Radius"), `Tangentenkonstruktion: falscher Radius, aber die Rückmeldung lautet „${rueck}“`);
+  await page.locator("#tk-undo").click();
+
+  // Und nun richtig: Thaleskreis um Z durch M.
+  await werkbank.zirkel(Z, M);
+  rueck = await werkbank.pruefen();
+  pruefe(rueck.includes("Berührpunkte"), `Tangentenkonstruktion: Thaleskreis steht, aber die Rückmeldung lautet „${rueck}“`);
+
+  await werkbank.lineal(P, T[0]);
+  rueck = await werkbank.pruefen();
+  pruefe(rueck.includes("Eine Tangente steht schon"), `Tangentenkonstruktion: eine Tangente gezeichnet, aber die Rückmeldung lautet „${rueck}“`);
+
+  await werkbank.lineal(P, T[1]);
+  rueck = await werkbank.pruefen();
+  pruefe(rueck.includes("Richtig konstruiert"), `Tangentenkonstruktion: die vollständige Konstruktion wird nicht anerkannt — „${rueck}“`);
+  pruefe(await werkbank.istGruen(), "Tangentenkonstruktion: die Rückmeldung ist nicht als richtig gekennzeichnet");
+
+  // Die fertige Mittelsenkrechte muss ihre Hilfskreise grau zurücktreten lassen.
+  const grau = await page.evaluate(() => document.querySelectorAll("#tk-layer-user circle.geo-done").length);
+  pruefe(grau === 2, `Tangentenkonstruktion: ${grau} Hilfskreise sind grau, erwartet 2`);
+
+  await page.locator('#tk-phase-tabs .geo-mode-tab[data-phase="guided"]').click();
+}
+
 // ── Die Quizze ────────────────────────────────────────────────────────────
 async function quizze(page) {
   const ids = ["quiz-satz", "quiz-beweis", "quiz-umkehrung", "quiz-tangenten"];
@@ -597,6 +806,7 @@ async function geruest(page) {
       await umkehrung(page);
       await konstruktion(page);
       await tangenten(page);
+      await tangentenKonstruktion(page);
       await quizze(page);
       await aufgaben(page);
     } else {
