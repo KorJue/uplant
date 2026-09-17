@@ -103,7 +103,12 @@ async function pruefeAufgabe(page, bericht, { nr, name, runden = 40, mindestensV
     // nur eines davon wirklich prüft.
     for (const [idx, wert, muster] of d.falschFelder || []) {
       if (wert === null || wert === undefined || (typeof wert === "number" && !Number.isFinite(wert))) continue;
-      if (Math.abs(wert - d.felder[idx]) < (d.toleranz ?? 0.5)) continue;
+      // Fällt der Fehlerwert mit der Lösung zusammen, taugt er nicht als Probe — bei Brüchen ist
+      // das eine Frage der Zeichenkette, nicht des Abstands.
+      const soll = d.felder[idx];
+      if (typeof wert === "number" && typeof soll === "number"
+        ? Math.abs(wert - soll) < (d.toleranz ?? 0.5)
+        : String(wert) === String(soll)) continue;
       const werte = d.felder.slice();
       werte[idx] = wert;
       const r = await antworteFelder(page, box, werte);

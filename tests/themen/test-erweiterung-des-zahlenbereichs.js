@@ -42,12 +42,12 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — Subtraktion einer negativen Zahl: die Stelle, an der aus zwei Minuszeichen ein
+  // Aufgabe 5 — Subtraktion einer negativen Zahl: die Stelle, an der aus zwei Minuszeichen ein
   // Plus wird. Gemessen mit tests/werkzeug-streuung.js: 141 verschiedene in 200 Würfen,
   // zurückgerechnet also rund 267 Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei
   // 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 22.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Minus vor Minus", runden: 30, mindestensVerschieden: 22,
+    nr: 3, name: "A3 Minus vor Minus", runden: 30, mindestensVerschieden: 22,
     deute: (frage) => {
       const m = frage.replace(/−/g, "-").match(/Berechne: (-?\d+) - \((-?\d+)\)/);
       if (!m) return null;
@@ -66,7 +66,7 @@ async function aufgaben(page) {
   // Aufgabe 3 — Vorzeichen eines dreifachen Produkts. 5·5·4 Beträge × 7
   // Vorzeichenmuster mit mindestens einem Minus.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Vorzeichen im Produkt", runden: 30, mindestensVerschieden: 24,
+    nr: 5, name: "A5 Vorzeichen im Produkt", runden: 30, mindestensVerschieden: 24,
     deute: (frage) => {
       const werte = zahlenAusTerm(frage);
       if (werte.length !== 3) return null;
@@ -90,7 +90,7 @@ async function aufgaben(page) {
   // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
   // 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Sachaufgabe", runden: 30, mindestensVerschieden: 27,
+    nr: 7, name: "A7 Sachaufgabe", runden: 30, mindestensVerschieden: 27,
     deute: (frage) => {
       // Alle drei Kontexte nennen genau drei Zahlen in derselben Reihenfolge:
       // Ausgangswert, Abnahme, Zunahme. Ein Muster je Kontext wäre unnötig
@@ -102,6 +102,92 @@ async function aufgaben(page) {
         richtig: start - x + y,
         // Die Richtungen vertauscht.
         falsch: [[start + x - y, "Reihenfolge der Richtungen"]],
+      };
+    },
+  });
+
+  // Aufgabe 2 — Betrag und Gegenzahl (Aufgabe zum Ausfüllen). Gemessen mit
+  // tests/werkzeug-streuung.js: 71 verschiedene in 200 Würfen, zurückgerechnet rund 77 Kandidaten
+  // (2 · 39 Zahlen = 78). Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen,
+  // vorsichtshalber für 0,8 · n gerechnet — 17.
+  await pruefeAufgabe(page, bericht, {
+    nr: 2, name: "A2 Betrag und Gegenzahl", runden: 30, mindestensVerschieden: 17,
+    deute: (frage) => {
+      const m = frage.match(/die Zahl (−?-?\d+)/);
+      if (!m) return null;
+      const n = Number(m[1].replace("−", "-"));
+      pruefe(n !== 0, "A2: die Null taugt nicht — Gegenzahl und Betrag fielen zusammen");
+      return {
+        felder: [-n, Math.abs(n)],
+        falschFelder: [
+          [0, n, "Zahl selbst"],
+          [1, -Math.abs(n), "nie negativ"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 4 — ordnen. Gemessen mit tests/werkzeug-streuung.js: in 200 Würfen kein einziges
+  // Doppel (56 Zahlen, aus denen vier verschiedene gezogen werden). Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen — 27.
+  await pruefeAufgabe(page, bericht, {
+    nr: 4, name: "A4 ordnen", runden: 30, mindestensVerschieden: 27,
+    deute: (frage) => {
+      const m = frage.match(/kleinste\?\s*(.+)$/);
+      if (!m) return null;
+      const zahlen = (m[1].match(/−?-?\d+/g) || []).map((x) => Number(x.replace("−", "-")));
+      if (zahlen.length !== 4) return null;
+      pruefe(new Set(zahlen).size === 4, `A4: die vier Zahlen sind nicht paarweise verschieden — ${zahlen.join(", ")}`);
+      const betragsgroesste = zahlen.reduce((a, b) => (Math.abs(a) >= Math.abs(b) ? a : b));
+      return {
+        richtig: Math.min(...zahlen),
+        falsch: [
+          [Math.max(...zahlen), "größte"],
+          [betragsgroesste !== Math.min(...zahlen) ? betragsgroesste : null, "Betrag"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 6 — Punkt vor Strich in ℤ. Gemessen mit tests/werkzeug-streuung.js: 198 verschiedene
+  // in 200 Würfen, zurückgerechnet rund 9900 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen — 27.
+  await pruefeAufgabe(page, bericht, {
+    nr: 6, name: "A6 Punkt vor Strich in ℤ", runden: 30, mindestensVerschieden: 27,
+    deute: (frage) => {
+      // Klammern stehen nur um negative Zahlen — die Prüfung darf sie deshalb nicht verlangen.
+      const m = frage.match(/Berechne: (−?-?\d+) · \(?(−?-?\d+)\)? \+ \(?(−?-?\d+)\)?/);
+      if (!m) return null;
+      const [a, b, c] = m.slice(1).map((x) => Number(x.replace("−", "-")));
+      return {
+        richtig: a * b + c,
+        falsch: [
+          [a * (b + c), "Punkt vor Strich"],
+          [-a * b + c, "Vorzeichen"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 8 — ein Verlauf mit Höchst- und Tiefstwert (Aufgabe zum Ausfüllen). Gemessen mit
+  // tests/werkzeug-streuung.js: in 200 Würfen kein einziges Doppel (25 · 13 · 17 · 13 · 3
+  // Möglichkeiten). Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen — 27.
+  await pruefeAufgabe(page, bericht, {
+    nr: 8, name: "A8 Verlauf", runden: 30, mindestensVerschieden: 27,
+    deute: (frage) => {
+      const zahlenImText = (frage.match(/−?-?\d+/g) || []).map((x) => Number(x.replace("−", "-")));
+      if (zahlenImText.length < 4) return null;
+      const [start, s1, s2, s3] = zahlenImText;
+      const v1 = start + s1, v2 = v1 - s2, v3 = v2 - s3;
+      const alle = [start, v1, v2, v3];
+      const tief = Math.min(...alle), hoch = Math.max(...alle);
+      return {
+        felder: [v3, tief, hoch - tief],
+        falschFelder: [
+          [0, start + s1 + s2 + s3, "abgezogen"],
+          [1, hoch, "höchste"],
+          [2, tief - hoch, "nie negativ"],
+        ],
       };
     },
   });

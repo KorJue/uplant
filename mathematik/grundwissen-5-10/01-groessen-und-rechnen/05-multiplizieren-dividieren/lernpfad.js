@@ -37,6 +37,15 @@ function num(x, digits = 3) {
 function randInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
+// Dezimalzahl mit fester Stellenzahl, deutsch geschrieben — anders als num() bleibt die Null
+// hinter dem Komma stehen.
+function dez(x, stellen) {
+  return x.toFixed(stellen).replace(".", ",");
+}
+// Dezimalzahl ohne überflüssige Nullen hinter dem Komma: 4,00 → „4“, 3,50 → „3,5“.
+function dezKurz(x) {
+  return String(Number(x.toFixed(4))).replace(".", ",");
+}
 function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -464,6 +473,11 @@ function generateAufgabe1() {
       return !!b && b.z === kr.z && b.n === kr.n;
     },
     hinweis: bruchHinweis(kr.z, kr.n),
+    tipps: [
+      `${bruchHtml(z, n)} · ${k} heißt: ${k}-mal ${bruchHtml(z, n)} nehmen — die Stücke bleiben gleich groß, es werden nur mehr.`,
+      `Deshalb wird nur der Zähler vervielfacht: ${z} · ${k}. Der Nenner ${n} bleibt.`,
+      "Zum Schluss vollständig kürzen.",
+    ],
     musterloesungHtml:
       `Nur der Zähler wird vervielfacht, der Nenner bleibt:<br>` +
       `${bruchHtml(z, n)} · ${k} = ${bruchHtml(`${z} · ${k}`, n)} = ${bruchHtml(zP, n)}` +
@@ -488,6 +502,11 @@ function generateAufgabe2() {
       return !!b && b.z === k.z && b.n === k.n;
     },
     hinweis: bruchHinweis(k.z, k.n),
+    tipps: [
+      "Beim Multiplizieren muss man <em>nicht</em> gleichnamig machen — das ist nur beim Addieren nötig.",
+      "Zähler mal Zähler, Nenner mal Nenner.",
+      "Kürzen darf man auch schon vorher — über Kreuz, bevor man ausmultipliziert.",
+    ],
     musterloesungHtml:
       `Zähler mal Zähler, Nenner mal Nenner — gleichnamig machen ist nicht nötig:<br>` +
       `${bruchHtml(z1, n1)} · ${bruchHtml(z2, n2)} = ${bruchHtml(`${z1} · ${z2}`, `${n1} · ${n2}`)} = ${bruchHtml(zP, nP)}` +
@@ -517,6 +536,11 @@ function generateAufgabe3() {
       if (b.z * (n1 * n2) === z1 * z2 * b.n) return "Du hast multipliziert statt dividiert. Beim Dividieren wird der <strong>zweite</strong> Bruch umgedreht.";
       return "";
     },
+    tipps: [
+      "Durch einen Bruch dividieren heißt: mit seinem Kehrwert multiplizieren.",
+      `Der Kehrwert von ${bruchHtml(z2, n2)} ist ${bruchHtml(n2, z2)}.`,
+      "Umgedreht wird nur der <strong>zweite</strong> Bruch — dann ganz normal multiplizieren.",
+    ],
     musterloesungHtml:
       `Durch einen Bruch dividieren heißt: mit dem Kehrwert multiplizieren. Kehrwert von ${bruchHtml(z2, n2)} ist ${bruchHtml(n2, z2)}.<br>` +
       `${bruchHtml(z1, n1)} : ${bruchHtml(z2, n2)} = ${bruchHtml(z1, n1)} · ${bruchHtml(n2, z2)} = ${bruchHtml(`${z1} · ${n2}`, `${n1} · ${z2}`)} = ${bruchHtml(zP, nP)}` +
@@ -553,6 +577,17 @@ function generateAufgabe4() {
     correct: proPersonCent / 100,
     tolerance: 0.005,
     placeholder: "z. B. 24,50",
+    hinweis: (roh, val) =>
+      Math.abs(val - gesamtCent / 100) < 0.005
+        ? "Das sind die Gesamtkosten — sie werden noch auf die Gruppen verteilt."
+        : Math.abs(val - preisCent / 100) < 0.005
+          ? "Das ist der Preis für ein Stück. Erst mal die Menge, dann durch die Gruppen."
+          : "",
+    tipps: [
+      "Zwei Schritte: erst die Gesamtkosten, dann gleichmäßig verteilen.",
+      `Gesamtkosten: ${menge} · den Stückpreis.`,
+      `Danach durch ${personen} teilen.`,
+    ],
     musterloesungHtml:
       `① Gesamtkosten (Dezimalmultiplikation): ${cent(preisCent)} · ${menge}<br>` +
       `&nbsp;&nbsp;ohne Komma: ${num(preisCent)} · ${menge} = ${num(gesamtCent)}; die Nachkommastellen des Preises wieder ansetzen ⇒ <strong>${cent(gesamtCent)} €</strong><br>` +
@@ -561,12 +596,183 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 2 — den Kehrwert bilden. Der Baustein, auf dem die ganze Division durch einen Bruch
+// beruht: Ohne ihn bleibt „mit dem Kehrwert multiplizieren“ ein Spruch ohne Inhalt.
+function generateAufgabe2b() {
+  const ganzeZahl = Math.random() < 0.35;
+  if (ganzeZahl) {
+    const k = randInt(2, 15);
+    return {
+      promptHtml: `Wie heißt der <strong>Kehrwert</strong> von <strong>${k}</strong>?<br><span class="progress-note">Antworte als Bruch in der Form <code>z/n</code>.</span>`,
+      placeholder: "z. B. 1/7",
+      check: (raw) => {
+        const b = parseBruchEingabe(raw);
+        return !!b && b.z === 1 && b.n === k;
+      },
+      hinweis: (raw) => {
+        const b = parseBruchEingabe(raw);
+        if (!b) return "Schreibe deine Antwort als Bruch in der Form <code>z/n</code>, z.&nbsp;B. <code>1/7</code>.";
+        if (b.z === k && b.n === 1) return "Das ist die Zahl selbst. Beim Kehrwert werden Zähler und Nenner vertauscht.";
+        return "";
+      },
+      tipps: [
+        `Jede ganze Zahl lässt sich als Bruch schreiben: ${k} = ${bruchHtml(k, 1)}.`,
+        "Der Kehrwert entsteht, indem Zähler und Nenner vertauscht werden.",
+        "Probe: Eine Zahl mal ihr Kehrwert ergibt immer 1.",
+      ],
+      musterloesungHtml:
+        `${k} = ${bruchHtml(k, 1)} ⇒ Zähler und Nenner vertauschen ⇒ <strong>${bruchHtml(1, k, "gross")}</strong><br>` +
+        `Probe: ${k} · ${bruchHtml(1, k)} = ${bruchHtml(k, k)} = 1 ✓`,
+    };
+  }
+  const n = pick([2, 3, 4, 5, 6, 7, 8, 9, 10, 12]);
+  const z = randInt(1, n - 1);
+  const g = ggT(z, n);
+  const zk = z / g, nk = n / g;
+  return {
+    promptHtml: `Wie heißt der <strong>Kehrwert</strong> von ${bruchHtml(zk, nk, "gross")}?`,
+    placeholder: "z. B. 4/3",
+    check: (raw) => {
+      const b = parseBruchEingabe(raw);
+      return !!b && b.z === nk && b.n === zk;
+    },
+    hinweis: (raw) => {
+      const b = parseBruchEingabe(raw);
+      if (!b) return "Schreibe deine Antwort als Bruch in der Form <code>z/n</code>, z.&nbsp;B. <code>4/3</code>.";
+      if (b.z === zk && b.n === nk) return "Das ist der Bruch selbst — beim Kehrwert werden Zähler und Nenner vertauscht.";
+      return "";
+    },
+    tipps: [
+      "Kehrwert heißt: Zähler und Nenner tauschen die Plätze.",
+      "Probe: Ein Bruch mal sein Kehrwert ergibt immer 1.",
+    ],
+    musterloesungHtml:
+      `Zähler und Nenner vertauschen: ${bruchHtml(zk, nk)} ⇒ <strong>${bruchHtml(nk, zk, "gross")}</strong><br>` +
+      `Probe: ${bruchHtml(zk, nk)} · ${bruchHtml(nk, zk)} = ${bruchHtml(zk * nk, nk * zk)} = 1 ✓`,
+  };
+}
+
+// Aufgabe 4 — Dezimalzahlen multiplizieren. Die Regel steckt allein in der Zahl der
+// Nachkommastellen; der abgefragte Fehler ist das Komma an der falschen Stelle.
+function generateAufgabe4b() {
+  const aH = randInt(11, 98) * 10 + randInt(1, 9);     // zwei Nachkommastellen
+  const bZ = randInt(11, 89);                          // eine Nachkommastelle
+  const a = aH / 100, b = bZ / 10;
+  const produktTausendstel = aH * bZ;                  // 2 + 1 = 3 Nachkommastellen
+  const correct = produktTausendstel / 1000;
+  const kommaZuWenig = produktTausendstel / 100;       // eine Stelle zu wenig abgezählt
+  return {
+    promptHtml: `Berechne: <strong>${dez(a, 2)} · ${dez(b, 1)}</strong>`,
+    correct,
+    tolerance: 0.0005,
+    placeholder: "Ergebnis",
+    hinweis: (roh, val) =>
+      Math.abs(val - kommaZuWenig) < 0.0005
+        ? "Das Komma steht eine Stelle zu weit rechts: Es sind 2 + 1 = 3 Nachkommastellen abzuzählen."
+        : Math.abs(val - aH * bZ) < 0.5
+          ? "Das ist das Produkt ohne Komma. Jetzt müssen noch die Nachkommastellen abgezählt werden."
+          : "",
+    tipps: [
+      "Zuerst ohne Komma rechnen, als wären es ganze Zahlen.",
+      `${aH} · ${bZ} = ${(aH * bZ).toLocaleString("de-DE")}.`,
+      "Dann so viele Nachkommastellen abzählen, wie beide Faktoren zusammen haben: 2 + 1 = 3.",
+    ],
+    musterloesungHtml:
+      `① Ohne Komma: ${aH} · ${bZ} = ${(aH * bZ).toLocaleString("de-DE")}<br>` +
+      `② Nachkommastellen zählen: ${dez(a, 2)} hat 2, ${dez(b, 1)} hat 1 — zusammen 3.<br>` +
+      `③ Komma drei Stellen von rechts setzen: <strong>${dez(correct, 3)}</strong><br>` +
+      `Überschlag: rund ${Math.round(a)} · ${Math.round(b)} = ${Math.round(a) * Math.round(b)} ✓`,
+  };
+}
+
+// Aufgabe 6 — durch eine Dezimalzahl dividieren. Der Kern: Beide Zahlen mit derselben Zehnerpotenz
+// multiplizieren, bis der Divisor ganzzahlig ist — der Quotient ändert sich dabei nicht.
+function generateAufgabe6() {
+  const divisorHundertstel = pick([25, 50, 75, 20, 40, 5, 15, 250, 125]);
+  const quotient = randInt(3, 40);
+  const dividendHundertstel = divisorHundertstel * quotient;
+  const divisor = divisorHundertstel / 100;
+  const dividend = dividendHundertstel / 100;
+  const stellen = divisorHundertstel % 10 === 0 ? 1 : 2;
+  const faktor = Math.pow(10, stellen);
+  return {
+    promptHtml: `Berechne: <strong>${dezKurz(dividend)} : ${dezKurz(divisor)}</strong>`,
+    correct: quotient,
+    tolerance: 0.001,
+    placeholder: "Ergebnis",
+    hinweis: (roh, val) =>
+      Math.abs(val - quotient / faktor) < 0.001
+        ? "Beide Zahlen müssen mit derselben Zahl multipliziert werden — sonst ändert sich der Quotient."
+        : Math.abs(val - dividend * divisor) < 0.001
+          ? "Hier wurde multipliziert statt dividiert."
+          : "",
+    tipps: [
+      "Durch eine Dezimalzahl lässt sich schlecht teilen — der Divisor soll erst ganzzahlig werden.",
+      `Dazu beide Zahlen mit ${faktor} multiplizieren: Das Komma wandert bei beiden um ${stellen} Stelle${stellen > 1 ? "n" : ""} nach rechts.`,
+      `Dann steht da ${dezKurz(dividend * faktor)} : ${divisor * faktor}.`,
+    ],
+    musterloesungHtml:
+      `① Beide Zahlen mit ${faktor} multiplizieren (der Quotient ändert sich dadurch nicht):<br>` +
+      `&nbsp;&nbsp;${dezKurz(dividend)} : ${dezKurz(divisor)} = ${dezKurz(dividend * faktor)} : ${divisor * faktor}<br>` +
+      `② Jetzt ist der Divisor eine ganze Zahl: ${dezKurz(dividend * faktor)} : ${divisor * faktor} = <strong>${quotient}</strong><br>` +
+      `Probe: ${quotient} · ${dezKurz(divisor)} = ${dezKurz(dividend)} ✓`,
+  };
+}
+
+// Aufgabe 8 — Rezept umrechnen: teilen, vervielfachen, bezahlen. Drei Felder, weil drei
+// verschiedene Rechenschritte dahinterstecken — und der erste ist eine Division, die man beim
+// bloßen „mal so viel“ leicht überspringt.
+function generateAufgabe8() {
+  // Mengen je Person bleiben im Bereich einer Küche: 100 g bis 750 g.
+  const proPersonHundertstel = pick([10, 15, 20, 25, 30, 40, 50, 75]);
+  const personen = pick([4, 5, 6, 8]);
+  const zielPersonen = pick([3, 7, 9, 10, 12]);
+  const gesamtHundertstel = proPersonHundertstel * personen;
+  const zielHundertstel = proPersonHundertstel * zielPersonen;
+  const preisCent = pick([80, 120, 140, 160, 200, 240]);   // € je Kilogramm
+  const kostenCent = (zielHundertstel * preisCent) / 100;
+  const zutat = pick(["Mehl", "Reis", "Zucker", "Haferflocken"]);
+  return {
+    promptHtml:
+      `Ein Rezept für <strong>${personen} Personen</strong> braucht <strong>${dezKurz(gesamtHundertstel / 100)} kg ${zutat}</strong>. ` +
+      `Ein Kilogramm kostet <strong>${dez(preisCent / 100, 2)} €</strong>.`,
+    felder: [
+      {
+        name: "Menge für 1 Person", soll: proPersonHundertstel / 100, einheit: "kg", toleranz: 0.0005,
+        hinweis: (roh, val) => (Math.abs(val - gesamtHundertstel / 100) < 0.0005 ? "Das ist die Menge für alle. Für eine Person wird durch die Personenzahl geteilt." : ""),
+      },
+      {
+        name: `Menge für ${zielPersonen} Personen`, soll: zielHundertstel / 100, einheit: "kg", toleranz: 0.0005,
+        hinweis: (roh, val) => (Math.abs(val - (gesamtHundertstel / 100) * zielPersonen) < 0.0005 ? "Hier wurde die Menge für alle vervielfacht statt die für eine Person." : ""),
+      },
+      {
+        name: `Kosten für diese Menge`, soll: kostenCent / 100, einheit: "€", toleranz: 0.0005,
+        hinweis: (roh, val) => (Math.abs(val - (zielHundertstel / 100) / (preisCent / 100)) < 0.0005 ? "Hier wurde geteilt. Der Preis je Kilogramm wird mit der Menge multipliziert." : ""),
+      },
+    ],
+    tipps: [
+      "Erst herunter auf eine Person, dann hinauf auf die gesuchte Anzahl.",
+      `Für eine Person: ${dezKurz(gesamtHundertstel / 100)} kg : ${personen}.`,
+      "Die Kosten sind Menge mal Preis je Kilogramm.",
+    ],
+    musterloesungHtml:
+      `① Für 1 Person: ${dezKurz(gesamtHundertstel / 100)} kg : ${personen} = <strong>${dezKurz(proPersonHundertstel / 100)} kg</strong><br>` +
+      `② Für ${zielPersonen} Personen: ${dezKurz(proPersonHundertstel / 100)} kg · ${zielPersonen} = <strong>${dezKurz(zielHundertstel / 100)} kg</strong><br>` +
+      `③ Kosten: ${dezKurz(zielHundertstel / 100)} kg · ${dez(preisCent / 100, 2)} € = <strong>${dez(kostenCent / 100, 2)} €</strong><br>` +
+      `<span class="progress-note">Der Weg über „eine Person“ funktioniert immer — auch wenn die gesuchte Anzahl kein Vielfaches der gegebenen ist.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Bruch mal natürliche Zahl", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Bruch mal Bruch", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Durch einen Bruch dividieren", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Sachaufgabe mit Dezimalzahlen", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Kehrwert bilden", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Bruch mal Bruch", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Dezimalzahlen multiplizieren", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Durch einen Bruch dividieren", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Durch eine Dezimalzahl dividieren", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Sachaufgabe mit Dezimalzahlen", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Rezept umrechnen", generate: generateAufgabe8 },
   ]);
 }
 

@@ -710,6 +710,11 @@ function generateAufgabe1() {
       }
       return "";
     },
+    tipps: [
+      "Kürzen heißt: Zähler und Nenner durch <em>dieselbe</em> Zahl teilen. Der Wert ändert sich dabei nicht.",
+      "Vollständig gekürzt ist der Bruch erst, wenn Zähler und Nenner keinen gemeinsamen Teiler mehr haben.",
+      `Suche den größten gemeinsamen Teiler von ${z} und ${n}.`,
+    ],
     musterloesungHtml:
       `ggT(${z}; ${n}) = <strong>${k}</strong>. Also Zähler und Nenner durch ${k} dividieren:<br>` +
       `${bruchHtml(z, n)} = ${bruchHtml(z + " : " + k, n + " : " + k)} = ${bruchHtml(zk, nk, "gross")}<br>` +
@@ -728,6 +733,17 @@ function generateAufgabe2() {
     correct,
     tolerance: 0.5,
     placeholder: "Ergebnis in " + einheit,
+    hinweis: (roh, val) =>
+      Math.abs(val - einTeil) < 0.01 && zk !== 1
+        ? `Das ist erst <em>ein</em> ${nk}-tel. Gefragt sind ${zk} davon.`
+        : Math.abs(val - wert / zk) < 0.01 && zk !== nk
+          ? "Hier wurde durch den Zähler geteilt. Geteilt wird durch den <em>Nenner</em>."
+          : "",
+    tipps: [
+      `Der Nenner sagt, in wie viele gleiche Teile zerlegt wird: hier ${nk}.`,
+      `Ein ${nk}-tel von ${num(wert)} ${einheit} sind ${num(wert)} : ${nk}.`,
+      `Der Zähler sagt, wie viele dieser Teile genommen werden: ${zk}.`,
+    ],
     musterloesungHtml:
       `① ein ${nk}-tel bestimmen: ${num(wert)} ${einheit} : ${nk} = ${num(einTeil)} ${einheit}<br>` +
       `② davon ${zk} nehmen: ${num(einTeil)} ${einheit} · ${zk} = <strong>${num(correct)} ${einheit}</strong>`,
@@ -757,6 +773,11 @@ function generateAufgabe3() {
       }
       return "";
     },
+    tipps: [
+      "Die letzte Ziffer verrät den Nenner: Zehntel ⇒ 10, Hundertstel ⇒ 100, Tausendstel ⇒ 1000.",
+      `Hier steht die letzte Ziffer an der ${nameStelle}-Stelle, der Nenner ist also ${num(nenner)}.`,
+      "Danach noch vollständig kürzen.",
+    ],
     musterloesungHtml:
       `① Die letzte Ziffer steht an der ${nameStelle}-Stelle ⇒ Nenner ${num(nenner)}:<br>` +
       `${dezText} = ${bruchHtml(zaehler, nenner)}<br>` +
@@ -786,6 +807,17 @@ function generateAufgabe4() {
     correct,
     tolerance: 0.5,
     placeholder: "Anzahl",
+    hinweis: (roh, val) =>
+      Math.abs(val - zwischen) < 0.5
+        ? "Das ist das Zwischenergebnis nach dem ersten Anteil — der zweite Anteil fehlt noch."
+        : Math.abs(val - (gesamt / n2) * z2) < 0.5
+          ? "Der zweite Anteil bezieht sich auf das <em>Zwischenergebnis</em>, nicht auf die Gesamtzahl."
+          : "",
+    tipps: [
+      "Zwei Schritte nacheinander: erst der erste Anteil, dann der zweite — aber vom Ergebnis des ersten.",
+      `Erster Schritt: ${bruchHtml(z1, n1)} von ${num(gesamt)}.`,
+      "Zweiter Schritt: den zweiten Bruch auf dieses Zwischenergebnis anwenden.",
+    ],
     musterloesungHtml:
       `① ${bruchHtml(z1, n1)} von ${num(gesamt)}: ${num(gesamt)} : ${n1} = ${num(gesamt / n1)}, davon ${z1} ⇒ <strong>${num(zwischen)}</strong><br>` +
       `② ${bruchHtml(z2, n2)} von ${num(zwischen)}: ${num(zwischen)} : ${n2} = ${num(zwischen / n2)}, davon ${z2} ⇒ <strong>${num(correct)}</strong><br>` +
@@ -793,12 +825,177 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 2 — erweitern. Das Gegenstück zum Kürzen aus Aufgabe 1: Der Wert bleibt, die
+// Schreibweise ändert sich. Verlangt ist der ganze Bruch, damit der Nenner nicht untergeht.
+function generateAufgabe2b() {
+  const [zk, nk] = pick(STAMMPAARE);
+  const k = randInt(2, 8);
+  const zNeu = zk * k, nNeu = nk * k;
+  return {
+    promptHtml: `Erweitere ${bruchHtml(zk, nk, "gross")} so, dass der Nenner <strong>${nNeu}</strong> ist.`,
+    placeholder: "z. B. 6/8",
+    check: (raw) => {
+      const b = parseBruchEingabe(raw);
+      return !!b && b.z === zNeu && b.n === nNeu;
+    },
+    hinweis: (raw) => {
+      const b = parseBruchEingabe(raw);
+      if (!b) return "Schreibe deine Antwort als Bruch in der Form <code>z/n</code>, z.&nbsp;B. <code>6/8</code>.";
+      if (b.n === nNeu && b.z !== zNeu) return `Der Nenner stimmt. Der Zähler muss mit <em>derselben</em> Zahl ${k} multipliziert werden: ${zk} · ${k}.`;
+      if (b.z === zk && b.n === nk) return "Das ist der Ausgangsbruch — er soll erweitert werden.";
+      if (b.z * nk === zk * b.n) return `Der Wert stimmt, aber der Nenner soll ${nNeu} sein.`;
+      return "";
+    },
+    tipps: [
+      "Erweitern heißt: Zähler und Nenner mit <em>derselben</em> Zahl multiplizieren. Der Wert ändert sich dabei nicht.",
+      `Womit muss ${nk} multipliziert werden, damit ${nNeu} herauskommt? ${nNeu} : ${nk} = ${k}.`,
+      `Also auch den Zähler mit ${k} multiplizieren.`,
+    ],
+    musterloesungHtml:
+      `${nNeu} : ${nk} = <strong>${k}</strong> — mit dieser Zahl wird erweitert.<br>` +
+      `${bruchHtml(zk, nk)} = ${bruchHtml(zk + " · " + k, nk + " · " + k)} = ${bruchHtml(zNeu, nNeu, "gross")}<br>` +
+      `Probe: ${bruchHtml(zNeu, nNeu)} lässt sich mit ${k} wieder zu ${bruchHtml(zk, nk)} kürzen — derselbe Wert, andere Schreibweise.`,
+  };
+}
+
+// Aufgabe 4 — unechter Bruch als gemischte Zahl. Zwei Felder, weil die gemischte Zahl aus zwei
+// Angaben besteht; mit nur einem Feld bliebe offen, ob der Rest überhaupt bestimmt wurde.
+function generateAufgabe4b() {
+  const n = pick([3, 4, 5, 6, 8, 9, 10, 12]);
+  const ganze = randInt(2, 9);
+  const rest = randInt(1, n - 1);              // nie 0: sonst wäre es kein gemischter Anteil
+  const z = ganze * n + rest;
+  return {
+    promptHtml: `Schreibe den unechten Bruch ${bruchHtml(z, n, "gross")} als gemischte Zahl.`,
+    felder: [
+      {
+        name: "die ganze Zahl davor", soll: ganze, toleranz: 0.5,
+        hinweis: (roh, val) => (Math.abs(val - z) < 0.5 ? "Das ist der Zähler. Gesucht ist, wie oft der Nenner ganz hineinpasst." : ""),
+      },
+      {
+        name: `der Zähler des Restbruchs (Nenner bleibt ${n})`, soll: rest, toleranz: 0.5,
+        hinweis: (roh, val) => (val >= n ? `Der Rest muss kleiner als der Nenner ${n} sein — sonst ließe sich noch eine ganze Zahl abspalten.` : ""),
+      },
+    ],
+    tipps: [
+      `Wie oft passt der Nenner ${n} ganz in den Zähler ${z}?`,
+      `${ganze} · ${n} = ${ganze * n} — mehr passt nicht hinein.`,
+      `Was übrig bleibt (${z} − ${ganze * n}), ist der Zähler des Restbruchs.`,
+    ],
+    musterloesungHtml:
+      `${z} : ${n} = ${ganze} Rest ${rest}<br>` +
+      `${bruchHtml(z, n)} = <strong>${ganze}</strong> ${bruchHtml(rest, n)}<br>` +
+      `Probe: ${ganze} · ${n} + ${rest} = ${ganze * n} + ${rest} = ${z} ✓`,
+  };
+}
+
+// Aufgabe 6 — Brüche vergleichen. Drei Brüche mit verschiedenen Nennern; ohne gemeinsamen Nenner
+// (oder den Vergleich mit 1/2) ist die Frage nicht zu beantworten. Die drei Werte sind paarweise
+// verschieden, sonst gäbe es „den größten“ zweimal.
+function generateAufgabe6() {
+  const kandidaten = [[1, 2], [2, 3], [3, 4], [3, 5], [4, 5], [5, 6], [5, 8], [7, 8], [7, 10], [7, 12], [5, 9], [7, 9]];
+  const gewaehlt = [];
+  const werte = new Set();
+  const misch = kandidaten.slice();
+  for (let i = misch.length - 1; i > 0; i--) {
+    const j = randInt(0, i);
+    [misch[i], misch[j]] = [misch[j], misch[i]];
+  }
+  for (const [z, n] of misch) {
+    const w = z / n;
+    if (werte.has(w)) continue;               // gleiche Werte kämen als „größter“ doppelt vor
+    werte.add(w);
+    gewaehlt.push([z, n]);
+    if (gewaehlt.length === 3) break;
+  }
+  const groesster = gewaehlt.reduce((a, b) => (a[0] / a[1] >= b[0] / b[1] ? a : b));
+  const hauptnenner = gewaehlt.reduce((acc, [, n]) => (acc * n) / ggT(acc, n), 1);
+  return {
+    promptHtml:
+      `Welcher der drei Brüche ist der <strong>größte</strong>? ` +
+      gewaehlt.map(([z, n]) => bruchHtml(z, n)).join(" &nbsp; ") +
+      `<br><span class="progress-note">Schreibe ihn so, wie er dasteht.</span>`,
+    placeholder: "z. B. 3/4",
+    check: (raw) => {
+      const b = parseBruchEingabe(raw);
+      return !!b && b.z === groesster[0] && b.n === groesster[1];
+    },
+    hinweis: (raw) => {
+      const b = parseBruchEingabe(raw);
+      if (!b) return "Schreibe deine Antwort als Bruch in der Form <code>z/n</code>, z.&nbsp;B. <code>3/4</code>.";
+      const gewaehltWert = b.z / b.n;
+      if (gewaehlt.some(([z, n]) => z === b.z && n === b.n) && gewaehltWert < groesster[0] / groesster[1]) {
+        return `Dieser Bruch steht zwar da, ist aber nicht der größte: Auf den gemeinsamen Nenner ${hauptnenner} gebracht ist er ${(gewaehltWert * hauptnenner).toFixed(0)}/${hauptnenner}.`;
+      }
+      if (b.z > b.n) return "Alle drei Brüche sind kleiner als 1 — der größte kann keinen Zähler über dem Nenner haben.";
+      return "";
+    },
+    tipps: [
+      "Brüche mit verschiedenen Nennern lassen sich nicht direkt vergleichen — zuerst auf einen gemeinsamen Nenner bringen.",
+      `Ein gemeinsamer Nenner der drei ist ${hauptnenner}.`,
+      "Bei gleichem Nenner entscheidet allein der Zähler.",
+    ],
+    musterloesungHtml:
+      `Alle drei auf den gemeinsamen Nenner ${hauptnenner} erweitern:<br>` +
+      gewaehlt.map(([z, n]) => `${bruchHtml(z, n)} = ${bruchHtml((z * hauptnenner) / n, hauptnenner)}`).join(" &nbsp;·&nbsp; ") +
+      `<br>Bei gleichem Nenner entscheidet der Zähler: der größte ist ` +
+      `${bruchHtml((groesster[0] * hauptnenner) / groesster[1], hauptnenner)} = ${bruchHtml(groesster[0], groesster[1], "gross")}`,
+  };
+}
+
+// Aufgabe 8 — Anteil, Dezimalschreibweise und Runden in einem Sachzusammenhang. Die Grundmenge ist
+// so gewählt, dass der Anteil eine ganze Anzahl ergibt: Halbe Schülerinnen gibt es nicht.
+function generateAufgabe8() {
+  const [z, n] = pick([[3, 8], [5, 8], [3, 4], [2, 5], [3, 5], [7, 10], [3, 20], [7, 20], [1, 4]]);
+  const vielfaches = randInt(3, 30);
+  const gesamt = n * vielfaches * 10;          // durch n teilbar und eine glatte Zahl
+  const anzahl = (gesamt / n) * z;
+  const anteil = z / n;
+  const gerundet = Math.round(anteil * 10) / 10;
+  return {
+    promptHtml:
+      `An einer Schule sind <strong>${gesamt.toLocaleString("de-DE")}</strong> Schülerinnen und Schüler. ` +
+      `${bruchHtml(z, n)} von ihnen fahren mit dem Bus.`,
+    felder: [
+      {
+        name: "Wie viele fahren mit dem Bus?", soll: anzahl, toleranz: 0.5,
+        hinweis: (roh, val) => (Math.abs(val - gesamt / n) < 0.5 ? `Das ist erst ein ${n}-tel. Gefragt sind ${z} davon.` : ""),
+      },
+      {
+        name: "Der Anteil als Dezimalzahl", soll: anteil, toleranz: 0.0005,
+        hinweis: (roh, val) => (Math.abs(val - n / z) < 0.0005 ? "Zähler und Nenner sind vertauscht: Der Bruch bedeutet Zähler geteilt durch Nenner." : ""),
+      },
+      {
+        name: "Dieser Anteil, auf Zehntel gerundet", soll: gerundet, toleranz: 0.0005,
+        hinweis: (roh, val) => (Math.abs(val - Math.floor(anteil * 10) / 10) < 0.0005 && gerundet !== Math.floor(anteil * 10) / 10
+          ? "Hier wurde abgeschnitten statt gerundet — die Hundertstel-Ziffer entscheidet."
+          : ""),
+      },
+    ],
+    tipps: [
+      `Ein ${n}-tel von ${gesamt.toLocaleString("de-DE")} sind ${gesamt.toLocaleString("de-DE")} : ${n}. Davon dann ${z} Stück.`,
+      `Als Dezimalzahl: ${z} : ${n} rechnen.`,
+      "Beim Runden auf Zehntel entscheidet die Ziffer an der Hundertstel-Stelle.",
+    ],
+    musterloesungHtml:
+      `① Anteil berechnen: ${gesamt.toLocaleString("de-DE")} : ${n} = ${(gesamt / n).toLocaleString("de-DE")}, davon ${z} Stück: ` +
+      `${(gesamt / n).toLocaleString("de-DE")} · ${z} = <strong>${anzahl.toLocaleString("de-DE")}</strong><br>` +
+      `② Als Dezimalzahl: ${z} : ${n} = <strong>${num(anteil, 4)}</strong><br>` +
+      `③ Auf Zehntel gerundet: <strong>${num(gerundet, 1)}</strong><br>` +
+      `Probe: ${num(anteil, 4)} · ${gesamt.toLocaleString("de-DE")} = ${anzahl.toLocaleString("de-DE")} ✓`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Vollständig kürzen", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Anteil einer Größe", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Dezimalzahl als Bruch", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Anteil vom Anteil", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Erweitern", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Anteil einer Größe", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Unechter Bruch als gemischte Zahl", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Dezimalzahl als Bruch", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Brüche vergleichen", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Anteil vom Anteil", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Anteil, Dezimalzahl, Runden", generate: generateAufgabe8 },
   ]);
 }
 

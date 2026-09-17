@@ -58,11 +58,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — Anteil einer Größe. Gemessen mit tests/werkzeug-streuung.js: 193 verschiedene
+  // Aufgabe 3 — Anteil einer Größe. Gemessen mit tests/werkzeug-streuung.js: 193 verschiedene
   // in 200 Würfen, zurückgerechnet also rund 2776 Kandidaten. Die Schranke ist das simulierte
   // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Anteil einer Größe", runden: 30, mindestensVerschieden: 27, liesRoh: brueche,
+    nr: 3, name: "A3 Anteil einer Größe", runden: 30, mindestensVerschieden: 27, liesRoh: brueche,
     deute: (frage, roh) => {
       if (!roh || roh.brueche.length < 1) return null;
       const [z, n] = roh.brueche[0];
@@ -77,11 +77,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — Dezimalzahl als Bruch. Gemessen mit tests/werkzeug-streuung.js: 23 verschiedene
+  // Aufgabe 5 — Dezimalzahl als Bruch. Gemessen mit tests/werkzeug-streuung.js: 23 verschiedene
   // in 200 Würfen, zurückgerechnet also rund 23 Kandidaten. Die Schranke ist das simulierte
   // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 10.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Dezimalzahl als Bruch", runden: 30, mindestensVerschieden: 10,
+    nr: 5, name: "A5 Dezimalzahl als Bruch", runden: 30, mindestensVerschieden: 10,
     deute: (frage) => {
       const m = frage.match(/Dezimalzahl (\d+),(\d+) als/);
       if (!m) return null;
@@ -97,11 +97,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — Anteil vom Anteil. Gemessen mit tests/werkzeug-streuung.js: 184 verschiedene in
+  // Aufgabe 7 — Anteil vom Anteil. Gemessen mit tests/werkzeug-streuung.js: 184 verschiedene in
   // 200 Würfen, zurückgerechnet also rund 1177 Kandidaten. Die Schranke ist das simulierte
   // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 26.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Anteil vom Anteil", runden: 30, mindestensVerschieden: 26, liesRoh: brueche,
+    nr: 7, name: "A7 Anteil vom Anteil", runden: 30, mindestensVerschieden: 26, liesRoh: brueche,
     deute: (frage, roh) => {
       if (!roh || roh.brueche.length < 2) return null;
       const [[z1, n1], [z2, n2]] = roh.brueche;
@@ -121,6 +121,95 @@ async function aufgaben(page) {
           pruefe(rueck.includes("Zwischenergebnis"),
             `A4: Musterlösung weist nicht auf das Zwischenergebnis hin — „${f}“`);
         },
+      };
+    },
+  });
+
+  // Aufgabe 2 — erweitern. Gemessen mit tests/werkzeug-streuung.js: 118 verschiedene in 200 Würfen,
+  // zurückgerechnet rund 171 Kandidaten (24 Stammbrüche · 7 Faktoren = 168). Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 21.
+  await pruefeAufgabe(page, bericht, {
+    nr: 2, name: "A2 erweitern", runden: 30, mindestensVerschieden: 21, liesRoh: brueche,
+    deute: (frage, roh) => {
+      if (!roh || roh.brueche.length < 1) return null;
+      const [z, n] = roh.brueche[0];
+      const m = roh.text.match(/Nenner (\d+) ist/);
+      if (!m) return null;
+      const nNeu = Number(m[1]);
+      pruefe(nNeu % n === 0, `A2: ${nNeu} ist kein Vielfaches von ${n} — so lässt sich nicht erweitern`);
+      const k = nNeu / n;
+      return {
+        richtig: `${z * k}/${nNeu}`,
+        falsch: [
+          // Nur den Nenner erweitert — der Wert stimmt dann nicht mehr.
+          [`${z}/${nNeu}`, "derselben"],
+          [`${z}/${n}`, "Ausgangsbruch"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 4 — gemischte Zahl (Aufgabe zum Ausfüllen). Gemessen mit tests/werkzeug-streuung.js:
+  // 146 verschiedene in 200 Würfen, zurückgerechnet rund 299 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 23.
+  await pruefeAufgabe(page, bericht, {
+    nr: 4, name: "A4 gemischte Zahl", runden: 30, mindestensVerschieden: 23, liesRoh: brueche,
+    deute: (frage, roh) => {
+      if (!roh || roh.brueche.length < 1) return null;
+      const [z, n] = roh.brueche[0];
+      pruefe(z > n, `A4: ${z}/${n} ist kein unechter Bruch`);
+      const ganze = Math.floor(z / n), rest = z - ganze * n;
+      pruefe(rest > 0, `A4: ${z}/${n} geht ganz auf — dann gibt es keine gemischte Zahl`);
+      return {
+        felder: [ganze, rest],
+        falschFelder: [
+          [0, z, "Zähler"],
+          [1, n + rest, "kleiner"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 6 — Brüche vergleichen. Gemessen mit tests/werkzeug-streuung.js: 182 verschiedene in
+  // 200 Würfen, zurückgerechnet rund 1039 Kandidaten. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 25.
+  await pruefeAufgabe(page, bericht, {
+    nr: 6, name: "A6 Brüche vergleichen", runden: 30, mindestensVerschieden: 25, liesRoh: brueche,
+    deute: (frage, roh) => {
+      if (!roh || roh.brueche.length !== 3) return null;
+      const werte = roh.brueche.map(([z, n]) => z / n);
+      pruefe(new Set(werte).size === 3, `A6: zwei der drei Brüche sind gleich groß — ${roh.brueche.map((b) => b.join("/")).join(", ")}`);
+      const gross = roh.brueche[werte.indexOf(Math.max(...werte))];
+      const klein = roh.brueche[werte.indexOf(Math.min(...werte))];
+      return {
+        richtig: `${gross[0]}/${gross[1]}`,
+        falsch: [[`${klein[0]}/${klein[1]}`, "nicht der größte"]],
+      };
+    },
+  });
+
+  // Aufgabe 8 — Anteil, Dezimalzahl, Runden (Aufgabe zum Ausfüllen). Gemessen mit
+  // tests/werkzeug-streuung.js: 140 verschiedene in 200 Würfen, zurückgerechnet rund 262
+  // Kandidaten (9 Brüche · 28 Vielfache = 252). Die Schranke ist das simulierte 10⁻⁴-Quantil bei
+  // 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 22.
+  await pruefeAufgabe(page, bericht, {
+    nr: 8, name: "A8 Anteil und Dezimalzahl", runden: 30, mindestensVerschieden: 22, liesRoh: brueche,
+    deute: (frage, roh) => {
+      if (!roh || roh.brueche.length < 1) return null;
+      const [z, n] = roh.brueche[0];
+      const m = roh.text.match(/sind ([\d.]+) Schülerinnen/);
+      if (!m) return null;
+      const gesamt = Number(m[1].replace(/\./g, ""));
+      pruefe(gesamt % n === 0, `A8: ${gesamt} ist nicht durch ${n} teilbar — es gäbe keine ganze Anzahl`);
+      const anzahl = (gesamt / n) * z;
+      const anteil = z / n;
+      return {
+        toleranz: 0.0004,
+        felder: [anzahl, anteil, Math.round(anteil * 10) / 10],
+        falschFelder: [
+          [0, gesamt / n, "ein"],
+          [1, n / z, "vertauscht"],
+        ],
       };
     },
   });

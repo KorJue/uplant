@@ -35,6 +35,9 @@ function num(x, digits = 3) {
 function randInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
+function pick(arr) {
+  return arr[randInt(0, arr.length - 1)];
+}
 function clampInt(v, lo, hi) {
   const n = Math.round(Number(v));
   if (isNaN(n)) return lo;
@@ -787,6 +790,18 @@ function generateAufgabe1() {
     correct,
     tolerance: 0.5,
     placeholder: "Ergebnis",
+    hinweis: (roh, val) =>
+      Math.abs(val - (useKlammer ? a + b * c : (a + b) * c)) < 0.5
+        ? useKlammer
+          ? "Die Klammer wird zuerst gerechnet — vor Punkt vor Strich."
+          : `Hier steht keine Klammer: Punkt vor Strich, also zuerst ${b} · ${c}.`
+        : "",
+    tipps: [
+      useKlammer
+        ? "Steht eine Klammer da, wird sie immer zuerst gerechnet."
+        : "Punkt vor Strich: Mal und Geteilt kommen vor Plus und Minus.",
+      useKlammer ? `Zuerst ${a} + ${b}.` : `Zuerst ${b} · ${c}.`,
+    ],
     musterloesungHtml: useKlammer
       ? `Klammer zuerst: ${a} + ${b} = ${a + b}. Dann: ${a + b} · ${c} = <strong>${correct}</strong>`
       : `Punkt vor Strich: ${b} · ${c} = ${b * c}. Dann: ${a} + ${b * c} = <strong>${correct}</strong>`,
@@ -802,6 +817,11 @@ function generateAufgabe2() {
     correct,
     tolerance: 0.5,
     placeholder: "Summe",
+    tipps: [
+      "Schreibe die Zahlen stellengerecht untereinander: Einer unter Einer, Zehner unter Zehner.",
+      "Spaltenweise von rechts addieren; wird eine Spalte zehn oder mehr, wandert der Übertrag in die nächste.",
+      `Überschlag zur Kontrolle: rund ${(Math.round(a / 1000) * 1000).toLocaleString("de-DE")} + ${(Math.round(b / 1000) * 1000).toLocaleString("de-DE")}.`,
+    ],
     musterloesungHtml: `Stellengerecht untereinanderschreiben und spaltenweise mit Übertrag addieren: ${a.toLocaleString("de-DE")} + ${b.toLocaleString("de-DE")} = <strong>${correct.toLocaleString("de-DE")}</strong>`,
   };
 }
@@ -822,6 +842,15 @@ function generateAufgabe3() {
     correct: s,
     tolerance: 0.5,
     placeholder: "Subtrahend",
+    hinweis: (roh, val) =>
+      Math.abs(val - (m + d)) < 0.5
+        ? "Hier wurde addiert. Der Subtrahend ist das, was vom Minuenden ABGEZOGEN wird."
+        : "",
+    tipps: [
+      "Schreibe die Beziehung auf: Minuend − Subtrahend = Differenz.",
+      "Gesucht ist der Subtrahend — stelle die Gleichung nach ihm um.",
+      `Also ${m.toLocaleString("de-DE")} − ${d.toLocaleString("de-DE")}. Die Probe (Subtrahend + Differenz = Minuend) zeigt, ob es stimmt.`,
+    ],
     musterloesungHtml:
       `Es gilt Minuend − Subtrahend = Differenz, also ist der Subtrahend = Minuend − Differenz.<br>` +
       `${m.toLocaleString("de-DE")} − ${d.toLocaleString("de-DE")} = <strong>${s.toLocaleString("de-DE")}</strong> (dabei muss entbündelt werden).<br>` +
@@ -842,16 +871,160 @@ function generateAufgabe4() {
     correct: q,
     tolerance: 0.5,
     placeholder: "Anzahl Packungen",
+    hinweis: (roh, val) =>
+      Math.abs(val - (q + (r > 0 ? 1 : 0))) < 0.5 && r > 0
+        ? `Die letzten ${r} Teile füllen keine ganze Packung mehr — gefragt sind die <em>vollen</em> Packungen.`
+        : Math.abs(val - Math.floor((a * b) / d)) < 0.5 && c > 0
+          ? "Der Ausschuss ist noch nicht abgezogen."
+          : "",
+    tipps: [
+      "Drei Schritte: erst die Gesamtzahl, dann den Ausschuss abziehen, dann verpacken.",
+      `Produziert werden ${a} · ${b} Teile.`,
+      "Beim Verpacken zählt nur, wie oft die Packungsgröße ganz hineinpasst — der Rest bleibt übrig.",
+    ],
     musterloesungHtml: `Produziert: ${a} · ${b} = ${a * b}. Ohne Ausschuss: ${a * b} − ${c} = ${total}. Verpackt zu je ${d}: ${total} : ${d} = ${q} Rest ${r} → <strong>${q} volle Packungen</strong> (${r} Teile bleiben übrig).`,
+  };
+}
+
+// Aufgabe 2 — Division mit Rest, in zwei Feldern. Quotient und Rest sind zwei verschiedene
+// Ergebnisse; wer nur eine Zahl abgibt, verrät nicht, ob er den Rest überhaupt bestimmt hat.
+function generateAufgabe2b() {
+  const teiler = randInt(3, 12);
+  const q = randInt(4, 40);
+  const rest = randInt(1, teiler - 1);          // nie 0: sonst ist es keine Division MIT Rest
+  const zahl = q * teiler + rest;
+  return {
+    promptHtml: `Teile <strong>${zahl}</strong> durch <strong>${teiler}</strong> — mit Rest.`,
+    felder: [
+      {
+        name: "Quotient (wie oft passt der Teiler hinein)", soll: q, toleranz: 0.5,
+        hinweis: (roh, val) => (Math.abs(val - (q + 1)) < 0.5 ? `Einmal zu oft: ${q + 1} · ${teiler} = ${(q + 1) * teiler} ist schon größer als ${zahl}.` : ""),
+      },
+      {
+        name: "Rest", soll: rest, toleranz: 0.5,
+        hinweis: (roh, val) => (val >= teiler ? `Der Rest muss <em>kleiner</em> als der Teiler ${teiler} sein — sonst passt der Teiler noch einmal hinein.` : ""),
+      },
+    ],
+    tipps: [
+      `Suche die größte Zahl, die mit ${teiler} multipliziert höchstens ${zahl} ergibt.`,
+      `${q} · ${teiler} = ${q * teiler}. Mehr passt nicht hinein.`,
+      `Der Rest ist, was übrig bleibt: ${zahl} − ${q * teiler}.`,
+    ],
+    musterloesungHtml:
+      `${zahl} : ${teiler} = <strong>${q}</strong> Rest <strong>${rest}</strong><br>` +
+      `Probe: ${q} · ${teiler} + ${rest} = ${q * teiler} + ${rest} = ${zahl} ✓<br>` +
+      `Der Rest ist immer kleiner als der Teiler.`,
+  };
+}
+
+// Aufgabe 4 — vorteilhaft rechnen. Zwei der drei Faktoren ergeben zusammen eine runde Zahl; das
+// ist der ganze Witz des Assoziativgesetzes an dieser Stelle.
+function generateAufgabe4b() {
+  const paare = [[2, 50], [4, 25], [5, 20], [8, 125], [2, 500], [4, 250], [5, 200]];
+  const [x, y] = pick(paare);
+  const dritter = randInt(3, 19);
+  const rund = x * y;
+  const correct = rund * dritter;
+  // Die Reihenfolge wird gemischt, damit das „passende Paar“ nicht immer vorn steht.
+  const reihe = pick([[x, dritter, y], [dritter, x, y], [x, y, dritter]]);
+  return {
+    promptHtml: `Rechne vorteilhaft: <strong>${reihe.join(" · ")}</strong>`,
+    correct,
+    tolerance: 0.5,
+    placeholder: "Ergebnis",
+    hinweis: (roh, val) =>
+      Math.abs(val - (x + y + dritter)) < 0.5
+        ? "Hier wurde addiert statt multipliziert."
+        : Math.abs(val - rund) < 0.5
+          ? `Das ist erst ${x} · ${y}. Der dritte Faktor ${dritter} fehlt noch.`
+          : "",
+    tipps: [
+      "Faktoren darf man beliebig vertauschen und zusammenfassen (Kommutativ- und Assoziativgesetz).",
+      `Suche zwei Faktoren, die zusammen eine runde Zahl ergeben: ${x} · ${y} = ${rund}.`,
+      `Dann nur noch ${rund} · ${dritter}.`,
+    ],
+    musterloesungHtml:
+      `Umsortieren: ${reihe.join(" · ")} = (${x} · ${y}) · ${dritter}<br>` +
+      `${x} · ${y} = ${rund} — eine runde Zahl.<br>` +
+      `${rund} · ${dritter} = <strong>${correct.toLocaleString("de-DE")}</strong>`,
+  };
+}
+
+// Aufgabe 6 — schriftliche Multiplikation. Der klassische Fehler ist die nicht verschobene zweite
+// Teilzeile; genau dieser Wert wird als Hinweis abgefangen.
+function generateAufgabe6() {
+  const a = randInt(123, 987);
+  const zehner = randInt(2, 9), einer = randInt(2, 9);
+  const b = zehner * 10 + einer;
+  const correct = a * b;
+  const ohneVerschiebung = a * zehner + a * einer;   // die zweite Zeile nicht verschoben
+  return {
+    promptHtml: `Berechne schriftlich: <strong>${a} · ${b}</strong>`,
+    correct,
+    tolerance: 0.5,
+    placeholder: "Produkt",
+    hinweis: (roh, val) =>
+      Math.abs(val - ohneVerschiebung) < 0.5
+        ? "Die zweite Teilzeile gehört um eine Stelle nach links versetzt — sie zählt Zehner, nicht Einer."
+        : "",
+    tipps: [
+      `Zerlege den zweiten Faktor: ${b} = ${zehner} · 10 + ${einer}.`,
+      `Erste Teilzeile: ${a} · ${einer} = ${(a * einer).toLocaleString("de-DE")}.`,
+      `Zweite Teilzeile: ${a} · ${zehner} = ${(a * zehner).toLocaleString("de-DE")} — um eine Stelle nach links versetzt, also ${(a * zehner * 10).toLocaleString("de-DE")}.`,
+    ],
+    musterloesungHtml:
+      `${a} · ${b} = ${a} · ${zehner === 0 ? "" : zehner + "0"} + ${a} · ${einer}<br>` +
+      `= ${(a * zehner * 10).toLocaleString("de-DE")} + ${(a * einer).toLocaleString("de-DE")} = <strong>${correct.toLocaleString("de-DE")}</strong><br>` +
+      `Überschlag zur Kontrolle: rund ${(Math.round(a / 100) * 100).toLocaleString("de-DE")} · ${Math.round(b / 10) * 10} = ${(Math.round(a / 100) * 100 * Math.round(b / 10) * 10).toLocaleString("de-DE")}`,
+  };
+}
+
+// Aufgabe 8 — Überschlag und genaue Rechnung nebeneinander, in drei Feldern. Der Überschlag ist
+// kein Selbstzweck: Erst der Vergleich zeigt, wozu er taugt.
+function generateAufgabe8() {
+  // Einerziffer nie 5 — sonst wäre die Rundungsrichtung Geschmackssache.
+  const stueck = randInt(2, 9) * 10 + pick([1, 2, 3, 4, 6, 7, 8, 9]);
+  const preis = randInt(1, 9) * 10 + pick([1, 2, 3, 4, 6, 7, 8, 9]);
+  const genau = stueck * preis;
+  const ueberschlag = Math.round(stueck / 10) * 10 * (Math.round(preis / 10) * 10);
+  return {
+    promptHtml:
+      `Ein Verein bestellt <strong>${stueck} Trikots</strong> zu je <strong>${preis} €</strong>.`,
+    felder: [
+      {
+        name: "Überschlag (beide Zahlen auf Zehner gerundet)", soll: ueberschlag, einheit: "€", toleranz: 0.5,
+        hinweis: (roh, val) => (Math.abs(val - genau) < 0.5 ? "Das ist schon der genaue Preis. Für den Überschlag werden beide Zahlen zuerst auf Zehner gerundet." : ""),
+      },
+      { name: "genauer Preis", soll: genau, einheit: "€", toleranz: 0.5 },
+      {
+        name: "Unterschied zwischen Überschlag und genauem Preis", soll: Math.abs(ueberschlag - genau), einheit: "€", toleranz: 0.5,
+        hinweis: (roh, val) => (val < 0 ? "Gefragt ist der Unterschied — der ist nie negativ." : ""),
+      },
+    ],
+    tipps: [
+      "Für den Überschlag erst runden, dann rechnen — nie umgekehrt.",
+      `${stueck} ≈ ${Math.round(stueck / 10) * 10} und ${preis} ≈ ${Math.round(preis / 10) * 10}.`,
+      "Der Unterschied ist die größere minus die kleinere Zahl.",
+    ],
+    musterloesungHtml:
+      `Überschlag: ${Math.round(stueck / 10) * 10} · ${Math.round(preis / 10) * 10} = <strong>${ueberschlag.toLocaleString("de-DE")} €</strong><br>` +
+      `Genau: ${stueck} · ${preis} = <strong>${genau.toLocaleString("de-DE")} €</strong><br>` +
+      `Unterschied: ${Math.max(ueberschlag, genau).toLocaleString("de-DE")} € − ${Math.min(ueberschlag, genau).toLocaleString("de-DE")} € = ` +
+      `<strong>${Math.abs(ueberschlag - genau).toLocaleString("de-DE")} €</strong><br>` +
+      `Der Überschlag liegt also ${ueberschlag > genau ? "über" : "unter"} dem genauen Preis — zum Abschätzen reicht er, zum Bezahlen nicht.`,
   };
 }
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Rangfolge anwenden", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Schriftliche Addition", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Fehlenden Subtrahenden bestimmen", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Mehrschrittige Textaufgabe", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Division mit Rest", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Schriftliche Addition", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — vorteilhaft rechnen", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Fehlenden Subtrahenden bestimmen", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — schriftliche Multiplikation", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Mehrschrittige Textaufgabe", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Überschlag und genaue Rechnung", generate: generateAufgabe8 },
   ]);
 }
 
