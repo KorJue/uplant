@@ -3,7 +3,7 @@
 // Gerade, Kreis, Zirkelbogen, rechter-Winkel-Marke) sowie ein klick-basiertes Werkzeug
 // ("Kreis"/"Gerade") für das freie Konstruieren mit anschließender Prüfung.
 
-import { add, scale, sub, len, dist, norm, angleOf } from "./geo-core.js?v=23";
+import { add, scale, sub, len, dist, norm, angleOf } from "./geo-core.js?v=24";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -27,17 +27,23 @@ export function clearEl(el) {
 // iPad) liefert getScreenCTM() eine Matrix, die den aktuellen Zoom nicht berücksichtigt; das Ziehen
 // eines Punkts bewegte sich dann nur noch um einen Bruchteil des tatsächlichen Fingerwegs.
 // getBoundingClientRect() ist dagegen laut Spezifikation immer im selben (bereits um Pinch-Zoom
-// bereinigten) Koordinatensystem wie clientX/clientY angegeben. Die Umrechnung über das viewBox-
-// Rechteck setzt voraus, dass Breite und Höhe des gerenderten <svg> genau das viewBox-Seiten-
-// verhältnis haben — hier immer der Fall (CSS: width: 100%; height: auto).
+// bereinigten) Koordinatensystem wie clientX/clientY angegeben.
+//
+// Gerechnet wird über die tatsächlich gezeichnete Fläche, nicht über das ganze Rechteck: Passt das
+// Seitenverhältnis des <svg> nicht zur viewBox, legt preserveAspectRatio="xMidYMid meet" zwei leere
+// Streifen an den Rand, und die gehören nicht dazu. Im normalen Fluss (width: 100 %, height: auto)
+// gibt es sie nicht — im Vollbild aber schon, sobald sich die Höhe ändert, etwa weil die Statuszeile
+// „Einstichpunkt gesetzt“ erscheint. Gemessen war dadurch auf dem Handy jeder dritte Zirkelschlag um
+// bis zu 23 Einheiten zu kurz.
 export function toSvgPoint(svg, evt) {
   const rect = svg.getBoundingClientRect();
   const vb = svg.viewBox.baseVal;
   if (!rect.width || !rect.height || !vb) return { x: 0, y: 0 };
-  return {
-    x: vb.x + ((evt.clientX - rect.left) / rect.width) * vb.width,
-    y: vb.y + ((evt.clientY - rect.top) / rect.height) * vb.height,
-  };
+  const m = Math.min(rect.width / vb.width, rect.height / vb.height);
+  if (!(m > 0)) return { x: 0, y: 0 };
+  const left = rect.left + (rect.width - vb.width * m) / 2;
+  const oben = rect.top + (rect.height - vb.height * m) / 2;
+  return { x: vb.x + (evt.clientX - left) / m, y: vb.y + (evt.clientY - oben) / m };
 }
 
 // ---------- Zeichenprimitive ----------

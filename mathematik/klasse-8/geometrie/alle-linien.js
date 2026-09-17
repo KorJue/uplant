@@ -1,8 +1,8 @@
-import * as GC from "./geo-core.js?v=23";
-import * as GS from "./geo-svg.js?v=23";
-import { setupDraggableTriangle } from "./triangle-common.js?v=23";
-import { drawMittelsenkrechte, drawUmkreis, drawWinkelhalbierende, drawInkreis, drawSeitenhalbierende, drawHoehe } from "./constructions.js?v=23";
-import { setupCanvasZoom } from "./canvas-zoom.js?v=23";
+import * as GC from "./geo-core.js?v=24";
+import * as GS from "./geo-svg.js?v=24";
+import { setupDraggableTriangle } from "./triangle-common.js?v=24";
+import { drawMittelsenkrechte, drawUmkreis, drawWinkelhalbierende, drawInkreis, drawSeitenhalbierende, drawHoehe } from "./constructions.js?v=24";
+import { setupCanvasZoom } from "./canvas-zoom.js?v=24";
 
 const W = 600,
   H = 460;

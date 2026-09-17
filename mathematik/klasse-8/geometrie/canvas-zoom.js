@@ -154,6 +154,15 @@ export function setupCanvasZoom(wrapEl, btnEl) {
   window.addEventListener("resize", () => {
     if (wrapEl.classList.contains("geo-fullscreen")) viewBoxAnpassen(wrapEl);
   });
+  // Die Höhe ändert sich aber auch ohne Zutun des Geräts: Sobald die Statuszeile („Einstichpunkt
+  // gesetzt“) oder die Rückmeldung erscheint, schrumpft die Zeichenfläche im Vollbild um bis zu
+  // 44 Bildpunkten. Ohne Nachführen bliebe der freigewordene Rand ungenutzt.
+  if (typeof ResizeObserver !== "undefined") {
+    const beobachter = new ResizeObserver(() => {
+      if (wrapEl.classList.contains("geo-fullscreen")) viewBoxAnpassen(wrapEl);
+    });
+    for (const svg of zeichenflaechen(wrapEl)) beobachter.observe(svg);
+  }
   setLabel();
   setAnleitungLabel();
   return { toggle, isActive: () => wrapEl.classList.contains("geo-fullscreen") };

@@ -11,28 +11,12 @@
 
 const { neuerBericht } = require("../lib/pruefen.js");
 const { starteBrowser, neueSeite, oeffne, text } = require("../lib/seite.js");
+const { neueWerkbank, kreisSchnitt, abst, mitte } = require("../lib/konstruieren.js");
 
 const PFAD = "/mathematik/klasse-8/geometrie/satz-des-thales.html";
 const GRAD = 180 / Math.PI;
 
 // ---------- Geometrie, unabhängig nachgerechnet ----------
-
-const abst = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
-const mitte = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
-
-// Die beiden Schnittpunkte zweier Kreise, der obere zuerst.
-function kreisSchnitt(c1, r1, c2, r2) {
-  const d = abst(c1, c2);
-  const a = (d * d + r1 * r1 - r2 * r2) / (2 * d);
-  const h = Math.sqrt(Math.max(0, r1 * r1 - a * a));
-  const u = { x: (c2.x - c1.x) / d, y: (c2.y - c1.y) / d };
-  const m = { x: c1.x + a * u.x, y: c1.y + a * u.y };
-  const s = [
-    { x: m.x - h * u.y, y: m.y + h * u.x },
-    { x: m.x + h * u.y, y: m.y - h * u.x },
-  ];
-  return s.sort((p, q) => p.y - q.y);
-}
 
 // Winkel bei V zwischen den Strahlen nach P und nach Q, in Grad.
 function winkelBei(V, P, Q) {
@@ -42,93 +26,31 @@ function winkelBei(V, P, Q) {
 }
 
 // ---------- Bedienung der Zeichenfläche ----------
+//
+// Die Bedienung selbst steht in tests/lib/konstruieren.js — dieselbe Werkbank bedient die
+// Tangenten-Konstruktion in Abschnitt 5 (siehe test-satz-des-thales.js). Hier stehen nur die
+// Kennungen dieser Zeichenfläche und die gewohnten Aufrufformen.
 
-async function svgRahmen(page, id) {
-  return page.evaluate((svgId) => {
-    const svg = document.getElementById(svgId);
-    svg.scrollIntoView({ block: "center" });
-    const r = svg.getBoundingClientRect();
-    const vb = svg.viewBox.baseVal;
-    return { left: r.left, top: r.top, breite: r.width, hoehe: r.height, vbB: vb.width, vbH: vb.height };
-  }, id);
-}
+const werkbank = (page) => neueWerkbank(page, {
+  svg: "ka-svg",
+  kreis: "#ka-circle",
+  linie: "#ka-line",
+  pruefen: "#ka-check",
+  rueckmeldung: "#ka-feedback",
+});
 
-// page.mouse.click rollt die Seite NICHT von selbst zum Ziel — deshalb vor jedem Klick neu messen.
-async function klick(page, p) {
-  const r = await svgRahmen(page, "ka-svg");
-  await page.mouse.click(r.left + (p.x / r.vbB) * r.breite, r.top + (p.y / r.vbH) * r.hoehe);
-}
-
-async function werkzeug(page, name) {
-  await page.locator(name === "kreis" ? "#ka-circle" : "#ka-line").click();
-}
-
-// Ein Zirkelschlag: Einstich, dann ein Punkt auf dem Kreis.
-async function zirkel(page, zentrum, punktAufKreis) {
-  await werkzeug(page, "kreis");
-  await klick(page, zentrum);
-  await klick(page, punktAufKreis);
-}
-
-async function lineal(page, p, q) {
-  await werkzeug(page, "line");
-  await klick(page, p);
-  await klick(page, q);
-}
-
-// Die Mittelsenkrechte von PQ mit vorgegebener Hilfsweite. Zurück kommen ihre beiden
-// Schnittpunkte — dieselben, die die Seite als Klickziele anbietet.
-async function mittelsenkrechte(page, P, Q, weite, hilfsP, hilfsQ) {
-  await zirkel(page, P, hilfsP);
-  await zirkel(page, Q, hilfsQ);
-  const s = kreisSchnitt(P, weite, Q, weite);
-  await lineal(page, s[0], s[1]);
-  return s;
-}
-
-// Das Lot VON einem Punkt C AUF die Gerade durch gA und gB: ein Kreis um C, der die Gerade
-// zweimal schneidet, dann die Mittelsenkrechte dieser beiden Schnittpunkte.
-async function lotVonPunkt(page, C, gA, gB, rKreis, rPaar) {
-  const u = { x: (gB.x - gA.x) / abst(gA, gB), y: (gB.y - gA.y) / abst(gA, gB) };
-  // Fußpunkt: die Projektion von C auf die Gerade.
-  const t = (C.x - gA.x) * u.x + (C.y - gA.y) * u.y;
-  const F = { x: gA.x + t * u.x, y: gA.y + t * u.y };
-  const halb = Math.sqrt(rKreis * rKreis - abst(C, F) ** 2);
-  const P1 = { x: F.x - halb * u.x, y: F.y - halb * u.y };
-  const P2 = { x: F.x + halb * u.x, y: F.y + halb * u.y };
-  await zirkel(page, C, P2);
-  await zirkel(page, P1, { x: P1.x - u.y * rPaar, y: P1.y + u.x * rPaar });
-  await zirkel(page, P2, { x: P2.x - u.y * rPaar, y: P2.y + u.x * rPaar });
-  const s = kreisSchnitt(P1, rPaar, P2, rPaar);
-  await lineal(page, s[0], s[1]);
-  return { F, s };
-}
-
-// Das Lot IN F, wobei F schon auf der Geraden liegt: Kreis um F, dann die Mittelsenkrechte
-// seiner beiden Schnittpunkte mit der Geraden.
-async function lot(page, F, richtung, rKreis, rPaar) {
-  const u = { x: richtung.x, y: richtung.y };
-  const P1 = { x: F.x - u.x * rKreis, y: F.y - u.y * rKreis };
-  const P2 = { x: F.x + u.x * rKreis, y: F.y + u.y * rKreis };
-  await zirkel(page, F, P2);
-  await zirkel(page, P1, { x: P1.x - u.y * rPaar, y: P1.y + u.x * rPaar });
-  await zirkel(page, P2, { x: P2.x - u.y * rPaar, y: P2.y + u.x * rPaar });
-  const s = kreisSchnitt(P1, rPaar, P2, rPaar);
-  await lineal(page, s[0], s[1]);
-  return s;
-}
+const klick = (page, p) => werkbank(page).klick(p);
+const werkzeug = (page, name) => werkbank(page).werkzeug(name);
+const zirkel = (page, zentrum, punktAufKreis) => werkbank(page).zirkel(zentrum, punktAufKreis);
+const lineal = (page, p, q) => werkbank(page).lineal(p, q);
+const mittelsenkrechte = (page, P, Q, weite, hilfsP, hilfsQ) => werkbank(page).mittelsenkrechte(P, Q, weite, hilfsP, hilfsQ);
+const lot = (page, F, richtung, rKreis, rPaar) => werkbank(page).lot(F, richtung, rKreis, rPaar);
+const lotVonPunkt = (page, C, gA, gB, rKreis, rPaar) => werkbank(page).lotVonPunkt(C, gA, gB, rKreis, rPaar);
+const pruefeKnopf = (page) => werkbank(page).pruefen();
+const istGruen = (page) => werkbank(page).istGruen();
 
 async function waehleAufgabe(page, id) {
   await page.locator(`#ka-tabs button[data-id="${id}"]`).click();
-}
-
-async function pruefeKnopf(page) {
-  await page.locator("#ka-check").click();
-  return (await text(page, "#ka-feedback")).trim();
-}
-
-async function istGruen(page) {
-  return page.evaluate(() => document.getElementById("ka-feedback").className.includes("geo-feedback-ok"));
 }
 
 // ---------- Die sechs Konstruktionsaufgaben ----------
