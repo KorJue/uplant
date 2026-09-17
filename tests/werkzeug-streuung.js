@@ -22,6 +22,7 @@
 
 const { starteBrowser, neueSeite, oeffne } = require("./lib/seite.js");
 const { alleThemen } = require("./lib/themen.js");
+const { oeffneAufgabe, aufgabenProReiter } = require("./lib/aufgaben.js");
 
 const ZUEGE = 200;
 const PRUEF_ZUEGE = Number(process.env.UPLANT_ZUEGE || 30);
@@ -56,12 +57,6 @@ function schranke(n, versuche = 400000) {
   return 1;
 }
 
-async function oeffneAufgabe(page, nr) {
-  if (nr === 1) return "#exercises-mount > .aufgabe-box";
-  await page.locator(`#exercises-mount .schwierigkeit-tabs button:nth-child(${nr - 1})`).click();
-  return "#exercises-mount .schwierigkeit-tab-panel .aufgabe-box";
-}
-
 (async () => {
   const filter = process.argv[2] || "";
   const browser = await starteBrowser();
@@ -71,11 +66,13 @@ async function oeffneAufgabe(page, nr) {
   for (const thema of alleThemen()) {
     if (filter && !thema.name.includes(filter)) continue;
     await oeffne(page, thema.pfad);
-    for (let nr = 1; nr <= 4; nr++) {
-      const box = await oeffneAufgabe(page, nr);
+    const proReiter = await aufgabenProReiter(page);
+    const anzahl = proReiter * 4;
+    for (let nr = 1; nr <= anzahl; nr++) {
+      const box = await oeffneAufgabe(page, nr, proReiter);
       const gesehen = new Set();
       for (let i = 0; i < ZUEGE; i++) {
-        await page.locator(`${box} .btn:not(.btn-primary)`).click();
+        await page.locator(`${box} .btn-wuerfeln`).click();
         gesehen.add((await page.locator(`${box} .aufgabe-prompt`).innerText()).replace(/\s+/g, " ").trim());
       }
       const n = schaetzeN(gesehen.size, ZUEGE);

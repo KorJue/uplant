@@ -6,6 +6,8 @@
 
 "use strict";
 
+import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=1";
+
 // ---------- Helfer ----------
 
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -397,71 +399,10 @@ function initGroessen() {
 // Würfel-Knopf, der dieselbe Aufgabenart mit neuen Zufallszahlen neu stellt. Beim Prüfen werden
 // Fehler UND eine Musterlösung angezeigt.
 
-function mountStaffelAufgabe(container, def) {
-  const box = el("div", { class: "aufgabe-box" });
-  box.appendChild(el("h3", {}, [def.titel, el("span", { class: "schwierigkeit-badge " + def.schwierigkeit }, def.schwierigkeit)]));
-  const promptEl = el("div", { class: "aufgabe-prompt" });
-  box.appendChild(promptEl);
-  const row = el("div", { class: "exercise-input-row" });
-  const input = el("input", { type: "text", placeholder: "Antwort" });
-  const btnPruefen = el("button", { type: "button", class: "btn btn-primary" }, "Prüfen");
-  const btnWuerfeln = el("button", { type: "button", class: "btn" }, "🎲 Neue Zahlen");
-  row.appendChild(input);
-  row.appendChild(btnPruefen);
-  row.appendChild(btnWuerfeln);
-  box.appendChild(row);
-  const feedback = el("div", { class: "aufgabe-feedback" });
-  box.appendChild(feedback);
-
-  let current;
-  function neueAufgabe() {
-    current = def.generate();
-    promptEl.innerHTML = current.promptHtml;
-    input.value = "";
-    input.placeholder = current.placeholder || "Antwort";
-    feedback.innerHTML = "";
-  }
-  btnPruefen.addEventListener("click", () => {
-    const raw = input.value.trim();
-    const val = parseFlexibleNumber(raw);
-    const tol = current.tolerance ?? 0.01;
-    const ok = !isNaN(val) && Math.abs(val - current.correct) < tol;
-    const statusHtml = ok
-      ? `<div class="status ok">✓ Richtig!</div>`
-      : `<div class="status err">✗ Noch nicht richtig${raw ? " — deine Eingabe: " + raw : " — du hast noch keine Antwort eingetragen"}.</div>`;
-    feedback.innerHTML = statusHtml + `<div class="musterloesung"><span class="ml-label">Musterlösung</span>${current.musterloesungHtml}</div>`;
-  });
-  btnWuerfeln.addEventListener("click", neueAufgabe);
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") btnPruefen.click();
-  });
-
-  neueAufgabe();
-  container.appendChild(box);
-}
-
-function mountUebungsaufgaben(container, defs) {
-  mountStaffelAufgabe(container, defs[0]);
-
-  const tabBar = el("div", { class: "schwierigkeit-tabs" });
-  const panel = el("div", { class: "schwierigkeit-tab-panel" });
-  container.appendChild(tabBar);
-  container.appendChild(panel);
-
-  const rest = defs.slice(1);
-  function showTab(idx) {
-    [...tabBar.children].forEach((b, i) => b.classList.toggle("active", i === idx));
-    panel.innerHTML = "";
-    mountStaffelAufgabe(panel, rest[idx]);
-  }
-  rest.forEach((d, i) => {
-    const label = d.schwierigkeit.charAt(0).toUpperCase() + d.schwierigkeit.slice(1);
-    const btn = el("button", { type: "button" }, label);
-    btn.addEventListener("click", () => showTab(i));
-    tabBar.appendChild(btn);
-  });
-  showTab(0);
-}
+// Die Werkbank für die Übungsaufgaben ist für alle Grundwissen-Seiten dieselbe und steht in
+// ../../aufgaben.js. Mitgegeben wird nur, wie DIESE Seite eine Eingabe als Zahl liest.
+const mountUebungsaufgaben = (container, defs) =>
+  mountUebungsaufgabenBasis(container, defs, { parse: parseFlexibleNumber });
 
 // ---------- Aufgaben-Definitionen ----------
 
@@ -480,6 +421,17 @@ function generateAufgabe1() {
     correct,
     tolerance: 0.5,
     placeholder: "gerundete Zahl",
+    hinweis: (roh, val) =>
+      Math.abs(val - n) < 0.5
+        ? "Das ist die Ausgangszahl — sie ist noch nicht gerundet."
+        : Math.abs(val - (nachbarDigit >= 5 ? correct - s.v : correct + s.v)) < 0.5
+          ? "Auf- und Abrunden sind vertauscht: Ab 5 wird aufgerundet, darunter abgerundet."
+          : "",
+    tipps: [
+      `Gerundet wird auf ${s.label}. Entscheidend ist allein die Ziffer <em>rechts daneben</em> — die ${s.nachbar}-Ziffer.`,
+      "Ist diese Ziffer 5 oder größer, wird aufgerundet, sonst abgerundet. Alle Stellen rechts davon werden 0.",
+      `Hier ist die ${s.nachbar}-Ziffer eine ${nachbarDigit}.`,
+    ],
     musterloesungHtml: `Die ${s.nachbar}-Ziffer (rechts neben der ${s.label}-Stelle) ist ${nachbarDigit} → ${nachbarDigit >= 5 ? "aufrunden" : "abrunden"}.<br>${n.toLocaleString("de-DE")} ≈ <strong>${correct.toLocaleString("de-DE")}</strong>`,
   };
 }
@@ -496,6 +448,17 @@ function generateAufgabe2() {
     correct,
     tolerance: 0.5,
     placeholder: "Zahl",
+    hinweis: (roh, val) => {
+      const ohneNullen = Number([ht, zt, t, h, z, e].filter((d) => d !== 0).join(""));
+      return Math.abs(val - ohneNullen) < 0.5 && ohneNullen !== correct
+        ? "Die Nullen dürfen nicht wegfallen: Sie halten die leeren Stellen frei."
+        : "";
+    },
+    tipps: [
+      "Schreibe sechs Kästchen nebeneinander: Hunderttausender, Zehntausender, Tausender, Hunderter, Zehner, Einer.",
+      "Trage in jedes Kästchen die genannte Ziffer ein — auch dann, wenn es eine 0 ist.",
+      "Erst am Ende alle Ziffern ohne Lücke hintereinander lesen.",
+    ],
     musterloesungHtml: `${ht}·100.000 + ${zt}·10.000 + ${t}·1.000 + ${h}·100 + ${z}·10 + ${e}·1 = <strong>${correct.toLocaleString("de-DE")}</strong>`,
   };
 }
@@ -508,6 +471,15 @@ function generateAufgabe3() {
     correct,
     tolerance: 0.5,
     placeholder: "Gewicht in kg",
+    hinweis: (roh, val) =>
+      Math.abs(val - (t + kg)) < 0.5
+        ? "Hier wurden Tonnen und Kilogramm zusammengezählt, ohne umzurechnen: 1 t sind 1000 kg."
+        : "",
+    tipps: [
+      "Beide Angaben müssen zuerst in <em>derselben</em> Einheit stehen.",
+      "1 t = 1000 kg — rechne das Leergewicht in Kilogramm um.",
+      `${t}&nbsp;t = ${(t * 1000).toLocaleString("de-DE")}&nbsp;kg. Dazu kommt die Fracht.`,
+    ],
     musterloesungHtml: `${t}&nbsp;t = ${(t * 1000).toLocaleString("de-DE")}&nbsp;kg. Beladen: ${(t * 1000).toLocaleString("de-DE")}&nbsp;kg + ${kg.toLocaleString("de-DE")}&nbsp;kg = <strong>${correct.toLocaleString("de-DE")}&nbsp;kg</strong>`,
   };
 }
@@ -523,16 +495,193 @@ function generateAufgabe4() {
     correct,
     tolerance: 0.5,
     placeholder: "Tonnen (Zahl)",
+    hinweis: (roh, val) =>
+      Math.abs(val - totalKg) < 0.5
+        ? "Das ist das Gesamtgewicht in Kilogramm. Gefragt sind volle Tonnen."
+        : Math.abs(val - Math.floor(totalKg / 1000)) < 0.5 && Math.floor(totalKg / 1000) !== correct
+          ? "Hier wurde abgeschnitten statt gerundet: Ab 500 kg wird zur nächsten Tonne aufgerundet."
+          : "",
+    tipps: [
+      "Rechne zuerst beide Stapel getrennt aus und addiere sie.",
+      "1 t = 1000 kg — runden auf volle Tonnen heißt runden auf volle Tausender.",
+      "Entscheidend ist die Hunderterziffer des Gesamtgewichts.",
+    ],
     musterloesungHtml: `Gesamtgewicht: ${a}·${b}&nbsp;kg + ${c}·${d}&nbsp;kg = ${(a * b).toLocaleString("de-DE")}&nbsp;kg + ${(c * d).toLocaleString("de-DE")}&nbsp;kg = ${totalKg.toLocaleString("de-DE")}&nbsp;kg.<br>Gerundet auf volle Tausender (Tonnen): <strong>${correct}&nbsp;t</strong>`,
+  };
+}
+
+// Aufgabe 2 — den Stellenwert einer Ziffer lesen. Die Ziffer kommt in der Zahl genau einmal vor,
+// sonst wäre die Frage „die Ziffer d“ nicht eindeutig; gebaut wird die Zahl deshalb aus lauter
+// verschiedenen Ziffern statt gewürfelt und geprüft.
+function generateAufgabe2b() {
+  const stellen = [
+    { v: 1, label: "Einer" },
+    { v: 10, label: "Zehner" },
+    { v: 100, label: "Hunderter" },
+    { v: 1000, label: "Tausender" },
+    { v: 10000, label: "Zehntausender" },
+  ];
+  const ziffern = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  for (let i = ziffern.length - 1; i > 0; i--) {
+    const j = randInt(0, i);
+    [ziffern[i], ziffern[j]] = [ziffern[j], ziffern[i]];
+  }
+  const fuenf = ziffern.slice(0, 5);
+  if (fuenf[4] === 0) [fuenf[4], fuenf[0]] = [fuenf[0], fuenf[4]];   // keine führende Null
+  const pos = randInt(0, 4);
+  if (fuenf[pos] === 0) fuenf[pos] = ziffern[5] || 7;                // die gefragte Ziffer ist nicht 0
+  const n = fuenf.reduce((acc, z, i) => acc + z * Math.pow(10, i), 0);
+  const d = fuenf[pos];
+  const stelle = stellen[pos];
+  const correct = d * stelle.v;
+  return {
+    promptHtml:
+      `In der Zahl <strong>${n.toLocaleString("de-DE")}</strong> steht die Ziffer <strong>${d}</strong>. ` +
+      `Wie viel ist sie an ihrer Stelle <em>wert</em>?`,
+    correct,
+    tolerance: 0.5,
+    placeholder: "Wert der Ziffer",
+    hinweis: (roh, val) =>
+      Math.abs(val - d) < 0.5
+        ? "Das ist die Ziffer selbst. Gefragt ist ihr <em>Stellenwert</em>: Sie steht an der " + stelle.label + "-Stelle."
+        : Math.abs(val - stelle.v) < 0.5
+          ? "Das ist der Wert der Stelle, aber die Ziffer steht noch davor: " + d + " · " + stelle.v.toLocaleString("de-DE") + "."
+          : "",
+    tipps: [
+      "Zähle die Stellen von <em>rechts</em> ab: Einer, Zehner, Hunderter, Tausender, Zehntausender.",
+      `Die ${d} steht an der <strong>${stelle.label}</strong>-Stelle. Eine Ziffer dort ist ${stelle.v.toLocaleString("de-DE")} wert.`,
+      `Also: ${d} · ${stelle.v.toLocaleString("de-DE")}.`,
+    ],
+    musterloesungHtml:
+      `${n.toLocaleString("de-DE")} = ` +
+      fuenf.map((z, i) => `${z} · ${Math.pow(10, i).toLocaleString("de-DE")}`).reverse().join(" + ") + `<br>` +
+      `Die ${d} steht an der ${stelle.label}-Stelle: ${d} · ${stelle.v.toLocaleString("de-DE")} = <strong>${correct.toLocaleString("de-DE")}</strong>`,
+  };
+}
+
+// Aufgabe 4 — die Mitte zweier Zahlen auf dem Zahlenstrahl. Die Mitte ist immer eine ganze Zahl:
+// Gewürfelt wird der halbe Abstand und die KLEINERE Zahl, nicht die beiden Enden. Aus Mitte und
+// halbem Abstand gewürfelt konnte die kleinere Zahl negativ werden — auf einer Seite über
+// natürliche Zahlen hat eine negative Zahl nichts verloren.
+function generateAufgabe4b() {
+  const halb = randInt(3, 60) * 10;
+  const a = randInt(1, 480) * 10;
+  const mitte = a + halb, b = mitte + halb;
+  return {
+    promptHtml:
+      `Auf dem Zahlenstrahl liegen <strong>${a.toLocaleString("de-DE")}</strong> und <strong>${b.toLocaleString("de-DE")}</strong>. ` +
+      `Welche Zahl liegt genau in der <strong>Mitte</strong> zwischen den beiden?`,
+    correct: mitte,
+    tolerance: 0.5,
+    placeholder: "Zahl",
+    hinweis: (roh, val) =>
+      Math.abs(val - 2 * halb) < 0.5
+        ? "Das ist der <em>Abstand</em> der beiden Zahlen. Die Mitte liegt einen halben Abstand rechts von der kleineren Zahl."
+        : Math.abs(val - (a + b)) < 0.5
+          ? "Du hast die beiden Zahlen nur addiert. Die Mitte ist die <em>Hälfte</em> dieser Summe."
+          : "",
+    tipps: [
+      "Die Mitte liegt von beiden Zahlen gleich weit entfernt.",
+      `Abstand der beiden Zahlen: ${b.toLocaleString("de-DE")} − ${a.toLocaleString("de-DE")} = ${(2 * halb).toLocaleString("de-DE")}. Davon die Hälfte ist ${halb.toLocaleString("de-DE")}.`,
+      `Von ${a.toLocaleString("de-DE")} aus ${halb.toLocaleString("de-DE")} nach rechts.`,
+    ],
+    musterloesungHtml:
+      `Abstand: ${b.toLocaleString("de-DE")} − ${a.toLocaleString("de-DE")} = ${(2 * halb).toLocaleString("de-DE")}<br>` +
+      `Halber Abstand: ${(2 * halb).toLocaleString("de-DE")} : 2 = ${halb.toLocaleString("de-DE")}<br>` +
+      `Mitte: ${a.toLocaleString("de-DE")} + ${halb.toLocaleString("de-DE")} = <strong>${mitte.toLocaleString("de-DE")}</strong> ` +
+      `(Probe: ${b.toLocaleString("de-DE")} − ${halb.toLocaleString("de-DE")} = ${mitte.toLocaleString("de-DE")})`,
+  };
+}
+
+// Aufgabe 6 — dieselbe Länge in drei Schreibweisen. Drei Felder, weil das Umrechnen in beide
+// Richtungen und das Ergänzen zur nächsten runden Größe drei verschiedene Schritte sind: Wer nur
+// eine Zahl abgibt, weiß nicht, welcher davon gesessen hat.
+function generateAufgabe6() {
+  const km = randInt(1, 8);
+  const m = randInt(1, 19) * 50;           // 50 m … 950 m, nie 0
+  const gesamtM = km * 1000 + m;
+  const bisNaechstesKm = 1000 - m;
+  return {
+    promptHtml:
+      `Ein Wanderweg ist <strong>${km}&nbsp;km ${m}&nbsp;m</strong> lang.`,
+    felder: [
+      {
+        name: "die Länge in Metern", soll: gesamtM, einheit: "m", toleranz: 0.5,
+        hinweis: (roh, val) => (Math.abs(val - (km + m)) < 0.5 ? "Hier wurden Kilometer und Meter einfach addiert. 1 km sind aber 1000 m." : ""),
+      },
+      {
+        name: "die Länge in Zentimetern", soll: gesamtM * 100, einheit: "cm", toleranz: 0.5,
+        hinweis: (roh, val) => (Math.abs(val - gesamtM * 10) < 0.5 ? "Das wären Dezimeter. 1 m sind 100 cm." : ""),
+      },
+      {
+        name: `wie viele Meter noch bis ${km + 1}&nbsp;km fehlen`, soll: bisNaechstesKm, einheit: "m", toleranz: 0.5,
+        hinweis: (roh, val) => (Math.abs(val - m) < 0.5 ? "Das ist der Teil, der über die vollen Kilometer hinausgeht. Gefragt ist das, was noch fehlt." : ""),
+      },
+    ],
+    tipps: [
+      "1 km = 1000 m, 1 m = 100 cm. In die <em>kleinere</em> Einheit wird multipliziert.",
+      `${km}&nbsp;km = ${(km * 1000).toLocaleString("de-DE")}&nbsp;m; dazu noch ${m}&nbsp;m.`,
+      `Bis zum nächsten vollen Kilometer fehlen 1000&nbsp;m − ${m}&nbsp;m.`,
+    ],
+    musterloesungHtml:
+      `In Metern: ${km} · 1000&nbsp;m + ${m}&nbsp;m = <strong>${gesamtM.toLocaleString("de-DE")}&nbsp;m</strong><br>` +
+      `In Zentimetern: ${gesamtM.toLocaleString("de-DE")}&nbsp;m · 100 = <strong>${(gesamtM * 100).toLocaleString("de-DE")}&nbsp;cm</strong><br>` +
+      `Bis ${km + 1}&nbsp;km: 1000&nbsp;m − ${m}&nbsp;m = <strong>${bisNaechstesKm.toLocaleString("de-DE")}&nbsp;m</strong>`,
+  };
+}
+
+// Aufgabe 8 — vier Zahlen ordnen, runden und vergleichen. Die vier Zahlen sind paarweise
+// verschieden, sonst gäbe es „die größte“ zweimal; gebaut werden sie aus verschiedenen Tausender-
+// Stufen, damit das ohne Verwerfen sicher ist.
+function generateAufgabe8() {
+  const basen = [0, 1, 2, 3];
+  for (let i = basen.length - 1; i > 0; i--) {
+    const j = randInt(0, i);
+    [basen[i], basen[j]] = [basen[j], basen[i]];
+  }
+  const zahlen = basen.map((b) => (b * 20 + randInt(1, 19)) * 1000 + randInt(0, 999));
+  const groesste = Math.max(...zahlen);
+  const kleinste = Math.min(...zahlen);
+  const gerundet = Math.round(groesste / 1000) * 1000;
+  return {
+    promptHtml:
+      `Gegeben sind die vier Zahlen <strong>${zahlen.map((z) => z.toLocaleString("de-DE")).join("</strong>, <strong>")}</strong>.`,
+    felder: [
+      { name: "die größte Zahl", soll: groesste, toleranz: 0.5, platzhalter: "Zahl" },
+      { name: "die kleinste Zahl", soll: kleinste, toleranz: 0.5, platzhalter: "Zahl" },
+      {
+        name: "die größte Zahl, auf Tausender gerundet", soll: gerundet, toleranz: 0.5, platzhalter: "Zahl",
+        hinweis: (roh, val) =>
+          Math.abs(val - Math.floor(groesste / 1000) * 1000) < 0.5 && gerundet !== Math.floor(groesste / 1000) * 1000
+            ? "Hier wurden die hinteren Stellen einfach weggelassen. Beim Runden entscheidet die Hunderterziffer."
+            : "",
+      },
+      { name: "die Differenz größte − kleinste", soll: groesste - kleinste, toleranz: 0.5, platzhalter: "Zahl" },
+    ],
+    tipps: [
+      "Vergleiche die Zahlen Stelle für Stelle von <em>links</em>: Erst die Zehntausender, dann die Tausender …",
+      "Beim Runden auf Tausender entscheidet die Ziffer rechts daneben — die Hunderterziffer.",
+      `Die größte ist ${groesste.toLocaleString("de-DE")}, die kleinste ${kleinste.toLocaleString("de-DE")}.`,
+    ],
+    musterloesungHtml:
+      `Der Größe nach geordnet: ${[...zahlen].sort((x, y) => x - y).map((z) => z.toLocaleString("de-DE")).join(" &lt; ")}<br>` +
+      `Größte: <strong>${groesste.toLocaleString("de-DE")}</strong>, kleinste: <strong>${kleinste.toLocaleString("de-DE")}</strong><br>` +
+      `Die größte auf Tausender gerundet: Hunderterziffer ist ${Math.floor(groesste / 100) % 10} → ` +
+      `${Math.floor(groesste / 100) % 10 >= 5 ? "aufrunden" : "abrunden"} → <strong>${gerundet.toLocaleString("de-DE")}</strong><br>` +
+      `Differenz: ${groesste.toLocaleString("de-DE")} − ${kleinste.toLocaleString("de-DE")} = <strong>${(groesste - kleinste).toLocaleString("de-DE")}</strong>`,
   };
 }
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Runden", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Stellenwerte zusammensetzen", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Größen addieren", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Größen, Runden und Rechnen kombiniert", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Stellenwert einer Ziffer", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Stellenwerte zusammensetzen", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — die Mitte auf dem Zahlenstrahl", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Größen addieren", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — eine Länge in drei Schreibweisen", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Größen, Runden und Rechnen kombiniert", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — ordnen, runden, vergleichen", generate: generateAufgabe8 },
   ]);
 }
 

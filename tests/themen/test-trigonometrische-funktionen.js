@@ -9,6 +9,7 @@ const { neuerBericht } = require("../lib/pruefen");
 const { starteBrowser, neueSeite, oeffne, HOST } = require("../lib/seite");
 const { pruefeNotation } = require("../lib/notation");
 const { pruefeKontrast } = require("../lib/kontrast");
+const { oeffneAufgabe } = require("../lib/aufgaben");
 
 const BASIS = HOST + "/mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/12-trigonometrische-funktionen/index.html";
 
@@ -428,11 +429,8 @@ async function testAnwendungen(page) {
 
 // ================= Abschnitt 9: Übungsaufgaben =================
 
-async function aufgabeOeffnen(page, nr) {
-  if (nr === 1) return "#exercises-mount > .aufgabe-box";
-  await page.locator(`#exercises-mount .schwierigkeit-tabs button:nth-child(${nr - 1})`).click();
-  return "#exercises-mount .schwierigkeit-tab-panel .aufgabe-box";
-}
+// Dieselbe Adressierung wie in allen anderen Prüfungen — sie steht in tests/lib/aufgaben.js.
+const aufgabeOeffnen = (page, nr) => oeffneAufgabe(page, nr);
 async function antworte(page, box, wert) {
   await page.locator(`${box} input`).fill(String(wert).replace(".", ","));
   await page.locator(`${box} .btn-primary`).click();
@@ -443,7 +441,7 @@ async function testAufgabe1(page) {
   const box = await aufgabeOeffnen(page, 1);
   const gesehen = new Set();
   for (let i = 0; i < 60; i++) {
-    await page.locator(`${box} .btn:not(.btn-primary)`).click();
+    await page.locator(`${box} .btn-wuerfeln`).click();
     const frage = await text(page, `${box} .aufgabe-prompt`);
     gesehen.add(frage);
     const mb = frage.match(/sin\((\d+) · x\)/);
@@ -477,7 +475,7 @@ async function testAufgabe2(page) {
   const box = await aufgabeOeffnen(page, 2);
   const gesehen = new Set();
   for (let i = 0; i < 40; i++) {
-    await page.locator(`${box} .btn:not(.btn-primary)`).click();
+    await page.locator(`${box} .btn-wuerfeln`).click();
     const daten = await page.evaluate((sel) => {
       const p = document.querySelector(sel + " .aufgabe-prompt");
       const br = p.querySelector(".tf-bruch");
@@ -514,7 +512,7 @@ async function testAufgabe3(page) {
   const box = await aufgabeOeffnen(page, 3);
   const gesehen = new Set();
   for (let i = 0; i < 60; i++) {
-    await page.locator(`${box} .btn:not(.btn-primary)`).click();
+    await page.locator(`${box} .btn-wuerfeln`).click();
     const frage = (await text(page, `${box} .aufgabe-prompt`)).replace(/−/g, "-");
     gesehen.add(frage);
     const m = frage.match(/Periode (\d+)°.*höchster Wert ist (-?\d+), sein niedrigster (-?\d+),.*x = (\d+)°/);
@@ -549,7 +547,7 @@ async function testAufgabe4(page) {
   const box = await aufgabeOeffnen(page, 4);
   const gesehen = new Set();
   for (let i = 0; i < 60; i++) {
-    await page.locator(`${box} .btn:not(.btn-primary)`).click();
+    await page.locator(`${box} .btn-wuerfeln`).click();
     const frage = (await text(page, `${box} .aufgabe-prompt`)).replace(/−/g, "-");
     gesehen.add(frage);
     const m = frage.match(/Durchmesser (\d+) m.*tiefster Punkt liegt (\d+) m.*dauert (\d+) s.*nach (\d+) s/);

@@ -51,11 +51,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — Stellenwerte. Gemessen mit tests/werkzeug-streuung.js: in 200 Würfen kein
+  // Aufgabe 3 — Stellenwerte. Gemessen mit tests/werkzeug-streuung.js: in 200 Würfen kein
   // einziges Doppel, die Menge ist also viele Tausend groß. Die Schranke ist das simulierte
   // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Stellenwerte", runden: 30, mindestensVerschieden: 27,
+    nr: 3, name: "A3 Stellenwerte", runden: 30, mindestensVerschieden: 27,
     deute: (frage) => {
       const m = frage.match(/aus (\d+) Hunderttausendern, (\d+) Zehntausendern, (\d+) Tausendern, (\d+) Hundertern, (\d+) Zehnern und (\d+) Einern/);
       if (!m) return null;
@@ -70,11 +70,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 3 — Größen addieren. Gemessen mit tests/werkzeug-streuung.js: 166 verschiedene in
+  // Aufgabe 5 — Größen addieren. Gemessen mit tests/werkzeug-streuung.js: 166 verschiedene in
   // 200 Würfen, zurückgerechnet also rund 517 Kandidaten. Die Schranke ist das simulierte
   // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 24.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Größen addieren", runden: 30, mindestensVerschieden: 24,
+    nr: 5, name: "A5 Größen addieren", runden: 30, mindestensVerschieden: 24,
     deute: (frage) => {
       const m = frage.match(/wiegt leer (\d+) t\. Er wird mit ([\d.]+) kg/);
       if (!m) return null;
@@ -87,11 +87,11 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 4 — kombiniert. Gemessen mit tests/werkzeug-streuung.js: in 200 Würfen kein
+  // Aufgabe 7 — kombiniert. Gemessen mit tests/werkzeug-streuung.js: in 200 Würfen kein
   // einziges Doppel, die Menge ist also viele Tausend groß. Die Schranke ist das simulierte
   // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 kombiniert", runden: 30, mindestensVerschieden: 27,
+    nr: 7, name: "A7 kombiniert", runden: 30, mindestensVerschieden: 27,
     deute: (frage) => {
       const m = frage.match(/stehen (\d+) Kisten mit je (\d+) kg und (\d+) Kisten mit je (\d+) kg/);
       if (!m) return null;
@@ -101,6 +101,95 @@ async function aufgaben(page) {
         richtig: rundeAuf(gesamt, 1000) / 1000,
         // Abgeschnitten statt gerundet ist der nächstliegende Fehler.
         falsch: [[Math.floor(gesamt / 1000), null], [gesamt, null]],
+      };
+    },
+  });
+
+  // Aufgabe 2 — Stellenwert einer Ziffer. Gemessen mit tests/werkzeug-streuung.js: in 200 Würfen
+  // kein einziges Doppel, die Menge ist also viele Tausend groß. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen — 27.
+  await pruefeAufgabe(page, bericht, {
+    nr: 2, name: "A2 Stellenwert", runden: 30, mindestensVerschieden: 27,
+    deute: (frage) => {
+      const m = frage.match(/In der Zahl ([\d.]+) steht die Ziffer (\d)\./);
+      if (!m) return null;
+      const ziffern = m[1].replace(/\./g, "");
+      const d = m[2];
+      // Die Frage „die Ziffer d“ ist nur eindeutig, wenn d genau einmal vorkommt.
+      const anzahl = ziffern.split("").filter((z) => z === d).length;
+      pruefe(anzahl === 1, `A2: die Ziffer ${d} kommt ${anzahl}-mal in ${m[1]} vor — die Frage ist nicht eindeutig`);
+      const pos = ziffern.length - 1 - ziffern.indexOf(d);   // 0 = Einer
+      const stellenwert = Math.pow(10, pos);
+      return {
+        richtig: Number(d) * stellenwert,
+        falsch: [
+          [Number(d), "Stellenwert"],
+          [stellenwert, "Ziffer steht noch davor"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 4 — die Mitte auf dem Zahlenstrahl. Gemessen mit tests/werkzeug-streuung.js: in 200
+  // Würfen kein einziges Doppel (480 · 58 = 27.840 mögliche Paare). Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen — 27.
+  await pruefeAufgabe(page, bericht, {
+    nr: 4, name: "A4 Mitte", runden: 30, mindestensVerschieden: 27,
+    deute: (frage) => {
+      const m = frage.match(/liegen ([\d.]+) und ([\d.]+)\./);
+      if (!m) return null;
+      const a = Number(m[1].replace(/\./g, "")), b = Number(m[2].replace(/\./g, ""));
+      pruefe((a + b) % 2 === 0, `A4: die Mitte von ${a} und ${b} ist keine ganze Zahl`);
+      return {
+        richtig: (a + b) / 2,
+        falsch: [
+          [b - a, "Abstand"],
+          [a + b, "Hälfte"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 6 — eine Länge in drei Schreibweisen (Aufgabe zum Ausfüllen). Gemessen mit
+  // tests/werkzeug-streuung.js: 114 verschiedene in 200 Würfen, zurückgerechnet rund 159
+  // Kandidaten (8 · 19 = 152 Paare, dazu die Messungenauigkeit). Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 20.
+  await pruefeAufgabe(page, bericht, {
+    nr: 6, name: "A6 Länge umrechnen", runden: 30, mindestensVerschieden: 20,
+    deute: (frage) => {
+      const m = frage.match(/ist (\d+) km (\d+) m lang/);
+      if (!m) return null;
+      const km = Number(m[1]), rest = Number(m[2]);
+      const gesamt = km * 1000 + rest;
+      return {
+        felder: [gesamt, gesamt * 100, 1000 - rest],
+        falschFelder: [
+          [0, km + rest, "1000"],
+          [1, gesamt * 10, "Dezimeter"],
+          [2, rest, "fehlt"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 8 — ordnen, runden, vergleichen (Aufgabe zum Ausfüllen). Gemessen mit
+  // tests/werkzeug-streuung.js: in 200 Würfen kein einziges Doppel, die Menge ist also viele
+  // Tausend groß. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen — 27.
+  await pruefeAufgabe(page, bericht, {
+    nr: 8, name: "A8 ordnen", runden: 30, mindestensVerschieden: 27,
+    deute: (frage) => {
+      const m = frage.match(/vier Zahlen ([\d.]+), ([\d.]+), ([\d.]+), ([\d.]+)\./);
+      if (!m) return null;
+      const z = m.slice(1).map((x) => Number(x.replace(/\./g, "")));
+      pruefe(new Set(z).size === 4, `A8: die vier Zahlen sind nicht paarweise verschieden — ${z.join(", ")}`);
+      const gross = Math.max(...z), klein = Math.min(...z);
+      return {
+        felder: [gross, klein, rundeAuf(gross, 1000), gross - klein],
+        falschFelder: [
+          [0, klein, null],
+          [2, Math.floor(gross / 1000) * 1000, "weggelassen"],
+          [3, gross + klein, null],
+        ],
       };
     },
   });

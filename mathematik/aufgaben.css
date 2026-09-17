@@ -1,0 +1,93 @@
+/* Zusätzliche Regeln für die gemeinsame Aufgaben-Werkbank (aufgaben.js).
+ *
+ * Die Grundgestaltung der Aufgabenkästen (.aufgabe-box, .schwierigkeit-tabs, .musterloesung …)
+ * steht weiterhin im lernpfad.css der jeweiligen Seite. Hier stehen nur die Teile, die es vorher
+ * nicht gab: die abrufbaren Tipps und die Felder zum Ausfüllen. Diese Datei wird VOR lernpfad.css
+ * eingebunden, damit eine Seite bei Bedarf noch etwas eigenes darüberlegen kann.
+ */
+
+/* ---------- Abrufbare Tipps ---------- */
+
+.aufgabe-tipps {
+  margin-top: 0.5rem;
+}
+.aufgabe-tipp {
+  background: #fff8e6;
+  border-left: 4px solid #b3650a;
+  border-radius: 6px;
+  padding: 0.55rem 0.8rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.aufgabe-tipp .tipp-label {
+  display: block;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #b3650a;
+  margin-bottom: 0.2rem;
+}
+:root[data-theme="dark"] .aufgabe-tipp {
+  background: #3a2a10;
+  border-left-color: #ffbf6e;
+}
+:root[data-theme="dark"] .aufgabe-tipp .tipp-label {
+  color: #ffbf6e;
+}
+.btn.btn-tipp[disabled] {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* ---------- Mehrere Felder zum Ausfüllen ---------- */
+
+.aufgabe-felder {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin: 0.6rem 0 0.2rem;
+}
+.aufgabe-feld {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.95rem;
+}
+.aufgabe-feld-name {
+  min-width: 16rem;
+}
+.aufgabe-feld input {
+  width: 7.5rem;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: var(--card-bg);
+  color: var(--text);
+}
+.aufgabe-feld-einheit {
+  color: var(--muted);
+  min-width: 2.5rem;
+}
+/* Nach dem Prüfen: Jedes Feld zeigt für sich, ob es stimmt — bei sechs Feldern hilft eine
+   Gesamtmeldung allein nicht weiter. */
+.aufgabe-feld input.feld-ok {
+  border-color: #157347;
+  background: #e7f6ec;
+}
+.aufgabe-feld input.feld-fehler {
+  border-color: #b3261e;
+  background: #fdecec;
+}
+:root[data-theme="dark"] .aufgabe-feld input.feld-ok {
+  border-color: #6fd68f;
+  background: #17321f;
+}
+:root[data-theme="dark"] .aufgabe-feld input.feld-fehler {
+  border-color: #ff8a8a;
+  background: #3a1f1f;
+}
