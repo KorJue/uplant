@@ -1153,6 +1153,31 @@ function ohneKollision(kandidaten, werte, notfall, eps = 1e-9) {
   return gewaehlt;
 }
 
+// Dasselbe für Aufgaben mit mehreren Eingabefeldern: Kollidieren müssen die
+// Werte nur innerhalb eines Feldes, denn nur dort entscheidet die Zahl darüber,
+// welcher Hinweis erscheint. eps darf eine Zahl oder eine Liste sein.
+// NaN bedeutet "an dieser Stelle springt kein Hinweis an" und wird übergangen.
+function ohneFeldKollision(kandidaten, gruppen, eps = 1e-9) {
+  const sauber = kandidaten.filter((kk) => gruppen(kk).every((g, gi) => {
+    const e = Array.isArray(eps) ? eps[gi] : eps;
+    const echt = g.filter((x) => Number.isFinite(x));
+    return echt.every((x, i) => echt.every((y, j) => i === j || Math.abs(x - y) > e));
+  }));
+  if (!sauber.length) throw new Error("Aufgabengenerator ohne gültige Kandidaten");
+  return pick(sauber);
+}
+
+// "=" nur, wenn der angezeigte Wert exakt ist — √2 : 2 ist es nicht.
+function zeichenOderGleich(x) {
+  return Math.abs(Number(x.toFixed(4)) - x) < 1e-12 ? "=" : "≈";
+}
+
+// Auf eine feste Stellenzahl gerundet — als Zahl, nicht als Text.
+function rund(x, stellen) {
+  const f = Math.pow(10, stellen);
+  return Math.round(x * f) / f;
+}
+
 // Aufgabe 1 — die Periode aus der Gleichung ablesen.
 // b ist stets ein Teiler von 360, damit die Periode eine ganze Gradzahl ist.
 const A1_KANDIDATEN = (() => {
@@ -1184,6 +1209,11 @@ function generateAufgabe1() {
       if (Math.abs(val - a) < 0.4) return `Die ${num(a)} ist die <strong>Amplitude</strong>, der Faktor <em>vor</em> dem Sinus. Die Periode steckt in dem Faktor <em>bei</em> x.`;
       return `Die Periode ist p = 360° : b. Probe: Setze x = p ein, dann muss b · x gerade 360° ergeben.`;
     },
+    tipps: [
+      "Die Periode ist die Länge einer vollen Schwingung. Für sin x ist sie 360°.",
+      `Der Faktor ${num(b)} bei dem x lässt das Argument ${num(b)}-mal so schnell wachsen — die Welle wird also ${num(b)}-mal so schmal.`,
+      `Deshalb gilt p = 360° : b. Die ${num(a)} davor ändert nur die Höhe, nicht die Breite.`,
+    ],
     musterloesungHtml:
       `<strong>Formel:</strong> p = 360° : b<br>` +
       `<strong>Einsetzen:</strong> p = 360° : ${num(b)} = <strong>${num(p)}°</strong><br>` +
@@ -1193,8 +1223,86 @@ function generateAufgabe1() {
   };
 }
 
-// Aufgabe 2 — vom Bogenmaß ins Gradmaß.
+// Aufgabe 2 — Amplitude, Periode und Wertebereich in einem. Aufgabe 1 fragt nur
+// nach der Periode; hier kommt die Mittellinie dazu, und damit wird sichtbar,
+// was jeder der drei Parameter mit der Kurve macht.
 const A2_KANDIDATEN = (() => {
+  const liste = [];
+  for (const a of [1, 2, 3, 4, 5, 6, 8, 10, 12]) {
+    // b = 1 bliebe außen vor: Dann wäre die Periode gerade die 360° der
+    // Grundfunktion, und der Hinweis darauf träfe die richtige Antwort.
+    for (const b of [2, 3, 4, 5, 6, 8, 9, 10, 12]) {
+      for (const d of [-6, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 8]) {
+        liste.push({ a, b, d, p: 360 / b, max: a + d, min: d - a });
+      }
+    }
+  }
+  return liste;
+})();
+
+function generateAufgabe2() {
+  const k = ohneFeldKollision(A2_KANDIDATEN, (v) => [
+    // Feld 1: die Amplitude. (max − min ist dasselbe wie 2a und steht deshalb
+    // nicht noch einmal in der Liste.)
+    [v.a, v.b, v.d, 2 * v.a],
+    // Feld 2: die Periode.
+    [v.p, 360 * v.b, 360, v.a, v.b],
+    // Feld 3: der größte Wert.
+    [v.max, v.a, v.d, v.min],
+  ], [0.4, 0.4, 0.4]);
+  const { a, b, d, p, max, min } = k;
+  const term = `${faktorHtml(a)}sin(${faktorHtml(b)}x)${d === 0 ? "" : d > 0 ? ` + ${num(d)}` : ` − ${num(-d)}`}`;
+  return {
+    promptHtml: `Gegeben ist die Funktion <strong>f(x) = ${term}</strong>.`,
+    felder: [
+      {
+        name: "Amplitude", soll: a, toleranz: 0.4, platzhalter: "a",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - b) < 0.4) return `${num(b)} steht <em>bei</em> dem x und bestimmt die Periode. Die Amplitude ist der Faktor <strong>vor</strong> dem Sinus.`;
+          if (Math.abs(val - d) < 0.4) return `${num(d)} verschiebt die Kurve nach oben oder unten — das ist die Mittellinie, nicht die Amplitude.`;
+          if (Math.abs(val - 2 * a) < 0.4) return `${num(2 * a)} ist der Abstand zwischen höchstem und niedrigstem Wert. Die Amplitude ist davon die <strong>Hälfte</strong>: der Ausschlag von der Mittellinie aus.`;
+          return `Die Amplitude ist der Faktor vor dem Sinus — hier ${num(a)}.`;
+        },
+      },
+      {
+        name: "Periode (in Grad)", soll: p, einheit: "°", toleranz: 0.4, platzhalter: "Periode",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - 360 * b) < 0.4) return `Hier wurde mit ${num(b)} multipliziert. Ein größeres b lässt die Welle <strong>schneller</strong> schwingen, die Periode wird also kürzer: p = 360° : b.`;
+          if (Math.abs(val - 360) < 0.4) return `360° ist die Periode von sin x, also der Fall b = 1. Hier steht ${num(b)} bei dem x.`;
+          if (Math.abs(val - a) < 0.4) return `${num(a)} ist die Amplitude, nicht die Periode.`;
+          return `p = 360° : b = 360° : ${num(b)}.`;
+        },
+      },
+      {
+        name: "größter Funktionswert", soll: max, toleranz: 0.4, platzhalter: "Maximum",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - a) < 0.4) return `${num(a)} wäre das Maximum, wenn die Kurve um die x-Achse schwänge. Sie ist aber um ${num(d)} verschoben — die ${num(d)} kommt noch dazu.`;
+          if (Math.abs(val - min) < 0.4) return `${num(min)} ist der <em>kleinste</em> Wert. Gefragt ist der größte.`;
+          if (Math.abs(val - d) < 0.4) return `${num(d)} ist die Mittellinie. Von dort schlägt die Kurve um die Amplitude ${num(a)} nach oben aus.`;
+          return `Der Sinus wird höchstens 1, also ist der größte Wert ${num(a)} · 1 + ${klammer(d)}.`;
+        },
+      },
+    ],
+    tipps: [
+      "In f(x) = a · sin(b · x) + d hat jeder Buchstabe eine eigene Aufgabe: a streckt in der Höhe, b staucht in der Breite, d verschiebt nach oben oder unten.",
+      `Die Amplitude ist der Faktor <em>vor</em> dem Sinus, die Periode berechnet sich aus dem Faktor <em>bei</em> dem x: p = 360° : b.`,
+      `Der Sinus schwankt zwischen −1 und 1. Also schwankt f zwischen ${num(d)} − ${num(a)} und ${num(d)} + ${num(a)}.`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Amplitude:</strong> der Faktor vor dem Sinus ⇒ a = <strong>${num(a)}</strong><br>` +
+      `<strong>2. Periode:</strong> p = 360° : b = 360° : ${num(b)} = <strong>${num(p)}°</strong><br>` +
+      `<strong>3. Mittellinie:</strong> d = ${num(d)} — um diesen Wert ist die Kurve verschoben<br>` +
+      `<strong>4. Größter Wert:</strong> Der Sinus wird höchstens 1 ⇒ f<sub>max</sub> = ${num(a)} · 1 ${d === 0 ? "" : d > 0 ? "+ " + num(d) : "− " + num(-d)} = <strong>${num(max)}</strong><br>` +
+      `<em>Und der kleinste:</em> ${num(a)} · (−1) ${d === 0 ? "" : d > 0 ? "+ " + num(d) : "− " + num(-d)} = ${num(min)}. ` +
+      `Die Kurve läuft also zwischen ${num(min)} und ${num(max)}.<br>` +
+      `<span class="progress-note">Zur Probe: Der Abstand zwischen größtem und kleinstem Wert ist ${num(max - min)} — ` +
+      `immer das Doppelte der Amplitude. Und ihre Mitte, (${num(max)} ${min < 0 ? "− " + num(-min) : "+ " + num(min)}) : 2 = ${num(d)}, ` +
+      `ist die Mittellinie. So kommt man auch umgekehrt von einem Graphen zu a und d.</span>`,
+  };
+}
+
+// Aufgabe 3 — vom Bogenmaß ins Gradmaß.
+const A3_KANDIDATEN = (() => {
   const liste = [];
   for (const n of [2, 3, 4, 6]) {
     for (let z = 1; z <= 2 * n; z++) {
@@ -1205,14 +1313,14 @@ const A2_KANDIDATEN = (() => {
   return liste;
 })();
 
-function generateAufgabe2() {
+function generateAufgabe3() {
   const kd = ohneKollision(
-    A2_KANDIDATEN,
+    A3_KANDIDATEN,
     (v) => {
       const zn = v.z / v.n;
       return [zn * 180, zn * 360, zn * Math.PI * Math.PI / 180];
     },
-    A2_KANDIDATEN[0],
+    A3_KANDIDATEN[0],
     0.4,
   );
   const { z, n } = kd;
@@ -1231,6 +1339,11 @@ function generateAufgabe2() {
       if (Math.abs(val - zn * Math.PI * Math.PI / 180) < 0.4) return `Das ist die Umrechnung in die falsche Richtung: mit π : 180 kommt man vom Gradmaß <em>ins</em> Bogenmaß. Zurück geht es mit dem Kehrwert <strong>180 : π</strong>.`;
       return `Setze π = 180° ein: ${bruch} bedeutet ${num(z)} · 180° : ${num(n)}.`;
     },
+    tipps: [
+      "Der ganze Kreis misst 2π im Bogenmaß und 360° im Gradmaß. Also entspricht <strong>π</strong> gerade <strong>180°</strong>.",
+      `Ersetze in ${bruch} das π durch 180°.`,
+      `Es bleibt ${num(z)} · 180° : ${num(n)} — das lässt sich im Kopf ausrechnen.`,
+    ],
     musterloesungHtml:
       `<strong>Umrechnung:</strong> α = x · ${bruchHtml("180°", "π")}<br>` +
       `<strong>Einsetzen:</strong> α = ${bruch} · ${bruchHtml("180°", "π")} = ${bruchHtml(`${num(z)} · 180°`, num(n))} = <strong>${num(grad)}°</strong><br>` +
@@ -1239,8 +1352,94 @@ function generateAufgabe2() {
   };
 }
 
-// Aufgabe 3 — die Verschiebung c aus Maximum, Minimum und Periode bestimmen.
-const A3_KANDIDATEN = (() => {
+// Aufgabe 4 — die markanten Stellen der Sinuskurve. Abschnitt 3 hatte keine
+// Aufgabe; dabei liegt alles an denselben vier Vierteln: Nulldurchgang,
+// Hochpunkt, Nulldurchgang, Tiefpunkt.
+const A4_KANDIDATEN = (() => {
+  const liste = [];
+  for (const a of [1, 2, 3, 4, 5, 6, 8, 10]) {
+    for (const b of [1, 2, 3, 4, 5, 6, 8, 9, 10, 12]) {
+      const p = 360 / b;
+      // Die Probestelle ist ein Vielfaches eines Zwölftels der Periode; dann
+      // ist das Argument ein runder Winkel und der Wert ohne Rechner greifbar.
+      for (const teil of [1, 2, 5, 7, 8, 11]) {
+        const x0 = (p * teil) / 12;
+        if (!Number.isInteger(x0)) continue;
+        liste.push({ a, b, p, teil, x0, wert: a * sinG(30 * teil) });
+      }
+    }
+  }
+  return liste;
+})();
+
+function generateAufgabe4() {
+  const k = ohneFeldKollision(A4_KANDIDATEN, (v) => [
+    // Feld 1: der erste Hochpunkt.
+    [v.p / 4, v.p, v.p / 2, v.p * 3 / 4],
+    // Feld 2: die erste Nullstelle nach 0.
+    [v.p / 2, v.p / 4, v.p, v.p * 3 / 4],
+    // Feld 3: der Funktionswert an der Probestelle.
+    [rund(v.wert, 3), v.a, -v.a, 0],
+  ], [0.4, 0.4, 0.004]);
+  const { a, b, p, teil, x0, wert } = k;
+  const winkel = 30 * teil;
+  const term = `${faktorHtml(a)}sin(${faktorHtml(b)}x)`;
+  const exakt = { 30: "1 : 2", 60: "√3 : 2", 150: "1 : 2", 210: "−1 : 2", 240: "−√3 : 2", 330: "−1 : 2" }[winkel];
+  return {
+    promptHtml: `Gegeben ist <strong>f(x) = ${term}</strong> mit der Periode <strong>${num(p)}°</strong>.<br>` +
+      `Untersuche die Kurve im Bereich von 0° an und berechne den Wert an der Stelle <strong>x = ${num(x0)}°</strong>.`,
+    felder: [
+      {
+        name: "Stelle des ersten Hochpunkts (in Grad)", soll: p / 4, einheit: "°", toleranz: 0.4, platzhalter: "x in Grad",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - p / 2) < 0.4) return `Nach einer <em>halben</em> Periode ist die Kurve wieder auf der Mittellinie — auf dem Weg nach unten. Der Hochpunkt liegt schon nach einem <strong>Viertel</strong>.`;
+          if (Math.abs(val - p) < 0.4) return `Nach einer ganzen Periode beginnt alles von vorn; dort ist die Kurve wieder bei 0. Der erste Hochpunkt kommt viel früher.`;
+          if (Math.abs(val - p * 3 / 4) < 0.4) return `Nach drei Vierteln der Periode liegt der <em>Tiefpunkt</em>.`;
+          return `Die Sinuskurve steigt von 0 aus und erreicht ihr Maximum nach einem Viertel der Periode: ${num(p)}° : 4.`;
+        },
+      },
+      {
+        name: "erste Nullstelle nach x = 0 (in Grad)", soll: p / 2, einheit: "°", toleranz: 0.4, platzhalter: "x in Grad",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - p / 4) < 0.4) return `Nach einem Viertel der Periode liegt der <em>Hochpunkt</em>, nicht eine Nullstelle.`;
+          if (Math.abs(val - p) < 0.4) return `${num(p)}° ist die <em>zweite</em> Nullstelle nach 0 — dort beginnt die nächste Welle. Dazwischen kreuzt die Kurve die Achse noch einmal.`;
+          if (Math.abs(val - p * 3 / 4) < 0.4) return `Nach drei Vierteln liegt der Tiefpunkt.`;
+          return `Zwischen zwei Nullstellen liegt immer eine <em>halbe</em> Periode: ${num(p)}° : 2.`;
+        },
+      },
+      {
+        name: `f(${num(x0)}°)`, soll: rund(wert, 3), toleranz: 0.004, platzhalter: "Wert",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - a) < 0.004) return `${num(a)} ist der größte Wert überhaupt. An der Stelle ${num(x0)}° ist das Argument ${num(b)} · ${num(x0)}° = ${num(winkel)}°, und sin ${num(winkel)}° ist nicht 1.`;
+          if (Math.abs(val + a) < 0.004) return `${num(-a)} ist der kleinste Wert. Rechne zuerst das Argument aus: ${num(b)} · ${num(x0)}° = ${num(winkel)}°.`;
+          if (Math.abs(val - rund(a * sinG(x0), 3)) < 0.004) return `Der Faktor ${num(b)} bei dem x wurde übersehen. Das Argument des Sinus ist ${num(b)} · ${num(x0)}° = ${num(winkel)}°, nicht ${num(x0)}°.`;
+          if (Math.abs(val - rund(sinG(winkel), 3)) < 0.004 && a !== 1) return `Das ist sin ${num(winkel)}° allein. Die Amplitude ${num(a)} muss noch als Faktor davor.`;
+          return `Erst das Argument: ${num(b)} · ${num(x0)}° = ${num(winkel)}°. Dann sin ${num(winkel)}° = ${exakt}, und das mal ${num(a)}.`;
+        },
+      },
+    ],
+    tipps: [
+      "Eine Sinuskurve läuft in vier gleichen Vierteln ab: von 0 hinauf zum Hochpunkt, zurück zur Nulllinie, hinunter zum Tiefpunkt, zurück zur Nulllinie.",
+      `Eine Periode ist hier ${num(p)}° lang. Ein Viertel davon sind ${num(p / 4)}°, eine Hälfte ${num(p / 2)}°.`,
+      `Für den Funktionswert rechne zuerst das Argument aus: ${num(b)} · ${num(x0)}° = ${num(winkel)}°. Dann sin ${num(winkel)}° = ${exakt}.`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Periode:</strong> p = 360° : ${num(b)} = ${num(p)}°<br>` +
+      `<strong>2. Hochpunkt:</strong> nach einem Viertel der Periode ⇒ x = ${num(p)}° : 4 = <strong>${num(p / 4)}°</strong><br>` +
+      `<strong>3. Nullstelle:</strong> nach einer halben Periode ⇒ x = ${num(p)}° : 2 = <strong>${num(p / 2)}°</strong><br>` +
+      `<strong>4. Funktionswert:</strong> Argument ${num(b)} · ${num(x0)}° = ${num(winkel)}°, ` +
+      `sin ${num(winkel)}° = ${exakt} ⇒ f(${num(x0)}°) = ${num(a)} · ${exakt} = <strong>${num(rund(wert, 3), 3)}</strong><br>` +
+      `<em>Zur Lage:</em> ${num(x0)}° ist ${num(teil)} Zwölftel der Periode — die Kurve ist dort ` +
+      `${wert > 0 ? "oberhalb" : "unterhalb"} der Nulllinie und ` +
+      `${teil < 3 ? "noch am Steigen" : teil < 9 ? "auf dem Weg nach unten" : "wieder am Steigen"}.<br>` +
+      `<span class="progress-note">Alle vier Antworten hängen an derselben Zahl: der Periode. ` +
+      `Der Faktor ${num(b)} bei dem x staucht die ganze Kurve auf ein ${num(b)}-tel ihrer Breite; ` +
+      `die Amplitude ${num(a)} ändert daran nichts, sie streckt nur in der Höhe.</span>`,
+  };
+}
+
+// Aufgabe 5 — die Verschiebung c aus Maximum, Minimum und Periode bestimmen.
+const A5_KANDIDATEN = (() => {
   const liste = [];
   for (const p of [120, 180, 240, 360, 720]) {
     for (const xm of [0, 30, 45, 60, 75, 90, 105, 120, 135, 150, 180, 210, 240, 270, 300]) {
@@ -1253,22 +1452,22 @@ const A3_KANDIDATEN = (() => {
   return liste;
 })();
 
-function a3C(xm, p) { return ((xm - p / 4) % p + p) % p; }
+function a5C(xm, p) { return ((xm - p / 4) % p + p) % p; }
 
-function generateAufgabe3() {
+function generateAufgabe5() {
   const kd = ohneKollision(
-    A3_KANDIDATEN,
+    A5_KANDIDATEN,
     (v) => [
-      a3C(v.xm, v.p),                                   // richtig
+      a5C(v.xm, v.p),                                   // richtig
       ((v.xm % v.p) + v.p) % v.p,                       // c mit der Maximumstelle verwechselt
       ((v.xm + v.p / 4) % v.p + v.p) % v.p,             // Viertelperiode addiert statt subtrahiert
       ((v.xm - v.p / 2) % v.p + v.p) % v.p,             // halbe statt viertel Periode
     ],
-    A3_KANDIDATEN[0],
+    A5_KANDIDATEN[0],
     0.4,
   );
   const { p, xm, hoch, tief } = kd;
-  const c = a3C(xm, p);
+  const c = a5C(xm, p);
   const a = (hoch - tief) / 2, d = (hoch + tief) / 2, b = 360 / p;
   return {
     promptHtml: `Der Graph von <strong>f(x) = a · sin(b · (x − c)) + d</strong> hat die Periode <strong>${num(p)}°</strong>. ` +
@@ -1284,6 +1483,11 @@ function generateAufgabe3() {
       if (Math.abs(val - (((xm - p / 2) % p + p) % p)) < 0.4) return `Abgezogen wurde eine <em>halbe</em> Periode. Zwischen dem Nulldurchgang c und dem Hochpunkt liegt aber nur ein <strong>Viertel</strong> der Periode; eine halbe Periode führte schon zum Tiefpunkt.`;
       return `Ein Hochpunkt liegt immer bei c + p : 4. Also ist c = ${num(xm)}° − ${num(p)}° : 4.`;
     },
+    tipps: [
+      "c ist die Stelle, an der die Kurve <em>steigend</em> durch die Mittellinie geht — nicht die Stelle des Hochpunkts.",
+      `Vom Nulldurchgang bis zum Hochpunkt vergeht ein Viertel der Periode, hier ${num(p / 4)}°.`,
+      `Also liegt c eine Viertelperiode <strong>vor</strong> dem Hochpunkt: c = ${num(xm)}° − ${num(p / 4)}°. Ein negatives Ergebnis schiebt man um eine ganze Periode nach vorn.`,
+    ],
     musterloesungHtml:
       `<strong>Merksatz:</strong> Der Hochpunkt liegt eine Viertelperiode nach c: &nbsp; x<sub>Hoch</sub> = c + p : 4<br>` +
       `<strong>Nach c auflösen:</strong> c = x<sub>Hoch</sub> − p : 4 = ${num(xm)}° − ${num(p / 4)}° = <strong>${num(xm - p / 4)}°</strong>` +
@@ -1296,32 +1500,129 @@ function generateAufgabe3() {
   };
 }
 
-// Aufgabe 4 — Höhe einer Riesenradgondel zu einem Bruchteil der Umlaufzeit.
-// Nur Stellen mit cos ≠ 0: Bei einer Viertel- oder Dreivierteldrehung ergäbe
-// auch die falsche Rechnung mit dem Durchmesser statt dem Radius die richtige
-// Höhe — die Aufgabe könnte den Fehler dort nicht mehr aufdecken.
-const A4_STELLEN = [
-  { z: 1, n: 6, grad: 60, kos: 0.5 },
-  { z: 1, n: 3, grad: 120, kos: -0.5 },
-  { z: 1, n: 2, grad: 180, kos: -1 },
-  { z: 2, n: 3, grad: 240, kos: -0.5 },
-  { z: 5, n: 6, grad: 300, kos: 0.5 },
+// Aufgabe 6 — eine Sinusgleichung im Bereich 0° bis 360°. Der springende Punkt
+// ist, dass sin<sup>−1</sup> nur eine Lösung nennt: Zu jedem Sinuswert gehören
+// auf einer vollen Periode zwei Stellen.
+const A6_SINUSWERTE = [
+  { s: 0.5, x1: 30, x2: 150, text: "1 : 2" },
+  { s: Math.sqrt(2) / 2, x1: 45, x2: 135, text: "√2 : 2" },
+  { s: Math.sqrt(3) / 2, x1: 60, x2: 120, text: "√3 : 2" },
+  { s: -0.5, x1: 210, x2: 330, text: "−1 : 2" },
+  { s: -Math.sqrt(2) / 2, x1: 225, x2: 315, text: "−√2 : 2" },
+  { s: -Math.sqrt(3) / 2, x1: 240, x2: 300, text: "−√3 : 2" },
 ];
-const A4_KANDIDATEN = (() => {
+const A6_KANDIDATEN = (() => {
   const liste = [];
-  for (const D of [32, 40, 48, 56, 60, 64, 80, 100]) {
-    for (const boden of [2, 3, 4, 5]) {
-      for (const T of [120, 180, 240, 300, 360, 480, 600]) {
-        for (const st of A4_STELLEN) liste.push({ D, boden, T, st });
+  for (const sw of A6_SINUSWERTE) {
+    for (const a of [2, 4, 6, 8, 10, 12]) {
+      for (const d of [-6, -4, -2, 0, 2, 3, 4, 5, 6, 8, 10]) {
+        const w = a * sw.s + d;
+        // Nur glatte rechte Seiten: 8 · (1 : 2) + 3 ist 7, 8 · (√2 : 2) + 3 nicht.
+        if (!Number.isInteger(rund(w, 6))) continue;
+        liste.push({ sw, a, d, w: rund(w, 6) });
       }
     }
   }
   return liste;
 })();
 
-function generateAufgabe4() {
+function generateAufgabe6() {
+  const k = ohneFeldKollision(A6_KANDIDATEN, (v) => [
+    // Feld 1: der Sinuswert.
+    [rund(v.sw.s, 4), -rund(v.sw.s, 4), v.w, v.w - v.d],
+    // Feld 2: die kleinere Lösung.
+    [v.sw.x1, v.sw.x2, 180 + v.sw.x1, 360 - v.sw.x1],
+    // Feld 3: die größere Lösung. Bei positivem Sinus ist 180° − x₂ gerade x₁;
+    // dann trägt der Wert keinen eigenen Hinweis und zählt nicht als Kollision.
+    [v.sw.x2, v.sw.x1, 180 - v.sw.x2 === v.sw.x1 ? NaN : 180 - v.sw.x2],
+  ], [0.004, 0.4, 0.4]);
+  const { sw, a, d, w } = k;
+  const term = `${faktorHtml(a)}sin(x)${d === 0 ? "" : d > 0 ? ` + ${num(d)}` : ` − ${num(-d)}`}`;
+  const negativ = sw.s < 0;
+  return {
+    promptHtml: `Löse die Gleichung <strong>${term} = ${num(w)}</strong> für <strong>0° ≤ x ≤ 360°</strong>.<br>` +
+      `<em>Es gibt genau zwei Lösungen.</em>`,
+    felder: [
+      {
+        name: "sin x", soll: rund(sw.s, 4), toleranz: 0.004, platzhalter: "sin x",
+        hinweis: (roh, val) => {
+          if (Math.abs(val + sw.s) < 0.004) return `Das Vorzeichen stimmt nicht. Aus ${faktorHtml(a)}sin x = ${num(w)} ${d === 0 ? "" : d > 0 ? "− " + num(d) : "+ " + num(-d)} = ${num(w - d)} folgt sin x = ${num(w - d)} : ${num(a)} = ${num(rund(sw.s, 4), 4)}.`;
+          if (Math.abs(val - w) < 0.004) return `${num(w)} ist die rechte Seite der Gleichung. Erst ${d === 0 ? "" : `${d > 0 ? "− " + num(d) : "+ " + num(-d)}, dann `}durch ${num(a)} teilen.`;
+          if (Math.abs(val - (w - d)) < 0.004) return `${num(w - d)} ist ${faktorHtml(a)}sin x. Es fehlt noch die Division durch ${num(a)}.`;
+          if (!isNaN(val) && Math.abs(val) > 1) return "Der Sinus liegt immer zwischen −1 und 1. Prüfe die Umformung noch einmal.";
+          return `Stelle nach sin x um: sin x = (${num(w)} ${d === 0 ? "" : d > 0 ? "− " + num(d) : "+ " + num(-d)}) : ${num(a)}.`;
+        },
+      },
+      {
+        name: "kleinere Lösung (in Grad)", soll: sw.x1, einheit: "°", toleranz: 0.4, platzhalter: "x in Grad",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - sw.x2) < 0.4) return `${num(sw.x2)}° ist die <em>größere</em> der beiden Lösungen.`;
+          if (Math.abs(val - (180 + sw.x1)) < 0.4 || Math.abs(val - (360 - sw.x1)) < 0.4) {
+            return `Dort ist der Sinus ${negativ ? "positiv" : "negativ"} — das passt nicht zu sin x = ${num(rund(sw.s, 4), 4)}. ` +
+              `Zeichne den Einheitskreis: Gesucht sind die beiden Punkte in der Höhe ${num(rund(sw.s, 4), 4)}.`;
+          }
+          return negativ
+            ? `Der Sinus ist negativ, die Lösungen liegen also <strong>unterhalb</strong> der x-Achse — zwischen 180° und 360°.`
+            : `Der Sinus ist positiv, die Lösungen liegen also <strong>oberhalb</strong> der x-Achse — zwischen 0° und 180°.`;
+        },
+      },
+      {
+        name: "größere Lösung (in Grad)", soll: sw.x2, einheit: "°", toleranz: 0.4, platzhalter: "x in Grad",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - sw.x1) < 0.4) return `${num(sw.x1)}° ist die kleinere Lösung — sie nennt auch der Taschenrechner${negativ ? " (als negativen Winkel)" : ""}. Die zweite muss man selbst finden.`;
+          if (Math.abs(val - (180 - sw.x2)) < 0.4) return `Die Regel 180° − x gilt für die Spiegelung an der y-Achse. ${negativ ? `Bei negativem Sinus liegen beide Lösungen unten: ${num(sw.x1)}° und ${num(sw.x2)}° = 360° − ${num(360 - sw.x2)}°.` : `Sie führt von ${num(sw.x1)}° zu ${num(sw.x2)}°, nicht umgekehrt.`}`;
+          return negativ
+            ? `Beide Lösungen liegen unten. Sie sind zur senkrechten Achse bei 270° symmetrisch: ${num(sw.x1)}° und ${num(sw.x2)}°.`
+            : `Beide Lösungen liegen oben und sind zur senkrechten Achse bei 90° symmetrisch: x und 180° − x.`;
+        },
+      },
+    ],
+    tipps: [
+      `Stelle die Gleichung zuerst nach sin x um: ${faktorHtml(a)}sin x = ${num(w)} ${d === 0 ? "" : d > 0 ? "− " + num(d) : "+ " + num(-d)}, dann durch ${num(a)} teilen.`,
+      `Es bleibt sin x = ${sw.text} ${zeichenOderGleich(sw.s)} ${num(rund(sw.s, 4), 4)}. Das ist einer der Werte aus der Tabelle der besonderen Winkel.`,
+      "Der Taschenrechner nennt nur <em>eine</em> Lösung. Am Einheitskreis sieht man die zweite: Zwei Punkte liegen gleich hoch, und sie sind zur senkrechten Achse symmetrisch.",
+    ],
+    musterloesungHtml:
+      `<strong>1. Nach sin x umstellen:</strong> ${faktorHtml(a)}sin x = ${num(w)} ${d === 0 ? "" : d > 0 ? "− " + num(d) : "+ " + num(-d)} = ${num(w - d)}<br>` +
+      `&nbsp;&nbsp;&nbsp;sin x = ${num(w - d)} : ${num(a)} = ${sw.text} ${zeichenOderGleich(sw.s)} <strong>${num(rund(sw.s, 4), 4)}</strong><br>` +
+      `<strong>2. Erste Lösung:</strong> x<sub>1</sub> = <strong>${num(sw.x1)}°</strong><br>` +
+      `<strong>3. Zweite Lösung:</strong> ${negativ
+        ? `Beide Lösungen liegen unterhalb der Achse und sind zur Senkrechten bei 270° symmetrisch ⇒ x<sub>2</sub> = <strong>${num(sw.x2)}°</strong>`
+        : `Zur Senkrechten bei 90° gespiegelt: 180° − ${num(sw.x1)}° = <strong>${num(sw.x2)}°</strong>`}<br>` +
+      `<em>Probe:</em> ${faktorHtml(a)}sin ${num(sw.x2)}° ${d === 0 ? "" : d > 0 ? "+ " + num(d) : "− " + num(-d)} = ` +
+      `${num(a)} · ${klammer(rund(sw.s, 4), 4)} ${d === 0 ? "" : d > 0 ? "+ " + num(d) : "− " + num(-d)} = ${num(w)} ✓<br>` +
+      `<span class="progress-note">Auf einer vollen Periode gibt es zu jedem Sinuswert zwischen −1 und 1 genau zwei Stellen — ` +
+      `außer bei ±1, wo Hoch- und Tiefpunkt liegen. Der Taschenrechner nennt immer nur eine davon; ` +
+      `die zweite findet man am Einheitskreis oder an der Kurve.</span>`,
+  };
+}
+
+// Aufgabe 7 — Höhe einer Riesenradgondel zu einem Bruchteil der Umlaufzeit.
+// Nur Stellen mit cos ≠ 0: Bei einer Viertel- oder Dreivierteldrehung ergäbe
+// auch die falsche Rechnung mit dem Durchmesser statt dem Radius die richtige
+// Höhe — die Aufgabe könnte den Fehler dort nicht mehr aufdecken.
+const A7_STELLEN = [
+  { z: 1, n: 6, grad: 60, kos: 0.5 },
+  { z: 1, n: 3, grad: 120, kos: -0.5 },
+  { z: 1, n: 2, grad: 180, kos: -1 },
+  { z: 2, n: 3, grad: 240, kos: -0.5 },
+  { z: 5, n: 6, grad: 300, kos: 0.5 },
+];
+const A7_KANDIDATEN = (() => {
+  const liste = [];
+  for (const D of [32, 40, 48, 56, 60, 64, 80, 100]) {
+    for (const boden of [2, 3, 4, 5]) {
+      for (const T of [120, 180, 240, 300, 360, 480, 600]) {
+        for (const st of A7_STELLEN) liste.push({ D, boden, T, st });
+      }
+    }
+  }
+  return liste;
+})();
+
+function generateAufgabe7() {
   const kd = ohneKollision(
-    A4_KANDIDATEN,
+    A7_KANDIDATEN,
     (v) => {
       const h = v.D / 2 + v.boden;
       return [
@@ -1331,7 +1632,7 @@ function generateAufgabe4() {
         (v.D / 2) * (1 - v.st.kos),                       // Bodenabstand vergessen
       ];
     },
-    A4_KANDIDATEN[0],
+    A7_KANDIDATEN[0],
     0.5,
   );
   const { D, boden, T, st } = kd;
@@ -1352,6 +1653,11 @@ function generateAufgabe4() {
       if (Math.abs(val - r * (1 - st.kos)) < 0.5) return `Das ist die Höhe über dem <em>tiefsten Punkt</em> der Gondel. Gefragt ist die Höhe über dem <strong>Boden</strong> — es fehlen noch die ${num(boden)} m Bodenabstand.`;
       return `Die Achse liegt in ${num(r)} + ${num(boden)} = ${num(h)} m Höhe. Von dort aus: h(t) = ${num(h)} − ${num(r)} · cos(${num(b, 3)}° · t).`;
     },
+    tipps: [
+      `Zeichne eine Skizze: Die Achse des Rads liegt ${num(r)} m über dem tiefsten Punkt der Gondel, also ${num(r)} + ${num(boden)} = ${num(h)} m über dem Boden.`,
+      `Die Gondel schwingt um diese Achse mit der Amplitude ${num(r)} m — dem <strong>Radius</strong>, nicht dem Durchmesser.`,
+      "Der Start ganz unten ist ein Minimum. Dazu gehört −cos: h(t) = d − r · cos(b · t).",
+    ],
     musterloesungHtml:
       `<strong>1. Achsenhöhe:</strong> d = ${bruchHtml(num(D), "2")} + ${num(boden)} = ${num(r)} + ${num(boden)} = <strong>${num(h)} m</strong><br>` +
       `<strong>2. Amplitude:</strong> a = Radius = <strong>${num(r)} m</strong><br>` +
@@ -1364,12 +1670,119 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 8 — ein periodischer Vorgang, der nicht im Minimum startet. Anders
+// als beim Riesenrad ist hier der Zeitpunkt des Hochpunkts gegeben; daraus
+// folgt die Verschiebung c, und erst damit lässt sich ein Wert berechnen.
+const A8_KANDIDATEN = (() => {
+  const liste = [];
+  for (const hoch of [3, 3.5, 4, 4.5, 5, 6, 7, 8]) {
+    for (const tief of [0.5, 1, 1.5, 2]) {
+      if (hoch - tief < 2) continue;
+      for (const tHoch of [2, 3, 4, 5, 8, 9, 10, 11]) {
+        // Die Probezeit liegt ein Zwölftel der Periode neben dem Hochpunkt,
+        // damit das Argument ein runder Winkel wird.
+        for (const teil of [1, 2, 3, 4, 5, 8, 9, 10]) {
+          const t1 = (tHoch + teil) % 12;
+          liste.push({ hoch, tief, tHoch, teil, t1 });
+        }
+      }
+    }
+  }
+  return liste;
+})();
+const A8_KONTEXTE = [
+  { was: "Der Wasserstand in einem Hafen", er: "er", einheit: "m", gross: "Hochwasser", klein: "Niedrigwasser", zeit: "Uhr" },
+  { was: "Die Wassertiefe an einer Hafeneinfahrt", er: "sie", einheit: "m", gross: "Hochwasser", klein: "Niedrigwasser", zeit: "Uhr" },
+  { was: "Der Pegelstand an einer Messstelle", er: "er", einheit: "m", gross: "Hochwasser", klein: "Niedrigwasser", zeit: "Uhr" },
+];
+
+function generateAufgabe8() {
+  const k = ohneFeldKollision(A8_KANDIDATEN, (v) => {
+    const a = (v.hoch - v.tief) / 2, d = (v.hoch + v.tief) / 2;
+    // Periode 12 h ⇒ 30° je Stunde. Der Hochpunkt liegt bei 90°.
+    const wert = d + a * sinG(90 + 30 * v.teil);
+    return [
+      // Feld 1: die Amplitude.
+      [a, d, v.hoch, v.tief, v.hoch - v.tief],
+      // Feld 2: die Mittellinie.
+      [d, a, v.hoch, v.tief],
+      // Feld 3: der Wert zur Probezeit.
+      [rund(wert, 3), v.hoch, v.tief, d, rund(d + a * sinG(30 * v.teil), 3)],
+    ];
+  }, [0.04, 0.04, 0.004]);
+  const { hoch, tief, tHoch, teil, t1 } = k;
+  const kt = pick(A8_KONTEXTE);
+  const a = (hoch - tief) / 2, d = (hoch + tief) / 2;
+  const winkel = 90 + 30 * teil;
+  const wert = rund(d + a * sinG(winkel), 3);
+  const uhr = (h) => `${num(h)}:00 ${kt.zeit}`;
+  return {
+    promptHtml: `${kt.was} schwankt annähernd nach einer Sinuskurve mit der Periode <strong>12 Stunden</strong>. ` +
+      `Beim ${kt.gross} beträgt ${kt.er} <strong>${num(hoch)} ${kt.einheit}</strong>, beim ${kt.klein} <strong>${num(tief)} ${kt.einheit}</strong>. ` +
+      `${kt.gross} ist um <strong>${uhr(tHoch)}</strong>.<br>` +
+      `Wie hoch steht das Wasser um <strong>${uhr(t1)}</strong>? <em>Runde auf drei Stellen nach dem Komma.</em>`,
+    felder: [
+      {
+        name: `Amplitude a (in ${kt.einheit})`, soll: a, einheit: kt.einheit, toleranz: 0.004, platzhalter: "a",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (hoch - tief)) < 0.004) return `${num(hoch - tief)} ${kt.einheit} ist der ganze Unterschied zwischen ${kt.gross} und ${kt.klein} — der <strong>Tidenhub</strong>. Die Amplitude ist davon die Hälfte, denn sie misst nur den Ausschlag <em>von der Mittellinie aus</em>.`;
+          if (Math.abs(val - d) < 0.004) return `${num(d)} ${kt.einheit} ist die Mittellinie, also der mittlere Stand. Die Amplitude ist der Ausschlag darum herum.`;
+          if (Math.abs(val - hoch) < 0.004 || Math.abs(val - tief) < 0.004) return "Das ist einer der beiden Extremwerte selbst, nicht der Ausschlag.";
+          return `a = (${num(hoch)} − ${num(tief)}) : 2.`;
+        },
+      },
+      {
+        name: `Mittellinie d (in ${kt.einheit})`, soll: d, einheit: kt.einheit, toleranz: 0.004, platzhalter: "d",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - a) < 0.004) return `${num(a)} ${kt.einheit} ist die Amplitude. Die Mittellinie liegt in der Mitte zwischen den beiden Extremwerten.`;
+          if (Math.abs(val - hoch) < 0.004) return `${num(hoch)} ${kt.einheit} ist der höchste Stand, nicht der mittlere.`;
+          if (Math.abs(val - tief) < 0.004) return `${num(tief)} ${kt.einheit} ist der niedrigste Stand.`;
+          return `d = (${num(hoch)} + ${num(tief)}) : 2.`;
+        },
+      },
+      {
+        name: `Wasserstand um ${uhr(t1)} (in ${kt.einheit})`, soll: wert, einheit: kt.einheit, toleranz: 0.004, platzhalter: "Stand",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - hoch) < 0.004) return `${num(hoch)} ${kt.einheit} ist der Stand um ${uhr(tHoch)}. Bis ${uhr(t1)} sind ${num(teil)} Stunden vergangen — die Kurve ist weitergelaufen.`;
+          if (Math.abs(val - d) < 0.004) return `${num(d)} ${kt.einheit} ist die Mittellinie. Die erreicht die Kurve drei Stunden nach dem ${kt.gross}, hier sind es aber ${num(teil)}.`;
+          if (Math.abs(val - rund(d + a * sinG(30 * teil), 3)) < 0.004) return `Der Zeitpunkt des ${kt.gross}s wurde nicht berücksichtigt. Gezählt wird ab ${uhr(tHoch)}: Nach ${num(teil)} Stunden ist das Argument 90° + ${num(30 * teil)}° = ${num(winkel)}°.`;
+          if (Math.abs(val - tief) < 0.004) return `${num(tief)} ${kt.einheit} ist der niedrigste Stand — den gibt es erst sechs Stunden nach dem ${kt.gross}.`;
+          return `Je Stunde schreitet das Argument um 360° : 12 = 30° voran. Beim ${kt.gross} steht es bei 90°, nach ${num(teil)} Stunden also bei ${num(winkel)}°.`;
+        },
+      },
+    ],
+    tipps: [
+      `Amplitude und Mittellinie folgen allein aus den beiden Extremwerten: a = (${num(hoch)} − ${num(tief)}) : 2 und d = (${num(hoch)} + ${num(tief)}) : 2.`,
+      "Die Periode ist 12 Stunden, also schreitet das Argument um 360° : 12 = 30° je Stunde voran.",
+      `Beim ${kt.gross} steht das Argument des Sinus bei 90° — dort ist der Sinus 1. Von ${uhr(tHoch)} bis ${uhr(t1)} vergehen ${num(teil)} Stunden, das Argument ist also 90° + ${num(teil)} · 30° = ${num(winkel)}°.`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Amplitude:</strong> a = (${num(hoch)} − ${num(tief)}) : 2 = <strong>${num(a)} ${kt.einheit}</strong><br>` +
+      `<strong>2. Mittellinie:</strong> d = (${num(hoch)} + ${num(tief)}) : 2 = <strong>${num(d)} ${kt.einheit}</strong><br>` +
+      `<strong>3. Winkel je Stunde:</strong> b = 360° : 12 h = 30° je Stunde<br>` +
+      `<strong>4. Argument um ${uhr(t1)}:</strong> Beim ${kt.gross} um ${uhr(tHoch)} ist es 90°; ${num(teil)} Stunden später ` +
+      `90° + ${num(teil)} · 30° = <strong>${num(winkel)}°</strong><br>` +
+      `<strong>5. Wert:</strong> ${num(d)} + ${num(a)} · sin ${num(winkel)}° = ${num(d)} + ${num(a)} · ${num(rund(sinG(winkel), 4), 4)} ` +
+      `≈ <strong>${num(wert, 3)} ${kt.einheit}</strong><br>` +
+      `<em>Kontrolle:</em> Der Wert muss zwischen ${num(tief)} und ${num(hoch)} ${kt.einheit} liegen — ${num(wert, 3)} tut das ✓, ` +
+      `und weil ${num(teil)} Stunden ${teil < 6 ? "weniger" : "mehr"} als eine halbe Periode nach dem ${kt.gross} liegen, ` +
+      `ist das Wasser ${teil < 6 ? "noch am Fallen" : "schon wieder am Steigen"}.<br>` +
+      `<span class="progress-note">Als fertige Gleichung: h(t) = ${num(a)} · sin(30° · (t − ${num(((tHoch - 3) % 12 + 12) % 12)})) + ${num(d)} ` +
+      `mit t in Stunden. Die Verschiebung c liegt eine Viertelperiode <em>vor</em> dem ${kt.gross}, ` +
+      `also bei ${num(((tHoch - 3) % 12 + 12) % 12)} Uhr — dort steigt die Kurve durch die Mittellinie.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Periode ablesen", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Bogenmaß ins Gradmaß", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — die Verschiebung c bestimmen", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Riesenrad", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Amplitude, Periode, Wertebereich", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Bogenmaß ins Gradmaß", generate: generateAufgabe3 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — die Kurve im Viertelschritt", generate: generateAufgabe4 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — die Verschiebung c bestimmen", generate: generateAufgabe5 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — eine Sinusgleichung lösen", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Riesenrad", generate: generateAufgabe7 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Gezeiten", generate: generateAufgabe8 },
   ]);
 }
 
