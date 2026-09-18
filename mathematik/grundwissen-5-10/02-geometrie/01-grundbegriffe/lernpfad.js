@@ -512,6 +512,7 @@ function generateAufgabe1() {
       const g = randInt(10, 80);
       return {
         frage: `Wie groß ist der Winkel, der ${g}° zu einem <strong>rechten Winkel</strong> ergänzt?`,
+        name: "rechter Winkel", ganz: 90,
         correct: 90 - g,
         loesung: `Ein rechter Winkel misst 90°. Also: 90° − ${g}° = <strong>${90 - g}°</strong>`,
       };
@@ -520,6 +521,7 @@ function generateAufgabe1() {
       const g = randInt(20, 160);
       return {
         frage: `Wie groß ist der Winkel, der ${g}° zu einem <strong>gestreckten Winkel</strong> ergänzt?`,
+        name: "gestreckter Winkel", ganz: 180,
         correct: 180 - g,
         loesung: `Ein gestreckter Winkel misst 180°. Also: 180° − ${g}° = <strong>${180 - g}°</strong>`,
       };
@@ -528,6 +530,7 @@ function generateAufgabe1() {
       const g = randInt(30, 330);
       return {
         frage: `Wie groß ist der Winkel, der ${g}° zu einem <strong>Vollwinkel</strong> ergänzt?`,
+        name: "Vollwinkel", ganz: 360,
         correct: 360 - g,
         loesung: `Ein Vollwinkel misst 360°. Also: 360° − ${g}° = <strong>${360 - g}°</strong>`,
       };
@@ -539,6 +542,12 @@ function generateAufgabe1() {
     correct: v.correct,
     tolerance: 0.5,
     placeholder: "Winkel in Grad",
+    hinweis: (roh, val) => (trifft(val, v.ganz + (v.ganz - v.correct)) ? "Hier wurde addiert statt ergänzt." : ""),
+    tipps: [
+      `Ein ${v.name} misst <strong>${v.ganz}°</strong>.`,
+      "Ergänzen heißt: Was fehlt noch bis dahin?",
+      `Also ${v.ganz}° minus der gegebene Winkel.`,
+    ],
     musterloesungHtml: v.loesung,
   };
 }
@@ -570,6 +579,11 @@ function generateAufgabe2() {
     correct: v.correct,
     tolerance: 0.5,
     placeholder: "Zahl",
+    tipps: [
+      "Zeichne den Punkt ins Koordinatensystem — die erste Zahl ist der Weg nach rechts, die zweite der nach oben.",
+      "Bei einer Spiegelung an einer Achse bleibt die Koordinate <em>entlang</em> dieser Achse gleich; die andere wechselt das Vorzeichen.",
+      "Die Quadranten werden gegen den Uhrzeigersinn gezählt, beginnend rechts oben.",
+    ],
     musterloesungHtml: v.loesung,
   };
 }
@@ -592,6 +606,11 @@ function generateAufgabe3() {
         trifft(val, Math.abs(px - lage))
           ? "Du hast die x-Koordinate verwendet. Bei einer <strong>waagerechten</strong> Geraden führt das Lot senkrecht nach oben oder unten — es zählt also die <strong>y</strong>-Koordinate."
           : "",
+      tipps: [
+        "Der Abstand wird immer über das <strong>Lot</strong> gemessen — den kürzesten Weg zur Geraden.",
+        "Bei einer waagerechten Geraden führt das Lot senkrecht nach oben oder unten.",
+        `Es zählt also nur die y-Koordinate: |${py} − ${lage}|.`,
+      ],
       musterloesungHtml:
         `g ist waagerecht, das Lot von P steht also senkrecht darauf und verläuft in y-Richtung.<br>` +
         `Abstand = |y<sub>P</sub> − ${lage}| = |${py} − ${lage}| = <strong>${abstand}</strong><br>` +
@@ -609,6 +628,11 @@ function generateAufgabe3() {
       trifft(val, Math.abs(py - lage))
         ? "Du hast die y-Koordinate verwendet. Bei einer <strong>senkrechten</strong> Geraden führt das Lot waagerecht — es zählt also die <strong>x</strong>-Koordinate."
         : "",
+    tipps: [
+      "Der Abstand wird immer über das <strong>Lot</strong> gemessen — den kürzesten Weg zur Geraden.",
+      "Bei einer senkrechten Geraden führt das Lot waagerecht nach links oder rechts.",
+      `Es zählt also nur die x-Koordinate: |${px} − ${lage}|.`,
+    ],
     musterloesungHtml:
       `g ist senkrecht, das Lot von P verläuft also waagerecht in x-Richtung.<br>` +
       `Abstand = |x<sub>P</sub> − ${lage}| = |${px} − ${lage}| = <strong>${abstand}</strong><br>` +
@@ -643,6 +667,11 @@ function generateAufgabe4() {
         : trifft(val, breite * hoehe)
           ? "Das ist der Flächeninhalt. Gefragt ist der <strong>Umfang</strong>, also die Summe aller Seitenlängen."
           : "",
+    tipps: [
+      "Lies die Seitenlängen aus den Koordinaten ab: Zwei Ecken auf gleicher Höhe liegen waagerecht nebeneinander.",
+      `Die waagerechte Seite ist |${x2} − ${x1}| lang, die senkrechte |${y2} − ${y1}|.`,
+      "Der Umfang ist die Summe aller vier Seiten — jede Länge kommt zweimal vor.",
+    ],
     musterloesungHtml:
       `① Seitenlängen aus den Koordinaten ablesen:<br>` +
       `&nbsp;&nbsp;<span style="text-decoration:overline">AB</span> verläuft waagerecht: |${x2} − ${x1}| = <strong>${breite} cm</strong><br>` +
@@ -652,12 +681,166 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 2 — Punktspiegelung am Ursprung. Zwei Felder, weil bei der Punktspiegelung BEIDE
+// Koordinaten das Vorzeichen wechseln — bei der Achsenspiegelung nur eine. Genau das ist der
+// Unterschied, den ein einzelnes Feld nicht abfragen könnte.
+function generateAufgabe2b() {
+  const x = randInt(-6, 6) || 3;
+  const y = randInt(-6, 6) || 4;
+  return {
+    promptHtml:
+      `Der Punkt P(${x} | ${y}) wird am <strong>Ursprung</strong> (0 | 0) gespiegelt. ` +
+      `Wie lauten die Koordinaten des Bildpunkts P′?`,
+    felder: [
+      {
+        name: "x-Koordinate von P′", soll: -x, toleranz: 0.5,
+        hinweis: (roh, val) => (trifft(val, x) ? "Bei der Punktspiegelung am Ursprung wechseln <em>beide</em> Koordinaten das Vorzeichen." : ""),
+      },
+      {
+        name: "y-Koordinate von P′", soll: -y, toleranz: 0.5,
+        hinweis: (roh, val) => (trifft(val, y) ? "Auch die y-Koordinate wechselt das Vorzeichen — anders als bei der Spiegelung an der y-Achse." : ""),
+      },
+    ],
+    tipps: [
+      "Bei einer Punktspiegelung am Ursprung liegt der Ursprung genau in der Mitte zwischen P und P′.",
+      "Um von P zum Ursprung zu kommen, geht man den Weg zurück — und genauso weit darüber hinaus.",
+      "Beide Koordinaten wechseln also das Vorzeichen.",
+    ],
+    musterloesungHtml:
+      `Der Ursprung ist die Mitte zwischen P und P′. Von P(${x} | ${y}) aus geht es ${Math.abs(x)} nach ` +
+      `${x > 0 ? "links" : "rechts"} und ${Math.abs(y)} nach ${y > 0 ? "unten" : "oben"} zum Ursprung — und noch einmal ebenso weiter:<br>` +
+      `P′(<strong>${-x}</strong> | <strong>${-y}</strong>)<br>` +
+      `<span class="progress-note">Zum Vergleich: An der x-Achse gespiegelt wäre es (${x} | ${-y}), an der y-Achse (${-x} | ${y}). Nur bei der Punktspiegelung wechseln beide.</span>`,
+  };
+}
+
+// Aufgabe 4 — Abstand zweier Punkte, die auf einer Parallelen zu einer Achse liegen. Ohne
+// Wurzelrechnung, die erst in Klasse 9 kommt: Eine der beiden Koordinaten ist bei beiden gleich.
+function generateAufgabe4b() {
+  const waagerecht = Math.random() < 0.5;
+  const fest = randInt(-6, 6);
+  let a = randInt(-7, 7), b = randInt(-7, 7);
+  if (a === b) b = a + randInt(1, 5);
+  const A = waagerecht ? { x: a, y: fest } : { x: fest, y: a };
+  const B = waagerecht ? { x: b, y: fest } : { x: fest, y: b };
+  const abstand = Math.abs(a - b);
+  return {
+    promptHtml:
+      `Welchen Abstand haben die Punkte A(${A.x} | ${A.y}) und B(${B.x} | ${B.y}) voneinander?` +
+      `<br><span class="progress-note">Zähle die Einheiten im Koordinatensystem.</span>`,
+    correct: abstand,
+    tolerance: 0.05,
+    placeholder: "Abstand",
+    hinweis: (roh, val) =>
+      trifft(val, a + b)
+        ? "Die beiden Koordinaten werden nicht addiert: Der Abstand ist der <em>Unterschied</em>, also die größere minus die kleinere."
+        : trifft(val, -abstand)
+          ? "Ein Abstand ist nie negativ — gerechnet wird mit dem Betrag."
+          : "",
+    tipps: [
+      `Vergleiche die Koordinaten: Die ${waagerecht ? "y" : "x"}-Koordinate ist bei beiden Punkten gleich (${fest}).`,
+      `Die Strecke AB verläuft also ${waagerecht ? "waagerecht" : "senkrecht"} — der Abstand steckt allein in der ${waagerecht ? "x" : "y"}-Koordinate.`,
+      `Abstand = |${a} − ${b}|.`,
+    ],
+    musterloesungHtml:
+      `Beide Punkte haben dieselbe ${waagerecht ? "y" : "x"}-Koordinate (${fest}), die Strecke AB verläuft also ${waagerecht ? "waagerecht" : "senkrecht"}.<br>` +
+      `Abstand = |${a} − ${b}| = <strong>${abstand}</strong><br>` +
+      `<span class="progress-note">Bei schrägen Strecken geht das nicht so einfach — dafür braucht man den Satz des Pythagoras (Klasse 9).</span>`,
+  };
+}
+
+// Aufgabe 6 — Spiegelung an einer Geraden, die NICHT eine der Achsen ist. Der Bildpunkt liegt so
+// weit jenseits der Spiegelachse, wie der Urpunkt davor liegt; die andere Koordinate bleibt.
+function generateAufgabe6() {
+  const anX = Math.random() < 0.5;          // Spiegelachse waagerecht (y = c) oder senkrecht (x = c)
+  const c = randInt(-4, 4);
+  const px = randInt(-7, 7);
+  const py = randInt(-7, 7);
+  const beweglich = anX ? py : px;
+  if (beweglich === c) return generateAufgabe6();   // auf der Achse gäbe es nichts zu spiegeln
+  const gespiegelt = 2 * c - beweglich;
+  const bild = anX ? { x: px, y: gespiegelt } : { x: gespiegelt, y: py };
+  return {
+    promptHtml:
+      `Der Punkt P(${px} | ${py}) wird an der Geraden <strong>${anX ? "y" : "x"} = ${c}</strong> gespiegelt ` +
+      `(sie verläuft ${anX ? "waagerecht" : "senkrecht"}). Wie lauten die Koordinaten von P′?`,
+    felder: [
+      {
+        name: "x-Koordinate von P′", soll: bild.x, toleranz: 0.5,
+        hinweis: (roh, val) => (!anX && trifft(val, px) ? "Bei einer senkrechten Spiegelachse ändert sich gerade die x-Koordinate." : ""),
+      },
+      {
+        name: "y-Koordinate von P′", soll: bild.y, toleranz: 0.5,
+        hinweis: (roh, val) => (anX && trifft(val, py) ? "Bei einer waagerechten Spiegelachse ändert sich gerade die y-Koordinate." : ""),
+      },
+    ],
+    tipps: [
+      `Die Spiegelachse verläuft ${anX ? "waagerecht" : "senkrecht"} — die ${anX ? "x" : "y"}-Koordinate bleibt deshalb unverändert.`,
+      `P liegt ${Math.abs(beweglich - c)} Einheiten von der Achse entfernt. Das Bild liegt genauso weit auf der anderen Seite.`,
+      `Von ${c} aus also ${Math.abs(beweglich - c)} Einheiten nach ${beweglich > c ? "unten bzw. links" : "oben bzw. rechts"}.`,
+    ],
+    musterloesungHtml:
+      `Die ${anX ? "x" : "y"}-Koordinate bleibt: ${anX ? px : py}.<br>` +
+      `Abstand von P zur Achse: |${beweglich} − ${c}| = ${Math.abs(beweglich - c)}<br>` +
+      `Das Bild liegt genauso weit auf der anderen Seite: ${c} ${beweglich > c ? "−" : "+"} ${Math.abs(beweglich - c)} = <strong>${gespiegelt}</strong><br>` +
+      `P′(<strong>${bild.x}</strong> | <strong>${bild.y}</strong>) &nbsp; — Kontrolle: Die Achse liegt genau in der Mitte zwischen ${beweglich} und ${gespiegelt}.`,
+  };
+}
+
+// Aufgabe 8 — die vierte Ecke eines achsenparallelen Rechtecks und sein Umfang. Drei Felder: Die
+// Koordinaten allein zeigen noch nicht, ob die Seitenlängen abgelesen wurden.
+function generateAufgabe8() {
+  const x1 = randInt(-6, 2), y1 = randInt(-6, 2);
+  const breite = randInt(2, 7), hoehe = randInt(2, 6);
+  const A = { x: x1, y: y1 };
+  const B = { x: x1 + breite, y: y1 };
+  const C = { x: x1 + breite, y: y1 + hoehe };
+  const D = { x: x1, y: y1 + hoehe };
+  const umfang = 2 * (breite + hoehe);
+  return {
+    promptHtml:
+      `Drei Ecken eines achsenparallelen Rechtecks ABCD sind gegeben:<br>` +
+      `<span class="formula-block">A(${A.x} | ${A.y}) &nbsp; B(${B.x} | ${B.y}) &nbsp; C(${C.x} | ${C.y})</span>`,
+    felder: [
+      {
+        name: "x-Koordinate der vierten Ecke D", soll: D.x, toleranz: 0.5,
+        hinweis: (roh, val) => (trifft(val, C.x) ? "D liegt über A, nicht über C — sonst wäre es kein Rechteck." : ""),
+      },
+      { name: "y-Koordinate der vierten Ecke D", soll: D.y, toleranz: 0.5 },
+      {
+        name: "der Umfang des Rechtecks", soll: umfang, toleranz: 0.5,
+        hinweis: (roh, val) =>
+          trifft(val, breite * hoehe)
+            ? "Das ist der Flächeninhalt. Der Umfang ist die Länge des ganzen Randes."
+            : trifft(val, breite + hoehe)
+              ? "Jede Seitenlänge kommt zweimal vor."
+              : "",
+      },
+    ],
+    tipps: [
+      "Zeichne die drei Punkte ins Koordinatensystem — dann sieht man sofort, wo die vierte Ecke liegen muss.",
+      "In einem achsenparallelen Rechteck haben gegenüberliegende Ecken jeweils eine Koordinate gemeinsam: D hat dieselbe x-Koordinate wie A und dieselbe y-Koordinate wie C.",
+      `Die Seiten sind ${breite} und ${hoehe} Einheiten lang; der Umfang ist 2 · (${breite} + ${hoehe}).`,
+    ],
+    musterloesungHtml:
+      `A und B liegen auf derselben Höhe, B und C übereinander. D muss also über A und neben C liegen:<br>` +
+      `D(<strong>${D.x}</strong> | <strong>${D.y}</strong>)<br>` +
+      `Seitenlängen: AB = ${breite}, BC = ${hoehe}<br>` +
+      `Umfang = 2 · (${breite} + ${hoehe}) = <strong>${umfang}</strong><br>` +
+      `<span class="progress-note">Zum Vergleich: Der Flächeninhalt wäre ${breite} · ${hoehe} = ${breite * hoehe} — eine ganz andere Größe.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Winkel ergänzen", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Punkte im Koordinatensystem", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Abstand von einer Geraden", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Rechteck aus Koordinaten", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Punktspiegelung am Ursprung", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Punkte im Koordinatensystem", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Abstand zweier Punkte", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Abstand von einer Geraden", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Spiegeln an einer Geraden", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Rechteck aus Koordinaten", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Die vierte Ecke und der Umfang", generate: generateAufgabe8 },
   ]);
 }
 

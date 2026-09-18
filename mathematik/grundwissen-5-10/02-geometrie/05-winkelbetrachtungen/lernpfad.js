@@ -614,6 +614,11 @@ function generateAufgabe1() {
     correct: antwort,
     tolerance: 0.01,
     placeholder: "Winkel in Grad",
+    tipps: [
+      "Scheitelwinkel liegen sich am Schnittpunkt gegenüber, Nebenwinkel liegen nebeneinander.",
+      nachScheitel ? "Scheitelwinkel sind gleich groß." : "Nebenwinkel ergänzen sich zu 180°.",
+      nachScheitel ? `Also ebenfalls ${alpha}°.` : `Also 180° − ${alpha}°.`,
+    ],
     hinweis: (raw, val) => {
       if (trifft(val, (nachScheitel ? 180 - alpha : alpha))) {
         return nachScheitel
@@ -652,6 +657,11 @@ function generateAufgabe2() {
     correct: antwort,
     tolerance: 0.01,
     placeholder: "Winkel in Grad",
+    tipps: [
+      "An geschnittenen Parallelen entstehen an beiden Schnittpunkten dieselben vier Winkel.",
+      "Stufen- und Wechselwinkel sind gleich groß; entgegengesetzt liegende (Nachbar-)Winkel ergänzen sich zu 180°.",
+      `Ein ${art.name} ist hier also ${art.gleich ? "gleich groß wie α" : "der Ergänzungswinkel zu α"}.`,
+    ],
     hinweis: (raw, val) => {
       if (trifft(val, (art.gleich ? 180 - alpha : alpha))) {
         return art.gleich
@@ -684,6 +694,11 @@ function generateAufgabe3() {
     correct: gamma,
     tolerance: 0.01,
     placeholder: "γ in Grad",
+    tipps: [
+      "In jedem Dreieck ergeben die drei Winkel zusammen 180°.",
+      `Zwei sind bekannt: ${alpha}° und ${beta}°.`,
+      `Gesucht ist, was noch fehlt: 180° − ${alpha}° − ${beta}°.`,
+    ],
     hinweis: (raw, val) => {
       if (trifft(val, alpha + beta)) return `Das ist die <strong>Summe</strong> der beiden gegebenen Winkel. Gesucht ist, was bis 180° noch <em>fehlt</em>: 180° − ${alpha}° − ${beta}°.`;
       if (trifft(val, 360 - alpha - beta)) return "Im <strong>Dreieck</strong> ist die Winkelsumme 180°, nicht 360°. Auf 360° kommt erst das Viereck.";
@@ -713,6 +728,11 @@ function generateAufgabe4() {
       `der dort entstehende <strong>Außenwinkel bei B beträgt ${aussen}°</strong>. Wie groß ist <strong>γ</strong> (in Grad)?`,
     correct: gamma,
     tolerance: 0.01,
+    tipps: [
+      "Der Außenwinkel und der Innenwinkel an derselben Ecke sind Nebenwinkel — zusammen 180°.",
+      `Also β = 180° − ${aussen}°.`,
+      "Mit der Winkelsumme im Dreieck folgt daraus γ = 180° − α − β.",
+    ],
     placeholder: "γ in Grad",
     hinweis: (raw, val) => {
       if (trifft(val, beta)) return `Das ist <strong>β</strong>, der Innenwinkel bei B (180° − ${aussen}° = ${beta}°). Der ist nur der Zwischenschritt — gesucht ist γ.`;
@@ -732,12 +752,264 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 2 — alle vier Winkel am Geradenkreuz. Drei Felder, weil die beiden Regeln erst
+// zusammen etwas taugen: Scheitelwinkel gleich, Nebenwinkel ergänzen sich zu 180°.
+function generateAufgabe2b() {
+  let alpha = randInt(2, 34) * 5;
+  // Bei 90° wären alle vier Winkel gleich groß — dann ließe sich nicht zeigen, welche Regel
+  // wofür gilt.
+  if (alpha === 90) alpha = 95;
+  const neben = 180 - alpha;
+  return {
+    promptHtml:
+      `Zwei Geraden schneiden sich. Sie bilden vier Winkel; einer davon ist <strong>α = ${alpha}°</strong>. ` +
+      `Die anderen heißen im Uhrzeigersinn β, γ und δ.`,
+    felder: [
+      {
+        name: "β (der Nebenwinkel von α)", soll: neben, einheit: "°", toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, alpha) ? "Das ist α selbst. Nebenwinkel ergänzen sich zu 180°." : ""),
+      },
+      {
+        name: "γ (der Scheitelwinkel von α)", soll: alpha, einheit: "°", toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, neben) ? "Scheitelwinkel liegen sich gegenüber und sind <em>gleich</em> groß." : ""),
+      },
+      { name: "δ (der vierte Winkel)", soll: neben, einheit: "°", toleranz: 0.01 },
+    ],
+    tipps: [
+      "Gegenüberliegende Winkel heißen Scheitelwinkel — sie sind gleich groß.",
+      "Benachbarte Winkel heißen Nebenwinkel — sie ergänzen sich zu 180°.",
+      `Hier also: β = 180° − ${alpha}°, γ = ${alpha}°, δ = β.`,
+    ],
+    musterloesungHtml:
+      `β ist Nebenwinkel von α: β = 180° − ${alpha}° = <strong>${neben}°</strong><br>` +
+      `γ ist Scheitelwinkel von α: γ = <strong>${alpha}°</strong><br>` +
+      `δ ist Scheitelwinkel von β: δ = <strong>${neben}°</strong><br>` +
+      `Probe: α + β + γ + δ = ${alpha} + ${neben} + ${alpha} + ${neben} = 360° ✓`,
+  };
+}
+
+// Aufgabe 4 — die Winkelsumme im Vieleck (Abschnitt 5). Zwei Wege: am regelmäßigen Vieleck der
+// einzelne Innenwinkel, am unregelmäßigen der fehlende. Mit nur einer Frageart gäbe es bloß zehn
+// verschiedene Aufgaben — eine je Eckenzahl.
+const VIELECK_NAMEN = { 3: "Dreieck", 4: "Viereck", 5: "Fünfeck", 6: "Sechseck", 7: "Siebeneck", 8: "Achteck", 9: "Neuneck", 10: "Zehneck", 11: "Elfeck", 12: "Zwölfeck" };
+
+// Beim regelmäßigen Vieleck ist der einzelne Innenwinkel nur dann ganzzahlig, wenn n ein Teiler
+// von 360 ist — beim Sieben- und beim Elfeck käme 128,57…° heraus.
+const VIELECK_REGELMAESSIG = [3, 4, 5, 6, 8, 9, 10, 12];
+
+function generateAufgabe4b() {
+  const regelmaessig = Math.random() < 0.5;
+  const n = regelmaessig ? pick(VIELECK_REGELMAESSIG) : randInt(3, 12);
+  const summe = (n - 2) * 180;
+  const name = VIELECK_NAMEN[n];
+
+  if (regelmaessig) {
+    const einzeln = summe / n;
+    return {
+      promptHtml: `Gegeben ist ein <strong>regelmäßiges ${name}</strong> (${n} gleich lange Seiten, ${n} gleich große Winkel).`,
+      felder: [
+        {
+          name: "Summe aller Innenwinkel", soll: summe, einheit: "°", toleranz: 0.01,
+          hinweis: (roh, val) =>
+            trifft(val, n * 180) ? `Nicht ${n} Dreiecke, sondern ${n - 2}: Von einer Ecke aus lassen sich nur ${n - 3} Diagonalen ziehen.`
+              : trifft(val, 360) ? "360° ist die Summe der <em>Außen</em>winkel — die ist bei jedem Vieleck gleich." : "",
+        },
+        {
+          name: "Größe eines einzelnen Innenwinkels", soll: einzeln, einheit: "°", toleranz: 0.01,
+          hinweis: (roh, val) => (trifft(val, 360 / n) ? "Das ist der Mittelpunktswinkel. Gefragt ist der Innenwinkel an einer Ecke." : ""),
+        },
+      ],
+      tipps: [
+        "Jedes Vieleck lässt sich von einer Ecke aus in Dreiecke zerlegen.",
+        `Bei ${n} Ecken entstehen ${n - 2} Dreiecke, also (${n} − 2) · 180°.`,
+        "Im regelmäßigen Vieleck sind alle Innenwinkel gleich groß — die Summe wird durch die Eckenzahl geteilt.",
+      ],
+      musterloesungHtml:
+        `① Zerlegung in Dreiecke: ${n} Ecken ⇒ ${n - 2} Dreiecke<br>` +
+        `&nbsp;&nbsp;Summe = (${n} − 2) · 180° = <strong>${summe}°</strong><br>` +
+        `② regelmäßig ⇒ alle Winkel gleich: ${summe}° : ${n} = <strong>${einzeln}°</strong><br>` +
+        `<span class="progress-note">Probe: ${n} · ${einzeln}° = ${summe}° ✓</span>`,
+    };
+  }
+
+  // Unregelmäßig: n − 1 Winkel sind gegeben, einer fehlt. Konstruktiv erzeugt, damit jeder
+  // Winkel echt positiv und kleiner als 360° bleibt: Die gegebenen Winkel werden um den
+  // Durchschnitt herum gestreut, der Rest bleibt für den gesuchten.
+  const schnitt = summe / n;
+  const gegeben = [];
+  let verbraucht = 0;
+  for (let i = 0; i < n - 1; i++) {
+    const spielraum = Math.min(Math.round(schnitt * 0.4), 50);
+    // Höchstens 175°: Ein Innenwinkel über 180° hieße, dass das Vieleck an dieser Ecke
+    // eingedellt ist — das lenkt von der Winkelsumme ab.
+    const w = Math.min(175, Math.round(schnitt) + randInt(-spielraum, spielraum));
+    gegeben.push(w);
+    verbraucht += w;
+  }
+  const fehlt = summe - verbraucht;
+  if (fehlt < 15 || fehlt > 355) return generateAufgabe4b();
+  return {
+    promptHtml:
+      `In einem ${name} sind ${n - 1} Innenwinkel bekannt:<br>` +
+      `<span class="formula-block">${gegeben.map((w) => w + "°").join(" &nbsp; ")}</span>`,
+    felder: [
+      {
+        name: "Summe aller Innenwinkel", soll: summe, einheit: "°", toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, n * 180) ? `Nicht ${n} Dreiecke, sondern ${n - 2}.` : ""),
+      },
+      {
+        name: "der fehlende Winkel", soll: fehlt, einheit: "°", toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, verbraucht) ? "Das ist die Summe der bekannten Winkel. Gesucht ist, was bis zur Gesamtsumme fehlt." : ""),
+      },
+    ],
+    tipps: [
+      `Die Winkelsumme hängt nur von der Eckenzahl ab: (${n} − 2) · 180°.`,
+      "Addiere zuerst die bekannten Winkel.",
+      "Der fehlende ist die Gesamtsumme minus diese Teilsumme.",
+    ],
+    musterloesungHtml:
+      `① Winkelsumme: (${n} − 2) · 180° = <strong>${summe}°</strong><br>` +
+      `② bekannte Winkel: ${gegeben.join("° + ")}° = ${verbraucht}°<br>` +
+      `③ fehlender Winkel: ${summe}° − ${verbraucht}° = <strong>${fehlt}°</strong><br>` +
+      `<span class="progress-note">Ob das Vieleck regelmäßig ist, spielt für die Summe keine Rolle — nur die Eckenzahl zählt.</span>`,
+  };
+}
+
+// Aufgabe 6 — die Winkelsumme im Dreieck rückwärts, mit einer Bedingung zwischen den Winkeln.
+// Die Gleichung muss erst aufgestellt werden; das unterscheidet die Aufgabe von Aufgabe 5.
+function generateAufgabe6() {
+  const art = pick(["doppelt", "gleich", "differenz"]);
+  if (art === "doppelt") {
+    // α + 2α + γ = 180 mit ganzzahligem α
+    const alpha = randInt(10, 55);
+    const gamma = 180 - 3 * alpha;
+    if (gamma < 10) return generateAufgabe6();
+    return {
+      promptHtml:
+        `Im Dreieck ABC ist <strong>β doppelt so groß wie α</strong> und <strong>γ = ${gamma}°</strong>. Wie groß ist <strong>α</strong> (in Grad)?`,
+      correct: alpha,
+      tolerance: 0.01,
+      placeholder: "α in Grad",
+      hinweis: (raw, val) =>
+        trifft(val, 2 * alpha) ? "Das ist β. Gefragt ist α — die Hälfte davon."
+          : trifft(val, 180 - gamma) ? "Das ist α + β zusammen. Diese Summe verteilt sich noch im Verhältnis 1 : 2." : "",
+      tipps: [
+        "Schreibe die Winkelsumme als Gleichung: α + β + γ = 180°.",
+        `Setze β = 2 · α ein: α + 2α + ${gamma}° = 180°.`,
+        `Also 3α = ${180 - gamma}°.`,
+      ],
+      musterloesungHtml:
+        `α + β + γ = 180° &nbsp;mit&nbsp; β = 2α<br>` +
+        `α + 2α + ${gamma}° = 180° ⇒ 3α = ${180 - gamma}° ⇒ α = <strong>${alpha}°</strong><br>` +
+        `Probe: ${alpha}° + ${2 * alpha}° + ${gamma}° = 180° ✓`,
+    };
+  }
+  if (art === "gleich") {
+    // gleichschenklig: zwei gleiche Basiswinkel
+    const basis = randInt(20, 80);
+    const spitze = 180 - 2 * basis;
+    if (spitze < 10) return generateAufgabe6();
+    const nachSpitze = Math.random() < 0.5;
+    return {
+      promptHtml: nachSpitze
+        ? `Ein gleichschenkliges Dreieck hat die beiden <strong>Basiswinkel ${basis}°</strong>. Wie groß ist der Winkel an der <strong>Spitze</strong> (in Grad)?`
+        : `Ein gleichschenkliges Dreieck hat an der Spitze den Winkel <strong>${spitze}°</strong>. Wie groß ist jeder der beiden <strong>Basiswinkel</strong> (in Grad)?`,
+      correct: nachSpitze ? spitze : basis,
+      tolerance: 0.01,
+      placeholder: "Winkel in Grad",
+      hinweis: (raw, val) =>
+        nachSpitze && trifft(val, 180 - basis) ? "Es sind <em>zwei</em> Basiswinkel — beide müssen abgezogen werden."
+          : !nachSpitze && trifft(val, 180 - spitze) ? "Das ist die Summe beider Basiswinkel. Jeder einzelne ist halb so groß." : "",
+      tipps: [
+        "Im gleichschenkligen Dreieck sind die beiden Basiswinkel gleich groß.",
+        "Winkelsumme: Basiswinkel + Basiswinkel + Spitzenwinkel = 180°.",
+        nachSpitze ? `Also 180° − 2 · ${basis}°.` : `Also (180° − ${spitze}°) : 2.`,
+      ],
+      musterloesungHtml: nachSpitze
+        ? `Spitze = 180° − 2 · ${basis}° = <strong>${spitze}°</strong><br>Probe: ${basis}° + ${basis}° + ${spitze}° = 180° ✓`
+        : `Basiswinkel = (180° − ${spitze}°) : 2 = <strong>${basis}°</strong><br>Probe: ${basis}° + ${basis}° + ${spitze}° = 180° ✓`,
+    };
+  }
+  // β ist um d größer als α
+  const alpha = randInt(15, 60);
+  const d = randInt(5, 40);
+  const gamma = 180 - (2 * alpha + d);
+  if (gamma < 10) return generateAufgabe6();
+  return {
+    promptHtml:
+      `Im Dreieck ABC ist <strong>β um ${d}° größer als α</strong> und <strong>γ = ${gamma}°</strong>. Wie groß ist <strong>α</strong> (in Grad)?`,
+    correct: alpha,
+    tolerance: 0.01,
+    placeholder: "α in Grad",
+    hinweis: (raw, val) =>
+      trifft(val, alpha + d) ? "Das ist β. Gefragt ist α — davon noch die Differenz abziehen."
+        : trifft(val, (180 - gamma) / 2) ? `Die beiden Winkel sind nicht gleich groß: β ist um ${d}° größer.` : "",
+    tipps: [
+      "Schreibe die Winkelsumme als Gleichung: α + β + γ = 180°.",
+      `Setze β = α + ${d}° ein: α + α + ${d}° + ${gamma}° = 180°.`,
+      `Also 2α = ${180 - gamma - d}°.`,
+    ],
+    musterloesungHtml:
+      `α + β + γ = 180° &nbsp;mit&nbsp; β = α + ${d}°<br>` +
+      `2α + ${d}° + ${gamma}° = 180° ⇒ 2α = ${180 - gamma - d}° ⇒ α = <strong>${alpha}°</strong><br>` +
+      `Probe: ${alpha}° + ${alpha + d}° + ${gamma}° = 180° ✓`,
+  };
+}
+
+// Aufgabe 8 — Stufen- und Wechselwinkel an geschnittenen Parallelen, gefolgt von der Winkelsumme.
+// Drei Felder: Die Kette ist der Kern des Abschnitts, ein einzelnes Ergebnis zeigt sie nicht.
+function generateAufgabe8() {
+  let alpha = randInt(4, 32) * 5;
+  if (alpha === 90) alpha = 95;
+  const neben = 180 - alpha;
+  // Vier Winkelarten, von denen drei in zufälliger Reihenfolge gefragt werden. Mit einer festen
+  // Auswahl gäbe es nur so viele Aufgaben wie Gradzahlen — gemessen 28.
+  const arten = [
+    { name: "der Stufenwinkel zu α an h", soll: alpha, gleich: true },
+    { name: "der Wechselwinkel zu α an h", soll: alpha, gleich: true },
+    { name: "der Nachbarwinkel des Stufenwinkels an h", soll: neben, gleich: false },
+    { name: "der entgegengesetzt liegende Winkel zu α an h", soll: neben, gleich: false },
+  ];
+  for (let i = arten.length - 1; i > 0; i--) {
+    const j = randInt(0, i);
+    [arten[i], arten[j]] = [arten[j], arten[i]];
+  }
+  const gefragt = arten.slice(0, 3);
+  return {
+    promptHtml:
+      `Zwei <strong>parallele</strong> Geraden g und h werden von einer Geraden t geschnitten. ` +
+      `An g entsteht der Winkel <strong>α = ${alpha}°</strong>.`,
+    felder: gefragt.map((a) => ({
+      name: a.name, soll: a.soll, einheit: "°", toleranz: 0.01,
+      hinweis: (roh, val) =>
+        trifft(val, a.gleich ? neben : alpha)
+          ? a.gleich
+            ? "Stufen- und Wechselwinkel an Parallelen sind <em>gleich</em> groß — ergänzt wird nur bei benachbarten Winkeln."
+            : "Dieser Winkel liegt neben dem gleich großen — Nachbarwinkel ergänzen sich zu 180°."
+          : "",
+    })),
+    tipps: [
+      "An geschnittenen Parallelen sind Stufenwinkel gleich groß, und Wechselwinkel ebenfalls.",
+      "Nur benachbarte Winkel ergänzen sich zu 180°.",
+      `Hier also zweimal ${alpha}° und einmal 180° − ${alpha}°.`,
+    ],
+    musterloesungHtml:
+      gefragt.map((a) => `${a.name}: <strong>${a.soll}°</strong> ` +
+        (a.gleich ? "(gleich groß wie α)" : `(Nachbarwinkel: 180° − ${alpha}°)`)).join("<br>") + `<br>` +
+      `<span class="progress-note">Alles folgt aus einer einzigen Tatsache: Werden zwei Parallelen geschnitten, entstehen an beiden Schnittpunkten dieselben vier Winkel.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Scheitel- oder Nebenwinkel", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — An geschnittenen Parallelen", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Winkelsumme im Dreieck", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Außenwinkel", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Alle vier Winkel am Geradenkreuz", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — An geschnittenen Parallelen", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Winkelsumme im Vieleck", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Winkelsumme im Dreieck", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Winkel mit einer Bedingung", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Außenwinkel", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Drei Winkel an Parallelen", generate: generateAufgabe8 },
   ]);
 }
 

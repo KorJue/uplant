@@ -139,12 +139,41 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — 1. Strahlensatz. m ∈ 2..4, p ∈ 3..9, q ∈ 3..9 mit Ausweichen
+  // Aufgabe 2 — den Streckfaktor selbst bestimmen, hier auch für k < 1. Gemessen mit
+  // tests/werkzeug-streuung.js: 65 verschiedene in 200 Würfen, zurückgerechnet rund 69
+  // Kandidaten. Die nachgebildete Verteilung ergibt bei 30 Zügen E = 24,7 und ein
+  // 10⁻⁴-Quantil von 18; angesetzt wird die vorsichtigere Rechnung mit 0,8 · n — 16.
+  let kleinerEins = 0, groesserEins = 0;
+  await pruefeAufgabe(page, bericht, {
+    nr: 2, name: "A2 Streckfaktor bestimmen", runden: 30, mindestensVerschieden: 16,
+    deute: (frage) => {
+      const m = frage.match(/Strecke ist (\d+) cm lang.*?Bildstrecke (\d+) cm lang/);
+      if (!m) return null;
+      const a = Number(m[1]), bild = Number(m[2]);
+      const k = bild / a;
+      pruefe([0.25, 0.5, 0.75, 1.5, 2, 2.5, 3, 4].some((v) => Math.abs(v - k) < 1e-9),
+        `A2: k = ${k} ist keiner der vorgesehenen Streckfaktoren — „${frage}“`);
+      if (k < 1) kleinerEins++; else groesserEins++;
+      return {
+        richtig: k,
+        toleranz: 0.0005,
+        falsch: [
+          [a / bild, "Original durch Bild"],
+          [bild - a, "Differenz"],
+          [a - bild, "verkehrt herum"],
+        ],
+      };
+    },
+  });
+  pruefe(kleinerEins > 0 && groesserEins > 0,
+    `A2: in 30 Zügen war k ${kleinerEins}-mal kleiner und ${groesserEins}-mal größer als 1 — beide Fälle müssen vorkommen`);
+
+  // Aufgabe 3 — 1. Strahlensatz. m ∈ 2..4, p ∈ 3..9, q ∈ 3..9 mit Ausweichen
   // bei q = p; die Fassungen sind dadurch ungleich wahrscheinlich. Simuliert
   // man den Generator, ist bei 30 Zügen E = 27,0 und σ = 1,5 (Quantil 10⁻⁴
   // bei 21) — Schranke 20.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Strahlensatz", runden: 30, mindestensVerschieden: 20,
+    nr: 3, name: "A3 1. Strahlensatz", runden: 30, mindestensVerschieden: 20,
     deute: (frage) => {
       const m = frage.match(/ZA = (\d+) cm, ZA. = (\d+) cm und ZB = (\d+) cm/);
       if (!m) return null;
@@ -160,21 +189,46 @@ async function aufgaben(page) {
           [q / faktor, "umgekehrt"],
         ],
         pruefe: (f, rueck) => {
-          pruefe(Number.isInteger(faktor), `A2: ZA' : ZA = ${zas} : ${p} ist nicht ganzzahlig — „${f}“`);
+          pruefe(Number.isInteger(faktor), `A3: ZA' : ZA = ${zas} : ${p} ist nicht ganzzahlig — „${f}“`);
           // Der Fehlerwert muss von der Lösung verschieden sein, sonst wäre er
           // nicht diagnostizierbar: q·m = q + p(m−1) gilt genau für q = p.
-          pruefe(q !== p, `A2: ZB = ZA = ${p} cm macht den Differenzfehler unsichtbar — „${f}“`);
+          pruefe(q !== p, `A3: ZB = ZA = ${p} cm macht den Differenzfehler unsichtbar — „${f}“`);
           pruefe(rueck.includes("1. Strahlensatz"),
-            `A2: die Musterlösung benennt den Strahlensatz nicht — „${f}“`);
+            `A3: die Musterlösung benennt den Strahlensatz nicht — „${f}“`);
         },
       };
     },
   });
 
-  // Aufgabe 3 — k aus zwei Seiten, dann die Fläche mit k². k ∈ 2..4, a ∈ 3..9,
+  // Aufgabe 4 — 2. Strahlensatz: die gesuchte Strecke liegt auf den Parallelen. Gemessen: 104
+  // verschiedene in 200 Würfen, zurückgerechnet rund 134 Kandidaten. Schranke: simuliertes
+  // 10⁻⁴-Quantil bei 30 Zügen für 0,8 · n — 19.
+  await pruefeAufgabe(page, bericht, {
+    nr: 4, name: "A4 2. Strahlensatz", runden: 30, mindestensVerschieden: 19,
+    deute: (frage) => {
+      const m = frage.match(/ZA = (\d+) cm, ZA. = (\d+) cm und die Strecke AB = (\d+) cm/);
+      if (!m) return null;
+      const [p, zas, q] = m.slice(1).map(Number);
+      const faktor = zas / p;
+      pruefe(Number.isInteger(faktor), `A4: ZA' : ZA = ${zas} : ${p} ist nicht ganzzahlig — „${frage}“`);
+      pruefe(q !== p, `A4: AB = ZA = ${p} cm macht den Differenzfehler unsichtbar — „${frage}“`);
+      return {
+        felder: [faktor, q * faktor],
+        toleranz: 0.0005,
+        falschFelder: [
+          [0, zas - p, "Differenz"],
+          [0, p / zas, "umgekehrt"],
+          [1, q + (zas - p), "Differenz"],
+          [1, q / faktor, "länger"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 5 — k aus zwei Seiten, dann die Fläche mit k². k ∈ 2..4, a ∈ 3..9,
   // A gerade aus 4..30: bei 30 Zügen E = 28,5, σ = 1,2, Quantil 10⁻⁴ bei 23.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Fläche mit k²", runden: 30, mindestensVerschieden: 22,
+    nr: 5, name: "A5 Fläche mit k²", runden: 30, mindestensVerschieden: 22,
     deute: (frage) => {
       const m = frage.match(/Seite (\d+) cm lang.*?Seite (\d+) cm lang.*?Flächeninhalt (\d+) cm²/);
       if (!m) return null;
@@ -189,20 +243,52 @@ async function aufgaben(page) {
           [A + (as - a), "Differenz"],
         ],
         pruefe: (f) => {
-          pruefe(Number.isInteger(k), `A3: ${as} : ${a} ist kein ganzzahliger Streckfaktor — „${f}“`);
+          pruefe(Number.isInteger(k), `A5: ${as} : ${a} ist kein ganzzahliger Streckfaktor — „${f}“`);
           // A·k und A + a(k−1) fallen genau für A = a zusammen; die Aufgabe
           // schließt das aus, damit beide Fehler unterscheidbar bleiben.
-          pruefe(A !== a, `A3: A = a = ${a} macht zwei Fehler ununterscheidbar — „${f}“`);
+          pruefe(A !== a, `A5: A = a = ${a} macht zwei Fehler ununterscheidbar — „${f}“`);
         },
       };
     },
   });
 
-  // Aufgabe 4 — Maßstab, Fläche mit k², dann cm² → m². Drei Maßstäbe mit 6, 3
+  // Aufgabe 6 — rückwärts vom Flächen- oder Volumenfaktor auf k. Gemessen: 78 verschiedene in 200
+  // Würfen, zurückgerechnet rund 86 Kandidaten. Die nachgebildete Verteilung ergibt bei 30 Zügen
+  // E = 25,6 und ein 10⁻⁴-Quantil von 19; angesetzt wird die vorsichtigere Rechnung mit
+  // 0,8 · n — 18.
+  const wurzeln = new Set();
+  await pruefeAufgabe(page, bericht, {
+    nr: 6, name: "A6 vom Faktor zur Länge", runden: 30, mindestensVerschieden: 18,
+    deute: (frage) => {
+      const m = frage.match(/(Oberfläche|Volumen) des größeren ist (\d+)-mal so groß.*?Kante des kleineren Körpers ist (\d+) cm/);
+      if (!m) return null;
+      const ueberFlaeche = m[1] === "Oberfläche";
+      const faktor = Number(m[2]), a = Number(m[3]);
+      // Unabhängig nachgerechnet: k ist die zweite beziehungsweise dritte Wurzel aus dem Faktor.
+      const k = Math.round(ueberFlaeche ? Math.sqrt(faktor) : Math.cbrt(faktor));
+      pruefe(ueberFlaeche ? k * k === faktor : k * k * k === faktor,
+        `A6: ${faktor} ist keine ${ueberFlaeche ? "Quadrat" : "Kubik"}zahl — „${frage}“`);
+      wurzeln.add(m[1]);
+      return {
+        felder: [k, a * k],
+        toleranz: 0.0005,
+        falschFelder: [
+          [0, faktor, ueberFlaeche ? "Faktor für die Oberfläche" : "Faktor für das Volumen"],
+          [0, faktor / (ueberFlaeche ? 2 : 3), "Wurzelziehen"],
+          [1, a * faktor, "gehört zu"],
+          [1, a + k, "Zuschlag"],
+        ],
+      };
+    },
+  });
+  pruefe(wurzeln.size === 2,
+    "A6: in 30 Zügen kam nur eine der beiden Fassungen (Oberfläche / Volumen) vor");
+
+  // Aufgabe 7 — Maßstab, Fläche mit k², dann cm² → m². Drei Maßstäbe mit 6, 3
   // und 3 Längen, dazu 10 Flächen: bei 30 Zügen E = 26,3 und σ = 1,6,
   // Quantil 10⁻⁴ bei 20 — Schranke 19.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Modellauto", runden: 30, mindestensVerschieden: 19,
+    nr: 7, name: "A7 Modellauto", runden: 30, mindestensVerschieden: 19,
     deute: (frage) => {
       const m = frage.match(/ist (\d+) cm lang, das echte Auto ([\d,]+) m.*?beträgt (\d+) cm²/);
       if (!m) return null;
@@ -225,12 +311,44 @@ async function aufgaben(page) {
         ],
         pruefe: (f, rueck) => {
           pruefe(Math.abs(R * 100 - L * k) < 1e-9,
-            `A4: ${R} m sind nicht ${L} cm · ${k} — „${f}“`);
+            `A7: ${R} m sind nicht ${L} cm · ${k} — „${f}“`);
           // Konstruktiv gewählt: Die gesuchte Fläche muss ganzzahlig sein.
-          pruefe(Number.isInteger(Z), `A4: die Lösung ${Z} m² ist nicht ganzzahlig — „${f}“`);
+          pruefe(Number.isInteger(Z), `A7: die Lösung ${Z} m² ist nicht ganzzahlig — „${f}“`);
           pruefe(rueck.includes("10 000"),
-            `A4: die Musterlösung nennt die Umrechnung 1 m² = 10 000 cm² nicht — „${f}“`);
+            `A7: die Musterlösung nennt die Umrechnung 1 m² = 10 000 cm² nicht — „${f}“`);
         },
+      };
+    },
+  });
+
+  // Aufgabe 8 — k, k² und k³ an einem Quader. Gemessen: 165 verschiedene in 200 Würfen,
+  // zurückgerechnet rund 500 Kandidaten. Schranke: simuliertes 10⁻⁴-Quantil bei 30 Zügen für
+  // 0,8 · n — 24.
+  await pruefeAufgabe(page, bericht, {
+    nr: 8, name: "A8 zwei ähnliche Behälter", runden: 30, mindestensVerschieden: 24,
+    deute: (frage) => {
+      const m = frage.match(/kleinere ist (\d+) cm lang, (\d+) cm breit und (\d+) cm hoch.*?größere ist (\d+) cm hoch/);
+      if (!m) return null;
+      const [l, b, h, hGross] = m.slice(1).map(Number);
+      const k = hGross / h;
+      // Oberfläche und Volumen werden aus den Kantenlängen nachgerechnet, nicht aus der Seite
+      // übernommen — nur so prüft der Test wirklich etwas.
+      const o1 = 2 * (l * b + l * h + b * h);
+      const v1 = l * b * h;
+      pruefe(Number.isInteger(k), `A8: ${hGross} : ${h} ist kein ganzzahliger Streckfaktor — „${frage}“`);
+      return {
+        felder: [k, o1 * k * k, (v1 * k * k * k) / 1000],
+        toleranz: 0.005,
+        falschFelder: [
+          [0, hGross - h, "Differenz"],
+          [0, h / hGross, "umgekehrt"],
+          [1, o1, "kleineren"],
+          [1, o1 * k, "nur mit k"],
+          [1, o1 * k * k * k, "k³"],
+          [2, v1 * k * k * k, "cm³"],
+          [2, (v1 * k * k) / 1000, "k² gestreckt"],
+          [2, v1 / 1000, "kleineren"],
+        ],
       };
     },
   });

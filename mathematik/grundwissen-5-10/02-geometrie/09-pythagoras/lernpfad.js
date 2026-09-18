@@ -675,6 +675,11 @@ function generateAufgabe1() {
         return `Du hast <strong>subtrahiert</strong>. Gesucht ist hier die Hypotenuse, also die längste Seite — dafür werden die Quadrate addiert.`;
       return `Setze in a² + b² = c² ein und ziehe am Ende die Wurzel.`;
     },
+    tipps: [
+      "Der Satz des Pythagoras verbindet die <em>Quadrate</em> der Seiten, nicht die Längen selbst.",
+      `Gesucht ist die Hypotenuse, also wird addiert: c² = ${num(a)}² + ${num(b)}².`,
+      `c² = ${num(a * a)} + ${num(b * b)} = ${num(c * c)} — jetzt fehlt nur noch die Wurzel.`,
+    ],
     musterloesungHtml:
       `c² = a² + b² = ${num(a)}² + ${num(b)}² = ${num(a * a)} + ${num(b * b)} = <strong>${num(c * c)}</strong><br>` +
       `c = √${num(c * c)} = <strong>${num(c)} cm</strong>`,
@@ -699,6 +704,11 @@ function generateAufgabe2() {
         return `Du hast <strong>addiert</strong>. Addiert wird nur, wenn die Hypotenuse gesucht ist. Hier ist sie schon bekannt, die gesuchte Kathete ist also <em>kürzer</em> als ${num(c)} cm.`;
       return `Stelle a² + b² = c² nach b um: b² = c² − a².`;
     },
+    tipps: [
+      "Hier ist die Hypotenuse schon bekannt — die gesuchte Kathete muss also <em>kürzer</em> sein.",
+      "Stelle a² + b² = c² um: b² = c² − a².",
+      `b² = ${num(c * c)} − ${num(a * a)} = ${num(b * b)} — jetzt noch die Wurzel ziehen.`,
+    ],
     musterloesungHtml:
       `Aus a² + b² = c² folgt b² = c² − a².<br>` +
       `b² = ${num(c)}² − ${num(a)}² = ${num(c * c)} − ${num(a * a)} = <strong>${num(b * b)}</strong><br>` +
@@ -734,6 +744,11 @@ function generateAufgabe3() {
           return `Du hast p · q = ${num(p * q)} ausgerechnet — das ist bereits <strong>h²</strong>. Es fehlt noch die Quadratwurzel.`;
         return `Höhensatz: h² = p · q.`;
       },
+      tipps: [
+        "Die Höhe über der Hypotenuse hängt mit den beiden Hypotenusenabschnitten zusammen — das ist der Höhensatz.",
+        "Er lautet h² = p · q: die Abschnitte werden <em>multipliziert</em>, nicht addiert.",
+        `h² = ${num(p)} · ${num(q)} = ${num(p * q)} — jetzt noch die Wurzel ziehen.`,
+      ],
       musterloesungHtml:
         `Höhensatz: h² = p · q = ${num(p)} · ${num(q)} = <strong>${num(p * q)}</strong><br>` +
         `h = √${num(p * q)} = <strong>${num(h)} cm</strong>`,
@@ -758,6 +773,11 @@ function generateAufgabe3() {
         return `Du hast mit dem <strong>falschen Abschnitt</strong> gerechnet. Zu a gehört p — der Abschnitt, der unter a liegt. Mit q käme die andere Kathete b heraus.`;
       return `Kathetensatz: a² = c · p.`;
     },
+    tipps: [
+      "Gesucht ist eine Kathete, gegeben sind die Hypotenuse und der Abschnitt darunter — das ist der Kathetensatz.",
+      "Er lautet a² = c · p, wobei p der Abschnitt ist, der <em>unter a</em> liegt.",
+      `a² = ${num(c)} · ${num(p)} = ${num(a * a)} — jetzt noch die Wurzel ziehen.`,
+    ],
     musterloesungHtml:
       `Kathetensatz: a² = c · p = ${num(c)} · ${num(p)} = <strong>${num(a * a)}</strong><br>` +
       `a = √${num(a * a)} = <strong>${num(a)} cm</strong>`,
@@ -799,6 +819,11 @@ function generateAufgabe4() {
         return `Du hast nur zwei der drei Kanten verwendet. In die Raumdiagonale gehen <strong>alle drei</strong> ein: e² = l² + b² + h².`;
       return `Zwei Schritte: erst die Bodendiagonale d² = l² + b², dann e² = d² + h².`;
     },
+    tipps: [
+      "Der Stab liegt in der Kiste schräg von einer Ecke zur gegenüberliegenden — gesucht ist die Raumdiagonale.",
+      `Wende den Satz zweimal an: zuerst am Boden, d² = ${num(l)}² + ${num(b)}² = ${num(boden)}.`,
+      `Dann steht die Bodendiagonale senkrecht auf der Höhe: e² = ${num(boden)} + ${num(h)}².`,
+    ],
     musterloesungHtml:
       `<strong>1. Bodendiagonale:</strong> d² = l² + b² = ${num(l)}² + ${num(b)}² = ${num(l * l)} + ${num(b * b)} = <strong>${num(boden)}</strong><br>` +
       `<strong>2. Raumdiagonale:</strong> Die Bodendiagonale steht senkrecht auf der Höhe, also gilt<br>` +
@@ -808,12 +833,239 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 2 — die Umkehrung: aus den drei Seiten auf den rechten Winkel schließen. Konstruktiv
+// entsteht das Gegenbeispiel aus einem echten Tripel, dessen längste Seite um 1 verändert wird —
+// dann ist c² ≠ a² + b² garantiert, und die Dreiecksungleichung bleibt erfüllt.
+function generateAufgabe2b() {
+  const [x, y, z] = pick(TRIPEL);
+  const t = randInt(1, 3);
+  const rechtwinklig = Math.random() < 0.5;
+  const dritte = rechtwinklig ? z * t : z * t + pick([-1, 1]);
+  // Die beiden Katheten werden vertauscht, damit die längste Seite nicht immer hinten steht.
+  const [s1, s2] = Math.random() < 0.5 ? [x * t, y * t] : [y * t, x * t];
+  const seiten = [s1, s2, dritte];
+  const laengste = Math.max(...seiten);
+  const rest = seiten.filter((s, i) => i !== seiten.indexOf(laengste));
+  const quadratsumme = rest.reduce((sum, s) => sum + s * s, 0);
+  const passt = quadratsumme === laengste * laengste;
+  return {
+    promptHtml:
+      `Ein Dreieck hat die Seiten <strong>${num(s1)} cm</strong>, <strong>${num(s2)} cm</strong> und <strong>${num(dritte)} cm</strong>. ` +
+      `Ist es <strong>rechtwinklig</strong>?<br>` +
+      `<span class="progress-note">Antworte mit 1 für „ja“ oder 2 für „nein“.</span>`,
+    correct: passt ? 1 : 2,
+    tolerance: 0.01,
+    placeholder: "1 oder 2",
+    hinweis: (raw, val) => {
+      if (Math.abs(val - (passt ? 2 : 1)) < 0.01)
+        return `Rechne nach: Die längste Seite ist ${num(laengste)} cm, also ${num(laengste)}² = ${num(laengste * laengste)}. ` +
+          `Die beiden anderen ergeben ${rest.map((s) => `${num(s)}²`).join(" + ")} = ${num(quadratsumme)}. ` +
+          `${passt ? "Beide Zahlen sind gleich — der Winkel ist also recht." : "Die Zahlen sind verschieden — ein rechter Winkel kommt hier nicht vor."}`;
+      return "";
+    },
+    tipps: [
+      "Die Umkehrung des Satzes gilt auch: Stimmt a² + b² = c², dann ist das Dreieck rechtwinklig.",
+      "Dabei muss c die <strong>längste</strong> Seite sein — der rechte Winkel liegt ihr gegenüber.",
+      `Hier ist ${num(laengste)} cm die längste Seite. Vergleiche ${num(laengste * laengste)} mit ${rest.map((s) => `${num(s)}²`).join(" + ")}.`,
+    ],
+    musterloesungHtml:
+      `Die längste Seite ist ${num(laengste)} cm — ihr läge der rechte Winkel gegenüber.<br>` +
+      `${rest.map((s) => `${num(s)}²`).join(" + ")} = ${rest.map((s) => num(s * s)).join(" + ")} = <strong>${num(quadratsumme)}</strong><br>` +
+      `${num(laengste)}² = <strong>${num(laengste * laengste)}</strong><br>` +
+      `<span class="du-urteil ${passt ? "ja" : "nein"}">${passt
+        ? "Beide Seiten der Gleichung stimmen überein — das Dreieck ist rechtwinklig (1)."
+        : "Die beiden Zahlen sind verschieden — das Dreieck ist nicht rechtwinklig (2)."}</span><br>` +
+      `<span class="progress-note">Ohne Rechnung lässt sich das nicht entscheiden: ${passt
+        ? "Auch ein Dreieck mit ganz ähnlichen Maßen kann schiefwinklig sein."
+        : `Die Seiten liegen nur um 1 cm neben einem echten pythagoreischen Tripel — für den rechten Winkel genügt „fast“ nicht.`}</span>`,
+  };
+}
+
+// Aufgabe 4 — Abstand zweier Punkte. Der Satz des Pythagoras wird hier nicht an einer gezeichneten
+// Figur angewendet, sondern an einem Steigungsdreieck, das man sich erst denken muss.
+// Für die Punkte im Koordinatensystem werden nur Tripel mit handlichen Katheten verwendet —
+// sonst lägen die Punkte weit außerhalb jedes gezeichneten Gitters.
+const PUNKT_TRIPEL = [[3, 4, 5], [6, 8, 10], [9, 12, 15], [5, 12, 13], [8, 15, 17], [20, 21, 29], [7, 24, 25]];
+
+function generateAufgabe4b() {
+  const [x, y, z] = pick(PUNKT_TRIPEL);
+  const t = 1;
+  const [dx, dy] = Math.random() < 0.5 ? [x * t, y * t] : [y * t, x * t];
+  const x1 = randInt(-8, 8), y1 = randInt(-8, 8);
+  const x2 = x1 + (Math.random() < 0.5 ? dx : -dx);
+  const y2 = y1 + (Math.random() < 0.5 ? dy : -dy);
+  const koord = (v) => (v < 0 ? `−${num(-v)}` : num(v));
+  return {
+    promptHtml:
+      `Im Koordinatensystem liegen die Punkte <strong>P(${koord(x1)} | ${koord(y1)})</strong> und ` +
+      `<strong>Q(${koord(x2)} | ${koord(y2)})</strong>. Eine Einheit entspricht 1 cm.`,
+    felder: [
+      {
+        name: "Waagerechter Abstand", soll: dx, einheit: "Einheiten", toleranz: 0.01,
+        hinweis: (roh, val) => (Math.abs(val - (x1 + x2)) < 0.01 && x1 * x2 < 0
+          ? "Bei verschiedenen Vorzeichen wird nicht addiert: Der Abstand ist der Betrag der <strong>Differenz</strong> der x-Werte."
+          : ""),
+      },
+      {
+        name: "Senkrechter Abstand", soll: dy, einheit: "Einheiten", toleranz: 0.01,
+        hinweis: (roh, val) => (Math.abs(val - dx) < 0.01
+          ? "Das ist der waagerechte Abstand. Für den senkrechten zählen die <strong>y</strong>-Werte."
+          : ""),
+      },
+      {
+        name: "Länge der Strecke PQ", soll: z * t, einheit: "cm", toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (dx + dy)) < 0.01) return "Du hast die beiden Abstände <strong>addiert</strong>. Das wäre der Weg „erst waagerecht, dann senkrecht“ — die Strecke PQ ist die Abkürzung und damit kürzer.";
+          if (Math.abs(val - (dx * dx + dy * dy)) < 0.01) return `${num(dx * dx + dy * dy)} ist bereits <strong>PQ²</strong>. Es fehlt noch die Quadratwurzel.`;
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Zeichne dir ein rechtwinkliges Dreieck: von P waagerecht, dann senkrecht zu Q.",
+      "Die beiden Katheten sind die Unterschiede der x- und der y-Werte — jeweils als Abstand, also ohne Vorzeichen.",
+      "PQ ist die Hypotenuse: PQ² = (waagerecht)² + (senkrecht)².",
+    ],
+    musterloesungHtml:
+      `① waagerecht: |${koord(x2)} − (${koord(x1)})| = <strong>${num(dx)}</strong><br>` +
+      `② senkrecht: |${koord(y2)} − (${koord(y1)})| = <strong>${num(dy)}</strong><br>` +
+      `③ PQ² = ${num(dx)}² + ${num(dy)}² = ${num(dx * dx)} + ${num(dy * dy)} = ${num((z * t) * (z * t))}<br>` +
+      `&nbsp;&nbsp;&nbsp;PQ = √${num((z * t) * (z * t))} = <strong>${num(z * t)} cm</strong><br>` +
+      `<span class="progress-note">Das Steigungsdreieck ist in keiner Zeichnung eingetragen — man muss es sich denken. ` +
+      `Genau darin liegt die Übung: Der Satz des Pythagoras ist auch dort anwendbar, wo kein Dreieck zu sehen ist.</span>`,
+  };
+}
+
+// Aufgabe 6 — gleichschenkliges Dreieck. Die Höhe halbiert die Basis; erst dadurch entsteht das
+// rechtwinklige Dreieck, in dem gerechnet werden kann.
+// Halbe Basis und Höhe sind die Katheten, der Schenkel ist die Hypotenuse. Die Liste enthält
+// auch Vielfache der Grundtripel — das erhöht die Zahl der Fassungen, ohne dass die Maße
+// unanschaulich groß werden.
+const GLEICHSCHENKLIG = [
+  [3, 4, 5], [6, 8, 10], [9, 12, 15], [12, 16, 20], [15, 20, 25], [5, 12, 13],
+  [10, 24, 26], [8, 15, 17], [20, 21, 29], [7, 24, 25], [18, 24, 30],
+];
+
+function generateAufgabe6() {
+  const [x, y, z] = pick(GLEICHSCHENKLIG);
+  const t = randInt(1, 3);
+  // Halbe Basis und Höhe sind die beiden Katheten, der Schenkel ist die Hypotenuse.
+  const [halb, hoehe] = Math.random() < 0.5 ? [x * t, y * t] : [y * t, x * t];
+  const basis = 2 * halb, schenkel = z * t;
+  const flaeche = halb * hoehe; // = ½ · basis · hoehe
+  return {
+    promptHtml:
+      `Ein <strong>gleichschenkliges</strong> Dreieck hat die Basis <strong>c = ${num(basis)} cm</strong> ` +
+      `und die Schenkel <strong>a = b = ${num(schenkel)} cm</strong>.`,
+    felder: [
+      {
+        name: "Höhe auf die Basis", soll: hoehe, einheit: "cm", toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - Math.sqrt(Math.abs(schenkel * schenkel - basis * basis))) < 0.05)
+            return `Du hast mit der <strong>ganzen</strong> Basis gerechnet. Die Höhe halbiert die Basis — im rechtwinkligen Teildreieck ist die Kathete nur ${num(halb)} cm lang.`;
+          if (Math.abs(val - (schenkel - halb)) < 0.01)
+            return "Du hast die <strong>Längen</strong> subtrahiert. Subtrahiert werden die Quadrate: h² = a² − (c : 2)².";
+          if (Math.abs(val - (schenkel * schenkel - halb * halb)) < 0.01)
+            return `${num(schenkel * schenkel - halb * halb)} ist bereits <strong>h²</strong>. Es fehlt noch die Quadratwurzel.`;
+          return "";
+        },
+      },
+      {
+        name: "Flächeninhalt", soll: flaeche, einheit: "cm²", toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - basis * hoehe) < 0.01) return "Du hast die <strong>Halbierung</strong> vergessen: A = ½ · c · h.";
+          if (Math.abs(val - (basis * schenkel) / 2) < 0.01) return "Du hast mit dem <strong>Schenkel</strong> gerechnet. In die Flächenformel gehört die Höhe — der senkrechte Abstand.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Im gleichschenkligen Dreieck ist die Höhe auf die Basis zugleich die Mittelsenkrechte — sie <strong>halbiert</strong> die Basis.",
+      `So entsteht ein rechtwinkliges Dreieck mit den Katheten ${num(halb)} cm und h sowie der Hypotenuse ${num(schenkel)} cm.`,
+      "Also h² = a² − (c : 2)², und danach A = ½ · c · h.",
+    ],
+    musterloesungHtml:
+      `① Die Höhe halbiert die Basis: c : 2 = ${num(basis)} : 2 = <strong>${num(halb)} cm</strong><br>` +
+      `② Im rechtwinkligen Teildreieck: h² = ${num(schenkel)}² − ${num(halb)}² = ${num(schenkel * schenkel)} − ${num(halb * halb)} = ${num(hoehe * hoehe)}<br>` +
+      `&nbsp;&nbsp;&nbsp;h = √${num(hoehe * hoehe)} = <strong>${num(hoehe)} cm</strong><br>` +
+      `③ A = ½ · c · h = ½ · ${num(basis)} · ${num(hoehe)} = <strong>${num(flaeche)} cm²</strong><br>` +
+      `<span class="progress-note">Der Schenkel ist die <em>Hypotenuse</em> des Teildreiecks, nicht seine Kathete — deshalb wird hier subtrahiert. ` +
+      `Probe: ${num(halb)}² + ${num(hoehe)}² = ${num(halb * halb)} + ${num(hoehe * hoehe)} = ${num(schenkel * schenkel)} = ${num(schenkel)}² ✓</span>`,
+  };
+}
+
+// Aufgabe 8 — ein Satteldach: Sparrenlänge, Dachfläche, Kosten. Die Maße stammen aus
+// pythagoreischen Tripeln, damit die Sparrenlänge ganzzahlig bleibt; die breitere Kathete wird
+// zur halben Hausbreite, sodass das Dach nie steiler als 45° steht.
+const DACH_TRIPEL = [[3, 4, 5], [6, 8, 10], [9, 12, 15], [5, 12, 13], [8, 15, 17]];
+
+function generateAufgabe8() {
+  const [x, y, z] = pick(DACH_TRIPEL);
+  const halb = Math.max(x, y), hoehe = Math.min(x, y), sparre = z;
+  const breite = 2 * halb;
+  const laenge = randInt(6, 20);
+  const preis = randInt(20, 60);
+  const flaeche = 2 * sparre * laenge;
+  const kosten = flaeche * preis;
+  return {
+    promptHtml:
+      `Ein Haus mit <strong>Satteldach</strong> ist <strong>${num(breite)} m</strong> breit und <strong>${num(laenge)} m</strong> lang. ` +
+      `Der First liegt <strong>${num(hoehe)} m</strong> über dem Dachansatz.<br>` +
+      `Das Dach soll für <strong>${num(preis)} € je Quadratmeter</strong> neu gedeckt werden.`,
+    felder: [
+      {
+        name: "Länge eines Sparrens (vom Dachansatz zum First)", soll: sparre, einheit: "m", toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - Math.sqrt(breite * breite + hoehe * hoehe)) < 0.05)
+            return `Du hast mit der <strong>ganzen</strong> Hausbreite gerechnet. Ein Sparren überspannt nur die halbe Breite, also ${num(halb)} m.`;
+          if (Math.abs(val - (halb + hoehe)) < 0.01)
+            return "Du hast die beiden Längen <strong>addiert</strong>. Addiert werden die Quadrate.";
+          if (Math.abs(val - (halb * halb + hoehe * hoehe)) < 0.01)
+            return `${num(halb * halb + hoehe * hoehe)} ist bereits das <strong>Quadrat</strong> der Sparrenlänge. Es fehlt die Wurzel.`;
+          return "";
+        },
+      },
+      {
+        name: "Gesamte Dachfläche", soll: flaeche, einheit: "m²", toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - sparre * laenge) < 0.01) return "Das ist erst <strong>eine</strong> Dachhälfte. Ein Satteldach hat zwei.";
+          if (Math.abs(val - breite * laenge) < 0.01) return "Das ist die <strong>Grundfläche</strong> des Hauses. Das schräge Dach ist größer — deshalb wird ja mit der Sparrenlänge gerechnet.";
+          return "";
+        },
+      },
+      {
+        name: "Kosten", soll: kosten, einheit: "€", toleranz: 0.01,
+        hinweis: (roh, val) => (Math.abs(val - sparre * laenge * preis) < 0.01
+          ? "Du hast nur eine Dachhälfte bezahlt."
+          : ""),
+      },
+    ],
+    tipps: [
+      "Schneide das Haus quer durch: Der Giebel ist ein gleichschenkliges Dreieck, ein Sparren ist seine Schenkelseite.",
+      `Die Kathete ist die <em>halbe</em> Hausbreite, also ${num(halb)} m, die andere ist die Firsthöhe ${num(hoehe)} m.`,
+      "Jede Dachhälfte ist ein Rechteck aus Sparrenlänge und Hauslänge — und es gibt zwei davon.",
+    ],
+    musterloesungHtml:
+      `① halbe Hausbreite: ${num(breite)} m : 2 = ${num(halb)} m<br>` +
+      `&nbsp;&nbsp;&nbsp;Sparren: s² = ${num(halb)}² + ${num(hoehe)}² = ${num(halb * halb)} + ${num(hoehe * hoehe)} = ${num(sparre * sparre)} ⇒ s = <strong>${num(sparre)} m</strong><br>` +
+      `② eine Dachhälfte: ${num(sparre)} m · ${num(laenge)} m = ${num(sparre * laenge)} m²<br>` +
+      `&nbsp;&nbsp;&nbsp;beide Hälften: 2 · ${num(sparre * laenge)} = <strong>${num(flaeche)} m²</strong><br>` +
+      `③ Kosten: ${num(flaeche)} · ${num(preis)} € = <strong>${num(kosten)} €</strong><br>` +
+      `<span class="progress-note">Zum Vergleich: Die Grundfläche des Hauses beträgt nur ${num(breite * laenge)} m². ` +
+      `Das Dach ist um ${num(flaeche - breite * laenge)} m² größer — wer mit der Grundfläche rechnet, bestellt zu wenig Material.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Hypotenuse berechnen", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — fehlende Kathete", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Höhensatz und Kathetensatz", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Raumdiagonale einer Kiste", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Ist es rechtwinklig?", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — fehlende Kathete", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Abstand zweier Punkte", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Höhensatz und Kathetensatz", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Gleichschenkliges Dreieck", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Raumdiagonale einer Kiste", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Satteldach decken", generate: generateAufgabe8 },
   ]);
 }
 

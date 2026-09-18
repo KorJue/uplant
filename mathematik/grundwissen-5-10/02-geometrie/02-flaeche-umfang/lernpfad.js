@@ -467,6 +467,13 @@ function generateAufgabe1() {
         : trifft(val, a + b)
           ? "Du hast nur einmal Länge plus Breite gerechnet. Der Umfang umfasst <strong>alle vier</strong> Seiten."
           : "",
+    tipps: [
+      nachFlaeche
+        ? "Der Flächeninhalt sagt, wie viele Quadratzentimeter in das Rechteck passen."
+        : "Der Umfang ist die Länge des Randes — einmal ganz herum.",
+      nachFlaeche ? "A = a · b" : "u = 2 · (a + b) — jede Seitenlänge kommt zweimal vor.",
+      nachFlaeche ? `Also ${a} · ${b}.` : `Also 2 · (${a} + ${b}).`,
+    ],
     musterloesungHtml: nachFlaeche
       ? `<span class="legende-flaeche">A = a · b = ${a} cm · ${b} cm = <strong>${A} cm²</strong></span><br><span class="progress-note">Zum Vergleich: Der Umfang wäre u = 2 · (${a} + ${b}) cm = ${u} cm — eine ganz andere Größe, in cm statt cm².</span>`
       : `<span class="legende-umfang">u = 2 · (a + b) = 2 · (${a} cm + ${b} cm) = 2 · ${a + b} cm = <strong>${u} cm</strong></span><br><span class="progress-note">Zum Vergleich: Der Flächeninhalt wäre A = ${a} · ${b} cm² = ${A} cm².</span>`,
@@ -496,6 +503,11 @@ function generateAufgabe2() {
     correct: ergebnis,
     tolerance: Math.max(1e-9, Math.abs(ergebnis) * 1e-9),
     placeholder: "Maßzahl in " + z.label,
+    tipps: [
+      "Bei Flächen ist jede Stufe <strong>100</strong> groß, nicht 10 — ein Quadrat wächst in zwei Richtungen.",
+      `Zwischen ${q.label} und ${z.label} liegen ${Math.abs(diff) / 2} Stufe${Math.abs(diff) / 2 > 1 ? "n" : ""}, der Faktor ist also ${faktor.toLocaleString("de-DE")}.`,
+      runter ? "Zur kleineren Einheit wird multipliziert." : "Zur größeren Einheit wird dividiert.",
+    ],
     hinweis: (raw, val) => {
       // Der klassische Fehler: mit dem Längenfaktor 10 statt dem Flächenfaktor 100 rechnen
       const mitLaengenfaktor = wert * Math.pow(10, diff / 2);
@@ -526,6 +538,11 @@ function generateAufgabe3() {
       `Eine L-förmige Fläche entsteht aus einem Rechteck von <strong>${a} cm × ${b} cm</strong>, aus dem an einer Ecke ein Rechteck von ` +
       `<strong>${c} cm × ${d} cm</strong> herausgeschnitten wurde. Wie groß ist der <strong>Flächeninhalt</strong> der L-Form in cm²?`,
     correct: A,
+    tipps: [
+      "Zeichne eine Skizze: ein großes Rechteck mit einer fehlenden Ecke.",
+      "Rechne die Fläche des ganzen Rechtecks aus — so, als wäre nichts herausgeschnitten.",
+      `Davon das herausgeschnittene Stück abziehen: ${a} · ${b} − ${c} · ${d}.`,
+    ],
     tolerance: 0.01,
     placeholder: "Flächeninhalt in cm²",
     hinweis: (raw, val) =>
@@ -574,6 +591,11 @@ function generateAufgabe4() {
         return "Du hast die beiden Preise vertauscht: Der Zaun wird nach dem <strong>Umfang</strong> (in m) berechnet, der Rasen nach dem <strong>Flächeninhalt</strong> (in m²).";
       return "";
     },
+    tipps: [
+      "Zwei Posten, zwei verschiedene Größen: Der Zaun läuft am Rand entlang, der Rasen bedeckt die Fläche.",
+      "„je Meter“ verlangt den Umfang, „je Quadratmeter“ den Flächeninhalt.",
+      `Also u = 2 · (${a} + ${b}) für den Zaun und A = ${a} · ${b} für den Rasen — beides mit seinem Preis multiplizieren und addieren.`,
+    ],
     musterloesungHtml:
       `① Zaun — dafür braucht man den <span class="legende-umfang">Umfang</span>:<br>` +
       `&nbsp;&nbsp;u = 2 · (${a} m + ${b} m) = ${u} m ⇒ ${u} · ${preisZaun} € = <strong>${num(kostenZaun)} €</strong><br>` +
@@ -584,12 +606,161 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 2 — beide Größen desselben Rechtecks in zwei Feldern. Flächeninhalt und Umfang werden
+// gern verwechselt; nebeneinander abgefragt fällt der Unterschied nicht mehr unter den Tisch.
+function generateAufgabe2b() {
+  const a = randInt(3, 18);
+  let b = randInt(2, 15);
+  // Gleiche Maßzahl für A und u ließe die beiden Felder ununterscheidbar werden.
+  if (a * b === 2 * (a + b)) b += 1;
+  const A = a * b, u = 2 * (a + b);
+  return {
+    promptHtml: `Ein Rechteck ist <strong>${a} cm</strong> lang und <strong>${b} cm</strong> breit.`,
+    felder: [
+      {
+        name: "Flächeninhalt", soll: A, einheit: "cm²", toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, u) ? "Das ist der Umfang. Der Flächeninhalt ist A = a · b." : ""),
+      },
+      {
+        name: "Umfang", soll: u, einheit: "cm", toleranz: 0.01,
+        hinweis: (roh, val) =>
+          trifft(val, A) ? "Das ist der Flächeninhalt. Der Umfang ist u = 2 · (a + b)."
+            : trifft(val, a + b) ? "Jede Seitenlänge kommt zweimal vor." : "",
+      },
+    ],
+    tipps: [
+      "Der Flächeninhalt sagt, wie viele Quadratzentimeter hineinpassen; der Umfang, wie lang der Rand ist.",
+      `A = a · b = ${a} · ${b}.`,
+      `u = 2 · (a + b) = 2 · (${a} + ${b}).`,
+    ],
+    musterloesungHtml:
+      `<span class="legende-flaeche">A = a · b = ${a} cm · ${b} cm = <strong>${A} cm²</strong></span><br>` +
+      `<span class="legende-umfang">u = 2 · (a + b) = 2 · ${a + b} cm = <strong>${u} cm</strong></span><br>` +
+      `<span class="progress-note">Die Einheiten verraten den Unterschied: cm² für eine Fläche, cm für eine Länge.</span>`,
+  };
+}
+
+// Aufgabe 4 — die fehlende Seitenlänge aus dem Flächeninhalt. Die Umkehrung zu Aufgabe 1: Aus
+// A = a · b wird b = A : a.
+function generateAufgabe4b() {
+  const a = randInt(3, 16);
+  const b = randInt(2, 14);
+  const A = a * b;
+  const nachUmfang = Math.random() < 0.4;
+  return {
+    promptHtml:
+      `Ein Rechteck hat den Flächeninhalt <strong>${A} cm²</strong>. Eine Seite ist <strong>${a} cm</strong> lang.<br>` +
+      (nachUmfang ? `Wie groß ist sein <strong>Umfang</strong>?` : `Wie lang ist die andere Seite?`),
+    correct: nachUmfang ? 2 * (a + b) : b,
+    tolerance: 0.01,
+    placeholder: nachUmfang ? "Umfang in cm" : "Länge in cm",
+    hinweis: (raw, val) =>
+      trifft(val, A - a)
+        ? "Hier wurde subtrahiert. Der Flächeninhalt entsteht durch Multiplizieren — rückwärts wird also dividiert."
+        : nachUmfang && trifft(val, b)
+          ? "Das ist die zweite Seitenlänge — der Umfang fehlt noch."
+          : "",
+    tipps: [
+      "Aus A = a · b wird rückwärts b = A : a.",
+      `Also ${A} : ${a}.`,
+      nachUmfang ? "Mit beiden Seitenlängen dann u = 2 · (a + b)." : "Probe: Länge mal Breite muss wieder den Flächeninhalt ergeben.",
+    ],
+    musterloesungHtml:
+      `① Zweite Seite: b = A : a = ${A} cm² : ${a} cm = <strong>${b} cm</strong><br>` +
+      (nachUmfang ? `② Umfang: u = 2 · (${a} + ${b}) cm = <strong>${2 * (a + b)} cm</strong><br>` : "") +
+      `Probe: ${a} cm · ${b} cm = ${A} cm² ✓`,
+  };
+}
+
+// Aufgabe 6 — gleicher Umfang, verschiedene Fläche (Abschnitt 3). Zwei Rechtecke mit demselben
+// Umfang; gefragt ist der Unterschied der Flächeninhalte — die Aussage des Abschnitts in Zahlen.
+function generateAufgabe6() {
+  const halbUmfang = randInt(10, 24);
+  let a1 = randInt(1, Math.floor(halbUmfang / 2));
+  let a2 = randInt(1, Math.floor(halbUmfang / 2));
+  if (a1 === a2) a2 = a1 === 1 ? a1 + 1 : a1 - 1;
+  const b1 = halbUmfang - a1, b2 = halbUmfang - a2;
+  const A1 = a1 * b1, A2 = a2 * b2;
+  const groesser = A1 >= A2 ? 1 : 2;
+  return {
+    promptHtml:
+      `Zwei Rechtecke haben denselben Umfang von <strong>${2 * halbUmfang} cm</strong>:<br>` +
+      `<span class="formula-block">Rechteck I: ${a1} cm × ${b1} cm &nbsp;&nbsp; Rechteck II: ${a2} cm × ${b2} cm</span>`,
+    felder: [
+      {
+        name: "Flächeninhalt von Rechteck I", soll: A1, einheit: "cm²", toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, 2 * (a1 + b1)) ? "Das ist der Umfang — er ist bei beiden gleich. Gefragt ist die Fläche." : ""),
+      },
+      { name: "Flächeninhalt von Rechteck II", soll: A2, einheit: "cm²", toleranz: 0.01 },
+      {
+        name: "Um wie viel cm² ist die größere Fläche größer?", soll: Math.abs(A1 - A2), einheit: "cm²", toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, A1 + A2) ? "Gefragt ist der Unterschied, nicht die Summe." : ""),
+      },
+    ],
+    tipps: [
+      "Rechne für jedes Rechteck getrennt A = a · b aus.",
+      "Der Umfang ist bei beiden gleich — daran ändert sich nichts.",
+      "Der Unterschied ist die größere Fläche minus die kleinere.",
+    ],
+    musterloesungHtml:
+      `Rechteck I: A = ${a1} · ${b1} = <strong>${A1} cm²</strong><br>` +
+      `Rechteck II: A = ${a2} · ${b2} = <strong>${A2} cm²</strong><br>` +
+      `Unterschied: ${Math.max(A1, A2)} − ${Math.min(A1, A2)} = <strong>${Math.abs(A1 - A2)} cm²</strong><br>` +
+      `<span class="progress-note">Beide haben den Umfang ${2 * halbUmfang} cm — trotzdem ist Rechteck ${groesser === 1 ? "I" : "II"} größer. ` +
+      `Gleicher Umfang bedeutet also nicht gleiche Fläche; am größten wird die Fläche, wenn die Seiten möglichst gleich lang sind.</span>`,
+  };
+}
+
+// Aufgabe 8 — ein Weg um ein Beet: Fläche und Umfang an zwei ineinanderliegenden Rechtecken.
+// Drei Felder, weil die Ringfläche eine Differenz zweier Flächen ist — und genau daran scheitert
+// es meistens.
+function generateAufgabe8() {
+  const a = randInt(6, 20), b = randInt(4, 16);
+  const rand = randInt(1, 4);
+  const aussenA = a + 2 * rand, aussenB = b + 2 * rand;
+  const innen = a * b, aussen = aussenA * aussenB;
+  const wegflaeche = aussen - innen;
+  return {
+    promptHtml:
+      `Ein rechteckiges Beet ist <strong>${a} m</strong> lang und <strong>${b} m</strong> breit. ` +
+      `Rundherum verläuft ein <strong>${rand} m</strong> breiter Weg.`,
+    felder: [
+      {
+        name: "Fläche des Beets", soll: innen, einheit: "m²", toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, 2 * (a + b)) ? "Das ist der Umfang des Beets." : ""),
+      },
+      {
+        name: "Fläche von Beet und Weg zusammen", soll: aussen, einheit: "m²", toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, (a + rand) * (b + rand)) ? `Der Weg liegt auf <em>beiden</em> Seiten — die Länge wächst um 2 · ${rand} m.` : ""),
+      },
+      {
+        name: "Fläche des Weges allein", soll: wegflaeche, einheit: "m²", toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, aussen) ? "Das ist die Gesamtfläche. Für den Weg allein muss das Beet abgezogen werden." : ""),
+      },
+    ],
+    tipps: [
+      "Zeichne eine Skizze: ein kleines Rechteck in einem größeren.",
+      `Der Weg liegt auf beiden Seiten — das äußere Rechteck ist also ${a} + 2 · ${rand} lang und ${b} + 2 · ${rand} breit.`,
+      "Die Wegfläche ist die große Fläche minus die kleine.",
+    ],
+    musterloesungHtml:
+      `① Beet: A = ${a} m · ${b} m = <strong>${innen} m²</strong><br>` +
+      `② Außen: (${a} + 2 · ${rand}) m · (${b} + 2 · ${rand}) m = ${aussenA} m · ${aussenB} m = <strong>${aussen} m²</strong><br>` +
+      `③ Weg: ${aussen} m² − ${innen} m² = <strong>${wegflaeche} m²</strong><br>` +
+      `<span class="progress-note">Der Weg ist ein Rahmen — seine Fläche lässt sich nicht mit einer einzigen Multiplikation bestimmen.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Rechteck: Fläche oder Umfang", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Flächeneinheiten umrechnen", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Zusammengesetzte Fläche", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Zaun und Rasen", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Fläche und Umfang nebeneinander", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Flächeneinheiten umrechnen", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Die fehlende Seitenlänge", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Zusammengesetzte Fläche", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Gleicher Umfang, andere Fläche", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Zaun und Rasen", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Ein Weg um das Beet", generate: generateAufgabe8 },
   ]);
 }
 
