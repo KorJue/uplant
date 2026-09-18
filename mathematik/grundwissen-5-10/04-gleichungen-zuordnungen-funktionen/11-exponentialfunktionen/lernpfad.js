@@ -853,6 +853,26 @@ function ohneKollision(kandidaten, werte, notfall, eps = 1e-9) {
   return gewaehlt;
 }
 
+// Dasselbe für Aufgaben mit mehreren Eingabefeldern: Kollidieren müssen die
+// Werte nur innerhalb eines Feldes, denn nur dort entscheidet die Zahl darüber,
+// welcher Hinweis erscheint. eps darf eine Zahl oder eine Liste sein.
+// NaN bedeutet "an dieser Stelle springt kein Hinweis an" und wird übergangen.
+function ohneFeldKollision(kandidaten, gruppen, eps = 1e-9) {
+  const sauber = kandidaten.filter((kk) => gruppen(kk).every((g, gi) => {
+    const e = Array.isArray(eps) ? eps[gi] : eps;
+    const echt = g.filter((x) => Number.isFinite(x));
+    return echt.every((x, i) => echt.every((y, j) => i === j || Math.abs(x - y) > e));
+  }));
+  if (!sauber.length) throw new Error("Aufgabengenerator ohne gültige Kandidaten");
+  return pick(sauber);
+}
+
+// Auf eine feste Stellenzahl gerundet — als Zahl, nicht als Text.
+function rund(x, stellen) {
+  const f = Math.pow(10, stellen);
+  return Math.round(x * f) / f;
+}
+
 // Die Faktoren werden als Bruch geführt, damit sich exakt entscheiden lässt,
 // wann a · qⁿ eine ganze Zahl ist. Mit Gleitkommazahlen wäre 0,1 + 0,2 ≠ 0,3
 // hier schon ein Problem.
@@ -898,6 +918,11 @@ function generateAufgabe1() {
       if (Math.abs(val - linear) < 0.5) return `Das wäre <em>lineares</em> Wachstum: immer derselbe Betrag dazu. Hier wird aber immer derselbe <em>Faktor</em> multipliziert.`;
       return `Nach ${num(k)} Schritten steht dort a · q<sup>${num(k)}</sup> = ${num(a)} · ${num(f.q, 2)}<sup>${num(k)}</sup>.`;
     },
+    tipps: [
+      `Bei exponentiellem Wachstum wird in <em>jedem</em> Schritt erneut mit q multipliziert — nach ${num(k)} Schritten also ${num(k)}-mal.`,
+      `Schritt für Schritt: ${num(a)} · ${num(f.q, 2)} = ${num(a * f.q)}, davon wieder ${num(f.q, 2)}-mal, und so fort.`,
+      `Kürzer schreibt man das als a · q<sup>${num(k)}</sup> = ${num(a)} · ${num(f.q, 2)}<sup>${num(k)}</sup>.`,
+    ],
     musterloesungHtml:
       `<strong>Formel:</strong> f(n) = a · q<sup>n</sup><br>` +
       `<strong>Einsetzen:</strong> ${num(a)} · ${num(f.q, 2)}<sup>${num(k)}</sup> = ${num(a)} · ${num(Math.pow(f.q, k), 6)} = <strong>${num(ende)}</strong><br>` +
@@ -907,8 +932,109 @@ function generateAufgabe1() {
   };
 }
 
-// Aufgabe 2 — Prozentsatz in den Faktor umrechnen und n Schritte rechnen.
+// Aufgabe 2 — linear oder exponentiell? Abschnitt 1 hatte keine Aufgabe, dabei
+// ist der Test an einer Wertetabelle die Grundlage von allem Weiteren:
+// gleiche Differenzen heißt linear, gleiche Quotienten heißt exponentiell.
 const A2_KANDIDATEN = (() => {
+  const liste = [];
+  // Linear: fester Zuwachs (auch negativ).
+  for (const a of [12, 16, 20, 24, 30, 36, 40, 48, 50, 60, 64, 72, 80, 90, 100, 120, 150, 200]) {
+    for (const dd of [-20, -15, -12, -10, -8, -6, -5, -4, 4, 5, 6, 8, 10, 12, 15, 20, 25, 30]) {
+      const werte = [0, 1, 2, 3].map((i) => a + dd * i);
+      if (werte.some((w) => w <= 0)) continue;
+      liste.push({ art: "linear", a, kenn: dd, werte, naechster: a + dd * 4 });
+    }
+  }
+  // Exponentiell: fester Faktor. Nur Faktoren, bei denen alle Werte ganz bleiben.
+  for (const a of [16, 24, 32, 48, 64, 80, 81, 96, 100, 125, 128, 160, 192, 200, 243, 256, 320, 400, 625, 1000]) {
+    for (const q of [0.5, 0.75, 0.8, 1.25, 1.5, 2, 2.5, 3]) {
+      const werte = [0, 1, 2, 3, 4].map((i) => a * Math.pow(q, i));
+      if (werte.some((w) => !Number.isInteger(w) || w <= 0 || w > 200000)) continue;
+      liste.push({ art: "exponentiell", a, kenn: q, werte: werte.slice(0, 4), naechster: werte[4] });
+    }
+  }
+  return liste;
+})();
+
+function generateAufgabe2() {
+  // Beide Arten gleich häufig — sonst rät man nach kurzer Zeit richtig. Aus der
+  // Bauart der Listen käme sonst nur jede fünfte Aufgabe exponentiell heraus.
+  const art = pick(["linear", "exponentiell"]);
+  const k = ohneFeldKollision(A2_KANDIDATEN.filter((v) => v.art === art), (v) => {
+    const d = v.werte[1] - v.werte[0];
+    const q = v.werte[1] / v.werte[0];
+    return [
+      // Feld 2: die Kenngröße — der jeweils andere Wert ist der klassische Irrtum.
+      [v.kenn, v.art === "linear" ? q : d],
+      // Feld 3: der nächste Wert; daneben der Wert, den die falsche Art ergäbe.
+      [v.naechster, v.art === "linear" ? rund(v.werte[3] * q, 2) : v.werte[3] + d],
+    ];
+  }, [0.006, 0.6]);
+  const { kenn, werte, naechster } = k;
+  const linear = art === "linear";
+  const d = werte[1] - werte[0];
+  const q = werte[1] / werte[0];
+  const andersHerum = linear ? rund(werte[3] * q, 2) : werte[3] + d;
+  const tabelle = `<table class="ex-tabelle"><tr><th>n</th>` +
+    werte.map((_, i) => `<td>${num(i)}</td>`).join("") + `</tr><tr><th>Wert</th>` +
+    werte.map((w) => `<td><strong>${num(w)}</strong></td>`).join("") + `</tr></table>`;
+  return {
+    promptHtml: `Eine Wertetabelle:<br>${tabelle}` +
+      `Untersuche, ob das Wachstum linear oder exponentiell ist.`,
+    felder: [
+      {
+        name: "Art (1 = linear, 2 = exponentiell)", soll: linear ? 1 : 2, toleranz: 0.25, platzhalter: "1 oder 2",
+        hinweis: () => linear
+          ? `Bilde beide Spalten: Die <strong>Differenzen</strong> sind ${werte.slice(1).map((w, i) => num(w - werte[i])).join(", ")} — immer dieselbe Zahl. Die Quotienten dagegen wechseln. Also <strong>linear</strong>.`
+          : `Bilde beide Spalten: Die <strong>Quotienten</strong> sind ${werte.slice(1).map((w, i) => num(w / werte[i], 2)).join(", ")} — immer dieselbe Zahl. Die Differenzen dagegen wechseln. Also <strong>exponentiell</strong>.`,
+      },
+      {
+        name: "gemeinsamer Zuwachs (linear) bzw. Faktor (exponentiell)",
+        soll: kenn, toleranz: 0.003, platzhalter: "Zahl",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (linear ? q : d)) < 0.003) return linear
+            ? `${num(q, 4)} ist der Quotient ${num(werte[1])} : ${num(werte[0])}. Er bleibt hier aber nicht gleich — konstant ist die <em>Differenz</em>.`
+            : `${num(d)} ist die Differenz ${num(werte[1])} − ${num(werte[0])}. Sie bleibt hier nicht gleich — konstant ist der <em>Quotient</em>.`;
+          return linear
+            ? `Rechne ${num(werte[1])} − ${num(werte[0])} und prüfe, ob bei den anderen Schritten dasselbe herauskommt.`
+            : `Rechne ${num(werte[1])} : ${num(werte[0])} und prüfe, ob bei den anderen Schritten dasselbe herauskommt.`;
+        },
+      },
+      {
+        name: "nächster Wert (bei n = 4)", soll: naechster, toleranz: 0.006, platzhalter: "Wert",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - andersHerum) < 0.006) return linear
+            ? `So ginge es bei exponentiellem Wachstum weiter. Hier kommt aber jedes Mal derselbe <strong>Betrag</strong> dazu: ${num(werte[3])} ${d > 0 ? "+" : "−"} ${num(Math.abs(d))}.`
+            : `So ginge es bei linearem Wachstum weiter. Hier wird aber jedes Mal mit demselben <strong>Faktor</strong> multipliziert: ${num(werte[3])} · ${num(kenn, 2)}.`;
+          return linear
+            ? `Setze die Tabelle mit demselben Zuwachs fort: ${num(werte[3])} ${d > 0 ? "+" : "−"} ${num(Math.abs(d))}.`
+            : `Setze die Tabelle mit demselben Faktor fort: ${num(werte[3])} · ${num(kenn, 2)}.`;
+        },
+      },
+    ],
+    tipps: [
+      "Rechne von Zeile zu Zeile auf <strong>zwei</strong> Arten: einmal die Differenz (nachfolgender minus vorheriger Wert), einmal den Quotienten (nachfolgender geteilt durch vorherigen).",
+      "Bleibt die Differenz gleich, ist es linear. Bleibt der Quotient gleich, ist es exponentiell. Beides zugleich gibt es nicht.",
+      `Von ${num(werte[0])} auf ${num(werte[1])}: Differenz ${num(d)}, Quotient ${num(q, 4)}. Prüfe dasselbe beim nächsten Schritt — nur eine der beiden Zahlen wiederholt sich.`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Differenzen:</strong> ${werte.slice(1).map((w, i) => num(w - werte[i])).join(" · ")} — ` +
+      `${linear ? "<strong>immer dieselbe Zahl</strong>" : "sie wechseln"}<br>` +
+      `<strong>2. Quotienten:</strong> ${werte.slice(1).map((w, i) => num(w / werte[i], 3)).join(" · ")} — ` +
+      `${linear ? "sie wechseln" : "<strong>immer dieselbe Zahl</strong>"}<br>` +
+      `<strong>3. Ergebnis:</strong> Das Wachstum ist <strong>${art}</strong>` +
+      (linear ? ` mit dem Zuwachs <strong>${num(kenn)}</strong> je Schritt.` : ` mit dem Faktor <strong>${num(kenn, 2)}</strong> je Schritt.`) + `<br>` +
+      `<strong>4. Fortsetzen:</strong> ${num(werte[3])} ${linear ? `${d > 0 ? "+" : "−"} ${num(Math.abs(d))}` : `· ${num(kenn, 2)}`} = <strong>${num(naechster)}</strong><br>` +
+      `<em>Zum Vergleich:</em> Die jeweils andere Art ergäbe ${num(andersHerum, 2)} — ` +
+      `${Math.abs(andersHerum - naechster) < 1e-9 ? "hier zufällig dasselbe" : `ein Unterschied von ${num(Math.abs(andersHerum - naechster), 2)}`}.<br>` +
+      `<span class="progress-note">Die Formel dahinter: linear f(n) = a + d · n, exponentiell f(n) = a · q<sup>n</sup>. ` +
+      `Beim einen kommt derselbe Betrag dazu, beim anderen derselbe Faktor — ` +
+      `und „um p % mehr“ ist immer ein Faktor, nie ein Betrag.</span>`,
+  };
+}
+
+// Aufgabe 3 — Prozentsatz in den Faktor umrechnen und n Schritte rechnen.
+const A3_KANDIDATEN = (() => {
   const liste = [];
   for (const richtung of [1, -1]) {
     for (let p = 2; p <= 30; p += 2) {
@@ -920,14 +1046,14 @@ const A2_KANDIDATEN = (() => {
   return liste;
 })();
 
-function generateAufgabe2() {
+function generateAufgabe3() {
   const kd = ohneKollision(
-    A2_KANDIDATEN,
+    A3_KANDIDATEN,
     (v) => {
       const q = 1 + v.richtung * v.p / 100;
       return [v.a * Math.pow(q, v.n), v.a * (1 + v.richtung * v.p * v.n / 100), v.a * Math.pow(v.p / 100, v.n)];
     },
-    A2_KANDIDATEN[0],
+    A3_KANDIDATEN[0],
     0.06,
   );
   const { richtung, p, a, n } = kd;
@@ -947,6 +1073,11 @@ function generateAufgabe2() {
       if (Math.abs(val - a * Math.pow(p / 100, n)) < 0.06) return `Der Faktor ist nicht ${num(p / 100, 2)}, sondern <strong>${num(q, 2)}</strong> — bei einer ${richtung > 0 ? "Zunahme kommt der Anteil zum Ganzen dazu: 1 + p : 100" : "Abnahme bleibt der Rest übrig: 1 − p : 100"}.`;
       return `Erst den Faktor bilden: q = 1 ${richtung > 0 ? "+" : "−"} ${num(p)} : 100 = ${num(q, 2)}. Dann a · q<sup>${num(n)}</sup>.`;
     },
+    tipps: [
+      `Ein Prozentsatz ist immer ein <strong>Faktor</strong>, nie ein Betrag. ${richtung > 0 ? "Bei einer Zunahme kommt der Anteil zum Ganzen dazu" : "Bei einer Abnahme bleibt vom Ganzen der Rest übrig"}.`,
+      `Hier heißt das: q = 1 ${richtung > 0 ? "+" : "−"} ${num(p)} : 100 = <strong>${num(q, 2)}</strong>.`,
+      `Und dann ${num(n)}-mal hintereinander: ${num(a)} · ${num(q, 2)}<sup>${num(n)}</sup>. Die Prozentsätze werden dabei <em>nicht</em> addiert.`,
+    ],
     musterloesungHtml:
       `<strong>Faktor:</strong> q = 1 ${richtung > 0 ? "+" : "−"} ${num(p)} : 100 = <strong>${num(q, 2)}</strong><br>` +
       `<strong>Formel:</strong> a · q<sup>n</sup> = ${num(a)} · ${num(q, 2)}<sup>${num(n)}</sup><br>` +
@@ -955,8 +1086,94 @@ function generateAufgabe2() {
   };
 }
 
-// Aufgabe 3 — aus zwei Beständen den Wachstumsfaktor bestimmen.
-const A3_KANDIDATEN = (() => {
+// Aufgabe 4 — Zinseszins. Abschnitt 6 hatte keine eigene Aufgabe. Der Kern ist
+// der Vergleich: Bei einfacher Verzinsung wächst das Kapital linear, mit
+// Zinseszins exponentiell — und der Unterschied wächst mit der Laufzeit.
+const A4_KANDIDATEN = (() => {
+  const liste = [];
+  for (const kapital of [500, 800, 1000, 1200, 1500, 2000, 2500, 3000, 4000, 5000, 6000, 8000, 10000, 12000, 15000, 20000]) {
+    for (const p of [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7, 8]) {
+      for (const n of [3, 4, 5, 6, 8, 10, 12, 15, 20]) {
+        liste.push({ kapital, p, n });
+      }
+    }
+  }
+  return liste;
+})();
+
+function generateAufgabe4() {
+  const k = ohneFeldKollision(A4_KANDIDATEN, (v) => {
+    const q = 1 + v.p / 100;
+    const end = rund(v.kapital * Math.pow(q, v.n), 2);
+    const zins = rund(end - v.kapital, 2);
+    const einfach = rund(v.kapital * (1 + (v.p * v.n) / 100), 2);
+    return [
+      // Feld 1: das Endkapital.
+      [end, einfach, v.kapital, rund(v.kapital * v.p * v.n / 100, 2)],
+      // Feld 2: die Zinsen insgesamt.
+      [zins, rund(einfach - v.kapital, 2), end, v.kapital],
+      // Feld 3: das Endkapital ohne Zinseszins.
+      [einfach, end, v.kapital],
+    ];
+  }, 0.06);
+  const { kapital, p, n } = k;
+  const q = 1 + p / 100;
+  const end = rund(kapital * Math.pow(q, n), 2);
+  const zins = rund(end - kapital, 2);
+  const einfach = rund(kapital * (1 + (p * n) / 100), 2);
+  const einfachZins = rund(einfach - kapital, 2);
+  return {
+    promptHtml: `Ein Kapital von <strong>${num(kapital)} €</strong> wird mit <strong>${num(p, 1)} %</strong> ` +
+      `jährlich verzinst; die Zinsen bleiben auf dem Konto und werden mitverzinst.<br>` +
+      `Wie sieht es nach <strong>${num(n)} Jahren</strong> aus? <em>Runde auf Cent.</em>`,
+    felder: [
+      {
+        name: "Endkapital mit Zinseszins", soll: end, einheit: "€", toleranz: 0.02, platzhalter: "Betrag in €",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - einfach) < 0.02) return `${num(einfach, 2)} € käme bei <em>einfachen</em> Zinsen heraus: ${num(n)} · ${num(p, 1)} % = ${num(p * n, 1)} %. Mit Zinseszins werden die Faktoren aber multipliziert: ${num(q, 4)}<sup>${num(n)}</sup>.`;
+          if (Math.abs(val - kapital) < 0.02) return `${num(kapital)} € ist das Anfangskapital. Gefragt ist der Stand nach ${num(n)} Jahren.`;
+          if (Math.abs(val - rund(kapital * p * n / 100, 2)) < 0.02) return `Das sind nur die Zinsen einer einfachen Verzinsung, nicht das ganze Kapital — das Anfangskapital fehlt.`;
+          return `Der Faktor ist q = 1 + ${num(p, 1)} : 100 = ${num(q, 4)}. Das Endkapital ist ${num(kapital)} € · q<sup>${num(n)}</sup>.`;
+        },
+      },
+      {
+        name: "Zinsen insgesamt", soll: zins, einheit: "€", toleranz: 0.02, platzhalter: "Betrag in €",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - einfachZins) < 0.02) return `${num(einfachZins, 2)} € wären die Zinsen ohne Zinseszins. Hier verzinsen sich die Zinsen mit.`;
+          if (Math.abs(val - end) < 0.02) return `${num(end, 2)} € ist das gesamte Endkapital. Die Zinsen sind der Zuwachs — davon muss das Anfangskapital abgezogen werden.`;
+          if (Math.abs(val - kapital) < 0.02) return `${num(kapital)} € ist das Anfangskapital, nicht der Zuwachs.`;
+          return `Zinsen = Endkapital − Anfangskapital = ${num(end, 2)} € − ${num(kapital)} €.`;
+        },
+      },
+      {
+        name: "Endkapital bei einfacher Verzinsung", soll: einfach, einheit: "€", toleranz: 0.02, platzhalter: "Betrag in €",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - end) < 0.02) return `${num(end, 2)} € ist der Wert <em>mit</em> Zinseszins. Bei einfacher Verzinsung gibt es jedes Jahr ${num(p, 1)} % vom <strong>Anfangs</strong>kapital, also immer denselben Betrag.`;
+          if (Math.abs(val - kapital) < 0.02) return `Das Anfangskapital allein — die Zinsen fehlen.`;
+          return `Bei einfacher Verzinsung kommen jedes Jahr ${num(rund(kapital * p / 100, 2), 2)} € dazu, in ${num(n)} Jahren also ${num(n)} · ${num(rund(kapital * p / 100, 2), 2)} €.`;
+        },
+      },
+    ],
+    tipps: [
+      `„${num(p, 1)} % mehr“ heißt: mit dem Faktor q = 1 + ${num(p, 1)} : 100 = ${num(q, 4)} multiplizieren.`,
+      `Weil die Zinsen mitverzinst werden, geschieht das in jedem der ${num(n)} Jahre erneut: K · q<sup>${num(n)}</sup>.`,
+      `Für den Vergleich: Ohne Zinseszins gäbe es jedes Jahr ${num(p, 1)} % vom Anfangskapital, also ${num(n)}-mal denselben Betrag — das ist lineares Wachstum.`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Faktor:</strong> q = 1 + ${num(p, 1)} : 100 = <strong>${num(q, 4)}</strong><br>` +
+      `<strong>2. Endkapital:</strong> K = ${num(kapital)} € · ${num(q, 4)}<sup>${num(n)}</sup> = ${num(kapital)} € · ${num(Math.pow(q, n), 6)} ≈ <strong>${num(end, 2)} €</strong><br>` +
+      `<strong>3. Zinsen:</strong> ${num(end, 2)} € − ${num(kapital)} € = <strong>${num(zins, 2)} €</strong><br>` +
+      `<strong>4. Zum Vergleich ohne Zinseszins:</strong> ${num(n)} · ${num(p, 1)} % = ${num(p * n, 1)} % vom Anfangskapital ⇒ ` +
+      `${num(kapital)} € + ${num(einfachZins, 2)} € = <strong>${num(einfach, 2)} €</strong><br>` +
+      `<em>Unterschied:</em> ${num(rund(end - einfach, 2), 2)} € — das sind die Zinsen auf die Zinsen.<br>` +
+      `<span class="progress-note">Bei kurzen Laufzeiten fällt der Unterschied kaum auf; er wächst aber mit jedem Jahr. ` +
+      `Nach ${num(n)} Jahren beträgt die Gesamtzunahme ${num(rund((Math.pow(q, n) - 1) * 100, 1), 1)} % statt der ` +
+      `${num(p * n, 1)} %, die das Addieren der Prozentsätze ergäbe.</span>`,
+  };
+}
+
+// Aufgabe 5 — aus zwei Beständen den Wachstumsfaktor bestimmen.
+const A5_KANDIDATEN = (() => {
   const liste = [];
   for (const f of A1_FAKTOREN) {
     for (const a of [400, 500, 600, 800, 1000, 1200, 1600, 2000, 2400, 3000, 4000, 5000, 6000, 8000]) {
@@ -970,11 +1187,11 @@ const A3_KANDIDATEN = (() => {
   return liste;
 })();
 
-function generateAufgabe3() {
+function generateAufgabe5() {
   const kd = ohneKollision(
-    A3_KANDIDATEN,
+    A5_KANDIDATEN,
     (v) => [v.f.q, v.ende / v.a, (v.ende - v.a) / v.a / v.k + 1],
-    A3_KANDIDATEN[0],
+    A5_KANDIDATEN[0],
     0.002,
   );
   const { a, f, k, ende } = kd;
@@ -995,6 +1212,11 @@ function generateAufgabe3() {
       if (Math.abs(val - ((ende - a) / a / k + 1)) < 0.006) return `Hier wurde die Gesamtänderung durch ${num(k)} <em>geteilt</em>. Das wäre bei linearem Wachstum richtig; exponentiell muss man die ${num(k)}-te <strong>Wurzel</strong> ziehen.`;
       return `Erst der Gesamtfaktor: ${num(ende)} : ${num(a)} = ${num(gesamt, 4)} = q<sup>${num(k)}</sup>. Dann die ${num(k)}-te Wurzel.`;
     },
+    tipps: [
+      `Schreibe auf, was gilt: ${num(a)} · q<sup>${num(k)}</sup> = ${num(ende)}.`,
+      `Teile durch den Anfangswert: q<sup>${num(k)}</sup> = ${num(ende)} : ${num(a)} = ${num(gesamt, 4)}. Das ist der Faktor für alle ${num(k)} Schritte zusammen.`,
+      `Gesucht ist die Basis, nicht der Exponent — dafür ist die <strong>Wurzel</strong> zuständig: q = <sup>${num(k)}</sup>√${num(gesamt, 4)}.`,
+    ],
     musterloesungHtml:
       `<strong>Ansatz:</strong> ${num(a)} · q<sup>${num(k)}</sup> = ${num(ende)}<br>` +
       `<strong>Durch a teilen:</strong> q<sup>${num(k)}</sup> = ${num(ende)} : ${num(a)} = ${num(gesamt, 4)}<br>` +
@@ -1004,35 +1226,128 @@ function generateAufgabe3() {
   };
 }
 
-// Aufgabe 4 — nach wie vielen ganzen Schritten ist die Hälfte unterschritten?
-const A4_KANDIDATEN = (() => {
+// Aufgabe 6 — die Verdopplungszeit. Sie hängt allein von q ab, nicht vom
+// Anfangswert — genau das macht sie zur Kennzahl des Wachstums.
+const A6_KANDIDATEN = (() => {
+  const liste = [];
+  for (let p = 3; p <= 40; p++) {
+    for (const a of [40, 50, 60, 75, 80, 100, 120, 150, 200, 250, 300, 400, 500]) {
+      liste.push({ p, a });
+    }
+  }
+  return liste;
+})();
+const A6_KONTEXTE = [
+  { was: "Eine Bakterienkultur", einheit: "Bakterien je ml", schritt: "Stunde", schritte: "Stunden" },
+  { was: "Ein Algenteppich", einheit: "m²", schritt: "Tag", schritte: "Tagen" },
+  { was: "Die Zahl der Teilnehmer eines Netzwerks", einheit: "Teilnehmer", schritt: "Monat", schritte: "Monaten" },
+];
+
+// Das kleinste n mit qⁿ ≥ 2 — schrittweise, so wie es Abschnitt 4 vormacht.
+function verdopplung(q) {
+  for (let n = 1; n <= 500; n++) if (Math.pow(q, n) >= 2) return n;
+  return null;
+}
+
+function generateAufgabe6() {
+  const k = ohneFeldKollision(A6_KANDIDATEN, (v) => {
+    const q = 1 + v.p / 100;
+    const t = verdopplung(q);
+    return [
+      // Feld 1: der Wachstumsfaktor.
+      [rund(q, 2), v.p / 100, v.p],
+      // Feld 2: die Verdopplungszeit.
+      [t, t - 1, Math.round(100 / v.p), Math.round(2 / (v.p / 100))],
+      // Feld 3: der Bestand nach T Schritten.
+      [rund(v.a * Math.pow(q, t), 1), 2 * v.a, v.a],
+    ];
+  }, [0.003, 0.6, 0.3]);
+  const { p, a } = k;
+  const kt = pick(A6_KONTEXTE);
+  const q = 1 + p / 100;
+  const t = verdopplung(q);
+  const nachT = rund(a * Math.pow(q, t), 1);
+  const vorher = rund(a * Math.pow(q, t - 1), 1);
+  return {
+    promptHtml: `${kt.was} umfasst zu Beginn <strong>${num(a)} ${kt.einheit}</strong> und wächst je ${kt.schritt} um ` +
+      `<strong>${num(p)} %</strong>.<br>` +
+      `<em>Runde die Bestände auf eine Stelle nach dem Komma.</em>`,
+    felder: [
+      {
+        name: "Wachstumsfaktor q", soll: rund(q, 2), toleranz: 0.003, platzhalter: "q",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - p / 100) < 0.003) return `${num(p / 100, 2)} ist nur der <em>Anteil</em>, um den es wächst. Der Faktor enthält das Ganze und den Zuwachs: q = 1 + ${num(p)} : 100.`;
+          if (Math.abs(val - p) < 0.003) return `${num(p)} ist der Prozentsatz. Der Faktor ist q = 1 + ${num(p)} : 100 = ${num(q, 2)}.`;
+          return `Bei einer Zunahme um ${num(p)} % ist q = 1 + ${num(p)} : 100.`;
+        },
+      },
+      {
+        name: `Verdopplungszeit (ganze ${kt.schritte})`, soll: t, einheit: kt.schritte, toleranz: 0.4, platzhalter: "Anzahl",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (t - 1)) < 0.4) return `Nach ${num(t - 1)} ${kt.schritte} ist der Bestand erst auf das ${num(rund(Math.pow(q, t - 1), 3), 3)}-fache gewachsen — noch nicht das Doppelte. Ein Schritt mehr ist nötig.`;
+          if (Math.abs(val - Math.round(100 / p)) < 0.4) return `Das sieht nach 100 : ${num(p)} aus. So rechnet man bei <em>linearem</em> Wachstum; hier kommt aber in jedem Schritt ein Anteil des <strong>gewachsenen</strong> Bestands dazu, und die Verdopplung ist früher erreicht.`;
+          return `Gesucht ist das kleinste n mit ${num(q, 2)}<sup>n</sup> ≥ 2. Probiere ${num(q, 2)}, ${num(q, 2)}², ${num(q, 2)}³, … bis der Wert 2 erreicht.`;
+        },
+      },
+      {
+        name: `Bestand nach dieser Zeit (${kt.einheit})`, soll: nachT, einheit: kt.einheit, toleranz: 0.06, platzhalter: "Bestand",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - 2 * a) < 0.06) return `Genau das Doppelte, also ${num(2 * a)}, wird erst zwischen zwei ganzen Schritten erreicht. Nach ${num(t)} ganzen ${kt.schritte} ist es schon etwas mehr.`;
+          if (Math.abs(val - a) < 0.06) return `${num(a)} ist der Anfangsbestand.`;
+          if (Math.abs(val - vorher) < 0.06) return `${num(vorher, 1)} ist der Bestand nach ${num(t - 1)} Schritten — noch unter dem Doppelten.`;
+          return `Rechne ${num(a)} · ${num(q, 2)}<sup>${num(t)}</sup>.`;
+        },
+      },
+    ],
+    tipps: [
+      `Rechne zuerst den Faktor aus: Eine Zunahme um ${num(p)} % bedeutet Multiplikation mit q = 1 + ${num(p)} : 100.`,
+      "Die Verdopplungszeit ist das kleinste n mit qⁿ ≥ 2. Ohne Logarithmus findet man es durch schrittweises Probieren: q, q², q³, …",
+      "Bemerkenswert: Diese Zeit hängt gar nicht vom Anfangswert ab. Von 100 auf 200 dauert es genauso lange wie von 5000 auf 10 000.",
+    ],
+    musterloesungHtml:
+      `<strong>1. Faktor:</strong> q = 1 + ${num(p)} : 100 = <strong>${num(q, 2)}</strong><br>` +
+      `<strong>2. Probieren:</strong> ` +
+      Array.from({ length: Math.min(t, 8) }, (_, i) => `${num(q, 2)}<sup>${num(i + 1)}</sup> ≈ ${num(Math.pow(q, i + 1), 3)}`).join(" · ") +
+      (t > 8 ? " · …" : "") + `<br>` +
+      `&nbsp;&nbsp;&nbsp;Zum ersten Mal ≥ 2 bei n = <strong>${num(t)}</strong><br>` +
+      `<strong>3. Bestand:</strong> ${num(a)} · ${num(q, 2)}<sup>${num(t)}</sup> ≈ <strong>${num(nachT, 1)} ${kt.einheit}</strong><br>` +
+      `<em>Probe:</em> Nach ${num(t - 1)} ${kt.schritte} waren es erst ${num(vorher, 1)} — weniger als das Doppelte von ${num(a)}; ` +
+      `nach ${num(t)} ${kt.schritte} sind es ${num(nachT, 1)} — mehr ✓<br>` +
+      `<span class="progress-note">Die Verdopplungszeit hängt <em>nur</em> von q ab. Mit denselben ${num(p)} % je ${kt.schritt} ` +
+      `verdoppelt sich auch ein Bestand von 1 Million in ${num(t)} ${kt.schritte} — der Anfangswert kürzt sich aus der ` +
+      `Gleichung a · q<sup>n</sup> = 2a heraus.</span>`,
+  };
+}
+
+// Aufgabe 7 — nach wie vielen ganzen Schritten ist die Hälfte unterschritten?
+const A7_KANDIDATEN = (() => {
   const liste = [];
   for (let p = 4; p <= 36; p += 1) liste.push({ p });
   return liste;
 })();
 
-function a4Schritte(q) {
+function a7Schritte(q) {
   for (let n = 1; n <= 400; n++) if (Math.pow(q, n) < 0.5) return n;
   return null;
 }
 
-function generateAufgabe4() {
+function generateAufgabe7() {
   // Geprüft wird nur, dass die richtige Antwort n nicht mit dem Fehler n − 1
   // zusammenfällt. Der dritte Hinweis (50 : p) darf mit n − 1 übereinstimmen:
   // Beide Hinweise sind dann für dieselbe Zahl richtig, und der erste greift.
   // Nähme man 50 : p mit in die Liste, blieben von 33 Prozentsätzen nur 9 übrig.
   const kd = ohneKollision(
-    A4_KANDIDATEN,
+    A7_KANDIDATEN,
     (v) => {
-      const n = a4Schritte(1 - v.p / 100);
+      const n = a7Schritte(1 - v.p / 100);
       return [n, n - 1];
     },
-    A4_KANDIDATEN[0],
+    A7_KANDIDATEN[0],
     0.4,
   );
   const p = kd.p;
   const q = 1 - p / 100;
-  const n = a4Schritte(q);
+  const n = a7Schritte(q);
   const genau = Math.log(0.5) / Math.log(q);
   return {
     promptHtml: `Ein Stoff zerfällt täglich um <strong>${num(p)} %</strong>.<br>` +
@@ -1045,6 +1360,11 @@ function generateAufgabe4() {
       if (Math.abs(val - Math.round(50 / p)) < 0.4) return `Das sieht nach 50 : ${num(p)} aus. So rechnet man bei <em>linearer</em> Abnahme; hier wird aber jeden Tag ein Anteil des <strong>Rests</strong> abgezogen, nie ein fester Betrag.`;
       return `Der Faktor ist q = 1 − ${num(p)} : 100 = ${num(q, 2)}. Probiere q, q², q³, … bis der Wert unter 0,5 fällt.`;
     },
+    tipps: [
+      `Eine Abnahme um ${num(p)} % bedeutet: Es bleiben ${num(100 - p)} % übrig, also q = ${num(q, 2)}.`,
+      "Der Anfangswert spielt keine Rolle — gesucht ist das kleinste n mit qⁿ &lt; 0,5.",
+      `Probiere der Reihe nach: ${num(q, 2)}, ${num(q, 2)}², ${num(q, 2)}³, … und sieh nach, wann der Wert zum ersten Mal unter 0,5 liegt.`,
+    ],
     musterloesungHtml:
       `<strong>Faktor:</strong> q = 1 − ${num(p)} : 100 = <strong>${num(q, 2)}</strong><br>` +
       `<strong>Gesucht:</strong> das kleinste n mit ${num(q, 2)}<sup>n</sup> &lt; 0,5<br>` +
@@ -1057,12 +1377,123 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 8 — zwei Bestände, von denen der kleinere schneller wächst. Das ist
+// Abschnitt 5 im Sachzusammenhang: Der schnellere Faktor holt jeden Vorsprung
+// ein, wenn man ihm nur genug Schritte lässt.
+const A8_KANDIDATEN = (() => {
+  const liste = [];
+  for (const a1 of [200, 250, 300, 400, 500, 600, 800, 1000]) {
+    for (const faktor of [1.5, 2, 2.5, 3, 4]) {
+      const a2 = a1 * faktor;
+      if (!Number.isInteger(a2) || a2 > 5000) continue;
+      for (let p1 = 8; p1 <= 30; p1 += 1) {
+        for (let p2 = 1; p2 <= 12; p2 += 1) {
+          if (p1 - p2 < 5) continue;
+          const q1 = 1 + p1 / 100, q2 = 1 + p2 / 100;
+          // Das erste ganze n, in dem A den Bestand B erreicht oder überholt.
+          let n = null;
+          for (let i = 1; i <= 100; i++) {
+            if (a1 * Math.pow(q1, i) >= a2 * Math.pow(q2, i)) { n = i; break; }
+          }
+          if (n === null || n < 4 || n > 30) continue;
+          liste.push({ a1, a2, p1, p2, n });
+        }
+      }
+    }
+  }
+  return liste;
+})();
+const A8_KONTEXTE = [
+  { was: "Zwei Städte", e1: "Stadt A", e2: "Stadt B", einheit: "Einwohner", schritt: "Jahr", schritte: "Jahren", verb: "hat" },
+  { was: "Zwei Vereine", e1: "Verein A", e2: "Verein B", einheit: "Mitglieder", schritt: "Jahr", schritte: "Jahren", verb: "hat" },
+  { was: "Zwei Sparanlagen", e1: "Anlage A", e2: "Anlage B", einheit: "€", schritt: "Jahr", schritte: "Jahren", verb: "enthält" },
+];
+
+function generateAufgabe8() {
+  const k = ohneFeldKollision(A8_KANDIDATEN, (v) => {
+    const q1 = 1 + v.p1 / 100, q2 = 1 + v.p2 / 100;
+    const wa = rund(v.a1 * Math.pow(q1, v.n), 1);
+    const wb = rund(v.a2 * Math.pow(q2, v.n), 1);
+    return [
+      // Feld 1: das Jahr des Überholens.
+      [v.n, v.n - 1, v.n + 1],
+      // Feld 2: der Bestand von A.
+      [wa, wb, v.a1, v.a2],
+      // Feld 3: der Bestand von B.
+      [wb, wa, v.a2, v.a1],
+    ];
+  }, [0.4, 0.3, 0.3]);
+  const { a1, a2, p1, p2, n } = k;
+  const kt = pick(A8_KONTEXTE);
+  const q1 = 1 + p1 / 100, q2 = 1 + p2 / 100;
+  const wa = rund(a1 * Math.pow(q1, n), 1);
+  const wb = rund(a2 * Math.pow(q2, n), 1);
+  const vorherA = rund(a1 * Math.pow(q1, n - 1), 1);
+  const vorherB = rund(a2 * Math.pow(q2, n - 1), 1);
+  return {
+    promptHtml: `${kt.was}: <strong>${kt.e1}</strong> ${kt.verb} heute <strong>${num(a1)} ${kt.einheit}</strong> und wächst je ${kt.schritt} um ` +
+      `<strong>${num(p1)} %</strong>. <strong>${kt.e2}</strong> ${kt.verb} <strong>${num(a2)} ${kt.einheit}</strong> und wächst je ${kt.schritt} um ` +
+      `<strong>${num(p2)} %</strong>.<br>` +
+      `Wann holt ${kt.e1} auf? <em>Runde die Bestände auf eine Stelle nach dem Komma.</em>`,
+    felder: [
+      {
+        name: `erstes ganzes Jahr, in dem ${kt.e1} mindestens so groß ist wie ${kt.e2}`,
+        soll: n, einheit: kt.schritte, toleranz: 0.4, platzhalter: "Anzahl der Jahre",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (n - 1)) < 0.4) return `Nach ${num(n - 1)} ${kt.schritte} steht es ${num(vorherA, 1)} zu ${num(vorherB, 1)} — ${kt.e1} liegt noch zurück. Ein Jahr mehr ist nötig.`;
+          if (Math.abs(val - (n + 1)) < 0.4) return `Schon ein Jahr früher, nach ${num(n)} ${kt.schritte}, liegt ${kt.e1} vorn: ${num(wa, 1)} gegen ${num(wb, 1)}. Gefragt ist das <em>erste</em> solche Jahr.`;
+          if (Math.abs(val - (a2 - a1)) < 0.4) return `Das ist der heutige Unterschied der Bestände, keine Anzahl von ${kt.schritte}.`;
+          return `Rechne Jahr für Jahr beide Bestände aus: ${num(a1)} · ${num(q1, 2)}<sup>n</sup> und ${num(a2)} · ${num(q2, 2)}<sup>n</sup>, bis der erste den zweiten erreicht.`;
+        },
+      },
+      {
+        name: `${kt.e1} nach dieser Zeit`, soll: wa, einheit: kt.einheit, toleranz: 0.06, platzhalter: "Bestand",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - wb) < 0.06) return `${num(wb, 1)} ist der Bestand von ${kt.e2}. Beide sind dann fast gleich, aber nicht ganz — ${kt.e1} hat gerade überholt.`;
+          if (Math.abs(val - a1) < 0.06) return `${num(a1)} ist der heutige Bestand von ${kt.e1}.`;
+          if (Math.abs(val - rund(a1 * (1 + (p1 * n) / 100), 1)) < 0.06) return `Hier wurden die Prozentsätze addiert: ${num(n)} · ${num(p1)} % = ${num(p1 * n)} %. Exponentiell werden die Faktoren multipliziert.`;
+          return `Rechne ${num(a1)} · ${num(q1, 2)}<sup>${num(n)}</sup>.`;
+        },
+      },
+      {
+        name: `${kt.e2} nach dieser Zeit`, soll: wb, einheit: kt.einheit, toleranz: 0.06, platzhalter: "Bestand",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - wa) < 0.06) return `${num(wa, 1)} ist der Bestand von ${kt.e1}.`;
+          if (Math.abs(val - a2) < 0.06) return `${num(a2)} ist der heutige Bestand von ${kt.e2}.`;
+          if (Math.abs(val - rund(a2 * (1 + (p2 * n) / 100), 1)) < 0.06) return `Auch hier wurden die Prozentsätze addiert statt die Faktoren multipliziert.`;
+          return `Rechne ${num(a2)} · ${num(q2, 2)}<sup>${num(n)}</sup>.`;
+        },
+      },
+    ],
+    tipps: [
+      `Bilde zuerst beide Faktoren: q<sub>A</sub> = ${num(q1, 2)} und q<sub>B</sub> = ${num(q2, 2)}.`,
+      `Gesucht ist das kleinste n mit ${num(a1)} · ${num(q1, 2)}<sup>n</sup> ≥ ${num(a2)} · ${num(q2, 2)}<sup>n</sup>. Ohne Logarithmus findet man es durch Ausprobieren — am besten mit einer Wertetabelle für beide Bestände.`,
+      `Eine Abkürzung: Teilt man beide Seiten durch ${num(a2)} · ${num(q2, 2)}<sup>n</sup>, so bleibt (${num(q1, 2)} : ${num(q2, 2)})<sup>n</sup> ≥ ${num(rund(a2 / a1, 4), 4)} — nur noch ein Faktor, den man hochrechnet.`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Faktoren:</strong> q<sub>A</sub> = 1 + ${num(p1)} : 100 = ${num(q1, 2)} und q<sub>B</sub> = 1 + ${num(p2)} : 100 = ${num(q2, 2)}<br>` +
+      `<strong>2. Ansatz:</strong> ${num(a1)} · ${num(q1, 2)}<sup>n</sup> ≥ ${num(a2)} · ${num(q2, 2)}<sup>n</sup><br>` +
+      `<strong>3. Zusammenfassen:</strong> (${num(q1, 2)} : ${num(q2, 2)})<sup>n</sup> = ${num(rund(q1 / q2, 4), 4)}<sup>n</sup> ≥ ${num(a2)} : ${num(a1)} = ${num(rund(a2 / a1, 4), 4)}<br>` +
+      `<strong>4. Hochrechnen:</strong> Zum ersten Mal erreicht bei n = <strong>${num(n)}</strong><br>` +
+      `<strong>5. Bestände:</strong> ${kt.e1}: ${num(a1)} · ${num(q1, 2)}<sup>${num(n)}</sup> ≈ <strong>${num(wa, 1)}</strong>, ` +
+      `${kt.e2}: ${num(a2)} · ${num(q2, 2)}<sup>${num(n)}</sup> ≈ <strong>${num(wb, 1)}</strong><br>` +
+      `<em>Probe:</em> Ein Jahr früher stand es ${num(vorherA, 1)} zu ${num(vorherB, 1)} — da lag ${kt.e2} noch vorn ✓<br>` +
+      `<span class="progress-note">${kt.e2} startet mit dem ${num(rund(a2 / a1, 2), 2)}-fachen Bestand und verliert ihn trotzdem. ` +
+      `Der größere Faktor gewinnt immer — es ist nur eine Frage der Zeit. Genau deshalb sagt ein Vorsprung bei ` +
+      `exponentiellem Wachstum wenig über die Zukunft aus.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Bestand nach n Schritten", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Prozentsatz und Faktor", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — den Faktor bestimmen", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Halbwertszeit", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — linear oder exponentiell?", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Prozentsatz und Faktor", generate: generateAufgabe3 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Zinseszins", generate: generateAufgabe4 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — den Faktor bestimmen", generate: generateAufgabe5 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Verdopplungszeit", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Halbwertszeit", generate: generateAufgabe7 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — wer holt wen ein?", generate: generateAufgabe8 },
   ]);
 }
 
