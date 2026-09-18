@@ -147,12 +147,15 @@ async function aufgaben(page) {
   });
 
   // Aufgabe 2 — günstige Ergebnisse zählen. Gemessen mit tests/werkzeug-streuung.js: 100
-  // verschiedene in 200 Würfen, zurückgerechnet rund 125 Kandidaten. Die Schranke ist das
-  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 20.
+  // verschiedene in 200 Würfen. Die Rückrechnung auf eine gleichverteilte Kandidatenmenge
+  // taugt hier nicht: Vier der sieben Ereignisformen („gerade“, „ungerade“, „durch 3 teilbar“,
+  // „Primzahl“) haben je Beutelgröße nur einen einzigen Text und wiederholen sich deshalb oft,
+  // die übrigen drei hängen zusätzlich von m ab. Die nachgebildete Mischung ergibt bei 30 Zügen
+  // E = 26,3 und ein 10⁻⁴-Quantil von 19 — Schranke 18.
   const PRIM = [2, 3, 5, 7, 11, 13, 17, 19, 23];
   const formen = new Set();
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 günstige Ergebnisse", runden: 30, mindestensVerschieden: 20,
+    nr: 2, name: "A2 günstige Ergebnisse", runden: 30, mindestensVerschieden: 18,
     deute: (frage) => {
       const mn = frage.match(/Zahlen 1 bis (\d+)/);
       const me = frage.match(/Ereignis E: (.*?)\./);

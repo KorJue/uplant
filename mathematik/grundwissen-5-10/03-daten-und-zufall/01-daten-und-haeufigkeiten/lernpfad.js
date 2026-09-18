@@ -878,7 +878,12 @@ function generateAufgabe4b() {
   const n = pick(KREIS_N);
   const thema = pick(KREIS_THEMEN);
   // H bleibt echt zwischen 0 und n, damit weder ein leeres noch ein volles Kreisdiagramm entsteht.
-  const H = randInt(1, n - 1);
+  // Außerdem müssen die beiden Fehlerwerte „Anteil als Dezimalzahl“ (H : n) und „die übrigen“
+  // (n − H) weiter auseinanderliegen als die Rundungstoleranz: Bei H = n − 1 ist H : n fast 1,
+  // und die Eingabe 1 bekäme den falschen Hinweis.
+  const moeglich = [];
+  for (let h = 1; h < n; h++) if (Math.abs((n - h) - h / n) > 0.05) moeglich.push(h);
+  const H = pick(moeglich);
   const prozent = (H * 100) / n;
   const winkel = (H * 360) / n; // ganzzahlig, weil n ein Teiler von 360 ist
   return {

@@ -223,6 +223,10 @@ async function aufgaben(page) {
       const winkel = (H * 360) / n;
       pruefe(Number.isInteger(winkel), `A4: ${H} : ${n} · 360° = ${winkel}° ist nicht ganzzahlig — „${frage}“`);
       pruefe(H > 0 && H < n, `A4: H = ${H} von ${n} ergibt kein Kreisstück — „${frage}“`);
+      // Bei H = n − 1 läge der Anteil als Dezimalzahl (fast 1) innerhalb der Rundungstoleranz
+      // um „die übrigen“ (= 1); der Generator schließt solche H aus.
+      pruefe(Math.abs((n - H) - H / n) > 0.05,
+        `A4: bei H = ${H} von ${n} fallen zwei Fehlerwerte praktisch zusammen — „${frage}“`);
       return {
         felder: [(H * 100) / n, winkel],
         toleranz: 0.01,

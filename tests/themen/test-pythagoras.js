@@ -135,12 +135,13 @@ async function aufgaben(page) {
   });
 
   // Aufgabe 2 — die Umkehrung: aus den drei Seiten auf den rechten Winkel schließen. Gemessen mit
-  // tests/werkzeug-streuung.js: 98 verschiedene in 200 Würfen, zurückgerechnet rund 121
-  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
-  // 0,8 · n gerechnet — 19.
+  // tests/werkzeug-streuung.js: 98 verschiedene in 200 Würfen. Die Ziehung mischt zwei Fassungen
+  // mit verschieden vielen Texten — rechtwinklig (Tripel × Faktor × Vertauschung) und schief
+  // (dasselbe, aber zusätzlich mit ±1 auf der längsten Seite). Nachgebildet ergibt sich bei
+  // 30 Zügen E = 26,4 und ein 10⁻⁴-Quantil von 20 — Schranke 18.
   let rechtwinklig = 0, schief = 0;
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Umkehrung", runden: 30, mindestensVerschieden: 19,
+    nr: 2, name: "A2 Umkehrung", runden: 30, mindestensVerschieden: 18,
     deute: (frage) => {
       const m = frage.match(/Seiten (\d+) cm, (\d+) cm und (\d+) cm/);
       if (!m) return null;
