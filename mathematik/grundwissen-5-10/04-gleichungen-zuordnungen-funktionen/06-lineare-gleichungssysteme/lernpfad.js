@@ -48,6 +48,13 @@ function num(x, digits = 4) {
 function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
+function randInt(min, max) {
+  return min + Math.floor(Math.random() * (max - min + 1));
+}
+// "1 Kind", aber "3 Kinder" — Aufgabentexte dürfen nicht grammatisch schief sein.
+function mz(n, einzahl, mehrzahl) {
+  return `${n} ${n === 1 ? einzahl : mehrzahl}`;
+}
 function ggt(a, b) {
   return b ? ggt(b, a % b) : Math.abs(a);
 }
@@ -823,6 +830,26 @@ function ohneKollision(kandidaten, werte, notfall, eps = 1e-9) {
   return gewaehlt;
 }
 
+// Dasselbe für Aufgaben mit mehreren Eingabefeldern: Kollidieren müssen die
+// Werte nur innerhalb eines Feldes, denn nur dort entscheidet die Zahl darüber,
+// welcher Hinweis erscheint. Zwischen zwei Feldern darf dieselbe Zahl stehen.
+// NaN bedeutet "an dieser Stelle springt kein Hinweis an" und wird übergangen.
+function ohneFeldKollision(kandidaten, gruppen, eps = 1e-9) {
+  const sauber = kandidaten.filter((kk) => gruppen(kk).every((g) => {
+    const echt = g.filter((x) => Number.isFinite(x));
+    return echt.every((x, i) => echt.every((y, j) => i === j || Math.abs(x - y) > eps));
+  }));
+  if (!sauber.length) throw new Error("Aufgabengenerator ohne gültige Kandidaten");
+  return pick(sauber);
+}
+
+// Ein Geldbetrag: 19,60 € statt 19,6 €.
+function euro(x) {
+  return Number.isInteger(x)
+    ? num(x)
+    : x.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace("-", "−");
+}
+
 // Aufgabe 1 — Gleichsetzungsverfahren, gesucht ist x.
 const A1_KANDIDATEN = GS_KANDIDATEN.filter((k) => Math.abs(k.m1 - k.m2) <= 6);
 
@@ -848,6 +875,11 @@ function generateAufgabe1() {
       if (Math.abs(val - (m1 - m2)) < 0.001) return "Das ist der Koeffizient vor dem x, nicht der Wert von x. Durch ihn musst du noch teilen.";
       return "Setze die rechten Seiten gleich, bringe alle x nach links und alle Zahlen nach rechts, und teile dann durch den Koeffizienten vor dem x.";
     },
+    tipps: [
+      "Beide Gleichungen sind schon nach y aufgelöst. Dasselbe y kann nur einen Wert haben — also sind die beiden rechten Seiten gleich.",
+      `Schreibe ${termRein(m1, "x")} ${b1 < 0 ? "− " + num(-b1) : "+ " + num(b1)} = ${termRein(m2, "x")} ${b2 < 0 ? "− " + num(-b2) : "+ " + num(b2)} und sortiere: x nach links, Zahlen nach rechts.`,
+      `Übrig bleibt ${termRein(m1 - m2, "x")} = ${num(b2 - b1)}. Jetzt nur noch durch ${klammer(m1 - m2)} teilen.`,
+    ],
     musterloesungHtml:
       `<strong>1. Gleichsetzen:</strong> ${termRein(m1, "x")} ${b1 < 0 ? "− " + num(-b1) : "+ " + num(b1)} = ${termRein(m2, "x")} ${b2 < 0 ? "− " + num(-b2) : "+ " + num(b2)}<br>` +
       `<strong>2. Sortieren:</strong> ${termRein(m1 - m2, "x")} = ${num(b2 - b1)}<br>` +
@@ -857,8 +889,136 @@ function generateAufgabe1() {
   };
 }
 
-// Aufgabe 2 — Einsetzungsverfahren, gesucht ist y.
+// Aufgabe 2 — Die Probe: Erfüllt ein angebotenes Paar beide Gleichungen?
+// Der Kern der Aufgabe ist das „und“: Eine erfüllte Gleichung genügt nicht.
+const A2_KANDIDATEN = (() => {
+  const liste = [];
+  for (let a1 = -3; a1 <= 3; a1++) {
+    if (a1 === 0) continue;
+    for (let b1 = -3; b1 <= 3; b1++) {
+      if (b1 === 0) continue;
+      for (let a2 = -3; a2 <= 3; a2++) {
+        if (a2 === 0) continue;
+        for (let b2 = -3; b2 <= 3; b2++) {
+          if (b2 === 0 || a1 * b2 - a2 * b1 === 0) continue;
+          for (const x0 of [-3, -2, -1, 1, 2, 3]) {
+            for (const y0 of [-3, -2, -1, 1, 2, 3]) {
+              if (x0 === y0) continue;
+              const c1 = a1 * x0 + b1 * y0, c2 = a2 * x0 + b2 * y0;
+              if (Math.abs(c1) > 15 || Math.abs(c2) > 15) continue;
+              liste.push({ a1, b1, a2, b2, c1, c2, x0, y0 });
+            }
+          }
+        }
+      }
+    }
+  }
+  return liste;
+})();
+
+// Wie das angebotene Paar vom Schnittpunkt abweicht. „I“ heißt: Es liegt auf
+// der ersten Geraden, aber nicht auf der zweiten — genau der lehrreiche Fall.
+// Die drei Ausgänge — Lösung, nur eine Gleichung erfüllt, gar keine — kommen
+// gleich oft vor; sonst rät man nach kurzer Zeit richtig.
+const A2_FAELLE = [
+  { art: "beide" }, { art: "beide" }, { art: "beide" }, { art: "beide" },
+  { art: "I", t: 1 }, { art: "I", t: -1 },
+  { art: "II", t: 1 }, { art: "II", t: -1 },
+  { art: "keine", dx: 1, dy: 1 }, { art: "keine", dx: 1, dy: -1 },
+  { art: "keine", dx: -1, dy: 1 }, { art: "keine", dx: 2, dy: -1 },
+];
+
+function a2Paar(v, f) {
+  if (f.art === "beide") return { xp: v.x0, yp: v.y0 };
+  // Entlang der Richtung (b | −a) bleibt man auf der jeweiligen Geraden.
+  if (f.art === "I") return { xp: v.x0 + v.b1 * f.t, yp: v.y0 - v.a1 * f.t };
+  if (f.art === "II") return { xp: v.x0 + v.b2 * f.t, yp: v.y0 - v.a2 * f.t };
+  return { xp: v.x0 + f.dx, yp: v.y0 + f.dy };
+}
+
 function generateAufgabe2() {
+  const f = pick(A2_FAELLE);
+  const passend = A2_KANDIDATEN.filter((v) => {
+    const { xp, yp } = a2Paar(v, f);
+    if (Math.abs(xp) > 7 || Math.abs(yp) > 7 || xp === yp) return false;
+    const r1 = v.a1 * xp + v.b1 * yp === v.c1;
+    const r2 = v.a2 * xp + v.b2 * yp === v.c2;
+    if (f.art === "beide") return r1 && r2;
+    if (f.art === "I") return r1 && !r2;
+    if (f.art === "II") return !r1 && r2;
+    return !r1 && !r2;
+  });
+  const k = ohneFeldKollision(passend, (v) => {
+    const { xp, yp } = a2Paar(v, f);
+    const l1 = v.a1 * xp + v.b1 * yp, l2 = v.a2 * xp + v.b2 * yp;
+    return [
+      [l1, v.a1 * yp + v.b1 * xp, l1 === v.c1 ? NaN : v.c1],
+      [l2, v.a2 * yp + v.b2 * xp, l2 === v.c2 ? NaN : v.c2],
+    ];
+  });
+  const { a1, b1, a2, b2, c1, c2 } = k;
+  const { xp, yp } = a2Paar(k, f);
+  const l1 = a1 * xp + b1 * yp, l2 = a2 * xp + b2 * yp;
+  const istLoesung = l1 === c1 && l2 === c2;
+  const seite = (a, b) => `${a < 0 ? "−" : ""}${Math.abs(a) === 1 ? "" : num(Math.abs(a)) + " · "}${klammer(xp)} ${b < 0 ? "− " : "+ "}${Math.abs(b) === 1 ? "" : num(Math.abs(b)) + " · "}${klammer(yp)}`;
+  const urteil = (nr, links, rechts) => links === rechts
+    ? `<strong>${num(links)} = ${num(rechts)}</strong> ✓ — ${nr} ist erfüllt`
+    : `<strong>${num(links)} ≠ ${num(rechts)}</strong> ✗ — ${nr} ist <strong>nicht</strong> erfüllt`;
+  return {
+    promptHtml: `Gegeben ist das Gleichungssystem<br>` +
+      `<strong>I:&nbsp; ${gleichungRein(a1, b1, c1)}</strong><br>` +
+      `<strong>II:&nbsp; ${gleichungRein(a2, b2, c2)}</strong><br>` +
+      `Setze das Paar <strong>(${num(xp)} | ${num(yp)})</strong> in beide Gleichungen ein.`,
+    felder: [
+      {
+        name: "Linke Seite von I ergibt", soll: l1, toleranz: 0.0005, platzhalter: "Wert",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (a1 * yp + b1 * xp)) < 0.0005) return `x und y sind vertauscht: x = ${num(xp)} gehört zum Term ${termRein(a1, "x")}, y = ${num(yp)} zu ${termRein(b1, "y")}.`;
+          if (l1 !== c1 && Math.abs(val - c1) < 0.0005) return `${num(c1)} ist die <em>rechte</em> Seite von I. Gefragt ist, was links herauskommt, wenn du die beiden Zahlen einsetzt.`;
+          return "";
+        },
+      },
+      {
+        name: "Linke Seite von II ergibt", soll: l2, toleranz: 0.0005, platzhalter: "Wert",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (a2 * yp + b2 * xp)) < 0.0005) return `Auch hier steht x vorn: ${termRein(a2, "x")} bekommt ${num(xp)}, ${termRein(b2, "y")} bekommt ${num(yp)}.`;
+          if (l2 !== c2 && Math.abs(val - c2) < 0.0005) return `${num(c2)} ist die rechte Seite von II, nicht das Ergebnis des Einsetzens.`;
+          return "";
+        },
+      },
+      {
+        name: "Ist das Paar eine Lösung? (1 = ja, 2 = nein)", soll: istLoesung ? 1 : 2, toleranz: 0.25, platzhalter: "1 oder 2",
+        hinweis: (roh, val) => {
+          if (!istLoesung && Math.abs(val - 1) < 0.25) {
+            if (l1 === c1 || l2 === c2) return `Eine der beiden Gleichungen stimmt zwar — aber eine Lösung muss <strong>beide</strong> erfüllen. Im Bild: Der Punkt liegt auf einer der Geraden, aber nicht im Schnittpunkt.`;
+            return "Vergleiche jede linke Seite mit ihrer rechten: Hier stimmt keine von beiden.";
+          }
+          if (istLoesung && Math.abs(val - 2) < 0.25) return `Beide Vergleiche gehen auf: ${num(l1)} = ${num(c1)} und ${num(l2)} = ${num(c2)}. Dann ist das Paar eine Lösung.`;
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      `Einsetzen heißt: Überall dort, wo x steht, schreibst du ${num(xp)}; überall dort, wo y steht, ${num(yp)}.`,
+      `In I wird daraus ${seite(a1, b1)}. Rechne das aus und vergleiche mit ${num(c1)}.`,
+      "Erst wenn <em>beide</em> Gleichungen erfüllt sind, ist das Paar eine Lösung des Systems — sonst nicht.",
+    ],
+    musterloesungHtml:
+      `<strong>1. In I einsetzen:</strong> ${seite(a1, b1)} = ${num(l1)}<br>` +
+      `&nbsp;&nbsp;&nbsp;${urteil("I", l1, c1)}<br>` +
+      `<strong>2. In II einsetzen:</strong> ${seite(a2, b2)} = ${num(l2)}<br>` +
+      `&nbsp;&nbsp;&nbsp;${urteil("II", l2, c2)}<br>` +
+      `<strong>3. Urteil:</strong> Das Paar (${num(xp)} | ${num(yp)}) ist ` +
+      `<strong>${istLoesung ? "eine Lösung" : "keine Lösung"}</strong> des Systems ` +
+      `${istLoesung ? "— beide Gleichungen sind erfüllt." : "— es müssten beide Gleichungen erfüllt sein."}<br>` +
+      `<span class="progress-note">Die Probe entscheidet immer über beide Gleichungen zugleich. ` +
+      `Geometrisch heißt das: Gesucht ist nicht ein Punkt auf einer Geraden, sondern der Punkt, ` +
+      `der auf beiden liegt — der Schnittpunkt.</span>`,
+  };
+}
+
+// Aufgabe 3 — Einsetzungsverfahren, gesucht ist y.
+function generateAufgabe3() {
   const k = ohneKollision(ES_KANDIDATEN, (v) => [v.y0, v.x0, -v.y0, v.c1, v.c2], ES_KANDIDATEN[0]);
   const { a1, a2, b2, c1, c2, x0, y0 } = k;
   const nenner = a2 - a1 * b2, zaehler = c2 - b2 * c1;
@@ -877,6 +1037,11 @@ function generateAufgabe2() {
       if (Math.abs(val - c2) < 0.001) return "Das ist die rechte Seite von Gleichung II, nicht y.";
       return "Löse I nach y auf, setze den Term in Klammern in II ein, multipliziere aus und fasse zusammen. Erst kommt x heraus — und daraus y.";
     },
+    tipps: [
+      "In Gleichung I steht das y allein mit dem Koeffizienten 1 — deshalb lässt sich I ohne Bruch nach y auflösen.",
+      `I nach y aufgelöst: y = ${num(c1)} ${a1 < 0 ? "+ " + termRein(-a1, "x") : "− " + termRein(a1, "x")}. Diesen ganzen Term setzt du in II für y ein — <strong>in Klammern</strong>.`,
+      "Zuerst kommt x heraus. Setze x dann in die nach y aufgelöste Gleichung ein — gefragt ist y.",
+    ],
     musterloesungHtml:
       `<strong>1. I nach y auflösen:</strong> y = ${num(c1)} ${a1 < 0 ? "+ " + termRein(-a1, "x") : "− " + termRein(a1, "x")}<br>` +
       `<strong>2. In II einsetzen:</strong> ${termRein(a2, "x")} ${b2 < 0 ? "− " + (Math.abs(b2) === 1 ? "" : num(-b2) + " · ") : "+ " + (Math.abs(b2) === 1 ? "" : num(b2) + " · ")}(${num(c1)} ${a1 < 0 ? "+ " + termRein(-a1, "x") : "− " + termRein(a1, "x")}) = ${num(c2)}<br>` +
@@ -887,8 +1052,102 @@ function generateAufgabe2() {
   };
 }
 
-// Aufgabe 3 — Additionsverfahren, gesucht ist x.
-const A3_KANDIDATEN = (() => {
+// Aufgabe 4 — Additionsverfahren in Teilschritten: Erst wird die Zahl gesucht,
+// mit der I zu multiplizieren ist, dann beide Lösungen. Gebaut ist das System
+// so, dass eine einzige Multiplikation genügt.
+const A4_KANDIDATEN = (() => {
+  const liste = [];
+  for (const k of [-3, -2, 2, 3]) {
+    for (let a1 = -3; a1 <= 3; a1++) {
+      if (a1 === 0) continue;
+      for (let b1 = -3; b1 <= 3; b1++) {
+        if (b1 === 0) continue;
+        const b2 = -k * b1;
+        if (Math.abs(b2) > 9) continue;
+        for (let a2 = -4; a2 <= 4; a2++) {
+          // Verschwindet die Determinante, so ist das System nicht eindeutig
+          // lösbar; dieselbe Bedingung sichert auch k · a1 + a2 ≠ 0.
+          if (a2 === 0 || a1 * b2 - a2 * b1 === 0) continue;
+          for (const x0 of [-3, -2, -1, 1, 2, 3]) {
+            for (const y0 of [-3, -2, -1, 1, 2, 3]) {
+              if (x0 === y0) continue;
+              const c1 = a1 * x0 + b1 * y0, c2 = a2 * x0 + b2 * y0;
+              if (Math.abs(c1) > 20 || Math.abs(c2) > 28) continue;
+              liste.push({ k, a1, b1, a2, b2, c1, c2, x0, y0 });
+            }
+          }
+        }
+      }
+    }
+  }
+  return liste;
+})();
+
+function generateAufgabe4() {
+  const k = ohneFeldKollision(A4_KANDIDATEN, (v) => {
+    const naiv = v.a1 + v.a2 === 0 ? NaN : (v.c1 + v.c2) / (v.a1 + v.a2);
+    return [
+      [v.k, -v.k, v.b2, v.a2],
+      [v.x0, v.y0, -v.x0, naiv],
+      [v.y0, v.x0, -v.y0],
+    ];
+  });
+  const { k: fk, a1, b1, a2, b2, c1, c2, x0, y0 } = k;
+  const koeff = fk * a1 + a2, rechts = fk * c1 + c2;
+  return {
+    promptHtml: `Löse das Gleichungssystem mit dem Additionsverfahren:<br>` +
+      `<strong>I:&nbsp; ${gleichungRein(a1, b1, c1)}</strong><br>` +
+      `<strong>II:&nbsp; ${gleichungRein(a2, b2, c2)}</strong><br>` +
+      `Hier genügt es, <strong>I</strong> zu vervielfachen.`,
+    felder: [
+      {
+        name: "Mit dieser Zahl wird I multipliziert, damit y beim Addieren wegfällt", soll: fk, toleranz: 0.0005, platzhalter: "Zahl",
+        hinweis: (roh, val) => {
+          if (Math.abs(val + fk) < 0.0005) return `Mit ${num(-fk)} stünde bei y der Koeffizient ${num(-fk * b1)}, zusammen mit ${num(b2)} ergäbe das ${num(-fk * b1 + b2)} — das y bliebe stehen. Das Vorzeichen muss andersherum.`;
+          if (Math.abs(val - b2) < 0.0005) return `${num(b2)} ist der y-Koeffizient von II. Gesucht ist die Zahl, die ${num(b1)} in das Gegenteil von ${num(b2)} verwandelt.`;
+          if (Math.abs(val - a2) < 0.0005) return `${num(a2)} ist der x-Koeffizient von II. Weggehoben werden soll aber das y — schau nur auf ${num(b1)} und ${num(b2)}.`;
+          return `Suche die Zahl m mit m · ${klammer(b1)} + ${klammer(b2)} = 0.`;
+        },
+      },
+      {
+        name: "x", soll: x0, toleranz: 0.0005, platzhalter: "x = ?",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - y0) < 0.0005) return "Das ist der y-Wert. Nach dem Addieren steht nur noch x da — dieser Wert ist gesucht.";
+          if (Math.abs(val + x0) < 0.0005) return `Nur das Vorzeichen stimmt nicht. Nach dem Addieren steht ${termRein(koeff, "x")} = ${num(rechts)}; teile durch ${klammer(koeff)}, nicht durch ${klammer(-koeff)}.`;
+          if (a1 + a2 !== 0 && Math.abs(val - (c1 + c2) / (a1 + a2)) < 0.0005) return "So sähe es aus, wenn man die Gleichungen ohne Vorbereitung addiert. Multipliziere I zuerst.";
+          return `Addiere I · ${klammer(fk)} und II; es bleibt ${termRein(koeff, "x")} = ${num(rechts)}.`;
+        },
+      },
+      {
+        name: "y", soll: y0, toleranz: 0.0005, platzhalter: "y = ?",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - x0) < 0.0005) return "Das ist der x-Wert. Setze ihn in eine der beiden Gleichungen ein, um y zu bekommen.";
+          if (Math.abs(val + y0) < 0.0005) return `Nur das Vorzeichen stimmt nicht. Setze x = ${num(x0)} in I ein: ${faktor(einsetzenXY(a1, x0, b1, y0))} = ${num(c1)}.`;
+          return `Setze x = ${num(x0)} in I ein und löse nach y auf.`;
+        },
+      },
+    ],
+    tipps: [
+      `Weggehoben wird das y. Entscheidend sind nur seine Koeffizienten: ${num(b1)} in I und ${num(b2)} in II.`,
+      `Zwei Zahlen heben sich beim Addieren genau dann weg, wenn ihre Summe 0 ist. Gesucht ist also m mit m · ${klammer(b1)} = ${klammer(-b2)}.`,
+      `Nach dem Addieren von I · ${klammer(fk)} und II bleibt ${termRein(koeff, "x")} = ${num(rechts)}. Den y-Wert bekommst du danach durch Einsetzen.`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Faktor bestimmen:</strong> m · ${klammer(b1)} + ${klammer(b2)} = 0 ⇒ <strong>m = ${num(fk)}</strong><br>` +
+      `<strong>2. I vervielfachen:</strong> I · ${klammer(fk)} ergibt ${gleichungRein(a1 * fk, b1 * fk, c1 * fk)}<br>` +
+      `<strong>3. Addieren:</strong> ${termRein(b1 * fk, "y")} und ${termRein(b2, "y")} heben sich weg →&nbsp; ${termRein(koeff, "x")} = ${num(rechts)}<br>` +
+      (koeff === 1
+        ? `<strong>4. Ablesen:</strong> Vor dem x steht nur die 1 →&nbsp; <strong>x = ${num(x0)}</strong><br>`
+        : `<strong>4. Teilen:</strong> | : ${klammer(koeff)} →&nbsp; <strong>x = ${num(x0)}</strong><br>`) +
+      `<strong>5. y berechnen:</strong> x in I: ${faktor(einsetzenLinear(a1, x0, 0))} ${b1 < 0 ? "− " + termRein(Math.abs(b1), "y") : "+ " + termRein(b1, "y")} = ${num(c1)} ⇒ <strong>y = ${num(y0)}</strong><br>` +
+      `<em>Probe in II:</em> ${faktor(einsetzenXY(a2, x0, b2, y0))} = ${num(c2)} ✓ — die Lösung ist (${num(x0)} | ${num(y0)}).<br>` +
+      `<span class="progress-note">Multipliziert wird immer die <em>ganze</em> Gleichung, also auch die rechte Seite. ` +
+      `Wer das vergisst, verändert die Lösungsmenge und bekommt ein falsches x.</span>`,
+  };
+}
+
+// Aufgabe 5 — Additionsverfahren, gesucht ist x.
+const A5_KANDIDATEN = (() => {
   const liste = [];
   for (let a1 = -3; a1 <= 3; a1++) {
     if (a1 === 0) continue;
@@ -915,12 +1174,12 @@ const A3_KANDIDATEN = (() => {
   return liste;
 })();
 
-function generateAufgabe3() {
-  const k = ohneKollision(A3_KANDIDATEN, (v) => {
+function generateAufgabe5() {
+  const k = ohneKollision(A5_KANDIDATEN, (v) => {
     const werte = [v.x0, v.y0, -v.x0];
     if (!isNaN(v.naiv) && werte.every((w) => Math.abs(w - v.naiv) > 1e-9)) werte.push(v.naiv);
     return werte;
-  }, A3_KANDIDATEN[0]);
+  }, A5_KANDIDATEN[0]);
   const { a1, b1, a2, b2, c1, c2, x0, y0 } = k;
   const g = ggt(b1, b2) || 1;
   let k1 = b2 / g, k2 = -b1 / g;
@@ -942,6 +1201,11 @@ function generateAufgabe3() {
       }
       return `Multipliziere I mit ${num(k1)} und II mit ${num(k2)}. Dann stehen bei y die Koeffizienten ${num(b1 * k1)} und ${num(b2 * k2)}, und beim Addieren fällt y weg.`;
     },
+    tipps: [
+      "Gefragt ist x — weggehoben werden muss also das <strong>y</strong>. Schau nur auf die beiden y-Koeffizienten.",
+      `Die y-Koeffizienten sind ${num(b1)} und ${num(b2)}. Beim Addieren fallen sie nur weg, wenn sie entgegengesetzt gleich sind — hier also erst nach passender Multiplikation.`,
+      `Nimm I · ${klammer(k1)} und II · ${klammer(k2)}; bei y stehen dann ${num(b1 * k1)} und ${num(b2 * k2)}. Addieren, dann durch ${klammer(koeff)} teilen.`,
+    ],
     musterloesungHtml:
       `<strong>1. Passend multiplizieren:</strong> I · ${klammer(k1)} und II · ${klammer(k2)}<br>` +
       `&nbsp;&nbsp;&nbsp;I:&nbsp; ${gleichungRein(a1 * k1, b1 * k1, c1 * k1)}<br>` +
@@ -953,13 +1217,114 @@ function generateAufgabe3() {
   };
 }
 
-// Aufgabe 4 — Sachaufgabe: aus dem Text ein System aufstellen und lösen.
-const A4_SACHEN = [
-  { ding1: "Erwachsenenkarte", ding2: "Kinderkarte", mehr1: "Erwachsene", mehr2: "Kinder", satz: (a, b, s) => `${a} Erwachsene und ${b} Kinder zahlen zusammen ${s} €` },
-  { ding1: "Kugel Eis", ding2: "Waffel", mehr1: "Kugeln Eis", mehr2: "Waffeln", satz: (a, b, s) => `${a} Kugeln Eis und ${b} Waffeln kosten zusammen ${s} €` },
-  { ding1: "Heft", ding2: "Stift", mehr1: "Hefte", mehr2: "Stifte", satz: (a, b, s) => `${a} Hefte und ${b} Stifte kosten zusammen ${s} €` },
+// Aufgabe 6 — Die drei Lösungsfälle. Gleichung I steht in Normalform und muss
+// erst nach y aufgelöst werden; II ist bereits aufgelöst. Erst der Vergleich
+// von Steigung und y-Achsenabschnitt entscheidet über die Zahl der Lösungen.
+const A6_KANDIDATEN = (() => {
+  const liste = [];
+  for (const b1 of [-3, -2, 2, 3]) {
+    for (let m1 = -4; m1 <= 4; m1++) {
+      if (m1 === 0) continue;
+      for (let n1 = -5; n1 <= 5; n1++) {
+        if (n1 === 0 || n1 === m1) continue;
+        const a1 = -m1 * b1, c1 = n1 * b1;
+        if (Math.abs(a1) > 9 || Math.abs(c1) > 12) continue;
+        liste.push({ a1, b1, c1, m1, n1 });
+      }
+    }
+  }
+  return liste;
+})();
+
+function generateAufgabe6() {
+  // Alle drei Fälle sind gleich häufig — sonst rät man nach kurzer Zeit richtig.
+  const fall = pick([1, 2, 3]);
+  const k = ohneFeldKollision(A6_KANDIDATEN, (v) => [
+    [v.m1, v.a1, -v.m1],
+    [v.n1, v.c1, -v.n1, v.m1],
+  ]);
+  const { a1, b1, c1, m1, n1 } = k;
+  // Fall 1: andere Steigung. Fall 2: gleiche Steigung, anderer Achsenabschnitt.
+  // Fall 3: dieselbe Gerade. Die zweite Gerade darf keine Zahl beisteuern, auf
+  // der schon ein anderer Hinweis desselben Feldes liegt.
+  const m2 = fall === 1
+    ? pick([-4, -3, -2, -1, 1, 2, 3, 4].filter((z) => z !== m1 && z !== a1 && z !== -m1))
+    : m1;
+  const n2 = fall === 3
+    ? n1
+    : pick([-5, -4, -3, -2, -1, 1, 2, 3, 4, 5].filter((z) => z !== c1 && z !== -n1 && z !== m1 && (fall === 1 || z !== n1)));
+  const fallText = { 1: "genau eine Lösung", 2: "keine Lösung", 3: "unendlich viele Lösungen" }[fall];
+  const xs = fall === 1 ? (n2 - n1) / (m1 - m2) : null;
+  return {
+    promptHtml: `Untersuche, wie viele Lösungen das Gleichungssystem hat:<br>` +
+      `<strong>I:&nbsp; ${gleichungRein(a1, b1, c1)}</strong><br>` +
+      `<strong>II:&nbsp; ${nachYRein(m2, n2)}</strong><br>` +
+      `Löse dazu <strong>I</strong> ebenfalls nach y auf.`,
+    felder: [
+      {
+        name: "Steigung der Geraden I", soll: m1, toleranz: 0.0005, platzhalter: "m",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - a1) < 0.0005) return `${num(a1)} ist der Koeffizient vor dem x in I. Die Steigung siehst du erst, wenn du durch ${num(b1)} geteilt hast — und beim Sortieren wechselt das Vorzeichen.`;
+          if (Math.abs(val + m1) < 0.0005) return `Nur das Vorzeichen stimmt nicht: Aus ${gleichungRein(a1, b1, c1)} wird ${termRein(b1, "y")} = ${termRein(-a1, "x")} ${c1 < 0 ? "− " + num(-c1) : "+ " + num(c1)}, geteilt durch ${klammer(b1)}.`;
+          if (Math.abs(val - m2) < 0.0005) return `${num(m2)} ist die Steigung der zweiten Geraden. Gefragt ist die der ersten.`;
+          return `Bringe ${termRein(a1, "x")} auf die andere Seite und teile die ganze Gleichung durch ${klammer(b1)}.`;
+        },
+      },
+      {
+        name: "y-Achsenabschnitt der Geraden I", soll: n1, toleranz: 0.0005, platzhalter: "b",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - c1) < 0.0005) return `${num(c1)} ist die rechte Seite von I. Auch sie wird noch durch ${klammer(b1)} geteilt.`;
+          if (Math.abs(val + n1) < 0.0005) return "Nur das Vorzeichen stimmt nicht — achte darauf, ob du durch eine negative Zahl teilst.";
+          if (Math.abs(val - m1) < 0.0005) return "Das ist die Steigung, nicht der y-Achsenabschnitt. Der y-Achsenabschnitt ist die Zahl ohne x.";
+          return `Teile die ganze Gleichung durch ${klammer(b1)} — auch die Zahl ${num(c1)}.`;
+        },
+      },
+      {
+        name: "Anzahl der Lösungen (1 = genau eine, 2 = keine, 3 = unendlich viele)",
+        soll: fall, toleranz: 0.25, platzhalter: "1, 2 oder 3",
+        hinweis: (roh, val) => {
+          const g = Math.round(val);
+          if (g === fall) return "";
+          if (fall === 1) return `Die beiden Steigungen sind verschieden (${num(m1)} und ${num(m2)}). Dann sind die Geraden weder parallel noch gleich — sie schneiden sich in genau einem Punkt.`;
+          if (fall === 2) {
+            if (g === 1) return `Beide Geraden haben dieselbe Steigung ${num(m1)}. Dann gibt es keinen Schnittpunkt.`;
+            return `Dieselbe Steigung, aber verschiedene y-Achsenabschnitte (${num(n1)} und ${num(n2)}): Die Geraden sind echt parallel und haben keinen Punkt gemeinsam.`;
+          }
+          if (g === 1) return `Beide Geraden haben dieselbe Steigung ${num(m1)} <em>und</em> denselben y-Achsenabschnitt ${num(n1)} — es ist nur eine einzige Gerade.`;
+          return `Steigung und y-Achsenabschnitt stimmen beide überein. Die Gleichungen beschreiben dieselbe Gerade, also erfüllt jeder ihrer Punkte beide.`;
+        },
+      },
+    ],
+    tipps: [
+      `Löse I nach y auf: ${termRein(a1, "x")} auf die andere Seite, dann die ganze Gleichung durch ${klammer(b1)} teilen.`,
+      "Vergleiche danach zuerst die <strong>Steigungen</strong>. Sind sie verschieden, schneiden sich die Geraden genau einmal.",
+      "Sind die Steigungen gleich, entscheidet der y-Achsenabschnitt: verschieden ⇒ parallel ⇒ keine Lösung; gleich ⇒ dieselbe Gerade ⇒ unendlich viele Lösungen.",
+    ],
+    musterloesungHtml:
+      `<strong>1. I nach y auflösen:</strong> ${gleichungRein(a1, b1, c1)} &nbsp;|&nbsp; ${a1 < 0 ? "+ " + termRein(-a1, "x") : "− " + termRein(a1, "x")}<br>` +
+      `&nbsp;&nbsp;&nbsp;${termRein(b1, "y")} = ${termRein(-a1, "x")} ${c1 < 0 ? "− " + num(-c1) : "+ " + num(c1)} &nbsp;|&nbsp; : ${klammer(b1)}<br>` +
+      `&nbsp;&nbsp;&nbsp;<strong>${nachYRein(m1, n1)}</strong><br>` +
+      `<strong>2. Vergleichen:</strong> Steigungen ${num(m1)} und ${num(m2)} — ${m1 === m2 ? "gleich" : "verschieden"}; ` +
+      `y-Achsenabschnitte ${num(n1)} und ${num(n2)} — ${n1 === n2 ? "gleich" : "verschieden"}.<br>` +
+      `<strong>3. Ergebnis:</strong> Das System hat <strong>${fallText}</strong>` +
+      (fall === 1
+        ? `; die Geraden schneiden sich${Number.isInteger(xs) ? ` bei x = ${num(xs)}` : ""}.`
+        : fall === 2
+          ? "; die Geraden sind echt parallel."
+          : "; beide Gleichungen beschreiben dieselbe Gerade.") + `<br>` +
+      `<span class="progress-note">Beim Rechnen zeigen sich diese Fälle an der letzten Zeile: ` +
+      `Bleibt eine falsche Aussage wie 0 = 5 stehen, gibt es keine Lösung; bleibt 0 = 0 stehen, ` +
+      `gibt es unendlich viele. Beides ist kein Rechenfehler, sondern das Ergebnis.</span>`,
+  };
+}
+
+// Aufgabe 7 — Sachaufgabe: aus dem Text ein System aufstellen und lösen.
+const A7_SACHEN = [
+  { ding1: "Erwachsenenkarte", ding2: "Kinderkarte", mehr1: "Erwachsene", mehr2: "Kinder", satz: (a, b, s) => `${mz(a, "Erwachsener", "Erwachsene")} und ${mz(b, "Kind", "Kinder")} zahlen zusammen ${s} €` },
+  { ding1: "Kugel Eis", ding2: "Waffel", mehr1: "Kugeln Eis", mehr2: "Waffeln", satz: (a, b, s) => `${mz(a, "Kugel Eis", "Kugeln Eis")} und ${mz(b, "Waffel", "Waffeln")} kosten zusammen ${s} €` },
+  { ding1: "Heft", ding2: "Stift", mehr1: "Hefte", mehr2: "Stifte", satz: (a, b, s) => `${mz(a, "Heft", "Hefte")} und ${mz(b, "Stift", "Stifte")} kosten zusammen ${s} €` },
 ];
-const A4_KANDIDATEN = (() => {
+const A7_KANDIDATEN = (() => {
   const liste = [];
   for (let a1 = 1; a1 <= 4; a1++) {
     for (let b1 = 1; b1 <= 5; b1++) {
@@ -982,13 +1347,13 @@ const A4_KANDIDATEN = (() => {
   return liste;
 })();
 
-function generateAufgabe4() {
+function generateAufgabe7() {
   // Gesucht ist der Preis der zweiten Sorte. Die Ablenker sind der Preis der
   // ersten Sorte, die Summe beider Preise und ihr Unterschied — genau die
   // Zahlen, auf die die Hinweise anspringen.
-  const k = ohneKollision(A4_KANDIDATEN, (v) => [v.q, v.p, v.p + v.q, v.p - v.q], A4_KANDIDATEN[0]);
+  const k = ohneKollision(A7_KANDIDATEN, (v) => [v.q, v.p, v.p + v.q, v.p - v.q], A7_KANDIDATEN[0]);
   const { a1, b1, a2, b2, c1, c2, p, q } = k;
-  const s = pick(A4_SACHEN);
+  const s = pick(A7_SACHEN);
   return {
     promptHtml: `${s.satz(a1, b1, num(c1))}. ${s.satz(a2, b2, num(c2))}.<br>` +
       `Wie viel Euro kostet <strong>eine ${s.ding2}</strong>?`,
@@ -1002,6 +1367,11 @@ function generateAufgabe4() {
       if (val < 0) return "Ein Preis kann nicht negativ sein — irgendwo ist ein Vorzeichen verrutscht. Schreibe beide Gleichungen ordentlich untereinander auf.";
       return `Nenne x den Preis einer ${s.ding1} und y den Preis einer ${s.ding2}. Dann heißt der Text: ${gleichungRein(a1, b1, c1)} und ${gleichungRein(a2, b2, c2)}.`;
     },
+    tipps: [
+      `Benenne zuerst die Unbekannten: x = Preis einer ${s.ding1} in €, y = Preis einer ${s.ding2} in €. Beide Gleichungen benutzen dieselben Bezeichnungen.`,
+      `Jeder der beiden Sätze wird zu einer Gleichung: I: ${gleichungRein(a1, b1, c1)}, II: ${gleichungRein(a2, b2, c2)}.`,
+      `Multipliziere I mit ${num(a2)} und II mit ${klammer(-a1)} und addiere — dann fällt x weg und y bleibt übrig. Gefragt ist der Preis der ${s.ding2}.`,
+    ],
     musterloesungHtml:
       `<strong>1. Benennen:</strong> x = Preis einer ${s.ding1} in €, y = Preis einer ${s.ding2} in €<br>` +
       `<strong>2. Übersetzen:</strong><br>` +
@@ -1014,12 +1384,116 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 8 — Mischungsaufgabe. Zwei Gleichungen, die verschiedene Dinge
+// zählen: die eine die Menge, die andere den Wert. Genau daran scheitert das
+// Aufstellen am häufigsten.
+const A8_KONTEXTE = [
+  { wer: "Ein Teehändler", s1: "Darjeeling", s1Dativ: "Darjeeling", s2: "Assam", s2Dativ: "Assam", mischung: "Teemischung", einheit: "kg" },
+  { wer: "Eine Rösterei", s1: "Arabica-Bohnen", s1Dativ: "Arabica-Bohnen", s2: "Robusta-Bohnen", s2Dativ: "Robusta-Bohnen", mischung: "Kaffeemischung", einheit: "kg" },
+  { wer: "Ein Hofladen", s1: "Cashewkerne", s1Dativ: "Cashewkernen", s2: "Erdnüsse", s2Dativ: "Erdnüssen", mischung: "Nussmischung", einheit: "kg" },
+  { wer: "Ein Süßwarenladen", s1: "Schokotrüffel", s1Dativ: "Schokotrüffeln", s2: "Fruchtgummi", s2Dativ: "Fruchtgummi", mischung: "Naschmischung", einheit: "kg" },
+];
+const A8_KANDIDATEN = (() => {
+  const liste = [];
+  for (const g of [10, 12, 15, 16, 20, 24, 25]) {
+    for (const p2 of [6, 8, 9, 10, 12, 14, 15]) {
+      for (const d of [3, 4, 5, 6, 8, 10]) {
+        const p1 = p2 + d;
+        for (let x = 2; x <= g - 2; x++) {
+          const y = g - x;
+          if (x === y) continue;                 // sonst wäre „vertauscht“ kein Fehler
+          const s = p1 * x + p2 * y;             // Gesamtwert der Mischung in €
+          const mCent = (s * 100) / g;           // Mischpreis in Cent je Einheit
+          if (!Number.isInteger(mCent)) continue;
+          const m = mCent / 100;
+          // Der halbe-halbe-Preis ist ein eigener Hinweis und darf nicht
+          // zufällig der richtige Mischpreis sein.
+          if (m === (p1 + p2) / 2) continue;
+          liste.push({ g, p1, p2, x, y, s, m });
+        }
+      }
+    }
+  }
+  return liste;
+})();
+
+function generateAufgabe8() {
+  const kt = pick(A8_KONTEXTE);
+  const k = ohneFeldKollision(A8_KANDIDATEN, (v) => [
+    [v.s, v.g * v.p1, v.g * v.p2, v.m, v.p1 + v.p2],
+    [v.x, v.y, v.g / 2, v.g],
+    [v.y, v.x, v.g / 2, v.g],
+  ]);
+  const { g, p1, p2, x, y, s, m } = k;
+  const halb = (p1 + p2) / 2;
+  return {
+    promptHtml:
+      `${kt.wer} mischt ${kt.s1} zu <strong>${euro(p1)} €</strong> je ${kt.einheit} mit ${kt.s2Dativ} zu ` +
+      `<strong>${euro(p2)} €</strong> je ${kt.einheit}. Es sollen <strong>${num(g)} ${kt.einheit}</strong> ` +
+      `${kt.mischung} entstehen, die <strong>${euro(m)} €</strong> je ${kt.einheit} kostet.`,
+    felder: [
+      {
+        name: "Gesamtwert der Mischung", soll: s, einheit: "€", toleranz: 0.005, platzhalter: "Wert in €",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - m) < 0.005) return `${euro(m)} € ist der Preis <em>je</em> ${kt.einheit}. Gefragt ist, was die ganzen ${num(g)} ${kt.einheit} wert sind.`;
+          if (Math.abs(val - g * p1) < 0.005) return `So viel wäre die Menge wert, wenn sie ganz aus der teureren Sorte bestünde (${kt.s1}, ${euro(p1)} € je ${kt.einheit}). Gerechnet wird mit dem Mischpreis ${euro(m)} €.`;
+          if (Math.abs(val - g * p2) < 0.005) return `So viel wäre die Menge wert, wenn sie ganz aus der günstigeren Sorte bestünde (${kt.s2}, ${euro(p2)} € je ${kt.einheit}).`;
+          if (Math.abs(val - (p1 + p2)) < 0.005) return "Die beiden Einzelpreise zu addieren ergibt keinen Gesamtwert — die Mengen fehlen.";
+          return `Multipliziere den Mischpreis mit der Gesamtmenge: ${euro(m)} € · ${num(g)}.`;
+        },
+      },
+      {
+        name: `Menge ${kt.s1}`, soll: x, einheit: kt.einheit, toleranz: 0.005, platzhalter: `Menge in ${kt.einheit}`,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - y) < 0.005) return `${num(y)} ${kt.einheit} ist die Menge ${kt.s2}. Gefragt war hier ${kt.s1} — die teurere Sorte.`;
+          if (Math.abs(val - g / 2) < 0.005) return `Halbe-halbe ergäbe den Mischpreis ${euro(halb)} € je ${kt.einheit}; verlangt sind aber ${euro(m)} €.`;
+          if (Math.abs(val - g) < 0.005) return `${num(g)} ${kt.einheit} ist die Gesamtmenge. Sie verteilt sich auf beide Sorten.`;
+          if (val < 0 || val > g) return `Die Menge einer Sorte liegt zwischen 0 und ${num(g)} ${kt.einheit}.`;
+          return `Nenne x die Menge ${kt.s1} und y die Menge ${kt.s2}. Dann gilt x + y = ${num(g)} und ${num(p1)}x + ${num(p2)}y = ${num(s)}.`;
+        },
+      },
+      {
+        name: `Menge ${kt.s2}`, soll: y, einheit: kt.einheit, toleranz: 0.005, platzhalter: `Menge in ${kt.einheit}`,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - x) < 0.005) return `${num(x)} ${kt.einheit} ist die Menge ${kt.s1}. Die beiden Mengen ergeben zusammen ${num(g)} ${kt.einheit}.`;
+          if (Math.abs(val - g / 2) < 0.005) return `Bei gleichen Mengen läge der Mischpreis genau in der Mitte, also bei ${euro(halb)} € je ${kt.einheit}.`;
+          if (Math.abs(val - g) < 0.005) return `${num(g)} ${kt.einheit} ist die Gesamtmenge, nicht der Anteil einer Sorte.`;
+          return `Wenn die Menge ${kt.s1} bekannt ist, bleibt der Rest: ${num(g)} − x.`;
+        },
+      },
+    ],
+    tipps: [
+      `Der Gesamtwert steht nicht im Text, lässt sich aber ausrechnen: Mischpreis mal Gesamtmenge, also ${euro(m)} € · ${num(g)} ${kt.einheit}.`,
+      "Die beiden Gleichungen zählen verschiedene Dinge: Die erste zählt die Menge (x + y), die zweite den Wert (Preis mal Menge).",
+      `Mit x = Menge ${kt.s1} und y = Menge ${kt.s2} heißt das: I: x + y = ${num(g)} und II: ${num(p1)}x + ${num(p2)}y = ${num(s)}. Setze y = ${num(g)} − x in II ein.`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Gesamtwert:</strong> ${euro(m)} € je ${kt.einheit} · ${num(g)} ${kt.einheit} = <strong>${num(s)} €</strong><br>` +
+      `<strong>2. Benennen:</strong> x = Menge ${kt.s1} in ${kt.einheit}, y = Menge ${kt.s2} in ${kt.einheit}<br>` +
+      `<strong>3. Übersetzen:</strong><br>` +
+      `&nbsp;&nbsp;&nbsp;I:&nbsp; x + y = ${num(g)} &nbsp;<em>(die Mengen)</em><br>` +
+      `&nbsp;&nbsp;&nbsp;II:&nbsp; ${num(p1)}x + ${num(p2)}y = ${num(s)} &nbsp;<em>(die Werte)</em><br>` +
+      `<strong>4. Einsetzen:</strong> y = ${num(g)} − x in II →&nbsp; ${num(p1)}x + ${num(p2)} · (${num(g)} − x) = ${num(s)}<br>` +
+      `&nbsp;&nbsp;&nbsp;${num(p1)}x + ${num(p2 * g)} − ${num(p2)}x = ${num(s)} ⇒ ${num(p1 - p2)}x = ${num(s - p2 * g)} ⇒ <strong>x = ${num(x)} ${kt.einheit}</strong><br>` +
+      `<strong>5. Rest:</strong> y = ${num(g)} − ${num(x)} = <strong>${num(y)} ${kt.einheit}</strong><br>` +
+      `<em>Probe am Text:</em> ${num(x)} · ${euro(p1)} € + ${num(y)} · ${euro(p2)} € = ${num(s)} €, geteilt durch ${num(g)} ${kt.einheit} ergibt ${euro(m)} € je ${kt.einheit} ✓<br>` +
+      `<span class="progress-note">Der Mischpreis liegt immer zwischen den beiden Einzelpreisen — hier zwischen ${euro(p2)} € und ${euro(p1)} €. ` +
+      `Je näher er am Preis einer Sorte liegt, desto mehr von ihr steckt in der Mischung: ${euro(m)} € liegt näher an ` +
+      `${m - p2 < p1 - m ? `${euro(p2)} €, und entsprechend größer ist der Anteil an ${kt.s2Dativ}` : `${euro(p1)} €, und entsprechend größer ist der Anteil an ${kt.s1Dativ}`} ` +
+      `(${num(Math.max(x, y))} von ${num(g)} ${kt.einheit}).</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Gleichsetzungsverfahren", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Einsetzungsverfahren", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Additionsverfahren", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Sachaufgabe", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Die Probe", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Einsetzungsverfahren", generate: generateAufgabe3 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Additionsverfahren Schritt für Schritt", generate: generateAufgabe4 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Additionsverfahren", generate: generateAufgabe5 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Die drei Lösungsfälle", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Sachaufgabe", generate: generateAufgabe7 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Mischungsaufgabe", generate: generateAufgabe8 },
   ]);
 }
 
