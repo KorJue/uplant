@@ -79,6 +79,9 @@ function begrenzt(id, wertZahl, min, max) {
 }
 // Alle Teiler von k, die höchstens grenze sind — damit Wertetabellen
 // antiproportionaler Zuordnungen ganzzahlig bleiben.
+function randInt(min, max) {
+  return min + Math.floor(Math.random() * (max - min + 1));
+}
 function teiler(k, grenze) {
   const out = [];
   for (let t = 1; t <= Math.min(k, grenze); t++) if (k % t === 0) out.push(t);
@@ -703,6 +706,11 @@ function generateAufgabe1() {
         return `Du hast die beiden Anzahlen vertauscht. Geteilt wird durch die <em>gegebene</em> Anzahl ${num(a)}, multipliziert wird mit der <em>gesuchten</em> Anzahl ${num(b)}.`;
       return `Rechne zuerst den Preis für <strong>${ware.eines}</strong> aus: ${num(preisA)} € : ${num(a)}.`;
     },
+    tipps: [
+      "Der Dreisatz geht über die Einheit: erst herunter auf ein Stück, dann hinauf auf die gesuchte Anzahl.",
+      `Preis für ${ware.eines}: ${num(preisA)} € : ${num(a)} = ${num(stueck)} €.`,
+      `Damit weiter: ${num(b)} · ${num(stueck)} €.`,
+    ],
     musterloesungHtml:
       `<strong>1. Gegeben:</strong> ${num(a)} ${ware.was} ↦ ${num(preisA)} €<br>` +
       `<strong>2. Auf eine Einheit:</strong> beide Seiten : ${num(a)} → ${ware.einesGross} ↦ ${num(stueck)} €<br>` +
@@ -756,6 +764,11 @@ function generateAufgabe2() {
         return `Du hast den Unterschied dazugerechnet. Bei einer antiproportionalen Zuordnung wird geteilt und vervielfacht, nicht addiert.`;
       return `Rechne zuerst aus, wie lange <strong>${ctx.eines}</strong> allein bräuchte: ${num(a)} · ${num(tageA)}.`;
     },
+    tipps: [
+      `Hier gilt: mehr ${ctx.x} — weniger ${ctx.y}. Das ist eine <strong>antiproportionale</strong> Zuordnung.`,
+      `Auf dem Weg über die Einheit wird deshalb <em>multipliziert</em>: ${ctx.einesGross} allein bräuchte ${num(a)} · ${num(tageA)} ${ctx.y}.`,
+      `Und von dort auf ${num(b)} ${ctx.x}: geteilt.`,
+    ],
     musterloesungHtml:
       `<strong>1. Gegeben:</strong> ${num(a)} ${ctx.x} ↦ ${num(tageA)} ${ctx.y}<br>` +
       `<strong>2. Auf eine Einheit:</strong> links : ${num(a)}, rechts <strong>· ${num(a)}</strong> → ${ctx.einesGross} ↦ ${num(k)} ${ctx.y}<br>` +
@@ -824,6 +837,11 @@ function generateAufgabe3() {
           : `${num(k)} ist der gemeinsame Quotient y : x. Um y zu bekommen, musst du ihn noch mit ${num(x)} multiplizieren.`;
       return `Prüfe beide Proben an den bekannten Spalten: Sind alle Quotienten y : x gleich, oder alle Produkte x · y?`;
     },
+    tipps: [
+      "Welche Art es ist, verrät eine Probe an den <em>bekannten</em> Spalten — nicht die Überschrift.",
+      "Proportional: Alle Quotienten y : x sind gleich. Antiproportional: Alle Produkte x · y sind gleich.",
+      "Erst wenn die Art feststeht, lässt sich die Lücke füllen — mit derselben Zahl, die bei allen anderen Spalten herauskam.",
+    ],
     musterloesungHtml:
       `<strong>1. Art bestimmen:</strong> ` +
       (anti
@@ -910,6 +928,11 @@ function generateAufgabe4() {
         return `Die beiden gegebenen Preise darf man nicht addieren — sie gehören zu zwei verschiedenen Fahrten, nicht zu einer längeren.`;
       return `Der Preisunterschied ${num(c2)} € − ${num(c1)} € entfällt allein auf die zusätzlichen ${num(s2 - s1)} ${ctx.x}. Daraus ergibt sich der Preis ${ctx.je}.`;
     },
+    tipps: [
+      `Der Dreisatz hilft hier nicht: Bei 0 ${ctx.x} fällt schon die ${ctx.grund} an, die Zuordnung ist also <strong>nicht proportional</strong>.`,
+      `Der <em>Unterschied</em> der beiden Preise entfällt allein auf die zusätzlichen ${num(s2 - s1)} ${ctx.x} — daraus folgt der Preis ${ctx.je}.`,
+      `Mit diesem Preis lässt sich die ${ctx.grund} aus einer der beiden Angaben zurückrechnen.`,
+    ],
     musterloesungHtml:
       `<strong>1. Preis ${ctx.je}:</strong> Der Unterschied ${num(c2)} € − ${num(c1)} € = ${num(c2 - c1)} € entfällt auf ` +
       `${num(s2)} − ${num(s1)} = ${num(s2 - s1)} ${ctx.x}, also ${num(c2 - c1)} € : ${num(s2 - s1)} = <strong>${num(p)} €</strong> ${ctx.je}.<br>` +
@@ -920,12 +943,284 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 2 — der Proportionalitätsfaktor. Er bekommt hier einen eigenen Schritt: Wer ihn
+// einmal ausgerechnet hat, braucht für jeden weiteren Wert nur noch eine Multiplikation.
+const A2B_WAREN = [
+  { was: "Äpfel", einheit: "kg", eine: "ein Kilogramm" },
+  { was: "Benzin", einheit: "Liter", eine: "ein Liter" },
+  { was: "Stoff", einheit: "m", eine: "ein Meter" },
+  { was: "Kies", einheit: "Sack", eine: "einen Sack" },
+];
+
+function generateAufgabe2b() {
+  const ware = pick(A2B_WAREN);
+  // k wird aus festen Werten gezogen; x1 und x2 so, dass beide Preise glatt aufgehen.
+  const k = pick([1.5, 2, 2.5, 3, 4, 5, 6, 7.5]);
+  // Die halben Preise brauchen eine gerade Menge, damit der Gesamtpreis glatt aufgeht.
+  const noetig = Number.isInteger(k) ? 1 : 2;
+  const x1 = randInt(2, 9) * noetig;
+  let x2 = randInt(2, 12) * noetig;
+  if (x2 === x1) x2 = x1 + noetig;
+  const preis1 = k * x1, preis2 = k * x2;
+  const menge = (z) => `${num(z)} ${ware.einheit}`;
+  return {
+    promptHtml:
+      `<strong>${menge(x1)} ${ware.was}</strong> kosten <strong>${num(preis1)} €</strong>. ` +
+      `Der Preis ist <em>proportional</em> zur Menge.<br>` +
+      `<strong>Was kosten ${menge(x2)}?</strong>`,
+    felder: [
+      {
+        name: `Preis für ${ware.eine}`, soll: k, einheit: "€", toleranz: 0.005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - x1 / preis1) < 0.005) return `Du hast Menge durch Preis geteilt. Gefragt ist der Preis <em>je Einheit</em>: ${num(preis1)} € : ${num(x1)}.`;
+          if (Math.abs(val - preis1) < 0.005) return `${num(preis1)} € ist der Preis für ${menge(x1)}, nicht für ${ware.eine}.`;
+          return "";
+        },
+      },
+      {
+        name: `Preis für ${menge(x2)}`, soll: preis2, einheit: "€", toleranz: 0.005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (preis1 + x2 - x1)) < 0.005) return `Du hast den Unterschied der Mengen dazugezählt. Jede zusätzliche Einheit kostet aber ${num(k)} €, nicht 1 €.`;
+          if (Math.abs(val - (preis1 * x1) / x2) < 0.005) return "Du hast die beiden Mengen vertauscht: Multipliziert wird mit der <em>gesuchten</em> Menge.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Bei einer proportionalen Zuordnung gilt y = k · x — dieselbe Zahl k für <em>jedes</em> Wertepaar.",
+      `k ist der Preis für ${ware.eine}: ${num(preis1)} € : ${num(x1)}.`,
+      `Mit diesem k geht jeder weitere Wert in einem Schritt: ${num(x2)} · k.`,
+    ],
+    musterloesungHtml:
+      `① Proportionalitätsfaktor: k = ${num(preis1)} € : ${num(x1)} = <strong>${num(k)} €</strong> je Einheit<br>` +
+      `② Damit weiter: ${num(x2)} · ${num(k)} € = <strong>${num(preis2)} €</strong><br>` +
+      `<span class="progress-note">Probe: ${num(preis2)} : ${num(x2)} = ${num(k)} — derselbe Faktor wie oben ✓ &nbsp;· ` +
+      `Der Faktor k ist das, was bei einer proportionalen Zuordnung gleich bleibt. Man erkennt sie genau daran: Alle Quotienten y : x stimmen überein.</span>`,
+  };
+}
+
+// Aufgabe 4 — der Dreisatz rückwärts. Gegeben ist der Betrag, gesucht die Menge; damit wird die
+// Zuordnung in der anderen Richtung gelesen.
+function generateAufgabe4b() {
+  const ware = pick(A2B_WAREN);
+  const k = pick([1.5, 2, 2.5, 3, 4, 5, 6, 7.5]);
+  const noetig = Number.isInteger(k) ? 1 : 2;
+  const x1 = randInt(2, 9) * noetig;
+  let gesucht = randInt(2, 20) * noetig;
+  if (gesucht === x1) gesucht = x1 + noetig;
+  const preis1 = k * x1, betrag = k * gesucht;
+  return {
+    promptHtml:
+      `<strong>${num(x1)} ${ware.einheit} ${ware.was}</strong> kosten <strong>${num(preis1)} €</strong>.<br>` +
+      `Wie viel bekommt man für <strong>${num(betrag)} €</strong>?<br>` +
+      `<span class="progress-note">Der Preis ist proportional zur Menge.</span>`,
+    felder: [
+      {
+        name: `Preis für ${ware.eine}`, soll: k, einheit: "€", toleranz: 0.005,
+        hinweis: (roh, val) => (Math.abs(val - x1 / preis1) < 0.005
+          ? "Du hast Menge durch Preis geteilt. Für den Preis je Einheit wird der Preis durch die Menge geteilt."
+          : ""),
+      },
+      {
+        name: `Menge für ${num(betrag)} €`, soll: gesucht, einheit: ware.einheit, toleranz: 0.005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - betrag * k) < 0.005) return `Du hast <strong>multipliziert</strong>. Gesucht ist, wie oft ${num(k)} € in ${num(betrag)} € hineinpassen — also geteilt.`;
+          if (Math.abs(val - (x1 + betrag - preis1)) < 0.005) return "Du hast den Unterschied der Beträge als Menge dazugezählt. Euro und Kilogramm lassen sich nicht addieren.";
+          if (Math.abs(val - betrag) < 0.005) return `${num(betrag)} ist der <em>Betrag</em> in Euro, nicht die Menge.`;
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Auch rückwärts hilft der Preis für eine Einheit — er ist der Schlüssel in beide Richtungen.",
+      `k = ${num(preis1)} € : ${num(x1)}.`,
+      `Dann: Wie oft passen ${num(k)} € in ${num(betrag)} €? Das ist eine Division.`,
+    ],
+    musterloesungHtml:
+      `① Preis je Einheit: ${num(preis1)} € : ${num(x1)} = <strong>${num(k)} €</strong><br>` +
+      `② Menge: ${num(betrag)} € : ${num(k)} € = <strong>${num(gesucht)} ${ware.einheit}</strong><br>` +
+      `<span class="progress-note">Probe: ${num(gesucht)} · ${num(k)} € = ${num(betrag)} € ✓ &nbsp;· ` +
+      `Vorwärts wird mit k multipliziert, rückwärts durch k geteilt. Beide Male ist k dieselbe Zahl — das ist der ganze Vorteil des Zwischenschritts.</span>`,
+  };
+}
+
+// Aufgabe 6 — zusammengesetzter Dreisatz: Zwei Größen ändern sich gleichzeitig, die eine
+// proportional, die andere antiproportional. Deshalb wird in zwei getrennten Schritten gerechnet.
+const A6_KONTEXTE = [
+  { x: "Arbeiter", y: "Tage", yDat: "Tagen", menge: "m Mauer", satz: "bauen", mengeKurz: "m" },
+  { x: "Pumpen", y: "Stunden", yDat: "Stunden", menge: "m³ Wasser", satz: "fördern", mengeKurz: "m³" },
+  { x: "Maschinen", y: "Stunden", yDat: "Stunden", menge: "Bauteile", satz: "fertigen", mengeKurz: "Stück" },
+];
+
+function generateAufgabe6() {
+  const k = pick(A6_KONTEXTE);
+  // Konstruktiv: Alle drei Zwischenergebnisse müssen ganze Zahlen sein. Gesucht werden die
+  // Kombinationen, bei denen das aufgeht — nicht durch Verwerfen, sondern durch Filtern.
+  const kandidaten = [];
+  for (const a1 of [2, 3, 4, 5, 6]) {
+    for (const a2 of [2, 3, 4, 6, 8, 10, 12]) {
+      if (a2 === a1) continue;
+      for (const m1 of [100, 120, 150, 200, 240, 300]) {
+        for (const f of [2, 3, 4, 1.5, 2.5]) {
+          const m2 = m1 * f;
+          if (!Number.isInteger(m2)) continue;
+          for (const t1 of [4, 5, 6, 8, 9, 10, 12, 15]) {
+            const einArbeiter = a1 * t1;                       // Tage für 1 Arbeiter, m1
+            const fuerM2 = (einArbeiter * m2) / m1;            // Tage für 1 Arbeiter, m2
+            const t2 = fuerM2 / a2;                            // Tage für a2 Arbeiter, m2
+            if (!Number.isInteger(fuerM2) || !Number.isInteger(t2)) continue;
+            if (t2 < 2 || t2 > 60) continue;
+            kandidaten.push({ a1, a2, m1, m2, t1, einArbeiter, fuerM2, t2 });
+          }
+        }
+      }
+    }
+  }
+  const c = pick(kandidaten);
+  return {
+    promptHtml:
+      `<strong>${num(c.a1)} ${k.x}</strong> ${k.satz} <strong>${num(c.m1)} ${k.menge}</strong> in <strong>${num(c.t1)} ${k.yDat}</strong>.<br>` +
+      `Wie lange brauchen <strong>${num(c.a2)} ${k.x}</strong> für <strong>${num(c.m2)} ${k.menge}</strong>?<br>` +
+      `<span class="progress-note">Alle arbeiten gleich schnell. Rechne in zwei Schritten.</span>`,
+    felder: [
+      {
+        name: `Wie lange bräuchte 1 ${k.x.replace(/en$|n$/, "")} für ${num(c.m1)} ${k.mengeKurz}?`,
+        soll: c.einArbeiter, einheit: k.y, toleranz: 0.005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - c.t1 / c.a1) < 0.005) return `Du hast <strong>geteilt</strong>. Einer allein braucht <em>länger</em>, nicht kürzer: ${num(c.a1)} · ${num(c.t1)}.`;
+          if (Math.abs(val - c.t1) < 0.005) return `${num(c.t1)} ${k.y} brauchen ${num(c.a1)} ${k.x} zusammen. Einer allein braucht das ${num(c.a1)}-fache.`;
+          return "";
+        },
+      },
+      {
+        name: `Wie lange bräuchte 1 ${k.x.replace(/en$|n$/, "")} für ${num(c.m2)} ${k.mengeKurz}?`,
+        soll: c.fuerM2, einheit: k.y, toleranz: 0.005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (c.einArbeiter * c.m1) / c.m2) < 0.005) return "Hier ist die Zuordnung <strong>proportional</strong>: mehr Menge, mehr Zeit. Multipliziert wird mit dem Mengenfaktor, nicht geteilt.";
+          if (Math.abs(val - c.einArbeiter) < 0.005) return `Das gilt für ${num(c.m1)} ${k.mengeKurz}. Jetzt sind es ${num(c.m2)} ${k.mengeKurz}.`;
+          return "";
+        },
+      },
+      {
+        name: `Wie lange brauchen ${num(c.a2)} ${k.x}?`, soll: c.t2, einheit: k.y, toleranz: 0.005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - c.fuerM2 * c.a2) < 0.005) return `Mehr ${k.x} bedeutet <strong>weniger</strong> Zeit — hier wird geteilt, nicht multipliziert.`;
+          if (Math.abs(val - c.fuerM2) < 0.005) return `Das gilt für einen allein. Jetzt sind es ${num(c.a2)}.`;
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Zwei Größen ändern sich zugleich — deshalb wird nacheinander gerechnet, eine nach der anderen.",
+      `Schritt 1 und 2: erst auf einen ${k.x.replace(/en$|n$/, "")} (antiproportional: mal ${num(c.a1)}), dann auf die neue Menge (proportional).`,
+      `Schritt 3: von einem auf ${num(c.a2)} ${k.x} — antiproportional, also geteilt.`,
+    ],
+    musterloesungHtml:
+      `① Auf einen ${k.x.replace(/en$|n$/, "")}: mehr Leute, weniger Zeit — also <strong>mal</strong> ${num(c.a1)}:<br>` +
+      `&nbsp;&nbsp;&nbsp;${num(c.a1)} · ${num(c.t1)} = <strong>${num(c.einArbeiter)} ${k.y}</strong> für ${num(c.m1)} ${k.mengeKurz}<br>` +
+      `② Auf die neue Menge: mehr Menge, mehr Zeit — also mal ${num(c.m2)} : ${num(c.m1)} = ${num(c.m2 / c.m1)}:<br>` +
+      `&nbsp;&nbsp;&nbsp;${num(c.einArbeiter)} · ${num(c.m2 / c.m1)} = <strong>${num(c.fuerM2)} ${k.y}</strong><br>` +
+      `③ Auf ${num(c.a2)} ${k.x}: mehr Leute, weniger Zeit — also <strong>geteilt</strong>:<br>` +
+      `&nbsp;&nbsp;&nbsp;${num(c.fuerM2)} : ${num(c.a2)} = <strong>${num(c.t2)} ${k.y}</strong><br>` +
+      `<span class="progress-note">Probe über die Gesamtarbeit: ${num(c.a1)} · ${num(c.t1)} = ${num(c.einArbeiter)} Arbeitstage für ${num(c.m1)} ${k.mengeKurz}, ` +
+      `also ${num(c.a2)} · ${num(c.t2)} = ${num(c.a2 * c.t2)} Arbeitstage für ${num(c.m2)} ${k.mengeKurz} — das ist genau das ${num(c.m2 / c.m1)}-fache ✓ &nbsp;· ` +
+      `Wer beide Änderungen auf einmal machen will, verwechselt leicht, welche multipliziert und welche geteilt wird.</span>`,
+  };
+}
+
+// Aufgabe 8 — zwei Tarife vergleichen. Beide Zuordnungen sind linear, aber nicht proportional;
+// gefragt ist, ab wann sich der Wechsel lohnt.
+const A8_TARIFE = [
+  { einheit: "Gigabyte", dativ: "Gigabyte", kurz: "GB", einleitung: "Für einen <strong>Handytarif</strong>", a: "Basis", b: "Komfort" },
+  { einheit: "Stunden", dativ: "Stunden", kurz: "h", einleitung: "Für ein <strong>Leihgerät</strong>", a: "Tagesmiete", b: "Wochenmiete" },
+  { einheit: "Kilometer", dativ: "Kilometern", kurz: "km", einleitung: "Für einen <strong>Mietwagen</strong>", a: "Tarif Stadt", b: "Tarif Land" },
+];
+
+function generateAufgabe8() {
+  const t = pick(A8_TARIFE);
+  // Tarif A hat den kleineren Grundpreis, aber den höheren Preis je Einheit. Der Schnittpunkt
+  // wird ganzzahlig gewählt: Die Differenz der Grundpreise muss durch die Differenz der
+  // Einheitspreise teilbar sein.
+  const kandidaten = [];
+  for (const gA of [5, 8, 10, 12, 15, 20]) {
+    for (const gB of [18, 20, 24, 25, 30, 36, 40, 45]) {
+      if (gB <= gA) continue;
+      for (const pA of [2, 3, 4, 5, 6]) {
+        for (const pB of [1, 1.5, 2, 2.5, 3]) {
+          if (pB >= pA) continue;
+          const schnitt = (gB - gA) / (pA - pB);
+          if (!Number.isInteger(schnitt) || schnitt < 4 || schnitt > 40) continue;
+          kandidaten.push({ gA, gB, pA, pB, schnitt });
+        }
+      }
+    }
+  }
+  const c = pick(kandidaten);
+  // Die Beispielmenge liegt bewusst unterhalb des Schnittpunkts: Dort ist A noch günstiger,
+  // und die dritte Frage wird nicht schon durch die ersten beiden beantwortet.
+  const x0 = randInt(2, c.schnitt - 1);
+  const kostenA = c.gA + c.pA * x0;
+  const kostenB = c.gB + c.pB * x0;
+  return {
+    promptHtml:
+      `${t.einleitung} gibt es zwei Angebote:<div class="formula-block">` +
+      `<strong>${t.a}:</strong> ${num(c.gA)} € Grundpreis und ${num(c.pA)} € je ${t.einheit}<br>` +
+      `<strong>${t.b}:</strong> ${num(c.gB)} € Grundpreis und ${num(c.pB)} € je ${t.einheit}</div>` +
+      `Vergleiche zuerst beide Angebote bei <strong>${num(x0)} ${t.dativ}</strong>.<br>` +
+      `<span class="progress-note">Bei der letzten Frage ist die kleinste ganze Zahl von ${t.dativ} gesucht, ` +
+      `bei der ${t.b} <em>günstiger</em> ist.</span>`,
+    felder: [
+      {
+        name: `Kosten — ${t.a}`, soll: kostenA, einheit: "€", toleranz: 0.005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - c.pA * x0) < 0.005) return `Der Grundpreis von ${num(c.gA)} € fällt unabhängig von der Menge an und kommt dazu.`;
+          if (Math.abs(val - (c.gA + c.pA)) < 0.005) return `Der Preis je ${t.einheit} gilt ${num(x0)}-mal, nicht einmal.`;
+          return "";
+        },
+      },
+      {
+        name: `Kosten — ${t.b}`, soll: kostenB, einheit: "€", toleranz: 0.005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - kostenA) < 0.005) return `Das sind die Kosten für ${t.a}. ${t.b} hat einen anderen Grundpreis und einen anderen Preis je ${t.einheit}.`;
+          if (Math.abs(val - c.pB * x0) < 0.005) return `Auch hier fällt der Grundpreis an — bei ${t.b} sind es ${num(c.gB)} €.`;
+          return "";
+        },
+      },
+      {
+        name: `Ab wie vielen ${t.einheit} ist ${t.b} günstiger?`, soll: c.schnitt + 1, einheit: t.kurz, toleranz: 0.005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - c.schnitt) < 0.005) return `Bei genau ${num(c.schnitt)} ${t.kurz} kosten beide Tarife dasselbe (${num(c.gA + c.pA * c.schnitt)} €). <em>Günstiger</em> wird ${t.b} erst ab einer ${t.einheit} mehr.`;
+          if (Math.abs(val - (c.gB - c.gA)) < 0.005) return "Das ist der Unterschied der <strong>Grundpreise</strong> in Euro, nicht die Zahl der Einheiten. Er muss noch durch den Preisunterschied je Einheit geteilt werden.";
+          if (Math.abs(val - x0) < 0.005) return `Bei ${num(x0)} ${t.kurz} ist ${t.a} noch günstiger — das zeigen die beiden ersten Antworten.`;
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      `${t.b} hat den höheren Grundpreis, aber den niedrigeren Preis je ${t.einheit} — irgendwann holt er auf.`,
+      `Der Vorsprung beträgt anfangs ${num(c.gB)} € − ${num(c.gA)} € = ${num(c.gB - c.gA)} €.`,
+      `Je ${t.einheit} holt ${t.b} ${num(c.pA)} € − ${num(c.pB)} € = ${num(c.pA - c.pB)} € auf. Wie oft passt das in den Vorsprung?`,
+    ],
+    musterloesungHtml:
+      `① ${t.a} bei ${num(x0)} ${t.kurz}: ${num(c.gA)} + ${num(x0)} · ${num(c.pA)} = <strong>${num(kostenA)} €</strong><br>` +
+      `② ${t.b} bei ${num(x0)} ${t.kurz}: ${num(c.gB)} + ${num(x0)} · ${num(c.pB)} = <strong>${num(kostenB)} €</strong><br>` +
+      `③ Gleichstand: (${num(c.gB)} − ${num(c.gA)}) : (${num(c.pA)} − ${num(c.pB)}) = ${num(c.gB - c.gA)} : ${num(c.pA - c.pB)} = ${num(c.schnitt)} ${t.kurz}<br>` +
+      `&nbsp;&nbsp;&nbsp;Dort kosten beide ${num(c.gA + c.pA * c.schnitt)} €; günstiger wird ${t.b} ab <strong>${num(c.schnitt + 1)} ${t.kurz}</strong>.<br>` +
+      `<span class="progress-note">Beide Zuordnungen sind <em>linear</em>, aber nicht proportional: Bei 0 ${t.einheit} fällt schon der Grundpreis an. ` +
+      `Im Koordinatensystem sind es zwei Geraden mit verschiedenen Achsenabschnitten und verschiedenen Steigungen — sie schneiden sich in genau einem Punkt.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — proportionaler Dreisatz", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — antiproportionaler Dreisatz", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — welche Art ist es?", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Grundpreis und Stückpreis", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Der Proportionalitätsfaktor", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — antiproportionaler Dreisatz", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Der Dreisatz rückwärts", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — welche Art ist es?", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Zwei Größen auf einmal", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Grundpreis und Stückpreis", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Welcher Tarif lohnt sich?", generate: generateAufgabe8 },
   ]);
 }
 

@@ -725,6 +725,11 @@ function generateAufgabe1() {
         return `Das ist die Formel für den <em>Grundwert</em>. Hier ist G bereits bekannt; gesucht ist der Prozentwert W = G · p : 100.`;
       return `Rechne zuerst aus, wie viel 1 % sind: ${num(G)} : 100 = ${num(G / 100, 2)}. Das Ergebnis dann mit ${num(p)} multiplizieren.`;
     },
+    tipps: [
+      "Der Weg geht über 1 %: Wer weiß, wie viel ein Prozent ist, kommt auf jeden Prozentsatz.",
+      `1 % sind ${num(G)} : 100 = ${num(G / 100, 2)}.`,
+      `Davon ${num(p)} %: also ${num(G / 100, 2)} · ${num(p)}.`,
+    ],
     musterloesungHtml:
       `<strong>Gegeben:</strong> G = ${num(G)} ${kontext.einheit}, p = ${num(p)} % — gesucht ist W.<br>` +
       `<strong>1 %:</strong> ${num(G)} : 100 = ${num(G / 100, 2)}<br>` +
@@ -793,6 +798,11 @@ function generateAufgabe2() {
         return `${num(G - W)} ist die <em>Differenz</em> der beiden Zahlen, keine Prozentangabe. Der Prozentsatz entsteht durch Division, nicht durch Subtraktion.`;
       return `Bilde zuerst den Anteil W : G = ${num(W)} : ${num(G)} und multipliziere ihn dann mit 100.`;
     },
+    tipps: [
+      "Ein Prozentsatz ist ein <em>Anteil</em>: der Teil geteilt durch das Ganze.",
+      `Hier also ${num(W)} : ${num(G)}.`,
+      "Das Ergebnis ist eine Dezimalzahl; für Prozent wird sie noch mit 100 multipliziert.",
+    ],
     musterloesungHtml:
       `<strong>Gegeben:</strong> G = ${num(G)}, W = ${num(W)} — gesucht ist p.<br>` +
       `<strong>Anteil:</strong> ${num(W)} : ${num(G)} = ${wert(W / G, 4)}<br>` +
@@ -855,6 +865,11 @@ function generateAufgabe3() {
         return `Hier ist die Anzahl der Monate an die Stelle des Zinssatzes geraten. Der Zinssatz ist ${num(p, 1)} %, die ${num(m)} Monate wirken nur über den Faktor ${faktor(`${num(m)} : 12`)}.`;
       return `Rechne in zwei Schritten: erst den Jahreszins ${faktor(`${num(K)} € · ${num(p, 1)}`)} : 100, dann davon ${faktor(`${num(m)} : 12`)}.`;
     },
+    tipps: [
+      "Der Zinssatz gilt immer für ein <strong>ganzes</strong> Jahr — für kürzere Zeiten wird anteilig gerechnet.",
+      `Erst der Jahreszins: ${num(K)} € · ${num(p, 1)} : 100.`,
+      `Davon dann der Anteil ${num(m)} : 12, denn ${num(m)} Monate sind ${num(m)} Zwölftel eines Jahres.`,
+    ],
     musterloesungHtml:
       `<strong>Gegeben:</strong> K = ${num(K)} €, p = ${num(p, 1)} %, Laufzeit ${num(m)} Monate.<br>` +
       `<strong>1. Jahreszins:</strong> Z<sub>Jahr</sub> = ${faktor(`${num(K)} € · ${num(p, 1)}`)} : 100 = ${num(zJahr, 2)} €<br>` +
@@ -928,6 +943,11 @@ function generateAufgabe4() {
         return `${num(E)} € ist der Preis <em>nach</em> beiden Änderungen. Gesucht ist der Preis davor.`;
       return `Bestimme zuerst den Gesamtfaktor ${faktor(`${num(q1, 2)} · ${num(q2, 2)}`)} und teile dann ${num(E)} € durch ihn.`;
     },
+    tipps: [
+      "Prozentsätze darf man nicht addieren oder subtrahieren — sie beziehen sich auf verschiedene Grundwerte.",
+      `Jede Änderung ist ein Faktor: ${num(q1, 2)} und ${num(q2, 2)}. Zusammen wirkt ihr <strong>Produkt</strong>.`,
+      "Vom Ende zurück zum Anfang: durch diesen Gesamtfaktor teilen.",
+    ],
     musterloesungHtml:
       `<strong>1. Faktoren aufstellen:</strong> Erhöhung um ${num(p1)} % → q₁ = ${num(q1, 2)}; ` +
       `Senkung um ${num(p2)} % → q₂ = ${num(q2, 2)}.<br>` +
@@ -941,12 +961,249 @@ function generateAufgabe4() {
   };
 }
 
+function randInt(min, max) {
+  return min + Math.floor(Math.random() * (max - min + 1));
+}
+
+// Aufgabe 2 — der dritte Grundfall: Prozentwert und Prozentsatz sind bekannt, der Grundwert
+// gesucht. Aufgabe 1 fragt nach W, Aufgabe 3 nach p — hier fehlt G.
+const A2B_KONTEXTE = [
+  {
+    satz: (W, p) => `In einer Schule sind <strong>${num(p)} %</strong> aller Kinder in der Theatergruppe. Das sind <strong>${num(W)}</strong> Kinder.`,
+    frage: "Wie viele Kinder hat die Schule insgesamt?", einheit: "Kinder",
+  },
+  {
+    satz: (W, p) => `Bei einer Wahl entfielen <strong>${num(p)} %</strong> der Stimmen auf eine Partei. Das waren <strong>${num(W)}</strong> Stimmen.`,
+    frage: "Wie viele Stimmen wurden insgesamt abgegeben?", einheit: "Stimmen",
+  },
+  {
+    satz: (W, p) => `<strong>${num(p)} %</strong> der Bäume eines Waldstücks sind Buchen. Das sind <strong>${num(W)}</strong> Bäume.`,
+    frage: "Wie viele Bäume stehen auf dem Waldstück?", einheit: "Bäume",
+  },
+];
+
+function generateAufgabe2b() {
+  const k = pick(A2B_KONTEXTE);
+  // G als Vielfaches von 100 hält sowohl „1 %“ als auch W ganzzahlig.
+  const G = randInt(2, 60) * 100;
+  const p = pick([4, 5, 8, 10, 12, 15, 16, 20, 25, 30, 40, 45, 60, 75, 80]);
+  const einProzent = G / 100;
+  const W = einProzent * p;
+  return {
+    promptHtml: `${k.satz(W, p)}<br><strong>${k.frage}</strong>`,
+    felder: [
+      {
+        name: "Wie viele entfallen auf 1 %?", soll: einProzent, einheit: k.einheit, toleranz: 0.005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - W / 100) < 0.005) return `Du hast den <em>Prozentwert</em> durch 100 geteilt. Die ${num(W)} sind aber schon ${num(p)} %, nicht 100 %.`;
+          if (Math.abs(val - W * p) < 0.005) return `Du hast multipliziert. Von ${num(p)} % auf 1 % geht es durch Teilen.`;
+          return "";
+        },
+      },
+      {
+        name: "Grundwert (100 %)", soll: G, einheit: k.einheit, toleranz: 0.005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - W) < 0.005) return `${num(W)} ist der <strong>Prozentwert</strong> — er gehört zu ${num(p)} %, nicht zu 100 %.`;
+          if (Math.abs(val - (W * 100) / (100 - p)) < 0.005) return "Du hast mit dem Rest gerechnet. Die Angabe bezieht sich auf die genannte Gruppe selbst.";
+          if (Math.abs(val - W * p) < 0.005) return `Du hast mit ${num(p)} multipliziert. Der Weg geht über 1 %: erst durch ${num(p)} teilen, dann mit 100 multiplizieren.`;
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Gegeben sind Prozentwert und Prozentsatz; gesucht ist der Grundwert — die ganzen 100 %.",
+      `Der Weg geht über 1 %: ${num(W)} sind ${num(p)} %, also sind ${num(W)} : ${num(p)} genau 1 %.`,
+      "Und 100 % sind das Hundertfache davon.",
+    ],
+    musterloesungHtml:
+      `① 1 %: ${num(W)} : ${num(p)} = <strong>${num(einProzent)}</strong><br>` +
+      `② 100 %: ${num(einProzent)} · 100 = <strong>${num(G)} ${k.einheit}</strong><br>` +
+      `<span class="progress-note">Probe: ${num(p)} % von ${num(G)} = ${num(G)} : 100 · ${num(p)} = ${num(W)} ✓ &nbsp;· ` +
+      `Mit der Formel: G = W · 100 : p. Alle drei Grundaufgaben stecken in derselben Gleichung W = G · p : 100 — je nachdem, welche Größe fehlt.</span>`,
+  };
+}
+
+// Aufgabe 4 — der Weg über den Faktor. Statt „erst Prozentwert, dann abziehen“ wird gleich mit
+// q = 1 − p : 100 beziehungsweise 1 + p : 100 gerechnet; das ist der Schlüssel zu allen
+// mehrstufigen Aufgaben.
+const A4B_KONTEXTE = [
+  { rauf: false, satz: (G, p) => `Ein Fahrrad kostet <strong>${num(G)} €</strong>. Im Schlussverkauf wird der Preis um <strong>${num(p)} %</strong> gesenkt.`, was: "neuer Preis" },
+  { rauf: true, satz: (G, p) => `Eine Handwerkerrechnung beträgt <strong>${num(G)} €</strong> netto. Dazu kommen <strong>${num(p)} %</strong> Mehrwertsteuer.`, was: "Bruttobetrag" },
+  { rauf: false, satz: (G, p) => `Ein Laptop kostet <strong>${num(G)} €</strong>. Bei Barzahlung gibt es <strong>${num(p)} %</strong> Rabatt.`, was: "Preis bei Barzahlung" },
+  { rauf: true, satz: (G, p) => `Ein Verein hat <strong>${num(G)}</strong> Mitglieder. In diesem Jahr wächst er um <strong>${num(p)} %</strong>.`, was: "neue Mitgliederzahl" },
+];
+
+function generateAufgabe4b() {
+  const k = pick(A4B_KONTEXTE);
+  const G = randInt(2, 40) * 100;
+  const p = pick([5, 10, 12, 15, 19, 20, 25, 30, 40]);
+  const q = k.rauf ? 1 + p / 100 : 1 - p / 100;
+  const neu = G * q;
+  const aenderung = (G * p) / 100;
+  return {
+    promptHtml:
+      `${k.satz(G, p)}<br><span class="progress-note">Runde den Faktor auf zwei Nachkommastellen.</span>`,
+    felder: [
+      {
+        name: "Faktor q", soll: q, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - p / 100) < 0.0005) return `${num(p / 100, 2)} ist die <em>Änderung</em> als Dezimalzahl. Der Faktor vergleicht mit dem Ganzen: ${k.rauf ? "1 + " : "1 − "}${num(p / 100, 2)}.`;
+          if (Math.abs(val - (k.rauf ? 1 - p / 100 : 1 + p / 100)) < 0.0005) return k.rauf
+            ? "Hier kommt etwas <strong>dazu</strong> — der Faktor ist größer als 1."
+            : "Hier wird etwas <strong>abgezogen</strong> — der Faktor ist kleiner als 1.";
+          if (Math.abs(val - p) < 0.0005) return `${num(p)} ist der Prozentsatz. Der Faktor ist eine Zahl in der Nähe von 1.`;
+          return "";
+        },
+      },
+      {
+        name: k.was, soll: neu, einheit: k.was.includes("Mitglieder") ? "" : "€", toleranz: 0.005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - aenderung) < 0.005) return `${num(aenderung)} ist ${k.rauf ? "der Zuschlag" : "der Abzug"} selbst. Gefragt ist ${k.rauf ? "die Summe aus beidem" : "der Rest"}.`;
+          if (Math.abs(val - G * (k.rauf ? 1 - p / 100 : 1 + p / 100)) < 0.005) return k.rauf
+            ? "Du hast abgezogen statt addiert."
+            : "Du hast addiert statt abgezogen.";
+          if (Math.abs(val - G) < 0.005) return "Das ist der Ausgangswert — er hat sich ja gerade geändert.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      k.rauf
+        ? "Der neue Wert ist mehr als das Ganze: 100 % + " + num(p) + " % = " + num(100 + p) + " %."
+        : "Der neue Wert ist weniger als das Ganze: 100 % − " + num(p) + " % = " + num(100 - p) + " %.",
+      `Als Dezimalzahl ist das der Faktor ${num(q, 2)}.`,
+      `Damit geht es in einem Schritt: ${num(G)} · ${num(q, 2)}.`,
+    ],
+    musterloesungHtml:
+      `① Faktor: ${k.rauf ? `100 % + ${num(p)} % = ${num(100 + p)} %` : `100 % − ${num(p)} % = ${num(100 - p)} %`}, also q = <strong>${num(q, 2)}</strong><br>` +
+      `② ${k.was}: ${num(G)} · ${num(q, 2)} = <strong>${num(neu)}</strong><br>` +
+      `<span class="progress-note">Der Umweg über den Prozentwert führt zum selben Ergebnis: ${num(p)} % von ${num(G)} = ${num(aenderung)}, ` +
+      `und ${num(G)} ${k.rauf ? "+" : "−"} ${num(aenderung)} = ${num(neu)}. Der Faktor spart einen Schritt — und er ist unentbehrlich, ` +
+      `sobald mehrere Änderungen aufeinanderfolgen: Dann werden die Faktoren multipliziert.</span>`,
+  };
+}
+
+// Aufgabe 6 — die Zinsformel rückwärts. Mal fehlt der Zinssatz, mal das Kapital; beides
+// entsteht aus derselben umgestellten Gleichung.
+function generateAufgabe6() {
+  const nachSatz = Math.random() < 0.5;
+  const K = randInt(4, 60) * 500;
+  const p = pick([0.5, 1, 1.5, 2, 2.5, 3, 4, 5]);
+  const Z = (K * p) / 100;
+  return {
+    promptHtml: nachSatz
+      ? `Ein Kapital von <strong>${num(K)} €</strong> bringt in einem Jahr <strong>${num(Z)} €</strong> Zinsen.<br>` +
+        `<strong>Wie hoch ist der Zinssatz?</strong>`
+      : `Ein Kapital bringt bei einem Zinssatz von <strong>${num(p, 1)} %</strong> in einem Jahr <strong>${num(Z)} €</strong> Zinsen.<br>` +
+        `<strong>Wie hoch ist das Kapital?</strong>`,
+    felder: [
+      {
+        name: nachSatz ? "Anteil der Zinsen am Kapital (als Dezimalzahl)" : "Zinsen für 1 % des Kapitals",
+        soll: nachSatz ? Z / K : Z / p, einheit: nachSatz ? "" : "€", toleranz: nachSatz ? 0.0002 : 0.005,
+        hinweis: (roh, val) => {
+          if (nachSatz && Math.abs(val - K / Z) < 0.0002) return "Du hast den Bruch verkehrt herum gebildet. Geteilt wird durch das <strong>Kapital</strong>.";
+          if (nachSatz && Math.abs(val - (100 * Z) / K) < 0.0002) return "Das ist schon der Zinssatz in Prozent. Im ersten Schritt ist der Anteil als Dezimalzahl gefragt.";
+          if (!nachSatz && Math.abs(val - Z * p) < 0.005) return `Du hast multipliziert. ${num(Z)} € entsprechen ${num(p, 1)} %; für 1 % wird geteilt.`;
+          return "";
+        },
+      },
+      {
+        name: nachSatz ? "Zinssatz" : "Kapital", soll: nachSatz ? p : K, einheit: nachSatz ? "%" : "€",
+        toleranz: nachSatz ? 0.005 : 0.05,
+        hinweis: (roh, val) => {
+          if (nachSatz && Math.abs(val - Z / K) < 0.005) return "Das ist der Anteil als Dezimalzahl. Für Prozent noch mit 100 multiplizieren.";
+          if (nachSatz && Math.abs(val - Z) < 0.005) return `${num(Z)} € ist der Zinsbetrag, nicht der Zinssatz.`;
+          if (!nachSatz && Math.abs(val - Z / p) < 0.05) return "Das sind die Zinsen für 1 %. Das ganze Kapital sind 100 % davon.";
+          if (!nachSatz && Math.abs(val - Z * 100) < 0.05) return `Du hast den Zinssatz ${num(p, 1)} % übergangen. Erst durch ${num(p, 1)} teilen, dann mit 100 multiplizieren.`;
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Die Zinsformel lautet Z = K · p : 100 — hier ist sie nach einer anderen Größe umzustellen.",
+      nachSatz
+        ? `Der Anteil der Zinsen am Kapital ist ${num(Z)} : ${num(K)}.`
+        : `${num(Z)} € entsprechen ${num(p, 1)} %. Wie viel entspricht dann 1 %?`,
+      nachSatz ? "Diesen Anteil mit 100 multiplizieren ergibt den Zinssatz." : "Und 100 % sind das Hundertfache davon.",
+    ],
+    musterloesungHtml: nachSatz
+      ? `① Anteil: ${num(Z)} € : ${num(K)} € = <strong>${num(Z / K, 5)}</strong><br>` +
+        `② In Prozent: ${num(Z / K, 5)} · 100 = <strong>${num(p, 1)} %</strong><br>` +
+        `<span class="progress-note">Mit der umgestellten Formel: p = Z · 100 : K = ${num(Z)} · 100 : ${num(K)} = ${num(p, 1)}. ` +
+        `Probe: ${num(K)} € · ${num(p, 1)} : 100 = ${num(Z)} € ✓</span>`
+      : `① Zinsen für 1 %: ${num(Z)} € : ${num(p, 1)} = <strong>${num(Z / p)} €</strong><br>` +
+        `② Kapital (100 %): ${num(Z / p)} € · 100 = <strong>${num(K)} €</strong><br>` +
+        `<span class="progress-note">Mit der umgestellten Formel: K = Z · 100 : p = ${num(Z)} · 100 : ${num(p, 1)} = ${num(K)}. ` +
+        `Probe: ${num(K)} € · ${num(p, 1)} : 100 = ${num(Z)} € ✓</span>`,
+  };
+}
+
+// Aufgabe 8 — Zinseszins. Der Unterschied zur einfachen Verzinsung ist der eigentliche Inhalt:
+// Im zweiten Jahr verzinst sich auch das, was im ersten dazugekommen ist.
+function generateAufgabe8() {
+  const K = randInt(2, 40) * 500;
+  const p = pick([1, 2, 2.5, 3, 4, 5]);
+  const jahre = randInt(2, 5);
+  const q = 1 + p / 100;
+  const end = K * Math.pow(q, jahre);
+  const einfach = K + (K * p * jahre) / 100;
+  return {
+    promptHtml:
+      `<strong>${num(K)} €</strong> werden für <strong>${num(jahre)} Jahre</strong> zu <strong>${num(p, 1)} %</strong> angelegt. ` +
+      `Die Zinsen werden jedes Jahr mitverzinst.<br>` +
+      `<span class="progress-note">Runde Geldbeträge auf zwei Nachkommastellen.</span>`,
+    felder: [
+      {
+        name: "Jährlicher Faktor q", soll: q, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - p / 100) < 0.0005) return "Das ist der Zinssatz als Dezimalzahl. Der Faktor enthält auch das Kapital selbst: q = 1 + p : 100.";
+          if (Math.abs(val - (1 - p / 100)) < 0.0005) return "Das Kapital wächst, der Faktor ist also <strong>größer</strong> als 1.";
+          return "";
+        },
+      },
+      {
+        name: `Kapital nach ${num(jahre)} Jahren`, soll: end, einheit: "€", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - einfach) < 0.015) return `Du hast die Zinsen ${num(jahre)}-mal auf das <em>Anfangskapital</em> gerechnet. Beim Zinseszins verzinst sich auch das, was schon dazugekommen ist — deshalb wird der Faktor <strong>potenziert</strong>: K · q<sup>${num(jahre)}</sup>.`;
+          if (Math.abs(val - K * q * jahre) < 0.015) return `Der Faktor wird nicht mit ${num(jahre)} multipliziert, sondern ${num(jahre)}-mal angewandt — also hoch ${num(jahre)}.`;
+          if (Math.abs(val - K * q) < 0.015) return "Das ist das Kapital nach <em>einem</em> Jahr.";
+          return "";
+        },
+      },
+      {
+        name: "Zinsertrag insgesamt", soll: end - K, einheit: "€", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - end) < 0.015) return "Das ist das Endkapital. Der Ertrag ist nur der Zuwachs — das Anfangskapital muss noch abgezogen werden.";
+          if (Math.abs(val - (einfach - K)) < 0.015) return "Das wäre der Ertrag ohne Zinseszins.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      `Jedes Jahr wächst das Kapital um ${num(p, 1)} % — das ist der Faktor 1 + ${num(p / 100, 3)}.`,
+      `Nach ${num(jahre)} Jahren ist dieser Faktor ${num(jahre)}-mal angewandt worden: K · q<sup>${num(jahre)}</sup>.`,
+      "Der Zinsertrag ist die Differenz zwischen End- und Anfangskapital.",
+    ],
+    musterloesungHtml:
+      `① q = 1 + ${num(p, 1)} : 100 = <strong>${num(q, 4)}</strong><br>` +
+      `② Endkapital: ${num(K)} € · ${num(q, 4)}<sup>${num(jahre)}</sup> = <strong>${num(end, 2)} €</strong><br>` +
+      `③ Zinsertrag: ${num(end, 2)} − ${num(K)} = <strong>${num(end - K, 2)} €</strong><br>` +
+      `<span class="progress-note">Ohne Zinseszins wären es nur ${num(jahre)} · ${num((K * p) / 100, 2)} € = ${num(einfach - K, 2)} € gewesen — ` +
+      `der Unterschied beträgt ${num(end - einfach, 2)} €. Er entsteht, weil sich ab dem zweiten Jahr auch die bereits gutgeschriebenen Zinsen verzinsen. ` +
+      `Je länger die Laufzeit, desto stärker fällt das ins Gewicht.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Prozentwert berechnen", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Prozentsatz bestimmen", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Zinsen für Monate", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — zwei Änderungen rückwärts", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Grundwert berechnen", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Prozentsatz bestimmen", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Der Weg über den Faktor", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Zinsen für Monate", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Die Zinsformel rückwärts", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — zwei Änderungen rückwärts", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Zinseszins", generate: generateAufgabe8 },
   ]);
 }
 
