@@ -925,6 +925,30 @@ function ohneKollision(kandidaten, werte, notfall, eps = 1e-9) {
   return gewaehlt;
 }
 
+// Dasselbe für Aufgaben mit mehreren Eingabefeldern: Kollidieren müssen die
+// Werte nur innerhalb eines Feldes, denn nur dort entscheidet die Zahl darüber,
+// welcher Hinweis erscheint. Zwischen zwei Feldern darf dieselbe Zahl stehen.
+// NaN bedeutet "an dieser Stelle springt kein Hinweis an" und wird übergangen.
+// eps darf eine Zahl oder eine Liste sein — ein Feld, das auf ganze Grad
+// gerundet wird, braucht einen anderen Mindestabstand als eines mit drei
+// Nachkommastellen.
+function ohneFeldKollision(kandidaten, gruppen, eps = 1e-9) {
+  const sauber = kandidaten.filter((kk) => gruppen(kk).every((g, gi) => {
+    const e = Array.isArray(eps) ? eps[gi] : eps;
+    const echt = g.filter((x) => Number.isFinite(x));
+    return echt.every((x, i) => echt.every((y, j) => i === j || Math.abs(x - y) > e));
+  }));
+  if (!sauber.length) throw new Error("Aufgabengenerator ohne gültige Kandidaten");
+  return pick(sauber);
+}
+
+// Auf eine feste Stellenzahl gerundet — als Zahl, nicht als Text: Genau dieser
+// Wert steht dann im Lösungsfeld, und die Toleranz kann eng bleiben.
+function rund(x, stellen) {
+  const f = Math.pow(10, stellen);
+  return Math.round(x * f) / f;
+}
+
 // Aufgabe 1 — aus Hypotenuse und Seitenverhältnis eine Kathete. Die Zahlen sind
 // so gewählt, dass das Ergebnis ganzzahlig ist; hier soll niemand am Runden
 // scheitern, sondern nur die richtige Formel finden.
@@ -960,6 +984,11 @@ function generateAufgabe1() {
       if (Math.abs(val - andere) < 0.01) return `Das ist die <em>andere</em> Kathete. Gesucht war die ${seite}; sie gehört zu ${fkt} α, nicht zu ${fkt === "sin" ? "cos" : "sin"} α.`;
       return `${fkt} α = ${fkt === "sin" ? "a" : "b"} : c, also ${fkt === "sin" ? "a" : "b"} = c · ${fkt} α.`;
     },
+    tipps: [
+      `Der ${fkt === "sin" ? "Sinus" : "Kosinus"} vergleicht die ${fkt === "sin" ? "Gegenkathete" : "Ankathete"} mit der Hypotenuse: ${fkt} α = ${fkt === "sin" ? "a" : "b"} : c.`,
+      `Die gesuchte Seite steht im Zähler. Multipliziere die Gleichung deshalb mit c: ${fkt === "sin" ? "a" : "b"} = c · ${fkt} α.`,
+      `Einsetzen: ${num(c)} cm · ${num(v, 2)}. Zur Kontrolle: Eine Kathete ist immer kürzer als die Hypotenuse.`,
+    ],
     musterloesungHtml:
       `<strong>Formel:</strong> ${fkt} α = ${fkt === "sin" ? "Gegenkathete : Hypotenuse" : "Ankathete : Hypotenuse"} = ${fkt === "sin" ? "a" : "b"} : c<br>` +
       `<strong>Umstellen:</strong> ${fkt === "sin" ? "a" : "b"} = c · ${fkt} α<br>` +
@@ -969,8 +998,91 @@ function generateAufgabe1() {
   };
 }
 
-// Aufgabe 2 — eine Seite aus Winkel und Seite, auf eine Stelle gerundet.
+// Aufgabe 2 — die exakten Werte für 30°, 45° und 60°. Abschnitt 4 hatte keine
+// Aufgabe; hier werden die drei Werte nicht abgefragt, sondern gebraucht.
+const A2_WINKEL = {
+  30: { sin: "1 : 2", cos: "√3 : 2", dreieck: "das halbe gleichseitige Dreieck", ausDem: "dem halben gleichseitigen Dreieck" },
+  45: { sin: "√2 : 2", cos: "√2 : 2", dreieck: "das halbe Quadrat", ausDem: "dem halben Quadrat" },
+  60: { sin: "√3 : 2", cos: "1 : 2", dreieck: "das halbe gleichseitige Dreieck", ausDem: "dem halben gleichseitigen Dreieck" },
+};
 const A2_KANDIDATEN = (() => {
+  const liste = [];
+  for (const alpha of [30, 45, 60]) {
+    // Gerade Hypotenusen, damit bei 30° und 60° eine der Katheten glatt aufgeht.
+    for (let c = 6; c <= 48; c += 2) liste.push({ alpha, c });
+  }
+  return liste;
+})();
+
+function generateAufgabe2() {
+  const k = ohneFeldKollision(A2_KANDIDATEN, (v) => {
+    const s = sinG(v.alpha), co = cosG(v.alpha);
+    return [
+      // Feld 1: sin α. Bei 45° ist cos α derselbe Wert und trägt keinen Hinweis.
+      [rund(s, 3), v.alpha === 45 ? NaN : rund(co, 3), rund(tanG(v.alpha), 3)],
+      // Feld 2: die Gegenkathete. Bei 45° sind beide Katheten gleich lang; dann
+      // ist "vertauscht" kein Fehler und liegt auch kein Hinweis darauf.
+      [rund(v.c * s, 1), v.alpha === 45 ? NaN : rund(v.c * co, 1), v.c, rund(v.c / s, 1)],
+      // Feld 3: die Ankathete.
+      [rund(v.c * co, 1), v.alpha === 45 ? NaN : rund(v.c * s, 1), v.c, rund(v.c / co, 1)],
+    ];
+  }, [0.0012, 0.13, 0.13]);
+  const { alpha, c } = k;
+  const s = sinG(alpha), co = cosG(alpha);
+  const a = rund(c * s, 1), b = rund(c * co, 1);
+  const w = A2_WINKEL[alpha];
+  return {
+    promptHtml: `In einem rechtwinkligen Dreieck ist die <strong>Hypotenuse c = ${num(c)} cm</strong> ` +
+      `und der Winkel <strong>α = ${num(alpha)}°</strong>.<br>` +
+      `<em>Die drei Werte für 30°, 45° und 60° stehen in Abschnitt 4 — hier brauchst du keinen Taschenrechner für sin α.</em>`,
+    felder: [
+      {
+        name: `sin ${num(alpha)}° (auf 3 Stellen)`, soll: rund(s, 3), toleranz: 0.0006, platzhalter: "z. B. 0,500",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - rund(co, 3)) < 0.0006) return `${num(rund(co, 3), 3)} ist cos ${num(alpha)}° = ${w.cos}. Gefragt war der Sinus: sin ${num(alpha)}° = ${w.sin}.`;
+          if (Math.abs(val - rund(tanG(alpha), 3)) < 0.0006) return `Das ist tan ${num(alpha)}°. Der Sinus ist sin ${num(alpha)}° = ${w.sin}.`;
+          if (!isNaN(val) && (val > 1 || val < 0)) return "Sinus und Kosinus eines spitzen Winkels liegen immer zwischen 0 und 1 — sie sind Verhältnisse einer Kathete zur längeren Hypotenuse.";
+          return `sin ${num(alpha)}° = ${w.sin}. Rechne den Bruch aus und runde auf drei Stellen.`;
+        },
+      },
+      {
+        name: "Gegenkathete a (auf 1 Stelle, in cm)", soll: a, einheit: "cm", toleranz: 0.06, platzhalter: "a in cm",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - b) < 0.06) return `${num(b, 1)} cm ist die <em>Ankathete</em> b — sie gehört zum Kosinus. Zur Gegenkathete gehört der Sinus.`;
+          if (Math.abs(val - c) < 0.06) return `${num(c)} cm ist die Hypotenuse. Eine Kathete ist immer kürzer.`;
+          if (Math.abs(val - rund(c / s, 1)) < 0.06) return `Hier wurde geteilt statt multipliziert. Aus sin α = a : c folgt a = c · sin α.`;
+          return `sin α = a : c, also a = c · sin α = ${num(c)} cm · ${num(rund(s, 3), 3)}.`;
+        },
+      },
+      {
+        name: "Ankathete b (auf 1 Stelle, in cm)", soll: b, einheit: "cm", toleranz: 0.06, platzhalter: "b in cm",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - a) < 0.06) return `${num(a, 1)} cm ist die Gegenkathete a. Die Ankathete gehört zum Kosinus: b = c · cos α.`;
+          if (Math.abs(val - c) < 0.06) return `${num(c)} cm ist die Hypotenuse.`;
+          if (Math.abs(val - rund(c / co, 1)) < 0.06) return `Hier wurde geteilt statt multipliziert. Aus cos α = b : c folgt b = c · cos α.`;
+          return `cos ${num(alpha)}° = ${w.cos}, und b = c · cos α.`;
+        },
+      },
+    ],
+    tipps: [
+      `Die Werte für ${num(alpha)}° kommen aus ${w.dreieck} — man muss sie nicht auswendig können, aber nachschlagen sollte man sie: sin ${num(alpha)}° = ${w.sin}, cos ${num(alpha)}° = ${w.cos}.`,
+      "Vom Winkel α aus gehört die <strong>Gegenkathete</strong> zum Sinus und die <strong>Ankathete</strong> zum Kosinus — beide jeweils geteilt durch die Hypotenuse.",
+      `Beide Seiten stehen im Zähler, also wird jeweils mit der Hypotenuse multipliziert: a = ${num(c)} cm · sin α und b = ${num(c)} cm · cos α.`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Exakter Wert:</strong> sin ${num(alpha)}° = ${w.sin} ${zeichen(s, 3)} <strong>${num(rund(s, 3), 3)}</strong> ` +
+      `(aus ${w.ausDem})<br>` +
+      `<strong>2. Gegenkathete:</strong> sin α = a : c ⇒ a = c · sin α = ${num(c)} cm · ${w.sin} ${zeichen(c * s, 1)} <strong>${num(a, 1)} cm</strong><br>` +
+      `<strong>3. Ankathete:</strong> cos ${num(alpha)}° = ${w.cos}, also b = ${num(c)} cm · ${w.cos} ${zeichen(c * co, 1)} <strong>${num(b, 1)} cm</strong><br>` +
+      `<em>Probe mit Pythagoras:</em> ${num(a, 1)}² + ${num(b, 1)}² ≈ ${num(rund(a * a + b * b, 1), 1)} ≈ ${num(c * c)} = c² ✓<br>` +
+      `<span class="progress-note">Auch der trigonometrische Pythagoras geht auf: ` +
+      `sin² ${num(alpha)}° + cos² ${num(alpha)}° = ${num(rund(s * s, 3), 3)} + ${num(rund(co * co, 3), 3)} = 1. ` +
+      `${alpha === 45 ? "Bei 45° sind beide Katheten gleich lang — das Dreieck ist gleichschenklig." : `Die ${a < b ? "Gegenkathete" : "Ankathete"} ist hier die kürzere Seite, denn ${num(alpha)}° ist ${alpha < 45 ? "kleiner" : "größer"} als 45°.`}</span>`,
+  };
+}
+
+// Aufgabe 3 — eine Seite aus Winkel und Seite, auf eine Stelle gerundet.
+const A3_KANDIDATEN = (() => {
   const liste = [];
   for (const paar of Object.keys(SB_WEGE)) {
     for (let alpha = 15; alpha <= 75; alpha += 5) {
@@ -980,7 +1092,7 @@ const A2_KANDIDATEN = (() => {
   return liste;
 })();
 
-function a2Werte(v) {
+function a3Werte(v) {
   const [gegeben, gesucht] = v.paar.split(">");
   const weg = SB_WEGE[v.paar];
   const c = gegeben === "hyp" ? v.laenge
@@ -995,14 +1107,14 @@ function a2Werte(v) {
   return { gegeben, gesucht, weg, c, richtig, fw, umgekehrt, falscheFkt };
 }
 
-function generateAufgabe2() {
+function generateAufgabe3() {
   const k = ohneKollision(
-    A2_KANDIDATEN,
-    (v) => { const r = a2Werte(v); return [r.richtig, r.umgekehrt, r.falscheFkt]; },
-    A2_KANDIDATEN[0],
+    A3_KANDIDATEN,
+    (v) => { const r = a3Werte(v); return [r.richtig, r.umgekehrt, r.falscheFkt]; },
+    A3_KANDIDATEN[0],
     0.06,
   );
-  const r = a2Werte(k);
+  const r = a3Werte(k);
   const gerundet = Math.round(r.richtig * 10) / 10;
   return {
     promptHtml: `Gegeben: <strong>α = ${num(k.alpha)}°</strong> und ${SB_NAMEN[r.gegeben]} = <strong>${num(k.laenge)} cm</strong>.<br>` +
@@ -1018,6 +1130,11 @@ function generateAufgabe2() {
       if (Math.abs(val - r.falscheFkt) < 0.06) return `Das ist die falsche Winkelfunktion. Benenne erst die Seiten vom Winkel α aus: Gegeben ist die ${SB_NAMEN[r.gegeben].split(" ")[0]}, gesucht die ${SB_NAMEN[r.gesucht].split(" ")[0]} — beide kommen nur in „${r.weg.formel}“ vor.`;
       return `Passende Formel: <strong>${r.weg.formel}</strong>. Setze ein, was du kennst, und stelle nach der gesuchten Seite um.`;
     },
+    tipps: [
+      `Benenne zuerst die Seiten <em>vom Winkel α aus</em>: Gegeben ist die ${SB_NAMEN[r.gegeben].split(" ")[0]}, gesucht die ${SB_NAMEN[r.gesucht].split(" ")[0]}.`,
+      `Genau diese beiden Seiten kommen in einer einzigen Formel vor: <strong>${r.weg.formel}</strong>.`,
+      `Stelle nach der gesuchten Seite um: ${SB_KURZ[r.gesucht]} = ${SB_KURZ[r.gegeben]} ${r.weg.mal ? "·" : ":"} ${r.weg.fkt} α. Steht sie im Zähler, wird multipliziert; steht sie im Nenner, wird geteilt.`,
+    ],
     musterloesungHtml:
       `<strong>Benennen:</strong> Vom Winkel α aus ist ${SB_KURZ[r.gegeben]} die ${SB_NAMEN[r.gegeben].split(" ")[0]} und ${SB_KURZ[r.gesucht]} die ${SB_NAMEN[r.gesucht].split(" ")[0]}.<br>` +
       `<strong>Formel:</strong> ${r.weg.formel} — hier kommen genau diese beiden Seiten vor.<br>` +
@@ -1028,18 +1145,102 @@ function generateAufgabe2() {
   };
 }
 
-// Aufgabe 3 — den Winkel aus zwei Katheten, auf ganze Grad.
-const A3_KANDIDATEN = (() => {
+// Aufgabe 4 — der Einheitskreis. Abschnitt 5 hatte keine Aufgabe; der Kern ist,
+// dass zu jedem Sinuswert zwischen 0° und 180° zwei Winkel gehören und der
+// Taschenrechner nur einen davon nennt.
+const A4_KANDIDATEN = (() => {
+  const liste = [];
+  for (let phi = 10; phi <= 170; phi++) {
+    if (phi === 90) continue;               // dort wäre der Partnerwinkel er selbst
+    liste.push({ phi, partner: 180 - phi });
+  }
+  return liste;
+})();
+
+function generateAufgabe4() {
+  const k = ohneFeldKollision(A4_KANDIDATEN, (v) => {
+    const x = rund(cosG(v.phi), 3), y = rund(sinG(v.phi), 3);
+    return [
+      // Feld 1: die x-Koordinate.
+      [x, y, -x],
+      // Feld 2: die y-Koordinate.
+      [y, x, -y],
+      // Feld 3: der zweite Winkel mit demselben Sinus.
+      [v.partner, v.phi, 360 - v.phi, -v.phi],
+    ];
+  }, [0.0012, 0.0012, 1.2]);
+  const { phi, partner } = k;
+  const x = rund(cosG(phi), 3), y = rund(sinG(phi), 3);
+  const stumpf = phi > 90;
+  return {
+    promptHtml: `Am Einheitskreis wird der Winkel <strong>φ = ${num(phi)}°</strong> von der positiven x-Achse aus ` +
+      `gegen den Uhrzeigersinn abgetragen. Der zugehörige Punkt ist <strong>P(cos φ | sin φ)</strong>.`,
+    felder: [
+      {
+        name: "x-Koordinate von P (auf 3 Stellen)", soll: x, toleranz: 0.0006, platzhalter: "x",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - y) < 0.0006) return `${num(y, 3)} ist die y-Koordinate — das ist der Sinus. Waagerecht misst man den <strong>Kosinus</strong>.`;
+          if (Math.abs(val + x) < 0.0006) return stumpf
+            ? `Das Vorzeichen stimmt nicht: ${num(phi)}° ist <strong>stumpf</strong>, der Punkt liegt links von der y-Achse — dort ist die x-Koordinate negativ.`
+            : `Das Vorzeichen stimmt nicht: ${num(phi)}° ist <strong>spitz</strong>, der Punkt liegt rechts von der y-Achse — dort ist die x-Koordinate positiv.`;
+          if (!isNaN(val) && Math.abs(val) > 1) return "Der Kreis hat den Radius 1, also liegen beide Koordinaten zwischen −1 und 1.";
+          return `Die x-Koordinate ist cos ${num(phi)}°.`;
+        },
+      },
+      {
+        name: "y-Koordinate von P (auf 3 Stellen)", soll: y, toleranz: 0.0006, platzhalter: "y",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - x) < 0.0006) return `${num(x, 3)} ist die x-Koordinate — das ist der Kosinus. Senkrecht misst man den <strong>Sinus</strong>.`;
+          if (Math.abs(val + y) < 0.0006) return `Zwischen 0° und 180° liegt der Punkt immer <em>oberhalb</em> der x-Achse; der Sinus ist dort positiv.`;
+          if (!isNaN(val) && Math.abs(val) > 1) return "Der Kreis hat den Radius 1, also liegen beide Koordinaten zwischen −1 und 1.";
+          return `Die y-Koordinate ist sin ${num(phi)}°.`;
+        },
+      },
+      {
+        name: "zweiter Winkel zwischen 0° und 180° mit demselben Sinus",
+        soll: partner, einheit: "°", toleranz: 0.6, platzhalter: "Winkel in Grad",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - phi) < 0.6) return `Das ist der gegebene Winkel selbst. Gesucht ist der <em>andere</em>, der genauso hoch liegt.`;
+          if (Math.abs(val - (360 - phi)) < 0.6) return `${num(360 - phi)}° liegt gleich <em>weit rechts</em>, aber gespiegelt an der x-Achse — dort ist der Sinus das Gegenteil. Gespiegelt wird an der <strong>y-Achse</strong>: 180° − φ.`;
+          if (Math.abs(val + phi) < 0.6) return "Negative Winkel liegen unterhalb der x-Achse. Gesucht ist ein Winkel zwischen 0° und 180°.";
+          return "Zwei Punkte des Einheitskreises liegen gleich hoch: der bei φ und sein Spiegelbild an der y-Achse bei 180° − φ.";
+        },
+      },
+    ],
+    tipps: [
+      "Am Einheitskreis ist die <strong>waagerechte</strong> Koordinate der Kosinus und die <strong>senkrechte</strong> der Sinus — genau so herum wie in P(cos φ | sin φ).",
+      stumpf
+        ? `${num(phi)}° ist stumpf: Der Punkt liegt im zweiten Viertel, also links oben. Dort ist x negativ und y positiv.`
+        : `${num(phi)}° ist spitz: Der Punkt liegt im ersten Viertel, also rechts oben. Dort sind beide Koordinaten positiv.`,
+      "Zwei Punkte liegen gleich hoch: φ und sein Spiegelbild an der y-Achse. Das Spiegelbild gehört zum Winkel 180° − φ.",
+    ],
+    musterloesungHtml:
+      `<strong>1. Lage:</strong> ${num(phi)}° liegt im ${stumpf ? "zweiten" : "ersten"} Viertel, also ${stumpf ? "links" : "rechts"} oben ⇒ ` +
+      `x ist ${stumpf ? "negativ" : "positiv"}, y ist positiv<br>` +
+      `<strong>2. Koordinaten:</strong> x = cos ${num(phi)}° ≈ <strong>${num(x, 3)}</strong>, y = sin ${num(phi)}° ≈ <strong>${num(y, 3)}</strong><br>` +
+      `<strong>3. Gleicher Sinus:</strong> Das Spiegelbild an der y-Achse hat dieselbe Höhe ⇒ 180° − ${num(phi)}° = <strong>${num(partner)}°</strong><br>` +
+      `<em>Probe:</em> sin ${num(partner)}° ≈ ${num(rund(sinG(partner), 3), 3)} = sin ${num(phi)}° ✓, ` +
+      `aber cos ${num(partner)}° ≈ ${num(rund(cosG(partner), 3), 3)} — der Kosinus kippt das Vorzeichen.<br>` +
+      `<em>Und der trigonometrische Pythagoras:</em> ${num(x, 3)}² + ${num(y, 3)}² ≈ ${num(rund(x * x + y * y, 3), 3)} — ` +
+      `das ist 1, bis auf die Rundung der beiden Koordinaten. P liegt auf dem Kreis mit Radius 1.<br>` +
+      `<span class="progress-note">Der Taschenrechner nennt bei sin<sup>−1</sup>(${num(y, 3)}) nur den spitzen Winkel ` +
+      `${num(Math.min(phi, partner))}°; die zweite Lösung ${num(Math.max(phi, partner))}° muss man selbst dazunehmen. ` +
+      `Im rechtwinkligen Dreieck ist das nicht nötig — dort ist jeder Winkel kleiner als 90°.</span>`,
+  };
+}
+
+// Aufgabe 5 — den Winkel aus zwei Katheten, auf ganze Grad.
+const A5_KANDIDATEN = (() => {
   const liste = [];
   for (let a = 1; a <= 15; a++) for (let b = 1; b <= 15; b++) if (a !== b) liste.push({ a, b });
   return liste;
 })();
 
-function generateAufgabe3() {
+function generateAufgabe5() {
   const k = ohneKollision(
-    A3_KANDIDATEN,
+    A5_KANDIDATEN,
     (v) => [Math.round(atanG(v.a / v.b)), 90 - Math.round(atanG(v.a / v.b)), Math.round(Math.atan(v.a / v.b))],
-    A3_KANDIDATEN[0],
+    A5_KANDIDATEN[0],
     0.6,
   );
   const { a, b } = k;
@@ -1058,6 +1259,11 @@ function generateAufgabe3() {
       if (Math.abs(val - Math.atan(a / b)) < 0.6) return `Das sieht nach dem <strong>Bogenmaß</strong> aus: tan<sup>−1</sup>(${num(a / b, 4)}) ≈ ${num(Math.atan(a / b), 3)} rad. Stelle den Taschenrechner auf <strong>DEG</strong> — zur Kontrolle muss sin 30° = 0,5 herauskommen.`;
       return `Beide Katheten sind bekannt, also hilft der Tangens: tan α = a : b = ${num(a)} : ${num(b)} ${zeichen(a / b, 4)} ${num(a / b, 4)}. Dann die Umkehrtaste tan<sup>−1</sup>.`;
     },
+    tipps: [
+      "Gesucht ist ein Winkel, gegeben sind beide <strong>Katheten</strong> — dafür ist der Tangens zuständig.",
+      `tan α = Gegenkathete : Ankathete = ${num(a)} : ${num(b)} ${zeichen(a / b, 4)} ${num(a / b, 4)}.`,
+      `Aus dem Verhältnis wird der Winkel mit der Umkehrtaste: α = tan<sup>−1</sup>(${num(a / b, 4)}). Prüfe vorher, ob der Rechner auf DEG steht — sin 30° muss 0,5 ergeben.`,
+    ],
     musterloesungHtml:
       `<strong>Formel:</strong> tan α = Gegenkathete : Ankathete = a : b<br>` +
       `<strong>Einsetzen:</strong> tan α = ${num(a)} : ${num(b)} ${zeichen(a / b, 4)} ${num(a / b, 4)}<br>` +
@@ -1067,8 +1273,96 @@ function generateAufgabe3() {
   };
 }
 
-// Aufgabe 4 — Turmhöhe aus Abstand und Höhenwinkel, mit Augenhöhe.
-const A4_KANDIDATEN = (() => {
+// Aufgabe 6 — Steigung in Prozent. Die Falle steckt im Wort „Fahrstrecke“:
+// Sie ist die Hypotenuse, nicht die waagerechte Entfernung.
+const A6_KANDIDATEN = (() => {
+  const liste = [];
+  for (const p of [6, 7, 8, 9, 10, 12, 14, 15, 16, 18, 20, 22, 25, 28, 30]) {
+    for (const s of [200, 250, 300, 400, 500, 600, 750, 800, 1000, 1200, 1500]) {
+      liste.push({ p, s });
+    }
+  }
+  return liste;
+})();
+const A6_KONTEXTE = [
+  { was: "Eine Bergstraße", wer: "ein Radfahrer", fahrt: "Fahrstrecke" },
+  { was: "Ein Wanderweg", wer: "eine Wanderin", fahrt: "Wegstrecke" },
+  { was: "Eine Auffahrt", wer: "ein Lastwagen", fahrt: "Fahrstrecke" },
+];
+
+function generateAufgabe6() {
+  const k = ohneFeldKollision(A6_KANDIDATEN, (v) => {
+    const alpha = atanG(v.p / 100);
+    const hoehe = v.s * sinG(alpha);
+    const waagerecht = v.s * cosG(alpha);
+    return [
+      // Feld 1: der Steigungswinkel.
+      [rund(alpha, 1), v.p, rund(asinG(v.p / 100), 1)],
+      // Feld 2: der Höhenunterschied.
+      [rund(hoehe, 1), rund((v.s * v.p) / 100, 1), rund(waagerecht, 1), v.s],
+      // Feld 3: die waagerechte Entfernung.
+      [rund(waagerecht, 1), rund(hoehe, 1), v.s],
+    ];
+  }, 0.13);
+  const { p, s } = k;
+  const kt = pick(A6_KONTEXTE);
+  const alpha = atanG(p / 100);
+  const hoehe = rund(s * sinG(alpha), 1);
+  const waagerecht = rund(s * cosG(alpha), 1);
+  const naiv = rund((s * p) / 100, 1);
+  return {
+    promptHtml: `${kt.was} hat eine gleichmäßige Steigung von <strong>${num(p)} %</strong>. ` +
+      `${kt.wer.charAt(0).toUpperCase() + kt.wer.slice(1)} legt darauf eine <strong>${kt.fahrt} von ${num(s)} m</strong> zurück.<br>` +
+      `<em>Runde auf eine Stelle nach dem Komma.</em>`,
+    felder: [
+      {
+        name: "Steigungswinkel α (in Grad)", soll: rund(alpha, 1), einheit: "°", toleranz: 0.06, platzhalter: "α in Grad",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - p) < 0.06) return `${num(p)} ist die Steigung in Prozent, nicht der Winkel. Aus ${num(p)} % = tan α · 100 % folgt tan α = ${num(p / 100, 2)}.`;
+          if (Math.abs(val - rund(asinG(p / 100), 1)) < 0.06) return `Hier wurde sin<sup>−1</sup> benutzt. Die Steigung vergleicht den <em>Höhenunterschied</em> mit der <em>waagerechten</em> Strecke — das sind die beiden Katheten, also der Tangens.`;
+          if (!isNaN(val) && val >= 45) return "Eine Steigung von 100 % entspricht 45°. Hier sind es deutlich weniger Prozent, also muss der Winkel kleiner sein.";
+          return `Steigung in Prozent = tan α · 100 %, also tan α = ${num(p / 100, 2)} und α = tan<sup>−1</sup>(${num(p / 100, 2)}).`;
+        },
+      },
+      {
+        name: "Höhenunterschied (in m)", soll: hoehe, einheit: "m", toleranz: 0.06, platzhalter: "Höhe in m",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - naiv) < 0.06) return `${num(naiv, 1)} m wäre die Höhe, wenn die ${num(s)} m <em>waagerecht</em> gemessen wären. Die ${kt.fahrt} ist aber die schräge Strecke — die Hypotenuse. Gerechnet wird also mit dem Sinus.`;
+          if (Math.abs(val - waagerecht) < 0.06) return `${num(waagerecht, 1)} m ist die waagerechte Entfernung, nicht die Höhe.`;
+          if (Math.abs(val - s) < 0.06) return `${num(s)} m ist die ${kt.fahrt} selbst.`;
+          return `Vom Winkel α aus ist die Höhe die Gegenkathete und die ${kt.fahrt} die Hypotenuse: Höhe = ${num(s)} m · sin α.`;
+        },
+      },
+      {
+        name: "waagerechte Entfernung (in m)", soll: waagerecht, einheit: "m", toleranz: 0.06, platzhalter: "Strecke in m",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - hoehe) < 0.06) return `${num(hoehe, 1)} m ist der Höhenunterschied. Waagerecht misst man die Ankathete: ${num(s)} m · cos α.`;
+          if (Math.abs(val - s) < 0.06) return `${num(s)} m ist die schräge ${kt.fahrt}. Waagerecht ist es etwas weniger.`;
+          if (!isNaN(val) && val > s) return `Die waagerechte Entfernung ist immer <em>kürzer</em> als die schräge Strecke von ${num(s)} m — eine Kathete ist kürzer als die Hypotenuse.`;
+          return `Waagerecht = ${num(s)} m · cos α.`;
+        },
+      },
+    ],
+    tipps: [
+      `${num(p)} % Steigung heißt: Auf 100 m <strong>waagerecht</strong> geht es ${num(p)} m hinauf. Das ist ein Verhältnis zweier Katheten — also der Tangens.`,
+      `tan α = ${num(p / 100, 2)}, und mit der Umkehrtaste tan<sup>−1</sup> bekommst du α.`,
+      `Achtung bei der zweiten und dritten Frage: Die ${kt.fahrt} von ${num(s)} m ist die <strong>schräge</strong> Strecke, also die Hypotenuse. Höhe = ${num(s)} m · sin α, waagerecht = ${num(s)} m · cos α.`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Steigungswinkel:</strong> ${num(p)} % = tan α · 100 % ⇒ tan α = ${num(p / 100, 2)} ⇒ ` +
+      `α = tan<sup>−1</sup>(${num(p / 100, 2)}) ≈ <strong>${num(rund(alpha, 1), 1)}°</strong><br>` +
+      `<strong>2. Höhenunterschied:</strong> Die ${kt.fahrt} ist die Hypotenuse, die Höhe die Gegenkathete ⇒ ` +
+      `h = ${num(s)} m · sin ${num(rund(alpha, 1), 1)}° ≈ <strong>${num(hoehe, 1)} m</strong><br>` +
+      `<strong>3. Waagerecht:</strong> b = ${num(s)} m · cos ${num(rund(alpha, 1), 1)}° ≈ <strong>${num(waagerecht, 1)} m</strong><br>` +
+      `<em>Probe:</em> ${num(hoehe, 1)} : ${num(waagerecht, 1)} ≈ ${num(rund(hoehe / waagerecht, 4), 4)} — das sind wieder die ${num(p)} % ✓<br>` +
+      `<span class="progress-note">Der naheliegende Kurzweg „${num(p)} % von ${num(s)} m“ ergäbe ${num(naiv, 1)} m ` +
+      `und wäre um ${num(rund(naiv - hoehe, 1), 1)} m zu groß: Er behandelt die schräge Strecke, als wäre sie waagerecht. ` +
+      `Bei kleinen Steigungen ist der Unterschied winzig, bei ${num(p)} % schon spürbar.</span>`,
+  };
+}
+
+// Aufgabe 7 — Turmhöhe aus Abstand und Höhenwinkel, mit Augenhöhe.
+const A7_KANDIDATEN = (() => {
   const liste = [];
   for (let alpha = 20; alpha <= 60; alpha += 2) {
     for (let d = 20; d <= 90; d += 5) liste.push({ alpha, d });
@@ -1076,11 +1370,11 @@ const A4_KANDIDATEN = (() => {
   return liste;
 })();
 
-function generateAufgabe4() {
+function generateAufgabe7() {
   const k = ohneKollision(
-    A4_KANDIDATEN,
+    A7_KANDIDATEN,
     (v) => [v.d * tanG(v.alpha) + AW_AUGE, v.d * tanG(v.alpha), v.d * sinG(v.alpha) + AW_AUGE, v.d / tanG(v.alpha) + AW_AUGE],
-    A4_KANDIDATEN[0],
+    A7_KANDIDATEN[0],
     0.06,
   );
   const { alpha, d } = k;
@@ -1099,6 +1393,11 @@ function generateAufgabe4() {
       if (Math.abs(val - (d / tanG(alpha) + AW_AUGE)) < 0.06) return `Hier wurde geteilt statt multipliziert. Aus tan α = h₁ : d folgt h₁ = d · tan α.`;
       return `Zwei Schritte: erst h₁ = d · tan α, dann die Augenhöhe von 1,60 m addieren.`;
     },
+    tipps: [
+      "Zeichne eine Skizze: Der rechte Winkel liegt am Turm auf Augenhöhe, nicht am Boden.",
+      `Vom Winkel α aus ist der Abstand ${num(d)} m die Ankathete und die gesuchte Höhe die Gegenkathete — also tan α = h₁ : ${num(d)}.`,
+      "Und ganz zum Schluss: Die 1,60 m Augenhöhe gehören noch dazu. Ohne sie ist die Antwort um eine Körperlänge zu klein.",
+    ],
     musterloesungHtml:
       `<strong>Skizze:</strong> Der rechte Winkel liegt am Turm auf Augenhöhe. Vom Winkel α aus ist der Abstand d die Ankathete und die gesuchte Höhe h₁ die Gegenkathete.<br>` +
       `<strong>Formel:</strong> tan α = h₁ : d, also h₁ = d · tan α<br>` +
@@ -1109,12 +1408,121 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 8 — die Höhe aus zwei Standpunkten. Der Fußpunkt ist nicht
+// zugänglich, also hilft ein einzelner Höhenwinkel nicht mehr weiter: Erst
+// zwei Messungen von verschiedenen Stellen aus liefern die Höhe.
+const A8_KANDIDATEN = (() => {
+  const liste = [];
+  for (let alpha = 30; alpha <= 65; alpha += 1) {
+    for (let beta = 15; beta <= 50; beta += 1) {
+      if (alpha - beta < 8) continue;              // sonst wird die Rechnung numerisch heikel
+      for (const d of [20, 25, 30, 40, 50, 60, 75, 80, 100]) {
+        // h = d : (cot β − cot α)
+        const h = d / (1 / tanG(beta) - 1 / tanG(alpha));
+        if (h < 8 || h > 150) continue;
+        liste.push({ alpha, beta, d, h });
+      }
+    }
+  }
+  return liste;
+})();
+const A8_KONTEXTE = [
+  { was: "ein Kirchturm", der: "der Turm", jenseits: "Der Fuß des Turms steht hinter einer Mauer und ist nicht zugänglich" },
+  { was: "eine Felswand", der: "die Wand", jenseits: "Der Fuß der Wand liegt jenseits eines Flusses" },
+  { was: "ein Baum", der: "der Baum", jenseits: "Der Fuß des Baums steht mitten in einem Teich" },
+  { was: "ein Sendemast", der: "der Mast", jenseits: "Der Fuß des Masts liegt in einem gesperrten Bereich" },
+];
+
+function generateAufgabe8() {
+  const k = ohneFeldKollision(A8_KANDIDATEN, (v) => {
+    const h = rund(v.h, 1);
+    const x = rund(v.h / tanG(v.alpha), 1);
+    const luft = rund(v.h / sinG(v.beta), 1);
+    return [
+      // Feld 1: die Höhe.
+      [h, x, luft, v.d, rund(v.d * tanG(v.alpha), 1), rund(v.d * tanG(v.beta), 1)],
+      // Feld 2: der Abstand des vorderen Standpunkts vom Fußpunkt.
+      [x, h, rund(v.h / tanG(v.beta), 1), v.d, luft],
+      // Feld 3: die Luftlinie vom hinteren Standpunkt.
+      [luft, h, x, v.d, rund(v.h / sinG(v.alpha), 1)],
+    ];
+  }, 0.35);
+  const { alpha, beta, d } = k;
+  const kt = pick(A8_KONTEXTE);
+  const hGenau = d / (1 / tanG(beta) - 1 / tanG(alpha));
+  const h = rund(hGenau, 1);
+  const x = rund(hGenau / tanG(alpha), 1);
+  const hinten = rund(hGenau / tanG(beta), 1);
+  const luft = rund(hGenau / sinG(beta), 1);
+  const naiv = rund(d * tanG(alpha), 1);
+  return {
+    promptHtml: `Gemessen werden soll, wie hoch ${kt.was} über dem waagerechten Boden aufragt. ` +
+      `${kt.jenseits}.<br>` +
+      `Von einem Punkt A aus erscheint die Spitze unter dem Höhenwinkel <strong>α = ${num(alpha)}°</strong>. ` +
+      `Geht man <strong>${num(d)} m</strong> geradlinig zurück, so misst man von B aus nur noch <strong>β = ${num(beta)}°</strong>.<br>` +
+      `<em>Gemessen wird vom Boden aus; runde auf eine Stelle nach dem Komma.</em>`,
+    felder: [
+      {
+        name: "Höhe (in m)", soll: h, einheit: "m", toleranz: 0.16, platzhalter: "Höhe in m",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - naiv) < 0.16) return `${num(naiv, 1)} m käme heraus, wenn ${num(d)} m der Abstand vom Fußpunkt wäre. ${num(d)} m ist aber nur der Abstand <em>zwischen den beiden Standpunkten</em>.`;
+          if (Math.abs(val - rund(d * tanG(beta), 1)) < 0.16) return `Auch hier wurden die ${num(d)} m für den Abstand zum Fußpunkt gehalten. Der Fußpunkt ist ja gerade nicht erreichbar — das ist der Grund für die zweite Messung.`;
+          if (Math.abs(val - x) < 0.16) return `${num(x, 1)} m ist die Entfernung von A zum Fußpunkt, nicht die Höhe.`;
+          if (Math.abs(val - d) < 0.16) return `${num(d)} m ist der Abstand der beiden Standpunkte.`;
+          return `Nenne x den Abstand von A zum Fußpunkt. Dann gilt tan α = h : x und tan β = h : (x + ${num(d)}). Zwei Gleichungen, zwei Unbekannte.`;
+        },
+      },
+      {
+        name: "Abstand von A zum Fußpunkt (in m)", soll: x, einheit: "m", toleranz: 0.16, platzhalter: "x in m",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - h) < 0.16) return `${num(h, 1)} m ist die Höhe. Gefragt ist die waagerechte Entfernung.`;
+          if (Math.abs(val - hinten) < 0.16) return `${num(hinten, 1)} m ist die Entfernung von <strong>B</strong> zum Fußpunkt — das sind genau ${num(d)} m mehr.`;
+          if (Math.abs(val - d) < 0.16) return `${num(d)} m ist der Abstand zwischen A und B.`;
+          return `Aus tan α = h : x folgt x = h : tan α.`;
+        },
+      },
+      {
+        name: "Luftlinie von B zur Spitze (in m)", soll: luft, einheit: "m", toleranz: 0.16, platzhalter: "Strecke in m",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - rund(hGenau / sinG(alpha), 1)) < 0.16) return `Das ist die Luftlinie von <strong>A</strong> aus. Von B aus ist der Winkel β und die Strecke länger.`;
+          if (Math.abs(val - h) < 0.16) return `${num(h, 1)} m ist die Höhe, also die Gegenkathete. Die Luftlinie ist die Hypotenuse und damit länger.`;
+          if (Math.abs(val - hinten) < 0.16) return `${num(hinten, 1)} m ist die waagerechte Entfernung von B. Die Luftlinie geht schräg nach oben.`;
+          return `Im Dreieck bei B ist die Höhe die Gegenkathete zum Winkel β und die Luftlinie die Hypotenuse: sin β = h : Luftlinie.`;
+        },
+      },
+    ],
+    tipps: [
+      `Zeichne beide Dreiecke übereinander: Sie haben dieselbe Höhe h, aber verschiedene Ankatheten. Nenne die kürzere x — das ist der Abstand von A zum Fußpunkt.`,
+      `Dann heißt es tan ${num(alpha)}° = h : x und tan ${num(beta)}° = h : (x + ${num(d)}). Löse die erste nach x auf und setze ein.`,
+      `Man erhält h · (1 : tan ${num(beta)}° − 1 : tan ${num(alpha)}°) = ${num(d)} m, also h = ${num(d)} m : (${num(rund(1 / tanG(beta), 4), 4)} − ${num(rund(1 / tanG(alpha), 4), 4)}).`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Benennen:</strong> h = gesuchte Höhe, x = Abstand von A zum Fußpunkt. Von B aus ist der Abstand x + ${num(d)} m.<br>` +
+      `<strong>2. Zwei Gleichungen:</strong> tan ${num(alpha)}° = h : x und tan ${num(beta)}° = h : (x + ${num(d)})<br>` +
+      `<strong>3. Nach x auflösen:</strong> x = h : tan ${num(alpha)}° und x + ${num(d)} = h : tan ${num(beta)}°<br>` +
+      `<strong>4. Subtrahieren:</strong> ${num(d)} = h · (1 : tan ${num(beta)}° − 1 : tan ${num(alpha)}°) = h · (${num(rund(1 / tanG(beta), 4), 4)} − ${num(rund(1 / tanG(alpha), 4), 4)})<br>` +
+      `<strong>5. Höhe:</strong> h = ${num(d)} m : ${num(rund(1 / tanG(beta) - 1 / tanG(alpha), 4), 4)} ≈ <strong>${num(h, 1)} m</strong><br>` +
+      `<strong>6. Abstand:</strong> x = ${num(h, 1)} m : tan ${num(alpha)}° ≈ <strong>${num(x, 1)} m</strong><br>` +
+      `<strong>7. Luftlinie von B:</strong> sin ${num(beta)}° = h : Luftlinie ⇒ Luftlinie = ${num(h, 1)} m : sin ${num(beta)}° ≈ <strong>${num(luft, 1)} m</strong><br>` +
+      `<em>Probe:</em> Von B aus ist die waagerechte Entfernung ${num(x, 1)} m + ${num(d)} m = ${num(rund(x + d, 1), 1)} m, ` +
+      `und ${num(h, 1)} : ${num(rund(x + d, 1), 1)} ≈ ${num(rund(h / (x + d), 4), 4)} ≈ tan ${num(beta)}° = ${num(rund(tanG(beta), 4), 4)} ✓<br>` +
+      `<span class="progress-note">Mit einer einzigen Messung ginge es nicht: ${num(alpha)}° allein legt nur das ` +
+      `Verhältnis von Höhe und Abstand fest, nicht beide Größen. Erst die zweite Messung — und der bekannte Abstand ` +
+      `der Standpunkte — macht die Aufgabe eindeutig. Der Kurzschluss „${num(d)} m ist der Abstand zum Fuß“ ergäbe ` +
+      `${num(naiv, 1)} m statt ${num(h, 1)} m.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Kathete aus dem Verhältnis", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Seite berechnen", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Winkel berechnen", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Turmhöhe messen", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — die Werte für 30°, 45° und 60°", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Seite berechnen", generate: generateAufgabe3 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — am Einheitskreis", generate: generateAufgabe4 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Winkel berechnen", generate: generateAufgabe5 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Steigung in Prozent", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Turmhöhe messen", generate: generateAufgabe7 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Höhe aus zwei Standpunkten", generate: generateAufgabe8 },
   ]);
 }
 
