@@ -700,6 +700,29 @@ function ohneKollision(kandidaten, werte, notfall, eps = 1e-9) {
   return gewaehlt;
 }
 
+// Dasselbe für Aufgaben mit mehreren Eingabefeldern: Kollidieren müssen die
+// Werte nur innerhalb eines Feldes, denn nur dort entscheidet die Zahl darüber,
+// welcher Hinweis erscheint. Zwischen zwei Feldern darf dieselbe Zahl stehen.
+// NaN bedeutet "an dieser Stelle springt kein Hinweis an" und wird übergangen.
+function ohneFeldKollision(kandidaten, gruppen, eps = 1e-9) {
+  const sauber = kandidaten.filter((kk) => gruppen(kk).every((g) => {
+    const echt = g.filter((x) => Number.isFinite(x));
+    return echt.every((x, i) => echt.every((y, j) => i === j || Math.abs(x - y) > eps));
+  }));
+  if (!sauber.length) throw new Error("Aufgabengenerator ohne gültige Kandidaten");
+  return pick(sauber);
+}
+
+// Mischt eine kurze Liste, ohne sie zu verwerfen und neu zu ziehen.
+function mische(liste) {
+  const a = liste.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 // Aufgabe 1 — die Wurzel aus einer Quadratzahl.
 const A1_KANDIDATEN = (() => {
   const liste = [];
@@ -722,6 +745,11 @@ function generateAufgabe1() {
       if (!isNaN(val) && Math.abs(val * val - a) > 0.001) return `Prüfe mit der Probe: Deine Zahl mal sich selbst muss ${num(a)} ergeben. ${num(val)} · ${num(val)} = ${num(val * val, 3)}.`;
       return `Suche die Zahl, die mit sich selbst multipliziert ${num(a)} ergibt.`;
     },
+    tipps: [
+      "Die Wurzel fragt rückwärts: Welche Zahl ergibt, mit sich selbst multipliziert, den Radikanden?",
+      `Probiere der Reihe nach: ${num(n - 2)}² = ${num((n - 2) * (n - 2))}, ${num(n - 1)}² = ${num((n - 1) * (n - 1))} — beide noch zu klein.`,
+      "Die Wurzel ist nie negativ: Auch wenn zwei Zahlen dasselbe Quadrat haben, meint das Wurzelzeichen immer die nichtnegative.",
+    ],
     musterloesungHtml:
       `<strong>Gesucht:</strong> die nichtnegative Zahl x mit x² = ${num(a)}.<br>` +
       `<strong>Probieren:</strong> ${num(n - 1)}² = ${num((n - 1) * (n - 1))}, ${num(n)}² = <strong>${num(a)}</strong> ✓<br>` +
@@ -730,8 +758,85 @@ function generateAufgabe1() {
   };
 }
 
-// Aufgabe 2 — die Wurzel einschachteln.
+// Aufgabe 2 — Produkt- und Quotientenregel. Beide Wurzeln sind für sich
+// irrational; erst zusammengezogen wird das Ergebnis eine ganze Zahl. Genau
+// das ist der Grund, warum die Regel nützlich ist.
 const A2_KANDIDATEN = (() => {
+  const liste = [];
+  for (let a = 2; a <= 150; a++) {
+    if (istQuadrat(a)) continue;
+    for (let b = 2; b <= 150; b++) {
+      if (istQuadrat(b) || a === b) continue;
+      if (istQuadrat(a * b) && a * b <= 1600) {
+        liste.push({ art: "mal", a, b, radikand: a * b, wert: Math.round(Math.sqrt(a * b)) });
+      }
+      if (a > b && a % b === 0 && istQuadrat(a / b) && a / b >= 4) {
+        liste.push({ art: "geteilt", a, b, radikand: a / b, wert: Math.round(Math.sqrt(a / b)) });
+      }
+    }
+  }
+  return liste;
+})();
+
+function generateAufgabe2() {
+  const k = ohneFeldKollision(A2_KANDIDATEN, (v) => [
+    // Feld 1: der Radikand — und die Zahlen, auf die die Hinweise warten.
+    [v.radikand, v.art === "mal" ? v.a + v.b : v.a - v.b, v.a, v.b],
+    // Feld 2: das Ergebnis.
+    [v.wert, v.radikand, v.a, v.b],
+  ]);
+  const { art, a, b, radikand, wert } = k;
+  const zeichenText = art === "mal" ? "·" : ":";
+  const regel = art === "mal" ? "Produktregel" : "Quotientenregel";
+  const falschZusammen = art === "mal" ? a + b : a - b;
+  return {
+    promptHtml: `Berechne mit der ${regel}: <strong>√${num(a)} ${zeichenText} √${num(b)}</strong>.`,
+    felder: [
+      {
+        name: "Radikand unter der gemeinsamen Wurzel", soll: radikand, toleranz: 0.0005, platzhalter: "Zahl unter der Wurzel",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - falschZusammen) < 0.0005) {
+            return art === "mal"
+              ? `Die Radikanden werden <strong>multipliziert</strong>, nicht addiert: √a · √b = √(a · b). Mit ${num(a)} + ${num(b)} kommt man auf ${num(a + b)} — und √(a + b) ist etwas ganz anderes.`
+              : `Die Radikanden werden <strong>geteilt</strong>, nicht subtrahiert: √a : √b = √(a : b).`;
+          }
+          if (Math.abs(val - a) < 0.0005) return `${num(a)} ist der erste Radikand. Beide gehören unter eine gemeinsame Wurzel.`;
+          if (Math.abs(val - b) < 0.0005) return `${num(b)} ist der zweite Radikand. Beide gehören unter eine gemeinsame Wurzel.`;
+          return `Die Regel lautet √a ${zeichenText} √b = √(a ${zeichenText} b). Rechne also ${num(a)} ${zeichenText} ${num(b)}.`;
+        },
+      },
+      {
+        name: "Ergebnis", soll: wert, toleranz: 0.0005, platzhalter: "Ergebnis",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - radikand) < 0.0005) return `${num(radikand)} steht unter der Wurzel. Aus ihr muss noch die Wurzel gezogen werden: √${num(radikand)} = ${num(wert)}.`;
+          if (Math.abs(val - a) < 0.0005 || Math.abs(val - b) < 0.0005) return "Das ist einer der beiden Radikanden, nicht das Ergebnis.";
+          if (!isNaN(val) && Math.abs(val * val - radikand) > 0.0005) return `Probe: Deine Zahl mal sich selbst muss ${num(radikand)} ergeben. ${num(val)} · ${num(val)} = ${num(val * val, 3)}.`;
+          return `Zieh die Wurzel aus ${num(radikand)}.`;
+        },
+      },
+    ],
+    tipps: [
+      art === "mal"
+        ? "Ein Produkt von Wurzeln darf man unter <em>eine</em> Wurzel schreiben: √a · √b = √(a · b)."
+        : "Ein Quotient von Wurzeln darf man unter <em>eine</em> Wurzel schreiben: √a : √b = √(a : b).",
+      `Hier heißt das: √${num(a)} ${zeichenText} √${num(b)} = √(${num(a)} ${zeichenText} ${num(b)}).`,
+      `Rechne ${num(a)} ${zeichenText} ${num(b)} = ${num(radikand)} aus und zieh daraus die Wurzel — ${num(radikand)} ist eine Quadratzahl.`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Regel anwenden:</strong> √${num(a)} ${zeichenText} √${num(b)} = √(${num(a)} ${zeichenText} ${num(b)})<br>` +
+      `<strong>2. Radikand ausrechnen:</strong> ${num(a)} ${zeichenText} ${num(b)} = <strong>${num(radikand)}</strong><br>` +
+      `<strong>3. Wurzel ziehen:</strong> √${num(radikand)} = <strong>${num(wert)}</strong>, denn ${num(wert)}² = ${num(radikand)}<br>` +
+      `<em>Zur Kontrolle:</em> √${num(a)} ≈ ${fest(Math.sqrt(a), 3)} und √${num(b)} ≈ ${fest(Math.sqrt(b), 3)}; ` +
+      `${fest(Math.sqrt(a), 3)} ${zeichenText} ${fest(Math.sqrt(b), 3)} ≈ ${fest(art === "mal" ? Math.sqrt(a) * Math.sqrt(b) : Math.sqrt(a) / Math.sqrt(b), 3)} ✓<br>` +
+      `<span class="progress-note">Beide Wurzeln sind einzeln irrational — ${art === "mal" ? "ihr Produkt" : "ihr Quotient"} ist es nicht. ` +
+      `Das geht nur, weil ${num(a)} ${zeichenText} ${num(b)} eine Quadratzahl ist. ` +
+      `Für Summen und Differenzen gibt es keine solche Regel: ` +
+      `√${num(a)} ${art === "mal" ? "+" : "−"} √${num(b)} ist <em>nicht</em> √${num(falschZusammen)}.</span>`,
+  };
+}
+
+// Aufgabe 3 — die Wurzel einschachteln.
+const A3_KANDIDATEN = (() => {
   const liste = [];
   for (let a = 5; a <= 200; a++) {
     if (istQuadrat(a)) continue;
@@ -742,8 +847,8 @@ const A2_KANDIDATEN = (() => {
   return liste;
 })();
 
-function generateAufgabe2() {
-  const k = ohneKollision(A2_KANDIDATEN, (v) => [v.n, v.n + 1, v.a - v.unten, v.oben - v.a], A2_KANDIDATEN[0]);
+function generateAufgabe3() {
+  const k = ohneKollision(A3_KANDIDATEN, (v) => [v.n, v.n + 1, v.a - v.unten, v.oben - v.a], A3_KANDIDATEN[0]);
   const { a, n, unten, oben } = k;
   return {
     promptHtml: `Zwischen welchen beiden aufeinanderfolgenden ganzen Zahlen liegt <strong>√${num(a)}</strong>?<br>` +
@@ -758,6 +863,11 @@ function generateAufgabe2() {
       if (!isNaN(val) && val * val > a) return `Zu groß: ${num(val)}² = ${num(val * val)} ist schon größer als ${num(a)}. Gesucht ist die größte Zahl, deren Quadrat noch <em>unter</em> ${num(a)} liegt.`;
       return `Suche die beiden benachbarten Quadratzahlen um ${num(a)} herum: ${num(unten)} und ${num(oben)}.`;
     },
+    tipps: [
+      "Gesucht sind die beiden Quadratzahlen, zwischen denen der Radikand liegt.",
+      `Zähle die Quadratzahlen ab, bis du ${num(a)} überschreitest: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144 …`,
+      "Das Wurzelziehen erhält die Reihenfolge: Aus u < a < o wird √u < √a < √o. Die kleinere Zahl ist also die Wurzel aus der kleineren Quadratzahl.",
+    ],
     musterloesungHtml:
       `<strong>1. Quadratzahlen suchen:</strong> ${num(n)}² = ${num(unten)} und ${num(n + 1)}² = ${num(oben)}<br>` +
       `<strong>2. Einordnen:</strong> ${num(unten)} &lt; ${num(a)} &lt; ${num(oben)}<br>` +
@@ -766,8 +876,65 @@ function generateAufgabe2() {
   };
 }
 
-// Aufgabe 3 — teilweise wurzelziehen.
-const A3_KANDIDATEN = (() => {
+// Aufgabe 4 — rational oder irrational. Abschnitt 3 hatte bisher keine Aufgabe,
+// dabei ist die Entscheidung „√a ist genau dann rational, wenn a eine
+// Quadratzahl ist“ der Kern des ganzen Kapitels.
+const A4_ZAHLEN = [
+  ...[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((q) => ({ text: `√${q * q}`, rational: true, art: "wurzel", n: q * q })),
+  ...[[3, 4], [2, 5], [5, 8], [7, 10], [1, 3], [2, 9], [5, 6]].map(([z, n]) => ({ text: `${z}/${n}`, rational: true, art: "bruch" })),
+  ...["0,25", "1,75", "3,125", "0,4", "2,6", "0,125"].map((t) => ({ text: t, rational: true, art: "dezimal" })),
+  ...["0,333… (periodisch)", "0,1818… (periodisch)", "2,7272… (periodisch)"].map((t) => ({ text: t, rational: true, art: "periodisch" })),
+  ...[2, 3, 5, 6, 7, 8, 10, 11, 12, 13, 15, 17, 18, 20, 24, 27].map((a) => ({ text: `√${a}`, rational: false, art: "wurzel", n: a })),
+  { text: "π", rational: false, art: "pi" },
+  ...[[2, 3], [3, 2], [2, 5], [5, 2], [4, 3], [2, 7]].map(([c, a]) => ({ text: `${c} · √${a}`, rational: false, art: "vielfaches", c, n: a })),
+];
+const A4_RATIONALE = A4_ZAHLEN.filter((z) => z.rational);
+const A4_IRRATIONALE = A4_ZAHLEN.filter((z) => !z.rational);
+
+// Warum die Zahl rational bzw. irrational ist — jede Begründung nennt ihren
+// eigenen Grund, sonst wäre der Hinweis beliebig.
+function a4Begruendung(z) {
+  if (z.art === "wurzel" && z.rational) return `${z.text} = ${num(Math.round(Math.sqrt(z.n)))} — eine ganze Zahl und damit rational.`;
+  if (z.art === "wurzel") return `${num(z.n)} ist keine Quadratzahl. Dann hat ${z.text} unendlich viele Nachkommastellen ohne Periode und ist irrational.`;
+  if (z.art === "bruch") return `${z.text} ist ein Bruch aus zwei ganzen Zahlen — genau das ist die Definition von rational.`;
+  if (z.art === "dezimal") return `Die Dezimaldarstellung von ${z.text} bricht ab. Solche Zahlen lassen sich immer als Bruch schreiben, sie sind rational.`;
+  if (z.art === "periodisch") return "Die Dezimaldarstellung wiederholt sich ab einer Stelle immer weiter. Auch eine periodische Dezimalzahl lässt sich in einen Bruch verwandeln und ist damit rational.";
+  if (z.art === "pi") return "π hat unendlich viele Nachkommastellen ohne Periode — π ist irrational.";
+  return `√${num(z.n)} ist irrational, denn ${num(z.n)} ist keine Quadratzahl — und eine rationale Zahl mal einer irrationalen bleibt irrational.`;
+}
+
+function generateAufgabe4() {
+  // Konstruktiv: je eine rationale und eine irrationale Zahl sind gesetzt,
+  // die dritte kommt aus dem Rest. So ist nie alles gleich.
+  const r = pick(A4_RATIONALE);
+  const i = pick(A4_IRRATIONALE);
+  const dritte = pick(A4_ZAHLEN.filter((z) => z.text !== r.text && z.text !== i.text));
+  const zahlen = mische([r, i, dritte]);
+  const marken = ["a", "b", "c"];
+  return {
+    promptHtml: `Entscheide für jede Zahl, ob sie <strong>rational (1)</strong> oder <strong>irrational (2)</strong> ist:<br>` +
+      zahlen.map((z, idx) => `<strong>${marken[idx]})</strong> ${z.text}`).join("&nbsp;&nbsp;&nbsp;"),
+    felder: zahlen.map((z, idx) => ({
+      name: `${marken[idx]}) ${z.text}`, soll: z.rational ? 1 : 2, toleranz: 0.25, platzhalter: "1 oder 2",
+      hinweis: () => a4Begruendung(z),
+    })),
+    tipps: [
+      "Rational heißt: als Bruch zweier ganzer Zahlen schreibbar. Die Dezimaldarstellung bricht dann ab oder ist periodisch.",
+      "Eine Wurzel ist genau dann rational, wenn ihr Radikand eine Quadratzahl ist — also 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, …",
+      "Brüche und abbrechende oder periodische Dezimalzahlen sind immer rational. π und jedes Vielfache einer irrationalen Wurzel sind irrational.",
+    ],
+    musterloesungHtml:
+      zahlen.map((z, idx) =>
+        `<strong>${marken[idx]}) ${z.text}</strong> ist <strong>${z.rational ? "rational" : "irrational"}</strong> — ${a4Begruendung(z)}`
+      ).join("<br>") +
+      `<br><span class="progress-note">Die Faustregel für Wurzeln: √a ist genau dann rational, wenn a eine Quadratzahl ist. ` +
+      `Alle anderen Wurzeln aus natürlichen Zahlen sind irrational — das ist kein Zufall und lässt sich mit demselben ` +
+      `Widerspruchsbeweis zeigen wie bei √2.</span>`,
+  };
+}
+
+// Aufgabe 5 — teilweise wurzelziehen.
+const A5_KANDIDATEN = (() => {
   const liste = [];
   for (let a = 8; a <= 500; a++) {
     const { f, rest } = quadratfaktor(a);
@@ -777,8 +944,8 @@ const A3_KANDIDATEN = (() => {
   return liste;
 })();
 
-function generateAufgabe3() {
-  const k = ohneKollision(A3_KANDIDATEN, (v) => [v.f, v.rest, v.f * v.f, v.a, v.f * v.rest], A3_KANDIDATEN[0]);
+function generateAufgabe5() {
+  const k = ohneKollision(A5_KANDIDATEN, (v) => [v.f, v.rest, v.f * v.f, v.a, v.f * v.rest], A5_KANDIDATEN[0]);
   const { a, f, rest } = k;
   return {
     promptHtml: `Ziehe teilweise die Wurzel: <strong>√${num(a)} = c · √${num(rest)}</strong>.<br>` +
@@ -793,6 +960,11 @@ function generateAufgabe3() {
       if (Math.abs(val - f * rest) < 0.001) return `Du hast den Faktor mit dem Rest multipliziert. Vor der Wurzel steht nur √${num(f * f)} = ${num(f)}.`;
       return `Zerlege ${num(a)} in eine Quadratzahl mal ${num(rest)}: ${num(a)} : ${num(rest)} = ${num(a / rest)}. Ziehe daraus die Wurzel.`;
     },
+    tipps: [
+      `Unter der Wurzel steckt eine Quadratzahl. Teile dazu ${num(a)} durch den Rest ${num(rest)}.`,
+      `${num(a)} : ${num(rest)} = ${num(a / rest)} — und ${num(a / rest)} ist eine Quadratzahl.`,
+      "Nach der Produktregel √(x · y) = √x · √y darf man die Quadratzahl herausziehen; vor der Wurzel steht dann ihre Wurzel.",
+    ],
     musterloesungHtml:
       `<strong>1. Zerlegen:</strong> ${num(a)} = <strong>${num(f * f)}</strong> · ${num(rest)}, und ${num(f * f)} = ${num(f)}² ist eine Quadratzahl<br>` +
       `<strong>2. Produktregel:</strong> √${num(a)} = √(${num(f * f)} · ${num(rest)}) = √${num(f * f)} · √${num(rest)}<br>` +
@@ -801,8 +973,87 @@ function generateAufgabe3() {
   };
 }
 
-// Aufgabe 4 — die Diagonale eines Rechtecks, mit ganzzahligem Ergebnis.
-const A4_KANDIDATEN = (() => {
+// Aufgabe 6 — zwei Wurzeln zusammenfassen. Das geht nur, wenn nach dem
+// teilweisen Wurzelziehen derselbe Radikand übrig bleibt — die Wurzeln
+// verhalten sich dabei wie gleichartige Summanden.
+const A6_KANDIDATEN = (() => {
+  const liste = [];
+  for (const r of [2, 3, 5, 6, 7, 10, 11, 13, 14, 15]) {
+    for (let u = 1; u <= 7; u++) {
+      for (let v = 1; v <= 7; v++) {
+        if (u === v) continue;
+        const a = u * u * r, b = v * v * r;
+        if (a > 600 || b > 600) continue;
+        // Plus geht immer; Minus nur, wenn etwas Positives übrig bleibt.
+        liste.push({ r, u, v, a, b, op: "+", c: u + v });
+        if (u - v >= 2) liste.push({ r, u, v, a, b, op: "−", c: u - v });
+      }
+    }
+  }
+  return liste;
+})();
+
+function generateAufgabe6() {
+  const k = ohneFeldKollision(A6_KANDIDATEN, (v) => [
+    // Feld 1: der Faktor vor der Wurzel.
+    [v.c, v.u * v.v, 1, v.u, v.v],
+    // Feld 2: der gemeinsame Radikand.
+    [v.r, v.op === "+" ? v.a + v.b : v.a - v.b],
+    // Feld 3: der Zahlenwert.
+    [v.c * Math.sqrt(v.r), v.c * v.r, Math.sqrt(v.op === "+" ? v.a + v.b : v.a - v.b)],
+  ]);
+  const { r, u, v, a, b, op, c } = k;
+  const wert = c * Math.sqrt(r);
+  const falschRadikand = op === "+" ? a + b : a - b;
+  return {
+    promptHtml: `Fasse so weit wie möglich zusammen: <strong>√${num(a)} ${op} √${num(b)}</strong><br>` +
+      `Das Ergebnis hat die Form <strong>c · √r</strong>.`,
+    felder: [
+      {
+        name: "Faktor c vor der Wurzel", soll: c, toleranz: 0.0005, platzhalter: "c",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - 1) < 0.0005) return `Du hast wohl die Radikanden verrechnet. Das ist der häufigste Fehler überhaupt: √${num(a)} ${op} √${num(b)} ist <strong>nicht</strong> √${num(falschRadikand)}.`;
+          if (Math.abs(val - u * v) < 0.0005) return `Die Faktoren werden ${op === "+" ? "addiert" : "subtrahiert"}, nicht multipliziert: ${num(u)} ${op} ${num(v)} = ${num(c)}.`;
+          if (Math.abs(val - u) < 0.0005) return `${num(u)} ist nur der Faktor des ersten Summanden: √${num(a)} = ${num(u)}·√${num(r)}. Der zweite kommt noch dazu.`;
+          if (Math.abs(val - v) < 0.0005) return `${num(v)} ist nur der Faktor des zweiten Summanden: √${num(b)} = ${num(v)}·√${num(r)}.`;
+          return `Zieh aus beiden Wurzeln teilweise die Wurzel: √${num(a)} = ${num(u)}·√${num(r)} und √${num(b)} = ${num(v)}·√${num(r)}. Dann ${op === "+" ? "addiere" : "subtrahiere"} die Faktoren.`;
+        },
+      },
+      {
+        name: "Radikand r unter der Wurzel", soll: r, toleranz: 0.0005, platzhalter: "r",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - falschRadikand) < 0.0005) return `Radikanden dürfen <strong>nicht</strong> ${op === "+" ? "addiert" : "subtrahiert"} werden. √a ${op} √b ist nie √(a ${op} b) — sonst wäre schon √9 + √16 = √25, also 7 = 5.`;
+          return `Beide Radikanden enthalten denselben Rest: ${num(a)} = ${num(u * u)} · ${num(r)} und ${num(b)} = ${num(v * v)} · ${num(r)}. Dieser Rest bleibt stehen.`;
+        },
+      },
+      {
+        name: "Wert, auf zwei Stellen gerundet", soll: wert, toleranz: 0.005, einheit: "", platzhalter: "z. B. 8,66",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - c * r) < 0.005) return `${num(c * r)} wäre ${num(c)} · ${num(r)} — aber unter der Wurzel steht ${num(r)}, und √${num(r)} ≈ ${fest(Math.sqrt(r), 3)}.`;
+          if (Math.abs(val - Math.sqrt(falschRadikand)) < 0.005) return `Das ist √${num(falschRadikand)} — die Radikanden wurden verrechnet. Richtig ist ${num(c)} · √${num(r)}.`;
+          return `Rechne ${num(c)} · √${num(r)} ≈ ${num(c)} · ${fest(Math.sqrt(r), 4)} und runde auf zwei Stellen.`;
+        },
+      },
+    ],
+    tipps: [
+      "Zusammenfassen geht nur bei <em>gleichem</em> Radikanden — so wie 3x + 5x = 8x nur geht, weil beide Male x dasteht.",
+      `Zieh deshalb zuerst aus beiden Wurzeln teilweise die Wurzel: ${num(a)} = ${num(u * u)} · ${num(r)} und ${num(b)} = ${num(v * v)} · ${num(r)}.`,
+      `Damit steht da ${num(u)}·√${num(r)} ${op} ${num(v)}·√${num(r)}. Jetzt nur noch die Faktoren ${op === "+" ? "addieren" : "subtrahieren"}.`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Teilweise wurzelziehen:</strong><br>` +
+      `&nbsp;&nbsp;&nbsp;√${num(a)} = √(${num(u * u)} · ${num(r)}) = ${num(u)}·√${num(r)}<br>` +
+      `&nbsp;&nbsp;&nbsp;√${num(b)} = √(${num(v * v)} · ${num(r)}) = ${num(v)}·√${num(r)}<br>` +
+      `<strong>2. Zusammenfassen:</strong> ${num(u)}·√${num(r)} ${op} ${num(v)}·√${num(r)} = (${num(u)} ${op} ${num(v)})·√${num(r)} = <strong>${num(c)}·√${num(r)}</strong><br>` +
+      `<strong>3. Zahlenwert:</strong> ${num(c)} · ${fest(Math.sqrt(r), 4)} ≈ <strong>${fest(wert, 2)}</strong><br>` +
+      `<em>Probe:</em> √${num(a)} ${op} √${num(b)} ≈ ${fest(Math.sqrt(a), 3)} ${op} ${fest(Math.sqrt(b), 3)} ≈ ${fest(op === "+" ? Math.sqrt(a) + Math.sqrt(b) : Math.sqrt(a) - Math.sqrt(b), 3)} ✓<br>` +
+      `<span class="progress-note">Der verlockende Kurzweg √${num(a)} ${op} √${num(b)} = √${num(falschRadikand)} ergäbe ${fest(Math.sqrt(falschRadikand), 3)} — ` +
+      `und das stimmt nicht. Für Summen und Differenzen gibt es keine Wurzelregel; nur Produkte und Quotienten darf man auseinanderziehen.</span>`,
+  };
+}
+
+// Aufgabe 7 — die Diagonale eines Rechtecks, mit ganzzahligem Ergebnis.
+const A7_KANDIDATEN = (() => {
   const liste = [];
   for (let a = 2; a <= 60; a++) {
     for (let b = 2; b <= 60; b++) {
@@ -815,8 +1066,8 @@ const A4_KANDIDATEN = (() => {
   return liste;
 })();
 
-function generateAufgabe4() {
-  const k = ohneKollision(A4_KANDIDATEN, (v) => [v.d, v.a + v.b, v.q, v.b - v.a, v.a, v.b], A4_KANDIDATEN[0]);
+function generateAufgabe7() {
+  const k = ohneKollision(A7_KANDIDATEN, (v) => [v.d, v.a + v.b, v.q, v.b - v.a, v.a, v.b], A7_KANDIDATEN[0]);
   const { a, b, d, q } = k;
   const dinge = pick([
     { was: "Ein Rechteck", frage: "seine Diagonale", e: "cm" },
@@ -836,6 +1087,11 @@ function generateAufgabe4() {
       if (Math.abs(val - a) < 0.001 || Math.abs(val - b) < 0.001) return `Das ist eine der beiden Seiten. Die Diagonale ist länger als jede einzelne Seite.`;
       return `Satz des Pythagoras: d² = ${num(a)}² + ${num(b)}² = ${num(a * a)} + ${num(b * b)} = ${num(q)}. Ziehe daraus die Wurzel.`;
     },
+    tipps: [
+      "Die Diagonale teilt das Rechteck in zwei rechtwinklige Dreiecke; sie ist deren Hypotenuse.",
+      `Satz des Pythagoras: d² = ${num(a)}² + ${num(b)}² = ${num(a * a)} + ${num(b * b)} = ${num(q)}.`,
+      `Aus d² wird d durch Wurzelziehen: √${num(q)}. Hier geht die Wurzel auf.`,
+    ],
     musterloesungHtml:
       `<strong>1. Satz des Pythagoras:</strong> d² = a² + b² = ${num(a)}² + ${num(b)}² = ${num(a * a)} + ${num(b * b)} = <strong>${num(q)}</strong><br>` +
       `<strong>2. Wurzel ziehen:</strong> d = √${num(q)} = <strong>${num(d)}</strong> ${dinge.e}<br>` +
@@ -844,12 +1100,101 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 8 — eine Diagonale, deren Länge keine ganze Zahl ist. Sie führt
+// Pythagoras, teilweises Wurzelziehen und das Runden zusammen — und macht
+// nebenbei deutlich, dass eine irrationale Zahl eine ganz gewöhnliche Länge
+// sein kann.
+const A8_KANDIDATEN = (() => {
+  const liste = [];
+  for (let a = 2; a <= 40; a++) {
+    for (let b = a + 1; b <= 40; b++) {
+      const q = a * a + b * b;
+      if (istQuadrat(q)) continue;                 // dann wäre nichts zu runden
+      const { f, rest } = quadratfaktor(q);
+      if (f < 2 || rest < 2) continue;             // sonst gibt es nichts herauszuziehen
+      liste.push({ a, b, q, f, rest });
+    }
+  }
+  return liste;
+})();
+const A8_KONTEXTE = [
+  { was: "Ein rechteckiger Raum", lang: "lang", breit: "breit", frage: "die Diagonale des Raumes", e: "m" },
+  { was: "Ein rechteckiges Grundstück", lang: "lang", breit: "breit", frage: "der Diagonalweg", e: "m" },
+  { was: "Ein rechteckiges Fahnentuch", lang: "lang", breit: "hoch", frage: "die Diagonale des Tuches", e: "cm" },
+  { was: "Eine rechteckige Glasplatte", lang: "lang", breit: "breit", frage: "die Diagonale der Platte", e: "cm" },
+];
+
+function generateAufgabe8() {
+  const k = ohneFeldKollision(A8_KANDIDATEN, (v) => [
+    // Feld 1: der Radikand d² = a² + b².
+    [v.q, v.a + v.b, (v.a + v.b) * (v.a + v.b), v.a * v.b, v.b * v.b - v.a * v.a],
+    // Feld 2: der Faktor vor der Wurzel.
+    [v.f, v.rest, v.f * v.f, v.q],
+    // Feld 3: die gerundete Länge.
+    [Math.sqrt(v.q), v.a + v.b, v.q],
+  ]);
+  const { a, b, q, f, rest } = k;
+  const kt = pick(A8_KONTEXTE);
+  const d = Math.sqrt(q);
+  return {
+    promptHtml: `${kt.was} ist <strong>${num(b)} ${kt.e}</strong> ${kt.lang} und <strong>${num(a)} ${kt.e}</strong> ${kt.breit}.<br>` +
+      `Gesucht ist <strong>${kt.frage}</strong> — erst exakt in der Form c · √r, dann gerundet.`,
+    felder: [
+      {
+        name: "d² = a² + b²", soll: q, toleranz: 0.0005, platzhalter: "Radikand",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (a + b)) < 0.0005) return `${num(a + b)} ist der Weg um die Ecke, also a + b. Der Satz des Pythagoras addiert die <em>Quadrate</em>.`;
+          if (Math.abs(val - (a + b) * (a + b)) < 0.0005) return `(a + b)² ist nicht a² + b² — beim Ausmultiplizieren käme noch 2ab dazu. Rechne ${num(a)}² + ${num(b)}² getrennt aus.`;
+          if (Math.abs(val - a * b) < 0.0005) return `${num(a * b)} ist der Flächeninhalt, nicht das Quadrat der Diagonalen.`;
+          if (Math.abs(val - (b * b - a * a)) < 0.0005) return "Die Quadrate werden addiert, nicht subtrahiert: Die Diagonale ist die Hypotenuse.";
+          return `Satz des Pythagoras: d² = ${num(a)}² + ${num(b)}² = ${num(a * a)} + ${num(b * b)}.`;
+        },
+      },
+      {
+        name: "Faktor c vor der Wurzel", soll: f, toleranz: 0.0005, platzhalter: "c",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - rest) < 0.0005) return `${num(rest)} bleibt <em>unter</em> der Wurzel stehen. Davor kommt die Wurzel aus der Quadratzahl.`;
+          if (Math.abs(val - f * f) < 0.0005) return `${num(f * f)} ist die Quadratzahl in ${num(q)}. Vor die Wurzel kommt ihre Wurzel: √${num(f * f)} = ${num(f)}.`;
+          if (Math.abs(val - q) < 0.0005) return `${num(q)} ist der ganze Radikand. Zerlege ihn zuerst: ${num(q)} = ${num(f * f)} · ${num(rest)}.`;
+          return `Zerlege ${num(q)} in Quadratzahl mal Rest: ${num(q)} = ${num(f * f)} · ${num(rest)}. Aus ${num(f * f)} lässt sich die Wurzel ziehen.`;
+        },
+      },
+      {
+        name: `Länge gerundet (zwei Stellen)`, soll: d, einheit: kt.e, toleranz: 0.005, platzhalter: "z. B. 12,65",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - q) < 0.005) return `${num(q)} ist d², nicht d. Es fehlt die Wurzel.`;
+          if (Math.abs(val - (a + b)) < 0.005) return `${num(a + b)} ${kt.e} wäre der Weg um die Ecke. Die Diagonale ist kürzer.`;
+          if (!isNaN(val) && (val <= b || val >= a + b)) return `Die Diagonale ist länger als jede Seite (${num(b)} ${kt.e}) und kürzer als beide zusammen (${num(a + b)} ${kt.e}).`;
+          return `${num(f)} · √${num(rest)} ≈ ${num(f)} · ${fest(Math.sqrt(rest), 4)} — auf zwei Stellen gerundet.`;
+        },
+      },
+    ],
+    tipps: [
+      `Die Diagonale ist die Hypotenuse eines rechtwinkligen Dreiecks mit den Katheten ${num(a)} ${kt.e} und ${num(b)} ${kt.e}.`,
+      `d² = ${num(a)}² + ${num(b)}² = ${num(a * a)} + ${num(b * b)} = ${num(q)}. Da ${num(q)} keine Quadratzahl ist, bleibt eine Wurzel stehen.`,
+      `Zieh teilweise die Wurzel: ${num(q)} = ${num(f * f)} · ${num(rest)}, also d = ${num(f)}·√${num(rest)}. Den Zahlenwert bekommst du mit dem Taschenrechner.`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Satz des Pythagoras:</strong> d² = ${num(a)}² + ${num(b)}² = ${num(a * a)} + ${num(b * b)} = <strong>${num(q)}</strong><br>` +
+      `<strong>2. Teilweise wurzelziehen:</strong> ${num(q)} = ${num(f * f)} · ${num(rest)}, also d = √(${num(f * f)} · ${num(rest)}) = <strong>${num(f)}·√${num(rest)}</strong><br>` +
+      `<strong>3. Runden:</strong> ${num(f)} · ${fest(Math.sqrt(rest), 4)} ≈ <strong>${fest(d, 2)} ${kt.e}</strong><br>` +
+      `<em>Probe:</em> ${fest(d, 2)}² ≈ ${fest(Number(d.toFixed(2)) ** 2, 2)} ≈ ${num(q)} ✓ &nbsp; und die Diagonale liegt zwischen ${num(b)} ${kt.e} und ${num(a + b)} ${kt.e}.<br>` +
+      `<span class="progress-note">${num(f)}·√${num(rest)} ist die <em>exakte</em> Länge; ${fest(d, 2)} ${kt.e} ist nur eine Näherung. ` +
+      `Wer weiterrechnet, nimmt die exakte Form — sonst häufen sich die Rundungsfehler. ` +
+      `Dass die Länge irrational ist, merkt man ihr beim Nachmessen nicht an: Es ist eine ganz gewöhnliche Strecke.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Wurzel aus einer Quadratzahl", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Wurzel einschachteln", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — teilweise wurzelziehen", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Diagonale berechnen", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Produkt- und Quotientenregel", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Wurzel einschachteln", generate: generateAufgabe3 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — rational oder irrational?", generate: generateAufgabe4 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — teilweise wurzelziehen", generate: generateAufgabe5 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Wurzeln zusammenfassen", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Diagonale berechnen", generate: generateAufgabe7 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Diagonale mit Wurzel", generate: generateAufgabe8 },
   ]);
 }
 
