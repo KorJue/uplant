@@ -111,10 +111,42 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — Oberfläche eines Quaders. 118 zulässige Grundrisse × bis zu 11
+  // Aufgabe 2 — V = G · h, vorwärts und rückwärts. Gemessen mit tests/werkzeug-streuung.js: 199
+  // verschiedene in 200 Würfen. Schranke: simuliertes 10⁻⁴-Quantil bei 30 Zügen für ein
+  // vorsichtig angesetztes n — 28.
+  let vorwaerts = 0, rueckwaerts = 0;
+  await pruefeAufgabe(page, bericht, {
+    nr: 2, name: "A2 V = G · h", runden: 30, mindestensVerschieden: 28,
+    deute: (frage) => {
+      const vor = frage.match(/Grundflächeninhalt G = (\d+) cm² und die Höhe h = (\d+) cm/);
+      if (vor) {
+        const G = Number(vor[1]), h = Number(vor[2]);
+        vorwaerts++;
+        return {
+          richtig: G * h,
+          toleranz: 0.005,
+          falsch: [[G + h, "addiert"], [G / h, "geteilt"], [2 * G * h, "verdoppelt"]],
+        };
+      }
+      const zurueck = frage.match(/Volumen V = (\d+) cm³ und den Grundflächeninhalt G = (\d+) cm²/);
+      if (!zurueck) return null;
+      const V = Number(zurueck[1]), G = Number(zurueck[2]);
+      pruefe(Number.isInteger(V / G), `A2: ${V} : ${G} geht nicht auf — „${frage}“`);
+      rueckwaerts++;
+      return {
+        richtig: V / G,
+        toleranz: 0.005,
+        falsch: [[V * G, "multipliziert"], [V - G, "Division"]],
+      };
+    },
+  });
+  pruefe(vorwaerts > 0 && rueckwaerts > 0,
+    `A2: in 30 Zügen kam ${vorwaerts}-mal die Vorwärts- und ${rueckwaerts}-mal die Rückwärtsfassung — beide müssen vorkommen`);
+
+  // Aufgabe 3 — Oberfläche eines Quaders. 118 zulässige Grundrisse × bis zu 11
   // Höhen; bei 30 Zügen E = 29,7 und σ = 0,6, Quantil 10⁻⁴ bei 26 — Schranke 25.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Oberfläche", runden: 30, mindestensVerschieden: 25,
+    nr: 3, name: "A3 Oberfläche", runden: 30, mindestensVerschieden: 25,
     deute: (frage) => {
       const m = frage.match(/(\d+) cm lang, (\d+) cm breit und (\d+) cm hoch/);
       if (!m) return null;
@@ -132,19 +164,43 @@ async function aufgaben(page) {
         ],
         pruefe: (f) => {
           pruefe(paarweiseVerschieden([2 * G + M, M, G + M, a * b * h, 2 * G + G * h]),
-            `A2: Lösung und Fehlerwerte sind nicht paarweise verschieden — „${f}“`);
+            `A3: Lösung und Fehlerwerte sind nicht paarweise verschieden — „${f}“`);
           // Bei G = u wäre der Mantelfehler für jede Höhe unsichtbar; solche
           // Grundrisse siebt der Generator schon vor der Höhenwahl aus.
-          pruefe(G !== u, `A2: G = u = ${G} macht den Mantelfehler unsichtbar — „${f}“`);
+          pruefe(G !== u, `A3: G = u = ${G} macht den Mantelfehler unsichtbar — „${f}“`);
         },
       };
     },
   });
 
-  // Aufgabe 3 — Zylinder, Volumen oder Mantel. 10 Radien × bis zu 13 Höhen ×
+  // Aufgabe 4 — Oberfläche einer Konservendose. Gemessen: 98 verschiedene in 200 Würfen,
+  // zurückgerechnet rund 121 Kandidaten. Schranke: simuliertes 10⁻⁴-Quantil bei 30 Zügen für
+  // 0,8 · n — 19.
+  await pruefeAufgabe(page, bericht, {
+    nr: 4, name: "A4 Oberfläche einer Dose", runden: 30, mindestensVerschieden: 19,
+    deute: (frage) => {
+      const m = frage.match(/r = (\d+) cm und die Höhe h = (\d+) cm/);
+      if (!m) return null;
+      const r = Number(m[1]), h = Number(m[2]);
+      const G = Math.PI * r * r, M = 2 * Math.PI * r * h;
+      return {
+        felder: [G, 2 * G + M],
+        toleranz: 0.01,
+        falschFelder: [
+          [0, 2 * Math.PI * r, "Umfang"],
+          [0, 2 * Math.PI * r * r, "Faktor 2"],
+          [1, M, "nur der"],
+          [1, G + M, "einmal"],
+          [1, 2 * G + Math.PI * r * h, "ganze"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 5 — Zylinder, Volumen oder Mantel. 10 Radien × bis zu 13 Höhen ×
   // 2 Formen; bei 30 Zügen E = 28,3 und σ = 1,2, Quantil 10⁻⁴ bei 23.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Zylinder", runden: 30, mindestensVerschieden: 22,
+    nr: 5, name: "A5 Zylinder", runden: 30, mindestensVerschieden: 22,
     deute: (frage) => {
       const m = frage.match(/r = (\d+) cm.*?h = (\d+) cm/);
       if (!m) return null;
@@ -164,18 +220,45 @@ async function aufgaben(page) {
         ],
         pruefe: (f) => {
           // Bei r = 2 wären V und M dieselbe Zahl; die Aufgabe beginnt bei 3.
-          pruefe(r >= 3, `A3: bei r = ${r} fallen Volumen und Mantel zusammen — „${f}“`);
+          pruefe(r >= 3, `A5: bei r = ${r} fallen Volumen und Mantel zusammen — „${f}“`);
           pruefe(paarweiseVerschieden([V, M, 2 * Math.PI * r * r * h, Math.PI * r * h, O]),
-            `A3: Lösung und Fehlerwerte sind nicht paarweise verschieden — „${f}“`);
+            `A5: Lösung und Fehlerwerte sind nicht paarweise verschieden — „${f}“`);
         },
       };
     },
   });
 
-  // Aufgabe 4 — Fassungsvermögen in Litern. 8 × 8 Grundrisse × bis zu 8 Höhen;
+  // Aufgabe 6 — der Zylinder rückwärts: aus Fassungsvermögen und Radius die Höhe. Gemessen: 149
+  // verschiedene in 200 Würfen, zurückgerechnet rund 321 Kandidaten. Schranke: simuliertes
+  // 10⁻⁴-Quantil bei 30 Zügen für 0,8 · n — 23.
+  await pruefeAufgabe(page, bericht, {
+    nr: 6, name: "A6 Höhe des Gefäßes", runden: 30, mindestensVerschieden: 23,
+    deute: (frage) => {
+      const m = frage.match(/r = (\d+) cm und fasst ([\d.,]+) Liter/);
+      if (!m) return null;
+      const r = Number(m[1]);
+      const liter = Number(m[2].replace(/\./g, "").replace(",", "."));
+      const G = Math.PI * r * r;
+      // Aus GENAU der gestellten (gerundeten) Literzahl rechnen.
+      const h = (liter * 1000) / G;
+      pruefe(h > 1 && h < 200, `A6: die Höhe ${h} cm ist unanschaulich — „${frage}“`);
+      return {
+        felder: [G, h],
+        toleranz: 0.01,
+        falschFelder: [
+          [0, 2 * Math.PI * r, "Umfang"],
+          [0, 2 * Math.PI * r * r, "Faktor 2"],
+          [1, liter / G, "Litern"],
+          [1, (liter * 1000) / (2 * Math.PI * r), "Umfang"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 7 — Fassungsvermögen in Litern. 8 × 8 Grundrisse × bis zu 8 Höhen;
   // bei 30 Zügen E = 29,2 und σ = 0,9, Quantil 10⁻⁴ bei 24 — Schranke 23.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Liter", runden: 30, mindestensVerschieden: 23,
+    nr: 7, name: "A7 Liter", runden: 30, mindestensVerschieden: 23,
     deute: (frage) => {
       const m = frage.match(/(\d+) cm lang, (\d+) cm breit und (\d+) cm hoch/);
       if (!m) return null;
@@ -195,16 +278,51 @@ async function aufgaben(page) {
           // Konstruktiv: alle Kanten sind Vielfache von 10 cm, damit die
           // Umrechnung glatt aufgeht und die Lösung ganzzahlig wird.
           pruefe(a % 10 === 0 && b % 10 === 0 && h % 10 === 0,
-            `A4: die Kanten ${a}, ${b}, ${h} cm sind keine Vielfachen von 10 — „${f}“`);
-          pruefe(Number.isInteger(cm3 / 1000), `A4: ${cm3} cm³ sind keine ganze Zahl Liter — „${f}“`);
+            `A7: die Kanten ${a}, ${b}, ${h} cm sind keine Vielfachen von 10 — „${f}“`);
+          pruefe(Number.isInteger(cm3 / 1000), `A7: ${cm3} cm³ sind keine ganze Zahl Liter — „${f}“`);
           pruefe(paarweiseVerschieden([cm3 / 1000, cm3, cm3 / 100, cm3 / 10, a + b + h]),
-            `A4: Lösung und Fehlerwerte sind nicht paarweise verschieden — „${f}“`);
+            `A7: Lösung und Fehlerwerte sind nicht paarweise verschieden — „${f}“`);
           pruefe(rueck.includes("1000 cm³"),
-            `A4: die Musterlösung nennt 1 Liter = 1000 cm³ nicht — „${f}“`);
+            `A7: die Musterlösung nennt 1 Liter = 1000 cm³ nicht — „${f}“`);
         },
       };
     },
   });
+
+  // Aufgabe 8 — der Hohlzylinder: Querschnitt als Kreisring, Volumen, Masse. Gemessen: 192
+  // verschiedene in 200 Würfen, zurückgerechnet rund 2400 Kandidaten. Schranke: simuliertes
+  // 10⁻⁴-Quantil bei 30 Zügen für 0,8 · n — 27.
+  const stoffe = new Set();
+  await pruefeAufgabe(page, bericht, {
+    nr: 8, name: "A8 Rohr wiegen", runden: 30, mindestensVerschieden: 27,
+    deute: (frage) => {
+      const m = frage.match(
+        /Ein (\w+)rohr ist (\d+) cm lang.*?Außenradius beträgt (\d+) cm, die Wandstärke ([\d.,]+) cm.*?wiegt ([\d.,]+) g/);
+      if (!m) return null;
+      const stoff = m[1];
+      const L = Number(m[2]), R = Number(m[3]);
+      const s = Number(m[4].replace(",", "."));
+      const dichte = Number(m[5].replace(",", "."));
+      const r = R - s;
+      const ring = Math.PI * (R * R - r * r);
+      const V = ring * L;
+      pruefe(r > 0, `A8: die Wandstärke ${s} cm ist nicht kleiner als der Außenradius ${R} cm`);
+      stoffe.add(stoff);
+      return {
+        felder: [r, V, (V * dichte) / 1000],
+        toleranz: 0.01,
+        falschFelder: [
+          [0, R + s, "abgezogen"],
+          [0, R - 2 * s, "zweimal"],
+          [1, Math.PI * R * R * L, "volle"],
+          [1, Math.PI * s * s * L, "quadrieren"],
+          [1, ring, "Querschnitt"],
+          [2, V * dichte, "Gramm"],
+        ],
+      };
+    },
+  });
+  pruefe(stoffe.size >= 3, `A8: nur ${stoffe.size} verschiedene Werkstoffe in 30 Zügen`);
 }
 
 (async () => {

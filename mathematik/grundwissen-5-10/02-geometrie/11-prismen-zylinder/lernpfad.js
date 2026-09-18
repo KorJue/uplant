@@ -590,6 +590,11 @@ function generateAufgabe1() {
         return `Du hast <strong>addiert</strong>. Volumen entsteht durch Multiplizieren: V = G · h.`;
       return `Zuerst die Grundfläche G = ½ · g · h<sub>Dreieck</sub>, dann V = G · h.`;
     },
+    tipps: [
+      "Für jedes Prisma gilt V = G · h — erst die Grundfläche, dann mal die Körperhöhe.",
+      `Die Grundfläche ist hier ein Dreieck: G = ½ · ${num(g)} · ${num(hD)}.`,
+      `Die Körperhöhe ist ${num(h)} cm — nicht zu verwechseln mit der Dreieckshöhe ${num(hD)} cm.`,
+    ],
     musterloesungHtml:
       `<strong>1. Grundfläche:</strong> G = ½ · g · h<sub>Dreieck</sub> = ½ · ${num(g)} · ${num(hD)} = <strong>${num(G)} cm²</strong><br>` +
       `<strong>2. Volumen:</strong> V = G · h = ${num(G)} · ${num(h)} = <strong>${num(V)} cm³</strong><br>` +
@@ -639,6 +644,11 @@ function generateAufgabe2() {
         return `Im Mantel M = u · h steht der <strong>Umfang</strong> u = ${num(u)} cm, nicht die Grundfläche. Mit G · h käme das Volumen heraus.`;
       return `O = 2 · G + u · h mit G = a · b und u = 2 · (a + b).`;
     },
+    tipps: [
+      "Denk dir den Körper aufgeschnitten und flach ausgebreitet: unten und oben je eine Grundfläche, ringsherum der Mantel.",
+      `Grundfläche G = ${num(a)} · ${num(b)} = ${num(G)} cm², Umfang u = 2 · (${num(a)} + ${num(b)}) = ${num(u)} cm.`,
+      `Mantel M = u · h = ${num(u)} · ${num(h)}, und die Oberfläche ist O = 2 · G + M.`,
+    ],
     musterloesungHtml:
       `<strong>1. Grundfläche:</strong> G = a · b = ${num(a)} · ${num(b)} = <strong>${num(G)} cm²</strong><br>` +
       `<strong>2. Umfang:</strong> u = 2 · (a + b) = 2 · ${num(a + b)} = <strong>${num(u)} cm</strong><br>` +
@@ -690,6 +700,13 @@ function generateAufgabe3() {
         return `Das ist die <strong>gesamte Oberfläche</strong> O = 2 · π · r² + M. Gefragt ist nur ${volumen ? "das Volumen" : "der Mantel"}.`;
       return volumen ? `V = π · r² · h` : `M = 2 · π · r · h`;
     },
+    tipps: [
+      volumen
+        ? "Auch der Zylinder ist ein Prisma: V = G · h, und die Grundfläche ist ein Kreis."
+        : "Der Mantel ist ein aufgerolltes Rechteck: so breit wie der Kreisumfang, so hoch wie der Zylinder.",
+      volumen ? `G = π · r² = π · ${num(r)}²` : `u = 2 · π · r = 2 · π · ${num(r)}`,
+      volumen ? `V = G · ${num(h)}` : `M = u · ${num(h)}`,
+    ],
     musterloesungHtml: volumen
       ? `<strong>1. Grundfläche:</strong> G = π · r² = π · ${num(r)}² = ${num(r * r)}π ≈ ${num(Math.PI * r * r, 4)} cm²<br>` +
         `<strong>2. Volumen:</strong> V = G · h = ${num(Math.PI * r * r, 4)} · ${num(h)} ≈ <strong>${num(V, 2)} cm³</strong><br>` +
@@ -738,6 +755,11 @@ function generateAufgabe4() {
         return `Du hast die Kanten <strong>addiert</strong>. Das Volumen entsteht durch Multiplizieren.`;
       return `Erst das Volumen ausrechnen, dann in Liter umrechnen: 1 Liter = 1 dm³ = 1000 cm³.`;
     },
+    tipps: [
+      "Ein Liter ist genau ein Kubikdezimeter — also ein Würfel mit 10 cm Kantenlänge.",
+      `Am einfachsten rechnet man gleich in Dezimetern: ${num(a)} cm = ${num(aDm)} dm, ${num(b)} cm = ${num(bDm)} dm, ${num(h)} cm = ${num(hDm)} dm.`,
+      "Wer in Zentimetern rechnet, muss am Ende durch 1000 teilen — bei Raummaßen geht es in Tausenderschritten.",
+    ],
     musterloesungHtml:
       `<strong>Weg 1 — gleich in Dezimetern rechnen:</strong><br>` +
       `${num(a)} cm = ${num(aDm)} dm, ${num(b)} cm = ${num(bDm)} dm, ${num(h)} cm = ${num(hDm)} dm<br>` +
@@ -749,12 +771,222 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 2 — die Grundformel V = G · h, vorwärts und rückwärts. Welche Figur die Grundfläche
+// hat, spielt dabei keine Rolle — genau das ist die Einsicht, die alle Prismen verbindet.
+function generateAufgabe2b() {
+  const vorwaerts = Math.random() < 0.5;
+  const G = randInt(6, 40);
+  const h = randInt(2, 15);
+  const V = G * h;
+  const form = pick(["fünfeckige", "sechseckige", "trapezförmige", "L-förmige", "achteckige"]);
+  return {
+    promptHtml: vorwaerts
+      ? `Ein Prisma mit <strong>${form}r</strong> Grundfläche hat den Grundflächeninhalt <strong>G = ${num(G)} cm²</strong> ` +
+        `und die Höhe <strong>h = ${num(h)} cm</strong>.<br>Wie groß ist sein <strong>Volumen</strong> in Kubikzentimetern?`
+      : `Ein Prisma mit <strong>${form}r</strong> Grundfläche hat das Volumen <strong>V = ${num(V)} cm³</strong> ` +
+        `und den Grundflächeninhalt <strong>G = ${num(G)} cm²</strong>.<br>Wie <strong>hoch</strong> ist es in Zentimetern?`,
+    correct: vorwaerts ? V : h,
+    tolerance: 0.01,
+    placeholder: vorwaerts ? "V in cm³" : "h in cm",
+    hinweis: (raw, val) => {
+      if (vorwaerts) {
+        if (Math.abs(val - (G + h)) < 0.01) return "Du hast <strong>addiert</strong>. Ein Volumen entsteht durch Multiplizieren: V = G · h.";
+        if (Math.abs(val - G / h) < 0.01) return "Du hast <strong>geteilt</strong>. Geteilt wird nur, wenn man rückwärts rechnet.";
+        if (Math.abs(val - 2 * G * h) < 0.01) return "Hier wird nichts verdoppelt. V = G · h, ohne weiteren Faktor.";
+      } else {
+        if (Math.abs(val - V * G) < 0.01) return "Du hast <strong>multipliziert</strong>. Aus V = G · h folgt rückwärts h = V : G.";
+        if (Math.abs(val - (V - G)) < 0.01) return "cm³ minus cm² ergibt nichts. Die Umkehrung der Multiplikation ist die <strong>Division</strong>.";
+      }
+      return "";
+    },
+    tipps: [
+      "Für <em>jedes</em> Prisma gilt V = G · h — gleichgültig, welche Figur die Grundfläche ist.",
+      vorwaerts
+        ? "Gegeben sind die Grundfläche und die Höhe; gesucht ist ihr Produkt."
+        : "Gegeben sind das Volumen und die Grundfläche; die Höhe ergibt sich durch Division.",
+      vorwaerts ? `Also ${num(G)} · ${num(h)}.` : `Also ${num(V)} : ${num(G)}.`,
+    ],
+    musterloesungHtml: vorwaerts
+      ? `V = G · h = ${num(G)} cm² · ${num(h)} cm = <strong>${num(V)} cm³</strong><br>` +
+        `<span class="progress-note">Anschaulich: Auf der Grundfläche von ${num(G)} cm² steht eine 1 cm dicke Schicht mit ${num(G)} cm³. ` +
+        `Davon werden ${num(h)} Schichten gestapelt.</span>`
+      : `Aus V = G · h folgt h = V : G.<br>` +
+        `h = ${num(V)} cm³ : ${num(G)} cm² = <strong>${num(h)} cm</strong><br>` +
+        `<span class="progress-note">Probe: ${num(G)} · ${num(h)} = ${num(V)} ✓ &nbsp;· Auch die Einheiten gehen auf: cm³ : cm² = cm.</span>`,
+  };
+}
+
+// Aufgabe 4 — die Oberfläche des Zylinders in zwei Schritten. Der Mantel ist ein aufgerolltes
+// Rechteck; wer das sieht, braucht die Formel nicht auswendig zu lernen.
+function generateAufgabe4b() {
+  const r = randInt(3, 12);
+  const h = randInt(3, 15);
+  const G = Math.PI * r * r;
+  const M = 2 * Math.PI * r * h;
+  const O = 2 * G + M;
+  return {
+    promptHtml:
+      `Eine zylindrische Konservendose hat den Radius <strong>r = ${num(r)} cm</strong> und die Höhe <strong>h = ${num(h)} cm</strong>.<br>` +
+      `<span class="progress-note">Runde jeweils auf zwei Nachkommastellen.</span>`,
+    felder: [
+      {
+        name: "Grundfläche (Deckel)", soll: G, einheit: "cm²", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - 2 * Math.PI * r) < 0.02) return "Das ist der <strong>Umfang</strong> des Kreises. Gesucht ist seine Fläche: A = π · r².";
+          if (Math.abs(val - 2 * Math.PI * r * r) < 0.02) return "Ein <strong>Faktor 2 zu viel</strong>. Die Kreisfläche ist π · r² — die 2 gehört zum Umfang.";
+          return "";
+        },
+      },
+      {
+        name: "Gesamte Oberfläche", soll: O, einheit: "cm²", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - M) < 0.02) return "Das ist nur der <strong>Mantel</strong>. Eine Dose hat auch Boden und Deckel.";
+          if (Math.abs(val - (G + M)) < 0.02) return "Du hast die Kreisfläche nur <strong>einmal</strong> gezählt: O = <strong>2</strong> · π · r² + M.";
+          if (Math.abs(val - (2 * G + Math.PI * r * h)) < 0.02) return "Im Mantel steht der <strong>ganze</strong> Umfang 2 · π · r, nicht π · r.";
+          if (Math.abs(val - G * h) < 0.02) return "Das ist das <strong>Volumen</strong> (G · h). Gesucht ist eine Fläche.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Schneide die Dose auf: zwei Kreise und ein Rechteck.",
+      `Die Kreise haben je π · ${num(r)}² cm².`,
+      `Das Rechteck ist so breit wie der Kreisumfang (2 · π · ${num(r)}) und so hoch wie die Dose (${num(h)} cm).`,
+    ],
+    musterloesungHtml:
+      `① Kreisfläche: G = π · ${num(r)}² = ${num(r * r)}π ≈ <strong>${num(G, 2)} cm²</strong><br>` +
+      `② Mantel: M = 2 · π · ${num(r)} · ${num(h)} = ${num(2 * r * h)}π ≈ ${num(M, 2)} cm²<br>` +
+      `③ Oberfläche: O = 2 · G + M ≈ ${num(2 * G, 2)} + ${num(M, 2)} = <strong>${num(O, 2)} cm²</strong><br>` +
+      `<span class="progress-note">Exakt: O = (${num(2 * r * r)} + ${num(2 * r * h)})π = ${num(2 * r * r + 2 * r * h)}π cm². ` +
+      `Der Mantel ist ein Rechteck — man muss ihn sich nur aufgerollt denken.</span>`,
+  };
+}
+
+// Aufgabe 6 — der Zylinder rückwärts: Aus Fassungsvermögen und Radius die Höhe. Die Literangabe
+// muss zuerst in Kubikzentimeter umgerechnet werden, sonst stimmt die Größenordnung nicht.
+function generateAufgabe6() {
+  const r = randInt(5, 15);
+  const hZiel = randInt(8, 40);
+  // Das Fassungsvermögen wird auf eine Nachkommastelle gerundet gestellt; gerechnet wird
+  // anschließend mit GENAU dieser Zahl, damit die Lösung der Schülerin und die Musterlösung
+  // übereinstimmen.
+  const liter = Math.round((Math.PI * r * r * hZiel) / 100) / 10;
+  const G = Math.PI * r * r;
+  const h = (liter * 1000) / G;
+  return {
+    promptHtml:
+      `Ein zylindrisches Gefäß hat den Radius <strong>r = ${num(r)} cm</strong> und fasst <strong>${num(liter, 1)} Liter</strong>.<br>` +
+      `<span class="progress-note">Runde jeweils auf zwei Nachkommastellen. Denk daran: 1 Liter = 1000 cm³.</span>`,
+    felder: [
+      {
+        name: "Grundfläche", soll: G, einheit: "cm²", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - 2 * Math.PI * r) < 0.02) return "Das ist der Umfang. Die Grundfläche eines Zylinders ist ein Kreis: G = π · r².";
+          if (Math.abs(val - 2 * Math.PI * r * r) < 0.02) return "Ein Faktor 2 zu viel: G = π · r².";
+          return "";
+        },
+      },
+      {
+        name: "Höhe des Gefäßes", soll: h, einheit: "cm", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - liter / G) < 0.02) return `Du hast mit <strong>Litern</strong> gerechnet. Die Grundfläche steht in cm² — dann muss auch das Volumen in cm³ stehen: ${num(liter, 1)} · 1000 = ${num(liter * 1000)} cm³.`;
+          if (Math.abs(val - (liter * 1000) / (2 * Math.PI * r)) < 0.02) return "Du hast durch den <strong>Umfang</strong> geteilt. Aus V = G · h folgt h = V : G — geteilt wird durch die Grundfläche.";
+          if (Math.abs(val - liter * 1000 * G) < 0.5) return "Du hast <strong>multipliziert</strong>. Rückwärts wird geteilt: h = V : G.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      `Rechne das Fassungsvermögen zuerst um: ${num(liter, 1)} Liter = ${num(liter * 1000)} cm³.`,
+      `Die Grundfläche ist ein Kreis: G = π · ${num(r)}².`,
+      "Aus V = G · h folgt h = V : G.",
+    ],
+    musterloesungHtml:
+      `① Umrechnen: ${num(liter, 1)} Liter = <strong>${num(liter * 1000)} cm³</strong><br>` +
+      `② Grundfläche: G = π · ${num(r)}² = ${num(r * r)}π ≈ <strong>${num(G, 2)} cm²</strong><br>` +
+      `③ Höhe: h = V : G = ${num(liter * 1000)} : ${num(G, 2)} ≈ <strong>${num(h, 2)} cm</strong><br>` +
+      `<span class="progress-note">Probe: ${num(G, 2)} · ${num(h, 2)} ≈ ${num(G * h, 0)} cm³ ✓ &nbsp;· ` +
+      `Wer die Liter nicht umrechnet, kommt auf ${num(liter / G, 4)} cm — ein Gefäß von einem Hundertstel Millimeter Höhe.</span>`,
+  };
+}
+
+// Aufgabe 8 — ein Rohr ist ein Hohlzylinder: außen ein Kreis, innen ein Loch. Der Querschnitt ist
+// ein Kreisring, und daraus wird über die Länge das Materialvolumen und schließlich die Masse.
+const ROHR_STOFFE = [
+  { name: "Stahl", dichte: 7.85 },
+  { name: "Aluminium", dichte: 2.7 },
+  { name: "Kupfer", dichte: 8.9 },
+  { name: "Messing", dichte: 8.4 },
+];
+
+function generateAufgabe8() {
+  const stoff = pick(ROHR_STOFFE);
+  const R = randInt(3, 10);
+  // Die Wandstärke bleibt kleiner als der Außenradius, sonst gäbe es kein Loch.
+  const s = pick([0.5, 1, 1.5, 2].filter((x) => x < R));
+  const r = R - s;
+  const L = randInt(5, 30) * 10;      // Rohrlänge in cm
+  const ring = Math.PI * (R * R - r * r);
+  const V = ring * L;
+  const masse = (V * stoff.dichte) / 1000; // in kg
+  return {
+    promptHtml:
+      `Ein <strong>${stoff.name}rohr</strong> ist <strong>${num(L)} cm</strong> lang. Sein <strong>Außenradius</strong> beträgt ` +
+      `<strong>${num(R)} cm</strong>, die <strong>Wandstärke</strong> <strong>${num(s)} cm</strong>.<br>` +
+      `Ein Kubikzentimeter ${stoff.name} wiegt <strong>${num(stoff.dichte, 2)} g</strong>.<br>` +
+      `<span class="progress-note">Runde das Volumen auf zwei Nachkommastellen und die Masse auf zwei Nachkommastellen.</span>`,
+    felder: [
+      {
+        name: "Innenradius", soll: r, einheit: "cm", toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (R + s)) < 0.01) return "Die Wand liegt <em>innerhalb</em> des Außenradius — sie wird <strong>abgezogen</strong>, nicht addiert.";
+          if (Math.abs(val - (R - 2 * s)) < 0.01) return `Du hast die Wand <strong>zweimal</strong> abgezogen. Zweimal abgezogen wird beim <em>Durchmesser</em>; beim Radius nur einmal.`;
+          return "";
+        },
+      },
+      {
+        name: "Materialvolumen", soll: V, einheit: "cm³", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - Math.PI * R * R * L) < 0.02) return "Das ist das <strong>volle</strong> Rohr samt Loch. Das Innere ist hohl und zählt nicht zum Material.";
+          if (Math.abs(val - Math.PI * s * s * L) < 0.02) return "Du hast π · (R − r)² gerechnet. Erst <strong>quadrieren</strong>, dann subtrahieren: π · (R² − r²).";
+          if (Math.abs(val - ring) < 0.02) return "Das ist erst der <strong>Querschnitt</strong> in cm². Multipliziere ihn noch mit der Rohrlänge.";
+          return "";
+        },
+      },
+      {
+        name: "Masse des Rohrs", soll: masse, einheit: "kg", toleranz: 0.02,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - V * stoff.dichte) < 0.5) return "Das ist die Masse in <strong>Gramm</strong>. Ein Kilogramm sind 1000 Gramm.";
+          if (Math.abs(val - (Math.PI * R * R * L * stoff.dichte) / 1000) < 0.02) return "Du hast das volle Rohr gewogen — ohne das Loch abzuziehen.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Der Querschnitt eines Rohrs ist ein <strong>Kreisring</strong>: der große Kreis ohne den kleinen.",
+      `Innenradius: ${num(R)} cm − ${num(s)} cm = ${num(r)} cm. Ring: π · (${num(R)}² − ${num(r)}²).`,
+      `Das Materialvolumen ist Querschnitt · Länge, und 1000 g sind 1 kg.`,
+    ],
+    musterloesungHtml:
+      `① Innenradius: r = ${num(R)} − ${num(s)} = <strong>${num(r)} cm</strong><br>` +
+      `② Querschnitt: A = π · (${num(R)}² − ${num(r)}²) = π · (${num(R * R)} − ${num(r * r)}) = ${num(R * R - r * r, 4)}π ≈ ${num(ring, 2)} cm²<br>` +
+      `③ Volumen: V = ${num(ring, 2)} · ${num(L)} ≈ <strong>${num(V, 2)} cm³</strong><br>` +
+      `④ Masse: ${num(V, 2)} · ${num(stoff.dichte, 2)} g ≈ ${num(V * stoff.dichte, 0)} g = <strong>${num(masse, 2)} kg</strong><br>` +
+      `<span class="progress-note">Das volle Rohr ohne Loch hätte ${num(Math.PI * R * R * L, 0)} cm³ — ` +
+      `der Hohlraum spart ${num(100 - (V / (Math.PI * R * R * L)) * 100, 0)} % des Materials.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Volumen eines Dreiecksprismas", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Oberfläche eines Quaders", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Zylinder", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Fassungsvermögen in Litern", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — V = G · h, vorwärts und rückwärts", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Oberfläche eines Quaders", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Oberfläche einer Konservendose", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Zylinder", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Wie hoch ist das Gefäß?", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Fassungsvermögen in Litern", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Ein Rohr wiegen", generate: generateAufgabe8 },
   ]);
 }
 

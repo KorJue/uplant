@@ -675,6 +675,11 @@ function generateAufgabe1() {
         return `In V = ⅓ · G · h steht für G die ganze <strong>Grundfläche</strong> a² = ${num(G)} cm², nicht die Kantenlänge a.`;
       return `Erst G = a², dann V = ⅓ · G · h.`;
     },
+    tipps: [
+      "Eine Pyramide fasst genau ein <strong>Drittel</strong> des Prismas mit derselben Grundfläche und Höhe.",
+      `Grundfläche: G = a² = ${num(a)}² = ${num(G)} cm².`,
+      `Dann V = ⅓ · ${num(G)} · ${num(h)}.`,
+    ],
     musterloesungHtml:
       `<strong>1. Grundfläche:</strong> G = a² = ${num(a)}² = <strong>${num(G)} cm²</strong><br>` +
       `<strong>2. Volumen:</strong> V = ⅓ · G · h = ⅓ · ${num(G)} · ${num(h)} = ${num(G * h)} : 3 = <strong>${num(V)} cm³</strong><br>` +
@@ -722,6 +727,11 @@ function generateAufgabe2() {
         return `Das ist das <strong>Volumen</strong> in cm³. Gefragt ist eine Fläche.`;
       return `Erst hₛ aus h und a : 2 (Pythagoras), dann O = a² + 4 · ½ · a · hₛ.`;
     },
+    tipps: [
+      "Die vier Seitenflächen sind Dreiecke — in ihre Flächenformel gehört die <em>Seitenhöhe</em>, nicht die Körperhöhe.",
+      `Die Seitenhöhe folgt aus dem Pythagoras: hₛ² = h² + (a : 2)² = ${num(h)}² + ${num(a / 2)}².`,
+      `Dann O = a² + 4 · ½ · a · hₛ = ${num(G)} + 2 · ${num(a)} · hₛ. Eine Pyramide hat keinen Deckel.`,
+    ],
     musterloesungHtml:
       `<strong>1. Seitenhöhe (Pythagoras):</strong> hₛ² = h² + (a : 2)² = ${num(h)}² + ${num(a / 2)}² = ${num(h * h)} + ${num((a / 2) * (a / 2))} = ${num(hs * hs)}<br>` +
       `hₛ = √${num(hs * hs)} = <strong>${num(hs)} cm</strong><br>` +
@@ -771,6 +781,11 @@ function generateAufgabe3() {
         return `Eine <strong>2 zu viel</strong>. Beim Zylinder ist M = 2πrh, beim Kegel aber M = π · r · s — ohne Faktor 2.`;
       return `Erst s aus r und h (Pythagoras), dann M = π · r · s.`;
     },
+    tipps: [
+      "Die <em>Mantellinie</em> s ist die Strecke von der Spitze zum Rand des Grundkreises — sie ist länger als die Höhe.",
+      `s folgt aus dem Pythagoras: s² = ${num(r)}² + ${num(h)}².`,
+      `Dann M = π · r · s — beim Kegel ohne Faktor 2.`,
+    ],
     musterloesungHtml:
       `<strong>1. Mantellinie (Pythagoras):</strong> s² = r² + h² = ${num(r)}² + ${num(h)}² = ${num(r * r)} + ${num(h * h)} = ${num(s * s)}<br>` +
       `s = √${num(s * s)} = <strong>${num(s)} cm</strong><br>` +
@@ -824,6 +839,13 @@ function generateAufgabe4() {
         return `Beim Kegel fehlt das <strong>Drittel</strong>: V = ⅓ · π · r² · h, nicht π · r² · h.`;
       return `Beide Teilvolumina einzeln ausrechnen und addieren.`;
     },
+    tipps: [
+      "Zerlege den Körper in seine beiden bekannten Teile und rechne jedes Volumen einzeln aus.",
+      `Zylinder: V₁ = π · ${num(r)}² · ${num(h)}.`,
+      halbkugel
+        ? `Halbkugel: V₂ = ½ · ⁴⁄₃ · π · ${num(r)}³ = ⅔ · π · ${num(r * r * r)}.`
+        : `Kegel: V₂ = ⅓ · π · ${num(r)}² · ${num(r)}.`,
+    ],
     musterloesungHtml:
       `<strong>1. Zylinder:</strong> V₁ = π · r² · h = π · ${num(r * r)} · ${num(h)} = ${num(r * r * h)}π ≈ ${num(vZylinder, 2)} m³<br>` +
       (halbkugel
@@ -834,12 +856,294 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 2 — die Kugel. Zwei Formeln, die sich leicht verwechseln lassen: In der Oberfläche
+// steht r², im Volumen r³.
+function generateAufgabe2b() {
+  const volumen = Math.random() < 0.5;
+  // Der Radius wird so gewählt, dass Lösung und Fehlerwerte auseinanderliegen. Bei r = 3 sind
+  // Volumen und Oberfläche zahlengleich (⁴⁄₃ r³ = 4 r² für r = 3), bei r = 4 fielen Oberfläche
+  // und π · r³ zusammen.
+  const r = ohneKollision(
+    [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+    (k) => (volumen
+      ? [(4 / 3) * Math.PI * k * k * k, 4 * Math.PI * k * k, (4 / 3) * Math.PI * k * k, Math.PI * k * k * k]
+      : [4 * Math.PI * k * k, (4 / 3) * Math.PI * k * k * k, Math.PI * k * k, 2 * Math.PI * k * k, 4 * Math.PI * k * k * k]),
+    5,
+    0.05
+  );
+  const V = (4 / 3) * Math.PI * r * r * r;
+  const O = 4 * Math.PI * r * r;
+  const wert = volumen ? V : O;
+  return {
+    promptHtml:
+      `Eine Kugel hat den Radius <strong>r = ${num(r)} cm</strong>.<br>` +
+      (volumen
+        ? `Wie groß ist ihr <strong>Volumen</strong> in Kubikzentimetern?`
+        : `Wie groß ist ihre <strong>Oberfläche</strong> in Quadratzentimetern?`) +
+      `<br><span class="progress-note">Runde auf zwei Nachkommastellen.</span>`,
+    correct: wert,
+    tolerance: 0.015,
+    placeholder: volumen ? "V in cm³" : "O in cm²",
+    hinweis: (raw, val) => {
+      if (Math.abs(val - (volumen ? O : V)) < 0.02)
+        return volumen
+          ? `Das ist die <strong>Oberfläche</strong> (4 · π · r²). Im Volumen steht r³ und der Faktor ⁴⁄₃.`
+          : `Das ist das <strong>Volumen</strong> (⁴⁄₃ · π · r³). In der Oberfläche steht r², nicht r³.`;
+      if (volumen && Math.abs(val - (4 / 3) * Math.PI * r * r) < 0.02)
+        return `Du hast <strong>r²</strong> statt r³ eingesetzt. Ein Rauminhalt entsteht aus drei Längen.`;
+      if (volumen && Math.abs(val - Math.PI * r * r * r) < 0.02)
+        return `Der Faktor <strong>⁴⁄₃</strong> fehlt: V = ⁴⁄₃ · π · r³.`;
+      if (!volumen && Math.abs(val - Math.PI * r * r) < 0.02)
+        return `Das ist die Fläche <em>eines</em> Kreises mit dem Radius r. Die Kugeloberfläche ist genau <strong>viermal</strong> so groß.`;
+      if (!volumen && Math.abs(val - 2 * Math.PI * r * r) < 0.02)
+        return `Das ist die gekrümmte Fläche einer <strong>Halb</strong>kugel. Die ganze Kugel hat 4 · π · r².`;
+      if (!volumen && Math.abs(val - 4 * Math.PI * r * r * r) < 0.02)
+        return `Du hast <strong>r³</strong> eingesetzt. In der Oberfläche steht r² — eine Fläche entsteht aus zwei Längen.`;
+      return "";
+    },
+    tipps: [
+      "Für die Kugel gibt es zwei Formeln: O = 4 · π · r² und V = ⁴⁄₃ · π · r³.",
+      volumen
+        ? "Gesucht ist ein Rauminhalt — also die Formel mit r³."
+        : "Gesucht ist eine Fläche — also die Formel mit r².",
+      volumen ? `V = ⁴⁄₃ · π · ${num(r)}³ = ⁴⁄₃ · π · ${num(r * r * r)}` : `O = 4 · π · ${num(r)}² = 4 · π · ${num(r * r)}`,
+    ],
+    musterloesungHtml: volumen
+      ? `V = ⁴⁄₃ · π · r³ = ⁴⁄₃ · π · ${num(r)}³ = ⁴⁄₃ · π · ${num(r * r * r)} ≈ <strong>${num(V, 2)} cm³</strong><br>` +
+        `<span class="progress-note">Zum Vergleich: Die Oberfläche misst 4 · π · ${num(r * r)} ≈ ${num(O, 2)} cm². ` +
+        `Beide Formeln sehen ähnlich aus — entscheidend ist, ob r² oder r³ darin steht.</span>`
+      : `O = 4 · π · r² = 4 · π · ${num(r)}² = 4 · π · ${num(r * r)} ≈ <strong>${num(O, 2)} cm²</strong><br>` +
+        `<span class="progress-note">Anschaulich: Die Kugeloberfläche ist genau so groß wie <strong>vier</strong> Kreise vom Radius r — ` +
+        `ein Ergebnis, das Archimedes gefunden hat. Das Volumen wäre ⁴⁄₃ · π · ${num(r * r * r)} ≈ ${num(V, 2)} cm³.</span>`,
+  };
+}
+
+// Aufgabe 4 — Kegelvolumen in zwei Schritten. Erst die Kreisfläche, dann das Drittel: Genau an
+// diesen beiden Stellen geht es meistens schief.
+function generateAufgabe4b() {
+  const r = randInt(2, 12);
+  const h = randInt(3, 15);
+  const G = Math.PI * r * r;
+  const V = (G * h) / 3;
+  return {
+    promptHtml:
+      `Ein Kegel hat den Grundkreisradius <strong>r = ${num(r)} cm</strong> und die Höhe <strong>h = ${num(h)} cm</strong>.<br>` +
+      `<span class="progress-note">Runde jeweils auf zwei Nachkommastellen.</span>`,
+    felder: [
+      {
+        name: "Grundfläche", soll: G, einheit: "cm²", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - 2 * Math.PI * r) < 0.02) return "Das ist der <strong>Umfang</strong> des Grundkreises. Gesucht ist seine Fläche: G = π · r².";
+          if (Math.abs(val - 2 * Math.PI * r * r) < 0.02) return "Ein <strong>Faktor 2 zu viel</strong>: Die Kreisfläche ist π · r².";
+          return "";
+        },
+      },
+      {
+        name: "Volumen", soll: V, einheit: "cm³", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - G * h) < 0.02) return `Das ist das Volumen des <strong>Zylinders</strong> mit derselben Grundfläche und Höhe. Der Kegel fasst nur ein Drittel davon.`;
+          if (Math.abs(val - (G * h) / 2) < 0.02) return "Du hast <strong>halbiert</strong> statt gedrittelt. Bei Kegel und Pyramide steht ⅓.";
+          if (Math.abs(val - (Math.PI * r * h) / 3) < 0.02) return "In V = ⅓ · G · h steht für G die ganze Kreisfläche π · r², nicht π · r.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Auch der Kegel gehört zu den Spitzkörpern: V = ⅓ · G · h.",
+      `Die Grundfläche ist ein Kreis: G = π · ${num(r)}².`,
+      `Dann V = ⅓ · G · ${num(h)}.`,
+    ],
+    musterloesungHtml:
+      `① Grundfläche: G = π · ${num(r)}² = ${num(r * r)}π ≈ <strong>${num(G, 2)} cm²</strong><br>` +
+      `② Volumen: V = ⅓ · G · h = ⅓ · ${num(G, 2)} · ${num(h)} ≈ <strong>${num(V, 2)} cm³</strong><br>` +
+      `<span class="progress-note">Exakt: V = ${num((r * r * h) / 3, 4)}π cm³. Ein Zylinder mit denselben Maßen fasste ${num(G * h, 2)} cm³ — dreimal so viel. ` +
+      `Das lässt sich mit Wasser nachmessen: Drei Kegelfüllungen füllen den Zylinder genau.</span>`,
+  };
+}
+
+// Aufgabe 6 — die Kugel rückwärts. Die Oberfläche wird als Vielfaches von π angegeben; dann
+// bleibt jeder Zwischenschritt exakt, und der Weg über r² → r → V ist deutlich zu sehen.
+function generateAufgabe6() {
+  // Zweite Fassung: Gegeben ist das Volumen. Damit auch dort die Zahl vor π ganzzahlig bleibt,
+  // muss 4r³ durch 3 teilbar sein — also r ein Vielfaches von 3.
+  const ueberVolumen = Math.random() < 0.4;
+  const r = ueberVolumen ? randInt(1, 8) * 3 : randInt(2, 24);
+  const koeff = 4 * r * r;          // O = koeff · π
+  const vKoeff = (4 * r * r * r) / 3; // V = vKoeff · π
+  if (ueberVolumen) {
+    return {
+      promptHtml:
+        `Eine Kugel hat das Volumen <strong>V = ${num(vKoeff)} · π cm³</strong>.<br>` +
+        `<span class="progress-note">Alle drei Antworten gehen exakt auf.</span>`,
+      felder: [
+        {
+          name: "r³ (in cm³)", soll: r * r * r, toleranz: 0.005,
+          hinweis: (roh, val) => {
+            if (Math.abs(val - vKoeff) < 0.005) return `Das ist die ganze Zahl vor π. Aus V = ⁴⁄₃ · π · r³ folgt r³ = ${num(vKoeff)} · ¾.`;
+            if (Math.abs(val - r) < 0.005) return "Das ist schon r selbst. Im ersten Schritt ist noch r³ gefragt.";
+            if (Math.abs(val - (4 * vKoeff) / 3) < 0.005) return "Du hast mit ⁴⁄₃ multipliziert. Rückwärts wird durch ⁴⁄₃ geteilt — also mit ¾ multipliziert.";
+            return "";
+          },
+        },
+        {
+          name: "Radius r", soll: r, einheit: "cm", toleranz: 0.005,
+          hinweis: (roh, val) => {
+            if (Math.abs(val - r * r * r) < 0.005) return "Das ist r³. Es fehlt noch die <strong>dritte Wurzel</strong>.";
+            if (Math.abs(val - r * r) < 0.005) return "Das ist r². Aus r³ wird r durch die dritte Wurzel, nicht durch die Quadratwurzel.";
+            if (Math.abs(val - (r * r * r) / 3) < 0.005) return "Durch 3 zu teilen ist nicht dasselbe wie die dritte Wurzel zu ziehen.";
+            return "";
+          },
+        },
+        {
+          name: "Zahl vor π bei der Oberfläche", soll: koeff, toleranz: 0.005,
+          hinweis: (roh, val) => {
+            if (Math.abs(val - r * r) < 0.005) return "Der Faktor <strong>4</strong> fehlt: O = 4 · π · r².";
+            if (Math.abs(val - 4 * r * r * r) < 0.005) return "In der Oberfläche steht <strong>r²</strong>, nicht r³.";
+            if (Math.abs(val - vKoeff) < 0.005) return "Das ist die Zahl vor π beim <em>Volumen</em>. Gefragt ist die bei der Oberfläche.";
+            return "";
+          },
+        },
+      ],
+      tipps: [
+        "Stelle V = ⁴⁄₃ · π · r³ nach r³ um: Die Zahl vor π wird mit ¾ multipliziert.",
+        "Aus r³ wird r durch die dritte Wurzel — gesucht ist die Zahl, die dreimal mit sich selbst multipliziert r³ ergibt.",
+        "Mit r geht es in die Oberflächenformel: O = 4 · π · r².",
+      ],
+      musterloesungHtml:
+        `① Aus V = ⁴⁄₃ · π · r³ folgt r³ = ${num(vKoeff)} · ¾ = <strong>${num(r * r * r)}</strong><br>` +
+        `② r = ∛${num(r * r * r)} = <strong>${num(r)} cm</strong> (denn ${num(r)} · ${num(r)} · ${num(r)} = ${num(r * r * r)})<br>` +
+        `③ O = 4 · π · r² = 4 · ${num(r * r)} · π = <strong>${num(koeff)} · π cm²</strong> ≈ ${num(koeff * Math.PI, 2)} cm²<br>` +
+        `<span class="progress-note">Der Weg von der Länge zum Rauminhalt geht über die dritte Potenz, der Rückweg über die dritte Wurzel. ` +
+        `Die Quadratwurzel führte hier auf ${num(Math.sqrt(r * r * r), 2)} — eine Zahl ohne Bedeutung.</span>`,
+    };
+  }
+  return {
+    promptHtml:
+      `Eine Kugel hat die Oberfläche <strong>O = ${num(koeff)} · π cm²</strong>.<br>` +
+      `<span class="progress-note">Die ersten beiden Antworten gehen exakt auf; die letzte auf zwei Nachkommastellen.</span>`,
+    felder: [
+      {
+        name: "r² (in cm²)", soll: r * r, toleranz: 0.005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - koeff) < 0.005) return `Das ist die ganze Zahl vor π. Aus O = 4 · π · r² folgt r² = ${num(koeff)} : 4.`;
+          if (Math.abs(val - r) < 0.005) return "Das ist schon r selbst. Gefragt ist im ersten Schritt noch r².";
+          if (Math.abs(val - koeff / 2) < 0.005) return "Geteilt wird durch <strong>4</strong>, nicht durch 2: In O = 4 · π · r² steht der Faktor 4.";
+          return "";
+        },
+      },
+      {
+        name: "Radius r", soll: r, einheit: "cm", toleranz: 0.005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - r * r) < 0.005) return "Das ist r². Es fehlt noch die <strong>Quadratwurzel</strong>.";
+          if (Math.abs(val - (r * r) / 2) < 0.005) return "Halbieren ist nicht dasselbe wie Wurzelziehen.";
+          return "";
+        },
+      },
+      {
+        name: "Zahl vor π beim Volumen", soll: vKoeff, toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - 4 * r * r * r) < 0.02) return "Der Faktor <strong>⅓</strong> fehlt: V = ⁴⁄₃ · π · r³.";
+          if (Math.abs(val - (4 / 3) * r * r) < 0.02) return "Im Volumen steht <strong>r³</strong>, nicht r².";
+          if (Math.abs(val - koeff) < 0.02) return "Das ist die Zahl vor π bei der <em>Oberfläche</em>. Gefragt ist die beim Volumen.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Stelle O = 4 · π · r² nach r² um: Die Zahl vor π wird durch 4 geteilt.",
+      "Aus r² wird r durch Wurzelziehen.",
+      `Mit r geht es in die Volumenformel: V = ⁴⁄₃ · π · r³, die Zahl vor π ist also ⁴⁄₃ · r³.`,
+    ],
+    musterloesungHtml:
+      `① Aus O = 4 · π · r² folgt r² = ${num(koeff)} : 4 = <strong>${num(r * r)}</strong><br>` +
+      `② r = √${num(r * r)} = <strong>${num(r)} cm</strong><br>` +
+      `③ V = ⁴⁄₃ · π · r³ = ⁴⁄₃ · ${num(r * r * r)} · π = <strong>${num(vKoeff, 2)} · π cm³</strong> ≈ ${num(vKoeff * Math.PI, 2)} cm³<br>` +
+      `<span class="progress-note">Die Angabe als Vielfaches von π lohnt sich: Jeder Zwischenschritt bleibt eine exakte Zahl, ` +
+      `und Rundungsfehler können sich nicht fortpflanzen.</span>`,
+  };
+}
+
+// Aufgabe 8 — die Oberfläche eines zusammengesetzten Körpers. Anders als beim Volumen wird hier
+// nicht alles addiert: Die Kreisfläche zwischen Zylinder und Halbkugel liegt im Inneren.
+function generateAufgabe8() {
+  // r = 6 fällt heraus: Dort wäre das Volumen der Halbkugel (⅔ · π · r³) zahlengleich mit der
+  // Oberfläche der ganzen Kugel (4 · π · r²), und die beiden Fehlerhinweise ließen sich nicht
+  // mehr auseinanderhalten.
+  const r = pick([2, 3, 4, 5, 7, 8, 9]);
+  const h = randInt(3, 15);
+  const mitBoden = Math.random() < 0.5;
+  const mantel = 2 * Math.PI * r * h;
+  const kappe = 2 * Math.PI * r * r;
+  const boden = Math.PI * r * r;
+  const O = mantel + kappe + (mitBoden ? boden : 0);
+  return {
+    promptHtml:
+      `Ein Silo besteht aus einem <strong>Zylinder</strong> mit dem Radius <strong>r = ${num(r)} m</strong> und der Höhe ` +
+      `<strong>${num(h)} m</strong>; oben sitzt eine <strong>Halbkugel</strong> mit demselben Radius.<br>` +
+      (mitBoden
+        ? `Das Silo steht auf Stützen und wird <strong>vollständig</strong> gestrichen — auch die Bodenfläche.`
+        : `Das Silo steht auf dem Boden; die <strong>Bodenfläche wird nicht</strong> gestrichen.`) +
+      `<br><span class="progress-note">Runde jeweils auf zwei Nachkommastellen.</span>`,
+    felder: [
+      {
+        name: "Mantelfläche des Zylinders", soll: mantel, einheit: "m²", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - Math.PI * r * h) < 0.02) return "Der Faktor <strong>2</strong> fehlt: Der Mantel ist so breit wie der ganze Umfang 2 · π · r.";
+          if (Math.abs(val - Math.PI * r * r * h) < 0.02) return "Das ist das <strong>Volumen</strong> des Zylinders. Gesucht ist eine Fläche.";
+          return "";
+        },
+      },
+      {
+        name: "Gekrümmte Fläche der Halbkugel", soll: kappe, einheit: "m²", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - 4 * Math.PI * r * r) < 0.02) return "Das ist die <strong>ganze</strong> Kugel. Oben sitzt nur eine halbe.";
+          if (Math.abs(val - Math.PI * r * r) < 0.02) return "Das ist die Fläche des Schnittkreises. Die gewölbte Fläche der Halbkugel ist doppelt so groß: 2 · π · r².";
+          if (Math.abs(val - (2 / 3) * Math.PI * r * r * r) < 0.02) return "Das ist das <strong>Volumen</strong> der Halbkugel. Gesucht ist eine Fläche.";
+          return "";
+        },
+      },
+      {
+        name: "Zu streichende Fläche insgesamt", soll: O, einheit: "m²", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (O + boden)) < 0.02)
+            return mitBoden
+              ? "Du hast eine Kreisfläche <strong>zu viel</strong>: Die Fläche zwischen Zylinder und Halbkugel liegt im Inneren und ist gar nicht sichtbar."
+              : "Hier wird die <strong>Bodenfläche nicht</strong> gestrichen — das Silo steht ja darauf.";
+          if (mitBoden && Math.abs(val - (O - boden)) < 0.02)
+            return `Die <strong>Bodenfläche</strong> von π · ${num(r)}² ≈ ${num(boden, 2)} m² fehlt noch.`;
+          if (Math.abs(val - mantel) < 0.02) return "Das ist nur der <strong>Zylindermantel</strong>. Die Halbkugel gehört dazu.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Beim Oberflächeninhalt zählt nur, was wirklich <em>außen</em> liegt — anders als beim Volumen wird nicht einfach alles addiert.",
+      `Zylindermantel: 2 · π · ${num(r)} · ${num(h)}. Halbkugel: die Hälfte von 4 · π · r², also 2 · π · ${num(r)}².`,
+      mitBoden
+        ? `Dazu kommt die Bodenfläche π · ${num(r)}². Die Kreisfläche zwischen Zylinder und Halbkugel bleibt außen vor — sie liegt im Inneren.`
+        : `Weder die Bodenfläche noch die Kreisfläche zwischen Zylinder und Halbkugel wird gestrichen.`,
+    ],
+    musterloesungHtml:
+      `① Zylindermantel: M = 2 · π · ${num(r)} · ${num(h)} = ${num(2 * r * h)}π ≈ <strong>${num(mantel, 2)} m²</strong><br>` +
+      `② Halbkugel: ½ · 4 · π · r² = 2 · π · ${num(r * r)} = ${num(2 * r * r)}π ≈ <strong>${num(kappe, 2)} m²</strong><br>` +
+      (mitBoden
+        ? `③ Bodenfläche: π · ${num(r * r)} ≈ ${num(boden, 2)} m²<br>④ zusammen ≈ <strong>${num(O, 2)} m²</strong><br>`
+        : `③ zusammen ≈ <strong>${num(O, 2)} m²</strong> — Bodenfläche und Schnittkreis bleiben unberücksichtigt.<br>`) +
+      `<span class="progress-note">Der Schnittkreis zwischen Zylinder und Halbkugel wird <em>nie</em> mitgezählt: Er ist eine Hilfslinie der Zerlegung, ` +
+      `keine Fläche des Körpers. Wer ihn mitrechnet, bestellt ${num(boden, 2)} m² Farbe zu viel.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Volumen einer Pyramide", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Oberfläche einer Pyramide", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Mantelfläche eines Kegels", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — zusammengesetzter Körper", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Die Kugel", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Oberfläche einer Pyramide", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Volumen eines Kegels", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Mantelfläche eines Kegels", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Von der Oberfläche zur Kugel", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — zusammengesetzter Körper", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Ein Silo streichen", generate: generateAufgabe8 },
   ]);
 }
 
