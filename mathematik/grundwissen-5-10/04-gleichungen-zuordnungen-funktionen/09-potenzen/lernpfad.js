@@ -974,6 +974,24 @@ function ohneKollision(kandidaten, werte, notfall, eps = 1e-9) {
   return gewaehlt;
 }
 
+// Dasselbe für Aufgaben mit mehreren Eingabefeldern: Kollidieren müssen die
+// Werte nur innerhalb eines Feldes, denn nur dort entscheidet die Zahl darüber,
+// welcher Hinweis erscheint. Zwischen zwei Feldern darf dieselbe Zahl stehen.
+// NaN bedeutet "an dieser Stelle springt kein Hinweis an" und wird übergangen.
+function ohneFeldKollision(kandidaten, gruppen, eps = 1e-9) {
+  const sauber = kandidaten.filter((kk) => gruppen(kk).every((g) => {
+    const echt = g.filter((x) => Number.isFinite(x));
+    return echt.every((x, i) => echt.every((y, j) => i === j || Math.abs(x - y) > eps));
+  }));
+  if (!sauber.length) throw new Error("Aufgabengenerator ohne gültige Kandidaten");
+  return pick(sauber);
+}
+
+// Feste Stellenzahl — für Vorzahlen, bei denen die letzte Null etwas bedeutet.
+function fest(x, digits) {
+  return x.toLocaleString("de-DE", { maximumFractionDigits: digits, minimumFractionDigits: digits }).replace("-", "−");
+}
+
 // Aufgabe 1 — den Potenzwert bestimmen, mit der Vorzeichenfalle bei negativer Basis.
 const A1_KANDIDATEN = (() => {
   const liste = [];
@@ -998,6 +1016,13 @@ function generateAufgabe1() {
         : `Die Basis ${num(a)} ist positiv, also sind alle ${num(n)} Faktoren positiv — das Ergebnis kann nicht negativ sein.`;
       return `Schreibe die Faktoren hin: ${kette(basis, n)}.`;
     },
+    tipps: [
+      `Der Exponent zählt die <strong>Faktoren</strong>, nicht die Summanden: ${potRein(basis, n)} = ${kette(basis, n)}.`,
+      `Rechne der Reihe nach: ${num(a)} · ${num(a)} = ${num(a * a)}, dann weiter.`,
+      a < 0
+        ? `Achte auf das Vorzeichen: ${num(n)} Minuszeichen heben sich ${n % 2 === 0 ? "vollständig paarweise auf" : "paarweise auf, eines bleibt übrig"}.`
+        : "Die Basis ist positiv, also sind alle Faktoren positiv — das Ergebnis kann nicht negativ werden.",
+    ],
     musterloesungHtml:
       `<strong>Potenz ausschreiben:</strong> ${potRein(basis, n)} = ${kette(basis, n)}<br>` +
       `<strong>Ausrechnen:</strong> ${potRein(basis, n)} = <strong>${num(w)}</strong><br>` +
@@ -1008,11 +1033,90 @@ function generateAufgabe1() {
   };
 }
 
-// Aufgabe 2 — die Potenzgesetze (1), (2) und (3) in einem Term.
+// Aufgabe 2 — die wissenschaftliche Schreibweise. Abschnitt 4 hatte keine
+// eigene Aufgabe; dabei ist das Ablesen der Größenordnung die eigentliche
+// Leistung: Der Exponent zählt, um wie viele Stellen das Komma wandert.
+const A2_KANDIDATEN = (() => {
+  const liste = [];
+  // z ist die Vorzahl mit 1 ≤ z < 10, hier in Zehntelschritten.
+  for (let zz = 11; zz <= 99; zz++) {
+    const z = zz / 10;
+    for (const n of [-6, -5, -4, -3, -2, 3, 4, 5, 6, 7, 8]) {
+      liste.push({ z, n, zz });
+    }
+  }
+  return liste;
+})();
+
+// Die ausgeschriebene Zahl — ganzzahlig gerechnet, damit kein Rundungsfehler
+// in die Ziffernfolge gerät.
+function langzahl(zz, n) {
+  // z · 10^n = (zz : 10) · 10^n = zz · 10^(n−1).
+  if (n >= 1) return num(zz * potenz(10, n - 1));    // mit Tausenderpunkten
+  return "0," + "0".repeat(-n - 1) + String(zz);     // n ≤ −2: 0,00…zz
+}
+
+function generateAufgabe2() {
+  const k = ohneFeldKollision(A2_KANDIDATEN, (v) => [
+    // Feld 1: die Vorzahl z.
+    [v.z, v.zz, v.zz / 100, v.n],
+    // Feld 2: der Exponent n.
+    [v.n, -v.n, v.n + 1, v.n - 1, v.z],
+  ]);
+  const { z, n, zz } = k;
+  const lang = langzahl(zz, n);
+  const stellen = n > 0 ? n : -n;
+  return {
+    promptHtml: `Schreibe <strong>${lang}</strong> in wissenschaftlicher Schreibweise <strong>z · 10<sup>n</sup></strong> ` +
+      `mit 1 ≤ z &lt; 10.`,
+    felder: [
+      {
+        name: "Vorzahl z", soll: z, toleranz: 0.0005, platzhalter: "z",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - zz) < 0.0005) return `${num(zz)} ist nicht kleiner als 10. Das Komma gehört hinter die <em>erste</em> Ziffer: ${fest(z, 1)}.`;
+          if (Math.abs(val - zz / 100) < 0.0005) return `${num(zz / 100)} ist kleiner als 1. Verlangt ist 1 ≤ z &lt; 10, also genau eine Ziffer vor dem Komma.`;
+          if (Math.abs(val - n) < 0.0005) return `${num(n)} ist der Exponent, nicht die Vorzahl.`;
+          return `Setze das Komma so, dass genau eine Ziffer von 1 bis 9 davorsteht. Aus den Ziffern ${String(zz).split("").join(" und ")} wird ${fest(z, 1)}.`;
+        },
+      },
+      {
+        name: "Exponent n", soll: n, toleranz: 0.0005, platzhalter: "n",
+        hinweis: (roh, val) => {
+          if (Math.abs(val + n) < 0.0005) return n > 0
+            ? `${lang} ist eine <strong>große</strong> Zahl — größer als 10. Dann ist der Exponent positiv.`
+            : `${lang} ist eine <strong>kleine</strong> Zahl — kleiner als 1. Dann ist der Exponent negativ.`;
+          if (Math.abs(val - (n + 1)) < 0.0005 || Math.abs(val - (n - 1)) < 0.0005) {
+            return `Um eine Stelle daneben. Zähle nach: Das Komma wandert von ${fest(z, 1)} aus um <strong>${num(stellen)}</strong> Stellen nach ${n > 0 ? "rechts" : "links"}, bis ${lang} dasteht.`;
+          }
+          if (Math.abs(val - z) < 0.0005) return `${fest(z, 1)} ist die Vorzahl, nicht der Exponent.`;
+          return `Der Exponent zählt, um wie viele Stellen das Komma wandern muss.`;
+        },
+      },
+    ],
+    tipps: [
+      "In der wissenschaftlichen Schreibweise steht vor dem Komma genau eine Ziffer von 1 bis 9. Setze das Komma zuerst dorthin.",
+      `Hier heißt das: z = ${fest(z, 1)}.`,
+      n > 0
+        ? `Nun zähle, um wie viele Stellen das Komma nach rechts wandern muss, damit wieder ${lang} dasteht. Bei einer großen Zahl ist n positiv.`
+        : `Nun zähle, um wie viele Stellen das Komma nach links wandern muss, damit wieder ${lang} dasteht. Bei einer Zahl kleiner als 1 ist n negativ.`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Komma setzen:</strong> Genau eine Ziffer vor dem Komma ⇒ z = <strong>${fest(z, 1)}</strong><br>` +
+      `<strong>2. Stellen zählen:</strong> Von ${fest(z, 1)} nach ${lang} wandert das Komma um <strong>${num(stellen)}</strong> Stellen nach ${n > 0 ? "rechts" : "links"} ⇒ n = <strong>${num(n)}</strong><br>` +
+      `<strong>Ergebnis:</strong> ${lang} = <strong>${fest(z, 1)} · 10<sup>${num(n)}</sup></strong><br>` +
+      `<em>Probe:</em> ${fest(z, 1)} · 10<sup>${num(n)}</sup> = ${lang} ✓<br>` +
+      `<span class="progress-note">Der Exponent ist die <strong>Größenordnung</strong>. ` +
+      `${n > 0 ? `10<sup>${num(n)}</sup> bedeutet: Die Zahl hat ${num(n + 1)} Stellen vor dem Komma.`
+               : `10<sup>${num(n)}</sup> bedeutet: Nach dem Komma stehen ${num(stellen - 1)} Nullen, bevor die erste Ziffer kommt.`} ` +
+      `Ein Exponent mehr heißt zehnmal so groß.</span>`,
+  };
+}
+
+// Aufgabe 3 — die Potenzgesetze (1), (2) und (3) in einem Term.
 // Der äußere Exponent r wechselt zwischen 2 und 3. Bliebe er fest bei 2, so
 // fiele der typische Fehler "m + r statt m · r" für m = 2 mit der richtigen
 // Lösung zusammen, und die Kollisionsprüfung würde jedes m = 2 aussortieren.
-const A2_KANDIDATEN = (() => {
+const A3_KANDIDATEN = (() => {
   const liste = [];
   for (const r of [2, 3]) for (let m = 1; m <= 4; m++) for (let n = 1; n <= 5; n++) for (let k = 1; k <= 8; k++) {
     const e = r * m + n - k;
@@ -1021,11 +1125,11 @@ const A2_KANDIDATEN = (() => {
   return liste;
 })();
 
-function generateAufgabe2() {
+function generateAufgabe3() {
   const kd = ohneKollision(
-    A2_KANDIDATEN,
+    A3_KANDIDATEN,
     (v) => [v.e, v.m + v.r + v.n - v.k, v.r * v.m * v.n - v.k, v.r * v.m + v.n + v.k],
-    A2_KANDIDATEN[0],
+    A3_KANDIDATEN[0],
   );
   const { r, m, n, k, e } = kd;
   const innen = r * m, zwischen = innen + n;
@@ -1042,6 +1146,11 @@ function generateAufgabe2() {
       if (Math.abs(val - (innen + n + k)) < 0.001) return `Der letzte Schritt ist eine <strong>Division</strong>: Dabei wird der Exponent ${num(k)} abgezogen, nicht addiert.`;
       return `Drei Schritte: erst (a<sup>${m}</sup>)<sup>${r}</sup> = a<sup>${innen}</sup>, dann mal a<sup>${n}</sup>, zuletzt geteilt durch a<sup>${k}</sup>.`;
     },
+    tipps: [
+      "Arbeite die Klammer zuerst ab. Bei einer Potenz einer Potenz werden die Exponenten <strong>multipliziert</strong>.",
+      `Also (a<sup>${m}</sup>)<sup>${r}</sup> = a<sup>${innen}</sup>. Damit steht da a<sup>${innen}</sup> · a<sup>${n}</sup> : a<sup>${k}</sup>.`,
+      `Mal heißt plus, geteilt heißt minus: ${num(innen)} + ${num(n)} − ${num(k)}.`,
+    ],
     musterloesungHtml:
       `<strong>Gesetz (3)</strong> — Potenz einer Potenz: (a<sup>${m}</sup>)<sup>${r}</sup> = a<sup>${m} · ${r}</sup> = a<sup>${innen}</sup><br>` +
       `<strong>Gesetz (1)</strong> — gleiche Basis mal: a<sup>${innen}</sup> · a<sup>${n}</sup> = a<sup>${innen} + ${n}</sup> = a<sup>${zwischen}</sup><br>` +
@@ -1051,15 +1160,91 @@ function generateAufgabe2() {
   };
 }
 
-// Aufgabe 3 — negative Exponenten in einer Gleichung.
-const A3_KANDIDATEN = (() => {
+// Aufgabe 4 — Potenzfunktionen. Abschnitt 5 hatte keine Aufgabe; der Kern ist,
+// dass (−x)ⁿ = (−1)ⁿ · xⁿ gilt und das Vorzeichen allein am Exponenten hängt.
+const A4_KANDIDATEN = (() => {
+  const liste = [];
+  for (let n = 2; n <= 6; n++) {
+    for (const x0 of [2, 3, 4, 5, 6, 7, 8, 9, 10]) {
+      const w = potenz(x0, n);
+      if (w > 200000) continue;
+      liste.push({ n, x0, w, gerade: n % 2 === 0 });
+    }
+  }
+  return liste;
+})();
+
+function generateAufgabe4() {
+  const k = ohneFeldKollision(A4_KANDIDATEN, (v) => [
+    // Feld 1: f(x₀).
+    [v.w, v.x0 * v.n, v.n * v.x0 * v.x0, v.x0],
+    // Feld 2: f(−x₀). Bei geradem n ist das derselbe Wert wie f(x₀) — dann
+    // liegt auf −w kein eigener Hinweis.
+    [v.gerade ? v.w : -v.w, v.gerade ? -v.w : v.w, -v.x0 * v.n],
+  ]);
+  const { n, x0, w, gerade } = k;
+  const zweiter = gerade ? w : -w;
+  return {
+    promptHtml: `Gegeben ist die Potenzfunktion <strong>f(x) = x<sup>${num(n)}</sup></strong>.<br>` +
+      `Untersuche sie an der Stelle <strong>x = ${num(x0)}</strong> und an der Gegenstelle <strong>x = −${num(x0)}</strong>.`,
+    felder: [
+      {
+        name: `f(${num(x0)})`, soll: w, toleranz: 0.0005, platzhalter: "Wert",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - x0 * n) < 0.0005) return `${num(x0 * n)} ist das Vielfache ${num(x0)} · ${num(n)}. Der Exponent sagt, wie oft ${num(x0)} als <em>Faktor</em> auftritt: ${kette(num(x0), n)}.`;
+          if (Math.abs(val - n * x0 * x0) < 0.0005) return `Nur zwei Faktoren reichen nicht — es sind ${num(n)} Stück: ${kette(num(x0), n)}.`;
+          if (Math.abs(val - x0) < 0.0005) return `${num(x0)} ist die Stelle, nicht der Funktionswert.`;
+          return `Rechne ${kette(num(x0), n)}.`;
+        },
+      },
+      {
+        name: `f(−${num(x0)})`, soll: zweiter, toleranz: 0.0005, platzhalter: "Wert",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (gerade ? -w : w)) < 0.0005) {
+            return gerade
+              ? `Das Vorzeichen stimmt nicht: ${num(n)} ist <strong>gerade</strong>, die ${num(n)} Minuszeichen heben sich paarweise auf. Also ist f(−${num(x0)}) = f(${num(x0)}) = ${num(w)}.`
+              : `Das Vorzeichen stimmt nicht: ${num(n)} ist <strong>ungerade</strong>, ein Minuszeichen bleibt übrig. Also ist f(−${num(x0)}) = −f(${num(x0)}) = ${num(-w)}.`;
+          }
+          if (Math.abs(val + x0 * n) < 0.0005) return `Wieder das Vielfache statt der Potenz. Gerechnet wird ${kette("(−" + num(x0) + ")", n)}.`;
+          return `(−${num(x0)})<sup>${num(n)}</sup> = (−1)<sup>${num(n)}</sup> · ${num(x0)}<sup>${num(n)}</sup>. Der erste Faktor ist +1 oder −1, je nachdem, ob ${num(n)} gerade oder ungerade ist.`;
+        },
+      },
+      {
+        name: "Symmetrie (1 = achsensymmetrisch zur y-Achse, 2 = punktsymmetrisch zum Ursprung)",
+        soll: gerade ? 1 : 2, toleranz: 0.25, platzhalter: "1 oder 2",
+        hinweis: () => gerade
+          ? `Der Exponent ${num(n)} ist <strong>gerade</strong>, also f(−x) = f(x): Links und rechts der y-Achse stehen dieselben Werte. Der Graph ist <strong>achsensymmetrisch zur y-Achse</strong>.`
+          : `Der Exponent ${num(n)} ist <strong>ungerade</strong>, also f(−x) = −f(x): Der Wert kippt das Vorzeichen. Der Graph ist <strong>punktsymmetrisch zum Ursprung</strong>.`,
+      },
+    ],
+    tipps: [
+      `Eine Potenz ist eine Kurzschreibweise für ein Produkt: x<sup>${num(n)}</sup> = ${kette("x", n)}.`,
+      `Für die zweite Stelle setze die ganze negative Zahl ein — in Klammern: (−${num(x0)})<sup>${num(n)}</sup> = (−1)<sup>${num(n)}</sup> · ${num(x0)}<sup>${num(n)}</sup>.`,
+      "(−1)ⁿ ist +1 bei geradem n und −1 bei ungeradem n. Genau daran hängt auch die Symmetrie des Graphen.",
+    ],
+    musterloesungHtml:
+      `<strong>1. f(${num(x0)}):</strong> ${kette(num(x0), n)} = <strong>${num(w)}</strong><br>` +
+      `<strong>2. f(−${num(x0)}):</strong> (−${num(x0)})<sup>${num(n)}</sup> = (−1)<sup>${num(n)}</sup> · ${num(x0)}<sup>${num(n)}</sup> = ` +
+      `${gerade ? "+1" : "−1"} · ${num(w)} = <strong>${num(zweiter)}</strong><br>` +
+      `<strong>3. Symmetrie:</strong> ${num(n)} ist ${gerade ? "gerade" : "ungerade"}, also f(−x) = ${gerade ? "f(x)" : "−f(x)"} ⇒ ` +
+      `<strong>${gerade ? "achsensymmetrisch zur y-Achse" : "punktsymmetrisch zum Ursprung"}</strong><br>` +
+      `<em>Zur Kontrolle:</em> Der Graph geht durch (0 | 0) und (1 | 1), außerdem durch ` +
+      `(−1 | ${gerade ? "1" : "−1"}) — dieselbe Regel, nur an der Stelle 1.<br>` +
+      `<span class="progress-note">Für n = 2 wäre das die Normalparabel, für n = 1 die Gerade y = x. ` +
+      `Je größer der Exponent, desto flacher verläuft die Kurve zwischen −1 und 1 und desto steiler außerhalb — ` +
+      `die Stellen −1, 0 und 1 bleiben aber immer dieselben.</span>`,
+  };
+}
+
+// Aufgabe 5 — negative Exponenten in einer Gleichung.
+const A5_KANDIDATEN = (() => {
   const liste = [];
   for (const a of [2, 3, 5, 10]) for (let j = 1; j <= 3; j++) for (let k = 1; k <= 3; k++) if (j !== k) liste.push({ a, j, k });
   return liste;
 })();
 
-function generateAufgabe3() {
-  const kd = ohneKollision(A3_KANDIDATEN, (v) => [-(v.k + v.j), v.k + v.j, v.k - v.j, v.j - v.k], A3_KANDIDATEN[0]);
+function generateAufgabe5() {
+  const kd = ohneKollision(A5_KANDIDATEN, (v) => [-(v.k + v.j), v.k + v.j, v.k - v.j, v.j - v.k], A5_KANDIDATEN[0]);
   const { a, j, k } = kd;
   const e = -(k + j);
   const nenner = potenz(a, k);
@@ -1074,6 +1259,11 @@ function generateAufgabe3() {
       if (Math.abs(val - (k - j)) < 0.001 || Math.abs(val - (j - k)) < 0.001) return `Der Exponent ${num(j)} steht auf der <em>linken</em> Seite und muss dort abgezogen werden: n = −${num(k)} − ${num(j)}.`;
       return `Schreibe zuerst die rechte Seite als Potenz von ${num(a)}: 1 : ${num(nenner)} = ${num(a)}<sup>−${num(k)}</sup>.`;
     },
+    tipps: [
+      `Bringe beide Seiten auf dieselbe Basis ${num(a)}. Rechts steht ein Kehrwert — und ein Kehrwert ist eine Potenz mit <strong>negativem</strong> Exponenten.`,
+      `${num(nenner)} = ${num(a)}<sup>${num(k)}</sup>, also 1 : ${num(nenner)} = ${num(a)}<sup>−${num(k)}</sup>.`,
+      `Links werden die Exponenten addiert: n + ${num(j)}. Setze das gleich −${num(k)} und löse nach n auf.`,
+    ],
     musterloesungHtml:
       `<strong>Rechte Seite als Potenz:</strong> 1 : ${num(nenner)} = 1 : ${num(a)}<sup>${num(k)}</sup> = ${num(a)}<sup>−${num(k)}</sup><br>` +
       `<strong>Linke Seite nach Gesetz (1):</strong> ${num(a)}<sup>n</sup> · ${num(a)}<sup>${num(j)}</sup> = ${num(a)}<sup>n + ${num(j)}</sup><br>` +
@@ -1082,18 +1272,100 @@ function generateAufgabe3() {
   };
 }
 
-// Aufgabe 4 — dritte Wurzel aus einer Zahl in wissenschaftlicher Schreibweise.
-const A4_KANDIDATEN = (() => {
+// Aufgabe 6 — die n-te Wurzel und die zugehörige Gleichung. Beides wird
+// regelmäßig verwechselt: Die Wurzel ist als die nicht negative Zahl
+// festgelegt, die Gleichung xⁿ = a hat bei geradem n aber zwei Lösungen.
+const A6_KANDIDATEN = (() => {
+  const liste = [];
+  // n = 2 bliebe außen vor: Die Quadratwurzel schreibt man ohne Wurzelexponenten,
+  // und sie hat eine eigene Seite.
+  for (let n = 3; n <= 5; n++) {
+    for (let b = 2; b <= 12; b++) {
+      const a = potenz(b, n);
+      if (a > 25000) continue;
+      liste.push({ n, b, a, gerade: n % 2 === 0 });
+    }
+  }
+  return liste;
+})();
+
+function generateAufgabe6() {
+  const k = ohneFeldKollision(A6_KANDIDATEN, (v) => [
+    // Feld 1: die Wurzel selbst.
+    [v.b, -v.b, v.a, v.a / v.n],
+    // Feld 3: die kleinste Lösung der Gleichung.
+    [v.gerade ? -v.b : v.b, v.gerade ? v.b : -v.b, v.a],
+  ]);
+  const { n, b, a, gerade } = k;
+  const anzahl = gerade ? 2 : 1;
+  const kleinste = gerade ? -b : b;
+  return {
+    promptHtml: `Gegeben ist <strong>a = ${num(a)}</strong>.<br>` +
+      `Betrachte die Wurzel <strong><sup>${num(n)}</sup>√a = a<sup>1/${num(n)}</sup></strong> ` +
+      `und die Gleichung <strong>x<sup>${num(n)}</sup> = ${num(a)}</strong>.`,
+    felder: [
+      {
+        name: `<sup>${num(n)}</sup>√${num(a)}`, soll: b, toleranz: 0.0005, platzhalter: "Wurzelwert",
+        hinweis: (roh, val) => {
+          if (Math.abs(val + b) < 0.0005) return `Zwar ist (−${num(b)})<sup>${num(n)}</sup> = ${num(a)}, aber die ${num(n)}-te Wurzel ist als die <strong>nicht negative</strong> Zahl festgelegt. Also <sup>${num(n)}</sup>√${num(a)} = ${num(b)}.`;
+          if (Math.abs(val - a) < 0.0005) return `${num(a)} ist der Radikand selbst. Gesucht ist die Zahl, deren ${num(n)}-te Potenz ${num(a)} ergibt.`;
+          if (Math.abs(val - a / n) < 0.0005) return `Geteilt wird nicht durch den Wurzelexponenten. Gesucht ist die Zahl x mit ${kette("x", n)} = ${num(a)}.`;
+          if (!isNaN(val) && Math.abs(potenz(val, n) - a) > 0.0005) return `Probe: Deine Zahl ${num(n)}-mal mit sich selbst multipliziert muss ${num(a)} ergeben. ${num(val)}<sup>${num(n)}</sup> = ${num(potenz(val, n), 3)}.`;
+          return `Probiere: 2<sup>${num(n)}</sup> = ${num(potenz(2, n))}, 3<sup>${num(n)}</sup> = ${num(potenz(3, n))}, …`;
+        },
+      },
+      {
+        name: `Anzahl der Lösungen von x<sup>${num(n)}</sup> = ${num(a)}`, soll: anzahl, toleranz: 0.25, platzhalter: "1 oder 2",
+        hinweis: () => gerade
+          ? `${num(n)} ist <strong>gerade</strong>: Auch (−${num(b)})<sup>${num(n)}</sup> ergibt ${num(a)}, denn die Minuszeichen heben sich paarweise auf. Die Gleichung hat also <strong>zwei</strong> Lösungen — anders als die Wurzel, die nur eine Zahl bezeichnet.`
+          : `${num(n)} ist <strong>ungerade</strong>: Eine negative Zahl bleibt beim Potenzieren negativ und kann ${num(a)} nie ergeben. Die Gleichung hat also nur <strong>eine</strong> Lösung.`,
+      },
+      {
+        name: "kleinste Lösung der Gleichung", soll: kleinste, toleranz: 0.0005, platzhalter: "x",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (gerade ? b : -b)) < 0.0005) {
+            return gerade
+              ? `${num(b)} ist die <em>größere</em> der beiden Lösungen. Die kleinere ist ihr Gegenstück ${num(-b)}.`
+              : `${num(-b)} ist keine Lösung: (−${num(b)})<sup>${num(n)}</sup> = ${num(-a)}, nicht ${num(a)}. Bei ungeradem Exponenten gibt es nur die eine Lösung ${num(b)}.`;
+          }
+          if (Math.abs(val - a) < 0.0005) return `${num(a)} ist die rechte Seite der Gleichung, nicht ihre Lösung.`;
+          return gerade
+            ? `Bei geradem Exponenten gehören zu jeder Lösung zwei Zahlen: ${num(b)} und ${num(-b)}. Die kleinere ist gesucht.`
+            : `Bei ungeradem Exponenten gibt es nur eine Lösung — sie ist zugleich die kleinste.`;
+        },
+      },
+    ],
+    tipps: [
+      `Die ${num(n)}-te Wurzel fragt rückwärts: Welche Zahl ergibt, ${num(n)}-mal mit sich selbst multipliziert, ${num(a)}?`,
+      "Die Wurzel ist immer <strong>nicht negativ</strong> — das ist Festlegung, keine Rechnung.",
+      "Die <em>Gleichung</em> xⁿ = a ist etwas anderes als die Wurzel: Bei geradem n erfüllt auch die negative Zahl die Gleichung, bei ungeradem n nicht.",
+    ],
+    musterloesungHtml:
+      `<strong>1. Wurzel:</strong> ${kette(num(b), n)} = ${num(a)}, also <sup>${num(n)}</sup>√${num(a)} = <strong>${num(b)}</strong><br>` +
+      `<strong>2. Gleichung x<sup>${num(n)}</sup> = ${num(a)}:</strong> ` +
+      (gerade
+        ? `Auch (−${num(b)})<sup>${num(n)}</sup> = ${num(a)}, denn ${num(n)} ist gerade ⇒ <strong>2 Lösungen</strong>: x = ${num(b)} und x = ${num(-b)}<br>`
+        : `(−${num(b)})<sup>${num(n)}</sup> = ${num(-a)} ≠ ${num(a)}, denn ${num(n)} ist ungerade ⇒ <strong>1 Lösung</strong>: x = ${num(b)}<br>`) +
+      `<strong>3. Kleinste Lösung:</strong> <strong>${num(kleinste)}</strong><br>` +
+      `<em>Probe:</em> ${kette(klammer(kleinste), n)} = ${num(a)} ✓<br>` +
+      `<span class="progress-note">Wurzel und Gleichung fallen nur bei ungeradem Exponenten zusammen. ` +
+      `Bei geradem Exponenten bezeichnet das Wurzelzeichen <em>eine</em> Zahl, die Gleichung hat aber <em>zwei</em> Lösungen — ` +
+      `wer statt x = ±<sup>${num(n)}</sup>√a nur x = <sup>${num(n)}</sup>√a schreibt, verliert die Hälfte.</span>`,
+  };
+}
+
+// Aufgabe 7 — dritte Wurzel aus einer Zahl in wissenschaftlicher Schreibweise.
+const A7_KANDIDATEN = (() => {
   const liste = [];
   for (let c = 2; c <= 9; c++) for (const e of [1, 2]) liste.push({ c, e });
   return liste;
 })();
 
-function generateAufgabe4() {
+function generateAufgabe7() {
   const kd = ohneKollision(
-    A4_KANDIDATEN,
+    A7_KANDIDATEN,
     (v) => [v.c * potenz(10, v.e), v.c * potenz(10, 3 * v.e), Math.sqrt(potenz(v.c, 3) * potenz(10, 3 * v.e))],
-    A4_KANDIDATEN[0],
+    A7_KANDIDATEN[0],
   );
   const { c, e } = kd;
   const x = c * potenz(10, e);
@@ -1112,6 +1384,11 @@ function generateAufgabe4() {
       if (Math.abs(val - Math.sqrt(wuerfel * potenz(10, 3 * e))) < 0.01) return `Das ist die <em>Quadrat</em>wurzel. Ein Würfel hat aber das Volumen V = a³, gesucht ist also die <strong>dritte</strong> Wurzel.`;
       return `Zerlege das Volumen in ${num(wuerfel)} · 10<sup>${num(3 * e)}</sup> — dann lässt sich aus beiden Faktoren einzeln die dritte Wurzel ziehen.`;
     },
+    tipps: [
+      "Beim Würfel ist V = a³. Gesucht ist also die <strong>dritte</strong> Wurzel des Volumens, nicht die Quadratwurzel.",
+      `Schreibe das Volumen so um, dass der Zehnerexponent durch 3 teilbar ist: ${mantisse} · 10<sup>${num(zehner)}</sup> = ${num(wuerfel)} · 10<sup>${num(3 * e)}</sup>.`,
+      `Nun lässt sich aus beiden Faktoren einzeln die dritte Wurzel ziehen: ³√${num(wuerfel)} = ${num(c)} und ³√(10<sup>${num(3 * e)}</sup>) = 10<sup>${num(e)}</sup>.`,
+    ],
     musterloesungHtml:
       `<strong>Ansatz:</strong> Beim Würfel ist V = a³, also a = ³√V.<br>` +
       `<strong>Volumen günstig zerlegen:</strong> ${mantisse} · 10<sup>${num(zehner)}</sup> = <strong>${num(wuerfel)} · 10<sup>${num(3 * e)}</sup></strong> mm³<br>` +
@@ -1121,12 +1398,166 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 8 — rechnen in wissenschaftlicher Schreibweise. Gebaut ist die
+// Aufgabe so, dass das Zwischenergebnis die Bedingung 1 ≤ z < 10 verletzt —
+// genau der Schritt, den die Achtung-Box auf dieser Seite beschreibt.
+// Bewusst ohne Naturkonstanten: Die Zahlen werden gewürfelt, und ein Text, der
+// die Lichtgeschwindigkeit oder die Masse eines Bakteriums nennt, wäre dann bei
+// den meisten Würfen schlicht falsch.
+const A8_KONTEXTE = [
+  { art: "mal", einheit: "Byte",
+    einleitung: (a, b) => `Ein Rechenzentrum speichert ${a} Dateien mit je ${b} Byte.` },
+  { art: "mal", einheit: "mg",
+    einleitung: (a, b) => `Eine Maschine fertigt ${a} Bauteile; jedes wiegt ${b} mg.` },
+  { art: "mal", einheit: "Nachrichten",
+    einleitung: (a, b) => `Ein Netzwerk hat ${a} Knoten; über jeden laufen ${b} Nachrichten.` },
+  { art: "geteilt", einheit: "Byte",
+    einleitung: (a, b) => `Ein Speicher von ${a} Byte wird gleichmäßig auf ${b} Rechner verteilt.` },
+  { art: "geteilt", einheit: "km",
+    einleitung: (a, b) => `Eine Strecke von ${a} km wird in ${b} gleich lange Abschnitte geteilt.` },
+  { art: "geteilt", einheit: "Datensätze",
+    einleitung: (a, b) => `${a} Datensätze werden gleichmäßig auf ${b} Tage verteilt.` },
+];
+// Vorzahlen und Zehnerpotenzen werden getrennt gezogen: Die Hinweise eines
+// Feldes hängen jeweils nur an einer der beiden Hälften, und zwei kurze Listen
+// sind besser als eine mit vierzigtausend Einträgen.
+function ohneDoppel(werte) {
+  const echt = werte.filter((x) => Number.isFinite(x));
+  return echt.every((x, i) => echt.every((y, j) => i === j || Math.abs(x - y) > 1e-9));
+}
+const A8_VORZAHLEN = {
+  // Beim Multiplizieren soll das Produkt über 10 liegen — sonst fehlt der
+  // Normierungsschritt, um den es in dieser Aufgabe geht.
+  mal: (() => {
+    const liste = [];
+    for (let a = 11; a <= 99; a++) {
+      for (let b = 11; b <= 99; b++) {
+        const roh = Math.round(a * b) / 100;
+        if (roh < 10) continue;
+        if (Math.abs(roh * 10 - Math.round(roh * 10)) > 1e-9) continue;
+        const z = Math.round(roh * 100) / 1000;
+        if (!ohneDoppel([roh, z, a / 10, b / 10, (a + b) / 10])) continue;
+        liste.push({ z1: a / 10, z2: b / 10, roh: Math.round(roh * 10) / 10, z });
+      }
+    }
+    return liste;
+  })(),
+  // Beim Dividieren soll der Quotient unter 1 liegen — dann muss das Komma
+  // andersherum wandern.
+  geteilt: (() => {
+    const liste = [];
+    for (let a = 11; a <= 99; a++) {
+      for (let b = 11; b <= 99; b++) {
+        if (a >= b) continue;
+        const roh = a / b;
+        if (Math.abs(roh * 10 - Math.round(roh * 10)) > 1e-9) continue;
+        const r = Math.round(roh * 10) / 10, z = Math.round(roh * 100) / 10;
+        if (!ohneDoppel([r, z, a / 10, b / 10, (a + b) / 10])) continue;
+        liste.push({ z1: a / 10, z2: b / 10, roh: r, z });
+      }
+    }
+    return liste;
+  })(),
+};
+const A8_EXPONENTEN = {
+  mal: (() => {
+    const liste = [];
+    for (const n1 of [3, 4, 5, 6, 7, 8]) {
+      for (const n2 of [2, 3, 4, 5, 6]) {
+        if (n1 === n2) continue;
+        const zwischen = n1 + n2;
+        if (!ohneDoppel([zwischen + 1, zwischen, n1, n2])) continue;
+        liste.push({ n1, n2, zwischen, n: zwischen + 1 });
+      }
+    }
+    return liste;
+  })(),
+  geteilt: (() => {
+    const liste = [];
+    for (const n1 of [6, 7, 8, 9, 10, 11, 12]) {
+      for (const n2 of [2, 3, 4, 5]) {
+        const zwischen = n1 - n2;
+        if (!ohneDoppel([zwischen - 1, zwischen, n1, n2])) continue;
+        liste.push({ n1, n2, zwischen, n: zwischen - 1 });
+      }
+    }
+    return liste;
+  })(),
+};
+
+function wissText(z, n) {
+  return `${fest(z, 1)} · 10<sup>${num(n)}</sup>`;
+}
+
+function generateAufgabe8() {
+  const kt = pick(A8_KONTEXTE);
+  const art = kt.art;
+  const { z1, z2, roh, z } = pick(A8_VORZAHLEN[art]);
+  const { n1, n2, zwischen, n } = pick(A8_EXPONENTEN[art]);
+  const zeichenText = art === "mal" ? "·" : ":";
+  const a = wissText(z1, n1), b = wissText(z2, n2);
+  return {
+    promptHtml: `${kt.einleitung(`<strong>${a}</strong>`, `<strong>${b}</strong>`)}<br>` +
+      `Gib das Ergebnis in wissenschaftlicher Schreibweise <strong>z · 10<sup>n</sup></strong> an (1 ≤ z &lt; 10).`,
+    felder: [
+      {
+        name: `Vorzahlen ${zeichenText} gerechnet (noch nicht normiert)`, soll: roh, toleranz: 0.0005, platzhalter: "Zahl",
+        hinweis: (roh2, val) => {
+          if (Math.abs(val - z) < 0.0005) return `${num(z)} ist schon die fertige Vorzahl. Hier ist erst ${fest(z1, 1)} ${zeichenText} ${fest(z2, 1)} gefragt.`;
+          if (Math.abs(val - (z1 + z2)) < 0.0005) return `Die Vorzahlen werden ${art === "mal" ? "multipliziert" : "geteilt"}, nicht addiert.`;
+          if (Math.abs(val - z1) < 0.0005 || Math.abs(val - z2) < 0.0005) return `Das ist eine der beiden Vorzahlen. Beide müssen ${art === "mal" ? "miteinander multipliziert" : "durcheinander geteilt"} werden.`;
+          return `Rechne ${fest(z1, 1)} ${zeichenText} ${fest(z2, 1)}.`;
+        },
+      },
+      {
+        name: "Vorzahl z des Ergebnisses", soll: z, toleranz: 0.0005, platzhalter: "z",
+        hinweis: (roh2, val) => {
+          if (Math.abs(val - roh) < 0.0005) return art === "mal"
+            ? `${num(roh)} ist nicht kleiner als 10 — das ist noch keine wissenschaftliche Schreibweise. Verschiebe das Komma um eine Stelle nach links und gleiche es beim Exponenten aus.`
+            : `${num(roh)} ist kleiner als 1 — das ist noch keine wissenschaftliche Schreibweise. Verschiebe das Komma um eine Stelle nach rechts und gleiche es beim Exponenten aus.`;
+          if (Math.abs(val - z1) < 0.0005 || Math.abs(val - z2) < 0.0005) return "Das ist eine der gegebenen Vorzahlen, nicht die des Ergebnisses.";
+          return `Aus ${num(roh)} wird ${num(z)}, indem das Komma um eine Stelle nach ${art === "mal" ? "links" : "rechts"} wandert.`;
+        },
+      },
+      {
+        name: "Exponent n des Ergebnisses", soll: n, toleranz: 0.0005, platzhalter: "n",
+        hinweis: (roh2, val) => {
+          if (Math.abs(val - zwischen) < 0.0005) return `${num(zwischen)} ist der Exponent <em>vor</em> dem Normieren. Weil das Komma um eine Stelle nach ${art === "mal" ? "links" : "rechts"} gewandert ist, ${art === "mal" ? "wächst" : "sinkt"} er noch um 1.`;
+          if (Math.abs(val - n1) < 0.0005 || Math.abs(val - n2) < 0.0005) return `Das ist einer der gegebenen Exponenten. Beim ${art === "mal" ? "Multiplizieren werden sie addiert" : "Dividieren werden sie subtrahiert"}.`;
+          return `Beim ${art === "mal" ? "Multiplizieren addierst du die Exponenten" : "Dividieren subtrahierst du die Exponenten"}: ${num(n1)} ${art === "mal" ? "+" : "−"} ${num(n2)} = ${num(zwischen)} — und dann kommt die Verschiebung des Kommas dazu.`;
+        },
+      },
+    ],
+    tipps: [
+      `Vorzahlen und Zehnerpotenzen werden getrennt behandelt: ${fest(z1, 1)} ${zeichenText} ${fest(z2, 1)} einerseits, 10<sup>${num(n1)}</sup> ${zeichenText} 10<sup>${num(n2)}</sup> andererseits.`,
+      `Nach Gesetz (${art === "mal" ? "1" : "2"}) ist 10<sup>${num(n1)}</sup> ${zeichenText} 10<sup>${num(n2)}</sup> = 10<sup>${num(zwischen)}</sup>, und ${fest(z1, 1)} ${zeichenText} ${fest(z2, 1)} = ${num(roh)}.`,
+      `${num(roh)} · 10<sup>${num(zwischen)}</sup> ist richtig gerechnet, aber noch keine wissenschaftliche Schreibweise: ${num(roh)} liegt nicht zwischen 1 und 10. Verschiebe das Komma und gleiche den Exponenten aus.`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Getrennt rechnen:</strong> (${a}) ${zeichenText} (${b}) = (${fest(z1, 1)} ${zeichenText} ${fest(z2, 1)}) · (10<sup>${num(n1)}</sup> ${zeichenText} 10<sup>${num(n2)}</sup>)<br>` +
+      `<strong>2. Vorzahlen:</strong> ${fest(z1, 1)} ${zeichenText} ${fest(z2, 1)} = <strong>${num(roh)}</strong><br>` +
+      `<strong>3. Zehnerpotenzen nach Gesetz (${art === "mal" ? "1" : "2"}):</strong> 10<sup>${num(n1)}</sup> ${zeichenText} 10<sup>${num(n2)}</sup> = 10<sup>${num(n1)} ${art === "mal" ? "+" : "−"} ${num(n2)}</sup> = 10<sup>${num(zwischen)}</sup><br>` +
+      `<strong>4. Zwischenergebnis:</strong> ${num(roh)} · 10<sup>${num(zwischen)}</sup> — richtig gerechnet, aber ${num(roh)} liegt nicht zwischen 1 und 10<br>` +
+      `<strong>5. Nachnormieren:</strong> ${num(roh)} = ${num(z)} · 10<sup>${art === "mal" ? "1" : "−1"}</sup>, also ` +
+      `${num(roh)} · 10<sup>${num(zwischen)}</sup> = <strong>${num(z)} · 10<sup>${num(n)}</sup></strong> ${kt.einheit}<br>` +
+      `<em>Probe:</em> ${num(roh)} · 10<sup>${num(zwischen)}</sup> und ${num(z)} · 10<sup>${num(n)}</sup> sind dieselbe Zahl — ` +
+      `das Komma ist um eine Stelle nach ${art === "mal" ? "links" : "rechts"} gewandert, der Exponent um 1 nach ${art === "mal" ? "oben" : "unten"} ✓<br>` +
+      `<span class="progress-note">Der letzte Schritt wird am häufigsten vergessen. ` +
+      `${num(roh)} · 10<sup>${num(zwischen)}</sup> ist zwar dieselbe Zahl, aber keine wissenschaftliche Schreibweise — ` +
+      `und nur in dieser lassen sich Größenordnungen auf einen Blick vergleichen.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Potenzwert berechnen", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Potenzgesetze anwenden", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — negativer Exponent", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Kante eines Würfels", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — wissenschaftliche Schreibweise", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Potenzgesetze anwenden", generate: generateAufgabe3 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Potenzfunktionen", generate: generateAufgabe4 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — negativer Exponent", generate: generateAufgabe5 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — n-te Wurzel und Gleichung", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Kante eines Würfels", generate: generateAufgabe7 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — rechnen mit Zehnerpotenzen", generate: generateAufgabe8 },
   ]);
 }
 

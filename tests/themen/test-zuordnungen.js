@@ -111,11 +111,37 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — antiproportionaler Dreisatz. Gemessen mit tests/werkzeug-streuung.js: 177
+  // Aufgabe 2 — der Proportionalitätsfaktor. Gemessen mit tests/werkzeug-streuung.js: 143
+  // verschiedene in 200 Würfen, zurückgerechnet rund 280 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 22.
+  await pruefeAufgabe(page, bericht, {
+    nr: 2, name: "A2 Proportionalitätsfaktor", runden: 30, mindestensVerschieden: 22,
+    deute: (frage) => {
+      const m = frage.match(/^([\d,]+) \S+ .*?kosten ([\d,]+) €.*?Was kosten ([\d,]+) /);
+      if (!m) return null;
+      const zahl = (t) => Number(String(t).replace(/\./g, "").replace(",", "."));
+      const [x1, preis1, x2] = m.slice(1).map(zahl);
+      const k = preis1 / x1;
+      pruefe(x2 !== x1, `A2: gegebene und gesuchte Menge sind beide ${x1} — „${frage}“`);
+      pruefe(Number.isInteger(k * 2), `A2: der Faktor ${k} € ist kein halber Euro-Betrag — „${frage}“`);
+      return {
+        felder: [k, k * x2],
+        toleranz: 0.002,
+        falschFelder: [
+          [0, x1 / preis1, "Menge durch Preis"],
+          [0, preis1, "nicht für"],
+          [1, preis1 + x2 - x1, "Unterschied"],
+          [1, (preis1 * x1) / x2, "vertauscht"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 3 — antiproportionaler Dreisatz. Gemessen mit tests/werkzeug-streuung.js: 177
   // verschiedene in 200 Würfen, zurückgerechnet also rund 798 Kandidaten. Die Schranke ist das
   // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 25.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 antiproportionaler Dreisatz", runden: 30, mindestensVerschieden: 25,
+    nr: 3, name: "A3 antiproportionaler Dreisatz", runden: 30, mindestensVerschieden: 25,
     deute: (frage) => {
       const m = frage.match(/^(\d+) \D+ (\d+) (Tage|Stunden)[\s\S]*?brauchen (\d+) /);
       if (!m) return null;
@@ -132,22 +158,49 @@ async function aufgaben(page) {
           [tageA + b - a, "dazugerechnet"],
         ],
         pruefe: (f, rueck) => {
-          pruefe(Number.isInteger(k / b), `A2: ${k} : ${b} = ${k / b} ist nicht ganzzahlig — „${f}“`);
+          pruefe(Number.isInteger(k / b), `A3: ${k} : ${b} = ${k / b} ist nicht ganzzahlig — „${f}“`);
           // Die Probe des antiproportionalen Falls: gleiches Produkt.
           pruefe(rueck.includes(`${de(b)} · ${de(k / b)} = ${de(k)}`),
-            `A2: die Probe zeigt das gemeinsame Produkt ${k} nicht — „${f}“`);
+            `A3: die Probe zeigt das gemeinsame Produkt ${k} nicht — „${f}“`);
           pruefe(rueck.includes(b > a ? "muss das Ergebnis kleiner" : "muss das Ergebnis größer"),
-            `A2: die Probe begründet die Richtung nicht — „${f}“`);
+            `A3: die Probe begründet die Richtung nicht — „${f}“`);
         },
       };
     },
   });
 
-  // Aufgabe 3 — Art bestimmen und ergänzen. Gemessen mit tests/werkzeug-streuung.js: 52
+  // Aufgabe 4 — der Dreisatz rückwärts. Gemessen: 195 verschiedene in 200 Würfen,
+  // zurückgerechnet rund 3900 Kandidaten. Schranke: simuliertes 10⁻⁴-Quantil bei 30 Zügen für
+  // 0,8 · n — 27.
+  await pruefeAufgabe(page, bericht, {
+    nr: 4, name: "A4 Dreisatz rückwärts", runden: 30, mindestensVerschieden: 27,
+    deute: (frage) => {
+      const m = frage.match(/^([\d,]+) \S+ .*?kosten ([\d,]+) €.*?für ([\d,]+) €/);
+      if (!m) return null;
+      const zahl = (t) => Number(String(t).replace(/\./g, "").replace(",", "."));
+      const [x1, preis1, betrag] = m.slice(1).map(zahl);
+      const k = preis1 / x1;
+      const gesucht = betrag / k;
+      pruefe(Number.isInteger(k * 2), `A4: der Preis je Einheit ${k} € ist kein halber Euro-Betrag — „${frage}“`);
+      pruefe(Number.isInteger(gesucht * 2), `A4: die gesuchte Menge ${gesucht} geht nicht glatt auf — „${frage}“`);
+      return {
+        felder: [k, gesucht],
+        toleranz: 0.002,
+        falschFelder: [
+          [0, x1 / preis1, "Menge durch Preis"],
+          [1, betrag * k, "multipliziert"],
+          [1, x1 + betrag - preis1, "nicht addieren"],
+          [1, betrag, "Betrag"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 5 — Art bestimmen und ergänzen. Gemessen mit tests/werkzeug-streuung.js: 52
   // verschiedene in 200 Würfen, zurückgerechnet also rund 53 Kandidaten. Die Schranke ist das
   // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 15.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Art bestimmen", runden: 30, mindestensVerschieden: 15,
+    nr: 5, name: "A5 Art bestimmen", runden: 30, mindestensVerschieden: 15,
     liesRoh: (page2, box) => page2.evaluate((sel) => {
       const t = document.querySelector(`${sel} .aufgabe-prompt table.zo-tabelle`);
       if (!t) return null;
@@ -187,17 +240,50 @@ async function aufgaben(page) {
           // Genau eine der beiden Proben darf aufgehen — sonst wäre die Art
           // nicht bestimmbar.
           pruefe(gleich(produkte) !== gleich(quotienten),
-            `A3: die Tabelle ist zugleich proportional und antiproportional (oder keines) — „${f}“`);
-          pruefe(luecke === 2, `A3: die Lücke steht an Stelle ${luecke + 1}, erwartet die dritte — „${f}“`);
+            `A5: die Tabelle ist zugleich proportional und antiproportional (oder keines) — „${f}“`);
+          pruefe(luecke === 2, `A5: die Lücke steht an Stelle ${luecke + 1}, erwartet die dritte — „${f}“`);
         },
       };
     },
   });
 
-  // Aufgabe 4 — Grundpreis und Stückpreis. Mehrere tausend Fassungen × 3
+  // Aufgabe 6 — zusammengesetzter Dreisatz. Gemessen: 199 verschiedene in 200 Würfen.
+  // Schranke: simuliertes 10⁻⁴-Quantil bei 30 Zügen für ein vorsichtig angesetztes n — 28.
+  await pruefeAufgabe(page, bericht, {
+    nr: 6, name: "A6 zwei Größen auf einmal", runden: 30, mindestensVerschieden: 28,
+    deute: (frage) => {
+      // Fünf Zahlen in dieser Reihenfolge: Personen, Menge, Zeit, neue Personen, neue Menge.
+      const z = (frage.match(/\d+(?:\.\d{3})*/g) || []).map((t) => Number(t.replace(/\./g, "")));
+      if (z.length !== 5) return null;
+      const [a1, m1, t1, a2, m2] = z;
+      const einArbeiter = a1 * t1;
+      const fuerM2 = (einArbeiter * m2) / m1;
+      const t2 = fuerM2 / a2;
+      pruefe(a1 !== a2, `A6: die Zahl der Beteiligten ändert sich nicht (${a1}) — „${frage}“`);
+      pruefe(Number.isInteger(fuerM2) && Number.isInteger(t2),
+        `A6: ein Zwischenergebnis geht nicht auf (${fuerM2}, ${t2}) — „${frage}“`);
+      // Die Probe über die Gesamtarbeit: Arbeitstage verhalten sich wie die Mengen.
+      pruefe(Math.abs(a2 * t2 * m1 - a1 * t1 * m2) < 1e-9,
+        `A6: die Gesamtarbeit stimmt nicht — „${frage}“`);
+      return {
+        felder: [einArbeiter, fuerM2, t2],
+        toleranz: 0.002,
+        falschFelder: [
+          [0, t1 / a1, "länger"],
+          [0, t1, "zusammen"],
+          [1, (einArbeiter * m1) / m2, "proportional"],
+          [1, einArbeiter, "Jetzt sind es"],
+          [2, fuerM2 * a2, "weniger"],
+          [2, fuerM2, "einen allein"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 7 — Grundpreis und Stückpreis. Mehrere tausend Fassungen × 3
   // Kontexte; Doppel sind bei 30 Zügen praktisch ausgeschlossen.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Grundpreis", runden: 30, mindestensVerschieden: 28,
+    nr: 7, name: "A7 Grundpreis", runden: 30, mindestensVerschieden: 28,
     deute: (frage) => {
       // Alle drei Kontexte nennen die Zahlen in derselben Reihenfolge:
       // s₁, c₁, s₂, c₂ und zuletzt die gesuchte Größe s₃.
@@ -221,14 +307,50 @@ async function aufgaben(page) {
         ],
         pruefe: (f, rueck) => {
           pruefe(Number.isInteger(p) && Number.isInteger(g),
-            `A4: Stückpreis ${p} € und Grundpreis ${g} € sind nicht beide ganzzahlig — „${f}“`);
-          pruefe(g > 0, `A4: ohne Grundpreis (${g} €) wäre die Zuordnung doch proportional — „${f}“`);
+            `A7: Stückpreis ${p} € und Grundpreis ${g} € sind nicht beide ganzzahlig — „${f}“`);
+          pruefe(g > 0, `A7: ohne Grundpreis (${g} €) wäre die Zuordnung doch proportional — „${f}“`);
           // Beide gegebenen Angaben müssen zu derselben Geraden gehören.
           pruefe(Math.abs(g + p * s2 - c2) < 1e-9,
-            `A4: die zweite Angabe passt nicht zu y = ${g} + ${p}x — „${f}“`);
+            `A7: die zweite Angabe passt nicht zu y = ${g} + ${p}x — „${f}“`);
           pruefe(rueck.includes("nicht proportional"),
-            `A4: die Musterlösung sagt nicht, warum der Dreisatz hier nicht gilt — „${f}“`);
+            `A7: die Musterlösung sagt nicht, warum der Dreisatz hier nicht gilt — „${f}“`);
         },
+      };
+    },
+  });
+
+  // Aufgabe 8 — zwei Tarife vergleichen. Gemessen: 180 verschiedene in 200 Würfen,
+  // zurückgerechnet rund 930 Kandidaten. Schranke: simuliertes 10⁻⁴-Quantil bei 30 Zügen für
+  // 0,8 · n — 25.
+  await pruefeAufgabe(page, bericht, {
+    nr: 8, name: "A8 Tarifvergleich", runden: 30, mindestensVerschieden: 25,
+    deute: (frage) => {
+      // Fünf Zahlen: Grundpreis A, Preis je Einheit A, Grundpreis B, Preis je Einheit B,
+      // Vergleichsmenge.
+      const z = (frage.match(/\d+(?:\.\d{3})*(?:,\d+)?/g) || [])
+        .map((t) => Number(t.replace(/\./g, "").replace(",", ".")));
+      if (z.length !== 5) return null;
+      const [gA, pA, gB, pB, x0] = z;
+      const schnitt = (gB - gA) / (pA - pB);
+      pruefe(gB > gA && pA > pB,
+        `A8: der Tarif mit dem höheren Grundpreis hat nicht den niedrigeren Einheitspreis — „${frage}“`);
+      pruefe(Number.isInteger(schnitt), `A8: der Gleichstand liegt bei ${schnitt} — nicht ganzzahlig — „${frage}“`);
+      pruefe(x0 < schnitt, `A8: die Vergleichsmenge ${x0} liegt nicht unterhalb des Gleichstands ${schnitt} — „${frage}“`);
+      // Beim Gleichstand müssen beide Tarife wirklich dasselbe kosten.
+      pruefe(Math.abs(gA + pA * schnitt - (gB + pB * schnitt)) < 1e-9,
+        `A8: beim Gleichstand ${schnitt} kosten die Tarife nicht dasselbe — „${frage}“`);
+      return {
+        felder: [gA + pA * x0, gB + pB * x0, schnitt + 1],
+        toleranz: 0.002,
+        falschFelder: [
+          [0, pA * x0, "Grundpreis"],
+          [0, gA + pA, "nicht einmal"],
+          [1, gA + pA * x0, "anderen Grundpreis"],
+          [1, pB * x0, "Auch hier"],
+          [2, schnitt, "dasselbe"],
+          [2, gB - gA, "Grundpreise"],
+          [2, x0, "noch günstiger"],
+        ],
       };
     },
   });

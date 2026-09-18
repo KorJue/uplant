@@ -67,9 +67,45 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — x auf beiden Seiten.
+  // Aufgabe 2 — die Probe. Gemessen mit tests/werkzeug-streuung.js: 199 verschiedene in 200
+  // Würfen. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 28.
+  let stimmt = 0, stimmtNicht = 0;
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 x auf beiden Seiten", runden: 30, mindestensVerschieden: 28,
+    nr: 2, name: "A2 Probe", runden: 30, mindestensVerschieden: 28,
+    deute: (frage) => {
+      const m = frage.match(/Gleichung (\d+)x ([+−]) (\d+) = ([−-]?\d+)/);
+      const mk = frage.match(/x = ([−-]?\d+) sei/);
+      if (!m || !mk) return null;
+      const zahl = (t) => Number(String(t).replace("−", "-"));
+      const a = Number(m[1]);
+      const b = (m[2] === "+" ? 1 : -1) * Number(m[3]);
+      const c = zahl(m[4]);
+      const kandidat = zahl(mk[1]);
+      const links = a * kandidat + b;
+      const passt = links === c;
+      if (passt) stimmt++; else stimmtNicht++;
+      // Die Gleichung selbst muss eine ganzzahlige Lösung haben, sonst ist die Probe sinnlos.
+      pruefe(Number.isInteger((c - b) / a), `A2: (${c} − ${b}) : ${a} ist nicht ganzzahlig — „${frage}“`);
+      return {
+        felder: [links, c, passt ? 1 : 2],
+        toleranz: 0.0005,
+        falschFelder: [
+          [0, c, "rechte"],
+          [0, a + kandidat + b, "mal"],
+          [0, a * kandidat, "gehört noch dazu"],
+          [1, links, "linken Seite"],
+          [2, passt ? 2 : 1, "Vergleiche"],
+        ],
+      };
+    },
+  });
+  pruefe(stimmt > 0 && stimmtNicht > 0,
+    `A2: in 30 Zügen stimmte der Vorschlag ${stimmt}-mal und ${stimmtNicht}-mal nicht — beides muss vorkommen`);
+
+  // Aufgabe 3 — x auf beiden Seiten.
+  await pruefeAufgabe(page, bericht, {
+    nr: 3, name: "A3 x auf beiden Seiten", runden: 30, mindestensVerschieden: 28,
     deute: (frage) => {
       const m = frage.match(/Löse die Gleichung: (.+?) = (.+?) Wie groß/);
       if (!m) return null;
@@ -90,19 +126,65 @@ async function aufgaben(page) {
         ],
         pruefe: (f, rueck) => {
           const x = mm / kk;
-          pruefe(Number.isInteger(x), `A2: die Lösung ${x} ist nicht ganzzahlig — „${f}“`);
+          pruefe(Number.isInteger(x), `A3: die Lösung ${x} ist nicht ganzzahlig — „${f}“`);
           // Beide Seiten müssen bei der Lösung wirklich denselben Wert haben.
           pruefe(Math.abs((a * x + b) - (c * x + d)) < 1e-9,
-            `A2: bei x = ${x} sind die Seiten ${a * x + b} und ${c * x + d} — „${f}“`);
-          pruefe(rueck.includes("Probe"), `A2: die Musterlösung macht keine Probe — „${f}“`);
+            `A3: bei x = ${x} sind die Seiten ${a * x + b} und ${c * x + d} — „${f}“`);
+          pruefe(rueck.includes("Probe"), `A3: die Musterlösung macht keine Probe — „${f}“`);
         },
       };
     },
   });
 
-  // Aufgabe 3 — mit Klammer: a · (x + b) = c · x + d.
+  // Aufgabe 4 — Gleichung mit Nenner, in zwei Bauformen. Gemessen: 199 verschiedene in 200
+  // Würfen. Schranke: simuliertes 10⁻⁴-Quantil bei 30 Zügen für 0,8 · n — 28.
+  let mitKlammer = 0, ohneKlammer = 0;
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 mit Klammer", runden: 30, mindestensVerschieden: 28,
+    nr: 4, name: "A4 Gleichung mit Nenner", runden: 30, mindestensVerschieden: 28,
+    deute: (frage) => {
+      const zahl = (t) => Number(String(t).replace("−", "-"));
+      const kl = frage.match(/\(x ([+−]) (\d+)\) : (\d+) = ([−-]?\d+)/);
+      if (kl) {
+        const b = (kl[1] === "+" ? 1 : -1) * Number(kl[2]);
+        const n = Number(kl[3]), c = zahl(kl[4]);
+        const zwischen = c * n, x = zwischen - b;
+        mitKlammer++;
+        return {
+          felder: [zwischen, x],
+          toleranz: 0.0005,
+          falschFelder: [
+            [0, c / n, "multipliziert"],
+            [0, c, "erst mit"],
+            [1, zwischen + b, "Vorzeichen"],
+            [1, zwischen, "Zwischenwert"],
+          ],
+        };
+      }
+      const oh = frage.match(/x : (\d+) ([+−]) (\d+) = ([−-]?\d+)/);
+      if (!oh) return null;
+      const n = Number(oh[1]);
+      const b = (oh[2] === "+" ? 1 : -1) * Number(oh[3]);
+      const c = zahl(oh[4]);
+      const zwischen = c - b, x = zwischen * n;
+      ohneKlammer++;
+      return {
+        felder: [zwischen, x],
+        toleranz: 0.0005,
+        falschFelder: [
+          [0, c + b, "Vorzeichen"],
+          [0, c, "ganze rechte Seite"],
+          [1, zwischen / n, "noch einmal geteilt"],
+          [1, zwischen, "Zwischenwert"],
+        ],
+      };
+    },
+  });
+  pruefe(mitKlammer > 0 && ohneKlammer > 0,
+    `A4: in 30 Zügen kam ${mitKlammer}-mal die Klammerform und ${ohneKlammer}-mal die andere — beide müssen vorkommen`);
+
+  // Aufgabe 5 — mit Klammer: a · (x + b) = c · x + d.
+  await pruefeAufgabe(page, bericht, {
+    nr: 5, name: "A5 mit Klammer", runden: 30, mindestensVerschieden: 28,
     deute: (frage) => {
       const m = frage.match(/Löse die Gleichung: (−?\d+) · \(x ([+−]) (\d+)\) = (.+?) Wie groß/);
       if (!m) return null;
@@ -127,23 +209,73 @@ async function aufgaben(page) {
         ],
         pruefe: (f, rueck) => {
           const x = mm / kk;
-          pruefe(Number.isInteger(x), `A3: die Lösung ${x} ist nicht ganzzahlig — „${f}“`);
+          pruefe(Number.isInteger(x), `A5: die Lösung ${x} ist nicht ganzzahlig — „${f}“`);
           pruefe(Math.abs(a * (x + b) - (c * x + d)) < 1e-9,
-            `A3: bei x = ${x} sind die Seiten ${a * (x + b)} und ${c * x + d} — „${f}“`);
+            `A5: bei x = ${x} sind die Seiten ${a * (x + b)} und ${c * x + d} — „${f}“`);
           // Das Distributivgesetz muss in der Musterlösung ausgeschrieben stehen.
           pruefe(rueck.includes("Klammer ausmultiplizieren"),
-            `A3: die Musterlösung zeigt das Ausmultiplizieren nicht — „${f}“`);
+            `A5: die Musterlösung zeigt das Ausmultiplizieren nicht — „${f}“`);
         },
       };
     },
   });
 
-  // Aufgabe 4 — Sachaufgabe: zwei Tarife, drei Kontexte. Gemessen mit
+  // Aufgabe 6 — genau eine Lösung, keine, oder alle Zahlen. Gemessen: 186 verschiedene in 200
+  // Würfen. Die drei Fälle haben verschieden viele Fassungen; die nachgebildete Mischung ergibt
+  // bei 30 Zügen E = 29,4 und ein 10⁻⁴-Quantil von 25 — Schranke 24.
+  const faelle = new Set();
+  await pruefeAufgabe(page, bericht, {
+    nr: 6, name: "A6 eine, keine oder alle", runden: 30, mindestensVerschieden: 24,
+    deute: (frage) => {
+      const gleichung = frage.split(" Sortiere")[0].replace("Löse die Gleichung: ", "").trim();
+      const [linksText, rechtsText] = gleichung.split(" = ");
+      const term = (t) => {
+        // „7x − 1“, „x“, „−3“ — Koeffizient und Zahl getrennt lesen.
+        const mx = t.match(/(^|[^\d])(\d*)x/);
+        const koeff = mx ? (mx[2] === "" ? 1 : Number(mx[2])) : 0;
+        const mz = t.match(/([+−]) (\d+)\s*$/);
+        const zahl = mz ? (mz[1] === "+" ? 1 : -1) * Number(mz[2]) : (mx ? 0 : Number(t.replace("−", "-")));
+        return [koeff, zahl];
+      };
+      const [a, b] = term(linksText);
+      let c, d;
+      const kl = rechtsText.match(/^(\d+) · \((\d*)x ([+−]) (\d+)\)$/);
+      if (kl) {
+        const k = Number(kl[1]);
+        const m = kl[2] === "" ? 1 : Number(kl[2]);
+        const t = (kl[3] === "+" ? 1 : -1) * Number(kl[4]);
+        c = k * m; d = k * t;
+      } else {
+        [c, d] = term(rechtsText);
+      }
+      if (!a) return null;
+      const kk = a - c, mm = d - b;
+      const kennziffer = kk !== 0 ? 1 : mm === 0 ? 3 : 2;
+      faelle.add(String(kennziffer));
+      // Im Normalfall muss die Division am Ende glatt aufgehen.
+      pruefe(kk === 0 || Number.isInteger(mm / kk),
+        `A6: ${mm} : ${kk} ist nicht ganzzahlig — „${frage}“`);
+      return {
+        felder: [kk, mm, kennziffer],
+        toleranz: 0.0005,
+        falschFelder: [
+          [0, a + c, "subtrahiert"],
+          [0, a, "nur links"],
+          [1, d + b, "Vorzeichen"],
+          [1, d, "schon rechts"],
+          [2, kennziffer === 1 ? 2 : 1, kennziffer === 1 ? "nicht 0" : kk === 0 && mm === 0 ? "jedes" : "kein"],
+        ],
+      };
+    },
+  });
+  pruefe(faelle.size === 3, `A6: nur ${faelle.size} der drei Fälle kamen in 30 Zügen vor`);
+
+  // Aufgabe 7 — Sachaufgabe: zwei Tarife, drei Kontexte. Gemessen mit
   // tests/werkzeug-streuung.js: 189 verschiedene in 200 Würfen, zurückgerechnet also rund 1742
   // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
   // 0,8 · n gerechnet — 26.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 zwei Tarife", runden: 30, mindestensVerschieden: 26,
+    nr: 7, name: "A7 zwei Tarife", runden: 30, mindestensVerschieden: 26,
     deute: (frage) => {
       // Alle drei Kontexte nennen die vier Zahlen in derselben Reihenfolge:
       // Grundgebühr und Preis des ersten Angebots, dann des zweiten.
@@ -164,14 +296,47 @@ async function aufgaben(page) {
           [g1 - g2, "Division"],
         ],
         pruefe: (f, rueck) => {
-          pruefe(Number.isInteger(x), `A4: die Lösung ${x} ist nicht ganzzahlig — „${f}“`);
-          pruefe(x > 0, `A4: die Lösung ${x} ist nicht positiv, die Frage wäre sachlich sinnlos — „${f}“`);
+          pruefe(Number.isInteger(x), `A7: die Lösung ${x} ist nicht ganzzahlig — „${f}“`);
+          pruefe(x > 0, `A7: die Lösung ${x} ist nicht positiv, die Frage wäre sachlich sinnlos — „${f}“`);
           // Beim Schnittpunkt müssen beide Angebote wirklich gleich viel kosten.
           pruefe(Math.abs(g1 + p1 * x - (g2 + p2 * x)) < 1e-9,
-            `A4: bei ${x} kosten die Angebote ${g1 + p1 * x} und ${g2 + p2 * x} — „${f}“`);
+            `A7: bei ${x} kosten die Angebote ${g1 + p1 * x} und ${g2 + p2 * x} — „${f}“`);
           pruefe(rueck.includes(`${g1 + p1 * x}`),
-            `A4: die Musterlösung nennt den gemeinsamen Wert ${g1 + p1 * x} nicht — „${f}“`);
+            `A7: die Musterlösung nennt den gemeinsamen Wert ${g1 + p1 * x} nicht — „${f}“`);
         },
+      };
+    },
+  });
+
+  // Aufgabe 8 — Altersaufgabe. Gemessen: 46 verschiedene in 200 Würfen. Schranke: simuliertes
+  // 10⁻⁴-Quantil bei 30 Zügen für 0,8 · n — 14.
+  await pruefeAufgabe(page, bericht, {
+    nr: 8, name: "A8 Vater und Sohn", runden: 30, mindestensVerschieden: 14,
+    deute: (frage) => {
+      const m = frage.match(/heute (\d+)-mal.*?In (\d+) Jahren.*?(\d+)-mal/);
+      if (!m) return null;
+      const [a, n, b] = m.slice(1).map(Number);
+      // Unabhängig aus dem Ansatz a·S + n = b·(S + n) hergeleitet.
+      const S = (n * (b - 1)) / (a - b);
+      const V = a * S;
+      pruefe(a > b, `A8: das Verhältnis wächst von ${a} auf ${b} — es muss kleiner werden — „${frage}“`);
+      pruefe(Number.isInteger(S) && S > 0, `A8: das Alter des Sohnes wäre ${S} — „${frage}“`);
+      pruefe(Math.abs(V + n - b * (S + n)) < 1e-9,
+        `A8: in ${n} Jahren wäre der Vater ${V + n}, das ${b}-fache von ${S + n} ist aber ${b * (S + n)} — „${frage}“`);
+      pruefe(V - S >= 18, `A8: der Altersabstand beträgt nur ${V - S} Jahre — „${frage}“`);
+      return {
+        felder: [S, V, V + n],
+        toleranz: 0.0005,
+        falschFelder: [
+          [0, V, "Vaters"],
+          [0, n, "Jahre, die vergehen"],
+          [0, S + n, "erst in"],
+          [1, S, "Sohnes"],
+          [1, S + a, "mal"],
+          [1, b * S, "gilt erst"],
+          [2, V, "kommen noch dazu"],
+          [2, V + b * n, "gleich viele Jahre"],
+        ],
       };
     },
   });

@@ -701,6 +701,19 @@ function ohneKollision(kandidaten, werte, notfall, eps = 1e-9) {
   return gewaehlt;
 }
 
+// Dasselbe für Aufgaben mit mehreren Eingabefeldern: Kollidieren müssen die
+// Werte nur innerhalb eines Feldes, denn nur dort entscheidet die Zahl darüber,
+// welcher Hinweis erscheint. Zwischen zwei Feldern darf dieselbe Zahl stehen.
+// NaN bedeutet "an dieser Stelle springt kein Hinweis an" und wird übergangen.
+function ohneFeldKollision(kandidaten, gruppen, eps = 1e-9) {
+  const sauber = kandidaten.filter((kk) => gruppen(kk).every((g) => {
+    const echt = g.filter((x) => Number.isFinite(x));
+    return echt.every((x, i) => echt.every((y, j) => i === j || Math.abs(x - y) > eps));
+  }));
+  if (!sauber.length) throw new Error("Aufgabengenerator ohne gültige Kandidaten");
+  return pick(sauber);
+}
+
 // Aufgabe 1 — den Scheitel aus der Scheitelform ablesen.
 const A1_KANDIDATEN = (() => {
   const liste = [];
@@ -731,6 +744,11 @@ function generateAufgabe1() {
       if (Math.abs(val - a) < 0.001) return "Das ist der Formfaktor a vor der Klammer. Er sagt etwas über die Öffnung, nichts über die Lage.";
       return `Der Scheitel liegt dort, wo die Klammer null wird: x ${d > 0 ? "−" : "+"} ${num(Math.abs(d))} = 0.`;
     },
+    tipps: [
+      "Vergleiche den Term mit der allgemeinen Scheitelform f(x) = a · (x − d)² + e. Der Scheitel ist dann S(d | e).",
+      "Ein Quadrat ist nie negativ und wird nur an einer einzigen Stelle null — nämlich dort, wo die Klammer null ist. Genau dort liegt der Scheitel.",
+      `Setze also die Klammer null: x ${d > 0 ? "−" : "+"} ${num(Math.abs(d))} = 0. Achte auf das Vorzeichen — in der Form steht ein Minus.`,
+    ],
     musterloesungHtml:
       `<strong>Scheitelform:</strong> f(x) = a · (x − d)² + e mit dem Scheitel S(d | e)<br>` +
       `<strong>Vergleichen:</strong> a = ${num(a)}, d = <strong>${num(d)}</strong>, e = ${num(e)}<br>` +
@@ -739,8 +757,88 @@ function generateAufgabe1() {
   };
 }
 
-// Aufgabe 2 — quadratische Ergänzung: die y-Koordinate des Scheitels.
+// Aufgabe 2 — die Punktprobe. Abschnitt 1 hatte keine Aufgabe, dabei ist
+// „einsetzen und vergleichen“ die Grundlage von allem, was danach kommt:
+// Ein Punkt liegt genau dann auf dem Graphen, wenn seine Koordinaten die
+// Gleichung erfüllen.
+const A2_KANDIDATEN = (() => {
+  const liste = [];
+  for (const a of [-3, -2, -1, 1, 2, 3]) {
+    for (let d = -4; d <= 4; d++) {
+      if (d === 0) continue;
+      for (let e = -6; e <= 6; e++) {
+        if (e === 0) continue;
+        for (let x0 = -4; x0 <= 6; x0++) {
+          if (x0 === d) continue;               // sonst ist die Klammer null
+          const dx = x0 - d;
+          if (Math.abs(dx) > 4) continue;
+          const fw = a * dx * dx + e;
+          if (Math.abs(fw) > 60) continue;
+          liste.push({ a, d, e, x0, dx, fw });
+        }
+      }
+    }
+  }
+  return liste;
+})();
+// Wie weit der angebotene Punkt danebenliegt. 0 heißt: Er liegt wirklich auf
+// dem Graphen — und das soll etwa jeder dritte Fall sein.
+const A2_ABWEICHUNGEN = [0, 0, 0, 1, -1, 2, -2, 3, -3];
+
 function generateAufgabe2() {
+  const ab = pick(A2_ABWEICHUNGEN);
+  const k = ohneFeldKollision(A2_KANDIDATEN, (v) => [
+    // Feld 1: der Funktionswert und die Zahlen, auf denen ein Hinweis liegt.
+    [v.fw, v.a * v.dx * v.dx, v.a * v.dx * (v.a * v.dx), v.a * v.x0 * v.x0 + v.e,
+      v.a * (v.x0 + v.d) * (v.x0 + v.d) + v.e, ab === 0 ? NaN : v.fw + ab],
+  ]);
+  const { a, d, e, x0, dx, fw } = k;
+  const yp = fw + ab;
+  const liegtDrauf = ab === 0;
+  const term = scheitelRein(a, d, e);
+  // num(a) behält das Vorzeichen; num(Math.abs(a)) würde aus −2 · (…)² ein 2 · (…)² machen.
+  const vornA = a === 1 ? "" : a === -1 ? "−" : `${num(a)} · `;
+  const einsetzung = `${vornA}(${klammer(x0)} ${d > 0 ? "−" : "+"} ${num(Math.abs(d))})² ${e > 0 ? "+" : "−"} ${num(Math.abs(e))}`;
+  return {
+    promptHtml: `Gegeben ist <strong>f(x) = ${term}</strong>.<br>` +
+      `Liegt der Punkt <strong>P(${num(x0)} | ${num(yp)})</strong> auf dem Graphen?`,
+    felder: [
+      {
+        name: `f(${num(x0)}) =`, soll: fw, toleranz: 0.0005, platzhalter: "Funktionswert",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - a * dx * dx) < 0.0005) return `Die Zahl hinter der Klammer fehlt: Nach dem Quadrieren kommt noch ${e > 0 ? "+ " + num(e) : "− " + num(-e)} dazu.`;
+          if (Math.abs(val - (a * dx) * (a * dx)) < 0.0005) return `Erst quadrieren, dann mit ${num(a)} multiplizieren — das Quadrat gehört nur zur Klammer, nicht zum Faktor davor.`;
+          if (Math.abs(val - (a * x0 * x0 + e)) < 0.0005) return `Die ${num(Math.abs(d))} in der Klammer wurde übersehen. Rechne zuerst ${num(x0)} ${d > 0 ? "−" : "+"} ${num(Math.abs(d))} = ${num(dx)}.`;
+          if (Math.abs(val - (a * (x0 + d) * (x0 + d) + e)) < 0.0005) return `Vorzeichen in der Klammer: Dort steht (x ${d > 0 ? "−" : "+"} ${num(Math.abs(d))}), also ${num(x0)} ${d > 0 ? "−" : "+"} ${num(Math.abs(d))} = ${num(dx)}.`;
+          if (Math.abs(val - yp) < 0.0005) return `${num(yp)} ist die y-Koordinate des angebotenen Punktes. Die musst du erst ausrechnen, um sie vergleichen zu können.`;
+          return `Setze x = ${num(x0)} in den Term ein: ${einsetzung}.`;
+        },
+      },
+      {
+        name: "Liegt P auf dem Graphen? (1 = ja, 2 = nein)", soll: liegtDrauf ? 1 : 2, toleranz: 0.25, platzhalter: "1 oder 2",
+        hinweis: () => liegtDrauf
+          ? `f(${num(x0)}) = ${num(fw)}, und genau das ist die y-Koordinate von P. Beide Zahlen stimmen überein — der Punkt liegt auf dem Graphen.`
+          : `f(${num(x0)}) = ${num(fw)}, P hat aber die Höhe ${num(yp)}. ${num(fw)} ≠ ${num(yp)}, also liegt P ${ab > 0 ? "unter" : "über"} dem Punkt des Graphen, nicht auf ihm.`,
+      },
+    ],
+    tipps: [
+      "Ein Punkt liegt genau dann auf dem Graphen, wenn seine Koordinaten die Funktionsgleichung erfüllen.",
+      `Setze also die x-Koordinate ein: f(${num(x0)}) = ${einsetzung}.`,
+      `Vergleiche das Ergebnis mit der y-Koordinate ${num(yp)} von P. Stimmen beide überein, liegt P auf dem Graphen.`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Einsetzen:</strong> f(${num(x0)}) = ${einsetzung}<br>` +
+      `<strong>2. Klammer zuerst:</strong> ${num(x0)} ${d > 0 ? "−" : "+"} ${num(Math.abs(d))} = ${num(dx)}, also ${vornA}${klammer(dx)}² ${e > 0 ? "+" : "−"} ${num(Math.abs(e))} = ${vornA}${num(dx * dx)} ${e > 0 ? "+" : "−"} ${num(Math.abs(e))} = <strong>${num(fw)}</strong><br>` +
+      `<strong>3. Vergleichen:</strong> ${num(fw)} ${liegtDrauf ? "=" : "≠"} ${num(yp)} ${liegtDrauf ? "✓" : "✗"}<br>` +
+      `<strong>Antwort:</strong> P(${num(x0)} | ${num(yp)}) liegt <strong>${liegtDrauf ? "auf" : "nicht auf"}</strong> dem Graphen.<br>` +
+      `<span class="progress-note">Das Quadrat gehört zur Klammer, nicht zum Faktor davor: ` +
+      `${num(a)} · ${klammer(dx)}² heißt „erst quadrieren, dann mit ${num(a)} malnehmen“. ` +
+      `Wer zuerst multipliziert, bekommt ${num((a * dx) * (a * dx))} statt ${num(a * dx * dx)}.</span>`,
+  };
+}
+
+// Aufgabe 3 — quadratische Ergänzung: die y-Koordinate des Scheitels.
+function generateAufgabe3() {
   const k = ohneKollision(QE_KANDIDATEN, (v) => [v.e, v.d, v.q, v.k * v.k, v.p], QE_KANDIDATEN[0]);
   const { p, q, k: halb, d, e } = k;
   return {
@@ -757,6 +855,11 @@ function generateAufgabe2() {
       if (Math.abs(val - (q + halb * halb)) < 0.001) return `Beinahe: Das Quadrat der halben Zahl wird <em>abgezogen</em>, nicht addiert. Richtig ist ${num(q)} − ${num(halb * halb)}.`;
       return `Halbiere die Zahl vor dem x: ${num(p)} : 2 = ${num(halb)}. Quadriere sie: ${num(halb * halb)}. Die y-Koordinate ist dann q − (p : 2)².`;
     },
+    tipps: [
+      `Die quadratische Ergänzung macht aus x² ${p > 0 ? "+" : "−"} ${num(Math.abs(p))}x den Anfang einer binomischen Formel. Dazu brauchst du das Quadrat der halben Zahl vor dem x.`,
+      `${num(p)} : 2 = ${num(halb)}, und ${num(halb)}² = ${num(halb * halb)}. Diese Zahl wird addiert <em>und</em> gleich wieder abgezogen — der Term ändert sich dadurch nicht.`,
+      `Aus den ersten drei Summanden wird (x ${halb > 0 ? "+" : "−"} ${num(Math.abs(halb))})². Übrig bleibt ${num(q)} − ${num(halb * halb)} — und das ist die gesuchte Höhe.`,
+    ],
     musterloesungHtml:
       `<strong>1. Halbieren:</strong> p : 2 = ${num(p)} : 2 = ${num(halb)}, also (p : 2)² = ${num(halb * halb)}<br>` +
       `<strong>2. Ergänzen:</strong> ${normalRein(p, q)} = x² ${p > 0 ? "+" : "−"} ${num(Math.abs(p))}x + ${num(halb * halb)} − ${num(halb * halb)}${q === 0 ? "" : (q > 0 ? " + " : " − ") + num(Math.abs(q))}<br>` +
@@ -766,13 +869,108 @@ function generateAufgabe2() {
   };
 }
 
-// Aufgabe 3 — pq-Formel, gesucht ist die größere Lösung.
-const A3_KANDIDATEN = PQ_KANDIDATEN.filter((v) => v.x1 !== v.x2);
+// Aufgabe 4 — die Diskriminante. Abschnitt 5 hatte keine Aufgabe; dabei ist
+// die Frage „wie viele Lösungen?“ oft schon beantwortet, bevor man rechnet.
+const A4_KANDIDATEN = (() => {
+  const liste = [];
+  // p darf ungerade sein; dann ist p : 2 eine halbe Zahl — und genau beim
+  // Halbieren und Quadrieren verrechnen sich die meisten.
+  // Gezählt wird über D, nicht über q: Nur so kommt der seltene Fall D = 0
+  // (q = (p:2)²) überhaupt vor.
+  for (let t = -12; t <= 12; t++) {
+    if (t === 0) continue;                    // sonst wäre (p:2)² = 0
+    const halb = t / 2, quadrat = halb * halb;
+    for (let D = -20; D <= 30; D++) {
+      const q = quadrat - D;
+      if (q === 0 || Math.abs(q) > 70) continue;
+      liste.push({ p: 2 * halb, q, halb, quadrat, D, anzahl: D > 0 ? 2 : D === 0 ? 1 : 0 });
+    }
+  }
+  return liste;
+})();
+// Alle drei Fälle gleich häufig — sonst rät man nach kurzer Zeit richtig.
+const A4_NACH_FALL = [0, 1, 2].map((n) => A4_KANDIDATEN.filter((v) => v.anzahl === n));
 
-function generateAufgabe3() {
-  const k = ohneKollision(A3_KANDIDATEN,
+function generateAufgabe4() {
+  const fall = pick([0, 1, 2]);
+  const k = ohneFeldKollision(A4_NACH_FALL[fall], (v) => [
+    // Feld 1: (p : 2)². Bei D = 0 ist q = (p:2)² selbst die richtige Antwort;
+    // dort liegt kein Hinweis, und der Wert darf nicht als Kollision zählen.
+    [v.quadrat, v.halb, v.p * v.p, v.D === 0 ? NaN : v.q, v.p],
+    // Feld 2: die Diskriminante. Bei D = 0 ist q − (p:2)² ebenfalls 0 und damit
+    // die richtige Antwort — dort liegt dann kein Hinweis, und der Wert darf
+    // nicht als Kollision zählen, sonst bliebe der Fall D = 0 ganz aus.
+    [v.D, v.quadrat + v.q, v.D === 0 ? NaN : v.q - v.quadrat, v.quadrat],
+  ]);
+  const { p, q, halb, quadrat, D, anzahl } = k;
+  const wurzel = D >= 0 ? Math.sqrt(D) : NaN;
+  const genau = D > 0 && istQuadrat(D);
+  return {
+    promptHtml: `Gegeben ist die Gleichung <strong>${normalRein(p, q)} = 0</strong>.<br>` +
+      `Entscheide mit der Diskriminante, wie viele Lösungen sie hat.`,
+    felder: [
+      {
+        name: "(p : 2)²", soll: quadrat, toleranz: 0.0005, platzhalter: "Zahl",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - halb) < 0.0005) return `${num(halb)} ist p : 2. Das muss noch quadriert werden: ${num(halb)}² = ${num(quadrat)}.`;
+          if (Math.abs(val - p * p) < 0.0005) return `Quadriert wird die <em>halbe</em> Zahl: erst ${num(p)} : 2 = ${num(halb)}, dann quadrieren.`;
+          if (Math.abs(val - q) < 0.0005) return `${num(q)} ist q, nicht (p : 2)². Das p steht vor dem x.`;
+          if (Math.abs(val - p) < 0.0005) return `${num(p)} ist p selbst. Erst halbieren, dann quadrieren.`;
+          return `p ist die Zahl vor dem x, hier ${num(p)}. Halbiere sie und quadriere das Ergebnis.`;
+        },
+      },
+      {
+        name: "D = (p : 2)² − q", soll: D, toleranz: 0.0005, platzhalter: "Diskriminante",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (quadrat + q)) < 0.0005) return `q wird <strong>abgezogen</strong>, nicht addiert: ${num(quadrat)} − ${klammer(q)} = ${num(D)}.`;
+          if (Math.abs(val - (q - quadrat)) < 0.0005) return `Die Reihenfolge stimmt nicht: D = (p : 2)² − q, also ${num(quadrat)} − ${klammer(q)}.`;
+          if (Math.abs(val - quadrat) < 0.0005) return `${num(quadrat)} ist erst (p : 2)². Davon wird q = ${num(q)} noch abgezogen.`;
+          return `D = ${num(quadrat)} − ${klammer(q)}. Achte auf das Vorzeichen von q.`;
+        },
+      },
+      {
+        name: "Anzahl der Lösungen (0, 1 oder 2)", soll: anzahl, toleranz: 0.25, platzhalter: "0, 1 oder 2",
+        hinweis: (roh, val) => {
+          const g = Math.round(val);
+          if (g === anzahl) return "";
+          if (D > 0) return `D = ${num(D)} ist <strong>positiv</strong>. Aus einer positiven Zahl lässt sich die Wurzel ziehen, und das ± davor liefert zwei verschiedene Lösungen.`;
+          if (D === 0) {
+            return g === 0
+              ? "D = 0 heißt nicht „keine Lösung“. √0 = 0, und x = −p : 2 ist eine Lösung — der Scheitel liegt genau auf der x-Achse."
+              : "Bei D = 0 ist √D = 0; das ± ändert dann nichts mehr. Beide Lösungen fallen zu <strong>einer</strong> zusammen.";
+          }
+          return `D = ${num(D)} ist <strong>negativ</strong>. Aus einer negativen Zahl lässt sich keine Wurzel ziehen — die Parabel schneidet die x-Achse überhaupt nicht.`;
+        },
+      },
+    ],
+    tipps: [
+      `In ${normalRein(p, q)} ist p = ${num(p)} die Zahl vor dem x und q = ${num(q)} die Zahl ohne x.`,
+      `Die Diskriminante ist D = (p : 2)² − q. Rechne ${num(halb)}² − ${klammer(q)}.`,
+      "Das Vorzeichen von D entscheidet: D &gt; 0 zwei Lösungen, D = 0 eine, D &lt; 0 keine. Gerechnet werden muss die pq-Formel dafür gar nicht.",
+    ],
+    musterloesungHtml:
+      `<strong>1. Ablesen:</strong> p = ${num(p)}, q = ${num(q)}<br>` +
+      `<strong>2. Halbieren und quadrieren:</strong> p : 2 = ${num(halb)}, (p : 2)² = <strong>${num(quadrat)}</strong><br>` +
+      `<strong>3. Diskriminante:</strong> D = ${num(quadrat)} − ${klammer(q)} = <strong>${num(D)}</strong><br>` +
+      `<strong>4. Entscheiden:</strong> D ${D > 0 ? "&gt; 0" : D === 0 ? "= 0" : "&lt; 0"} ⇒ <strong>${anzahl === 2 ? "zwei Lösungen" : anzahl === 1 ? "genau eine Lösung" : "keine Lösung"}</strong><br>` +
+      (anzahl === 2
+        ? `<em>Zur Kontrolle:</em> x<sub>1,2</sub> = ${num(-halb)} ± √${num(D)}${genau ? `, also x₁ = ${num(-halb - wurzel)} und x₂ = ${num(-halb + wurzel)}` : ` ≈ ${num(-halb)} ± ${num(wurzel, 3)}`}.<br>`
+        : anzahl === 1
+          ? `<em>Zur Kontrolle:</em> x = ${num(-halb)} — der Scheitel S(${num(-halb)} | 0) liegt auf der x-Achse.<br>`
+          : `<em>Zur Kontrolle:</em> Der Scheitel liegt bei S(${num(-halb)} | ${num(-D)}), also ${D < 0 ? "oberhalb" : "unterhalb"} der x-Achse — die nach oben geöffnete Parabel erreicht sie nie.<br>`) +
+      `<span class="progress-note">Die Diskriminante ist das, was unter der Wurzel der pq-Formel steht. ` +
+      `Ihr Vorzeichen beantwortet die Frage nach der Anzahl, ohne dass man die Lösungen ausrechnen muss — ` +
+      `geometrisch sagt sie, ob der Scheitel unter, auf oder über der x-Achse liegt.</span>`,
+  };
+}
+
+// Aufgabe 5 — pq-Formel, gesucht ist die größere Lösung.
+const A5_KANDIDATEN = PQ_KANDIDATEN.filter((v) => v.x1 !== v.x2);
+
+function generateAufgabe5() {
+  const k = ohneKollision(A5_KANDIDATEN,
     (v) => [Math.max(v.x1, v.x2), Math.min(v.x1, v.x2), -v.p / 2, (v.p / 2) * (v.p / 2) - v.q, v.q],
-    A3_KANDIDATEN[0]);
+    A5_KANDIDATEN[0]);
   const { x1, x2, p, q } = k;
   const gross = Math.max(x1, x2), klein = Math.min(x1, x2);
   const halb = p / 2, D = halb * halb - q, w = Math.sqrt(D);
@@ -790,6 +988,11 @@ function generateAufgabe3() {
       if (Math.abs(val - (halb + w)) < 0.001) return `Vorzeichenfehler: In der Formel steht <strong>−</strong>p : 2, also ${num(-halb)} und nicht ${num(halb)}.`;
       return `pq-Formel: x = −p : 2 ± √((p : 2)² − q) = ${num(-halb)} ± √${num(D)}.`;
     },
+    tipps: [
+      `Lies zuerst p und q ab: p = ${num(p)} steht vor dem x, q = ${num(q)} steht allein.`,
+      `Die pq-Formel lautet x = −p : 2 ± √((p : 2)² − q). Hier: −p : 2 = ${num(-halb)} und (p : 2)² − q = ${num(halb * halb)} − ${klammer(q)} = ${num(D)}.`,
+      `√${num(D)} = ${num(w)}. Die größere Lösung entsteht mit dem <strong>Plus</strong>: ${num(-halb)} + ${num(w)}.`,
+    ],
     musterloesungHtml:
       `<strong>1. Ablesen:</strong> p = ${num(p)}, q = ${num(q)}, also p : 2 = ${num(halb)}<br>` +
       `<strong>2. Diskriminante:</strong> D = ${klammer(halb)}² − ${klammer(q)} = ${num(halb * halb)} − ${klammer(q)} = <strong>${num(D)}</strong>, √D = ${num(w)}<br>` +
@@ -800,8 +1003,92 @@ function generateAufgabe3() {
   };
 }
 
-// Aufgabe 4 — Extremwertaufgabe: die größtmögliche Fläche.
-const A4_KANDIDATEN = (() => {
+// Aufgabe 6 — eine Parabel aus Scheitel und einem weiteren Punkt bestimmen.
+// Das ist die Umkehrung von Aufgabe 1: Dort wurde aus der Gleichung der
+// Scheitel abgelesen, hier wird aus dem Scheitel die Gleichung gebaut.
+const A6_KANDIDATEN = (() => {
+  const liste = [];
+  for (const a of [-3, -2, -1, 1, 2, 3]) {
+    for (let d = -4; d <= 4; d++) {
+      for (let e = -8; e <= 8; e++) {
+        for (let x0 = -5; x0 <= 6; x0++) {
+          const dx = x0 - d;
+          if (dx === 0 || Math.abs(dx) > 3) continue;
+          if (x0 === 0) continue;             // sonst wäre f(0) schon gegeben
+          const y0 = a * dx * dx + e;
+          const f0 = a * d * d + e;
+          const zweite = 2 * d - x0;          // die andere Stelle mit demselben Wert
+          if (Math.abs(y0) > 40 || Math.abs(f0) > 40) continue;
+          liste.push({ a, d, e, x0, dx, y0, f0, zweite });
+        }
+      }
+    }
+  }
+  return liste;
+})();
+
+function generateAufgabe6() {
+  const k = ohneFeldKollision(A6_KANDIDATEN, (v) => [
+    // Feld 1: der Formfaktor a.
+    [v.a, (v.y0 - v.e) / v.dx, v.y0 - v.e, -v.a],
+    // Feld 2: der y-Achsenabschnitt f(0).
+    [v.f0, v.e, v.a * v.d * v.d, v.y0],
+    // Feld 3: die zweite Stelle mit demselben Funktionswert.
+    [v.zweite, v.x0, v.d, -v.x0],
+  ]);
+  const { a, d, e, x0, dx, y0, f0, zweite } = k;
+  return {
+    promptHtml: `Eine Parabel hat den Scheitel <strong>S(${num(d)} | ${num(e)})</strong> ` +
+      `und verläuft durch den Punkt <strong>P(${num(x0)} | ${num(y0)})</strong>.`,
+    felder: [
+      {
+        name: "Formfaktor a", soll: a, toleranz: 0.0005, platzhalter: "a",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (y0 - e) / dx) < 0.0005) return `Geteilt wird durch das <em>Quadrat</em> der Klammer: (${num(x0)} ${d > 0 ? "−" : "+"} ${num(Math.abs(d))})² = ${num(dx * dx)}, nicht durch ${num(dx)}.`;
+          if (Math.abs(val - (y0 - e)) < 0.0005) return `${num(y0 - e)} ist der Höhenunterschied ${num(y0)} − ${klammer(e)}. Er muss noch durch ${num(dx * dx)} geteilt werden.`;
+          if (Math.abs(val + a) < 0.0005) return `Das Vorzeichen stimmt nicht. P liegt ${y0 > e ? "über" : "unter"} dem Scheitel, also ist die Parabel nach ${y0 > e ? "oben" : "unten"} geöffnet und a ist ${y0 > e ? "positiv" : "negativ"}.`;
+          return `Setze P in f(x) = a · (x ${d > 0 ? "−" : "+"} ${num(Math.abs(d))})² ${e > 0 ? "+" : "−"} ${num(Math.abs(e))} ein und löse nach a auf.`;
+        },
+      },
+      {
+        name: "y-Achsenabschnitt f(0)", soll: f0, toleranz: 0.0005, platzhalter: "f(0)",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - e) < 0.0005) return `${num(e)} ist die Höhe des Scheitels, also f(${num(d)}). Gefragt ist der Wert an der Stelle x = 0.`;
+          if (Math.abs(val - a * d * d) < 0.0005) return `Die Zahl hinter der Klammer fehlt: Nach ${num(a)} · ${klammer(-d)}² = ${num(a * d * d)} kommt noch ${e > 0 ? "+ " + num(e) : "− " + num(-e)}.`;
+          if (Math.abs(val - y0) < 0.0005) return `${num(y0)} ist die Höhe von P, nicht der y-Achsenabschnitt.`;
+          return `Setze x = 0 ein: f(0) = ${num(a)} · (0 ${d > 0 ? "−" : "+"} ${num(Math.abs(d))})² ${e > 0 ? "+" : "−"} ${num(Math.abs(e))}.`;
+        },
+      },
+      {
+        name: `zweite Stelle mit dem Wert ${num(y0)}`, soll: zweite, toleranz: 0.0005, platzhalter: "x",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - x0) < 0.0005) return `${num(x0)} ist die schon bekannte Stelle. Gesucht ist die <em>andere</em> mit demselben Wert.`;
+          if (Math.abs(val - d) < 0.0005) return `${num(d)} ist die Stelle des Scheitels. Dort hat f den Wert ${num(e)}, nicht ${num(y0)}.`;
+          if (Math.abs(val + x0) < 0.0005) return `Gespiegelt wird nicht an der y-Achse, sondern an der Achse des Scheitels: x = ${num(d)}.`;
+          return `Die Parabel ist zur Geraden x = ${num(d)} symmetrisch. ${num(x0)} liegt ${num(Math.abs(dx))} ${Math.abs(dx) === 1 ? "Einheit" : "Einheiten"} ${dx > 0 ? "rechts" : "links"} davon — die zweite Stelle ebenso weit auf der anderen Seite.`;
+        },
+      },
+    ],
+    tipps: [
+      `Aus dem Scheitel folgt die Form: f(x) = a · (x ${d > 0 ? "−" : "+"} ${num(Math.abs(d))})² ${e > 0 ? "+" : "−"} ${num(Math.abs(e))}. Nur a ist noch unbekannt.`,
+      `Setze P(${num(x0)} | ${num(y0)}) ein: ${num(y0)} = a · ${num(dx * dx)} ${e > 0 ? "+" : "−"} ${num(Math.abs(e))}. Daraus lässt sich a berechnen.`,
+      `Für die dritte Frage brauchst du gar nicht zu rechnen: Die Parabel ist symmetrisch zur senkrechten Geraden durch den Scheitel, also zu x = ${num(d)}.`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Ansatz mit dem Scheitel:</strong> f(x) = a · (x ${d > 0 ? "−" : "+"} ${num(Math.abs(d))})² ${e > 0 ? "+" : "−"} ${num(Math.abs(e))}<br>` +
+      `<strong>2. P einsetzen:</strong> ${num(y0)} = a · ${klammer(dx)}² ${e > 0 ? "+" : "−"} ${num(Math.abs(e))} = a · ${num(dx * dx)} ${e > 0 ? "+" : "−"} ${num(Math.abs(e))}<br>` +
+      `<strong>3. Nach a auflösen:</strong> a · ${num(dx * dx)} = ${num(y0 - e)}, also <strong>a = ${num(a)}</strong><br>` +
+      `&nbsp;&nbsp;&nbsp;damit f(x) = ${scheitelRein(a, d, e)}<br>` +
+      `<strong>4. y-Achsenabschnitt:</strong> f(0) = ${num(a)} · ${klammer(-d)}² ${e > 0 ? "+" : "−"} ${num(Math.abs(e))} = <strong>${num(f0)}</strong><br>` +
+      `<strong>5. Symmetrie:</strong> P liegt ${num(Math.abs(dx))} ${Math.abs(dx) === 1 ? "Einheit" : "Einheiten"} ${dx > 0 ? "rechts" : "links"} der Achse x = ${num(d)}; ebenso weit auf der anderen Seite liegt <strong>x = ${num(zweite)}</strong><br>` +
+      `<em>Probe:</em> f(${klammer(zweite)}) = ${num(a)} · ${klammer(zweite - d)}² ${e > 0 ? "+" : "−"} ${num(Math.abs(e))} = ${num(y0)} ✓<br>` +
+      `<span class="progress-note">Zwei Angaben genügen, wenn eine davon der Scheitel ist: Er liefert d und e, ` +
+      `der zweite Punkt liefert a. Ohne den Scheitel bräuchte man drei Punkte.</span>`,
+  };
+}
+
+// Aufgabe 7 — Extremwertaufgabe: die größtmögliche Fläche.
+const A7_KANDIDATEN = (() => {
   const liste = [];
   for (let n = 3; n <= 20; n++) {
     const U = 4 * n;          // damit U : 4 ganzzahlig bleibt
@@ -810,8 +1097,8 @@ const A4_KANDIDATEN = (() => {
   return liste;
 })();
 
-function generateAufgabe4() {
-  const k = ohneKollision(A4_KANDIDATEN, (v) => [v.maxA, v.best, v.halbU, v.U], A4_KANDIDATEN[0]);
+function generateAufgabe7() {
+  const k = ohneKollision(A7_KANDIDATEN, (v) => [v.maxA, v.best, v.halbU, v.U], A7_KANDIDATEN[0]);
   const { U, best, maxA, halbU } = k;
   return {
     promptHtml: `Ein <strong>${num(U)} m</strong> langer Zaun soll ein rechteckiges Beet vollständig umschließen.<br>` +
@@ -826,6 +1113,11 @@ function generateAufgabe4() {
       if (Math.abs(val - U * U) < 0.001) return "Der Umfang wird nicht quadriert. Stelle zuerst die Fläche als Funktion einer Seite dar.";
       return `Ansatz: 2x + 2y = ${num(U)}, also y = ${num(halbU)} − x und A(x) = x · (${num(halbU)} − x). Suche den Scheitel dieser Parabel.`;
     },
+    tipps: [
+      `Nenne die eine Seite x. Aus dem Umfang 2x + 2y = ${num(U)} folgt y = ${num(halbU)} − x — beide Seiten hängen also zusammen.`,
+      `Damit wird die Fläche zu einer Funktion einer einzigen Größe: A(x) = x · (${num(halbU)} − x) = −x² + ${num(halbU)}x.`,
+      "Die Parabel ist nach unten geöffnet; ihr Scheitel ist der größte Wert. Er liegt in der Mitte zwischen den Nullstellen 0 und " + num(halbU) + ".",
+    ],
     musterloesungHtml:
       `<strong>1. Ansatz:</strong> 2x + 2y = ${num(U)}, also y = ${num(halbU)} − x<br>` +
       `<strong>2. Flächenterm:</strong> A(x) = x · (${num(halbU)} − x) = −x² + ${num(halbU)}x<br>` +
@@ -836,12 +1128,109 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 8 — eine Wurfparabel. Hier treffen Scheitel und Nullstellen in einem
+// Sachzusammenhang zusammen: Der Scheitel ist der höchste Punkt, die zweite
+// Nullstelle die Weite.
+const A8_KANDIDATEN = (() => {
+  const liste = [];
+  for (let w = 8; w <= 60; w += 2) {
+    for (let e = 2; e <= 20; e++) {
+      const c = (4 * e) / (w * w);            // h(x) = −c·x² + b·x
+      const b = (4 * e) / w;
+      // Beide Koeffizienten sollen ablesbar bleiben: höchstens drei bzw. zwei Nachkommastellen.
+      if (!Number.isInteger(c * 1000) || !Number.isInteger(b * 100)) continue;
+      if (c < 0.005 || b > 6 || b < 0.4) continue;
+      if (2 * e > w) continue;                // eine Wurfbahn ist mindestens doppelt so weit wie hoch
+      liste.push({ w, e, c, b, halb: w / 2 });
+    }
+  }
+  return liste;
+})();
+const A8_KONTEXTE = [
+  { einleitung: "Ein Fußball wird vom Boden aus abgeschlagen", maxW: 60,
+    frage: "bis der Ball wieder auf dem Boden auftrifft", antwort: "trifft der Ball wieder auf dem Boden auf" },
+  { einleitung: "Ein Golfball wird vom Abschlag aus geschlagen", maxW: 60,
+    frage: "bis der Ball wieder auf dem Boden auftrifft", antwort: "trifft der Ball wieder auf dem Boden auf" },
+  { einleitung: "Ein Wasserstrahl verlässt eine Düse am Beckenrand", maxW: 20,
+    frage: "bis der Strahl wieder auf die Wasseroberfläche trifft", antwort: "trifft der Strahl wieder auf die Wasseroberfläche" },
+  { einleitung: "Ein Stein wird flach über eine Wiese geworfen", maxW: 30,
+    frage: "bis der Stein wieder aufkommt", antwort: "kommt der Stein wieder auf" },
+];
+
+function generateAufgabe8() {
+  // Erst der Zusammenhang, dann die Zahlen: Ein Delfin springt nicht 50 m weit.
+  const kt = pick(A8_KONTEXTE);
+  const k = ohneFeldKollision(A8_KANDIDATEN.filter((v) => v.w <= kt.maxW), (v) => [
+    // Feld 1: die Stelle des höchsten Punktes.
+    [v.halb, v.w, v.e, v.b],
+    // Feld 2: die größte Höhe.
+    [v.e, v.halb, v.w, v.b],
+    // Feld 3: die Weite.
+    [v.w, v.halb, v.e, v.b],
+  ]);
+  const { w, e, c, b, halb } = k;
+  const bahn = `−${num(c)}x² ${b === 1 ? "+ x" : "+ " + num(b) + "x"}`;
+  return {
+    promptHtml: `${kt.einleitung}. Die Bahn beschreibt die Funktion<br>` +
+      `<strong>h(x) = ${bahn}</strong><br>` +
+      `Dabei ist x die waagerechte Entfernung in Metern und h(x) die Höhe in Metern.`,
+    felder: [
+      {
+        name: "Entfernung des höchsten Punktes", soll: halb, einheit: "m", toleranz: 0.0005, platzhalter: "x in m",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - w) < 0.0005) return `${num(w)} m ist die ganze Weite. Der höchste Punkt liegt genau in der Mitte.`;
+          if (Math.abs(val - e) < 0.0005) return `${num(e)} ist eine Höhe, keine Entfernung.`;
+          if (Math.abs(val - b) < 0.0005) return `${num(b)} ist der Koeffizient vor dem x, nicht die Stelle des Scheitels.`;
+          return `Die Bahn beginnt bei x = 0 und endet bei x = ${num(w)}. Eine Parabel ist symmetrisch — der Scheitel liegt in der Mitte zwischen den beiden Nullstellen.`;
+        },
+      },
+      {
+        name: "größte Höhe", soll: e, einheit: "m", toleranz: 0.0005, platzhalter: "h in m",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - halb) < 0.0005) return `${num(halb)} ist die <em>Stelle</em> des höchsten Punktes. Die Höhe bekommst du, indem du sie in h einsetzt.`;
+          if (Math.abs(val - w) < 0.0005) return `${num(w)} m ist die Weite, nicht die Höhe.`;
+          if (Math.abs(val - b) < 0.0005) return `${num(b)} ist der Koeffizient vor dem x.`;
+          return `Setze x = ${num(halb)} in h ein: h(${num(halb)}) = −${num(c)} · ${num(halb)}² + ${num(b)} · ${num(halb)}.`;
+        },
+      },
+      {
+        name: `Weite, ${kt.frage}`, soll: w, einheit: "m", toleranz: 0.0005, platzhalter: "x in m",
+        hinweis: (roh, val) => {
+          if (Math.abs(val - halb) < 0.0005) return `${num(halb)} m ist erst die halbe Strecke — dort ist der höchste Punkt erreicht, nicht der Boden.`;
+          if (Math.abs(val - e) < 0.0005) return `${num(e)} ist die Höhe, nicht die Weite.`;
+          if (Math.abs(val - b) < 0.0005) return `${num(b)} ist der Koeffizient vor dem x.`;
+          return `Gesucht ist die Stelle mit h(x) = 0. Klammere x aus: x · (−${num(c)}x + ${num(b)}) = 0.`;
+        },
+      },
+    ],
+    tipps: [
+      "Der höchste Punkt ist der Scheitel der Parabel, die Weite die zweite Nullstelle. Beides steckt in derselben Gleichung.",
+      `Die Nullstellen findest du durch Ausklammern: ${bahn} = x · (−${num(c)}x + ${num(b)}) = 0. Ein Produkt ist null, wenn ein Faktor null ist.`,
+      "Der Scheitel liegt immer genau in der Mitte zwischen den beiden Nullstellen — die Parabel ist zu dieser Senkrechten symmetrisch.",
+    ],
+    musterloesungHtml:
+      `<strong>1. Nullstellen durch Ausklammern:</strong> ${bahn} = x · (−${num(c)}x + ${num(b)}) = 0<br>` +
+      `&nbsp;&nbsp;&nbsp;x = 0 (der Start) oder −${num(c)}x + ${num(b)} = 0 ⇒ x = ${num(b)} : ${num(c)} = <strong>${num(w)}</strong><br>` +
+      `<strong>2. Scheitel in der Mitte:</strong> x = (0 + ${num(w)}) : 2 = <strong>${num(halb)}</strong><br>` +
+      `<strong>3. Höhe dort:</strong> h(${num(halb)}) = −${num(c)} · ${num(halb * halb)} + ${num(b)} · ${num(halb)} = ${num(-c * halb * halb)} + ${num(b * halb)} = <strong>${num(e)}</strong><br>` +
+      `<strong>Antwort:</strong> Nach ${num(halb)} m ist der höchste Punkt mit ${num(e)} m erreicht; nach ${num(w)} m ${kt.antwort}.<br>` +
+      `<em>Probe:</em> h(${num(w)}) = −${num(c)} · ${num(w * w)} + ${num(b)} · ${num(w)} = ${num(-c * w * w)} + ${num(b * w)} = 0 ✓<br>` +
+      `<span class="progress-note">Der Term hat keinen konstanten Summanden — deshalb beginnt die Bahn in der Höhe 0. ` +
+      `Nur für 0 ≤ x ≤ ${num(w)} beschreibt die Parabel den Wurf; davor und danach wäre h(x) negativ, ` +
+      `und eine Höhe unter dem Boden gibt es hier nicht.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Scheitel ablesen", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — quadratische Ergänzung", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — pq-Formel", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — größte Fläche", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Punktprobe", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — quadratische Ergänzung", generate: generateAufgabe3 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Diskriminante", generate: generateAufgabe4 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — pq-Formel", generate: generateAufgabe5 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Parabel aus Scheitel und Punkt", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — größte Fläche", generate: generateAufgabe7 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Wurfparabel", generate: generateAufgabe8 },
   ]);
 }
 

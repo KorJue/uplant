@@ -9,9 +9,12 @@ const { neuerBericht } = require("../lib/pruefen");
 const { starteBrowser, neueSeite, oeffne, HOST } = require("../lib/seite");
 const { pruefeNotation } = require("../lib/notation");
 const { pruefeKontrast } = require("../lib/kontrast");
-const { oeffneAufgabe } = require("../lib/aufgaben");
+const { oeffneAufgabe, pruefeAufgabe } = require("../lib/aufgaben");
 
 const BASIS = HOST + "/mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/12-trigonometrische-funktionen/index.html";
+
+// Über alle Runden gesammelt: Aufgabe 6 muss beide Vorzeichen des Sinus zeigen.
+const vorzeichenA6 = new Set();
 
 const bericht = neuerBericht();
 const { pruefe, nahe } = bericht;
@@ -471,8 +474,8 @@ async function testAufgabe1(page) {
   pruefe(gesehen.size >= 29, `A1: nur ${gesehen.size} verschiedene Aufgaben in 60 Zügen (erwartet ≥ 29)`);
 }
 
-async function testAufgabe2(page) {
-  const box = await aufgabeOeffnen(page, 2);
+async function testAufgabe3(page) {
+  const box = await aufgabeOeffnen(page, 3);
   const gesehen = new Set();
   for (let i = 0; i < 40; i++) {
     await page.locator(`${box} .btn-wuerfeln`).click();
@@ -485,46 +488,46 @@ async function testAufgabe2(page) {
     gesehen.add(daten.join("/"));
     const z = daten[0] === "π" ? 1 : Number(daten[0].replace("π", ""));
     const n = Number(daten[1]);
-    pruefe(Number.isFinite(z) && Number.isFinite(n), `A2: Bruch ${daten.join("/")} nicht lesbar`);
-    pruefe(ggT(z, n) === 1, `A2: Bruch ${z}/${n} ist nicht gekürzt`);
+    pruefe(Number.isFinite(z) && Number.isFinite(n), `A3: Bruch ${daten.join("/")} nicht lesbar`);
+    pruefe(ggT(z, n) === 1, `A3: Bruch ${z}/${n} ist nicht gekürzt`);
     const grad = z * 180 / n;
-    pruefe(Number.isInteger(grad), `A2: ${z}π/${n} ergibt ${grad}° — nicht ganzzahlig`);
+    pruefe(Number.isInteger(grad), `A3: ${z}π/${n} ergibt ${grad}° — nicht ganzzahlig`);
 
     const ok = await antworte(page, box, grad);
-    pruefe(ok.includes("✓ Richtig"), `A2: richtige Antwort ${grad} nicht anerkannt (${z}π/${n})`);
-    pruefe(ok.includes(`${String(grad).replace(".", ",")}°`), `A2: Musterlösung ohne ${grad}°`);
+    pruefe(ok.includes("✓ Richtig"), `A3: richtige Antwort ${grad} nicht anerkannt (${z}π/${n})`);
+    pruefe(ok.includes(`${String(grad).replace(".", ",")}°`), `A3: Musterlösung ohne ${grad}°`);
 
     for (const [falsch, muster] of [[z * 360 / n, "ganze"], [z / n * Math.PI * Math.PI / 180, "falsche Richtung"]]) {
       const eingabe = Math.round(falsch * 100) / 100;
       if (Math.abs(eingabe - grad) < 0.4) continue;
       const r = await antworte(page, box, eingabe);
-      pruefe(r.includes("Noch nicht richtig"), `A2: falsche Antwort ${eingabe} wurde anerkannt`);
-      pruefe(r.includes(muster), `A2: Hinweis „${muster}“ fehlt bei der Eingabe ${eingabe}`);
+      pruefe(r.includes("Noch nicht richtig"), `A3: falsche Antwort ${eingabe} wurde anerkannt`);
+      pruefe(r.includes(muster), `A3: Hinweis „${muster}“ fehlt bei der Eingabe ${eingabe}`);
     }
   }
   // Gemessen mit tests/werkzeug-streuung.js: 14 verschiedene in 200 Würfen — mehr gibt der
   // Generator nicht her. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 40 Zügen,
   // vorsichtshalber für 0,8 · n gerechnet — 8.
-  pruefe(gesehen.size >= 8, `A2: nur ${gesehen.size} verschiedene Aufgaben in 40 Zügen (erwartet ≥ 8)`);
+  pruefe(gesehen.size >= 8, `A3: nur ${gesehen.size} verschiedene Aufgaben in 40 Zügen (erwartet ≥ 8)`);
 }
 
-async function testAufgabe3(page) {
-  const box = await aufgabeOeffnen(page, 3);
+async function testAufgabe5(page) {
+  const box = await aufgabeOeffnen(page, 5);
   const gesehen = new Set();
   for (let i = 0; i < 60; i++) {
     await page.locator(`${box} .btn-wuerfeln`).click();
     const frage = (await text(page, `${box} .aufgabe-prompt`)).replace(/−/g, "-");
     gesehen.add(frage);
     const m = frage.match(/Periode (\d+)°.*höchster Wert ist (-?\d+), sein niedrigster (-?\d+),.*x = (\d+)°/);
-    pruefe(!!m, `A3: Aufgabe nicht lesbar: „${frage}“`);
+    pruefe(!!m, `A5: Aufgabe nicht lesbar: „${frage}“`);
     if (!m) continue;
     const p = Number(m[1]), hoch = Number(m[2]), tief = Number(m[3]), xm = Number(m[4]);
     const c = ((xm - p / 4) % p + p) % p;
-    pruefe(hoch > tief, `A3: Höchstwert ${hoch} nicht größer als ${tief}`);
-    pruefe(xm < p, `A3: Hochpunkt ${xm}° liegt außerhalb einer Periode von ${p}°`);
+    pruefe(hoch > tief, `A5: Höchstwert ${hoch} nicht größer als ${tief}`);
+    pruefe(xm < p, `A5: Hochpunkt ${xm}° liegt außerhalb einer Periode von ${p}°`);
 
     const ok = await antworte(page, box, c);
-    pruefe(ok.includes("✓ Richtig"), `A3: richtige Antwort ${c} nicht anerkannt (p=${p}, xm=${xm})`);
+    pruefe(ok.includes("✓ Richtig"), `A5: richtige Antwort ${c} nicht anerkannt (p=${p}, xm=${xm})`);
 
     for (const [falsch, muster] of [
       [((xm % p) + p) % p, "Hochpunkts"],
@@ -533,25 +536,25 @@ async function testAufgabe3(page) {
     ]) {
       if (Math.abs(falsch - c) < 0.4) continue;
       const r = await antworte(page, box, falsch);
-      pruefe(r.includes("Noch nicht richtig"), `A3: falsche Antwort ${falsch} wurde anerkannt (p=${p}, xm=${xm})`);
-      pruefe(r.includes(muster), `A3: Hinweis „${muster}“ fehlt bei der Eingabe ${falsch}`);
+      pruefe(r.includes("Noch nicht richtig"), `A5: falsche Antwort ${falsch} wurde anerkannt (p=${p}, xm=${xm})`);
+      pruefe(r.includes(muster), `A5: Hinweis „${muster}“ fehlt bei der Eingabe ${falsch}`);
     }
   }
   // Gemessen mit tests/werkzeug-streuung.js: 159 verschiedene in 200 Würfen, zurückgerechnet
   // also rund 417 Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 60 Zügen,
   // vorsichtshalber für 0,8 · n gerechnet — 46.
-  pruefe(gesehen.size >= 46, `A3: nur ${gesehen.size} verschiedene Aufgaben in 60 Zügen (erwartet ≥ 46)`);
+  pruefe(gesehen.size >= 46, `A5: nur ${gesehen.size} verschiedene Aufgaben in 60 Zügen (erwartet ≥ 46)`);
 }
 
-async function testAufgabe4(page) {
-  const box = await aufgabeOeffnen(page, 4);
+async function testAufgabe7(page) {
+  const box = await aufgabeOeffnen(page, 7);
   const gesehen = new Set();
   for (let i = 0; i < 60; i++) {
     await page.locator(`${box} .btn-wuerfeln`).click();
     const frage = (await text(page, `${box} .aufgabe-prompt`)).replace(/−/g, "-");
     gesehen.add(frage);
     const m = frage.match(/Durchmesser (\d+) m.*tiefster Punkt liegt (\d+) m.*dauert (\d+) s.*nach (\d+) s/);
-    pruefe(!!m, `A4: Aufgabe nicht lesbar: „${frage}“`);
+    pruefe(!!m, `A7: Aufgabe nicht lesbar: „${frage}“`);
     if (!m) continue;
     const D = Number(m[1]), boden = Number(m[2]), T = Number(m[3]), t = Number(m[4]);
     const r = D / 2, h = r + boden, grad = 360 * t / T;
@@ -559,15 +562,15 @@ async function testAufgabe4(page) {
     // exakten Wert. Für die Stellen dieser Aufgabe sind alle Kosinuswerte
     // ±0,5 oder ±1, deshalb wird hier auf ein Vielfaches von 0,5 gerundet.
     const kos = Math.round(cosG(grad) * 2) / 2;
-    pruefe(Math.abs(kos - cosG(grad)) < 1e-9, `A4: cos ${grad}° ist kein Vielfaches von 0,5`);
+    pruefe(Math.abs(kos - cosG(grad)) < 1e-9, `A7: cos ${grad}° ist kein Vielfaches von 0,5`);
     const hoehe = h - r * kos;
-    pruefe(Number.isInteger(hoehe), `A4: Ergebnis ${hoehe} ist nicht ganzzahlig (D=${D}, T=${T}, t=${t})`);
+    pruefe(Number.isInteger(hoehe), `A7: Ergebnis ${hoehe} ist nicht ganzzahlig (D=${D}, T=${T}, t=${t})`);
     pruefe(hoehe >= boden - 1e-9 && hoehe <= D + boden + 1e-9,
-      `A4: Ergebnis ${hoehe} liegt außerhalb von [${boden}, ${D + boden}]`);
-    pruefe(Number.isInteger(t), `A4: Zeitpunkt ${t} s ist nicht ganzzahlig`);
+      `A7: Ergebnis ${hoehe} liegt außerhalb von [${boden}, ${D + boden}]`);
+    pruefe(Number.isInteger(t), `A7: Zeitpunkt ${t} s ist nicht ganzzahlig`);
 
     const ok = await antworte(page, box, hoehe);
-    pruefe(ok.includes("✓ Richtig"), `A4: richtige Antwort ${hoehe} nicht anerkannt (D=${D}, T=${T}, t=${t})`);
+    pruefe(ok.includes("✓ Richtig"), `A7: richtige Antwort ${hoehe} nicht anerkannt (D=${D}, T=${T}, t=${t})`);
 
     for (const [falsch, muster] of [
       [h - D * kos, "Durchmesser"],
@@ -577,14 +580,14 @@ async function testAufgabe4(page) {
       const eingabe = Math.round(falsch * 100) / 100;
       if (Math.abs(eingabe - hoehe) < 0.05) continue;
       const res = await antworte(page, box, eingabe);
-      pruefe(res.includes("Noch nicht richtig"), `A4: falsche Antwort ${eingabe} wurde anerkannt`);
-      pruefe(res.includes(muster), `A4: Hinweis „${muster}“ fehlt bei der Eingabe ${eingabe}`);
+      pruefe(res.includes("Noch nicht richtig"), `A7: falsche Antwort ${eingabe} wurde anerkannt`);
+      pruefe(res.includes(muster), `A7: Hinweis „${muster}“ fehlt bei der Eingabe ${eingabe}`);
     }
   }
   // Gemessen mit tests/werkzeug-streuung.js: 181 verschiedene in 200 Würfen, zurückgerechnet
   // also rund 980 Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 60 Zügen,
   // vorsichtshalber für 0,8 · n gerechnet — 51.
-  pruefe(gesehen.size >= 51, `A4: nur ${gesehen.size} verschiedene Aufgaben in 60 Zügen (erwartet ≥ 51)`);
+  pruefe(gesehen.size >= 51, `A7: nur ${gesehen.size} verschiedene Aufgaben in 60 Zügen (erwartet ≥ 51)`);
 }
 
 // ================= Quizze =================
@@ -603,6 +606,190 @@ async function testQuizze(page) {
     const g = await text(page, `#${id} .quiz-feedback`);
     pruefe(g.startsWith("✗ Nicht ganz"), `${id}: zweite Antwort gilt nicht als falsch`);
   }
+}
+
+// Die vier neuen Aufgaben füllen mehrere Felder aus; dafür gibt es in
+// tests/lib/aufgaben.js den gemeinsamen Treiber, der jedes Feld einzeln
+// verdirbt und den zugehörigen Hinweis verlangt.
+const rund = (x, stellen) => { const f = Math.pow(10, stellen); return Math.round(x * f) / f; };
+
+async function testAufgabe2(page) {
+  // Gemessen mit tests/werkzeug-streuung.js: 178 verschiedene in 200 Würfen, zurückgerechnet
+  // rund 837 Kandidaten. Schranke bei 30 Zügen: 25.
+  await pruefeAufgabe(page, bericht, {
+    nr: 2, name: "A2 Amplitude und Wertebereich", runden: 30, mindestensVerschieden: 25,
+    deute: (frage) => {
+      const t = frage.replace(/−/g, "-");
+      const m = t.match(/f\(x\) = (?:(\d+) · )?sin\((\d+) · x\)(?: ([+-]) (\d+))?\./);
+      if (!m) return null;
+      const a = m[1] ? Number(m[1]) : 1;
+      const b = Number(m[2]);
+      const d = m[3] ? (m[3] === "-" ? -1 : 1) * Number(m[4]) : 0;
+      const p2 = 360 / b;
+      return {
+        felder: [a, p2, a + d],
+        toleranz: 0.4,
+        falschFelder: [
+          [0, b, "bestimmt die Periode"],
+          [0, d, "Mittellinie"],
+          [0, 2 * a, "Hälfte"],
+          [1, 360 * b, "multipliziert"],
+          [1, 360, "Periode von sin x"],
+          [1, a, "ist die Amplitude"],
+          [2, a, "um die x-Achse schwänge"],
+          [2, d - a, "kleinste"],
+          [2, d, "ist die Mittellinie"],
+        ],
+        pruefe: (f, rueck) => {
+          pruefe(Number.isInteger(p2), `A2: Periode ${p2} ist nicht ganzzahlig — „${f}“`);
+          pruefe(b !== 1, `A2: b = 1 macht Periode und Grundperiode ununterscheidbar — „${f}“`);
+          pruefe(!t.includes("1 · sin"), `A2: Koeffizient 1 ausgeschrieben — „${f}“`);
+          // Der Abstand der Extremwerte ist immer das Doppelte der Amplitude.
+          pruefe(Math.abs((a + d) - (d - a) - 2 * a) < 1e-9, `A2: Wertebereich passt nicht zur Amplitude — „${f}“`);
+          pruefe(rueck.includes("Doppelte der Amplitude"),
+            `A2: die Musterlösung verknüpft Wertebereich und Amplitude nicht — „${f}“`);
+        },
+      };
+    },
+  });
+}
+
+async function testAufgabe4(page) {
+  // Gemessen mit tests/werkzeug-streuung.js: 150 verschiedene in 200 Würfen, zurückgerechnet
+  // rund 329 Kandidaten. Schranke bei 30 Zügen: 23.
+  await pruefeAufgabe(page, bericht, {
+    nr: 4, name: "A4 Viertelschritte der Kurve", runden: 30, mindestensVerschieden: 23,
+    deute: (frage) => {
+      const t = frage.replace(/−/g, "-");
+      const m = t.match(/f\(x\) = (?:(\d+) · )?sin\((?:(\d+) · )?x\) mit der Periode (\d+)°/);
+      const mx = t.match(/Stelle x = (\d+)°/);
+      if (!m || !mx) return null;
+      const a = m[1] ? Number(m[1]) : 1;
+      const b = m[2] ? Number(m[2]) : 1;
+      const p2 = Number(m[3]);
+      const x0 = Number(mx[1]);
+      if (p2 !== 360 / b) return null;
+      const winkel = b * x0;
+      const wert = rund(a * sinG(winkel), 3);
+      return {
+        felder: [p2 / 4, p2 / 2, wert],
+        toleranz: 0.4,
+        falschFelder: [
+          [0, p2 / 2, "halben Periode"],
+          [0, p2, "ganzen Periode"],
+          [0, p2 * 3 / 4, "Tiefpunkt"],
+          [1, p2 / 4, "Hochpunkt"],
+          [1, p2, "zweite"],
+          [2, a, "größte Wert überhaupt"],
+          [2, -a, "kleinste Wert"],
+          [2, rund(a * sinG(x0), 3), "übersehen"],
+        ],
+        pruefe: (f, rueck) => {
+          pruefe(p2 === 360 / b, `A4: die genannte Periode ${p2}° passt nicht zu b = ${b} — „${f}“`);
+          // Das Argument muss ein runder Winkel sein, sonst braucht man den Rechner.
+          pruefe(winkel % 30 === 0, `A4: das Argument ${winkel}° ist kein Vielfaches von 30° — „${f}“`);
+          pruefe(Math.abs(wert) <= a + 1e-9, `A4: ${wert} liegt außerhalb der Amplitude ${a} — „${f}“`);
+          // Hochpunkt und Nullstelle müssen wirklich dort liegen.
+          pruefe(Math.abs(a * sinG(b * (p2 / 4)) - a) < 1e-9, `A4: bei ${p2 / 4}° liegt kein Hochpunkt — „${f}“`);
+          pruefe(Math.abs(a * sinG(b * (p2 / 2))) < 1e-9, `A4: bei ${p2 / 2}° liegt keine Nullstelle — „${f}“`);
+        },
+      };
+    },
+  });
+}
+
+async function testAufgabe6(page) {
+  // Gemessen mit tests/werkzeug-streuung.js: 58 verschiedene in 200 Würfen, zurückgerechnet
+  // rund 60 Kandidaten. Schranke bei 30 Zügen: 16.
+  await pruefeAufgabe(page, bericht, {
+    nr: 6, name: "A6 Sinusgleichung", runden: 30, mindestensVerschieden: 16,
+    deute: (frage) => {
+      const t = frage.replace(/−/g, "-");
+      const m = t.match(/Gleichung (?:(\d+) · )?sin\(x\)(?: ([+-]) (\d+))? = (-?\d+)/);
+      if (!m) return null;
+      const a = m[1] ? Number(m[1]) : 1;
+      const d = m[2] ? (m[2] === "-" ? -1 : 1) * Number(m[3]) : 0;
+      const w = Number(m[4]);
+      const sinWert = rund((w - d) / a, 4);
+      // Unabhängig nachgerechnet: die beiden Lösungen auf 0°…360°.
+      const grund = Math.round(Math.asin(sinWert) / BOGEN);
+      const x1 = sinWert >= 0 ? grund : 180 - grund;
+      const x2 = sinWert >= 0 ? 180 - grund : 360 + grund;
+      vorzeichenA6.add(sinWert >= 0 ? "positiv" : "negativ");
+      return {
+        felder: [sinWert, x1, x2],
+        toleranz: 0.4,
+        falschFelder: [
+          [0, -sinWert, "Vorzeichen stimmt nicht"],
+          [0, w, "rechte Seite der Gleichung"],
+          [0, w - d, "fehlt noch die Division"],
+          [1, x2, "größere"],
+          [2, x1, "kleinere Lösung"],
+        ],
+        pruefe: (f, rueck) => {
+          pruefe(Math.abs(sinWert) <= 1, `A6: sin x = ${sinWert} liegt außerhalb von [−1, 1] — „${f}“`);
+          // Beide Lösungen müssen die Gleichung wirklich erfüllen.
+          for (const x of [x1, x2]) {
+            pruefe(Math.abs(a * sinG(x) + d - w) < 0.002,
+              `A6: x = ${x}° erfüllt die Gleichung nicht (${a}·sin ${x}° + ${d}) — „${f}“`);
+            pruefe(x >= 0 && x <= 360, `A6: ${x}° liegt außerhalb von 0° bis 360° — „${f}“`);
+          }
+          pruefe(x1 < x2, `A6: ${x1}° ist nicht kleiner als ${x2}° — „${f}“`);
+          pruefe(rueck.includes("genau zwei Stellen"),
+            `A6: die Musterlösung erklärt die zweite Lösung nicht — „${f}“`);
+        },
+      };
+    },
+  });
+}
+
+async function testAufgabe8(page) {
+  // Gemessen mit tests/werkzeug-streuung.js: 195 verschiedene in 200 Würfen, zurückgerechnet
+  // rund 3914 Kandidaten. Schranke bei 30 Zügen: 27.
+  await pruefeAufgabe(page, bericht, {
+    nr: 8, name: "A8 Gezeiten", runden: 30, mindestensVerschieden: 27,
+    deute: (frage) => {
+      const t = frage.replace(/−/g, "-");
+      const mh = t.match(/Hochwasser beträgt (?:er|sie) ([\d,]+) m, beim Niedrigwasser ([\d,]+) m/);
+      const mz = t.match(/Hochwasser ist um (\d+):00 Uhr/);
+      const mt = t.match(/um (\d+):00 Uhr\?/);
+      if (!mh || !mz || !mt) return null;
+      const hoch = zahl(mh[1]), tief = zahl(mh[2]);
+      const tHoch = Number(mz[1]), t1 = Number(mt[1]);
+      const teil = ((t1 - tHoch) % 12 + 12) % 12;
+      const a = (hoch - tief) / 2, d = (hoch + tief) / 2;
+      // Beim Hochwasser steht das Argument bei 90°, je Stunde kommen 30° dazu.
+      const wert = rund(d + a * sinG(90 + 30 * teil), 3);
+      return {
+        felder: [a, d, wert],
+        toleranz: 0.004,
+        falschFelder: [
+          [0, hoch - tief, "Tidenhub"],
+          [0, d, "mittlere Stand"],
+          [0, hoch, "Extremwerte selbst"],
+          [1, a, "ist die Amplitude"],
+          [1, hoch, "höchste Stand"],
+          [1, tief, "niedrigste Stand"],
+          [2, hoch, "Stand um"],
+          [2, d, "Mittellinie"],
+          // Der Zeitpunkt des Hochwassers wurde nicht berücksichtigt.
+          [2, rund(d + a * sinG(30 * teil), 3), "nicht berücksichtigt"],
+        ],
+        pruefe: (f, rueck) => {
+          pruefe(hoch > tief, `A8: ${hoch} ist nicht größer als ${tief} — „${f}“`);
+          pruefe(teil >= 1 && teil <= 11, `A8: ${teil} Stunden Abstand — „${f}“`);
+          // Der Wert muss zwischen den beiden Extremwerten liegen.
+          pruefe(wert >= tief - 1e-9 && wert <= hoch + 1e-9,
+            `A8: ${wert} liegt nicht zwischen ${tief} und ${hoch} — „${f}“`);
+          // Und beim Hochwasser selbst muss die Kurve den Höchstwert erreichen.
+          pruefe(Math.abs(d + a * sinG(90) - hoch) < 1e-9, `A8: die Kurve erreicht ${hoch} nicht — „${f}“`);
+          pruefe(Math.abs(d + a * sinG(270) - tief) < 1e-9, `A8: die Kurve erreicht ${tief} nicht — „${f}“`);
+          pruefe(rueck.includes("Viertelperiode"),
+            `A8: die Musterlösung nennt die Verschiebung nicht — „${f}“`);
+        },
+      };
+    },
+  });
 }
 
 // ================= Hauptlauf =================
@@ -632,6 +819,13 @@ async function testQuizze(page) {
       await testAufgabe2(page);
       await testAufgabe3(page);
       await testAufgabe4(page);
+      await testAufgabe5(page);
+      await testAufgabe6(page);
+      await testAufgabe7(page);
+      await testAufgabe8(page);
+      for (const v of ["positiv", "negativ"]) {
+        pruefe(vorzeichenA6.has(v), `A6: in 30 Runden kam kein ${v}er Sinuswert vor`);
+      }
       await testQuizze(page);
     } else {
       await testEinheitskreis(page);
