@@ -54,6 +54,9 @@ function zeichen(x, stellen = 2) {
 function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
+function randInt(min, max) {
+  return min + Math.floor(Math.random() * (max - min + 1));
+}
 function ggt(a, b) {
   return b ? ggt(b, a % b) : Math.abs(a);
 }
@@ -825,6 +828,11 @@ function generateAufgabe1() {
         return `${num(m)} ist die Zahl der Ausgänge einer <em>einzelnen</em> Stufe. Gefragt sind alle Pfade über ${num(k)} Stufen.`;
       return `Denk an die Formel |Ω| = m<sup>k</sup> mit m = ${num(m)} Ausgängen und k = ${num(k)} Stufen.`;
     },
+    tipps: [
+      "Male dir den Anfang des Baums auf: Wie viele Pfade gibt es nach der ersten Stufe, wie viele nach der zweiten?",
+      `Jede Stufe verzweigt <em>jeden</em> bisherigen Pfad in ${num(m)} neue — die Zahl wird also mit ${num(m)} multipliziert.`,
+      `Nach ${num(k)} Stufen sind das ${num(m)}<sup>${num(k)}</sup>.`,
+    ],
     musterloesungHtml:
       `<strong>1. Baum lesen:</strong> Jede Stufe verzweigt jeden bisherigen Pfad in ${num(m)} neue.<br>` +
       `<strong>2. Formel:</strong> |Ω| = m<sup>k</sup> = ${num(m)}<sup>${num(k)}</sup> = ${Array(k).fill(num(m)).join(" · ")} = <strong>${num(anzahl)}</strong><br>` +
@@ -881,6 +889,11 @@ function generateAufgabe2() {
         return `Das wäre die Rechnung <em>ohne</em> Zurücklegen. Hier wird die Kugel zurückgelegt — im zweiten Zug liegen wieder alle ${num(n)} Kugeln in der Urne.`;
       return `1. Pfadregel: P(rot, blau) = P(rot) · P(blau) = ${faktor(r, n)} · ${faktor(b, n)}.`;
     },
+    tipps: [
+      "Gefragt ist ein einzelner Pfad im Baum — und entlang eines Pfades werden die Wahrscheinlichkeiten <strong>multipliziert</strong>.",
+      `Weil zurückgelegt wird, sind in beiden Zügen ${num(n)} Kugeln in der Urne: P(rot) = ${quot(r, n)}, P(blau) = ${quot(b, n)}.`,
+      `Also ${faktor(r, n)} · ${faktor(b, n)} — und „erst blau, dann rot“ wäre ein <em>anderer</em> Pfad.`,
+    ],
     musterloesungHtml:
       `<strong>1. Stufe:</strong> P(rot) = ${quot(r, n)} ${zeichen(r / n, 4)} ${num(r / n, 4)}<br>` +
       `<strong>2. Stufe:</strong> Die Kugel wurde zurückgelegt, also liegen wieder ${num(n)} Kugeln in der Urne: P(blau) = ${quot(b, n)} ${zeichen(b / n, 4)} ${num(b / n, 4)}<br>` +
@@ -936,6 +949,11 @@ function generateAufgabe3() {
         return `${num((100 * r) / n)} % ist P(rot) für einen einzelnen Zug. Das Experiment hat aber zwei Stufen.`;
       return `Es gibt zwei günstige Pfade: (rot, blau) und (blau, rot). Rechne jeden mit der 1. Pfadregel aus und addiere sie dann.`;
     },
+    tipps: [
+      "„Genau eine rote“ tritt auf zwei Wegen ein: (rot, blau) und (blau, rot).",
+      `Ohne Zurücklegen ändert sich der Nenner: im zweiten Zug nur noch ${num(n - 1)} Kugeln.`,
+      "Entlang jedes Pfades multiplizieren (1. Pfadregel), die beiden Pfade dann addieren (2. Pfadregel).",
+    ],
     musterloesungHtml:
       `<strong>1. Günstige Pfade finden:</strong> „genau eine rote“ tritt bei (rot, blau) und bei (blau, rot) ein — zwei Pfade.<br>` +
       `<strong>2. Pfadregel (multiplizieren):</strong><br>` +
@@ -1015,6 +1033,11 @@ function generateAufgabe4() {
         return `Die beiden Prozentsätze der 2. Stufe darf man nicht einfach addieren — sie gehören zu <em>verschiedenen</em> Zweigen und müssen erst mit deren Wahrscheinlichkeiten multipliziert werden.`;
       return `Zeichne den Baum: 1. Stufe ${num(p)} % / ${num(100 - p)} %, an jedem Knoten die 2. Stufe. Dann entlang der beiden „${k.treffer}“-Pfade multiplizieren und die Ergebnisse addieren.`;
     },
+    tipps: [
+      `Zeichne den Baum: Die erste Stufe teilt sich in „${k.a}“ mit ${num(p)} % und „${k.b}“ mit ${num(100 - p)} %.`,
+      `An beiden Knoten geht es weiter — einmal mit ${num(q1)} %, einmal mit ${num(q2)} %.`,
+      "Zwei Pfade führen zum Ziel. Entlang jedes Pfades multiplizieren, die beiden Ergebnisse addieren — mitteln wäre falsch, weil die Zweige verschieden schwer wiegen.",
+    ],
     musterloesungHtml:
       `<strong>1. Baum aufstellen:</strong> 1. Stufe „${k.a}“ ${num(p)} % und „${k.b}“ ${num(100 - p)} %; an jedem Knoten die 2. Stufe mit ${num(q1)} % bzw. ${num(q2)} % für „${k.treffer}“.<br>` +
       `<strong>2. Pfadregel (multiplizieren):</strong><br>` +
@@ -1025,12 +1048,247 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 2 — das Zählprinzip bei UNGLEICHEN Stufen. Aufgabe 1 fragt nach m^k; hier hat jede
+// Stufe ihre eigene Zahl von Möglichkeiten, und multipliziert wird trotzdem.
+const A2_KONTEXTE = [
+  { wer: "Ein Lokal bietet", nach: "an", teile: ["Vorspeisen", "Hauptgerichte", "Nachspeisen"], zwei: "Vorspeise und Hauptgericht", ganz: "vollständige Menüs" },
+  { wer: "Ein Geschäft führt", nach: "im Sortiment", teile: ["Hosen", "Oberteile", "Jacken"], zwei: "Hose und Oberteil", ganz: "vollständige Outfits" },
+  { wer: "Ein Fahrradhersteller bietet", nach: "zur Auswahl", teile: ["Rahmenfarben", "Sattelmodelle", "Lenkerformen"], zwei: "Rahmenfarbe und Sattel", ganz: "verschiedene Fahrräder" },
+];
+
+function generateAufgabe2b() {
+  const k = pick(A2_KONTEXTE);
+  // Die drei Zahlen werden verschieden gehalten: Sonst fielen mehrere Fehlerwerte zusammen.
+  const zahlen = [];
+  while (zahlen.length < 3) {
+    const z = randInt(2, 8);
+    if (!zahlen.includes(z)) zahlen.push(z);
+  }
+  const [a, b, c] = zahlen;
+  return {
+    promptHtml:
+      `${k.wer} <strong>${num(a)} ${k.teile[0]}</strong>, <strong>${num(b)} ${k.teile[1]}</strong> und ` +
+      `<strong>${num(c)} ${k.teile[2]}</strong> ${k.nach}. Jede Kombination ist möglich.`,
+    felder: [
+      {
+        name: `Wie viele Möglichkeiten gibt es für ${k.zwei}?`, soll: a * b, toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (a + b)) < 0.01) return "Du hast <strong>addiert</strong>. Zu jeder der ersten Möglichkeiten gibt es alle zweiten — das ist eine Multiplikation.";
+          if (Math.abs(val - a * b * c) < 0.01) return "Das sind schon alle drei Stufen zusammen. Hier zählen erst die beiden ersten.";
+          return "";
+        },
+      },
+      {
+        name: `Wie viele ${k.ganz} gibt es?`, soll: a * b * c, toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (a + b + c)) < 0.01) return "Die drei Zahlen werden nicht addiert, sondern <strong>multipliziert</strong>.";
+          if (Math.abs(val - a * b) < 0.01) return `Das sind nur die ersten beiden Stufen. Zu jeder dieser ${num(a * b)} Kombinationen gibt es noch ${num(c)} Möglichkeiten.`;
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Stell dir das Baumdiagramm vor: Jede Möglichkeit der ersten Stufe verzweigt sich in alle Möglichkeiten der zweiten.",
+      `Nach zwei Stufen sind es ${num(a)} · ${num(b)} Pfade.`,
+      "Jede weitere Stufe multipliziert die Zahl der Pfade erneut — auch wenn die Stufen verschieden groß sind.",
+    ],
+    musterloesungHtml:
+      `① Zwei Stufen: ${num(a)} · ${num(b)} = <strong>${num(a * b)}</strong><br>` +
+      `② Drei Stufen: ${num(a * b)} · ${num(c)} = ${num(a)} · ${num(b)} · ${num(c)} = <strong>${num(a * b * c)}</strong><br>` +
+      `<span class="progress-note">Das Zählprinzip verlangt nicht, dass alle Stufen gleich groß sind — es verlangt nur, dass jede Kombination wirklich möglich ist. ` +
+      `Wäre etwa eine Nachspeise nur zu bestimmten Hauptgerichten erhältlich, dürfte man nicht einfach multiplizieren.</span>`,
+  };
+}
+
+// Aufgabe 4 — „mindestens einmal“. Der direkte Weg wäre mühsam, der über das Gegenereignis kurz;
+// und der häufigste Fehler — die Einzelwahrscheinlichkeiten zu addieren — wird eigens abgefangen.
+const A4_GERAETE = [
+  { aufbau: "Ein Würfel wird", verb: "geworfen", m: 6, g: 1, was: "eine 6" },
+  { aufbau: "Ein Würfel wird", verb: "geworfen", m: 6, g: 2, was: "eine 5 oder eine 6" },
+  { aufbau: "Ein Würfel wird", verb: "geworfen", m: 6, g: 3, was: "eine gerade Zahl" },
+  { aufbau: "Eine Münze wird", verb: "geworfen", m: 2, g: 1, was: "Kopf" },
+  { aufbau: "Ein Glücksrad mit 4 gleich großen Feldern, von denen eines ein Gewinnfeld ist, wird", verb: "gedreht", m: 4, g: 1, was: "das Gewinnfeld" },
+  { aufbau: "Ein Glücksrad mit 5 gleich großen Feldern, von denen 2 Gewinnfelder sind, wird", verb: "gedreht", m: 5, g: 2, was: "ein Gewinnfeld" },
+  { aufbau: "Ein Glücksrad mit 10 gleich großen Feldern, von denen 3 Gewinnfelder sind, wird", verb: "gedreht", m: 10, g: 3, was: "ein Gewinnfeld" },
+];
+
+function generateAufgabe4b() {
+  const geraet = pick(A4_GERAETE);
+  const g = geraet.g;
+  const k = geraet.m === 2 ? randInt(3, 6) : randInt(2, 5);
+  const p = g / geraet.m;
+  const nie = Math.pow(1 - p, k) * 100;
+  const mind = 100 - nie;
+  return {
+    promptHtml:
+      `${geraet.aufbau} <strong>${num(k)}-mal</strong> ${geraet.verb}.<br>` +
+      `Wie wahrscheinlich ist es, dass dabei <strong>mindestens einmal ${geraet.was}</strong> kommt?<br>` +
+      `<span class="progress-note">Runde jeweils auf zwei Nachkommastellen.</span>`,
+    felder: [
+      {
+        name: "Wahrscheinlichkeit, dass es kein einziges Mal kommt", soll: nie, einheit: "%", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - Math.pow(p, k) * 100) < 0.015) return "Das ist die Wahrscheinlichkeit, dass es <strong>jedes Mal</strong> kommt. Gefragt ist das Gegenteil.";
+          if (Math.abs(val - (1 - p) * 100) < 0.015) return `Das gilt für <em>eine</em> Stufe. Bei ${num(k)} Stufen muss dieser Wert ${num(k)}-mal multipliziert werden.`;
+          if (Math.abs(val - mind) < 0.015) return "Das ist schon die Antwort auf die Hauptfrage. Hier ist zuerst das <strong>Gegenereignis</strong> gefragt.";
+          return "";
+        },
+      },
+      {
+        name: "Wahrscheinlichkeit für mindestens einmal", soll: mind, einheit: "%", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - nie) < 0.015) return "Das ist das <strong>Gegenereignis</strong>. Es muss noch von 100 % abgezogen werden.";
+          if (Math.abs(val - k * p * 100) < 0.015) return `Du hast ${num(k)}-mal ${num(p * 100, 2)} % addiert. So geht es nicht: Bei genügend vielen Stufen käme mehr als 100 % heraus. Wahrscheinlichkeiten werden entlang eines Pfades <strong>multipliziert</strong>.`;
+          if (Math.abs(val - Math.pow(p, k) * 100) < 0.015) return "Das ist die Wahrscheinlichkeit für <strong>jedes Mal</strong>, nicht für mindestens einmal.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "„Mindestens einmal“ hat viele günstige Pfade — das Gegenteil hat nur einen einzigen.",
+      `Das Gegenereignis lautet: <em>kein einziges Mal</em>. Seine Wahrscheinlichkeit ist ${num((1 - p) * 100, 2)} % pro Stufe, über ${num(k)} Stufen multipliziert.`,
+      "Zum Schluss: P(mindestens einmal) = 100 % − P(kein einziges Mal).",
+    ],
+    musterloesungHtml:
+      `① Pro Stufe: P(nicht) = ${num((1 - p) * 100, 2)} % = ${num(1 - p, 4)}<br>` +
+      `② Über ${num(k)} Stufen (1. Pfadregel): ${num(1 - p, 4)}<sup>${num(k)}</sup> = ${num(nie / 100, 6)} = <strong>${num(nie, 2)} %</strong><br>` +
+      `③ Gegenereignis: P(mindestens einmal) = 100 % − ${num(nie, 2)} % = <strong>${num(mind, 2)} %</strong><br>` +
+      `<span class="progress-note">Der direkte Weg wäre lang: Man müsste alle Pfade mit einem, zwei, … Treffern einzeln addieren. ` +
+      `Über das Gegenereignis genügt eine Potenz und eine Subtraktion. ` +
+      `Nicht erlaubt ist dagegen ${num(k)} · ${num(p * 100, 2)} % = ${num(k * p * 100, 2)} % — bei ${Math.ceil(1 / p)} Stufen ergäbe das bereits 100 % oder mehr.</span>`,
+  };
+}
+
+// Aufgabe 6 — zwei gleichfarbige Kugeln ohne Zurücklegen. Beide Pfadregeln in einem Zug, und der
+// Nenner ändert sich zwischen den Stufen.
+function generateAufgabe6() {
+  const n = randInt(6, 12);
+  const r = randInt(2, n - 2);
+  const b = n - r;
+  const nenner = n * (n - 1);
+  const rr = (r * (r - 1) * 100) / nenner;
+  const bb = (b * (b - 1) * 100) / nenner;
+  return {
+    promptHtml:
+      `In einer Urne liegen Kugeln in zwei Farben: <strong>${num(r)} rote</strong> und <strong>${num(b)} blaue</strong>. ` +
+      `Es werden nacheinander <strong>zwei Kugeln ohne Zurücklegen</strong> gezogen.<br>` +
+      `<span class="progress-note">Runde jeweils auf zwei Nachkommastellen.</span>`,
+    felder: [
+      {
+        name: "P(beide rot)", soll: rr, einheit: "%", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (r * r * 100) / (n * n)) < 0.015) return `Du hast in beiden Stufen mit ${num(n)} und ${num(r)} gerechnet. Ohne Zurücklegen liegen im zweiten Zug nur noch ${num(n - 1)} Kugeln in der Urne, davon ${num(r - 1)} rote.`;
+          if (Math.abs(val - (r * 100) / n) < 0.015) return "Das ist P(rot) für einen <em>einzelnen</em> Zug. Der Pfad hat zwei Stufen.";
+          return "";
+        },
+      },
+      {
+        name: "P(beide blau)", soll: bb, einheit: "%", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - rr) < 0.015) return "Das ist P(beide rot). Für Blau ändern sich beide Zähler.";
+          if (Math.abs(val - (b * b * 100) / (n * n)) < 0.015) return `Auch hier gilt: im zweiten Zug nur noch ${num(n - 1)} Kugeln, davon ${num(b - 1)} blaue.`;
+          return "";
+        },
+      },
+      {
+        name: "P(beide gleichfarbig)", soll: rr + bb, einheit: "%", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - rr) < 0.015 || Math.abs(val - bb) < 0.015) return "Gleichfarbig heißt <em>beide rot</em> <strong>oder</strong> <em>beide blau</em> — das sind zwei Pfade, die nach der 2. Pfadregel addiert werden.";
+          if (Math.abs(val - rr * bb) < 0.015) return "Verschiedene Pfade werden <strong>addiert</strong>, nicht multipliziert. Multipliziert wird nur <em>entlang</em> eines Pfades.";
+          if (Math.abs(val - (100 - rr - bb)) < 0.015) return "Das ist die Wahrscheinlichkeit für <strong>verschiedene</strong> Farben — das Gegenereignis.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Ohne Zurücklegen ändert sich der Nenner: Im zweiten Zug ist eine Kugel weniger in der Urne.",
+      `P(beide rot) = ${faktor(r, n)} · ${faktor(r - 1, n - 1)}, und für Blau entsprechend.`,
+      "„Gleichfarbig“ umfasst zwei Pfade — sie werden addiert.",
+    ],
+    musterloesungHtml:
+      `① P(rot, rot) = ${faktor(r, n)} · ${faktor(r - 1, n - 1)} = ${quot(r * (r - 1), nenner)} = <strong>${num(rr, 2)} %</strong><br>` +
+      `② P(blau, blau) = ${faktor(b, n)} · ${faktor(b - 1, n - 1)} = ${quot(b * (b - 1), nenner)} = <strong>${num(bb, 2)} %</strong><br>` +
+      `③ P(gleichfarbig) = ${num(rr, 2)} % + ${num(bb, 2)} % = <strong>${num(rr + bb, 2)} %</strong><br>` +
+      `<span class="progress-note">Probe über das Gegenereignis: Für zwei verschiedene Farben bleiben ${num(100 - rr - bb, 2)} % — zusammen 100 % ✓ &nbsp;· ` +
+      `Mit Zurücklegen käme für „beide rot“ ${num((r * r * 100) / (n * n), 2)} % heraus; der Unterschied ist umso größer, je weniger Kugeln in der Urne liegen.</span>`,
+  };
+}
+
+// Aufgabe 8 — zwei Drehungen am Glücksrad, dann der Sprung von der Wahrscheinlichkeit zur
+// erwarteten Anzahl. Drei Schritte, die für sich genommen bekannt sind — zusammen aber selten
+// geübt werden.
+function generateAufgabe8() {
+  const n = pick([4, 5, 6, 8, 10]);
+  const g = randInt(1, n - 1);
+  const p = g / n;
+  const zweimal = p * p * 100;
+  const keinmal = (1 - p) * (1 - p) * 100;
+  const mindestens = 100 - keinmal;
+  const runden = n * n * randInt(1, 5);
+  // Ganzzahlig gerechnet: Der Umweg über den gerundeten Prozentwert ergäbe 64,00000000000001.
+  const erwartet = (runden * g * g) / (n * n);
+  return {
+    promptHtml:
+      `Ein Glücksrad hat <strong>${num(n)} gleich große</strong> Felder; <strong>${num(g)}</strong> ` +
+      `${g === 1 ? "davon ist ein Gewinnfeld" : "davon sind Gewinnfelder"}. Eine Runde besteht aus ` +
+      `<strong>zwei Drehungen</strong>. Insgesamt werden <strong>${num(runden)} Runden</strong> gespielt.<br>` +
+      `<span class="progress-note">Runde die Wahrscheinlichkeiten auf zwei Nachkommastellen.</span>`,
+    felder: [
+      {
+        name: "P(zweimal Gewinn) in einer Runde", soll: zweimal, einheit: "%", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - p * 100) < 0.015) return "Das gilt für <em>eine</em> Drehung. Eine Runde hat zwei.";
+          if (Math.abs(val - 2 * p * 100) < 0.015) return "Du hast verdoppelt. Entlang eines Pfades wird <strong>multipliziert</strong>, nicht addiert.";
+          if (Math.abs(val - keinmal) < 0.015) return "Das ist die Wahrscheinlichkeit für <strong>keinen</strong> Gewinn.";
+          return "";
+        },
+      },
+      {
+        name: "P(mindestens einmal Gewinn) in einer Runde", soll: mindestens, einheit: "%", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - keinmal) < 0.015) return "Das ist das <strong>Gegenereignis</strong> „kein Gewinn“. Es muss noch von 100 % abgezogen werden.";
+          if (Math.abs(val - zweimal) < 0.015) return "Das ist P(zweimal Gewinn). „Mindestens einmal“ schließt auch die Runden mit genau einem Gewinn ein.";
+          if (Math.abs(val - 2 * p * 100) < 0.015) return "Zwei Wahrscheinlichkeiten zu addieren ist hier falsch — bei einem großen Gewinnfeld käme mehr als 100 % heraus. Rechne über das Gegenereignis.";
+          return "";
+        },
+      },
+      {
+        name: `Erwartete Zahl der Runden mit zweimal Gewinn`, soll: erwartet, toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - zweimal) < 0.015) return "Das ist ein <strong>Prozentsatz</strong>. Für eine Anzahl muss er noch auf die Zahl der Runden angewendet werden.";
+          if (Math.abs(val - runden) < 0.015) return "Das sind <em>alle</em> Runden. Nur ein Teil davon bringt zweimal Gewinn.";
+          if (Math.abs(val - (runden * mindestens) / 100) < 0.015) return "Das wäre die Zahl der Runden mit <em>mindestens</em> einem Gewinn.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      `Eine Drehung trifft mit ${num(g)} : ${num(n)} ein Gewinnfeld.`,
+      "Zweimal Gewinn ist <em>ein</em> Pfad — die beiden Wahrscheinlichkeiten werden multipliziert.",
+      "„Mindestens einmal“ geht am schnellsten über das Gegenereignis „kein einziges Mal“.",
+    ],
+    musterloesungHtml:
+      `① P(Gewinn) = ${quot(g, n)} = ${num(p, 4)}<br>` +
+      `&nbsp;&nbsp;&nbsp;P(zweimal) = ${faktor(g, n)} · ${faktor(g, n)} = ${num(p * p, 4)} = <strong>${num(zweimal, 2)} %</strong><br>` +
+      `② P(kein Gewinn) = ${num((1 - p) * (1 - p), 4)} = ${num(keinmal, 2)} %<br>` +
+      `&nbsp;&nbsp;&nbsp;P(mindestens einmal) = 100 % − ${num(keinmal, 2)} % = <strong>${num(mindestens, 2)} %</strong><br>` +
+      `③ Erwartete Anzahl: ${num(runden)} · ${num(p * p, 4)} = <strong>${num(erwartet)}</strong> Runden<br>` +
+      `<span class="progress-note">Die drei Zahlen beantworten drei verschiedene Fragen: wie wahrscheinlich ein bestimmter Pfad ist, ` +
+      `wie wahrscheinlich überhaupt ein Treffer fällt, und wie oft das bei ${num(runden)} Runden zu erwarten ist. ` +
+      `Der Erwartungswert ist dabei keine Garantie — er sagt, wohin es auf die Dauer läuft.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — wie viele Pfade?", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — 1. Pfadregel", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — ohne Zurücklegen", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — beide Pfadregeln", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Stufen verschiedener Größe", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — 1. Pfadregel", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — mindestens einmal", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — ohne Zurücklegen", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Zwei gleiche Farben", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — beide Pfadregeln", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Zwei Drehungen, viele Runden", generate: generateAufgabe8 },
   ]);
 }
 

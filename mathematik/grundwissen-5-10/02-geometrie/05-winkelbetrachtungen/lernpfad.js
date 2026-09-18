@@ -851,7 +851,7 @@ function generateAufgabe4b() {
   return {
     promptHtml:
       `In einem ${name} sind ${n - 1} Innenwinkel bekannt:<br>` +
-      `<span class="formula-block">${gegeben.map((w) => w + "°").join(" &nbsp; ")}</span>`,
+      `<div class="formula-block">${gegeben.map((w) => w + "°").join(" &nbsp; ")}</div>`,
     felder: [
       {
         name: "Summe aller Innenwinkel", soll: summe, einheit: "°", toleranz: 0.01,

@@ -927,7 +927,7 @@ function generateAufgabe4b() {
   }[f.nr];
   return {
     promptHtml:
-      `Für eine Dreieckskonstruktion sind gegeben:<br><span class="formula-block">${angabe}</span>` +
+      `Für eine Dreieckskonstruktion sind gegeben:<div class="formula-block">${angabe}</div>` +
       `Welcher <strong>Kongruenzsatz</strong> sichert, dass das Dreieck eindeutig festliegt?<br>` +
       `<span class="progress-note">1 = SSS, 2 = SWS, 3 = WSW, 4 = SsW</span>`,
     correct: f.nr,

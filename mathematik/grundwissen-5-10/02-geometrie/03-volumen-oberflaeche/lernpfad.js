@@ -881,7 +881,7 @@ function generateAufgabe6() {
   return {
     promptHtml:
       `Zwei Quader bestehen aus je <strong>${V} Einheitswürfeln</strong> — sie haben also dasselbe Volumen:<br>` +
-      `<span class="formula-block">Quader I: ${eins.x} × ${eins.y} × ${eins.z} &nbsp;&nbsp; Quader II: ${zwei.x} × ${zwei.y} × ${zwei.z}</span>`,
+      `<div class="formula-block">Quader I: ${eins.x} × ${eins.y} × ${eins.z} &nbsp;&nbsp; Quader II: ${zwei.x} × ${zwei.y} × ${zwei.z}</div>`,
     felder: [
       {
         name: "Oberfläche von Quader I", soll: O1, einheit: "Einheiten²", toleranz: 0.01,

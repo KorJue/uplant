@@ -635,6 +635,11 @@ function generateAufgabe1() {
         return `${num(n - H)} sind die <strong>übrigen</strong> Personen. Gefragt ist der Anteil derer, die ${farbe} nannten.`;
       return `h = H : n, und für Prozent noch · 100.`;
     },
+    tipps: [
+      "Die relative Häufigkeit ist ein <em>Anteil</em>: der Teil geteilt durch das Ganze.",
+      `Hier also ${num(H)} : ${num(n)}.`,
+      "Für Prozent wird das Ergebnis noch mit 100 multipliziert.",
+    ],
     musterloesungHtml:
       `<strong>1. Anteil:</strong> h = H : n = ${num(H)} : ${num(n)} = ${num(H / n, 4)}<br>` +
       `<strong>2. In Prozent:</strong> ${num(H / n, 4)} · 100 % = <strong>${num(prozent)} %</strong><br>` +
@@ -680,6 +685,11 @@ function generateAufgabe2() {
         return `Das ist der <strong>Median</strong> — der mittlere Wert der geordneten Liste. Gefragt ist das arithmetische Mittel.`;
       return `x̄ = Summe aller Werte : Anzahl der Werte.`;
     },
+    tipps: [
+      "Das arithmetische Mittel entsteht in zwei Schritten: erst alle Werte addieren, dann durch ihre Anzahl teilen.",
+      `Es sind ${num(anzahl)} Werte.`,
+      `Ihre Summe ist ${num(s2)} — jetzt noch durch ${num(anzahl)} teilen.`,
+    ],
     musterloesungHtml:
       `<strong>1. Summe:</strong> ${daten.map((v) => num(v)).join(" + ")} = <strong>${num(s2)}</strong><br>` +
       `<strong>2. Durch die Anzahl teilen:</strong> x̄ = ${num(s2)} : ${num(anzahl)} = <strong>${num(xq)}</strong><br>` +
@@ -740,6 +750,11 @@ function generateAufgabe3() {
         return `Du hast die Mitte der <strong>Urliste</strong> genommen. Erst der Größe nach ordnen, dann die Mitte suchen.`;
       return `Zuerst ordnen, dann bei gerader Anzahl das Mittel der beiden mittleren Werte nehmen.`;
     },
+    tipps: [
+      "Der Median wird nicht gerechnet, sondern gefunden: zuerst die Werte der Größe nach ordnen.",
+      `Bei ${num(anzahl)} Werten — einer <em>geraden</em> Anzahl — gibt es keinen einzelnen mittleren Wert, sondern zwei.`,
+      "Der Median ist dann das Mittel dieser beiden.",
+    ],
     musterloesungHtml:
       `<strong>1. Ordnen:</strong> ${sortiert.map((v, i) => (i === halb - 1 || i === halb ? `<strong>${num(v)}</strong>` : num(v))).join(" · ")}<br>` +
       `<strong>2. Die beiden mittleren Werte:</strong> ${num(sortiert[halb - 1])} und ${num(sortiert[halb])} (der ${num(halb)}. und der ${num(halb + 1)}. von ${num(anzahl)})<br>` +
@@ -786,6 +801,11 @@ function generateAufgabe4() {
         return `Du hast mit <strong>${num(anzahl - 1)}</strong> Arbeiten gerechnet. Der Durchschnitt bezieht sich auf alle ${num(anzahl)}.`;
       return `Erst die Gesamtsumme aus Durchschnitt · Anzahl, dann die bekannten Werte abziehen.`;
     },
+    tipps: [
+      "Aus x̄ = Summe : n lässt sich die Summe zurückgewinnen: Summe = x̄ · n.",
+      `Alle ${num(anzahl)} Arbeiten ergeben zusammen ${num(mittelwert)} · ${num(anzahl)} Punkte.`,
+      "Davon die bekannten Punktzahlen abziehen — was bleibt, ist die gesuchte Arbeit.",
+    ],
     musterloesungHtml:
       `<strong>1. Gesamtsumme:</strong> Aus x̄ = Summe : n folgt Summe = x̄ · n = ${num(mittelwert)} · ${num(anzahl)} = <strong>${num(anzahl * mittelwert)}</strong><br>` +
       `<strong>2. Bekannte Werte:</strong> ${bekannt.map((v) => num(v)).join(" + ")} = ${num(s)}<br>` +
@@ -794,12 +814,281 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 2 — Modalwert und Spannweite. Beides wird nicht gerechnet, sondern abgelesen: der
+// häufigste Wert und der Abstand zwischen dem kleinsten und dem größten.
+function generateAufgabe2b() {
+  // Konstruktiv: Erst wird der Modalwert festgelegt und dreimal eingetragen, dann werden die
+  // übrigen Werte aus verschiedenen Zahlen aufgefüllt — so ist der häufigste Wert eindeutig.
+  const vorrat = mischen(Array.from({ length: 22 }, (_, i) => i + 4));
+  const modus = vorrat[0];
+  const andere = vorrat.slice(1, 1 + randInt(4, 6));
+  const daten = mischen(andere.concat([modus, modus, modus]));
+  const kleinste = Math.min(...daten), groesste = Math.max(...daten);
+  const spann = groesste - kleinste;
+  return {
+    promptHtml:
+      `Bei einer Erhebung wurden diese Werte notiert:<br>` +
+      `<strong>${daten.map((v) => num(v)).join(" &nbsp;·&nbsp; ")}</strong>`,
+    felder: [
+      {
+        name: "Modalwert", soll: modus, toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - 3) < 0.01) return "3 ist, <em>wie oft</em> der häufigste Wert vorkommt. Gefragt ist der <strong>Wert</strong> selbst.";
+          if (Math.abs(val - groesste) < 0.01) return "Das ist der <strong>größte</strong> Wert. Der Modalwert ist der, der am <em>häufigsten</em> vorkommt.";
+          if (Math.abs(val - median(daten)) < 0.01) return "Das ist der <strong>Median</strong>. Der Modalwert wird nicht durch Ordnen gefunden, sondern durch Zählen.";
+          return "";
+        },
+      },
+      {
+        name: "Spannweite", soll: spann, toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - groesste) < 0.01) return `Das ist nur der größte Wert. Die Spannweite ist die <strong>Differenz</strong>: ${num(groesste)} − ${num(kleinste)}.`;
+          if (Math.abs(val - (groesste + kleinste)) < 0.01) return "Du hast <strong>addiert</strong>. Die Spannweite ist die Differenz zwischen größtem und kleinstem Wert.";
+          if (Math.abs(val - daten.length) < 0.01) return "Das ist die <strong>Anzahl</strong> der Werte. Die Spannweite misst, wie weit sie auseinanderliegen.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Der <strong>Modalwert</strong> ist der Wert, der am häufigsten vorkommt — man zählt, man rechnet nicht.",
+      "Die <strong>Spannweite</strong> ist die Differenz zwischen dem größten und dem kleinsten Wert.",
+      `Hier ist der kleinste Wert ${num(kleinste)} und der größte ${num(groesste)}.`,
+    ],
+    musterloesungHtml:
+      `<strong>Geordnet:</strong> ${daten.slice().sort((a, b) => a - b).map((v) => num(v)).join(" · ")}<br>` +
+      `<strong>Modalwert:</strong> ${num(modus)} — dieser Wert kommt dreimal vor, jeder andere höchstens einmal.<br>` +
+      `<strong>Spannweite:</strong> ${num(groesste)} − ${num(kleinste)} = <strong>${num(spann)}</strong><br>` +
+      `<span class="progress-note">Beide Größen sagen etwas Verschiedenes: Der Modalwert nennt den <em>typischen</em> Wert, ` +
+      `die Spannweite zeigt, wie weit die Daten <em>streuen</em>. Ein einziger Ausreißer verändert die Spannweite stark, den Modalwert gar nicht.</span>`,
+  };
+}
+
+// Aufgabe 4 — vom Anteil zum Kreisdiagramm. Der Mittelpunktswinkel ist nichts anderes als der
+// Anteil, nur in Grad statt in Prozent ausgedrückt.
+const KREIS_N = [10, 12, 15, 18, 20, 24, 30, 36, 40, 45, 60, 72, 90, 120];
+const KREIS_THEMEN = [
+  { wer: "Schülerinnen und Schülern", verb: "fahren", sache: "mit dem Fahrrad zur Schule" },
+  { wer: "Befragten", verb: "haben", sache: "ein Haustier" },
+  { wer: "Jugendlichen", verb: "nennen", sache: "Fußball als Lieblingssport" },
+  { wer: "Studierenden", verb: "haben", sache: "einen Nebenjob" },
+  { wer: "Gästen", verb: "wählen", sache: "Pizza als Hauptgericht" },
+];
+
+function generateAufgabe4b() {
+  const n = pick(KREIS_N);
+  const thema = pick(KREIS_THEMEN);
+  // H bleibt echt zwischen 0 und n, damit weder ein leeres noch ein volles Kreisdiagramm entsteht.
+  // Außerdem müssen die beiden Fehlerwerte „Anteil als Dezimalzahl“ (H : n) und „die übrigen“
+  // (n − H) weiter auseinanderliegen als die Rundungstoleranz: Bei H = n − 1 ist H : n fast 1,
+  // und die Eingabe 1 bekäme den falschen Hinweis.
+  const moeglich = [];
+  for (let h = 1; h < n; h++) if (Math.abs((n - h) - h / n) > 0.05) moeglich.push(h);
+  const H = pick(moeglich);
+  const prozent = (H * 100) / n;
+  const winkel = (H * 360) / n; // ganzzahlig, weil n ein Teiler von 360 ist
+  return {
+    promptHtml:
+      `Von <strong>${num(n)}</strong> ${thema.wer} ${thema.verb} <strong>${num(H)}</strong> ${thema.sache}.<br>` +
+      `Das Ergebnis soll in einem <strong>Kreisdiagramm</strong> dargestellt werden.<br>` +
+      `<span class="progress-note">Runde den Prozentsatz auf zwei Nachkommastellen; der Winkel geht genau auf.</span>`,
+    felder: [
+      {
+        name: "Anteil", soll: prozent, einheit: "%", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - H) < 0.015) return `${num(H)} ist die <strong>absolute</strong> Häufigkeit. Der Anteil entsteht durch Teilen: ${num(H)} : ${num(n)}.`;
+          if (Math.abs(val - H / n) < 0.015) return "Das ist der Anteil als <strong>Dezimalzahl</strong> — es fehlt noch die Multiplikation mit 100.";
+          if (Math.abs(val - (n - H)) < 0.015) return "Das sind die <strong>übrigen</strong> Befragten. Gefragt ist der Anteil der genannten Gruppe.";
+          return "";
+        },
+      },
+      {
+        name: "Mittelpunktswinkel", soll: winkel, einheit: "°", toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - prozent) < 0.015) return "Das ist der Anteil in <strong>Prozent</strong>. Ein Kreis hat aber nicht 100, sondern <strong>360</strong> Grad.";
+          if (Math.abs(val - (360 - winkel)) < 0.01) return "Das ist der Winkel des <em>restlichen</em> Kreisstücks.";
+          if (Math.abs(val - H / n) < 0.01) return "Das ist erst der Anteil. Für den Winkel muss er noch mit 360° multipliziert werden.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Der ganze Kreis steht für alle Befragten — also für 100 % und zugleich für 360°.",
+      `Der Anteil ist ${num(H)} : ${num(n)}.`,
+      "Denselben Anteil mit 100 nehmen ergibt Prozent, mit 360 ergibt Grad.",
+    ],
+    musterloesungHtml:
+      `<strong>1. Anteil:</strong> ${num(H)} : ${num(n)} = ${num(H / n, 4)}<br>` +
+      `<strong>2. In Prozent:</strong> ${num(H / n, 4)} · 100 % = <strong>${num(prozent, 2)} %</strong><br>` +
+      `<strong>3. Als Winkel:</strong> ${num(H / n, 4)} · 360° = <strong>${num(winkel)}°</strong><br>` +
+      `<span class="progress-note">Probe: Das restliche Kreisstück misst ${num(360 - winkel)}°, zusammen also 360° ✓ &nbsp;· ` +
+      `Prozent und Grad beschreiben denselben Anteil — nur die Maßeinheit des Ganzen ist verschieden: einmal 100, einmal 360.</span>`,
+  };
+}
+
+// Aufgabe 6 — Mittelwert aus einer Häufigkeitstabelle. Jede Note zählt so oft, wie sie
+// vorkommt; genau dieses Gewichten wird beim bloßen Addieren der Notenstufen übersehen.
+function generateAufgabe6() {
+  // Konstruktiv: mindestens vier Notenstufen kommen vor, damit die Tabelle nicht entartet.
+  const noten = [1, 2, 3, 4, 5, 6];
+  const gewaehlt = mischen(noten).slice(0, randInt(4, 6)).sort((a, b) => a - b);
+  const vorn = gewaehlt.slice(1).map(() => randInt(1, 8));
+  const stufen = summe(gewaehlt);
+  // Die erste Häufigkeit wird aus den Werten ausgewählt, bei denen kein Fehlerwert die Lösung
+  // trifft. Nötig ist das vor allem im dritten Feld: Der Durchschnitt wird auf zwei Stellen
+  // gerundet, und das Mittel der bloßen Notenstufen kann ihm zufällig sehr nahe kommen — dann
+  // bekäme eine falsche Rechenweise ein ✓. Verglichen wird je Feld, nicht über alle Felder
+  // hinweg, denn nur innerhalb eines Feldes stören sich die Werte.
+  const sauber = (k) => {
+    const h = [k].concat(vorn);
+    const n = summe(h);
+    const p = summe(gewaehlt.map((note, i) => note * h[i]));
+    const m = gewaehlt.length;
+    return [[n, m, p], [p, stufen, n], [p / n, p / m, stufen / m, 3.5]]
+      .every((g) => g.every((x, i) => g.every((y, j) => i === j || Math.abs(x - y) > 0.05)));
+  };
+  const moeglich = [1, 2, 3, 4, 5, 6, 7, 8].filter(sauber);
+  const haeufig = [moeglich.length ? pick(moeglich) : 1].concat(vorn);
+  const anzahl = summe(haeufig);
+  const punkte = summe(gewaehlt.map((note, i) => note * haeufig[i]));
+  const schnitt = punkte / anzahl;
+  const stufenSumme = stufen;
+  return {
+    promptHtml:
+      `Eine Klassenarbeit ergab diese Notenverteilung:<br>` +
+      `<div class="formula-block">${gewaehlt.map((note, i) => `Note ${num(note)}: ${num(haeufig[i])}×`).join(" &nbsp;·&nbsp; ")}</div>` +
+      `<span class="progress-note">Runde den Durchschnitt auf zwei Nachkommastellen.</span>`,
+    felder: [
+      {
+        name: "Wie viele Arbeiten wurden geschrieben?", soll: anzahl, toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - gewaehlt.length) < 0.01) return `${num(gewaehlt.length)} ist die Zahl der <strong>Notenstufen</strong>, die vorkommen. Gefragt ist, wie viele <em>Arbeiten</em> es insgesamt sind.`;
+          if (Math.abs(val - punkte) < 0.01) return "Das ist die Summe aller Noten. Gefragt ist zunächst nur, wie viele Arbeiten es sind.";
+          return "";
+        },
+      },
+      {
+        name: "Summe aller Noten", soll: punkte, toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - stufenSumme) < 0.01) return "Du hast die <strong>Notenstufen</strong> addiert. Jede Note zählt aber so oft, wie sie vergeben wurde — sie muss mit ihrer Häufigkeit multipliziert werden.";
+          if (Math.abs(val - anzahl) < 0.01) return "Das ist die Anzahl der Arbeiten. Gefragt ist die Summe der <em>Noten</em>.";
+          return "";
+        },
+      },
+      {
+        name: "Durchschnittsnote", soll: schnitt, toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - punkte / gewaehlt.length) < 0.015) return `Du hast durch ${num(gewaehlt.length)} geteilt — das ist die Zahl der Notenstufen. Geteilt wird durch die Zahl der <strong>Arbeiten</strong>.`;
+          if (Math.abs(val - stufenSumme / gewaehlt.length) < 0.015) return "Du hast nur die vorkommenden Notenstufen gemittelt. Eine Note, die zehnmal vergeben wurde, wiegt schwerer als eine, die einmal vorkommt.";
+          if (Math.abs(val - 3.5) < 0.015) return "3,5 ist die Mitte der Notenskala, nicht der Durchschnitt dieser Arbeit.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Jede Note zählt so oft, wie sie vergeben wurde — das nennt man <em>gewichtetes</em> Mitteln.",
+      `Anzahl der Arbeiten: ${haeufig.map((h) => num(h)).join(" + ")}.`,
+      `Summe der Noten: ${gewaehlt.map((note, i) => `${num(note)} · ${num(haeufig[i])}`).join(" + ")}.`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Anzahl:</strong> ${haeufig.map((h) => num(h)).join(" + ")} = <strong>${num(anzahl)}</strong> Arbeiten<br>` +
+      `<strong>2. Summe der Noten:</strong> ${gewaehlt.map((note, i) => `${num(note)} · ${num(haeufig[i])}`).join(" + ")} = <strong>${num(punkte)}</strong><br>` +
+      `<strong>3. Durchschnitt:</strong> ${num(punkte)} : ${num(anzahl)} ≈ <strong>${num(schnitt, 2)}</strong><br>` +
+      `<span class="progress-note">Wer stattdessen die vorkommenden Notenstufen mittelt (${gewaehlt.map((v) => num(v)).join(" + ")} = ${num(stufenSumme)}, ` +
+      `geteilt durch ${num(gewaehlt.length)} ergibt ${num(stufenSumme / gewaehlt.length, 2)}), lässt die Häufigkeiten unter den Tisch fallen — ` +
+      `eine Note, die achtmal vergeben wurde, wiegt dann genauso viel wie eine, die einmal vorkam.</span>`,
+  };
+}
+
+// Aufgabe 8 — der Ausreißer. Median und arithmetisches Mittel fallen hier weit auseinander, und
+// die dritte Frage macht sichtbar, warum: Das Mittel liegt über fast allen Werten.
+const A8_BETRIEBE = ["einer Werkstatt", "einem Handwerksbetrieb", "einem kleinen Verlag", "einer Gärtnerei", "einem Café"];
+
+function generateAufgabe8() {
+  const anzahl = pick([7, 9]);
+  const betrieb = pick(A8_BETRIEBE);
+  const grund = randInt(24, 34) * 100;
+  // Die Angestellten verdienen ähnlich viel, die Leitung deutlich mehr — so entsteht der
+  // Ausreißer, um den es geht.
+  const angestellte = Array.from({ length: anzahl - 1 }, () => grund + randInt(-4, 4) * 100);
+  // Damit die Aufgabe hält, was sie verspricht, muss das Mittel wirklich ÜBER dem Median liegen.
+  // Das ist nicht von selbst so: Häufen sich die Gehälter oben, kann der Median trotz Ausreißer
+  // größer bleiben. Deshalb wird das Gehalt der Leitung nicht nur gewürfelt, sondern notfalls
+  // angehoben — konstruktiv, ohne Verwerfen und Neuziehen.
+  const sortiertAngestellte = angestellte.slice().sort((a, b) => a - b);
+  const medianDanach = sortiertAngestellte[(anzahl - 1) / 2]; // die Leitung ist der größte Wert
+  const summeAngestellte = summe(angestellte);
+  const noetig = anzahl * (medianDanach + 200) - summeAngestellte;
+  const leitung = Math.max(
+    grund + randInt(20, 60) * 100,
+    Math.max(...angestellte) + 500,
+    Math.ceil(noetig / 100) * 100
+  );
+  const daten = mischen(angestellte.concat([leitung]));
+  const sortiert = daten.slice().sort((a, b) => a - b);
+  const md = sortiert[(anzahl - 1) / 2];
+  const s = summe(daten);
+  const mittel = s / anzahl;
+  const ueberMittel = daten.filter((v) => v > mittel).length;
+  const ueberMedian = daten.filter((v) => v > md).length;
+  return {
+    promptHtml:
+      `In ${betrieb} arbeiten ${num(anzahl)} Personen. Ihre Monatsgehälter in Euro:<br>` +
+      `<strong>${daten.map((v) => num(v)).join(" &nbsp;·&nbsp; ")}</strong><br>` +
+      `<span class="progress-note">Runde das arithmetische Mittel auf zwei Nachkommastellen.</span>`,
+    felder: [
+      {
+        name: "Median", soll: md, einheit: "€", toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - mittel) < 0.02) return "Das ist das <strong>arithmetische Mittel</strong>. Der Median wird nicht gerechnet, sondern durch Ordnen gefunden.";
+          if (Math.abs(val - daten[(anzahl - 1) / 2]) < 0.01) return "Du hast die Mitte der <strong>Urliste</strong> genommen. Erst der Größe nach ordnen, dann die Mitte suchen.";
+          if (Math.abs(val - (sortiert[0] + sortiert[anzahl - 1]) / 2) < 0.02) return "Das ist die Mitte zwischen dem kleinsten und dem größten Gehalt. Der Median ist der Wert, der in der geordneten Liste in der Mitte <em>steht</em>.";
+          return "";
+        },
+      },
+      {
+        name: "Arithmetisches Mittel", soll: mittel, einheit: "€", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - s) < 0.02) return `${num(s)} ist die <strong>Summe</strong>. Es fehlt noch die Division durch ${num(anzahl)}.`;
+          if (Math.abs(val - s / (anzahl - 1)) < 0.02) return `Du hast durch ${num(anzahl - 1)} geteilt. Es sind ${num(anzahl)} Personen.`;
+          if (Math.abs(val - md) < 0.02) return "Das ist der Median. Für das arithmetische Mittel zählen alle Werte mit — auch das hohe Gehalt der Leitung.";
+          return "";
+        },
+      },
+      {
+        name: "Wie viele verdienen mehr als das arithmetische Mittel?", soll: ueberMittel, toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - ueberMedian) < 0.01 && ueberMedian !== ueberMittel) return "So viele verdienen mehr als der <strong>Median</strong> — das ist immer etwa die Hälfte. Gefragt ist, wie viele über dem <em>arithmetischen Mittel</em> liegen.";
+          if (Math.abs(val - anzahl / 2) < 0.01) return "Die Hälfte gilt für den <strong>Median</strong>. Beim arithmetischen Mittel kann die Aufteilung ganz anders aussehen.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Ordne die Gehälter zuerst der Größe nach — dann steht der Median in der Mitte.",
+      `Für das arithmetische Mittel alle ${num(anzahl)} Gehälter addieren und durch ${num(anzahl)} teilen.`,
+      "Zähle danach ab, wie viele Gehälter größer als dieses Mittel sind. Das Ergebnis überrascht oft.",
+    ],
+    musterloesungHtml:
+      `<strong>1. Geordnet:</strong> ${sortiert.map((v, i) => (i === (anzahl - 1) / 2 ? `<strong>${num(v)}</strong>` : num(v))).join(" · ")}<br>` +
+      `<strong>2. Median:</strong> der ${num((anzahl + 1) / 2)}. von ${num(anzahl)} Werten = <strong>${num(md)} €</strong><br>` +
+      `<strong>3. Arithmetisches Mittel:</strong> ${num(s)} : ${num(anzahl)} ≈ <strong>${num(mittel, 2)} €</strong><br>` +
+      `<strong>4. Über dem Mittel:</strong> <strong>${num(ueberMittel)}</strong> von ${num(anzahl)} Personen<br>` +
+      `<span class="progress-note">Das hohe Gehalt der Leitung (${num(leitung)} €) zieht das arithmetische Mittel um ${num(mittel - md, 2)} € über den Median. ` +
+      `Deshalb verdienen nur ${num(ueberMittel)} Personen mehr als „den Durchschnitt“, aber ${num(ueberMedian)} mehr als den Median. ` +
+      `Wenn von einem „Durchschnittsgehalt“ die Rede ist, lohnt die Nachfrage, welcher der beiden Werte gemeint ist.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — relative Häufigkeit", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — arithmetisches Mittel", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Median", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — der fehlende Wert", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Modalwert und Spannweite", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — arithmetisches Mittel", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Anteil im Kreisdiagramm", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Median", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Notendurchschnitt aus der Tabelle", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — der fehlende Wert", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Ein Ausreißer und der Durchschnitt", generate: generateAufgabe8 },
   ]);
 }
 

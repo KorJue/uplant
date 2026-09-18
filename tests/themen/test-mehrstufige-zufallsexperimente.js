@@ -112,10 +112,34 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — 1. Pfadregel mit Zurücklegen. 22 zulässige Urnen; bei 30 Zügen
+  // Aufgabe 2 — Zählprinzip bei Stufen verschiedener Größe. Gemessen mit tests/werkzeug-streuung.js:
+  // 170 verschiedene in 200 Würfen, zurückgerechnet rund 600 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 24.
+  await pruefeAufgabe(page, bericht, {
+    nr: 2, name: "A2 Stufen verschiedener Größe", runden: 30, mindestensVerschieden: 24,
+    deute: (frage) => {
+      const m = frage.match(/(\d+) \S+, (\d+) \S+ und (\d+) \S+/);
+      if (!m) return null;
+      const [a, b, c] = m.slice(1).map(Number);
+      // Die drei Zahlen müssen verschieden sein, sonst fallen Fehlerwerte zusammen.
+      pruefe(a !== b && b !== c && a !== c, `A2: zwei Stufen sind gleich groß (${a}/${b}/${c}) — „${frage}“`);
+      return {
+        felder: [a * b, a * b * c],
+        toleranz: 0.005,
+        falschFelder: [
+          [0, a + b, "addiert"],
+          [0, a * b * c, "alle drei Stufen"],
+          [1, a + b + c, "multipliziert"],
+          [1, a * b, "ersten beiden"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 3 — 1. Pfadregel mit Zurücklegen. 22 zulässige Urnen; bei 30 Zügen
   // E = 11,1 und σ = 0,8, Kleinstwert 7 — Schranke 6.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Produktregel", runden: 30, mindestensVerschieden: 6,
+    nr: 3, name: "A3 Produktregel", runden: 30, mindestensVerschieden: 6,
     deute: (frage) => {
       const m = frage.match(/(\d+) rote.*?(\d+) blaue/);
       if (!m) return null;
@@ -135,17 +159,52 @@ async function aufgaben(page) {
         ],
         pruefe: (f) => {
           // Konstruktiv: der Prozentsatz muss ganzzahlig sein.
-          pruefe(Number.isInteger(proz), `A2: P = ${proz} % ist nicht ganzzahlig — „${f}“`);
+          pruefe(Number.isInteger(proz), `A3: P = ${proz} % ist nicht ganzzahlig — „${f}“`);
         },
       };
     },
   });
 
-  // Aufgabe 3 — beide Pfadregeln ohne Zurücklegen. Gemessen mit tests/werkzeug-streuung.js: 16
+  // Aufgabe 4 — „mindestens einmal“ über das Gegenereignis. Gemessen: 28 verschiedene in 200
+  // Würfen. Schranke: simuliertes 10⁻⁴-Quantil bei 30 Zügen für 0,8 · n — 11.
+  const geraete = new Set();
+  await pruefeAufgabe(page, bericht, {
+    nr: 4, name: "A4 mindestens einmal", runden: 30, mindestensVerschieden: 11,
+    deute: (frage) => {
+      const mk = frage.match(/(\d+)-mal (?:geworfen|gedreht)/);
+      if (!mk) return null;
+      const k = Number(mk[1]);
+      // p wird unabhängig aus dem Aufbau gelesen, nicht aus einer Angabe der Seite übernommen.
+      let p = null;
+      const rad = frage.match(/mit (\d+) gleich großen Feldern, von denen (eines|\d+)/);
+      if (rad) p = (rad[2] === "eines" ? 1 : Number(rad[2])) / Number(rad[1]);
+      else if (/mindestens einmal eine 6 /.test(frage)) p = 1 / 6;
+      else if (/eine 5 oder eine 6/.test(frage)) p = 2 / 6;
+      else if (/eine gerade Zahl/.test(frage)) p = 3 / 6;
+      else if (/mindestens einmal Kopf/.test(frage)) p = 1 / 2;
+      if (p === null) { pruefe(false, `A4: der Aufbau ist nicht lesbar — „${frage}“`); return null; }
+      geraete.add(String(p));
+      const nie = Math.pow(1 - p, k) * 100;
+      return {
+        felder: [nie, 100 - nie],
+        toleranz: 0.01,
+        falschFelder: [
+          [0, Math.pow(p, k) * 100, "jedes Mal"],
+          [0, (1 - p) * 100, "eine"],
+          [1, nie, "Gegenereignis"],
+          [1, k * p * 100, "addiert"],
+          [1, Math.pow(p, k) * 100, "jedes Mal"],
+        ],
+      };
+    },
+  });
+  pruefe(geraete.size >= 4, `A4: nur ${geraete.size} verschiedene Einzelwahrscheinlichkeiten in 30 Zügen`);
+
+  // Aufgabe 5 — beide Pfadregeln ohne Zurücklegen. Gemessen mit tests/werkzeug-streuung.js: 16
   // verschiedene in 200 Würfen, zurückgerechnet also rund 16 Kandidaten. Die Schranke ist das
   // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 8.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 beide Pfadregeln", runden: 30, mindestensVerschieden: 8,
+    nr: 5, name: "A5 beide Pfadregeln", runden: 30, mindestensVerschieden: 8,
     deute: (frage) => {
       const m = frage.match(/(\d+) rote.*?(\d+) blaue/);
       if (!m) return null;
@@ -163,23 +222,51 @@ async function aufgaben(page) {
           [(100 * r) / n, "einzelnen Zug"],
         ],
         pruefe: (f, rueck) => {
-          pruefe(Number.isInteger(proz), `A3: P = ${proz} % ist nicht ganzzahlig — „${f}“`);
-          pruefe(proz > 0 && proz < 100, `A3: P = ${proz} % liegt nicht echt zwischen 0 und 100 — „${f}“`);
+          pruefe(Number.isInteger(proz), `A5: P = ${proz} % ist nicht ganzzahlig — „${f}“`);
+          pruefe(proz > 0 && proz < 100, `A5: P = ${proz} % liegt nicht echt zwischen 0 und 100 — „${f}“`);
           // Beide Pfade müssen sichtbar sein, sonst ist die 2. Pfadregel nicht
           // nachvollziehbar.
           pruefe(rueck.includes("P(rot, blau)") && rueck.includes("P(blau, rot)"),
-            `A3: die Musterlösung zeigt nicht beide Pfade — „${f}“`);
+            `A5: die Musterlösung zeigt nicht beide Pfade — „${f}“`);
         },
       };
     },
   });
 
-  // Aufgabe 4 — zweistufiger Baum mit ungleichen Ästen. Gemessen mit
+  // Aufgabe 6 — zwei gleichfarbige Kugeln ohne Zurücklegen. Gemessen: 42 verschiedene in 200
+  // Würfen. Schranke: simuliertes 10⁻⁴-Quantil bei 30 Zügen für 0,8 · n — 14.
+  await pruefeAufgabe(page, bericht, {
+    nr: 6, name: "A6 gleiche Farben", runden: 30, mindestensVerschieden: 14,
+    deute: (frage) => {
+      const m = frage.match(/(\d+) rote.*?(\d+) blaue/);
+      if (!m) return null;
+      const r = Number(m[1]), b = Number(m[2]);
+      const n = r + b;
+      const nenner = n * (n - 1);
+      const rr = (r * (r - 1) * 100) / nenner;
+      const bb = (b * (b - 1) * 100) / nenner;
+      pruefe(r >= 2 && b >= 2, `A6: mit ${r} roten und ${b} blauen Kugeln ist ein Paar nicht möglich`);
+      return {
+        felder: [rr, bb, rr + bb],
+        toleranz: 0.01,
+        falschFelder: [
+          [0, (r * r * 100) / (n * n), "zweiten Zug"],
+          [0, (r * 100) / n, "einzelnen"],
+          [1, rr, "beide rot"],
+          [1, (b * b * 100) / (n * n), "zweiten Zug"],
+          [2, rr, "zwei Pfade"],
+          [2, 100 - rr - bb, "verschiedene"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 7 — zweistufiger Baum mit ungleichen Ästen. Gemessen mit
   // tests/werkzeug-streuung.js: 143 verschiedene in 200 Würfen, zurückgerechnet also rund 279
   // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
   // 0,8 · n gerechnet — 22.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 ungleiche Äste", runden: 30, mindestensVerschieden: 22,
+    nr: 7, name: "A7 ungleiche Äste", runden: 30, mindestensVerschieden: 22,
     deute: (frage) => {
       // Alle drei Kontexte nennen die drei Prozentsätze in derselben
       // Reihenfolge: Gewicht des ersten Zweigs, dann seine beiden Trefferraten.
@@ -202,12 +289,46 @@ async function aufgaben(page) {
           // Der gewichtete Wert liegt stets zwischen den beiden Raten — sonst
           // stimmte etwas an der Gewichtung nicht.
           pruefe(a1 + a2 >= Math.min(q1, q2) - 1e-9 && a1 + a2 <= Math.max(q1, q2) + 1e-9,
-            `A4: ${a1 + a2} % liegt nicht zwischen ${q2} % und ${q1} % — „${f}“`);
-          pruefe(q1 > q2, `A4: die beiden Raten ${q1} % und ${q2} % sind nicht verschieden geordnet — „${f}“`);
+            `A7: ${a1 + a2} % liegt nicht zwischen ${q2} % und ${q1} % — „${f}“`);
+          pruefe(q1 > q2, `A7: die beiden Raten ${q1} % und ${q2} % sind nicht verschieden geordnet — „${f}“`);
           // Der Mittelwert muss ausdrücklich als falsch benannt werden.
           pruefe(rueck.includes("falsch"),
-            `A4: die Musterlösung warnt nicht vor dem Mittelwert — „${f}“`);
+            `A7: die Musterlösung warnt nicht vor dem Mittelwert — „${f}“`);
         },
+      };
+    },
+  });
+
+  // Aufgabe 8 — zwei Drehungen, dann der Sprung zur erwarteten Anzahl. Gemessen: 109 verschiedene
+  // in 200 Würfen, zurückgerechnet rund 146 Kandidaten. Schranke: simuliertes 10⁻⁴-Quantil bei
+  // 30 Zügen für 0,8 · n — 20.
+  await pruefeAufgabe(page, bericht, {
+    nr: 8, name: "A8 zwei Drehungen", runden: 30, mindestensVerschieden: 20,
+    deute: (frage) => {
+      const m = frage.match(/(\d+) gleich große.*?Felder; (\d+) davon.*?(\d+) Runden/);
+      if (!m) return null;
+      const [n, g, runden] = m.slice(1).map(Number);
+      const p = g / n;
+      const zweimal = p * p * 100;
+      const keinmal = (1 - p) * (1 - p) * 100;
+      pruefe(g > 0 && g < n, `A8: ${g} von ${n} Feldern ist kein echtes Ereignis — „${frage}“`);
+      // Ganzzahlig nachgerechnet — über den Prozentwert käme 64,00000000000001 heraus.
+      const erwartet = (runden * g * g) / (n * n);
+      pruefe(Number.isInteger(erwartet),
+        `A8: die erwartete Anzahl ${erwartet} ist nicht ganzzahlig — „${frage}“`);
+      return {
+        felder: [zweimal, 100 - keinmal, erwartet],
+        toleranz: 0.01,
+        falschFelder: [
+          [0, p * 100, "eine"],
+          [0, 2 * p * 100, "verdoppelt"],
+          [0, keinmal, "keinen"],
+          [1, keinmal, "Gegenereignis"],
+          [1, zweimal, "zweimal Gewinn"],
+          [2, zweimal, "Prozentsatz"],
+          [2, runden, "alle"],
+          [2, (runden * (100 - keinmal)) / 100, "mindestens"],
+        ],
       };
     },
   });

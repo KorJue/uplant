@@ -645,25 +645,31 @@ function ohneKollision(kandidaten, werte, notfall, eps = 1e-9) {
 // vergleichbar und die Lösungen ganzzahlig.
 const AUFGABEN_KONTEXTE = [
   {
-    wer: "Jugendliche", kurzA: "Instrument", kurzB: "Sportverein",
+    wer: "Jugendlichen", kurzA: "Instrument", kurzB: "Sportverein",
     einleitung: "wer ein Instrument spielt (A) und wer im Sportverein ist (B)",
     frageAB: "Wie viel Prozent derjenigen, die im Sportverein sind, spielen auch ein Instrument?",
     frageBA: "Wie viel Prozent derjenigen, die ein Instrument spielen, sind auch im Sportverein?",
     satzA: "spielen ein Instrument", satzB: "sind im Sportverein",
+    mitA: (z) => `spielen ${z} ein Instrument`,
+    satzNichtA: "spielen kein Instrument", satzNichtB: "sind nicht im Sportverein",
   },
   {
-    wer: "Schülerinnen und Schüler", kurzA: "Brille", kurzB: "Rad",
+    wer: "Schülerinnen und Schülern", kurzA: "Brille", kurzB: "Rad",
     einleitung: "wer eine Brille trägt (A) und wer mit dem Rad zur Schule fährt (B)",
     frageAB: "Wie viel Prozent derjenigen, die mit dem Rad zur Schule fahren, tragen auch eine Brille?",
     frageBA: "Wie viel Prozent derjenigen, die eine Brille tragen, fahren auch mit dem Rad zur Schule?",
     satzA: "tragen eine Brille", satzB: "fahren mit dem Rad zur Schule",
+    mitA: (z) => `tragen ${z} eine Brille`,
+    satzNichtA: "tragen keine Brille", satzNichtB: "fahren nicht mit dem Rad zur Schule",
   },
   {
-    wer: "Befragte", kurzA: "Hund", kurzB: "Land",
+    wer: "Befragten", kurzA: "Hund", kurzB: "Land",
     einleitung: "wer einen Hund hat (A) und wer auf dem Land wohnt (B)",
     frageAB: "Wie viel Prozent derjenigen, die auf dem Land wohnen, haben auch einen Hund?",
     frageBA: "Wie viel Prozent derjenigen, die einen Hund haben, wohnen auch auf dem Land?",
     satzA: "haben einen Hund", satzB: "wohnen auf dem Land",
+    mitA: (z) => `haben ${z} einen Hund`,
+    satzNichtA: "haben keinen Hund", satzNichtB: "wohnen nicht auf dem Land",
   },
 ];
 
@@ -738,6 +744,11 @@ function generateAufgabe1() {
         return `Das ist P(A), der Anteil in der ganzen Umfrage. Die Bedingung verkleinert die Grundmenge auf ${num(t.spalteB)}.`;
       return `P(A|B) = (Zelle A ∩ B) : (Spaltensumme von B) = ${num(t.ab)} : ${num(t.spalteB)}.`;
     },
+    tipps: [
+      "Eine Bedingung verkleinert die Grundmenge: Es zählen nur noch die Personen, auf die die Bedingung zutrifft.",
+      `Die Bedingung ist B, also sind es nur noch ${num(t.spalteB)} Personen — die Spaltensumme.`,
+      `Davon haben ${num(t.ab)} auch A. Der Anteil ist ${num(t.ab)} : ${num(t.spalteB)}.`,
+    ],
     musterloesungHtml:
       `<strong>1. Neue Grundmenge:</strong> Die Bedingung ist B, also zählen nur noch die ${num(t.spalteB)} Personen der B-Spalte.<br>` +
       `<strong>2. Günstige darin:</strong> Von diesen haben ${num(t.ab)} auch A.<br>` +
@@ -782,6 +793,11 @@ function generateAufgabe2() {
         return `Das ist P(A ∩ B) mit dem Nenner ${num(t.n)}. Unter einer Bedingung schrumpft der Nenner auf die Bedingung.`;
       return `P(B|A) = (Zelle A ∩ B) : (Zeilensumme von A) = ${num(t.ab)} : ${num(t.zeileA)}.`;
     },
+    tipps: [
+      "Achte darauf, was hinter dem Strich steht: Das ist die Bedingung — und sie bestimmt den Nenner.",
+      `Diesmal ist A die Bedingung, also zählen nur noch die ${num(t.zeileA)} Personen der A-Zeile.`,
+      `Davon haben ${num(t.ab)} auch B: ${num(t.ab)} : ${num(t.zeileA)}.`,
+    ],
     musterloesungHtml:
       `<strong>1. Neue Grundmenge:</strong> Bedingung ist A, also zählen nur noch die ${num(t.zeileA)} Personen der A-Zeile.<br>` +
       `<strong>2. Günstige darin:</strong> Von diesen haben ${num(t.ab)} auch B.<br>` +
@@ -813,7 +829,7 @@ function generateAufgabe3() {
 
   return {
     promptHtml:
-      `Unter <strong>${num(n)} ${k.wer}</strong> ${k.satzA} <strong>${num(a)}</strong> (Ereignis A), und ` +
+      `Unter <strong>${num(n)} ${k.wer}</strong> ${k.mitA(`<strong>${num(a)}</strong>`)} (Ereignis A), und ` +
       `<strong>${num(b)}</strong> ${k.satzB} (Ereignis B).<br>` +
       `<strong>Wie viele müssten beides sein, damit A und B stochastisch unabhängig sind?</strong> Gib die Anzahl an.`,
     correct: soll,
@@ -829,6 +845,11 @@ function generateAufgabe3() {
           `Das ist der Fall stärkster Abhängigkeit, nicht der unabhängige.`;
       return `Setze P(A ∩ B) = P(A) · P(B) an: x : ${num(n)} = ${faktor(a, n)} · ${faktor(b, n)}.`;
     },
+    tipps: [
+      "Unabhängig heißt: P(A ∩ B) = P(A) · P(B). Genau diese Gleichung wird hier nach der Anzahl aufgelöst.",
+      `P(A) = ${num(a)} : ${num(n)} und P(B) = ${num(b)} : ${num(n)}.`,
+      `Gesucht ist die Anzahl x mit x : ${num(n)} = P(A) · P(B), also x = ${num(a)} · ${num(b)} : ${num(n)}.`,
+    ],
     musterloesungHtml:
       `<strong>1. Bedingung für Unabhängigkeit:</strong> P(A ∩ B) = P(A) · P(B)<br>` +
       `<strong>2. Einsetzen:</strong> x : ${num(n)} = ${faktor(a, n)} · ${faktor(b, n)} = ${num((a * b) / (n * n), 4)}<br>` +
@@ -896,6 +917,11 @@ function generateAufgabe4() {
         return `Du hast durch die ganze Stadt geteilt. Unter der Bedingung „Test positiv“ zählen nur noch die ${num(gesamt)} positiv Getesteten.`;
       return `Zähle zuerst alle positiven Tests zusammen: ${num(richtig)} + ${num(falsch)} = ${num(gesamt)}. Davon sind ${num(richtig)} wirklich krank.`;
     },
+    tipps: [
+      "Die Bedingung lautet „Test positiv“ — also zählen nur noch die Personen mit positivem Testergebnis.",
+      `Wie viele sind das? Die ${num(richtig)} richtig erkannten Kranken <em>und</em> die ${num(falsch)} fälschlich positiven Gesunden.`,
+      "Von dieser Gruppe ist nur der erste Teil wirklich krank — das ergibt den gesuchten Anteil.",
+    ],
     musterloesungHtml:
       `<strong>1. Positiv Getestete zählen:</strong> ${num(richtig)} Kranke + ${num(falsch)} Gesunde = <strong>${num(gesamt)}</strong><br>` +
       `<strong>2. Davon wirklich krank:</strong> ${num(richtig)}<br>` +
@@ -906,12 +932,315 @@ function generateAufgabe4() {
   };
 }
 
+function randInt(min, max) {
+  return min + Math.floor(Math.random() * (max - min + 1));
+}
+
+// Aufgabe 2 — die Vierfeldertafel überhaupt erst füllen. Vor jeder bedingten Wahrscheinlichkeit
+// steht das Sortieren der Fälle in vier Felder; wer hier danebengreift, rechnet später mit
+// falschen Nennern.
+function generateAufgabe2b() {
+  const k = pick(AUFGABEN_KONTEXTE);
+  // Die vier Felder werden direkt gewürfelt und daraus die Gesamtzahl bestimmt — so ist die
+  // Tafel immer widerspruchsfrei.
+  const ab = randInt(5, 30), anb = randInt(5, 30), nab = randInt(5, 30), nanb = randInt(5, 30);
+  const t = tafel(ab, anb, nab, nanb);
+  return {
+    promptHtml:
+      `In einer Umfrage unter <strong>${num(t.n)} ${k.wer}</strong> ergab sich:<div class="formula-block">` +
+      `<strong>${num(ab)}</strong> ${k.satzA} <em>und</em> ${k.satzB}<br>` +
+      `<strong>${num(anb)}</strong> ${k.satzA}, aber ${k.satzNichtB}<br>` +
+      `<strong>${num(nab)}</strong> ${k.satzB}, aber ${k.satzNichtA}` +
+      `</div>`,
+    felder: [
+      {
+        name: "Wie viele haben keines von beiden?", soll: nanb, toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (t.n - ab)) < 0.01) return "Du hast nur die mit <em>beiden</em> Merkmalen abgezogen. Auch die beiden Gruppen mit genau einem Merkmal gehören nicht dazu.";
+          if (Math.abs(val - (anb + nab)) < 0.01) return "Das sind die Personen mit <strong>genau einem</strong> Merkmal.";
+          return "";
+        },
+      },
+      {
+        name: `Wie viele ${k.satzA} insgesamt?`, soll: t.zeileA, toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - ab) < 0.01) return "Das sind nur die mit <strong>beiden</strong> Merkmalen. Wer nur das erste Merkmal hat, zählt auch dazu.";
+          if (Math.abs(val - anb) < 0.01) return "Das sind nur die mit dem ersten, aber ohne das zweite Merkmal.";
+          return "";
+        },
+      },
+      {
+        name: `Wie viele ${k.satzB} insgesamt?`, soll: t.spalteB, toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - t.zeileA) < 0.01) return "Das ist die andere Randsumme. Hier gehören die mit beiden Merkmalen und die mit <em>nur</em> dem zweiten zusammen.";
+          if (Math.abs(val - nab) < 0.01) return "Das sind nur die mit dem zweiten, aber ohne das erste Merkmal.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Zeichne eine Vierfeldertafel: zwei Zeilen für das erste Merkmal, zwei Spalten für das zweite.",
+      "Drei der vier Felder sind gegeben; das vierte ergibt sich, weil alle vier zusammen die Gesamtzahl ergeben müssen.",
+      "Eine Randsumme ist die Summe der beiden Felder ihrer Zeile beziehungsweise Spalte.",
+    ],
+    musterloesungHtml:
+      `<strong>1. Viertes Feld:</strong> ${num(t.n)} − ${num(ab)} − ${num(anb)} − ${num(nab)} = <strong>${num(nanb)}</strong><br>` +
+      `<strong>2. Randsumme der Zeile:</strong> ${num(ab)} + ${num(anb)} = <strong>${num(t.zeileA)}</strong><br>` +
+      `<strong>3. Randsumme der Spalte:</strong> ${num(ab)} + ${num(nab)} = <strong>${num(t.spalteB)}</strong><br>` +
+      tafelText(t, k) +
+      `<span class="progress-note">Probe: Die beiden Zeilensummen ergeben ${num(t.zeileA)} + ${num(t.zeileNichtA)} = ${num(t.n)}, ` +
+      `die beiden Spaltensummen ${num(t.spalteB)} + ${num(t.spalteNichtB)} = ${num(t.n)} — beide Male die Gesamtzahl ✓</span>`,
+  };
+}
+
+// Aufgabe 4 — Unabhängigkeit prüfen. Die Tafel wird so erzeugt, dass beide Antworten vorkommen:
+// mal ist die Produktregel exakt erfüllt, mal knapp verfehlt.
+function generateAufgabe4b() {
+  const k = pick(AUFGABEN_KONTEXTE);
+  // Konstruktiv: Erst die Randsummen wählen, dann die Zelle. a · b : n ist der Wert, bei dem
+  // Unabhängigkeit gilt; für den abhängigen Fall wird er gezielt um 3 bis 8 verschoben.
+  const kandidaten = [];
+  for (const n of [40, 50, 60, 80, 100, 120]) {
+    for (let a = 10; a <= n - 10; a += 5) {
+      for (let b = 10; b <= n - 10; b += 5) {
+        const soll = (a * b) / n;
+        if (!Number.isInteger(soll) || soll < 8 || soll > Math.min(a, b) - 8) continue;
+        if (n - a - b + soll < 8) continue;
+        kandidaten.push({ n, a, b, soll });
+      }
+    }
+  }
+  const c = pick(kandidaten);
+  const unabhaengig = Math.random() < 0.5;
+  const abweichung = randInt(3, 8) * (Math.random() < 0.5 ? 1 : -1);
+  const ab = unabhaengig ? c.soll : c.soll + abweichung;
+  const t = tafel(ab, c.a - ab, c.b - ab, c.n - c.a - c.b + ab);
+  const pA = (100 * t.zeileA) / t.n;
+  const pB = (100 * t.spalteB) / t.n;
+  const produkt = (pA * pB) / 100;
+  const gemeinsam = (100 * t.ab) / t.n;
+  const passt = Math.abs(produkt - gemeinsam) < 1e-9;
+  return {
+    promptHtml:
+      `In einer Umfrage unter <strong>${num(t.n)} ${k.wer}</strong> wurde erfasst, ${k.einleitung}:` +
+      tafelText(t, k) +
+      `<span class="progress-note">Runde die Prozentwerte auf zwei Nachkommastellen. Antworte bei der letzten Frage mit 1 für „ja“ oder 2 für „nein“.</span>`,
+    felder: [
+      {
+        name: "P(A) · P(B)", soll: produkt, einheit: "%", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (pA + pB)) < 0.015) return "Du hast <strong>addiert</strong>. Für die Unabhängigkeit wird das <em>Produkt</em> der beiden Wahrscheinlichkeiten gebraucht.";
+          if (Math.abs(val - pA * pB) < 0.015) return "Achte auf die Prozentrechnung: Zwei Prozentwerte multipliziert man als Dezimalzahlen — sonst ist das Ergebnis hundertmal zu groß.";
+          if (Math.abs(val - gemeinsam) < 0.015) return "Das ist P(A ∩ B), also die Zelle geteilt durch die Gesamtzahl. Gefragt ist das Produkt der beiden Randwahrscheinlichkeiten.";
+          return "";
+        },
+      },
+      {
+        name: "P(A ∩ B)", soll: gemeinsam, einheit: "%", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (100 * t.ab) / t.spalteB) < 0.015) return "Das ist P(A|B) — die Zelle geteilt durch die Spaltensumme. Bei P(A ∩ B) steht die <strong>Gesamtzahl</strong> im Nenner.";
+          if (Math.abs(val - (100 * t.ab) / t.zeileA) < 0.015) return "Das ist P(B|A). Bei P(A ∩ B) wird durch die Gesamtzahl geteilt.";
+          if (Math.abs(val - produkt) < 0.015) return "Das ist das Produkt der Randwahrscheinlichkeiten. Hier ist der Wert aus der Tafel selbst gefragt.";
+          return "";
+        },
+      },
+      {
+        name: "Sind A und B unabhängig? (1 = ja, 2 = nein)", soll: passt ? 1 : 2, toleranz: 0.01,
+        hinweis: (roh, val) =>
+          Math.abs(val - (passt ? 2 : 1)) < 0.01
+            ? `Vergleiche die beiden Zahlen: P(A) · P(B) = ${num(produkt, 2)} % und P(A ∩ B) = ${num(gemeinsam, 2)} %. ` +
+              (passt ? "Sie stimmen überein — genau das heißt unabhängig." : "Sie sind verschieden — dann sind die Merkmale nicht unabhängig.")
+            : "",
+      },
+    ],
+    tipps: [
+      "P(A) und P(B) liest man an den Randsummen ab, P(A ∩ B) an der Zelle oben links — jeweils geteilt durch die Gesamtzahl.",
+      "Unabhängig heißt: P(A ∩ B) = P(A) · P(B). Man rechnet beide Seiten aus und vergleicht.",
+      `Hier ist P(A) = ${num(pA, 2)} % und P(B) = ${num(pB, 2)} %.`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Randwahrscheinlichkeiten:</strong> P(A) = ${num(t.zeileA)} : ${num(t.n)} = ${num(pA, 2)} %, ` +
+      `P(B) = ${num(t.spalteB)} : ${num(t.n)} = ${num(pB, 2)} %<br>` +
+      `<strong>2. Produkt:</strong> ${num(pA / 100, 4)} · ${num(pB / 100, 4)} = ${num(produkt / 100, 4)} = <strong>${num(produkt, 2)} %</strong><br>` +
+      `<strong>3. Aus der Tafel:</strong> P(A ∩ B) = ${num(t.ab)} : ${num(t.n)} = <strong>${num(gemeinsam, 2)} %</strong><br>` +
+      `<span class="du-urteil ${passt ? "ja" : "nein"}">${passt
+        ? "Beide Werte stimmen überein — A und B sind unabhängig (1)."
+        : `${num(produkt, 2)} % ≠ ${num(gemeinsam, 2)} % — A und B sind nicht unabhängig (2).`}</span><br>` +
+      `<span class="progress-note">${passt
+        ? `Unabhängig heißt nicht „ohne Zusammenhang in der Sache“, sondern nur: Die Bedingung ändert die Wahrscheinlichkeit nicht. Tatsächlich ist P(A|B) = ${num((100 * t.ab) / t.spalteB, 2)} % — genauso groß wie P(A).`
+        : `Man sieht es auch an der Bedingung: P(A|B) = ${num((100 * t.ab) / t.spalteB, 2)} %, aber P(A) = ${num(pA, 2)} %. Die Bedingung verändert die Wahrscheinlichkeit — also besteht ein Zusammenhang.`}</span>`,
+  };
+}
+
+// Aufgabe 6 — vom Baumdiagramm zurück: Aus den Angaben „so viele sind in Gruppe 1“ und „so viele
+// davon haben das Merkmal“ wird die umgekehrte Frage beantwortet.
+// Die Gruppennamen stehen einmal im Nominativ („… sind 150 Mädchen“) und einmal im Dativ
+// („von den Mädchen“); das Merkmal ist in Verb und Rest zerlegt, damit die Prozentangabe an
+// die richtige Stelle rückt: „Von den Mädchen spielen 40 % ein Instrument.“
+const A6_KONTEXTE = [
+  { wo: "einer Jahrgangsstufe", g1Nom: "Mädchen", g1Dat: "Mädchen", g2Nom: "Jungen", g2Dat: "Jungen", verb: "spielen", rest: "ein Instrument" },
+  { wo: "einer Befragung", g1Nom: "Berufstätige", g1Dat: "Berufstätigen", g2Nom: "Nicht-Berufstätige", g2Dat: "Nicht-Berufstätigen", verb: "fahren", rest: "mit dem Rad zur Arbeit" },
+  { wo: "einem Sportverein", g1Nom: "Vereinsmitglieder", g1Dat: "Vereinsmitgliedern", g2Nom: "Gäste", g2Dat: "Gästen", verb: "nehmen", rest: "am Training teil" },
+];
+
+function generateAufgabe6() {
+  const k = pick(A6_KONTEXTE);
+  // Die Zahlen werden aus einer vorher gefilterten Liste gezogen: Jede Gruppengröße und jede
+  // Teilmenge muss eine ganze Zahl von Personen sein — halbe Befragte gibt es nicht.
+  const raten = [10, 20, 25, 40, 50, 60, 75, 80];
+  const kandidaten = [];
+  for (const n of [200, 250, 400, 500]) {
+    for (const anteil1 of [20, 25, 40, 50, 60, 75, 80]) {
+      const g1 = (n * anteil1) / 100, g2 = n - g1;
+      if (!Number.isInteger(g1)) continue;
+      for (const q1 of raten) {
+        if ((g1 * q1) % 100 !== 0) continue;
+        for (const q2 of raten) {
+          // Verschiedene Raten, sonst wäre die Rückfrage stumpf: Bei gleichen Raten ist der
+          // gesuchte Anteil genau der Gruppenanteil, und die Aufgabe verlöre ihren Sinn.
+          if (q2 === q1 || (g2 * q2) % 100 !== 0) continue;
+          kandidaten.push({ n, anteil1, g1, g2, q1, q2 });
+        }
+      }
+    }
+  }
+  const { n, anteil1, g1, g2, q1, q2 } = pick(kandidaten);
+  const m1 = (g1 * q1) / 100;
+  const m2 = (g2 * q2) / 100;
+  const gesamt = m1 + m2;
+  const rueck = (100 * m1) / gesamt;
+  return {
+    promptHtml:
+      `In ${k.wo} sind von <strong>${num(n)}</strong> Personen <strong>${num(g1)}</strong> ${k.g1Nom} und ` +
+      `<strong>${num(g2)}</strong> ${k.g2Nom}.<br>` +
+      `Von den ${k.g1Dat} ${k.verb} <strong>${num(q1)} %</strong> ${k.rest}, von den ${k.g2Dat} <strong>${num(q2)} %</strong>.<br>` +
+      `<span class="progress-note">Runde den Prozentwert auf zwei Nachkommastellen.</span>`,
+    felder: [
+      {
+        name: `Wie viele ${k.g1Nom} ${k.verb} ${k.rest}?`, soll: m1, toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - q1) < 0.01) return `${num(q1)} ist der <strong>Prozentsatz</strong>. Gefragt ist die Anzahl: ${num(q1)} % von ${num(g1)}.`;
+          if (Math.abs(val - g1) < 0.01) return `Das sind alle ${k.g1Nom}. Nur ${num(q1)} % davon ${k.verb} ${k.rest}.`;
+          if (Math.abs(val - Math.round((n * q1) / 100)) < 0.01) return `Du hast ${num(q1)} % von allen ${num(n)} Personen genommen. Die ${num(q1)} % beziehen sich nur auf die ${num(g1)} ${k.g1Nom}.`;
+          return "";
+        },
+      },
+      {
+        name: `Wie viele Personen ${k.verb} insgesamt ${k.rest}?`, soll: gesamt, toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - m1) < 0.01) return "Das ist nur der eine Zweig. Die zweite Gruppe kommt dazu.";
+          if (Math.abs(val - m2) < 0.01) return "Das ist nur der andere Zweig.";
+          if (Math.abs(val - Math.round((n * (q1 + q2)) / 200)) < 0.01) return "Die beiden Prozentsätze darf man nicht einfach mitteln — die Gruppen sind verschieden groß.";
+          return "";
+        },
+      },
+      {
+        name: `Wie viel Prozent davon sind ${k.g1Nom}?`, soll: rueck, einheit: "%", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - q1) < 0.015) return `${num(q1)} % ist die <strong>umgekehrte</strong> Richtung: der Anteil <em>unter den ${k.g1Dat}</em>. Jetzt ist die Bedingung das Merkmal, nicht die Gruppe.`;
+          if (Math.abs(val - anteil1) < 0.015) return `${num(anteil1)} % ist der Anteil der ${k.g1Nom} an <em>allen</em> Personen — ohne Bedingung.`;
+          if (Math.abs(val - (100 * m1) / n) < 0.015) return `Du hast durch alle ${num(n)} Personen geteilt. Die Bedingung verkleinert die Grundmenge auf die ${num(gesamt)} mit dem Merkmal.`;
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Rechne zuerst mit <em>absoluten Zahlen</em> weiter — dann lässt sich die Vierfeldertafel füllen.",
+      `${num(q1)} % von ${num(g1)} und ${num(q2)} % von ${num(g2)} — das sind die beiden Gruppen mit dem Merkmal.`,
+      "Bei der letzten Frage ist die Bedingung das <strong>Merkmal</strong>: Im Nenner steht, wie viele es insgesamt haben.",
+    ],
+    musterloesungHtml:
+      `① ${num(q1)} % von ${num(g1)} = <strong>${num(m1)}</strong><br>` +
+      `② ${num(q2)} % von ${num(g2)} = ${num(m2)}; zusammen ${num(m1)} + ${num(m2)} = <strong>${num(gesamt)}</strong><br>` +
+      `③ Unter der Bedingung „hat das Merkmal“ zählen nur noch diese ${num(gesamt)} Personen; ${num(m1)} davon sind ${k.g1Nom}:<br>` +
+      `&nbsp;&nbsp;&nbsp;${num(m1)} : ${num(gesamt)} = <strong>${num(rueck, 2)} %</strong><br>` +
+      `<span class="progress-note">Die beiden Richtungen sind zwei verschiedene Zahlen: ${num(q1)} % der ${k.g1Nom} ${k.verb} ${k.rest}, ` +
+      `aber ${num(rueck, 2)} % derjenigen, die es tun, sind ${k.g1Nom}. Wie weit sie auseinanderliegen, hängt davon ab, wie groß die beiden Gruppen sind.</span>`,
+  };
+}
+
+// Aufgabe 8 — dieselbe Umkehrung an einem Produktionsbeispiel, diesmal mit beiden Richtungen
+// nebeneinander. Die Verwechslung von P(defekt | A) und P(A | defekt) ist der Kern des Themas.
+function generateAufgabe8() {
+  // Auch hier aus einer gefilterten Liste: Die Zahl der defekten Teile muss ganzzahlig sein,
+  // und die beiden Ausschussquoten müssen verschieden sein — sonst wäre die Rückfrage stumpf.
+  const stueck = [200, 250, 300, 400, 500, 600, 800];
+  const quoten = [2, 4, 5, 8, 10];
+  const kandidaten = [];
+  for (const a of stueck) {
+    for (const pa of quoten) {
+      if ((a * pa) % 100 !== 0) continue;
+      for (const b of stueck) {
+        for (const pb of quoten) {
+          if (pb === pa || (b * pb) % 100 !== 0) continue;
+          kandidaten.push({ a, b, pa, pb });
+        }
+      }
+    }
+  }
+  const { a, b, pa, pb } = pick(kandidaten);
+  const da = (a * pa) / 100, db = (b * pb) / 100;
+  const defekt = da + db;
+  const anteilA = (100 * da) / defekt;
+  return {
+    promptHtml:
+      `Ein Betrieb fertigt Bauteile auf zwei Maschinen. <strong>Maschine A</strong> stellt <strong>${num(a)}</strong> Teile her, ` +
+      `<strong>Maschine B</strong> <strong>${num(b)}</strong>.<br>` +
+      `Von den Teilen der Maschine A sind <strong>${num(pa)} %</strong> defekt, von denen der Maschine B <strong>${num(pb)} %</strong>.<br>` +
+      `<span class="progress-note">Runde den Prozentwert auf zwei Nachkommastellen.</span>`,
+    felder: [
+      {
+        name: "Wie viele Teile sind insgesamt defekt?", soll: defekt, toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - da) < 0.01) return "Das sind nur die defekten Teile der Maschine A.";
+          if (Math.abs(val - db) < 0.01) return "Das sind nur die defekten Teile der Maschine B.";
+          if (Math.abs(val - ((a + b) * (pa + pb)) / 200) < 0.01) return "Die beiden Prozentsätze darf man nicht mitteln — die Maschinen stellen verschieden viele Teile her.";
+          return "";
+        },
+      },
+      {
+        name: "P(defekt | Maschine A)", soll: pa, einheit: "%", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - anteilA) < 0.015) return "Das ist die <strong>umgekehrte</strong> Richtung: P(Maschine A | defekt). Hier ist die Bedingung die Maschine, nicht der Defekt.";
+          if (Math.abs(val - (100 * da) / (a + b)) < 0.015) return `Du hast durch alle ${num(a + b)} Teile geteilt. Unter der Bedingung „von Maschine A“ zählen nur deren ${num(a)} Teile.`;
+          return "";
+        },
+      },
+      {
+        name: "P(Maschine A | defekt)", soll: anteilA, einheit: "%", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - pa) < 0.015) return "Das ist P(defekt | Maschine A) — die andere Richtung. Jetzt ist der Defekt die Bedingung.";
+          if (Math.abs(val - (100 * a) / (a + b)) < 0.015) return "Das ist der Anteil der Maschine A an der <em>ganzen</em> Produktion — ohne Bedingung.";
+          if (Math.abs(val - (100 * da) / (a + b)) < 0.015) return `Du hast durch alle ${num(a + b)} Teile geteilt. Die Bedingung verkleinert die Grundmenge auf die ${num(defekt)} defekten.`;
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      `Rechne zuerst aus, wie viele Teile jede Maschine ausschussweise liefert: ${num(pa)} % von ${num(a)} und ${num(pb)} % von ${num(b)}.`,
+      "P(defekt | Maschine A) steht schon in der Aufgabe — es ist der Prozentsatz, der sich auf Maschine A bezieht.",
+      "Bei P(Maschine A | defekt) ist die Bedingung der Defekt: Im Nenner steht die Zahl <em>aller</em> defekten Teile.",
+    ],
+    musterloesungHtml:
+      `① Defekte: ${num(pa)} % von ${num(a)} = ${num(da)}, ${num(pb)} % von ${num(b)} = ${num(db)}; zusammen <strong>${num(defekt)}</strong><br>` +
+      `② P(defekt | A) = ${num(da)} : ${num(a)} = <strong>${num(pa)} %</strong> — das stand schon in der Aufgabe.<br>` +
+      `③ P(A | defekt) = ${num(da)} : ${num(defekt)} = <strong>${num(anteilA, 2)} %</strong><br>` +
+      `<span class="progress-note">Beide Zahlen haben denselben Zähler ${num(da)} und verschiedene Nenner — einmal alle Teile der Maschine A, einmal alle defekten Teile. ` +
+      `Deshalb sind sie verschieden: ${num(pa)} % und ${num(anteilA, 2)} %. Wer sie verwechselt, zieht aus „die meisten defekten Teile stammen von A“ den falschen Schluss, ` +
+      `A arbeite besonders schlecht — dabei kann A einfach nur mehr produzieren.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — P(A|B) aus der Tafel", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — die andere Richtung", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — unabhängig machen", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — der seltene Fall", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Die Tafel füllen", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — die andere Richtung", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Sind sie unabhängig?", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — unabhängig machen", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Die Richtung umdrehen", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — der seltene Fall", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Zwei Maschinen, zwei Richtungen", generate: generateAufgabe8 },
   ]);
 }
 

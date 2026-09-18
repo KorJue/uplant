@@ -605,7 +605,7 @@ function generateAufgabe4b() {
   return {
     promptHtml:
       `Welche dieser vier Zahlen ist die <strong>kleinste</strong>?<br>` +
-      `<span class="formula-block">${liste.map(zahl).join(" &nbsp;&nbsp; ")}</span>`,
+      `<div class="formula-block">${liste.map(zahl).join(" &nbsp;&nbsp; ")}</div>`,
     correct: kleinste,
     tolerance: 0.5,
     placeholder: "Zahl",

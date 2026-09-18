@@ -146,12 +146,17 @@ async function aufgaben(page) {
   });
 
   // Aufgabe 4 — Winkelsumme im Vieleck (Aufgabe zum Ausfüllen). Gemessen mit
-  // tests/werkzeug-streuung.js: 107 verschiedene in 200 Würfen, zurückgerechnet rund 141
-  // Kandidaten — die Aufgabe stellt zwei Fragearten (regelmäßiges und unregelmäßiges Vieleck).
-  // Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n
-  // gerechnet — 20.
+  // tests/werkzeug-streuung.js: 110 verschiedene in 200 Würfen. Die Rückrechnung auf eine
+  // gleichverteilte Kandidatenmenge führt hier in die Irre: Die Aufgabe mischt zwei Fassungen —
+  // mit Wahrscheinlichkeit ½ ein regelmäßiges Vieleck (nur 8 mögliche Texte, die sich oft
+  // wiederholen) und sonst ein unregelmäßiges mit zufälligen Winkeln (praktisch immer neu).
+  // Diese Mischung wurde nachgebildet: bei 30 Zügen ist E = 21,8, das 10⁻⁴-Quantil liegt bei 13
+  // und das beobachtete Minimum bei 11 — Schranke 12.
+  //
+  // Die frühere Schranke 20 stammte aus der Gleichverteilungsrechnung und war deshalb zu eng;
+  // der vollständige Testlauf hat sie mit 17 verschiedenen Aufgaben widerlegt.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Winkelsumme im Vieleck", runden: 30, mindestensVerschieden: 20, liesRoh: feldnamen,
+    nr: 4, name: "A4 Winkelsumme im Vieleck", runden: 30, mindestensVerschieden: 12, liesRoh: feldnamen,
     deute: (frage, roh) => {
       if (!roh) return null;
       // \w trifft in JavaScript keine Umlaute — „Fünfeck“ und „Zwölfeck“ fielen sonst durch.

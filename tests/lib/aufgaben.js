@@ -101,20 +101,28 @@ async function pruefeAufgabe(page, bericht, { nr, name, runden = 40, mindestensV
 
     // Bei mehreren Feldern wird jedes einzeln verdorben: Sonst bliebe unbemerkt, wenn die Seite
     // nur eines davon wirklich prüft.
+    //
+    // Wie bei den Einzelantworten gilt: Fallen zwei Fehlerwerte DESSELBEN Feldes auf dieselbe
+    // Zahl — etwa wenn die Mitte der Urliste zufällig das arithmetische Mittel trifft —, nennt
+    // die Seite den zuerst geprüften Hinweis. Dann wird nur noch die Zurückweisung verlangt.
+    const gleichFeld = (a, b) => (typeof a === "number" && typeof b === "number"
+      ? Math.abs(a - b) < (d.toleranz ?? 0.5) : String(a) === String(b));
+    const geprueftJeFeld = new Map();
     for (const [idx, wert, muster] of d.falschFelder || []) {
       if (wert === null || wert === undefined || (typeof wert === "number" && !Number.isFinite(wert))) continue;
       // Fällt der Fehlerwert mit der Lösung zusammen, taugt er nicht als Probe — bei Brüchen ist
       // das eine Frage der Zeichenkette, nicht des Abstands.
-      const soll = d.felder[idx];
-      if (typeof wert === "number" && typeof soll === "number"
-        ? Math.abs(wert - soll) < (d.toleranz ?? 0.5)
-        : String(wert) === String(soll)) continue;
+      if (gleichFeld(wert, d.felder[idx])) continue;
+      const bisher = geprueftJeFeld.get(idx) || [];
+      const verdeckt = bisher.some((f) => gleichFeld(f, wert));
+      bisher.push(wert);
+      geprueftJeFeld.set(idx, bisher);
       const werte = d.felder.slice();
       werte[idx] = wert;
       const r = await antworteFelder(page, box, werte);
       bericht.pruefe(r.includes("Noch nicht richtig"),
         `${name}: im Feld ${idx + 1} wird ${wert} anerkannt — „${frage}“`);
-      if (muster) {
+      if (muster && !verdeckt) {
         bericht.pruefe(r.includes(muster),
           `${name}: im Feld ${idx + 1} fehlt bei ${wert} der Hinweis „${muster}“ — „${frage}“`);
       }

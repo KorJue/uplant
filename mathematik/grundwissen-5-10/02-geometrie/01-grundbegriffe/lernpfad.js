@@ -800,7 +800,7 @@ function generateAufgabe8() {
   return {
     promptHtml:
       `Drei Ecken eines achsenparallelen Rechtecks ABCD sind gegeben:<br>` +
-      `<span class="formula-block">A(${A.x} | ${A.y}) &nbsp; B(${B.x} | ${B.y}) &nbsp; C(${C.x} | ${C.y})</span>`,
+      `<div class="formula-block">A(${A.x} | ${A.y}) &nbsp; B(${B.x} | ${B.y}) &nbsp; C(${C.x} | ${C.y})</div>`,
     felder: [
       {
         name: "x-Koordinate der vierten Ecke D", soll: D.x, toleranz: 0.5,

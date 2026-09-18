@@ -497,7 +497,9 @@ function generateAufgabe1() {
 
   return {
     promptHtml:
-      `In einer Urne liegen <strong>${num(rot)} rote</strong> und <strong>${num(blau)} blaue</strong> Kugeln. ` +
+      // Der Satzbau kommt auch mit einer einzelnen Kugel aus: „1 rote und 4 blaue Kugeln“ wäre
+      // schief, „Kugeln in zwei Farben: 1 rote und 4 blaue“ nicht.
+      `In einer Urne liegen Kugeln in zwei Farben: <strong>${num(rot)} rote</strong> und <strong>${num(blau)} blaue</strong>. ` +
       `Sie unterscheiden sich nur in der Farbe.<br>` +
       `Wie groß ist die Wahrscheinlichkeit, eine <strong>rote</strong> Kugel zu ziehen, in Prozent?`,
     correct: prozent,
@@ -513,6 +515,11 @@ function generateAufgabe1() {
         return `${num(blau)} ist die Anzahl der <strong>blauen</strong> Kugeln.`;
       return `P = günstige : alle = ${num(rot)} : ${num(n)}, dann · 100 %.`;
     },
+    tipps: [
+      "Alle Kugeln sind gleich wahrscheinlich — deshalb darf die Laplace-Formel benutzt werden.",
+      `Wie viele Kugeln sind es insgesamt? ${num(rot)} + ${num(blau)} = ${num(n)}.`,
+      `P(rot) = ${num(rot)} : ${num(n)}, für Prozent noch mit 100 multiplizieren.`,
+    ],
     musterloesungHtml:
       `<strong>1. Alle Ergebnisse zählen:</strong> |Ω| = ${num(rot)} + ${num(blau)} = <strong>${num(n)}</strong><br>` +
       `<strong>2. Günstige zählen:</strong> |E| = <strong>${num(rot)}</strong><br>` +
@@ -552,6 +559,11 @@ function generateAufgabe2() {
         return `Du hast die <strong>Anzahl</strong> von 100 abgezogen. Abgezogen wird aber der <em>Prozentsatz</em> ${num((rot * 100) / n)} %.`;
       return `Entweder direkt (${num(n)} − ${num(rot)}) : ${num(n)} oder über 100 % − P(rot).`;
     },
+    tipps: [
+      "„Nicht rot“ ist das <strong>Gegenereignis</strong> zu „rot“ — zusammen ergeben beide 100 %.",
+      `Weg 1: Zähle die nicht-roten Felder — es sind ${num(n)} − ${num(rot)} = ${num(n - rot)}.`,
+      `Weg 2: Rechne P(rot) = ${num(rot)} : ${num(n)} aus und ziehe das Ergebnis von 100 % ab.`,
+    ],
     musterloesungHtml:
       `<strong>Weg 1 — direkt abzählen:</strong> nicht rot sind ${num(n)} − ${num(rot)} = ${num(n - rot)} Felder<br>` +
       `P(Ē) = ${num(n - rot)} : ${num(n)} = <strong>${num(prozent)} %</strong><br>` +
@@ -590,6 +602,11 @@ function generateAufgabe3() {
         return `Das ist die Wahrscheinlichkeit für <strong>keinen</strong> Gewinn — das Gegenereignis.`;
       return `P = α : 360°, dann · 100 %.`;
     },
+    tipps: [
+      "Bei einem Glücksrad entscheidet nicht die Zahl der Felder, sondern ihre <em>Größe</em>.",
+      `Der ganze Kreis hat 360°; das Gewinnfeld nimmt davon ${num(alpha)}° ein.`,
+      `P = ${num(alpha)} : 360, für Prozent noch mit 100 multiplizieren.`,
+    ],
     musterloesungHtml:
       `<strong>1. Anteil am Vollkreis:</strong> P = ${num(alpha)}° : 360° = ${num(alpha / 360, 4)}<br>` +
       `<strong>2. In Prozent:</strong> ${num(alpha / 360, 4)} · 100 % = <strong>${num(prozent)} %</strong><br>` +
@@ -645,6 +662,11 @@ function generateAufgabe4() {
         return `Du hast durch die Zahl der günstigen Ergebnisse geteilt. Multipliziert wird mit <strong>P = ${num(e.guenstig)} : 6</strong>.`;
       return `Erst P bestimmen, dann mit der Anzahl der Würfe multiplizieren.`;
     },
+    tipps: [
+      `Zähle zuerst, wie viele der sechs Augenzahlen zum Ereignis „${e.text}“ gehören.`,
+      `P = ${num(e.guenstig)} : 6 = ${num(p, 4)}.`,
+      `Die erwartete Anzahl ist P · Wurfzahl, hier also ${num(p, 4)} · ${num(n)}.`,
+    ],
     musterloesungHtml:
       `<strong>1. Wahrscheinlichkeit:</strong> Von den 6 Ergebnissen sind ${num(e.guenstig)} günstig, also P = ${num(e.guenstig)} : 6 = ${num(p, 4)}<br>` +
       `<strong>2. Erwartete Anzahl:</strong> ${num(n)} · ${num(p, 4)} = <strong>${num(erwartet)}</strong><br>` +
@@ -652,12 +674,250 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 2 — günstige Ergebnisse zählen. Vor jeder Laplace-Rechnung steht das Abzählen von |E|;
+// hier wird es eigens verlangt, weil dort die meisten Fehler entstehen — nicht beim Dividieren.
+const A2_ANZAHLEN = [6, 8, 10, 12, 15, 16, 20, 24, 25];
+const PRIM = [2, 3, 5, 7, 11, 13, 17, 19, 23];
+
+function generateAufgabe2b() {
+  const n = pick(A2_ANZAHLEN);
+  // m liegt echt im Inneren, damit „größer als m“ und „kleiner als m“ nie leer oder vollständig sind.
+  const m = randInt(2, n - 1);
+  const formen = [
+    { text: "eine gerade Zahl", guenstig: Math.floor(n / 2) },
+    { text: "eine ungerade Zahl", guenstig: n - Math.floor(n / 2) },
+    { text: `eine Zahl größer als ${num(m)}`, guenstig: n - m },
+    { text: `eine Zahl kleiner als ${num(m)}`, guenstig: m - 1 },
+    { text: "eine durch 3 teilbare Zahl", guenstig: Math.floor(n / 3) },
+    { text: "eine Primzahl", guenstig: PRIM.filter((p) => p <= n).length },
+    { text: `die Zahl ${num(m)}`, guenstig: 1 },
+  ];
+  const e = pick(formen);
+  const prozent = (e.guenstig * 100) / n;
+  return {
+    promptHtml:
+      `In einem Beutel liegen Kärtchen mit den Zahlen <strong>1 bis ${num(n)}</strong>, jede genau einmal. ` +
+      `Ein Kärtchen wird zufällig gezogen.<br>Ereignis E: <strong>${e.text}</strong>.<br>` +
+      `<span class="progress-note">Runde die Wahrscheinlichkeit auf zwei Nachkommastellen.</span>`,
+    felder: [
+      {
+        name: "Wie viele Kärtchen sind günstig?", soll: e.guenstig, toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (n - e.guenstig)) < 0.01) return "So viele Kärtchen gehören zum <strong>Gegenereignis</strong>. Gefragt sind die, bei denen E eintritt.";
+          if (Math.abs(val - n) < 0.01) return `${num(n)} ist die Zahl <em>aller</em> Kärtchen. Zähle nur die günstigen.`;
+          return "";
+        },
+      },
+      {
+        name: "Wahrscheinlichkeit P(E)", soll: prozent, einheit: "%", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - e.guenstig) < 0.015) return "Das ist die <strong>Anzahl</strong> der günstigen Kärtchen. Eine Wahrscheinlichkeit entsteht erst durch Teilen.";
+          if (Math.abs(val - e.guenstig / n) < 0.015) return "Das ist P als <strong>Dezimalzahl</strong> — es fehlt noch die Multiplikation mit 100.";
+          if (Math.abs(val - ((n - e.guenstig) * 100) / n) < 0.015) return "Das ist die Wahrscheinlichkeit des <strong>Gegenereignisses</strong>.";
+          if (Math.abs(val - (n * 100) / e.guenstig) < 0.015) return "Du hast alle durch die günstigen geteilt. Bei Laplace steht die Gesamtzahl im <strong>Nenner</strong>.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Schreibe dir notfalls alle Zahlen von 1 bis " + num(n) + " auf und streiche die ungünstigen durch.",
+      "Die Laplace-Formel lautet P(E) = Anzahl der günstigen Ergebnisse : Anzahl aller Ergebnisse.",
+      `Hier sind es ${num(n)} Ergebnisse insgesamt — und alle sind gleich wahrscheinlich, weil jede Zahl genau einmal vorkommt.`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Günstige zählen:</strong> |E| = <strong>${num(e.guenstig)}</strong><br>` +
+      `<strong>2. Alle zählen:</strong> |Ω| = <strong>${num(n)}</strong><br>` +
+      `<strong>3. Laplace:</strong> P(E) = ${num(e.guenstig)} : ${num(n)} = ${num(e.guenstig / n, 4)} = <strong>${num(prozent, 2)} %</strong><br>` +
+      `<span class="progress-note">Die Formel darf man nur anwenden, weil alle Kärtchen gleich wahrscheinlich sind. ` +
+      `Probe: Das Gegenereignis hat ${num(((n - e.guenstig) * 100) / n, 2)} % — zusammen 100 %.</span>`,
+  };
+}
+
+// Aufgabe 4 — Wahrscheinlichkeit aus einem Versuch schätzen. Hier hilft Laplace nicht: Ein
+// Reißnagel hat keine gleich wahrscheinlichen Seiten, die Wahrscheinlichkeit muss gemessen werden.
+const A4_VERSUCHE = [
+  { ding: "Ein Reißnagel", folge: (k) => `Dabei blieb er <strong>${k}-mal</strong> auf dem Kopf liegen.` },
+  { ding: "Ein Kronkorken", folge: (k) => `Dabei landete er <strong>${k}-mal</strong> mit der gewölbten Seite nach oben.` },
+  { ding: "Ein Papierbecher", folge: (k) => `Dabei blieb er <strong>${k}-mal</strong> auf der Seite liegen.` },
+];
+
+function generateAufgabe4b() {
+  const v = pick(A4_VERSUCHE);
+  const n = pick([200, 250, 400, 500]);
+  const treffer = randInt(Math.round(n * 0.2), Math.round(n * 0.7));
+  const weitere = randInt(2, 9) * 100;
+  const prozent = (treffer * 100) / n;
+  const erwartet = (treffer / n) * weitere;
+  return {
+    promptHtml:
+      `${v.ding} wurde <strong>${num(n)}-mal</strong> geworfen. ${v.folge(num(treffer))}<br>` +
+      `Wie oft wäre dasselbe bei <strong>${num(weitere)} weiteren Würfen</strong> zu erwarten?<br>` +
+      `<span class="progress-note">Runde jeweils auf zwei Nachkommastellen.</span>`,
+    felder: [
+      {
+        name: "Relative Häufigkeit", soll: prozent, einheit: "%", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - treffer) < 0.015) return "Das ist die <strong>absolute</strong> Häufigkeit. Die relative entsteht durch Teilen durch die Zahl der Versuche.";
+          if (Math.abs(val - treffer / n) < 0.015) return "Das ist der Anteil als <strong>Dezimalzahl</strong> — es fehlt noch · 100.";
+          if (Math.abs(val - ((n - treffer) * 100) / n) < 0.015) return "Das ist der Anteil der <strong>übrigen</strong> Würfe.";
+          return "";
+        },
+      },
+      {
+        name: "Erwartete Anzahl", soll: erwartet, toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - prozent) < 0.015) return "Das ist der <strong>Prozentsatz</strong>. Für eine Anzahl muss er noch mit der Zahl der Würfe multipliziert werden.";
+          if (Math.abs(val - treffer) < 0.015) return `${num(treffer)} war das Ergebnis des <em>ersten</em> Versuchs mit ${num(n)} Würfen. Jetzt sind es ${num(weitere)} Würfe.`;
+          if (Math.abs(val - weitere) < 0.015) return "Das sind alle neuen Würfe. Nur ein Teil davon trifft das Ereignis.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Laplace hilft hier nicht: Die beiden Lagen sind <em>nicht</em> gleich wahrscheinlich. Die Wahrscheinlichkeit muss aus dem Versuch geschätzt werden.",
+      `Relative Häufigkeit: ${num(treffer)} : ${num(n)}.`,
+      `Diesen Anteil auf ${num(weitere)} Würfe übertragen — das ist ein Dreisatz.`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Relative Häufigkeit:</strong> ${num(treffer)} : ${num(n)} = ${num(treffer / n, 4)} = <strong>${num(prozent, 2)} %</strong><br>` +
+      `<strong>2. Übertragen:</strong> ${num(weitere)} · ${num(treffer / n, 4)} = <strong>${num(erwartet, 2)}</strong><br>` +
+      `<span class="progress-note">Das ist eine <em>Schätzung</em>, keine exakte Wahrscheinlichkeit: Ein Reißnagel hat keine Symmetrie, aus der sich P berechnen ließe. ` +
+      `Je mehr Versuche, desto verlässlicher die Schätzung — das ist das empirische Gesetz der großen Zahlen. ` +
+      `Und der erwartete Wert wird selten genau eintreten.</span>`,
+  };
+}
+
+// Aufgabe 6 — rückwärts: aus der Wahrscheinlichkeit auf die Anzahl schließen und die Urne dann
+// so verändern, dass ein vorgegebener Anteil herauskommt.
+function generateAufgabe6() {
+  const n = pick([20, 25, 40, 50]);
+  const teiler = pick([2, 4, 5]);            // Ziel-Wahrscheinlichkeit 50 %, 25 % oder 20 %
+  const ziel = 100 / teiler;
+  // rot so wählen, dass die Zielzahl größer als n ist — sonst müsste man Kugeln wegnehmen.
+  const moeglich = [];
+  for (let r = 1; r < n; r++) if (teiler * r > n && (r * 100) % n === 0) moeglich.push(r);
+  const rot = moeglich.length ? pick(moeglich) : Math.ceil((n + 1) / teiler);
+  const prozent = (rot * 100) / n;
+  const gesamtNeu = teiler * rot;
+  const dazu = gesamtNeu - n;
+  return {
+    promptHtml:
+      `In einer Urne liegen <strong>${num(n)} Kugeln</strong>. Die Wahrscheinlichkeit, eine <strong>rote</strong> zu ziehen, ` +
+      `beträgt <strong>${num(prozent)} %</strong>.<br>` +
+      `Anschließend werden blaue Kugeln hinzugelegt, bis die Wahrscheinlichkeit für Rot nur noch ` +
+      `<strong>${num(ziel)} %</strong> beträgt.`,
+    felder: [
+      {
+        name: "Wie viele Kugeln sind rot?", soll: rot, toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - prozent) < 0.01) return `Das ist der <strong>Prozentsatz</strong>, nicht die Anzahl. Gesucht ist, wie viele Kugeln ${num(prozent)} % von ${num(n)} sind.`;
+          if (Math.abs(val - (n - rot)) < 0.01) return "So viele Kugeln sind <strong>nicht</strong> rot.";
+          if (Math.abs(val - (n * 100) / prozent) < 0.01) return "Du hast geteilt statt multipliziert. Der Anteil wird auf die Gesamtzahl <em>angewendet</em>.";
+          return "";
+        },
+      },
+      {
+        name: "Wie viele blaue Kugeln kommen dazu?", soll: dazu, toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - gesamtNeu) < 0.01) return `${num(gesamtNeu)} ist die <strong>neue Gesamtzahl</strong>. Gefragt ist, wie viele Kugeln dazukommen — die ${num(n)} vorhandenen also noch abziehen.`;
+          if (Math.abs(val - rot) < 0.01) return "Die Zahl der roten Kugeln ändert sich nicht; es kommen nur blaue dazu.";
+          if (Math.abs(val - (n - rot)) < 0.01) return "Das sind die blauen Kugeln, die schon da sind. Gefragt ist, wie viele noch dazukommen müssen.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      `${num(prozent)} % von ${num(n)} Kugeln — das ist ein gewöhnlicher Prozentsatz.`,
+      `Beim zweiten Schritt bleibt die Zahl der roten Kugeln gleich; nur die Gesamtzahl wächst.`,
+      `Aus ${num(rot)} : Gesamt = ${num(ziel)} % folgt Gesamt = ${num(rot)} · ${num(teiler)}.`,
+    ],
+    musterloesungHtml:
+      `<strong>1. Rote Kugeln:</strong> ${num(prozent)} % von ${num(n)} = ${num(n)} · ${num(prozent / 100, 4)} = <strong>${num(rot)}</strong><br>` +
+      `<strong>2. Neue Gesamtzahl:</strong> Damit ${num(rot)} rote Kugeln einen Anteil von ${num(ziel)} % ausmachen, ` +
+      `müssen es insgesamt ${num(rot)} · ${num(teiler)} = <strong>${num(gesamtNeu)}</strong> Kugeln sein.<br>` +
+      `<strong>3. Dazugelegt:</strong> ${num(gesamtNeu)} − ${num(n)} = <strong>${num(dazu)} blaue Kugeln</strong><br>` +
+      `<span class="progress-note">Probe: ${num(rot)} : ${num(gesamtNeu)} = ${num(rot / gesamtNeu, 4)} = ${num(ziel)} % ✓ &nbsp;· ` +
+      `Der Zähler bleibt, der Nenner wächst — deshalb sinkt die Wahrscheinlichkeit.</span>`,
+  };
+}
+
+// Aufgabe 8 — ein Glücksspiel durchgerechnet. Der Erwartungswert sagt nicht, was passiert,
+// sondern was auf lange Sicht herauskommt — und für wen.
+function generateAufgabe8() {
+  const n = pick([4, 5, 6, 8, 10, 12]);
+  const gewinnfelder = randInt(1, n - 1);
+  const auszahlung = randInt(2, 10);
+  const spiele = n * randInt(3, 12);
+  const gewinne = (spiele * gewinnfelder) / n;   // ganzzahlig, weil spiele ein Vielfaches von n ist
+  const summeAus = gewinne * auszahlung;
+  // Der Einsatz wird so gewählt, dass das Spiel nicht zufällig genau fair ist: Sonst wäre die
+  // dritte Antwort 0, und „Gewinn oder Verlust“ ließe sich nicht unterscheiden.
+  const einsatz = pick([1, 2, 3, 4, 5].filter((e) => e * spiele !== summeAus));
+  const bilanz = summeAus - einsatz * spiele;
+  return {
+    promptHtml:
+      `Ein Glücksrad hat <strong>${num(n)} gleich große</strong> Felder; ` +
+      `<strong>${num(gewinnfelder)}</strong> ${gewinnfelder === 1 ? "davon ist ein Gewinnfeld" : "davon sind Gewinnfelder"}. ` +
+      `Wer ein Gewinnfeld trifft, bekommt <strong>${num(auszahlung)} €</strong> ausgezahlt.<br>` +
+      `Ein Spiel kostet <strong>${num(einsatz)} €</strong> Einsatz. Jemand spielt <strong>${num(spiele)}-mal</strong>.`,
+    felder: [
+      {
+        name: "Wie viele Gewinne sind zu erwarten?", soll: gewinne, toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - spiele) < 0.01) return "Das sind <em>alle</em> Spiele. Nur ein Teil davon endet auf einem Gewinnfeld.";
+          if (Math.abs(val - gewinnfelder) < 0.01) return "Das ist die Zahl der Gewinnfelder. Multipliziere die Wahrscheinlichkeit mit der Zahl der Spiele.";
+          if (Math.abs(val - spiele / gewinnfelder) < 0.01) return `Du hast durch ${num(gewinnfelder)} geteilt. Die Wahrscheinlichkeit ist ${num(gewinnfelder)} : ${num(n)} — damit wird multipliziert.`;
+          return "";
+        },
+      },
+      {
+        name: "Wie viel wird insgesamt ausgezahlt?", soll: summeAus, einheit: "€", toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - auszahlung) < 0.01) return "Das ist die Auszahlung für <em>einen</em> Gewinn.";
+          if (Math.abs(val - spiele * auszahlung) < 0.01) return "Ausgezahlt wird nur bei einem <strong>Gewinn</strong>, nicht bei jedem Spiel.";
+          if (Math.abs(val - einsatz * spiele) < 0.01) return "Das sind die gezahlten <strong>Einsätze</strong>, nicht die Auszahlung.";
+          return "";
+        },
+      },
+      {
+        name: "Gewinn (+) oder Verlust (−) der spielenden Person", soll: bilanz, einheit: "€", toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - summeAus) < 0.01) return `Das ist die Auszahlung. Die ${num(spiele)} Einsätze von je ${num(einsatz)} € müssen noch abgezogen werden.`;
+          if (Math.abs(val - einsatz * spiele) < 0.01) return "Das sind die Einsätze allein. Gefragt ist die Bilanz: Auszahlung minus Einsätze.";
+          if (Math.abs(val + bilanz) < 0.01) return "Das Vorzeichen stimmt nicht: Rechne Auszahlung <em>minus</em> Einsätze.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      `Die Gewinnwahrscheinlichkeit ist ${num(gewinnfelder)} : ${num(n)}.`,
+      `Die erwartete Zahl der Gewinne ist ${num(spiele)} · ${num(gewinnfelder)} : ${num(n)}.`,
+      "Die Bilanz ist Auszahlung minus alle Einsätze — auch die verlorenen Spiele kosten Einsatz.",
+    ],
+    musterloesungHtml:
+      `① P(Gewinn) = ${num(gewinnfelder)} : ${num(n)} = ${num(gewinnfelder / n, 4)}<br>` +
+      `② erwartete Gewinne: ${num(spiele)} · ${num(gewinnfelder / n, 4)} = <strong>${num(gewinne)}</strong><br>` +
+      `③ Auszahlung: ${num(gewinne)} · ${num(auszahlung)} € = <strong>${num(summeAus)} €</strong><br>` +
+      `④ Einsätze: ${num(spiele)} · ${num(einsatz)} € = ${num(einsatz * spiele)} €<br>` +
+      `⑤ Bilanz: ${num(summeAus)} − ${num(einsatz * spiele)} = <strong>${num(bilanz)} €</strong><br>` +
+      `<span class="progress-note">${bilanz > 0
+        ? `Auf lange Sicht gewinnt hier die spielende Person — ein Glücksrad, das sich für den Betreiber nicht rechnet.`
+        : `Auf lange Sicht verliert die spielende Person ${num(-bilanz)} € — davon lebt der Betreiber.`} ` +
+      `Je Spiel sind das ${num(bilanz / spiele, 2)} €. Fair wäre ein Einsatz von ${num(summeAus / spiele, 2)} €. ` +
+      `Der Erwartungswert sagt nichts über den einzelnen Abend: Er beschreibt, wohin es auf die Dauer läuft.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Laplace-Wahrscheinlichkeit", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Gegenereignis", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — vom Winkel zur Wahrscheinlichkeit", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — erwartete Anzahl", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Günstige Ergebnisse zählen", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Gegenereignis", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Wahrscheinlichkeit schätzen", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — vom Winkel zur Wahrscheinlichkeit", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Die Urne verändern", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — erwartete Anzahl", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Lohnt sich das Glücksrad?", generate: generateAufgabe8 },
   ]);
 }
 
