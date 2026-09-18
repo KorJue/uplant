@@ -742,7 +742,7 @@ function generateAufgabe4b() {
     ],
     musterloesungHtml:
       `Kommas untereinander, mit Nullen aufgefüllt:<br>` +
-      `<span class="formula-block">${dez(links, 2)} ${plus ? "+" : "−"} ${dez(rechts, 2)} = <strong>${dez(correct, 2)}</strong></span>` +
+      `<div class="formula-block">${dez(links, 2)} ${plus ? "+" : "−"} ${dez(rechts, 2)} = <strong>${dez(correct, 2)}</strong></div>` +
       `Überschlag zur Kontrolle: rund ${Math.round(links)} ${plus ? "+" : "−"} ${Math.round(rechts)} = ${plus ? Math.round(links) + Math.round(rechts) : Math.round(links) - Math.round(rechts)}`,
   };
 }

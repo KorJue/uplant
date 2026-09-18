@@ -152,11 +152,41 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — arithmetisches Mittel. Gemessen mit tests/werkzeug-streuung.js: in 200 Würfen
+  // Aufgabe 2 — Modalwert und Spannweite. Beide werden abgelesen, nicht gerechnet. Gemessen mit
+  // tests/werkzeug-streuung.js: in 200 Würfen kein einziges Doppel, die Menge ist also viele
+  // Tausend groß. Schranke: simuliertes 10⁻⁴-Quantil bei 30 Zügen — 27.
+  await pruefeAufgabe(page, bericht, {
+    nr: 2, name: "A2 Modalwert und Spannweite", runden: 30, mindestensVerschieden: 27,
+    deute: (frage) => {
+      const m = frage.match(/Werte notiert: (.*)$/);
+      if (!m) return null;
+      const daten = liste(m[1]);
+      if (daten.length < 5) return null;
+      // Unabhängig nachgezählt: Der häufigste Wert muss eindeutig sein, sonst wäre die Frage
+      // nach „dem“ Modalwert gar nicht beantwortbar.
+      const moden = modalwerte(daten);
+      pruefe(moden.length === 1, `A2: der Modalwert ist nicht eindeutig (${moden.join("/")}) — „${frage}“`);
+      const kleinste = Math.min(...daten), groesste = Math.max(...daten);
+      return {
+        felder: [moden[0], groesste - kleinste],
+        toleranz: 0.005,
+        falschFelder: [
+          [0, 3, "wie oft"],
+          [0, groesste, "größte"],
+          [0, median(daten), "Median"],
+          [1, groesste, "Differenz"],
+          [1, groesste + kleinste, "addiert"],
+          [1, daten.length, "Anzahl"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 3 — arithmetisches Mittel. Gemessen mit tests/werkzeug-streuung.js: in 200 Würfen
   // kein einziges Doppel, die Menge ist also viele Tausend groß. Die Schranke ist das
   // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 arithmetisches Mittel", runden: 30, mindestensVerschieden: 27,
+    nr: 3, name: "A3 arithmetisches Mittel", runden: 30, mindestensVerschieden: 27,
     deute: (frage) => {
       const m = frage.match(/Bei (\d+) Messungen wurden diese Werte notiert: (.*?) Wie groß/);
       if (!m) return null;
@@ -175,17 +205,43 @@ async function aufgaben(page) {
         ],
         pruefe: (f) => {
           // Konstruktiv: der letzte Wert macht die Summe durch n teilbar.
-          pruefe(Number.isInteger(s / anzahl), `A2: x̄ = ${s / anzahl} ist nicht ganzzahlig — „${f}“`);
+          pruefe(Number.isInteger(s / anzahl), `A3: x̄ = ${s / anzahl} ist nicht ganzzahlig — „${f}“`);
         },
       };
     },
   });
 
-  // Aufgabe 3 — Median bei gerader Anzahl. Gemessen mit tests/werkzeug-streuung.js: in 200
+  // Aufgabe 4 — vom Anteil zum Kreisdiagramm. Gemessen: 189 verschiedene in 200 Würfen,
+  // zurückgerechnet rund 1700 Kandidaten. Schranke: simuliertes 10⁻⁴-Quantil bei 30 Zügen für
+  // 0,8 · n — 26.
+  await pruefeAufgabe(page, bericht, {
+    nr: 4, name: "A4 Kreisdiagramm", runden: 30, mindestensVerschieden: 26,
+    deute: (frage) => {
+      const m = frage.match(/Von (\d+) [^\d]+ (\d+) /);
+      if (!m) return null;
+      const n = Number(m[1]), H = Number(m[2]);
+      const winkel = (H * 360) / n;
+      pruefe(Number.isInteger(winkel), `A4: ${H} : ${n} · 360° = ${winkel}° ist nicht ganzzahlig — „${frage}“`);
+      pruefe(H > 0 && H < n, `A4: H = ${H} von ${n} ergibt kein Kreisstück — „${frage}“`);
+      return {
+        felder: [(H * 100) / n, winkel],
+        toleranz: 0.01,
+        falschFelder: [
+          [0, H, "absolute"],
+          [0, H / n, "Dezimalzahl"],
+          [0, n - H, "übrigen"],
+          [1, (H * 100) / n, "Prozent"],
+          [1, 360 - winkel, "restlichen"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 5 — Median bei gerader Anzahl. Gemessen mit tests/werkzeug-streuung.js: in 200
   // Würfen kein einziges Doppel, die Menge ist also viele Tausend groß. Die Schranke ist das
   // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Median", runden: 30, mindestensVerschieden: 27,
+    nr: 5, name: "A5 Median", runden: 30, mindestensVerschieden: 27,
     deute: (frage) => {
       const m = frage.match(/Diese (\d+) Werte wurden erhoben: (.*?) Wie groß/);
       if (!m) return null;
@@ -208,24 +264,52 @@ async function aufgaben(page) {
           [mitteUnsortiert, "Urliste"],
         ],
         pruefe: (f) => {
-          pruefe(anzahl % 2 === 0, `A3: die Anzahl ${anzahl} ist nicht gerade — „${f}“`);
+          pruefe(anzahl % 2 === 0, `A5: die Anzahl ${anzahl} ist nicht gerade — „${f}“`);
           // Konstruktiv: die beiden mittleren Werte haben gleiche Parität.
-          pruefe(Number.isInteger(md), `A3: der Median ${md} ist nicht ganzzahlig — „${f}“`);
+          pruefe(Number.isInteger(md), `A5: der Median ${md} ist nicht ganzzahlig — „${f}“`);
           // Erst dadurch, dass die Urlistenmitte etwas anderes ergibt, kann der
           // Hinweis „nicht geordnet“ überhaupt greifen.
           pruefe(Math.abs(mitteUnsortiert - md) > 1e-9,
-            `A3: die Mitte der Urliste ist zufällig schon der Median — „${f}“`);
+            `A5: die Mitte der Urliste ist zufällig schon der Median — „${f}“`);
         },
       };
     },
   });
 
-  // Aufgabe 4 — der fehlende Wert bei vorgegebenem Durchschnitt. Gemessen mit
+  // Aufgabe 6 — gewichtetes Mittel aus der Häufigkeitstabelle. Gemessen: in 200 Würfen kein
+  // Doppel. Schranke: simuliertes 10⁻⁴-Quantil bei 30 Zügen — 27.
+  await pruefeAufgabe(page, bericht, {
+    nr: 6, name: "A6 Notendurchschnitt", runden: 30, mindestensVerschieden: 27,
+    deute: (frage) => {
+      const paare = [...frage.matchAll(/Note (\d): (\d+)×/g)].map((t) => [Number(t[1]), Number(t[2])]);
+      if (paare.length < 4) return null;
+      const anzahl = summe(paare.map(([, h]) => h));
+      const punkte = summe(paare.map(([note, h]) => note * h));
+      const stufen = summe(paare.map(([note]) => note));
+      pruefe(paare.every(([, h]) => h >= 1), `A6: eine aufgeführte Notenstufe kommt null mal vor — „${frage}“`);
+      pruefe(punkte / anzahl >= 1 && punkte / anzahl <= 6,
+        `A6: der Durchschnitt ${punkte / anzahl} liegt außerhalb der Notenskala — „${frage}“`);
+      return {
+        felder: [anzahl, punkte, punkte / anzahl],
+        toleranz: 0.01,
+        falschFelder: [
+          [0, paare.length, "Notenstufen"],
+          [0, punkte, "Summe aller Noten"],
+          [1, stufen, "Notenstufen"],
+          [1, anzahl, "Anzahl der Arbeiten"],
+          [2, punkte / paare.length, "Notenstufen"],
+          [2, stufen / paare.length, "gemittelt"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 7 — der fehlende Wert bei vorgegebenem Durchschnitt. Gemessen mit
   // tests/werkzeug-streuung.js: in 200 Würfen kein einziges Doppel, die Menge ist also viele
   // Tausend groß. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber
   // für 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 fehlender Wert", runden: 30, mindestensVerschieden: 27,
+    nr: 7, name: "A7 fehlender Wert", runden: 30, mindestensVerschieden: 27,
     deute: (frage) => {
       const m = frage.match(/Durchschnitt aller (\d+) Punktzahlen ist (\d+).*?bekannt: (.*?) Wie viele/);
       if (!m) return null;
@@ -244,10 +328,50 @@ async function aufgaben(page) {
         ],
         pruefe: (f, rueck) => {
           // Die Probe muss zurück auf den vorgegebenen Durchschnitt führen.
-          pruefe(rueck.includes("Probe"), `A4: die Musterlösung macht keine Probe — „${f}“`);
+          pruefe(rueck.includes("Probe"), `A7: die Musterlösung macht keine Probe — „${f}“`);
           pruefe(Math.abs((s + (anzahl * mittelwert - s)) / anzahl - mittelwert) < 1e-9,
-            `A4: die Lösung führt nicht auf den Durchschnitt ${mittelwert} — „${f}“`);
+            `A7: die Lösung führt nicht auf den Durchschnitt ${mittelwert} — „${f}“`);
         },
+      };
+    },
+  });
+
+  // Aufgabe 8 — der Ausreißer: Median, arithmetisches Mittel und wie wenige darüber liegen.
+  // Gemessen: in 200 Würfen kein Doppel. Schranke: simuliertes 10⁻⁴-Quantil bei 30 Zügen — 27.
+  await pruefeAufgabe(page, bericht, {
+    nr: 8, name: "A8 Ausreißer", runden: 30, mindestensVerschieden: 27,
+    deute: (frage) => {
+      const m = frage.match(/Monatsgehälter in Euro: (.*?) Runde/);
+      if (!m) return null;
+      // Die Gehälter stehen mit Tausenderpunkt; `liste` würde „3.200“ als 3 und 200 lesen.
+      const daten = m[1].split("·").map((t) => Number(t.replace(/\./g, "").trim()));
+      const anzahl = daten.length;
+      if (anzahl !== 7 && anzahl !== 9 || daten.some((v) => !Number.isFinite(v))) return null;
+      const sortiert = daten.slice().sort((a, b) => a - b);
+      const md = sortiert[(anzahl - 1) / 2];
+      const s = summe(daten);
+      const mittel = s / anzahl;
+      const ueberMittel = daten.filter((v) => v > mittel).length;
+      const ueberMedian = daten.filter((v) => v > md).length;
+      // Der fachliche Kern der Aufgabe: Ein einzelner Ausreißer zieht das Mittel über den Median,
+      // und über dem Mittel liegt deshalb weniger als die Hälfte der Werte. Dass es STRENG
+      // weniger sind als über dem Median, lässt sich nicht verlangen: Liegen mehrere Gehälter
+      // genau auf dem Median, zählt auch dort nur der Ausreißer als „darüber“.
+      pruefe(mittel > md, `A8: das Mittel (${mittel}) liegt nicht über dem Median (${md}) — „${frage}“`);
+      pruefe(ueberMittel <= ueberMedian && ueberMittel < anzahl / 2,
+        `A8: über dem Mittel liegen ${ueberMittel} von ${anzahl} (über dem Median ${ueberMedian}) — der Ausreißer wirkt nicht — „${frage}“`);
+      return {
+        felder: [md, mittel, ueberMittel],
+        toleranz: 0.01,
+        falschFelder: [
+          [0, mittel, "arithmetische Mittel"],
+          [0, daten[(anzahl - 1) / 2], "Urliste"],
+          [0, (sortiert[0] + sortiert[anzahl - 1]) / 2, "kleinsten"],
+          [1, s, "Summe"],
+          [1, s / (anzahl - 1), "geteilt"],
+          [1, md, "Median"],
+          [2, ueberMedian, "Median"],
+        ],
       };
     },
   });

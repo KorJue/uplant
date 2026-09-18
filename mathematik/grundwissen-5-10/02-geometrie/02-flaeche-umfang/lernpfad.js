@@ -685,7 +685,7 @@ function generateAufgabe6() {
   return {
     promptHtml:
       `Zwei Rechtecke haben denselben Umfang von <strong>${2 * halbUmfang} cm</strong>:<br>` +
-      `<span class="formula-block">Rechteck I: ${a1} cm × ${b1} cm &nbsp;&nbsp; Rechteck II: ${a2} cm × ${b2} cm</span>`,
+      `<div class="formula-block">Rechteck I: ${a1} cm × ${b1} cm &nbsp;&nbsp; Rechteck II: ${a2} cm × ${b2} cm</div>`,
     felder: [
       {
         name: "Flächeninhalt von Rechteck I", soll: A1, einheit: "cm²", toleranz: 0.01,
