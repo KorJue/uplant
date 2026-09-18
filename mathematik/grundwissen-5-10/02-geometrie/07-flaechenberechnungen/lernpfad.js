@@ -526,6 +526,13 @@ function generateAufgabe1() {
       if (trifft(val, 2 * (g + h))) return "Das ist der Umfang eines Rechtecks mit diesen Maßen. Gefragt ist der Flächeninhalt.";
       return "";
     },
+    tipps: [
+      "Nicht jede angegebene Zahl wird gebraucht. In die Flächenformel geht nur die <em>Höhe</em> ein — der senkrechte Abstand.",
+      istDreieck ? "Für das Dreieck gilt A = ½ · g · h." : "Für das Parallelogramm gilt A = g · h.",
+      istDreieck
+        ? `Also ½ · ${g} · ${h} rechnen.`
+        : `Also ${g} · ${h} rechnen — ohne Halbierung.`,
+    ],
     musterloesungHtml: istDreieck
       ? `<span class="legende-h">A = ½ · g · h = ½ · ${g} cm · ${h} cm = ${A} cm²</span><br>` +
         `<span class="progress-note">Die schräge Seite von ${b} cm wird gar nicht gebraucht — sie ist nur zur Ablenkung angegeben. ` +
@@ -556,6 +563,11 @@ function generateAufgabe2() {
       if (trifft(val, a + c + h)) return "Du hast die drei Angaben addiert. Gesucht ist eine Fläche, also ein Produkt.";
       return "";
     },
+    tipps: [
+      "Die Trapezformel lautet A = ½ · (a + c) · h — beide parallelen Seiten zählen.",
+      `Zuerst die Klammer: ${a} + ${c} = ${a + c}.`,
+      `Dann ½ · ${a + c} · ${h} rechnen.`,
+    ],
     musterloesungHtml:
       `A = ½ · (a + c) · h<br>` +
       `&nbsp;&nbsp;= ½ · (${a} cm + ${c} cm) · ${h} cm<br>` +
@@ -588,6 +600,11 @@ function generateAufgabe3() {
         if (trifft(val, A / h)) return "Du hast die Halbierung vergessen. Aus A = ½ · (a + c) · h folgt zuerst a + c = <strong>2A</strong> : h.";
         return "";
       },
+      tipps: [
+        "Schreibe die Formel hin und löse sie Schritt für Schritt nach c auf: A = ½ · (a + c) · h.",
+        "Die Halbierung wird rückgängig gemacht, indem man mit 2 multipliziert: (a + c) · h = 2A.",
+        `Also a + c = 2 · ${A} : ${h} = ${summe} — davon a = ${a} abziehen.`,
+      ],
       musterloesungHtml:
         `Aus A = ½ · (a + c) · h folgt rückwärts:<br>` +
         `① a + c = 2 · A : h = 2 · ${A} : ${h} = ${2 * A} : ${h} = <strong>${summe} cm</strong><br>` +
@@ -614,6 +631,13 @@ function generateAufgabe3() {
       if (trifft(val, A * g)) return "Du hast multipliziert. Gesucht ist die Umkehrung: geteilt wird.";
       return "";
     },
+    tipps: [
+      istDreieck ? "Beim Dreieck gilt A = ½ · g · h." : "Beim Parallelogramm gilt A = g · h.",
+      istDreieck
+        ? "Die Halbierung wird zuerst rückgängig gemacht: g · h = 2 · A."
+        : "Die Umkehrung der Multiplikation ist die Division.",
+      istDreieck ? `Also h = 2 · ${A} : ${g}.` : `Also h = ${A} : ${g}.`,
+    ],
     musterloesungHtml: istDreieck
       ? `Aus A = ½ · g · h folgt rückwärts:<br>` +
         `&nbsp;&nbsp;g · h = 2 · A = 2 · ${A} = ${2 * A}<br>` +
@@ -653,6 +677,11 @@ function generateAufgabe4() {
       if (trifft(val, A)) return `Das ist die Fläche in m² — richtig gerechnet, aber der Preis von ${preis} € je m² fehlt noch.`;
       return "";
     },
+    tipps: [
+      "Zerlege die Wand in zwei bekannte Figuren: unten ein Rechteck, oben ein Dreieck.",
+      `Rechteck: ${b} · ${hR} m². Giebeldreieck: ½ · ${b} · ${hD} m².`,
+      `Beide Flächen addieren und das Ergebnis mit ${preis} € je m² multiplizieren.`,
+    ],
     musterloesungHtml:
       `① Rechteck: ${b} m · ${hR} m = <strong>${aR} m²</strong><br>` +
       `② Giebeldreieck: ½ · ${b} m · ${hD} m = <strong>${num(aD, 2)} m²</strong><br>` +
@@ -663,12 +692,223 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 2 — Raute und Drachen. Die fünfte Formel der Übersicht, A = ½ · e · f, bekommt eine
+// eigene Aufgabe: Sie wird am leichtesten vergessen, weil hier keine Höhe, sondern die beiden
+// Diagonalen eingehen.
+function generateAufgabe2b() {
+  const istRaute = Math.random() < 0.5;
+  // e · f muss gerade sein, damit die halbe Fläche ganzzahlig bleibt.
+  const e = randInt(3, 16);
+  const f = e % 2 === 0 ? randInt(3, 15) : randInt(2, 8) * 2;
+  const A = (e * f) / 2;
+  return {
+    promptHtml:
+      `Ein <strong>${istRaute ? "rautenförmiges" : "drachenförmiges"}</strong> Schild hat die Diagonalen ` +
+      `<strong>e = ${e} cm</strong> und <strong>f = ${f} cm</strong>. Wie groß ist der <strong>Flächeninhalt</strong> in cm²?`,
+    correct: A,
+    tolerance: 0.01,
+    placeholder: "Flächeninhalt in cm²",
+    hinweis: (raw, val) => {
+      if (trifft(val, e * f)) return `Du hast die <strong>Halbierung</strong> vergessen. ${e} · ${f} = ${e * f} cm² ist das umschließende Rechteck aus den beiden Diagonalen — die Raute füllt genau die Hälfte davon.`;
+      if (trifft(val, (e + f) / 2)) return "Du hast die Diagonalen addiert und halbiert. In die Formel geht ihr <strong>Produkt</strong> ein: ½ · e · f.";
+      if (trifft(val, 2 * (e + f))) return "Das wäre ein Umfang. Gefragt ist der Flächeninhalt.";
+      return "";
+    },
+    tipps: [
+      "Bei Raute und Drachen rechnet man nicht mit einer Höhe, sondern mit den beiden <strong>Diagonalen</strong>.",
+      "Die Formel lautet A = ½ · e · f.",
+      `Also ½ · ${e} · ${f} rechnen.`,
+    ],
+    musterloesungHtml:
+      `A = ½ · e · f = ½ · ${e} cm · ${f} cm = <strong>${A} cm²</strong><br>` +
+      `<span class="progress-note">Warum die Hälfte? Die beiden Diagonalen spannen ein Rechteck von ${e} · ${f} = ${e * f} cm² auf. ` +
+      `Die vier Ecken, die über die ${istRaute ? "Raute" : "Drachenform"} hinausragen, sind zusammen genau so groß wie die Figur selbst.</span>`,
+  };
+}
+
+// Aufgabe 4 — dasselbe Parallelogramm, zwei Grundseiten. Wer verstanden hat, dass die Fläche
+// feststeht, sieht sofort: Zur längeren Seite gehört die kürzere Höhe.
+function generateAufgabe4b() {
+  // Konstruktiv, damit beide Höhen ganzzahlig sind und wirklich in die Figur passen:
+  // a = d·p, b = d·q, h_a = q·m, h_b = p·m mit m < d. Dann ist a · h_a = b · h_b = d·p·q·m,
+  // und aus m < d folgt h_a < b und h_b < a — eine Höhe ist nie länger als die Nachbarseite.
+  const d = randInt(2, 6);
+  const m = randInt(1, d - 1);
+  const p = randInt(1, 3);
+  let q = randInt(1, 3);
+  if (q === p) q = p === 3 ? 1 : p + 1; // a ≠ b, sonst wäre es eine Raute und beide Höhen gleich
+  const a = d * p, b = d * q;
+  const ha = q * m, hb = p * m;
+  const A = a * ha;
+  return {
+    promptHtml:
+      `Ein <strong>Parallelogramm</strong> hat die Seiten <strong>a = ${a} cm</strong> und <strong>b = ${b} cm</strong>. ` +
+      `Die Höhe auf die Seite a beträgt <strong>h<sub>a</sub> = ${ha} cm</strong>.`,
+    felder: [
+      {
+        name: "Flächeninhalt", soll: A, einheit: "cm²", toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (trifft(val, a * b)) return "Du hast die beiden <strong>Seiten</strong> multipliziert. In die Formel gehört die Grundseite mal die zugehörige <em>Höhe</em>.";
+          if (trifft(val, (a * ha) / 2)) return "Halbiert wird beim Dreieck. Beim Parallelogramm gilt A = g · h ohne Halbierung.";
+          return "";
+        },
+      },
+      {
+        name: "Höhe h_b auf die Seite b", soll: hb, einheit: "cm", toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (trifft(val, ha)) return "Die beiden Höhen sind verschieden. Zur <strong>längeren</strong> Seite gehört die <strong>kürzere</strong> Höhe — das Produkt muss ja gleich bleiben.";
+          if (trifft(val, A * b)) return "Du hast multipliziert. Aus A = b · h<sub>b</sub> folgt h<sub>b</sub> = A : b.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Ein Parallelogramm hat zwei Paare von Seiten — und zu jeder Seite gehört eine eigene Höhe.",
+      "Der Flächeninhalt ist derselbe, egal welche Seite man als Grundseite nimmt: a · h<sub>a</sub> = b · h<sub>b</sub>.",
+      `Also zuerst A = ${a} · ${ha} rechnen und dann durch ${b} teilen.`,
+    ],
+    musterloesungHtml:
+      `① A = a · h<sub>a</sub> = ${a} cm · ${ha} cm = <strong>${A} cm²</strong><br>` +
+      `② Dieselbe Fläche über b: A = b · h<sub>b</sub> ⇒ h<sub>b</sub> = ${A} : ${b} = <strong>${hb} cm</strong><br>` +
+      `<span class="progress-note">Probe: ${b} · ${hb} = ${A} cm² ✓ &nbsp;· ` +
+      `${a > b ? `a ist länger als b, deshalb ist h<sub>a</sub> = ${ha} cm kürzer als h<sub>b</sub> = ${hb} cm` : `b ist länger als a, deshalb ist h<sub>b</sub> = ${hb} cm kürzer als h<sub>a</sub> = ${ha} cm`} — Länge und zugehörige Höhe verhalten sich gegenläufig.</span>`,
+  };
+}
+
+// Aufgabe 6 — Restfläche. Zusammengesetzte Figuren entstehen nicht nur durch Anlegen, sondern
+// auch durch Wegnehmen; das Rechnen läuft dann über die Differenz.
+function generateAufgabe6() {
+  const form = pick(["dreieck", "parallelogramm", "trapez"]);
+  const br = randInt(8, 20), t = randInt(5, 14);
+  const gesamt = br * t;
+  let ausschnitt, beschreibung, ohneHalb;
+  if (form === "parallelogramm") {
+    const g = randInt(2, br - 1), h = randInt(2, t - 1);
+    ausschnitt = g * h;
+    ohneHalb = null;
+    beschreibung = `ein <strong>Parallelogramm</strong> mit der Grundseite ${g} cm und der Höhe ${h} cm`;
+  } else if (form === "dreieck") {
+    const g = randInt(2, br - 1);
+    // g · h muss gerade bleiben, damit die halbe Fläche ganzzahlig ist.
+    const hMax = t - 1;
+    const h = g % 2 === 0 ? randInt(2, hMax) : randInt(1, Math.floor(hMax / 2)) * 2;
+    ausschnitt = (g * h) / 2;
+    ohneHalb = g * h;
+    beschreibung = `ein <strong>Dreieck</strong> mit der Grundseite ${g} cm und der Höhe ${h} cm`;
+  } else {
+    const a = randInt(4, br - 1);
+    const c = randInt(2, a - 1);
+    const hMax = t - 1;
+    const h = (a + c) % 2 === 0 ? randInt(2, hMax) : randInt(1, Math.floor(hMax / 2)) * 2;
+    ausschnitt = ((a + c) * h) / 2;
+    ohneHalb = (a + c) * h;
+    beschreibung = `ein <strong>Trapez</strong> mit den parallelen Seiten ${a} cm und ${c} cm und der Höhe ${h} cm`;
+  }
+  const rest = gesamt - ausschnitt;
+  return {
+    promptHtml:
+      `Aus einer rechteckigen Blechplatte von <strong>${br} cm × ${t} cm</strong> wird ${beschreibung} herausgeschnitten.`,
+    felder: [
+      {
+        name: "Fläche des ausgeschnittenen Stücks", soll: ausschnitt, einheit: "cm²", toleranz: 0.01,
+        hinweis: (roh, val) =>
+          (ohneHalb !== null && trifft(val, ohneHalb))
+            ? `Du hast die <strong>Halbierung</strong> vergessen — ${ohneHalb} cm² wäre das zugehörige Parallelogramm.`
+            : "",
+      },
+      {
+        name: "Restfläche der Platte", soll: rest, einheit: "cm²", toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (trifft(val, gesamt)) return `Das ist die <strong>ganze</strong> Platte (${br} · ${t} = ${gesamt} cm²). Das ausgeschnittene Stück muss noch abgezogen werden.`;
+          if (trifft(val, gesamt + ausschnitt)) return "Du hast addiert. Weggeschnittenes wird <strong>abgezogen</strong>.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Zwei Schritte: erst die Fläche des herausgeschnittenen Stücks, dann die Fläche der ganzen Platte.",
+      `Die ganze Platte misst ${br} · ${t} = ${gesamt} cm².`,
+      "Die Restfläche ist die Differenz: ganze Platte minus Ausschnitt.",
+    ],
+    musterloesungHtml:
+      `① Ausschnitt: <strong>${ausschnitt} cm²</strong><br>` +
+      `② ganze Platte: ${br} cm · ${t} cm = <strong>${gesamt} cm²</strong><br>` +
+      `③ Rest: ${gesamt} − ${ausschnitt} = <strong>${rest} cm²</strong><br>` +
+      `<span class="progress-note">Bei zusammengesetzten Figuren hilft immer dieselbe Frage: Welche bekannten Figuren stecken darin, und werden sie addiert oder abgezogen? ` +
+      `Hier bleiben ${num((rest / gesamt) * 100, 3)} % der Platte übrig.</span>`,
+  };
+}
+
+// Aufgabe 8 — vom Grundstück zum Einkaufszettel. Der letzte Schritt ist kein Rechenschritt mehr,
+// sondern eine Sachentscheidung: Packungen gibt es nur ganz, also wird aufgerundet.
+function generateAufgabe8() {
+  const a = randInt(10, 24);
+  const c = randInt(4, a - 2);
+  const h = randInt(1, 5) * 2;   // gerade — dann ist ½ · (a + c) · h ganzzahlig
+  const hd = randInt(1, 4) * 2;  // gerade — dann ist ½ · c · hd ganzzahlig
+  const aTrapez = ((a + c) * h) / 2;
+  const aDreieck = (c * hd) / 2;
+  const A = aTrapez + aDreieck;
+  const reicht = pick([8, 10, 12, 15, 20, 25]);
+  const packungen = Math.ceil(A / reicht);
+  const preis = randInt(3, 14);
+  const kosten = packungen * preis;
+  return {
+    promptHtml:
+      `Ein Grundstück besteht aus einem <strong>Trapez</strong> mit den parallelen Seiten ${a} m und ${c} m und der Höhe ${h} m. ` +
+      `An der ${c} m langen Seite schließt ein <strong>Dreieck</strong> mit derselben Grundseite und der Höhe ${hd} m an.<br>` +
+      `Der Rasen wird neu eingesät. Eine Packung Saatgut reicht für <strong>${reicht} m²</strong> und kostet <strong>${preis} €</strong>.`,
+    felder: [
+      {
+        name: "Gesamtfläche", soll: A, einheit: "m²", toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (trifft(val, aTrapez)) return "Das ist nur das <strong>Trapez</strong>. Das angesetzte Dreieck kommt noch dazu.";
+          if (trifft(val, (a + c) * h + aDreieck)) return "Beim Trapez fehlt die <strong>Halbierung</strong>: A = ½ · (a + c) · h.";
+          return "";
+        },
+      },
+      {
+        name: "Anzahl der Packungen", soll: packungen, toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (trifft(val, Math.floor(A / reicht))) return `Abgerundet reicht das Saatgut nicht: ${Math.floor(A / reicht)} Packungen decken nur ${Math.floor(A / reicht) * reicht} m². Bei Packungen wird <strong>aufgerundet</strong>.`;
+          if (trifft(val, A / reicht)) return "Packungen gibt es nur ganz — das Ergebnis muss <strong>aufgerundet</strong> werden.";
+          return "";
+        },
+      },
+      {
+        name: "Kosten", soll: kosten, einheit: "€", toleranz: 0.01,
+        hinweis: (roh, val) =>
+          trifft(val, (A / reicht) * preis)
+            ? "Bezahlt werden <strong>ganze</strong> Packungen. Rechne erst die aufgerundete Anzahl aus und multipliziere dann mit dem Preis."
+            : "",
+      },
+    ],
+    tipps: [
+      "Zerlege das Grundstück in die beiden bekannten Figuren und addiere ihre Flächen.",
+      `Trapez: ½ · (${a} + ${c}) · ${h} m². Dreieck: ½ · ${c} · ${hd} m².`,
+      `Dann die Fläche durch ${reicht} m² teilen — und daran denken, dass es Packungen nur ganz gibt.`,
+    ],
+    musterloesungHtml:
+      `① Trapez: ½ · (${a} + ${c}) · ${h} = <strong>${aTrapez} m²</strong><br>` +
+      `② Dreieck: ½ · ${c} · ${hd} = <strong>${aDreieck} m²</strong><br>` +
+      `③ zusammen: ${aTrapez} + ${aDreieck} = <strong>${A} m²</strong><br>` +
+      `④ Packungen: ${A} : ${reicht} = ${num(A / reicht, 4)} ⇒ <strong>${packungen} Packungen</strong> (aufgerundet)<br>` +
+      `⑤ Kosten: ${packungen} · ${preis} € = <strong>${kosten} €</strong><br>` +
+      `<span class="progress-note">${packungen} Packungen decken ${packungen * reicht} m² — ${num(packungen * reicht - A, 4)} m² bleiben übrig. ` +
+      `Abrunden wäre hier ein Sachfehler, kein Rechenfehler: Ein Stück Rasen bliebe kahl.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Parallelogramm oder Dreieck", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Trapez", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Rückwärtsrechnen", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Giebelwand streichen", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Raute und Drachen", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Trapez", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Zwei Seiten, zwei Höhen", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Rückwärtsrechnen", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Restfläche", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Giebelwand streichen", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Rasen säen", generate: generateAufgabe8 },
   ]);
 }
 

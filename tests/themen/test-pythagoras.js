@@ -134,12 +134,39 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — fehlende Kathete, gleiche Kandidatenmenge wie A1. Gemessen mit
+  // Aufgabe 2 — die Umkehrung: aus den drei Seiten auf den rechten Winkel schließen. Gemessen mit
+  // tests/werkzeug-streuung.js: 98 verschiedene in 200 Würfen, zurückgerechnet rund 121
+  // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
+  // 0,8 · n gerechnet — 19.
+  let rechtwinklig = 0, schief = 0;
+  await pruefeAufgabe(page, bericht, {
+    nr: 2, name: "A2 Umkehrung", runden: 30, mindestensVerschieden: 19,
+    deute: (frage) => {
+      const m = frage.match(/Seiten (\d+) cm, (\d+) cm und (\d+) cm/);
+      if (!m) return null;
+      const seiten = m.slice(1).map(Number);
+      // Unabhängig nachgerechnet: die längste Seite gegen die Summe der Quadrate der beiden anderen.
+      const sortiert = seiten.slice().sort((p, q) => p - q);
+      const [k1, k2, lang] = sortiert;
+      const passt = k1 * k1 + k2 * k2 === lang * lang;
+      pruefe(k1 + k2 > lang, `A2: ${seiten.join("/")} erfüllt die Dreiecksungleichung nicht`);
+      if (passt) rechtwinklig++; else schief++;
+      return {
+        richtig: passt ? 1 : 2,
+        toleranz: 0.02,
+        falsch: [[passt ? 2 : 1, "längste Seite"]],
+      };
+    },
+  });
+  pruefe(rechtwinklig > 0 && schief > 0,
+    `A2: in 30 Zügen war das Dreieck ${rechtwinklig}-mal rechtwinklig und ${schief}-mal nicht — beide Fälle müssen vorkommen`);
+
+  // Aufgabe 3 — fehlende Kathete, gleiche Kandidatenmenge wie A1. Gemessen mit
   // tests/werkzeug-streuung.js: 41 verschiedene in 200 Würfen, zurückgerechnet also rund 41
   // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
   // 0,8 · n gerechnet — 13.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Kathete", runden: 30, mindestensVerschieden: 13,
+    nr: 3, name: "A3 Kathete", runden: 30, mindestensVerschieden: 13,
     deute: (frage) => {
       const m = frage.match(/c = (\d+) cm.*?a = (\d+) cm/);
       if (!m) return null;
@@ -157,19 +184,46 @@ async function aufgaben(page) {
           [Math.sqrt(c * c + a * a), "addiert"],
         ],
         pruefe: (f) => {
-          pruefe(Number.isInteger(b), `A2: √(${c}² − ${a}²) = ${b} ist nicht ganzzahlig — „${f}“`);
-          pruefe(a < c, `A2: die Kathete ${a} ist nicht kürzer als die Hypotenuse ${c} — „${f}“`);
+          pruefe(Number.isInteger(b), `A3: √(${c}² − ${a}²) = ${b} ist nicht ganzzahlig — „${f}“`);
+          pruefe(a < c, `A3: die Kathete ${a} ist nicht kürzer als die Hypotenuse ${c} — „${f}“`);
         },
       };
     },
   });
 
-  // Aufgabe 3 — Höhensatz oder Kathetensatz, je zur Hälfte. Der Höhensatz-Zweig
+  // Aufgabe 4 — Abstand zweier Punkte im Koordinatensystem. Gemessen: 199 verschiedene in 200
+  // Würfen, zurückgerechnet rund 19 800 Kandidaten. Schranke: simuliertes 10⁻⁴-Quantil bei
+  // 30 Zügen für 0,8 · n — 28.
+  await pruefeAufgabe(page, bericht, {
+    nr: 4, name: "A4 Abstand zweier Punkte", runden: 30, mindestensVerschieden: 28,
+    deute: (frage) => {
+      const m = frage.match(/P\(([−-]?\d+) \| ([−-]?\d+)\) und Q\(([−-]?\d+) \| ([−-]?\d+)\)/);
+      if (!m) return null;
+      const [x1, y1, x2, y2] = m.slice(1).map((s) => Number(s.replace("−", "-")));
+      const dx = Math.abs(x2 - x1), dy = Math.abs(y2 - y1);
+      const d = Math.sqrt(dx * dx + dy * dy);
+      pruefe(Number.isInteger(d), `A4: √(${dx}² + ${dy}²) = ${d} ist nicht ganzzahlig — „${frage}“`);
+      pruefe(dx > 0 && dy > 0, `A4: P und Q liegen auf einer Parallelen zur Achse (${dx}/${dy}) — dann ist kein Dreieck da`);
+      return {
+        felder: [dx, dy, d],
+        toleranz: 0.005,
+        falschFelder: [
+          // Bei verschiedenen Vorzeichen wird gern addiert statt die Differenz gebildet.
+          [0, x1 + x2, x1 * x2 < 0 ? "Differenz" : null],
+          [1, dx, "waagerechte"],
+          [2, dx + dy, "addiert"],
+          [2, dx * dx + dy * dy, "Quadratwurzel"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 5 — Höhensatz oder Kathetensatz, je zur Hälfte. Der Höhensatz-Zweig
   // hat 36 Ziehungen auf etwa 30 Paare, der Kathetensatz-Zweig nur 6 Fassungen;
   // simuliert man den Generator, ist bei 30 Zügen E = 17,2 und σ = 2,0, das
   // Quantil 10⁻⁴ liegt bei 10 — Schranke 9.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Höhen- und Kathetensatz", runden: 30, mindestensVerschieden: 9,
+    nr: 5, name: "A5 Höhen- und Kathetensatz", runden: 30, mindestensVerschieden: 9,
     deute: (frage) => {
       const hoehe = frage.match(/p = (\d+) cm.*?q = (\d+) cm/);
       if (hoehe) {
@@ -184,10 +238,10 @@ async function aufgaben(page) {
             [p * q, "Quadratwurzel"],
           ],
           pruefe: (f) => {
-            pruefe(Number.isInteger(h), `A3: √(${p} · ${q}) = ${h} ist nicht ganzzahlig — „${f}“`);
+            pruefe(Number.isInteger(h), `A5: √(${p} · ${q}) = ${h} ist nicht ganzzahlig — „${f}“`);
             // Bei p = q fielen geometrisches und arithmetisches Mittel zusammen,
             // und der Mittelwert-Fehler wäre nicht mehr zu diagnostizieren.
-            pruefe(p !== q, `A3: p = q = ${p} macht den Mittelwertfehler unsichtbar — „${f}“`);
+            pruefe(p !== q, `A5: p = q = ${p} macht den Mittelwertfehler unsichtbar — „${f}“`);
           },
         };
       }
@@ -207,23 +261,50 @@ async function aufgaben(page) {
           [Math.sqrt(c * (c - p)), "falschen Abschnitt"],
         ],
         pruefe: (f) => {
-          pruefe(Number.isInteger(a), `A3: √(${c} · ${p}) = ${a} ist nicht ganzzahlig — „${f}“`);
-          pruefe(p < c, `A3: der Abschnitt ${p} ist nicht kürzer als die Hypotenuse ${c} — „${f}“`);
+          pruefe(Number.isInteger(a), `A5: √(${c} · ${p}) = ${a} ist nicht ganzzahlig — „${f}“`);
+          pruefe(p < c, `A5: der Abschnitt ${p} ist nicht kürzer als die Hypotenuse ${c} — „${f}“`);
           // Der Kathetensatz muss mit dem Pythagoras verträglich sein:
           // a² = c·p und b² = c·q ergeben zusammen a² + b² = c².
           const b2 = c * (c - p);
           pruefe(Math.abs(c * p + b2 - c * c) < 1e-9,
-            `A3: a² + b² = ${c * p + b2} statt c² = ${c * c} — „${f}“`);
+            `A5: a² + b² = ${c * p + b2} statt c² = ${c * c} — „${f}“`);
         },
       };
     },
   });
 
-  // Aufgabe 4 — Raumdiagonale. Gemessen mit tests/werkzeug-streuung.js: 24 verschiedene in 200
+  // Aufgabe 6 — gleichschenkliges Dreieck: Höhe und Fläche. Gemessen: 50 verschiedene in 200
+  // Würfen, zurückgerechnet rund 51 Kandidaten. Schranke: simuliertes 10⁻⁴-Quantil bei 30 Zügen
+  // für 0,8 · n — 15.
+  await pruefeAufgabe(page, bericht, {
+    nr: 6, name: "A6 gleichschenkliges Dreieck", runden: 30, mindestensVerschieden: 15,
+    deute: (frage) => {
+      const m = frage.match(/Basis c = (\d+) cm.*?Schenkel a = b = (\d+) cm/);
+      if (!m) return null;
+      const basis = Number(m[1]), schenkel = Number(m[2]);
+      const halb = basis / 2;
+      const hoehe = Math.sqrt(schenkel * schenkel - halb * halb);
+      pruefe(schenkel > halb, `A6: der Schenkel ${schenkel} cm ist nicht länger als die halbe Basis ${halb} cm`);
+      pruefe(Number.isInteger(hoehe), `A6: √(${schenkel}² − ${halb}²) = ${hoehe} ist nicht ganzzahlig — „${frage}“`);
+      return {
+        felder: [hoehe, (basis * hoehe) / 2],
+        toleranz: 0.005,
+        falschFelder: [
+          [0, Math.sqrt(Math.abs(schenkel * schenkel - basis * basis)), "ganzen"],
+          [0, schenkel - halb, "Längen"],
+          [0, schenkel * schenkel - halb * halb, "Quadratwurzel"],
+          [1, basis * hoehe, "Halbierung"],
+          [1, (basis * schenkel) / 2, "Schenkel"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 7 — Raumdiagonale. Gemessen mit tests/werkzeug-streuung.js: 24 verschiedene in 200
   // Würfen, zurückgerechnet also rund 24 Kandidaten. Die Schranke ist das simulierte
   // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 10.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Raumdiagonale", runden: 30, mindestensVerschieden: 10,
+    nr: 7, name: "A7 Raumdiagonale", runden: 30, mindestensVerschieden: 10,
     deute: (frage) => {
       const m = frage.match(/(\d+) cm lang, (\d+) cm breit und (\d+) cm hoch/);
       if (!m) return null;
@@ -239,13 +320,42 @@ async function aufgaben(page) {
           [Math.sqrt(l * l + h * h), "zwei der drei Kanten"],
         ],
         pruefe: (f, rueck) => {
-          pruefe(Number.isInteger(e), `A4: √(${l}² + ${b}² + ${h}²) = ${e} ist nicht ganzzahlig — „${f}“`);
+          pruefe(Number.isInteger(e), `A7: √(${l}² + ${b}² + ${h}²) = ${e} ist nicht ganzzahlig — „${f}“`);
           // Die beiden letzten Fehler wären bei b = h dieselbe Zahl; die
           // Kantenliste ist eigens so geordnet, dass das nicht vorkommt.
-          pruefe(b !== h, `A4: Breite und Höhe sind beide ${b} cm — zwei Fehler fallen zusammen — „${f}“`);
+          pruefe(b !== h, `A7: Breite und Höhe sind beide ${b} cm — zwei Fehler fallen zusammen — „${f}“`);
           pruefe(rueck.includes("Bodendiagonale"),
-            `A4: die Musterlösung führt den Zwischenschritt nicht — „${f}“`);
+            `A7: die Musterlösung führt den Zwischenschritt nicht — „${f}“`);
         },
+      };
+    },
+  });
+
+  // Aufgabe 8 — Satteldach: Sparren, Dachfläche, Kosten. Gemessen: 196 verschiedene in 200 Würfen,
+  // zurückgerechnet rund 4900 Kandidaten. Schranke: simuliertes 10⁻⁴-Quantil bei 30 Zügen für
+  // 0,8 · n — 27.
+  await pruefeAufgabe(page, bericht, {
+    nr: 8, name: "A8 Satteldach", runden: 30, mindestensVerschieden: 27,
+    deute: (frage) => {
+      const m = frage.match(/ist (\d+) m breit und (\d+) m lang.*?First liegt (\d+) m.*?(\d+) € je Quadratmeter/);
+      if (!m) return null;
+      const [breite, laenge, hoehe, preis] = m.slice(1).map(Number);
+      const halb = breite / 2;
+      const sparre = Math.sqrt(halb * halb + hoehe * hoehe);
+      const flaeche = 2 * sparre * laenge;
+      pruefe(Number.isInteger(sparre), `A8: √(${halb}² + ${hoehe}²) = ${sparre} ist nicht ganzzahlig — „${frage}“`);
+      pruefe(hoehe <= halb, `A8: die Firsthöhe ${hoehe} m übersteigt die halbe Hausbreite ${halb} m — das Dach wäre steiler als 45°`);
+      return {
+        felder: [sparre, flaeche, flaeche * preis],
+        toleranz: 0.005,
+        falschFelder: [
+          [0, Math.sqrt(breite * breite + hoehe * hoehe), "ganzen"],
+          [0, halb + hoehe, "addiert"],
+          [0, halb * halb + hoehe * hoehe, "Quadrat"],
+          [1, sparre * laenge, "eine Dachhälfte"],
+          [1, breite * laenge, "Grundfläche"],
+          [2, sparre * laenge * preis, "bezahlt"],
+        ],
       };
     },
   });

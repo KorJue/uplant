@@ -577,6 +577,11 @@ function generateAufgabe1() {
     correct: nachD ? d : r,
     tolerance: 0.01,
     placeholder: nachD ? "Durchmesser in cm" : "Radius in cm",
+    tipps: [
+      "Der Radius reicht vom Mittelpunkt bis zum Rand, der Durchmesser einmal ganz durch den Kreis.",
+      "Der Durchmesser ist doppelt so lang wie der Radius: d = 2 · r.",
+      nachD ? `Also 2 · ${r}.` : `Also ${d} : 2.`,
+    ],
     hinweis: (raw, val) =>
       trifft(val, nachD ? r : d)
         ? nachD
@@ -621,6 +626,11 @@ function generateAufgabe2() {
       if (trifft(val, 90 - alpha) && ziel !== 90) return `Du hast zu 90° ergänzt. Gefragt war aber der ${zielName} mit ${ziel}°.`;
       return "";
     },
+    tipps: [
+      `Ein ${zielName} misst <strong>${ziel}°</strong>.`,
+      "„Ergänzen sich zu“ heißt: Beide Winkel zusammen ergeben diesen Wert.",
+      `Also ${ziel}° − ${alpha}°.`,
+    ],
     musterloesungHtml:
       `β = ${ziel}° − α = ${ziel}° − ${alpha}° = <strong>${beta}°</strong><br>` +
       `<span class="progress-note">Probe: ${alpha}° + ${beta}° = ${ziel}° ✓ &nbsp;· α ist ein ${art.name}, β ein ${winkelart(beta).name}.</span>`,
@@ -652,6 +662,11 @@ function generateAufgabe3() {
           : trifft(val, gross - klein)
             ? "Die Differenz der beiden Ablesungen hilft nicht weiter. Gesucht ist eine der beiden Zahlen selbst — die Winkelart entscheidet welche."
             : "",
+    tipps: [
+      "Das Geodreieck hat zwei Skalen; an derselben Stelle stehen zwei Zahlen, die sich zu 180° ergänzen.",
+      "Welche gilt, verrät die Zeichnung: Ist der Winkel spitz, muss die Zahl kleiner als 90 sein, ist er stumpf, größer.",
+      `Hier ist der Winkel ${spitz ? "spitz" : "stumpf"}.`,
+    ],
     musterloesungHtml:
       `Die beiden Skalen ergänzen sich immer zu 180°: ${klein}° + ${gross}° = 180°.<br>` +
       `Die Zeichnung zeigt einen <strong>${spitz ? "spitzen" : "stumpfen"}</strong> Winkel, also muss die Zahl ${spitz ? "<strong>kleiner</strong>" : "<strong>größer</strong>"} als 90 sein.<br>` +
@@ -671,17 +686,22 @@ function generateAufgabe4() {
   const jeEiner = 360 / gesamt;
   const winkel = teil * jeEiner;
   const kontext = pick([
-    { was: "Kinder einer Klasse", frage: "kommen mit dem Fahrrad zur Schule" },
-    { was: "Befragte", frage: "hören am liebsten Popmusik" },
-    { was: "Mitglieder eines Vereins", frage: "spielen Handball" },
+    { satz: (g, t) => `Eine Klasse hat <strong>${g} Kinder</strong>; <strong>${t}</strong> davon kommen mit dem Fahrrad zur Schule.` },
+    { satz: (g, t) => `Von <strong>${g} Befragten</strong> hören <strong>${t}</strong> am liebsten Popmusik.` },
+    { satz: (g, t) => `Ein Verein hat <strong>${g} Mitglieder</strong>; <strong>${t}</strong> davon spielen Handball.` },
   ]);
   return {
     promptHtml:
-      `Von <strong>${gesamt} ${kontext.was}</strong> ${kontext.frage} <strong>${teil}</strong>. ` +
+      `${kontext.satz(gesamt, teil)} ` +
       `Wie groß ist der <strong>Mittelpunktswinkel</strong> dieses Kreisausschnitts im Kreisdiagramm (in Grad)?`,
     correct: winkel,
     tolerance: 0.01,
     placeholder: "Winkel in Grad",
+    tipps: [
+      `Der ganze Kreis hat 360° und steht für alle ${gesamt}.`,
+      `Auf einen Einzelnen entfallen 360° : ${gesamt} = ${jeEiner}°.`,
+      `Davon dann ${teil} Stück.`,
+    ],
     hinweis: (raw, val) => {
       // Der Rest wird zuerst geprüft: Er ist der häufigste Fehler und kann bei
       // teil : gesamt = 1 : 3 zahlengleich mit der 180°-Rechnung sein.
@@ -699,12 +719,169 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 2 — die Teile des Kreises in einer Aufgabe: Radius, Durchmesser und die Frage, ob ein
+// Punkt innen, außen oder auf dem Kreis liegt. Drei Felder wären zu viel des Gleichen; zwei
+// genügen, um Begriff und Bedeutung zu trennen.
+function generateAufgabe2b() {
+  const r = randInt(3, 25);
+  const abstand = pick([r - randInt(1, Math.max(1, r - 1)), r, r + randInt(1, 10)]);
+  const lage = abstand < r ? 1 : abstand === r ? 2 : 3;
+  return {
+    promptHtml:
+      `Ein Kreis um M hat den Radius <strong>r = ${r} cm</strong>. Ein Punkt P liegt <strong>${abstand} cm</strong> von M entfernt.`,
+    felder: [
+      {
+        name: "Durchmesser des Kreises", soll: 2 * r, einheit: "cm", toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, r / 2) ? "Der Durchmesser ist doppelt so lang wie der Radius, nicht halb so lang." : ""),
+      },
+      {
+        name: "Lage von P: innen = 1, auf dem Kreis = 2, außen = 3", soll: lage, toleranz: 0.01,
+        hinweis: (roh, val) =>
+          trifft(val, lage === 1 ? 3 : 1)
+            ? `Vergleiche den Abstand mit dem Radius: ${abstand} cm ist ${abstand < r ? "kleiner" : "größer"} als ${r} cm.`
+            : "",
+      },
+    ],
+    tipps: [
+      "Der Radius geht vom Mittelpunkt bis zum Rand, der Durchmesser einmal ganz hindurch — er ist doppelt so lang.",
+      "Ein Punkt liegt genau dann auf dem Kreis, wenn sein Abstand vom Mittelpunkt gleich dem Radius ist.",
+      `Hier ist der Abstand ${abstand} cm, der Radius ${r} cm.`,
+    ],
+    musterloesungHtml:
+      `Durchmesser: d = 2 · r = 2 · ${r} cm = <strong>${2 * r} cm</strong><br>` +
+      `Lage: ${abstand} cm ${abstand < r ? "&lt;" : abstand === r ? "=" : "&gt;"} ${r} cm ⇒ P liegt ` +
+      `<strong>${lage === 1 ? "innerhalb" : lage === 2 ? "auf dem Kreis" : "außerhalb"}</strong> (Antwort ${lage})<br>` +
+      `<span class="progress-note">Der Kreis ist genau die Menge aller Punkte, die vom Mittelpunkt den Abstand r haben.</span>`,
+  };
+}
+
+// Aufgabe 4 — Winkelarten benennen. Die Antwort ist eine Kennziffer, damit sie prüfbar bleibt,
+// ohne nach einem getippten Wort zu verlangen.
+function generateAufgabe4b() {
+  const bereiche = [
+    { nr: 1, name: "spitzer Winkel", min: 1, max: 89 },
+    { nr: 2, name: "rechter Winkel", min: 90, max: 90 },
+    { nr: 3, name: "stumpfer Winkel", min: 91, max: 179 },
+    { nr: 4, name: "gestreckter Winkel", min: 180, max: 180 },
+    { nr: 5, name: "überstumpfer Winkel", min: 181, max: 359 },
+  ];
+  const b = pick(bereiche);
+  const alpha = b.min === b.max ? b.min : randInt(b.min, b.max);
+  return {
+    promptHtml:
+      `Welche Art von Winkel ist <strong>${alpha}°</strong>?<br>` +
+      `<span class="progress-note">1 = spitz, 2 = recht, 3 = stumpf, 4 = gestreckt, 5 = überstumpf</span>`,
+    correct: b.nr,
+    tolerance: 0.01,
+    placeholder: "Kennziffer 1–5",
+    hinweis: (raw, val) =>
+      trifft(val, alpha)
+        ? "Gefragt ist die Kennziffer der Winkelart, nicht die Gradzahl."
+        : trifft(val, b.nr === 1 ? 3 : b.nr === 3 ? 1 : 0)
+          ? "Die Grenze liegt bei 90°: darunter spitz, darüber stumpf."
+          : "",
+    tipps: [
+      "Die Grenzen sind 90° (rechter Winkel) und 180° (gestreckter Winkel).",
+      "Unter 90° heißt spitz, zwischen 90° und 180° stumpf, über 180° überstumpf.",
+      `${alpha}° liegt ${alpha < 90 ? "unter 90°" : alpha === 90 ? "genau bei 90°" : alpha < 180 ? "zwischen 90° und 180°" : alpha === 180 ? "genau bei 180°" : "über 180°"}.`,
+    ],
+    musterloesungHtml:
+      `${alpha}° ⇒ <strong>${b.name}</strong> (Kennziffer ${b.nr})<br>` +
+      `<span class="progress-note">spitz &lt; 90° &lt; stumpf &lt; 180° &lt; überstumpf &lt; 360°; 90° und 180° haben eigene Namen.</span>`,
+  };
+}
+
+// Aufgabe 6 — zwei Winkel am Kreisdiagramm, aus Anteilen in Prozentschreibweise gibt es hier noch
+// nicht; gerechnet wird mit Anzahlen. Zwei Felder: der Winkel und die Probe über die Summe.
+function generateAufgabe6() {
+  const gesamt = pick([10, 12, 15, 18, 20, 24, 30, 36, 40, 45, 60, 72, 90]);
+  const jeEiner = 360 / gesamt;
+  const a = randInt(1, gesamt - 2);
+  const b = randInt(1, gesamt - 1 - a);
+  const rest = gesamt - a - b;
+  const kontext = pick([
+    { was: "Schülerinnen und Schüler", teile: ["gehen zu Fuß", "fahren mit dem Rad"] },
+    { was: "Befragte", teile: ["hören Pop", "hören Rock"] },
+    { was: "Mitglieder", teile: ["spielen Fußball", "spielen Handball"] },
+  ]);
+  return {
+    promptHtml:
+      `In einem Kreisdiagramm werden <strong>${gesamt} ${kontext.was}</strong> dargestellt. ` +
+      `<strong>${a}</strong> davon ${kontext.teile[0]}, <strong>${b}</strong> ${kontext.teile[1]}, der Rest verteilt sich auf anderes.`,
+    felder: [
+      {
+        name: `Mittelpunktswinkel für „${kontext.teile[0]}“`, soll: a * jeEiner, einheit: "°", toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, a) ? "Das ist die Anzahl, nicht der Winkel. Jeder Einzelne bekommt 360° : " + gesamt + "°." : ""),
+      },
+      { name: `Mittelpunktswinkel für „${kontext.teile[1]}“`, soll: b * jeEiner, einheit: "°", toleranz: 0.01 },
+      {
+        name: "Mittelpunktswinkel für den Rest", soll: rest * jeEiner, einheit: "°", toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, 360) ? "Das ist der Vollwinkel. Für den Rest bleibt, was von 360° übrig ist." : ""),
+      },
+    ],
+    tipps: [
+      `Der ganze Kreis sind 360°, verteilt auf ${gesamt} ${kontext.was}.`,
+      `Auf jeden Einzelnen entfallen also 360° : ${gesamt} = ${jeEiner}°.`,
+      "Zur Kontrolle: Alle drei Winkel zusammen müssen 360° ergeben.",
+    ],
+    musterloesungHtml:
+      `Je Person: 360° : ${gesamt} = <strong>${jeEiner}°</strong><br>` +
+      `„${kontext.teile[0]}“: ${a} · ${jeEiner}° = <strong>${a * jeEiner}°</strong><br>` +
+      `„${kontext.teile[1]}“: ${b} · ${jeEiner}° = <strong>${b * jeEiner}°</strong><br>` +
+      `Rest: ${rest} · ${jeEiner}° = <strong>${rest * jeEiner}°</strong><br>` +
+      `Probe: ${a * jeEiner}° + ${b * jeEiner}° + ${rest * jeEiner}° = 360° ✓`,
+  };
+}
+
+// Aufgabe 8 — vom Winkel zurück zur Anzahl. Die Umkehrung des Kreisdiagramms: Aus einem
+// abgelesenen Mittelpunktswinkel wird wieder eine Anzahl.
+function generateAufgabe8() {
+  const gesamt = pick([12, 15, 18, 20, 24, 30, 36, 40, 45, 60]);
+  const jeEiner = 360 / gesamt;
+  const teil = randInt(1, gesamt - 1);
+  const winkel = teil * jeEiner;
+  const kontext = pick([
+    { was: "Personen", frage: "fahren mit dem Bus" },
+    { was: "Kinder", frage: "essen am liebsten Nudeln" },
+    { was: "Befragte", frage: "lesen täglich" },
+  ]);
+  return {
+    promptHtml:
+      `Ein Kreisdiagramm stellt <strong>${gesamt} ${kontext.was}</strong> dar. Der Sektor „${kontext.frage}“ hat den ` +
+      `Mittelpunktswinkel <strong>${winkel}°</strong>.`,
+    felder: [
+      {
+        name: "Wie viel Grad entfallen auf eine Person?", soll: jeEiner, einheit: "°", toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, gesamt / 360) ? "Die Rechnung steht auf dem Kopf: 360° werden auf die Personen verteilt, also 360° : Anzahl." : ""),
+      },
+      {
+        name: "Wie viele Personen gehören zu diesem Sektor?", soll: teil, toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, winkel) ? "Das ist der Winkel. Gefragt ist die Anzahl dahinter." : ""),
+      },
+    ],
+    tipps: [
+      `Der ganze Kreis (360°) steht für alle ${gesamt} ${kontext.was}.`,
+      `Auf eine Person entfallen 360° : ${gesamt}.`,
+      `Die Anzahl ergibt sich, indem man ${winkel}° durch diesen Wert teilt.`,
+    ],
+    musterloesungHtml:
+      `① Je Person: 360° : ${gesamt} = <strong>${jeEiner}°</strong><br>` +
+      `② Anzahl: ${winkel}° : ${jeEiner}° = <strong>${teil}</strong><br>` +
+      `Probe: ${teil} · ${jeEiner}° = ${winkel}° ✓<br>` +
+      `<span class="progress-note">Der Weg über „eine Person“ funktioniert in beide Richtungen — vom Anteil zum Winkel und zurück.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Radius und Durchmesser", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Winkel ergänzen", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Welche Skala gilt?", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Mittelpunktswinkel im Kreisdiagramm", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Durchmesser und Lage eines Punktes", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Winkel ergänzen", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Welche Winkelart?", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Welche Skala gilt?", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Drei Sektoren im Kreisdiagramm", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Mittelpunktswinkel im Kreisdiagramm", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Vom Winkel zurück zur Anzahl", generate: generateAufgabe8 },
   ]);
 }
 

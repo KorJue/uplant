@@ -21,6 +21,13 @@ const SEITE = "/mathematik/grundwissen-5-10/02-geometrie/05-winkelbetrachtungen/
 // ergänzen sich zu 180°.
 const GLEICH = { Stufenwinkel: true, Wechselwinkel: true, Nachbarwinkel: false };
 
+// Die Beschriftungen der Eingabefelder — bei den Ausfüllaufgaben steht dort ein Teil der Frage.
+async function feldnamen(page, box) {
+  return page.evaluate((sel) => ({
+    felder: [...document.querySelectorAll(`${sel} .aufgabe-feld-name`)].map((e) => e.innerText.replace(/\s+/g, " ").trim()),
+  }), box);
+}
+
 async function aufgaben(page) {
   // Aufgabe 1 — Scheitel- und Nebenwinkel. 32 Winkel × 2 Fragen = 64 Fassungen;
   // bei 30 Zügen ist E = 30·(1 − 29/(2·64)) ≈ 23,6 (erwartete Doppel 6,8,
@@ -48,7 +55,7 @@ async function aufgaben(page) {
   // in 200 Würfen, zurückgerechnet also rund 81 Kandidaten. Die Schranke ist das simulierte
   // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 17.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Winkel an Parallelen", runden: 30, mindestensVerschieden: 17,
+    nr: 3, name: "A3 Winkel an Parallelen", runden: 30, mindestensVerschieden: 17,
     deute: (frage) => {
       const m = frage.match(/α = (\d+)°.*?(Stufenwinkel|Wechselwinkel|Nachbarwinkel)/);
       if (!m) return null;
@@ -69,7 +76,7 @@ async function aufgaben(page) {
   // verschiedene in 200 Würfen, zurückgerechnet also rund 429 Kandidaten. Die Schranke ist das
   // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 24.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Winkelsumme", runden: 30, mindestensVerschieden: 24,
+    nr: 5, name: "A5 Winkelsumme", runden: 30, mindestensVerschieden: 24,
     deute: (frage) => {
       const m = frage.match(/α = (\d+)° und β = (\d+)°/);
       if (!m) return null;
@@ -93,7 +100,7 @@ async function aufgaben(page) {
   // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
   // 0,8 · n gerechnet — 20.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Außenwinkel", runden: 30, mindestensVerschieden: 20,
+    nr: 7, name: "A7 Außenwinkel", runden: 30, mindestensVerschieden: 20,
     deute: (frage) => {
       const m = frage.match(/α = (\d+)°.*?Außenwinkel bei B beträgt (\d+)°/);
       if (!m) return null;
@@ -114,6 +121,126 @@ async function aufgaben(page) {
           [aussen + alpha, "addiert statt subtrahiert"],
         ],
       };
+    },
+  });
+
+  // Aufgabe 2 — alle vier Winkel am Geradenkreuz (Aufgabe zum Ausfüllen). Gemessen mit
+  // tests/werkzeug-streuung.js: 32 verschiedene in 200 Würfen — mehr Gradzahlen gibt es nicht
+  // (2 · 5° bis 34 · 5°, ohne 90°). Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen,
+  // vorsichtshalber für 0,8 · n gerechnet — 12.
+  await pruefeAufgabe(page, bericht, {
+    nr: 2, name: "A2 vier Winkel am Kreuz", runden: 30, mindestensVerschieden: 12,
+    deute: (frage) => {
+      const m = frage.match(/einer davon ist α = (\d+)°/);
+      if (!m) return null;
+      const a = Number(m[1]);
+      pruefe(a !== 90, "A2: bei 90° sind alle vier Winkel gleich — die beiden Regeln ließen sich nicht unterscheiden");
+      return {
+        felder: [180 - a, a, 180 - a],
+        falschFelder: [
+          [0, a, "180"],
+          [1, 180 - a, "gleich"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 4 — Winkelsumme im Vieleck (Aufgabe zum Ausfüllen). Gemessen mit
+  // tests/werkzeug-streuung.js: 107 verschiedene in 200 Würfen, zurückgerechnet rund 141
+  // Kandidaten — die Aufgabe stellt zwei Fragearten (regelmäßiges und unregelmäßiges Vieleck).
+  // Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n
+  // gerechnet — 20.
+  await pruefeAufgabe(page, bericht, {
+    nr: 4, name: "A4 Winkelsumme im Vieleck", runden: 30, mindestensVerschieden: 20, liesRoh: feldnamen,
+    deute: (frage, roh) => {
+      if (!roh) return null;
+      // \w trifft in JavaScript keine Umlaute — „Fünfeck“ und „Zwölfeck“ fielen sonst durch.
+      const reg = frage.match(/regelmäßiges ([A-Za-zÄÖÜäöüß]+eck)/);
+      const ECKEN = { Dreieck: 3, Viereck: 4, Fünfeck: 5, Sechseck: 6, Siebeneck: 7, Achteck: 8, Neuneck: 9, Zehneck: 10, Elfeck: 11, Zwölfeck: 12 };
+      if (reg) {
+        const n = ECKEN[reg[1]];
+        if (!n) return null;
+        const summe = (n - 2) * 180;
+        pruefe(summe % n === 0, `A4: ${summe}° lässt sich nicht glatt auf ${n} Ecken verteilen`);
+        return {
+          felder: [summe, summe / n],
+          falschFelder: [
+            [0, n * 180, "Dreiecke"],
+            [1, 360 / n, "Mittelpunktswinkel"],
+          ],
+        };
+      }
+      const unreg = frage.match(/In einem ([A-Za-zÄÖÜäöüß]+eck) sind (\d+) Innenwinkel bekannt:\s*(.+)$/);
+      if (!unreg) return null;
+      const n = ECKEN[unreg[1]];
+      const gegeben = (unreg[3].match(/\d+(?=°)/g) || []).map(Number);
+      if (!n || gegeben.length !== n - 1) return null;
+      const summe = (n - 2) * 180;
+      const verbraucht = gegeben.reduce((x, y) => x + y, 0);
+      const fehlt = summe - verbraucht;
+      pruefe(fehlt > 0 && fehlt < 360, `A4: der fehlende Winkel wäre ${fehlt}° — das ist kein Innenwinkel`);
+      return {
+        felder: [summe, fehlt],
+        falschFelder: [
+          [0, n * 180, "Dreiecke"],
+          [1, verbraucht, "bekannten"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 6 — Winkel mit einer Bedingung. Gemessen mit tests/werkzeug-streuung.js: 159
+  // verschiedene in 200 Würfen, zurückgerechnet rund 417 Kandidaten (drei Bedingungsarten).
+  // Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n
+  // gerechnet — 24.
+  await pruefeAufgabe(page, bericht, {
+    nr: 6, name: "A6 Winkel mit Bedingung", runden: 30, mindestensVerschieden: 24,
+    deute: (frage) => {
+      let m = frage.match(/β doppelt so groß wie α.*?γ = (\d+)°/);
+      if (m) {
+        const gamma = Number(m[1]);
+        pruefe((180 - gamma) % 3 === 0, `A6: 3α = ${180 - gamma}° ergibt kein ganzzahliges α`);
+        const alpha = (180 - gamma) / 3;
+        return { richtig: alpha, falsch: [[2 * alpha, "β"], [180 - gamma, "zusammen"]] };
+      }
+      m = frage.match(/β um (\d+)° größer als α.*?γ = (\d+)°/);
+      if (m) {
+        const d = Number(m[1]), gamma = Number(m[2]);
+        pruefe((180 - gamma - d) % 2 === 0, `A6: 2α = ${180 - gamma - d}° ergibt kein ganzzahliges α`);
+        const alpha = (180 - gamma - d) / 2;
+        return { richtig: alpha, falsch: [[alpha + d, "β"]] };
+      }
+      m = frage.match(/Basiswinkel (\d+)°.*?Spitze/);
+      if (m) {
+        const basis = Number(m[1]);
+        return { richtig: 180 - 2 * basis, falsch: [[180 - basis, "zwei"]] };
+      }
+      m = frage.match(/Spitze den Winkel (\d+)°.*?Basiswinkel/);
+      if (m) {
+        const spitze = Number(m[1]);
+        pruefe((180 - spitze) % 2 === 0, `A6: (180° − ${spitze}°) : 2 ergibt keinen ganzzahligen Basiswinkel`);
+        return { richtig: (180 - spitze) / 2, falsch: [[180 - spitze, "halb"]] };
+      }
+      return null;
+    },
+  });
+
+  // Aufgabe 8 — drei Winkel an Parallelen (Aufgabe zum Ausfüllen). Gemessen an der ANGABE:
+  // 28 verschiedene in 200 Würfen — mehr Gradzahlen gibt es nicht. Welche drei der vier
+  // Winkelarten gefragt werden, wechselt zusätzlich, steht aber in den Feldbeschriftungen und
+  // nicht in der Angabe; die Messung sieht es deshalb nicht. Die Schranke ist das simulierte
+  // 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 11.
+  await pruefeAufgabe(page, bericht, {
+    nr: 8, name: "A8 drei Winkel an Parallelen", runden: 30, mindestensVerschieden: 11, liesRoh: feldnamen,
+    deute: (frage, roh) => {
+      const m = frage.match(/α = (\d+)°/);
+      if (!m || !roh) return null;
+      const a = Number(m[1]);
+      pruefe(a !== 90, "A8: bei 90° wären alle Winkel gleich");
+      // Welcher Winkel gefragt ist, steht in der Beschriftung des Feldes.
+      const soll = roh.felder.map((name) => (/Stufenwinkel zu|Wechselwinkel zu/.test(name) ? a : 180 - a));
+      pruefe(soll.length === 3, `A8: ${soll.length} Felder statt 3`);
+      return { felder: soll };
     },
   });
 }

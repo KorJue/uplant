@@ -740,6 +740,11 @@ function generateAufgabe1() {
       if (trifft(val, 1)) return "So kurz darf c nicht sein: Dann wäre die längere der beiden gegebenen Seiten länger als die anderen beiden zusammen.";
       return "";
     },
+    tipps: [
+      "Die Dreiecksungleichung verlangt: Jede Seite ist kürzer als die beiden anderen zusammen.",
+      `Kritisch ist die längere Seite: ${Math.max(a, b)} &lt; ${Math.min(a, b)} + c.`,
+      `Daraus folgt c &gt; ${Math.abs(a - b)} — und gesucht ist die kleinste <em>ganze</em> Zahl darüber.`,
+    ],
     musterloesungHtml:
       `Die Dreiecksungleichung verlangt, dass jede Seite kürzer ist als die Summe der beiden anderen. Kritisch ist hier die <strong>längere</strong> der gegebenen Seiten:<br>` +
       `${Math.max(a, b)} &lt; ${Math.min(a, b)} + c &nbsp;⇒&nbsp; c &gt; ${Math.max(a, b)} − ${Math.min(a, b)} = ${Math.abs(a - b)}<br>` +
@@ -771,6 +776,13 @@ function generateAufgabe2() {
       if (trifft(val, 90 - basis) || trifft(val, 90 - spitze)) return "Die Winkelsumme im Dreieck ist 180°, nicht 90°.";
       return "";
     },
+    tipps: [
+      "Im gleichschenkligen Dreieck sind die beiden Basiswinkel gleich groß.",
+      "Alle drei Winkel zusammen ergeben 180°.",
+      nachSpitze
+        ? `Also 180° − ${basis}° − ${basis}° rechnen.`
+        : `Also zuerst 180° − ${spitze}° = ${180 - spitze}° — und diese Summe auf zwei gleiche Winkel verteilen.`,
+    ],
     musterloesungHtml: nachSpitze
       ? `Im gleichschenkligen Dreieck sind die <strong>beiden Basiswinkel gleich groß</strong> — hier also je ${basis}°.<br>` +
         `Spitze = 180° − ${basis}° − ${basis}° = 180° − ${2 * basis}° = <strong>${spitze}°</strong><br>` +
@@ -804,6 +816,11 @@ function generateAufgabe3() {
       if (trifft(val, a + b)) return "Das ist a + b. Gefragt ist, wie viele ganze Zahlen zwischen den beiden Grenzen liegen.";
       return "";
     },
+    tipps: [
+      "Die Dreiecksungleichung grenzt c nach unten <em>und</em> nach oben ein.",
+      `c muss größer als ${Math.abs(a - b)} und kleiner als ${a + b} sein — beide Randwerte selbst scheiden aus.`,
+      `Gezählt werden also die ganzen Zahlen von ${von} bis ${bis}: das sind ${bis} − ${von} + 1 Stück.`,
+    ],
     musterloesungHtml:
       `Die Dreiecksungleichung grenzt c von beiden Seiten ein:<br>` +
       `&nbsp;&nbsp;c &gt; |${a} − ${b}| = ${Math.abs(a - b)} &nbsp;⇒&nbsp; c ≥ <strong>${von}</strong><br>` +
@@ -838,6 +855,11 @@ function generateAufgabe4() {
       if (trifft(val, alpha + halb)) return "Du hast die beiden bekannten Winkel addiert. Gesucht ist, was bis 180° fehlt.";
       return "";
     },
+    tipps: [
+      "Zeichne dir die Strecke CD ein: Sie zerlegt das Dreieck ABC in zwei Teildreiecke.",
+      `Die Winkelhalbierende teilt γ in zwei gleiche Teile: ∠ACD = ${gamma}° : 2 = ${halb}°.`,
+      "Im Teildreieck ACD kennst du nun zwei Winkel (α und ∠ACD) — die Winkelsumme 180° liefert den dritten.",
+    ],
     musterloesungHtml:
       `① Die Winkelhalbierende teilt γ in zwei gleiche Teile:<br>` +
       `&nbsp;&nbsp;∠ACD = ${gamma}° : 2 = <strong>${halb}°</strong><br>` +
@@ -848,12 +870,172 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 2 — die Dreiecksungleichung als Entscheidung. Vor jeder Konstruktion steht die Frage,
+// ob es das Dreieck überhaupt gibt; sie wird hier direkt gestellt.
+function generateAufgabe2b() {
+  const a = randInt(3, 15), b = randInt(3, 15);
+  const gehtNicht = Math.random() < 0.5;
+  // Konstruktiv statt durch Verwerfen: c wird entweder aus dem erlaubten Bereich gezogen oder
+  // gezielt außerhalb — so ist beides gleich häufig und die Erzeugung terminiert immer.
+  const von = Math.abs(a - b) + 1, bis = a + b - 1;
+  const c = gehtNicht
+    ? (Math.random() < 0.5 ? Math.max(1, Math.abs(a - b)) : a + b + randInt(0, 4))
+    : randInt(von, bis);
+  const moeglich = c > Math.abs(a - b) && c < a + b;
+  return {
+    promptHtml:
+      `Gibt es ein Dreieck mit den Seiten <strong>a = ${a} cm</strong>, <strong>b = ${b} cm</strong> und <strong>c = ${c} cm</strong>?<br>` +
+      `<span class="progress-note">Antworte mit 1 für „ja“ oder 2 für „nein“.</span>`,
+    correct: moeglich ? 1 : 2,
+    tolerance: 0.01,
+    placeholder: "1 oder 2",
+    hinweis: (roh, val) =>
+      trifft(val, moeglich ? 2 : 1)
+        ? moeglich
+          ? `Die längste Seite ist ${Math.max(a, b, c)} cm, die beiden anderen ergeben zusammen ${a + b + c - Math.max(a, b, c)} cm — das ist mehr, also geht es.`
+          : `Die längste Seite ist ${Math.max(a, b, c)} cm, die beiden anderen ergeben zusammen nur ${a + b + c - Math.max(a, b, c)} cm — sie reichen nicht hin.`
+        : "",
+    tipps: [
+      "Die Dreiecksungleichung: Je zwei Seiten zusammen müssen länger sein als die dritte.",
+      "Es genügt, die <em>längste</em> Seite mit der Summe der beiden anderen zu vergleichen.",
+      `Längste Seite: ${Math.max(a, b, c)} cm. Die beiden anderen ergeben ${a + b + c - Math.max(a, b, c)} cm.`,
+    ],
+    musterloesungHtml:
+      `Längste Seite: ${Math.max(a, b, c)} cm<br>` +
+      `Summe der beiden anderen: ${a + b + c - Math.max(a, b, c)} cm<br>` +
+      `${a + b + c - Math.max(a, b, c)} ${moeglich ? "&gt;" : "≤"} ${Math.max(a, b, c)} ⇒ <strong>${moeglich ? "es gibt das Dreieck (1)" : "es gibt kein solches Dreieck (2)"}</strong><br>` +
+      `<span class="progress-note">Anschaulich: Die beiden kürzeren Seiten müssen zusammen über der längsten „zusammenklappen“ können — sonst treffen sich die Zirkelbögen nicht.</span>`,
+  };
+}
+
+// Aufgabe 4 — welcher Kongruenzsatz passt? Die Antwort ist eine Kennziffer, damit sie prüfbar
+// bleibt, ohne nach einem getippten Kürzel zu verlangen.
+function generateAufgabe4b() {
+  const faelle = [
+    { nr: 1, kurz: "SSS", text: "alle drei Seiten" },
+    { nr: 2, kurz: "SWS", text: "zwei Seiten und der von ihnen eingeschlossene Winkel" },
+    { nr: 3, kurz: "WSW", text: "eine Seite und die beiden anliegenden Winkel" },
+    { nr: 4, kurz: "SsW", text: "zwei Seiten und der Winkel gegenüber der längeren von beiden" },
+  ];
+  const f = pick(faelle);
+  const a = randInt(4, 12), b = randInt(4, 12), w = randInt(3, 16) * 5;
+  const angabe = {
+    1: `a = ${a} cm, b = ${b} cm, c = ${randInt(Math.abs(a - b) + 1, a + b - 1)} cm`,
+    2: `a = ${a} cm, b = ${b} cm, γ = ${w}°`,
+    3: `c = ${a} cm, α = ${w}°, β = ${Math.min(170 - w, randInt(3, 16) * 5)}°`,
+    4: `a = ${Math.max(a, b) + 2} cm, b = ${Math.min(a, b)} cm, α = ${w}° (α liegt der längeren Seite gegenüber)`,
+  }[f.nr];
+  return {
+    promptHtml:
+      `Für eine Dreieckskonstruktion sind gegeben:<br><span class="formula-block">${angabe}</span>` +
+      `Welcher <strong>Kongruenzsatz</strong> sichert, dass das Dreieck eindeutig festliegt?<br>` +
+      `<span class="progress-note">1 = SSS, 2 = SWS, 3 = WSW, 4 = SsW</span>`,
+    correct: f.nr,
+    tolerance: 0.01,
+    placeholder: "Kennziffer 1–4",
+    hinweis: (roh, val) =>
+      trifft(val, f.nr === 2 ? 4 : 2)
+        ? "Achte darauf, <em>wo</em> der Winkel liegt: zwischen den beiden Seiten (SWS) oder einer Seite gegenüber (SsW)."
+        : "",
+    tipps: [
+      "Zähle, was gegeben ist: Seiten (S) und Winkel (W) in der Reihenfolge, in der sie im Dreieck aufeinanderfolgen.",
+      "Liegt der Winkel zwischen den beiden Seiten, heißt der Satz SWS; liegt er der längeren Seite gegenüber, SsW.",
+      `Hier sind ${f.text} gegeben.`,
+    ],
+    musterloesungHtml:
+      `Gegeben sind ${f.text} ⇒ <strong>${f.kurz}</strong> (Kennziffer ${f.nr})<br>` +
+      `<span class="progress-note">Alle vier Sätze sagen dasselbe: Diese Angaben legen das Dreieck bis auf Verschieben und Spiegeln eindeutig fest — wer sie konstruiert, kommt immer auf dieselbe Figur.</span>`,
+  };
+}
+
+// Aufgabe 6 — gleichschenkliges Dreieck aus Umfang und Basis. Zwei Felder: erst die Schenkellänge,
+// dann die Frage, ob dieses Dreieck überhaupt existiert. Die Dreiecksungleichung ist hier keine
+// Formalität — bei zu langer Basis gibt es das Dreieck wirklich nicht.
+function generateAufgabe6() {
+  const schenkel = randInt(3, 20);
+  // Die Basis wird mal im erlaubten Bereich (< 2 · Schenkel), mal darüber gewählt.
+  const geht = Math.random() < 0.6;
+  const basis = geht ? randInt(1, 2 * schenkel - 1) : 2 * schenkel + randInt(0, 6);
+  const umfang = 2 * schenkel + basis;
+  const moeglich = basis < 2 * schenkel;
+  return {
+    promptHtml:
+      `Ein <strong>gleichschenkliges</strong> Dreieck hat den Umfang <strong>u = ${umfang} cm</strong> und die Basis <strong>c = ${basis} cm</strong>.`,
+    felder: [
+      {
+        name: "Länge eines Schenkels", soll: schenkel, einheit: "cm", toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, umfang - basis) ? "Das sind beide Schenkel zusammen — einer ist halb so lang." : ""),
+      },
+      {
+        name: "Gibt es dieses Dreieck? (1 = ja, 2 = nein)", soll: moeglich ? 1 : 2, toleranz: 0.01,
+        hinweis: (roh, val) =>
+          trifft(val, moeglich ? 2 : 1)
+            ? `Vergleiche die Basis mit den beiden Schenkeln zusammen: ${basis} cm gegen ${2 * schenkel} cm.`
+            : "",
+      },
+    ],
+    tipps: [
+      "Im gleichschenkligen Dreieck sind zwei Seiten gleich lang — der Umfang ist Basis + zweimal Schenkel.",
+      `Also 2 · Schenkel = ${umfang} − ${basis}.`,
+      "Danach die Dreiecksungleichung prüfen: Die Basis muss kürzer sein als beide Schenkel zusammen.",
+    ],
+    musterloesungHtml:
+      `① Schenkel: (u − c) : 2 = (${umfang} − ${basis}) : 2 = <strong>${schenkel} cm</strong><br>` +
+      `② Dreiecksungleichung: Basis ${basis} cm ${moeglich ? "&lt;" : "≥"} ${2 * schenkel} cm (beide Schenkel) ⇒ ` +
+      `<strong>${moeglich ? "das Dreieck gibt es (1)" : "so ein Dreieck gibt es nicht (2)"}</strong><br>` +
+      `<span class="progress-note">Rechnen allein genügt nicht: Die Zahlen gehen immer auf, das Dreieck muss es deshalb noch lange nicht geben.</span>`,
+  };
+}
+
+// Aufgabe 8 — eine WSW-Angabe vollständig durchdacht: dritter Winkel, Eindeutigkeit, Kongruenzsatz.
+// Drei Felder, weil die Konstruktion erst dann wirklich verstanden ist, wenn klar ist, WARUM sie
+// eindeutig ist.
+function generateAufgabe8() {
+  const alpha = randInt(4, 20) * 5;
+  const beta = randInt(4, Math.floor((175 - alpha) / 5)) * 5;
+  const gamma = 180 - alpha - beta;
+  const c = randInt(4, 14);
+  return {
+    promptHtml:
+      `Ein Dreieck ABC soll konstruiert werden aus <strong>c = ${c} cm</strong>, <strong>α = ${alpha}°</strong> und <strong>β = ${beta}°</strong> ` +
+      `(c ist die Seite zwischen den beiden Winkeln).`,
+    felder: [
+      {
+        name: "Wie groß ist γ?", soll: gamma, einheit: "°", toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, alpha + beta) ? "Das ist die Summe der beiden gegebenen Winkel — gesucht ist, was bis 180° fehlt." : ""),
+      },
+      {
+        name: "Ist das Dreieck eindeutig festgelegt? (1 = ja, 2 = nein)", soll: 1, toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, 2) ? "Eine Seite mit den beiden anliegenden Winkeln legt das Dreieck fest — die beiden Schenkel treffen sich in genau einem Punkt." : ""),
+      },
+      {
+        name: "Welcher Kongruenzsatz? (1 = SSS, 2 = SWS, 3 = WSW, 4 = SsW)", soll: 3, toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, 2) ? "Hier ist die <em>Seite</em> zwischen den beiden Winkeln gegeben, nicht der Winkel zwischen zwei Seiten." : ""),
+      },
+    ],
+    tipps: [
+      "Der dritte Winkel folgt immer aus der Winkelsumme 180°.",
+      "Eine Seite und die beiden anliegenden Winkel: Die Schenkel schneiden sich in genau einem Punkt.",
+      "Das ist der Kongruenzsatz WSW.",
+    ],
+    musterloesungHtml:
+      `① γ = 180° − ${alpha}° − ${beta}° = <strong>${gamma}°</strong><br>` +
+      `② An c werden bei A und B die Winkel angetragen; die beiden Schenkel schneiden sich in genau einem Punkt C ⇒ <strong>eindeutig (1)</strong><br>` +
+      `③ Seite zwischen zwei Winkeln ⇒ <strong>WSW (3)</strong><br>` +
+      `<span class="progress-note">Ist die Winkelsumme der beiden gegebenen Winkel schon 180° oder mehr, gibt es das Dreieck nicht — die Schenkel liefen dann auseinander.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Wie kurz darf die dritte Seite sein?", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Gleichschenkliges Dreieck", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Wie viele Möglichkeiten?", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Winkelhalbierende im Dreieck", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Gibt es dieses Dreieck?", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Gleichschenkliges Dreieck", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Welcher Kongruenzsatz?", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Wie viele Möglichkeiten?", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Umfang, Basis und Dreiecksungleichung", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Winkelhalbierende im Dreieck", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Eine WSW-Angabe durchdacht", generate: generateAufgabe8 },
   ]);
 }
 

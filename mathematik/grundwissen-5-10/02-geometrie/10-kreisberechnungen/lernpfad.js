@@ -532,6 +532,13 @@ function generateAufgabe1() {
       }
       return flaeche ? `A = π · r², die Zahl vor π ist also r².` : `U = 2 · π · r, die Zahl vor π ist also 2r.`;
     },
+    tipps: [
+      flaeche ? "Die Formel für den Flächeninhalt lautet A = π · r²." : "Die Formel für den Umfang lautet U = 2 · π · r.",
+      flaeche
+        ? "Gesucht ist nur die Zahl, die vor π steht — also r², nicht das ganze Ergebnis."
+        : "Gesucht ist nur die Zahl, die vor π steht — also 2 · r, nicht das ganze Ergebnis.",
+      flaeche ? `Hier also ${num(r)} · ${num(r)}.` : `Hier also 2 · ${num(r)}.`,
+    ],
     musterloesungHtml: flaeche
       ? `A = π · r² = π · ${num(r)}² = <strong>${num(r * r)} · π cm²</strong> ≈ ${num(Math.PI * r * r, 2)} cm²`
       : `U = 2 · π · r = 2 · π · ${num(r)} = <strong>${num(2 * r)} · π cm</strong> ≈ ${num(2 * Math.PI * r, 2)} cm`,
@@ -572,6 +579,13 @@ function generateAufgabe2() {
         return `Du hast die beiden Radien mitgezählt — das wäre der <em>Umfang</em> des Ausschnitts, nicht der Bogen allein.`;
       return `Anteil bestimmen (${alpha}° : 360°), dann mit dem ganzen Kreis multiplizieren.`;
     },
+    tipps: [
+      "Ein Kreisausschnitt ist ein <em>Anteil</em> des ganzen Kreises — und zwar derselbe Anteil, den α am Vollwinkel hat.",
+      `Anteil: ${alpha}° : 360° = ${num(anteil, 4)}.`,
+      bogen
+        ? `Diesen Anteil vom ganzen Umfang nehmen: ${num(anteil, 4)} · 2 · π · ${num(r)}.`
+        : `Diesen Anteil von der ganzen Fläche nehmen: ${num(anteil, 4)} · π · ${num(r)}².`,
+    ],
     musterloesungHtml:
       `<strong>1. Anteil:</strong> ${alpha}° : 360° = ${num(anteil, 4)}<br>` +
       (bogen
@@ -617,6 +631,15 @@ function generateAufgabe3() {
       }
       return ausUmfang ? `r = U : (2 · π)` : `r = √(A : π)`;
     },
+    tipps: [
+      ausUmfang ? "Gehe von U = 2 · π · r aus und stelle nach r um." : "Gehe von A = π · r² aus und stelle nach r um.",
+      ausUmfang
+        ? "Auf der rechten Seite steht r mit dem Faktor 2 · π — also durch 2 · π teilen."
+        : "Teile zuerst durch π; dann steht dort r², und erst danach wird die Wurzel gezogen.",
+      ausUmfang
+        ? `r = ${num(gegeben, 2)} : ${num(2 * Math.PI, 4)}`
+        : `r² = ${num(gegeben, 2)} : π ≈ ${num(gegeben / Math.PI, 4)}, dann die Wurzel.`,
+    ],
     musterloesungHtml: ausUmfang
       ? `Aus U = 2 · π · r folgt r = U : (2 · π).<br>` +
         `r = ${num(gegeben, 2)} : (2 · π) = ${num(gegeben, 2)} : ${num(2 * Math.PI, 4)} ≈ <strong>${num(r, 2)} cm</strong>`
@@ -660,6 +683,11 @@ function generateAufgabe4() {
         return `Du hast mit dem <strong>Durchmesser</strong> statt mit dem Radius gerechnet. In A = π · r² gehört immer der Radius: r = d : 2 = ${num(ri)} m.`;
       return `Äußere Kreisfläche minus innere Kreisfläche: A = π · (R² − r²) mit R = ${num(ri)} + ${num(b)}.`;
     },
+    tipps: [
+      "Der Weg ist ein <strong>Kreisring</strong>: die große Kreisfläche ohne die kleine.",
+      `Innenradius r = ${num(d)} : 2 = ${num(ri)} m, Außenradius R = ${num(ri)} + ${num(b)} = ${num(ra)} m.`,
+      "A = π · R² − π · r² = π · (R² − r²) — erst quadrieren, dann subtrahieren.",
+    ],
     musterloesungHtml:
       `<strong>1. Radien:</strong> innen r = d : 2 = ${num(d)} : 2 = ${num(ri)} m, außen R = ${num(ri)} + ${num(b)} = ${num(ra)} m<br>` +
       `<strong>2. Ringfläche:</strong> A = π · (R² − r²) = π · (${num(ra)}² − ${num(ri)}²) = π · (${num(ra * ra)} − ${num(ri * ri)}) = π · ${num(koeff)}<br>` +
@@ -668,12 +696,203 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 2 — Umfang aus dem Durchmesser. Gegeben ist absichtlich d und nicht r: Die Verwechslung
+// der beiden ist der häufigste Fehler beim Kreis, und sie lässt sich nur hier auslösen.
+function generateAufgabe2b() {
+  const d = randInt(4, 60);
+  const r = d / 2;
+  const U = Math.PI * d;
+  return {
+    promptHtml:
+      `Ein Rad hat den <strong>Durchmesser d = ${num(d)} cm</strong>.<br>` +
+      `Wie lang ist sein <strong>Umfang</strong> in Zentimetern?<br>` +
+      `<span class="progress-note">Runde auf zwei Nachkommastellen.</span>`,
+    correct: U,
+    tolerance: 0.015,
+    placeholder: "U in cm",
+    hinweis: (raw, val) => {
+      if (Math.abs(val - 2 * Math.PI * d) < 0.02)
+        return `Du hast <strong>d als Radius</strong> genommen. In U = 2 · π · r gehört der Radius, hier also r = ${num(d)} : 2 = ${num(r)} cm. Kurzform: U = π · d.`;
+      if (Math.abs(val - Math.PI * r) < 0.02)
+        return `Der Faktor <strong>2</strong> fehlt: U = 2 · π · r = 2 · π · ${num(r)}.`;
+      if (Math.abs(val - Math.PI * r * r) < 0.02)
+        return `Das ist der <strong>Flächeninhalt</strong> (π · r²). Gefragt ist der Umfang.`;
+      if (Math.abs(val - Math.PI * d * d) < 0.02)
+        return `Du hast d <strong>quadriert</strong>. Beim Umfang wird nicht quadriert — quadriert wird nur bei der Fläche.`;
+      return "";
+    },
+    tipps: [
+      "Gegeben ist der <strong>Durchmesser</strong>, in der Formel steht aber der Radius.",
+      `r = d : 2 = ${num(d)} : 2 = ${num(r)} cm.`,
+      `U = 2 · π · ${num(r)} — oder gleich kurz: U = π · d = π · ${num(d)}.`,
+    ],
+    musterloesungHtml:
+      `r = d : 2 = ${num(d)} : 2 = ${num(r)} cm<br>` +
+      `U = 2 · π · r = 2 · π · ${num(r)} ≈ <strong>${num(U, 2)} cm</strong><br>` +
+      `<span class="progress-note">Kürzer geht es direkt über den Durchmesser: U = π · d = π · ${num(d)} ≈ ${num(U, 2)} cm. ` +
+      `Beide Wege sind dasselbe, weil d = 2r ist.</span>`,
+  };
+}
+
+// Aufgabe 4 — der Rand eines Kreisausschnitts. Der Bogen allein ist nicht der Umfang: Die beiden
+// Radien gehören dazu, und genau das wird hier übersehen.
+function generateAufgabe4b() {
+  const r = randInt(3, 12);
+  let k = randInt(1, 7);
+  // Bei r · k = 16 fiele die Ausschnittsfläche zahlenmäßig mit dem ganzen Umfang zusammen
+  // (2r = r² · k/8), und die beiden Fehlerhinweise ließen sich nicht mehr auseinanderhalten.
+  if (r * k === 16) k = k === 7 ? 6 : k + 1;
+  const alpha = k * 45;
+  const anteil = k / 8;
+  const bogen = 2 * Math.PI * r * anteil;
+  const umfang = bogen + 2 * r;
+  return {
+    promptHtml:
+      `Ein Tortenstück hat die Form eines Kreisausschnitts mit dem Radius <strong>r = ${num(r)} cm</strong> ` +
+      `und dem Mittelpunktswinkel <strong>α = ${alpha}°</strong>.<br>` +
+      `<span class="progress-note">Runde jeweils auf zwei Nachkommastellen.</span>`,
+    felder: [
+      {
+        name: "Länge des Kreisbogens", soll: bogen, einheit: "cm", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - 2 * Math.PI * r) < 0.02) return `Das ist der <strong>ganze</strong> Kreisumfang. Davon wird nur der Anteil ${alpha}° : 360° = ${num(anteil, 4)} gebraucht.`;
+          if (Math.abs(val - Math.PI * r * r * anteil) < 0.02) return "Das ist die <strong>Fläche</strong> des Ausschnitts. Gefragt ist eine Länge.";
+          return "";
+        },
+      },
+      {
+        name: "Umfang des Tortenstücks", soll: umfang, einheit: "cm", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - bogen) < 0.02) return "Das ist nur der <strong>Bogen</strong>. Zum Rand des Stücks gehören auch die beiden geraden Schnittkanten — jede so lang wie der Radius.";
+          if (Math.abs(val - (bogen + r)) < 0.02) return "Du hast <strong>einen</strong> Radius addiert. Ein Tortenstück hat zwei gerade Kanten.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      `Der Bogen ist der Anteil ${alpha}° : 360° = ${num(anteil, 4)} vom ganzen Umfang.`,
+      "Der Umfang einer Figur ist ihr ganzer Rand — beim Tortenstück also der Bogen und beide Schnittkanten.",
+      `Die beiden Schnittkanten sind je ${num(r)} cm lang, zusammen also ${num(2 * r)} cm.`,
+    ],
+    musterloesungHtml:
+      `① Anteil: ${alpha}° : 360° = ${num(anteil, 4)}<br>` +
+      `② Bogen: b = ${num(anteil, 4)} · 2 · π · ${num(r)} ≈ <strong>${num(bogen, 2)} cm</strong><br>` +
+      `③ Umfang: u = b + 2 · r ≈ ${num(bogen, 2)} + ${num(2 * r)} = <strong>${num(umfang, 2)} cm</strong><br>` +
+      `<span class="progress-note">Der Bogen ist nur <em>ein Stück</em> des Randes. Wer ein Tortenstück mit Schokolade umranden will, braucht auch die beiden geraden Kanten.</span>`,
+  };
+}
+
+// Aufgabe 6 — rückwärts vom Bogen zum Mittelpunktswinkel. Der Bogen ist gerundet angegeben;
+// deshalb wird der Winkel auf ganze Grad gerundet verlangt.
+function generateAufgabe6() {
+  const r = randInt(4, 15);
+  const k = randInt(1, 11);
+  const alpha = k * 30;
+  const U = 2 * Math.PI * r;
+  const bogen = Math.round(U * (alpha / 360) * 100) / 100;
+  return {
+    promptHtml:
+      `Von einem Kreis mit dem Radius <strong>r = ${num(r)} cm</strong> ist ein Bogen von ` +
+      `<strong>b = ${num(bogen, 2)} cm</strong> abgemessen.<br>` +
+      `<span class="progress-note">Runde den Umfang auf zwei Nachkommastellen und den Winkel auf ganze Grad.</span>`,
+    felder: [
+      {
+        name: "Umfang des ganzen Kreises", soll: U, einheit: "cm", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - Math.PI * r) < 0.02) return "Der Faktor 2 fehlt: U = 2 · π · r.";
+          if (Math.abs(val - Math.PI * r * r) < 0.02) return "Das ist die <strong>Fläche</strong>. Gefragt ist der Umfang.";
+          return "";
+        },
+      },
+      {
+        name: "Mittelpunktswinkel α", soll: alpha, einheit: "°", toleranz: 0.6,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (bogen / U) * 100) < 0.6) return "Das ist der Anteil in <strong>Prozent</strong>. Gefragt ist der Winkel — also der Anteil mal 360°.";
+          if (Math.abs(val - (360 - alpha)) < 0.6) return "Das ist der Winkel des <em>übrigen</em> Kreisteils. Gefragt ist der Winkel, der zu diesem Bogen gehört.";
+          if (Math.abs(val - (bogen / U)) < 0.01) return "Das ist erst der <strong>Anteil</strong> am ganzen Kreis. Ein Vollkreis hat 360° — damit muss noch multipliziert werden.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Der Bogen verhält sich zum ganzen Umfang wie der Winkel zu 360°.",
+      `Berechne zuerst den ganzen Umfang: U = 2 · π · ${num(r)}.`,
+      `Dann ist der Anteil b : U, und der Winkel ist dieser Anteil mal 360°.`,
+    ],
+    musterloesungHtml:
+      `① U = 2 · π · ${num(r)} ≈ <strong>${num(U, 2)} cm</strong><br>` +
+      `② Anteil: ${num(bogen, 2)} : ${num(U, 2)} ≈ ${num(bogen / U, 4)}<br>` +
+      `③ α = ${num(bogen / U, 4)} · 360° ≈ <strong>${num(alpha)}°</strong><br>` +
+      `<span class="progress-note">Der Dreisatz läuft hier rückwärts: Vom Teil auf den Anteil, vom Anteil auf den Winkel. ` +
+      `Probe: ${num(alpha)}° : 360° = ${num(alpha / 360, 4)}, mal ${num(U, 2)} cm ergibt ${num(U * alpha / 360, 2)} cm ✓</span>`,
+  };
+}
+
+// Aufgabe 8 — ein Sportplatz aus einem Rechteck und zwei Halbkreisen. Die beiden Halbkreise
+// ergänzen sich zu genau einem Kreis mit dem Durchmesser der Rechteckbreite.
+function generateAufgabe8() {
+  const l = randInt(40, 100);
+  const b = randInt(20, 60);
+  const preis = randInt(3, 12);
+  const umfang = 2 * l + Math.PI * b;
+  const flaeche = l * b + (Math.PI * b * b) / 4;
+  const kosten = flaeche * preis;
+  return {
+    promptHtml:
+      `Ein Sportplatz besteht aus einem Rechteck von <strong>${num(l)} m × ${num(b)} m</strong>, an dessen beiden ` +
+      `Schmalseiten je ein <strong>Halbkreis</strong> anschließt.<br>` +
+      `Der Platz soll neu mit Rasen belegt werden; ein Quadratmeter kostet <strong>${num(preis)} €</strong>.<br>` +
+      `<span class="progress-note">Runde Umfang und Fläche auf zwei Nachkommastellen, die Kosten auf ganze Euro.</span>`,
+    felder: [
+      {
+        name: "Umfang des Platzes", soll: umfang, einheit: "m", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - 2 * (l + b)) < 0.02) return "Du hast den Rand des <strong>Rechtecks</strong> gerechnet. Die beiden Schmalseiten sind gar nicht Teil des Randes — dort sitzen die Halbkreise.";
+          if (Math.abs(val - (2 * l + (Math.PI * b) / 2)) < 0.02) return "Du hast nur <strong>einen</strong> Halbkreis gerechnet. Es sind zwei — zusammen ergeben sie einen ganzen Kreis.";
+          if (Math.abs(val - (2 * l + 2 * Math.PI * b)) < 0.02) return `Du hast <strong>${num(b)} m als Radius</strong> genommen. Das ist der Durchmesser der Halbkreise; der Radius ist ${num(b / 2)} m.`;
+          return "";
+        },
+      },
+      {
+        name: "Fläche des Platzes", soll: flaeche, einheit: "m²", toleranz: 0.015,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - l * b) < 0.02) return "Das ist nur das <strong>Rechteck</strong>. Die beiden Halbkreise kommen dazu.";
+          if (Math.abs(val - (l * b + Math.PI * b * b)) < 0.02) return `Auch hier gilt: ${num(b)} m ist der <strong>Durchmesser</strong>, der Radius ist ${num(b / 2)} m.`;
+          return "";
+        },
+      },
+      {
+        name: "Kosten für den Rasen", soll: kosten, einheit: "€", toleranz: 0.6,
+        hinweis: (roh, val) => (Math.abs(val - l * b * preis) < 0.6
+          ? "Du hast nur das Rechteck bezahlt. Auch die beiden Rundungen brauchen Rasen."
+          : ""),
+      },
+    ],
+    tipps: [
+      "Zerlege den Platz: ein Rechteck und zwei Halbkreise, die zusammen einen ganzen Kreis ergeben.",
+      `Der Durchmesser dieses Kreises ist die Breite des Rechtecks, also ${num(b)} m — der Radius damit ${num(b / 2)} m.`,
+      "Zum Umfang gehören nur die beiden langen Rechteckseiten und der Kreisumfang; die Schmalseiten liegen im Inneren.",
+    ],
+    musterloesungHtml:
+      `① Die beiden Halbkreise ergeben einen Kreis mit r = ${num(b)} : 2 = ${num(b / 2)} m.<br>` +
+      `② Umfang: u = 2 · ${num(l)} + 2 · π · ${num(b / 2)} = ${num(2 * l)} + ${num(Math.PI * b, 4)} ≈ <strong>${num(umfang, 2)} m</strong><br>` +
+      `③ Fläche: A = ${num(l)} · ${num(b)} + π · ${num(b / 2)}² = ${num(l * b)} + ${num((Math.PI * b * b) / 4, 4)} ≈ <strong>${num(flaeche, 2)} m²</strong><br>` +
+      `④ Kosten: ${num(flaeche, 2)} · ${num(preis)} € ≈ <strong>${num(Math.round(kosten))} €</strong><br>` +
+      `<span class="progress-note">Beim Umfang zählen die Schmalseiten <em>nicht</em> mit — sie sind nur Hilfslinien der Zerlegung. ` +
+      `Bei der Fläche dagegen wird alles addiert. Wer beides gleich behandelt, rechnet den Platz um ${num(2 * b)} m zu lang.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Umfang und Fläche als Vielfaches von π", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Bogen und Ausschnitt", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Radius rückwärts bestimmen", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Weg um einen Brunnen", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Umfang aus dem Durchmesser", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Bogen und Ausschnitt", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Der Rand eines Tortenstücks", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Radius rückwärts bestimmen", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Vom Bogen zum Winkel", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Weg um einen Brunnen", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Sportplatz mit Rundungen", generate: generateAufgabe8 },
   ]);
 }
 

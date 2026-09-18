@@ -101,10 +101,38 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — Bogen und Ausschnittsfläche. 10 Radien × 7 Winkel × 2 Formen
+  // Aufgabe 2 — Umfang aus dem Durchmesser. Gemessen mit tests/werkzeug-streuung.js: 56
+  // verschiedene in 200 Würfen, zurückgerechnet rund 58 Kandidaten. Die Schranke ist das
+  // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 15.
+  await pruefeAufgabe(page, bericht, {
+    nr: 2, name: "A2 Umfang aus dem Durchmesser", runden: 30, mindestensVerschieden: 15,
+    deute: (frage) => {
+      const m = frage.match(/d = (\d+) cm/);
+      if (!m) return null;
+      const d = Number(m[1]), r = d / 2;
+      return {
+        richtig: Math.PI * d,
+        toleranz: 0.01,
+        falsch: [
+          // d als Radius genommen — der häufigste Fehler beim Kreis.
+          [2 * Math.PI * d, "als Radius"],
+          // Den Faktor 2 vergessen.
+          [Math.PI * r, "Faktor"],
+          // Die Flächenformel genommen.
+          [Math.PI * r * r, "Flächeninhalt"],
+          [Math.PI * d * d, "quadriert"],
+        ],
+        pruefe: (f, rueck) => {
+          pruefe(rueck.includes("π · d"), `A2: die Musterlösung nennt die Kurzform U = π · d nicht — „${f}“`);
+        },
+      };
+    },
+  });
+
+  // Aufgabe 3 — Bogen und Ausschnittsfläche. 10 Radien × 7 Winkel × 2 Formen
   // = 140 Fassungen; bei 30 Zügen E = 27,1 und σ = 1,5, Quantil 10⁻⁴ bei 21.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Bogen und Ausschnitt", runden: 30, mindestensVerschieden: 20,
+    nr: 3, name: "A3 Bogen und Ausschnitt", runden: 30, mindestensVerschieden: 20,
     deute: (frage) => {
       const m = frage.match(/r = (\d+) cm.*?α = (\d+)°/);
       if (!m) return null;
@@ -125,16 +153,45 @@ async function aufgaben(page) {
         ],
         pruefe: (f) => {
           // α ist stets ein Vielfaches von 45°, damit der Anteil exakt bleibt.
-          pruefe(alpha % 45 === 0 && alpha < 360, `A2: α = ${alpha}° ist kein Achtel des Vollkreises — „${f}“`);
+          pruefe(alpha % 45 === 0 && alpha < 360, `A3: α = ${alpha}° ist kein Achtel des Vollkreises — „${f}“`);
         },
       };
     },
   });
 
-  // Aufgabe 3 — rückwärts zum Radius. 12 Radien × 2 Formen = 24 Fassungen;
+  // Aufgabe 4 — der Rand eines Tortenstücks. Gemessen: 65 verschiedene in 200 Würfen,
+  // zurückgerechnet rund 69 Kandidaten. Schranke: simuliertes 10⁻⁴-Quantil bei 30 Zügen für
+  // 0,8 · n — 16.
+  await pruefeAufgabe(page, bericht, {
+    nr: 4, name: "A4 Rand eines Tortenstücks", runden: 30, mindestensVerschieden: 16,
+    deute: (frage) => {
+      const m = frage.match(/r = (\d+) cm.*?α = (\d+)°/);
+      if (!m) return null;
+      const r = Number(m[1]), alpha = Number(m[2]);
+      const anteil = alpha / 360;
+      const bogen = 2 * Math.PI * r * anteil;
+      pruefe(alpha % 45 === 0 && alpha < 360, `A4: α = ${alpha}° ist kein Achtel des Vollkreises — „${frage}“`);
+      // Bei r · k = 16 wären „ganzer Umfang“ und „Ausschnittsfläche“ dieselbe Zahl; der
+      // Generator schließt das aus, damit beide Fehler unterscheidbar bleiben.
+      pruefe(r * (alpha / 45) !== 16,
+        `A4: bei r = ${r} cm und α = ${alpha}° fallen zwei Fehlerwerte zusammen — „${frage}“`);
+      return {
+        felder: [bogen, bogen + 2 * r],
+        toleranz: 0.01,
+        falschFelder: [
+          [0, 2 * Math.PI * r, "ganze"],
+          [0, Math.PI * r * r * anteil, "Fläche"],
+          [1, bogen, "nur der"],
+          [1, bogen + r, "einen"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 5 — rückwärts zum Radius. 12 Radien × 2 Formen = 24 Fassungen;
   // bei 30 Zügen E = 17,3 und σ = 1,6, Quantil 10⁻⁴ bei 11 — Schranke 10.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Radius rückwärts", runden: 30, mindestensVerschieden: 10,
+    nr: 5, name: "A5 Radius rückwärts", runden: 30, mindestensVerschieden: 10,
     deute: (frage) => {
       const ausUmfang = frage.includes("Umfang");
       const m = frage.match(/= ([\d.,]+) cm/);
@@ -160,17 +217,46 @@ async function aufgaben(page) {
             ],
         pruefe: (f, rueck) => {
           pruefe(rueck.includes(ausUmfang ? "r = U : (2 · π)" : "r = √(A : π)"),
-            `A3: die Musterlösung nennt die umgestellte Formel nicht — „${f}“`);
+            `A5: die Musterlösung nennt die umgestellte Formel nicht — „${f}“`);
         },
       };
     },
   });
 
-  // Aufgabe 4 — Kreisring als Weg um einen Brunnen. Gemessen mit tests/werkzeug-streuung.js: 29
+  // Aufgabe 6 — rückwärts vom Bogen zum Mittelpunktswinkel. Gemessen: 103 verschiedene in 200
+  // Würfen, zurückgerechnet rund 132 Kandidaten. Schranke: simuliertes 10⁻⁴-Quantil bei 30 Zügen
+  // für 0,8 · n — 20.
+  await pruefeAufgabe(page, bericht, {
+    nr: 6, name: "A6 vom Bogen zum Winkel", runden: 30, mindestensVerschieden: 20,
+    deute: (frage) => {
+      const m = frage.match(/r = (\d+) cm.*?b = ([\d.,]+) cm/);
+      if (!m) return null;
+      const r = Number(m[1]);
+      const bogen = Number(m[2].replace(/\./g, "").replace(",", "."));
+      const U = 2 * Math.PI * r;
+      // Aus genau der gestellten (gerundeten) Bogenlänge rechnen und auf ganze Grad runden —
+      // so, wie es die Aufgabe verlangt.
+      const alpha = Math.round((bogen / U) * 360);
+      pruefe(alpha % 30 === 0 && alpha > 0 && alpha < 360,
+        `A6: aus b = ${bogen} cm und r = ${r} cm folgt α = ${alpha}° — kein Vielfaches von 30° — „${frage}“`);
+      return {
+        felder: [U, alpha],
+        toleranz: 0.01,
+        falschFelder: [
+          [0, Math.PI * r, "Faktor 2"],
+          [0, Math.PI * r * r, "Fläche"],
+          [1, Math.round((bogen / U) * 100), "Prozent"],
+          [1, 360 - alpha, "übrigen"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 7 — Kreisring als Weg um einen Brunnen. Gemessen mit tests/werkzeug-streuung.js: 29
   // verschiedene in 200 Würfen, zurückgerechnet also rund 29 Kandidaten. Die Schranke ist das
   // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 11.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Kreisring", runden: 30, mindestensVerschieden: 11,
+    nr: 7, name: "A7 Kreisring", runden: 30, mindestensVerschieden: 11,
     deute: (frage) => {
       const m = frage.match(/d = (\d+) m.*?(\d+) m breiter/);
       if (!m) return null;
@@ -188,15 +274,42 @@ async function aufgaben(page) {
           [Math.PI * ((d + b) * (d + b) - d * d), "Durchmesser"],
         ],
         pruefe: (f, rueck) => {
-          pruefe(Number.isInteger(ri), `A4: der Innenradius ${ri} m ist nicht ganzzahlig — „${f}“`);
+          pruefe(Number.isInteger(ri), `A7: der Innenradius ${ri} m ist nicht ganzzahlig — „${f}“`);
           // Bei b = r fielen π·b² und π·r² zusammen; die Aufgabe schließt das
           // aus, damit beide Fehler unterscheidbar bleiben.
-          pruefe(b !== ri, `A4: Wegbreite und Innenradius sind beide ${b} m — „${f}“`);
+          pruefe(b !== ri, `A7: Wegbreite und Innenradius sind beide ${b} m — „${f}“`);
           // Die Ringfläche ist exakt π · b · (d + b), also ein ganzzahliges
           // Vielfaches von π.
           pruefe(rueck.includes(`π · ${de(b * (d + b))}`),
-            `A4: die Musterlösung nennt π · ${b * (d + b)} nicht — „${f}“`);
+            `A7: die Musterlösung nennt π · ${b * (d + b)} nicht — „${f}“`);
         },
+      };
+    },
+  });
+
+  // Aufgabe 8 — Sportplatz aus Rechteck und zwei Halbkreisen. Gemessen: 199 verschiedene in 200
+  // Würfen, zurückgerechnet rund 19 800 Kandidaten. Schranke: simuliertes 10⁻⁴-Quantil bei
+  // 30 Zügen für 0,8 · n — 28.
+  await pruefeAufgabe(page, bericht, {
+    nr: 8, name: "A8 Sportplatz", runden: 30, mindestensVerschieden: 28,
+    deute: (frage) => {
+      const m = frage.match(/Rechteck von (\d+) m × (\d+) m.*?kostet (\d+) €/);
+      if (!m) return null;
+      const [l, b, preis] = m.slice(1).map(Number);
+      // Die beiden Halbkreise ergeben zusammen einen Kreis mit dem Durchmesser b.
+      const umfang = 2 * l + Math.PI * b;
+      const flaeche = l * b + (Math.PI * b * b) / 4;
+      return {
+        felder: [umfang, flaeche, Math.round(flaeche * preis)],
+        toleranz: 0.01,
+        falschFelder: [
+          [0, 2 * (l + b), "Rechtecks"],
+          [0, 2 * l + (Math.PI * b) / 2, "einen"],
+          [0, 2 * l + 2 * Math.PI * b, "als Radius"],
+          [1, l * b, "nur das"],
+          [1, l * b + Math.PI * b * b, "Durchmesser"],
+          [2, Math.round(l * b * preis), "nur das Rechteck bezahlt"],
+        ],
       };
     },
   });

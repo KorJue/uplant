@@ -616,6 +616,13 @@ function generateAufgabe1() {
     correct: nachVolumen ? V : O,
     tolerance: 0.01,
     placeholder: nachVolumen ? "Volumen in cm³" : "Oberflächeninhalt in cm²",
+    tipps: [
+      nachVolumen
+        ? "Das Volumen sagt, wie viele Einheitswürfel in den Quader passen."
+        : "Die Oberfläche ist die Summe aller sechs Seitenflächen — je zwei sind gleich groß.",
+      nachVolumen ? "V = a · b · c" : "O = 2 · (a·b + a·c + b·c)",
+      nachVolumen ? `Also ${a} · ${b} · ${c}.` : `Also 2 · (${a * b} + ${a * c} + ${b * c}).`,
+    ],
     hinweis: (raw, val) =>
       trifft(val, (nachVolumen ? O : V))
         ? nachVolumen
@@ -686,6 +693,11 @@ function generateAufgabe2() {
       }
       return "";
     },
+    tipps: [
+      "Bei Raumeinheiten ist jede Stufe <strong>1000</strong> groß — ein Würfel wächst in drei Richtungen.",
+      `Hier gilt ${gleichung}.`,
+      runter ? "Zur kleineren Einheit wird multipliziert." : "Zur größeren Einheit wird dividiert.",
+    ],
     musterloesungHtml:
       `Es gilt <strong>${gleichung}</strong>.<br>` +
       `${num(wert, 10)} ${von} ${runter ? "·" : ":"} ${num(faktor, 10)} = <strong>${num(ergebnis, 10)} ${nach}</strong><br>` +
@@ -717,6 +729,11 @@ function generateAufgabe3() {
           : trifft(val, w.O)
             ? "Das ist der <strong>Oberflächeninhalt</strong> (in cm²). Gefragt ist das Volumen in cm³."
             : "",
+    tipps: [
+      "Zwei Wege führen zum Ziel: den ganzen Quader rechnen und das fehlende Stück abziehen — oder den Körper in zwei Quader zerlegen.",
+      `Ganzer Quader: ${a} · ${b} · ${c}.`,
+      `Weggeschnitten: ${d} · ${b} · ${e}.`,
+    ],
     musterloesungHtml:
       `<strong>Ergänzen (subtrahieren):</strong><br>` +
       `voller Quader: ${a} · ${b} · ${c} = ${a * b * c} cm³<br>` +
@@ -756,6 +773,11 @@ function generateAufgabe4() {
       if (trifft(val, a * b * c)) return "Das ist das Volumen in m³. Gefragt sind die Kosten für die <strong>Fläche</strong> von Boden und Wänden.";
       return "";
     },
+    tipps: [
+      "Ohne Deckel besteht die Fläche aus fünf Teilen: dem Boden und vier Wänden.",
+      `Boden ${a} · ${b}, zwei Wände 2 · ${a} · ${c}, zwei Wände 2 · ${b} · ${c}.`,
+      "Die Gesamtfläche dann mit dem Preis je Quadratmeter multiplizieren.",
+    ],
     musterloesungHtml:
       `① Boden: ${a} m · ${b} m = ${a * b} m²<br>` +
       `② zwei lange Wände: 2 · (${a} · ${c}) = ${2 * a * c} m²<br>` +
@@ -766,12 +788,173 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 2 — Volumen und Oberfläche desselben Quaders nebeneinander. Die beiden werden ständig
+// verwechselt; nebeneinander abgefragt muss der Unterschied ausgehalten werden.
+function generateAufgabe2b() {
+  const a = randInt(2, 12), b = randInt(2, 10);
+  let c = randInt(2, 9);
+  // Gleiche Maßzahl für V und O ließe die Felder ununterscheidbar werden.
+  if (a * b * c === 2 * (a * b + a * c + b * c)) c = c === 9 ? 2 : c + 1;
+  const V = a * b * c;
+  const O = 2 * (a * b + a * c + b * c);
+  return {
+    promptHtml: `Ein Quader hat die Kanten <strong>${a} cm</strong>, <strong>${b} cm</strong> und <strong>${c} cm</strong>.`,
+    felder: [
+      {
+        name: "Volumen", soll: V, einheit: "cm³", toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, O) ? "Das ist der Oberflächeninhalt. Das Volumen ist V = a · b · c." : ""),
+      },
+      {
+        name: "Oberflächeninhalt", soll: O, einheit: "cm²", toleranz: 0.01,
+        hinweis: (roh, val) =>
+          trifft(val, V) ? "Das ist das Volumen. Die Oberfläche setzt sich aus sechs Rechtecken zusammen."
+            : trifft(val, a * b + a * c + b * c) ? "Jede der drei Flächen kommt <em>zweimal</em> vor — vorn und hinten, links und rechts, oben und unten." : "",
+      },
+    ],
+    tipps: [
+      "Das Volumen sagt, wie viel hineinpasst; die Oberfläche, wie viel Papier man zum Einpacken braucht.",
+      `V = a · b · c = ${a} · ${b} · ${c}.`,
+      `O = 2 · (a·b + a·c + b·c) = 2 · (${a * b} + ${a * c} + ${b * c}).`,
+    ],
+    musterloesungHtml:
+      `V = ${a} · ${b} · ${c} = <strong>${num(V)} cm³</strong><br>` +
+      `O = 2 · (${a}·${b} + ${a}·${c} + ${b}·${c}) = 2 · (${a * b} + ${a * c} + ${b * c}) = <strong>${num(O)} cm²</strong><br>` +
+      `<span class="progress-note">Die Einheiten zeigen den Unterschied: cm³ für einen Rauminhalt, cm² für eine Fläche.</span>`,
+  };
+}
+
+// Aufgabe 4 — die fehlende Kante aus dem Volumen. Umkehrung zu Aufgabe 1: Aus V = a · b · c wird
+// c = V : (a · b).
+function generateAufgabe4b() {
+  const a = randInt(2, 12), b = randInt(2, 10), c = randInt(2, 12);
+  const V = a * b * c;
+  return {
+    promptHtml:
+      `Ein Quader hat das Volumen <strong>${num(V)} cm³</strong>. Zwei seiner Kanten sind ` +
+      `<strong>${a} cm</strong> und <strong>${b} cm</strong> lang. Wie lang ist die dritte Kante?`,
+    correct: c,
+    tolerance: 0.01,
+    placeholder: "Länge in cm",
+    hinweis: (raw, val) =>
+      trifft(val, V - a * b)
+        ? "Hier wurde subtrahiert. Das Volumen entsteht durch Multiplizieren — rückwärts wird dividiert."
+        : trifft(val, V / a)
+          ? "Es muss durch <em>beide</em> bekannten Kanten geteilt werden, also durch ihre Grundfläche."
+          : "",
+    tipps: [
+      "Aus V = a · b · c wird rückwärts c = V : (a · b).",
+      `Die Grundfläche der beiden bekannten Kanten ist ${a} · ${b} = ${a * b} cm².`,
+      `Also ${num(V)} : ${a * b}.`,
+    ],
+    musterloesungHtml:
+      `① Grundfläche der bekannten Kanten: ${a} cm · ${b} cm = ${a * b} cm²<br>` +
+      `② dritte Kante: c = V : (a · b) = ${num(V)} cm³ : ${a * b} cm² = <strong>${c} cm</strong><br>` +
+      `Probe: ${a} · ${b} · ${c} = ${num(V)} ✓`,
+  };
+}
+
+// Aufgabe 6 — gleiches Volumen, andere Oberfläche (Abschnitt 4). Zwei Quader aus derselben Zahl
+// von Würfeln; gefragt sind beide Oberflächen und ihr Unterschied.
+function generateAufgabe6() {
+  // Konstruktiv: eine Kantenzahl als Produkt dreier Faktoren, zweimal verschieden zerlegt.
+  const f = [pick([2, 3, 4]), pick([2, 3, 4, 6]), pick([2, 3, 5, 6])];
+  const V = f[0] * f[1] * f[2];
+  const teiler = [];
+  for (let x = 1; x <= V; x++) if (V % x === 0) teiler.push(x);
+  const zerlegungen = [];
+  for (const x of teiler) {
+    for (const y of teiler) {
+      if (V % (x * y) !== 0) continue;
+      const z = V / (x * y);
+      const o = 2 * (x * y + x * z + y * z);
+      if (!zerlegungen.some((q) => q.o === o)) zerlegungen.push({ x, y, z, o });
+    }
+  }
+  zerlegungen.sort((p, q) => p.o - q.o);
+  // Nicht immer die beiden Extreme: Sonst hängt die ganze Aufgabe allein an der Würfelzahl, und
+  // gemessen kamen so nur 22 verschiedene Aufgaben heraus. Gezogen werden zwei verschiedene
+  // Zerlegungen — die erste aus der unteren Hälfte, die zweite aus der oberen.
+  const mitte = Math.max(1, Math.floor(zerlegungen.length / 2));
+  const eins = zerlegungen[randInt(0, mitte - 1)];
+  const zwei = zerlegungen[randInt(Math.min(mitte, zerlegungen.length - 1), zerlegungen.length - 1)];
+  const O1 = eins.o, O2 = zwei.o;
+  return {
+    promptHtml:
+      `Zwei Quader bestehen aus je <strong>${V} Einheitswürfeln</strong> — sie haben also dasselbe Volumen:<br>` +
+      `<span class="formula-block">Quader I: ${eins.x} × ${eins.y} × ${eins.z} &nbsp;&nbsp; Quader II: ${zwei.x} × ${zwei.y} × ${zwei.z}</span>`,
+    felder: [
+      {
+        name: "Oberfläche von Quader I", soll: O1, einheit: "Einheiten²", toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, V) ? "Das ist das Volumen — es ist bei beiden gleich. Gefragt ist die Oberfläche." : ""),
+      },
+      { name: "Oberfläche von Quader II", soll: O2, einheit: "Einheiten²", toleranz: 0.01 },
+      {
+        name: "Um wie viel ist die größere Oberfläche größer?", soll: Math.abs(O1 - O2), einheit: "Einheiten²", toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, O1 + O2) ? "Gefragt ist der Unterschied, nicht die Summe." : ""),
+      },
+    ],
+    tipps: [
+      "Beide Quader enthalten gleich viele Würfel — das Volumen ist dasselbe.",
+      "Die Oberfläche rechnet man für jeden einzeln: O = 2 · (a·b + a·c + b·c).",
+      "Je „gedrungener“ ein Quader ist, desto kleiner wird seine Oberfläche.",
+    ],
+    musterloesungHtml:
+      `Quader I: O = 2 · (${eins.x}·${eins.y} + ${eins.x}·${eins.z} + ${eins.y}·${eins.z}) = <strong>${O1}</strong><br>` +
+      `Quader II: O = 2 · (${zwei.x}·${zwei.y} + ${zwei.x}·${zwei.z} + ${zwei.y}·${zwei.z}) = <strong>${O2}</strong><br>` +
+      `Unterschied: ${Math.max(O1, O2)} − ${Math.min(O1, O2)} = <strong>${Math.abs(O1 - O2)}</strong><br>` +
+      `<span class="progress-note">Gleiches Volumen heißt also nicht gleiche Oberfläche. Am kleinsten wird sie beim Würfel — deshalb sind Verpackungen möglichst würfelig, wenn man Material sparen will.</span>`,
+  };
+}
+
+// Aufgabe 8 — ein Aquarium: Volumen in Litern, Füllhöhe und die Glasfläche. Drei Felder, weil
+// jeder Schritt eine andere Größe liefert — und die Umrechnung dm³ ⇄ l dazwischensteht.
+function generateAufgabe8() {
+  const a = randInt(4, 12), b = randInt(3, 8), h = randInt(3, 7);   // in dm
+  const V = a * b * h;                       // dm³ = Liter
+  const gefuellt = a * b * (h - 1);          // bis 1 dm unter den Rand
+  // Glasfläche: Boden und vier Wände, ohne Deckel.
+  const glas = a * b + 2 * a * h + 2 * b * h;
+  return {
+    promptHtml:
+      `Ein Aquarium ist innen <strong>${a} dm</strong> lang, <strong>${b} dm</strong> breit und <strong>${h} dm</strong> hoch. ` +
+      `<span class="progress-note">Erinnerung: 1 dm³ = 1 l.</span>`,
+    felder: [
+      {
+        name: "Wie viele Liter passen hinein, wenn es randvoll ist?", soll: V, einheit: "l", toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, V * 1000) ? "In Kubikzentimeter wäre das richtig — gefragt sind Liter, und 1 dm³ ist genau 1 l." : ""),
+      },
+      {
+        name: "Wie viele Liter sind es, wenn nur bis 1 dm unter den Rand gefüllt wird?", soll: gefuellt, einheit: "l", toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, V - 1) ? "Es fehlt eine ganze Schicht von 1 dm Höhe, nicht ein Liter." : ""),
+      },
+      {
+        name: "Wie groß ist die Glasfläche (Boden und vier Wände, ohne Deckel)?", soll: glas, einheit: "dm²", toleranz: 0.01,
+        hinweis: (roh, val) => (trifft(val, 2 * (a * b + a * h + b * h)) ? "Das ist die volle Oberfläche — der Deckel fehlt beim Aquarium." : ""),
+      },
+    ],
+    tipps: [
+      "1 dm³ fasst genau 1 Liter — in Dezimetern gerechnet ist die Maßzahl des Volumens zugleich die Literzahl.",
+      `Für die Füllhöhe zählt nur die Höhe: ${h} dm − 1 dm.`,
+      "Zur Glasfläche gehören der Boden und vier Wände — die Deckfläche nicht.",
+    ],
+    musterloesungHtml:
+      `① Randvoll: V = ${a} · ${b} · ${h} = ${V} dm³ = <strong>${V} l</strong><br>` +
+      `② Bis 1 dm unter den Rand: ${a} · ${b} · ${h - 1} = <strong>${gefuellt} l</strong><br>` +
+      `③ Glas: Boden ${a}·${b} + zwei Seiten 2·${a}·${h} + zwei Seiten 2·${b}·${h} = <strong>${glas} dm²</strong><br>` +
+      `<span class="progress-note">Ohne Deckel wäre die volle Oberfläche ${2 * (a * b + a * h + b * h)} dm² — die Deckfläche ${a * b} dm² fällt weg.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Quader: Volumen oder Oberfläche", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Raumeinheiten und Hohlmaße", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Zusammengesetzter Körper", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Becken auskleiden", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Volumen und Oberfläche nebeneinander", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Raumeinheiten und Hohlmaße", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Die fehlende Kante", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Zusammengesetzter Körper", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Gleiches Volumen, andere Oberfläche", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Becken auskleiden", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Das Aquarium", generate: generateAufgabe8 },
   ]);
 }
 

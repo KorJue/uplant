@@ -611,6 +611,11 @@ function generateAufgabe1() {
         if (Math.abs(val - a / k) < 0.01) return `Du hast <strong>dividiert</strong>. Bei k = ${k} &gt; 1 wird die Figur größer, die Bildseite ist also länger als ${num(a)} cm.`;
         return `Multipliziere die Originallänge mit k.`;
       },
+      tipps: [
+        "k ist ein <strong>Faktor</strong>, kein Zuschlag: Die Figur wird k-mal so groß.",
+        "Aus dem Original wird das Bild durch Multiplizieren mit k.",
+        `Also ${num(a)} · ${k} rechnen.`,
+      ],
       musterloesungHtml: `Bei einer zentrischen Streckung wird <em>jede</em> Länge mit k multipliziert:<br><strong>${num(a)} cm · ${k} = ${num(bild)} cm</strong>`,
     };
   }
@@ -626,6 +631,11 @@ function generateAufgabe1() {
       if (Math.abs(val - (bild - k)) < 0.01) return `Du hast <strong>subtrahiert</strong>. k ist ein Faktor, kein Zuschlag.`;
       return `Rechne rückwärts: Aus Bild = Original · k folgt Original = Bild : k.`;
     },
+    tipps: [
+      "Gesucht ist hier das <em>Original</em>, nicht das Bild.",
+      `Bei k = ${k} > 1 ist das Bild größer — das Original muss also kleiner als ${num(bild)} cm sein.`,
+      `Aus Bild = Original · k folgt Original = ${num(bild)} : ${k}.`,
+    ],
     musterloesungHtml: `Aus Bild = Original · k folgt Original = Bild : k:<br><strong>${num(bild)} cm : ${k} = ${num(a)} cm</strong>`,
   };
 }
@@ -657,6 +667,11 @@ function generateAufgabe2() {
         return `Du hast das Verhältnis <strong>umgekehrt</strong> angesetzt. Weil ZA' größer ist als ZA, muss auch ZB' größer sein als ZB.`;
       return `1. Strahlensatz: ZA : ZA' = ZB : ZB'. Stelle nach ZB' um.`;
     },
+    tipps: [
+      "Beide Strahlen werden im selben Verhältnis geteilt — das ist der 1. Strahlensatz.",
+      `Bestimme zuerst das Streckungsverhältnis auf dem ersten Strahl: ZA' : ZA = ${num(zas)} : ${num(p)}.`,
+      `Mit demselben Faktor geht es auf dem zweiten Strahl weiter: ZB' = ${num(q)} · ${m}.`,
+    ],
     musterloesungHtml:
       `1. Strahlensatz: ZA : ZA' = ZB : ZB'<br>` +
       `Das Streckungsverhältnis ist ZA' : ZA = ${num(zas)} : ${num(p)} = <strong>${m}</strong>.<br>` +
@@ -693,6 +708,11 @@ function generateAufgabe3() {
         return `Du hast die <strong>Differenz</strong> der Seiten addiert. Ähnlichkeit arbeitet mit Faktoren, nicht mit Differenzen.`;
       return `Bestimme zuerst k aus den beiden Seiten, dann strecke die Fläche mit k².`;
     },
+    tipps: [
+      `Bestimme zuerst den Streckfaktor aus den beiden Seiten: k = ${num(as)} : ${num(a)}.`,
+      "Längen wachsen mit k, Flächen mit k² — beim Flächeninhalt werden ja zwei Längen multipliziert.",
+      `Also A' = ${num(A)} · ${k}².`,
+    ],
     musterloesungHtml:
       `<strong>1. Streckfaktor bestimmen:</strong> k = ${num(as)} : ${num(a)} = <strong>${k}</strong><br>` +
       `<strong>2. Fläche strecken:</strong> Flächen wachsen mit k², also<br>` +
@@ -734,6 +754,11 @@ function generateAufgabe4() {
         return `Du hast mit <strong>k³</strong> gerechnet. k³ gehört zum Volumen; eine Lackfläche wächst mit k².`;
       return `Drei Schritte: k aus den beiden Längen (auf gleiche Einheit achten!), dann · k², dann cm² in m² umrechnen.`;
     },
+    tipps: [
+      "Bevor man teilt, müssen beide Längen dieselbe Einheit haben — rechne die Meter in Zentimeter um.",
+      `k = ${num(L * m)} cm : ${num(L)} cm = ${m}. Flächen wachsen mit k², nicht mit k.`,
+      "Zum Schluss von cm² in m² umrechnen: 1 m² = 100 cm · 100 cm = 10 000 cm².",
+    ],
     musterloesungHtml:
       // L · m statt R · 100: exakt dasselbe, aber ohne den Umweg über die
       // Division durch 100, der 4,6 · 100 = 460,00000000000006 erzeugen würde.
@@ -746,12 +771,217 @@ function generateAufgabe4() {
   };
 }
 
+// Aufgabe 2 — den Streckfaktor selbst bestimmen. Erst hier kommt k < 1 vor: Auch das Verkleinern
+// heißt „Streckung“, und genau daran scheitern viele.
+function generateAufgabe2b() {
+  // k wird aus festen Werten gezogen; a wird so gewählt, dass a · k ganzzahlig bleibt.
+  const k = pick([0.25, 0.5, 0.75, 1.5, 2, 2.5, 3, 4]);
+  const noetig = { 0.25: 4, 0.5: 2, 0.75: 4, 1.5: 2, 2.5: 2 }[k] || 1;
+  const a = randInt(2, 10) * noetig;
+  const bild = a * k;
+  return {
+    promptHtml:
+      `Eine Strecke ist <strong>${num(a)} cm</strong> lang. Nach einer zentrischen Streckung ist die Bildstrecke ` +
+      `<strong>${num(bild)} cm</strong> lang. Wie groß ist der <strong>Streckfaktor k</strong>?`,
+    correct: k,
+    tolerance: 0.001,
+    placeholder: "k",
+    hinweis: (raw, val) => {
+      if (Math.abs(val - a / bild) < 0.001)
+        return `Du hast <strong>Original durch Bild</strong> geteilt. Aus Bild = Original · k folgt k = Bild : Original, hier also ${num(bild)} : ${num(a)}.`;
+      if (Math.abs(val - (bild - a)) < 0.001)
+        return `Das ist die <strong>Differenz</strong> der beiden Längen. k ist ein Faktor — gefragt ist, mit welcher Zahl man ${num(a)} multiplizieren muss.`;
+      if (Math.abs(val - (a - bild)) < 0.001)
+        return `Das ist die Differenz, und obendrein verkehrt herum. k ist ein Faktor, kein Unterschied.`;
+      return "";
+    },
+    tipps: [
+      "Aus Bild = Original · k folgt k = Bild : Original.",
+      `Hier also ${num(bild)} : ${num(a)}.`,
+      k < 1
+        ? "Das Bild ist kürzer als das Original — k liegt deshalb zwischen 0 und 1."
+        : "Das Bild ist länger als das Original — k ist deshalb größer als 1.",
+    ],
+    musterloesungHtml:
+      `k = Bild : Original = ${num(bild)} cm : ${num(a)} cm = <strong>${num(k)}</strong><br>` +
+      `<span class="progress-note">${k < 1
+        ? `k liegt zwischen 0 und 1: Die Figur wird <strong>kleiner</strong>. Das Wort „Streckung“ täuscht hier — gestreckt wird mit dem Faktor, nicht unbedingt in die Länge.`
+        : `k ist größer als 1: Die Figur wird <strong>größer</strong>.`} Probe: ${num(a)} · ${num(k)} = ${num(bild)} ✓</span>`,
+  };
+}
+
+// Aufgabe 4 — 2. Strahlensatz: Diesmal liegt die gesuchte Strecke auf den Parallelen, nicht auf
+// den Strahlen. Zwei Felder, damit der Zwischenschritt „Verhältnis“ sichtbar wird.
+function generateAufgabe4b() {
+  const m = randInt(2, 4);
+  const p = randInt(3, 9);
+  // q ≠ p, sonst fiele der Fehler „Differenz addiert“ mit der Lösung zusammen:
+  // q + p·(m−1) = q·m gilt genau für p = q.
+  let q = randInt(3, 9);
+  if (q === p) q = p + randInt(1, 4);
+  const zas = p * m, abs = q * m;
+  return {
+    promptHtml:
+      `Von einem Punkt Z gehen zwei Strahlen aus; zwei zueinander parallele Geraden schneiden sie in ` +
+      `A und B beziehungsweise in A' und B'.<br>` +
+      `Gegeben sind <strong>ZA = ${num(p)} cm</strong>, <strong>ZA' = ${num(zas)} cm</strong> und die Strecke ` +
+      `<strong>AB = ${num(q)} cm</strong> auf der ersten Parallelen.`,
+    felder: [
+      {
+        name: "Streckungsverhältnis ZA' : ZA", soll: m, toleranz: 0.001,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (zas - p)) < 0.001) return `Das ist die <strong>Differenz</strong> ZA' − ZA. Ein Verhältnis entsteht durch <em>Teilen</em>, nicht durch Abziehen.`;
+          if (Math.abs(val - p / zas) < 0.001) return `Du hast das Verhältnis <strong>umgekehrt</strong> gebildet. Gefragt ist ZA' : ZA, also ${num(zas)} : ${num(p)}.`;
+          return "";
+        },
+      },
+      {
+        name: "Länge von A'B'", soll: abs, einheit: "cm", toleranz: 0.001,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (q + (zas - p))) < 0.001) return `Du hast die Differenz ${num(zas - p)} cm zu AB addiert. Der Strahlensatz arbeitet mit <strong>Verhältnissen</strong>.`;
+          if (Math.abs(val - q / m) < 0.001) return `Weil A'B' weiter von Z entfernt liegt, muss es <strong>länger</strong> sein als AB.`;
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Der 2. Strahlensatz betrifft die Strecken <em>auf den Parallelen</em>: AB : A'B' = ZA : ZA'.",
+      `Bestimme zuerst, wie oft ZA in ZA' steckt: ${num(zas)} : ${num(p)}.`,
+      "Mit genau demselben Faktor wächst auch die Strecke auf der Parallelen.",
+    ],
+    musterloesungHtml:
+      `① Streckungsverhältnis: ZA' : ZA = ${num(zas)} : ${num(p)} = <strong>${m}</strong><br>` +
+      `② 2. Strahlensatz: A'B' = AB · ${m} = ${num(q)} cm · ${m} = <strong>${num(abs)} cm</strong><br>` +
+      `<span class="progress-note">Der 1. Strahlensatz vergleicht Abschnitte <em>auf den Strahlen</em>, der 2. die Strecken <em>zwischen</em> ihnen. ` +
+      `Der Faktor ist in beiden Fällen derselbe — es ist ja dieselbe zentrische Streckung von Z aus.</span>`,
+  };
+}
+
+// Aufgabe 6 — rückwärts vom Flächen- oder Volumenverhältnis auf k. Das ist die Umkehrung von
+// k² und k³: Aus dem Faktor muss die Wurzel gezogen werden.
+function generateAufgabe6() {
+  const ueberFlaeche = Math.random() < 0.5;
+  const k = ueberFlaeche ? randInt(2, 6) : randInt(2, 5);
+  const faktor = ueberFlaeche ? k * k : k * k * k;
+  const a = randInt(3, 12);
+  const gross = a * k;
+  return {
+    promptHtml:
+      `Zwei Körper sind zueinander ähnlich. ${ueberFlaeche
+        ? `Die <strong>Oberfläche</strong> des größeren ist <strong>${num(faktor)}-mal</strong> so groß wie die des kleineren.`
+        : `Das <strong>Volumen</strong> des größeren ist <strong>${num(faktor)}-mal</strong> so groß wie das des kleineren.`}<br>` +
+      `Eine Kante des kleineren Körpers ist <strong>${num(a)} cm</strong> lang.`,
+    felder: [
+      {
+        name: "Streckfaktor k", soll: k, toleranz: 0.001,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - faktor) < 0.001)
+            return `Das ist der Faktor für ${ueberFlaeche ? "die Oberfläche" : "das Volumen"}. Längen wachsen nur mit k — aus ${num(faktor)} muss also die ${ueberFlaeche ? "Quadratwurzel" : "dritte Wurzel"} gezogen werden.`;
+          if (Math.abs(val - faktor / (ueberFlaeche ? 2 : 3)) < 0.001)
+            return `Durch ${ueberFlaeche ? "2" : "3"} zu teilen ist nicht dasselbe wie Wurzelziehen. Gesucht ist die Zahl, die ${ueberFlaeche ? "mit sich selbst multipliziert" : "dreimal mit sich selbst multipliziert"} ${num(faktor)} ergibt.`;
+          return "";
+        },
+      },
+      {
+        name: "Entsprechende Kante des größeren Körpers", soll: gross, einheit: "cm", toleranz: 0.001,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - a * faktor) < 0.001) return `Du hast mit ${num(faktor)} gestreckt. Dieser Faktor gehört zu ${ueberFlaeche ? "Flächen" : "Volumina"} — <em>Längen</em> wachsen mit k.`;
+          if (Math.abs(val - (a + k)) < 0.001) return "k ist ein Faktor, kein Zuschlag.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      ueberFlaeche
+        ? "Oberflächen ähnlicher Körper verhalten sich wie k² — Längen nur wie k."
+        : "Volumina ähnlicher Körper verhalten sich wie k³ — Längen nur wie k.",
+      ueberFlaeche
+        ? `Gesucht ist also die Zahl k mit k² = ${num(faktor)}.`
+        : `Gesucht ist also die Zahl k mit k³ = ${num(faktor)}.`,
+      `Mit diesem k wird dann die Kante gestreckt: ${num(a)} · k.`,
+    ],
+    musterloesungHtml:
+      `① Aus ${ueberFlaeche ? "k²" : "k³"} = ${num(faktor)} folgt k = <strong>${num(k)}</strong> ` +
+      `(denn ${ueberFlaeche ? `${k} · ${k}` : `${k} · ${k} · ${k}`} = ${num(faktor)}).<br>` +
+      `② Kante: ${num(a)} cm · ${num(k)} = <strong>${num(gross)} cm</strong><br>` +
+      `<span class="progress-note">Der Weg von der Länge zur Fläche oder zum Volumen geht über Potenzen, der Rückweg über Wurzeln. ` +
+      `${ueberFlaeche
+        ? `Zur Probe: Die Oberfläche wächst um den Faktor ${k}² = ${num(faktor)} ✓`
+        : `Zur Probe: Das Volumen wächst um den Faktor ${k}³ = ${num(faktor)} ✓`}</span>`,
+  };
+}
+
+// Aufgabe 8 — alle drei Potenzen an einem Gegenstand: k für Kanten, k² für die Oberfläche,
+// k³ für den Inhalt. Die Maße stammen von einem wirklichen Quader, damit Oberfläche und
+// Volumen zueinander passen.
+function generateAufgabe8() {
+  const masse = [10, 15, 20, 25, 30, 40];
+  const l = pick(masse), b = pick(masse), h = pick(masse);
+  const k = randInt(2, 3);
+  const hGross = h * k;
+  const o1 = 2 * (l * b + l * h + b * h);
+  const o2 = o1 * k * k;
+  const v1 = l * b * h;               // in cm³
+  const v2Liter = (v1 * k * k * k) / 1000;
+  return {
+    promptHtml:
+      `Zwei <strong>quaderförmige</strong> Wasserbehälter sind zueinander ähnlich. Der kleinere ist ` +
+      `<strong>${num(l)} cm</strong> lang, <strong>${num(b)} cm</strong> breit und <strong>${num(h)} cm</strong> hoch. ` +
+      `Der größere ist <strong>${num(hGross)} cm</strong> hoch.`,
+    felder: [
+      {
+        name: "Streckfaktor k", soll: k, toleranz: 0.001,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (hGross - h)) < 0.001) return `Das ist die <strong>Differenz</strong> der Höhen. k ist ein Faktor: k = ${num(hGross)} : ${num(h)}.`;
+          if (Math.abs(val - h / hGross) < 0.001) return "Du hast das Verhältnis umgekehrt gebildet. Der größere Behälter entsteht aus dem kleineren, also k = groß : klein.";
+          return "";
+        },
+      },
+      {
+        name: "Oberfläche des größeren Behälters", soll: o2, einheit: "cm²", toleranz: 0.001,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - o1) < 0.001) return `Das ist die Oberfläche des <strong>kleineren</strong> Behälters (${num(o1)} cm²). Sie muss noch mit k² gestreckt werden.`;
+          if (Math.abs(val - o1 * k) < 0.001) return "Du hast nur mit k gestreckt. Eine Fläche entsteht aus <em>zwei</em> Längen — der Faktor ist k².";
+          if (Math.abs(val - o1 * k * k * k) < 0.001) return "Du hast mit k³ gerechnet. k³ gehört zum Volumen, für die Oberfläche ist k² zuständig.";
+          return "";
+        },
+      },
+      {
+        name: "Fassungsvermögen des größeren Behälters", soll: v2Liter, einheit: "Liter", toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - v1 * k * k * k) < 0.001) return "Das ist das Volumen in <strong>cm³</strong>. Gefragt ist das Fassungsvermögen in Litern: 1 Liter = 1000 cm³.";
+          if (Math.abs(val - (v1 * k * k) / 1000) < 0.001) return "Du hast mit k² gestreckt. k² gehört zur Oberfläche — ein Rauminhalt entsteht aus <em>drei</em> Längen.";
+          if (Math.abs(val - v1 / 1000) < 0.001) return `Das ist der Inhalt des <strong>kleineren</strong> Behälters (${num(v1 / 1000)} Liter). Er muss noch mit k³ gestreckt werden.`;
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      `Der Streckfaktor steckt in den Höhen: ${num(hGross)} : ${num(h)}.`,
+      `Die Oberfläche des kleinen Behälters ist 2 · (${num(l)}·${num(b)} + ${num(l)}·${num(h)} + ${num(b)}·${num(h)}) = ${num(o1)} cm² — sie wächst mit k².`,
+      `Sein Volumen ist ${num(l)} · ${num(b)} · ${num(h)} = ${num(v1)} cm³ — es wächst mit k³, und 1000 cm³ sind 1 Liter.`,
+    ],
+    musterloesungHtml:
+      `① k = ${num(hGross)} cm : ${num(h)} cm = <strong>${num(k)}</strong><br>` +
+      `② Oberfläche klein: 2 · (${num(l * b)} + ${num(l * h)} + ${num(b * h)}) = ${num(o1)} cm²<br>` +
+      `&nbsp;&nbsp;&nbsp;Oberfläche groß: ${num(o1)} · ${k}² = ${num(o1)} · ${num(k * k)} = <strong>${num(o2)} cm²</strong><br>` +
+      `③ Volumen klein: ${num(l)} · ${num(b)} · ${num(h)} = ${num(v1)} cm³<br>` +
+      `&nbsp;&nbsp;&nbsp;Volumen groß: ${num(v1)} · ${k}³ = ${num(v1 * k * k * k)} cm³ = <strong>${num(v2Liter)} Liter</strong><br>` +
+      `<span class="progress-note">Ein und derselbe Streckfaktor, drei verschiedene Potenzen: k für Kanten, k² für Flächen, k³ für Rauminhalte. ` +
+      `Der große Behälter ist nur ${num(k)}-mal so hoch, fasst aber ${num(k * k * k)}-mal so viel.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Streckfaktor anwenden", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Strahlensatz", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Fläche einer ähnlichen Figur", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Modellauto lackieren", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Streckfaktor bestimmen", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — 1. Strahlensatz", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — 2. Strahlensatz", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Fläche einer ähnlichen Figur", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Vom Faktor zurück zur Länge", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Modellauto lackieren", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Zwei ähnliche Behälter", generate: generateAufgabe8 },
   ]);
 }
 
