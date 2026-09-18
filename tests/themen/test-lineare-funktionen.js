@@ -54,11 +54,44 @@ async function aufgaben(page) {
     },
   });
 
-  // Aufgabe 2 — Steigung aus zwei Punkten. Gemessen mit tests/werkzeug-streuung.js: 186
+  // Aufgabe 2 — ablesen und Punktprobe. Gemessen mit tests/werkzeug-streuung.js: 198 verschiedene
+  // in 200 Würfen. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber
+  // für 0,8 · n gerechnet — 27.
+  let drauf = 0, daneben = 0;
+  await pruefeAufgabe(page, bericht, {
+    nr: 2, name: "A2 ablesen und Punktprobe", runden: 30, mindestensVerschieden: 27,
+    deute: (frage) => {
+      // geradeText schreibt „x“ statt „1x“ und „−x“ statt „−1x“.
+      const mg = frage.match(/g\(x\) = (−?\d*)x ([+−]) (\d+)/);
+      const mp = frage.match(/P\(([−-]?\d+) \| ([−-]?\d+)\)/);
+      if (!mg || !mp) return null;
+      const zahl = (t) => Number(String(t).replace("−", "-"));
+      const m = mg[1] === "" ? 1 : mg[1] === "−" ? -1 : zahl(mg[1]);
+      const b = (mg[2] === "+" ? 1 : -1) * Number(mg[3]);
+      const p = zahl(mp[1]), q = zahl(mp[2]);
+      const liegt = m * p + b === q;
+      if (liegt) drauf++; else daneben++;
+      return {
+        felder: [m, b, liegt ? 1 : 2],
+        toleranz: 0.0002,
+        falschFelder: [
+          [0, b, "y-Achsenabschnitt"],
+          [0, -m, "Vorzeichen"],
+          [1, m, "Steigung"],
+          [1, -b, "Vorzeichen"],
+          [2, liegt ? 2 : 1, "Setze die x-Koordinate ein"],
+        ],
+      };
+    },
+  });
+  pruefe(drauf > 0 && daneben > 0,
+    `A2: in 30 Zügen lag P ${drauf}-mal auf der Geraden und ${daneben}-mal nicht — beides muss vorkommen`);
+
+  // Aufgabe 3 — Steigung aus zwei Punkten. Gemessen mit tests/werkzeug-streuung.js: 186
   // verschiedene in 200 Würfen, zurückgerechnet also rund 1355 Kandidaten. Die Schranke ist das
   // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 26.
   await pruefeAufgabe(page, bericht, {
-    nr: 2, name: "A2 Steigung", runden: 30, mindestensVerschieden: 26,
+    nr: 3, name: "A3 Steigung", runden: 30, mindestensVerschieden: 26,
     deute: (frage) => {
       const m = minus(frage).match(/P\((-?\d+) \| (-?\d+)\) und Q\((-?\d+) \| (-?\d+)\)/);
       if (!m) return null;
@@ -78,22 +111,58 @@ async function aufgaben(page) {
           [dy + dx, null],
         ],
         pruefe: (f) => {
-          pruefe(dx > 0, `A2: Δx = ${dx} ist nicht positiv — „${f}“`);
-          pruefe(Number.isInteger(dy / dx), `A2: die Steigung ${dy / dx} ist nicht ganzzahlig — „${f}“`);
+          pruefe(dx > 0, `A3: Δx = ${dx} ist nicht positiv — „${f}“`);
+          pruefe(Number.isInteger(dy / dx), `A3: die Steigung ${dy / dx} ist nicht ganzzahlig — „${f}“`);
           // Beide Punkte müssen wirklich auf derselben Geraden liegen — das
           // ist bei zwei Punkten trivial, aber Δx darf nicht 0 sein.
-          pruefe(x1 !== x2, `A2: P und Q haben dieselbe x-Koordinate — „${f}“`);
+          pruefe(x1 !== x2, `A3: P und Q haben dieselbe x-Koordinate — „${f}“`);
         },
       };
     },
   });
 
-  // Aufgabe 3 — von zwei Punkten zur Funktionsgleichung und zurück. Gemessen mit
+  // Aufgabe 4 — die Wertetabelle. Gemessen: 197 verschiedene in 200 Würfen. Schranke:
+  // simuliertes 10⁻⁴-Quantil bei 30 Zügen für 0,8 · n — 27.
+  let linear = 0, krumm = 0;
+  await pruefeAufgabe(page, bericht, {
+    nr: 4, name: "A4 Wertetabelle", runden: 30, mindestensVerschieden: 27,
+    deute: (frage) => {
+      const m = frage.match(/\? x ([^y]*) y (.*?) Vergleiche/);
+      if (!m) return null;
+      const zahlen = (t) => (t.match(/[−-]?\d+/g) || []).map((z) => Number(z.replace("−", "-")));
+      const xs = zahlen(m[1]), ys = zahlen(m[2]);
+      if (xs.length !== 4 || ys.length !== 4) return null;
+      const m1 = (ys[1] - ys[0]) / (xs[1] - xs[0]);
+      const m2 = (ys[3] - ys[2]) / (xs[3] - xs[2]);
+      // Unabhängig geprüft: linear heißt, dass ALLE drei Steigungen übereinstimmen.
+      const alle = [0, 1, 2].map((i) => (ys[i + 1] - ys[i]) / (xs[i + 1] - xs[i]));
+      const istLinear = alle.every((v) => Math.abs(v - alle[0]) < 1e-9);
+      pruefe(istLinear === (Math.abs(m1 - m2) < 1e-9),
+        `A4: die beiden abgefragten Steigungen entscheiden die Frage nicht — „${frage}“`);
+      pruefe(new Set(xs.map((x, i) => (i ? x - xs[i - 1] : null)).slice(1)).size === 1,
+        `A4: die x-Schritte sind nicht gleich groß — „${frage}“`);
+      if (istLinear) linear++; else krumm++;
+      return {
+        felder: [m1, m2, istLinear ? 1 : 2],
+        toleranz: 0.0002,
+        falschFelder: [
+          [0, xs[1] - xs[0] !== 1 ? ys[1] - ys[0] : null, "geteilt"],
+          [0, (xs[1] - xs[0]) / (ys[1] - ys[0]), "verkehrt herum"],
+          [1, !istLinear ? m1 : null, "nicht gleich"],
+          [2, istLinear ? 2 : 1, "Vergleiche die beiden Steigungen"],
+        ],
+      };
+    },
+  });
+  pruefe(linear > 0 && krumm > 0,
+    `A4: in 30 Zügen war die Tabelle ${linear}-mal linear und ${krumm}-mal nicht — beides muss vorkommen`);
+
+  // Aufgabe 5 — von zwei Punkten zur Funktionsgleichung und zurück. Gemessen mit
   // tests/werkzeug-streuung.js: 199 verschiedene in 200 Würfen, zurückgerechnet also rund 19834
   // Kandidaten. Die Schranke ist das simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für
   // 0,8 · n gerechnet — 27.
   await pruefeAufgabe(page, bericht, {
-    nr: 3, name: "A3 Gleichung aufstellen", runden: 30, mindestensVerschieden: 27,
+    nr: 5, name: "A5 Gleichung aufstellen", runden: 30, mindestensVerschieden: 27,
     deute: (frage) => {
       const m = minus(frage).match(/P\((-?\d+) \| (-?\d+)\) und Q\((-?\d+) \| (-?\d+)\)\. Berechne f\((-?\d+)\)/);
       if (!m) return null;
@@ -114,26 +183,61 @@ async function aufgaben(page) {
         ],
         pruefe: (f) => {
           pruefe(Number.isInteger(st) && Number.isInteger(b),
-            `A3: m = ${st} und b = ${b} sind nicht beide ganzzahlig — „${f}“`);
+            `A5: m = ${st} und b = ${b} sind nicht beide ganzzahlig — „${f}“`);
           // Beide gegebenen Punkte müssen die aufgestellte Gleichung erfüllen.
           pruefe(Math.abs(st * x1 + b - y1) < 1e-9 && Math.abs(st * x2 + b - y2) < 1e-9,
-            `A3: die Gerade y = ${st}x + ${b} geht nicht durch beide Punkte — „${f}“`);
+            `A5: die Gerade y = ${st}x + ${b} geht nicht durch beide Punkte — „${f}“`);
         },
       };
     },
   });
 
-  // Aufgabe 4 — Schnittpunkt zweier Geraden. Gemessen mit tests/werkzeug-streuung.js: 190
+  // Aufgabe 6 — die Parallele durch einen Punkt. Gemessen: 200 verschiedene in 200 Würfen.
+  // Schranke: simuliertes 10⁻⁴-Quantil bei 30 Zügen für ein vorsichtig angesetztes n — 27.
+  await pruefeAufgabe(page, bericht, {
+    nr: 6, name: "A6 Parallele durch einen Punkt", runden: 30, mindestensVerschieden: 27,
+    deute: (frage) => {
+      const mg = frage.match(/g\(x\) = (−?\d*)x ([+−]) (\d+)/);
+      const mp = frage.match(/P\(([−-]?\d+) \| ([−-]?\d+)\)/);
+      const mc = frage.match(/h\(x\) = ([−-]?\d+)\?/);
+      if (!mg || !mp || !mc) return null;
+      const zahl = (t) => Number(String(t).replace("−", "-"));
+      const m = mg[1] === "" ? 1 : mg[1] === "−" ? -1 : zahl(mg[1]);
+      const b = (mg[2] === "+" ? 1 : -1) * Number(mg[3]);
+      const p = zahl(mp[1]), q = zahl(mp[2]), c = zahl(mc[1]);
+      const bNeu = q - m * p;
+      const x0 = (c - bNeu) / m;
+      pruefe(bNeu !== b, `A6: die „Parallele“ wäre die Gerade selbst — „${frage}“`);
+      pruefe(Number.isInteger(x0), `A6: (${c} − ${bNeu}) : ${m} = ${x0} ist nicht ganzzahlig — „${frage}“`);
+      return {
+        felder: [m, bNeu, x0],
+        toleranz: 0.0002,
+        falschFelder: [
+          [0, -m, "senkrechten"],
+          [1, b, "von <strong>g</strong>".replace(/<[^>]*>/g, "")],
+          [1, q + m * p, "Umstellen"],
+          [1, q, "y-Koordinate von P"],
+          [2, m !== 1 ? (c - bNeu) * m : null, "Teilen"],
+          [2, (c + bNeu) / m, "Hinüberbringen"],
+          [2, c, "Funktionswert"],
+        ],
+      };
+    },
+  });
+
+  // Aufgabe 7 — Schnittpunkt zweier Geraden. Gemessen mit tests/werkzeug-streuung.js: 190
   // verschiedene in 200 Würfen, zurückgerechnet also rund 1923 Kandidaten. Die Schranke ist das
   // simulierte 10⁻⁴-Quantil bei 30 Zügen, vorsichtshalber für 0,8 · n gerechnet — 26.
   await pruefeAufgabe(page, bericht, {
-    nr: 4, name: "A4 Schnittpunkt", runden: 30, mindestensVerschieden: 26,
+    nr: 7, name: "A7 Schnittpunkt", runden: 30, mindestensVerschieden: 26,
     deute: (frage) => {
-      const m = minus(frage).match(/g\(x\) = (-?\d+)x ([+-]) (\d+) und h\(x\) = (-?\d+)x ([+-]) (\d+)/);
+      // Die Seite schreibt „x“ statt „1x“ und „−x“ statt „−1x“ — beides muss gelesen werden.
+      const m = minus(frage).match(/g\(x\) = (-?\d*)x ([+-]) (\d+) und h\(x\) = (-?\d*)x ([+-]) (\d+)/);
       if (!m) return null;
-      const m1 = Number(m[1]);
+      const koeff = (t) => (t === "" ? 1 : t === "-" ? -1 : Number(t));
+      const m1 = koeff(m[1]);
       const b1 = (m[2] === "-" ? -1 : 1) * Number(m[3]);
-      const m2 = Number(m[4]);
+      const m2 = koeff(m[4]);
       const b2 = (m[5] === "-" ? -1 : 1) * Number(m[6]);
       const xs = (b2 - b1) / (m1 - m2);
       const ys = m1 * xs + b1;
@@ -150,14 +254,46 @@ async function aufgaben(page) {
           [b1, "y-Achsenabschnitt"],
         ],
         pruefe: (f, rueck) => {
-          pruefe(m1 !== m2, `A4: parallele Geraden mit m = ${m1} schneiden sich nicht — „${f}“`);
-          pruefe(Number.isInteger(xs), `A4: die x-Koordinate ${xs} ist nicht ganzzahlig — „${f}“`);
+          pruefe(m1 !== m2, `A7: parallele Geraden mit m = ${m1} schneiden sich nicht — „${f}“`);
+          pruefe(Number.isInteger(xs), `A7: die x-Koordinate ${xs} ist nicht ganzzahlig — „${f}“`);
           // Der Kern: Im Schnittpunkt liefern beide Funktionen denselben Wert.
           pruefe(Math.abs(m1 * xs + b1 - (m2 * xs + b2)) < 1e-9,
-            `A4: g(${xs}) = ${m1 * xs + b1}, aber h(${xs}) = ${m2 * xs + b2} — „${f}“`);
+            `A7: g(${xs}) = ${m1 * xs + b1}, aber h(${xs}) = ${m2 * xs + b2} — „${f}“`);
           pruefe(rueck.includes(`S(${xs < 0 ? "−" : ""}${Math.abs(xs)} | ${ys < 0 ? "−" : ""}${Math.abs(ys)})`),
-            `A4: die Musterlösung nennt den Schnittpunkt nicht als Paar — „${f}“`);
+            `A7: die Musterlösung nennt den Schnittpunkt nicht als Paar — „${f}“`);
         },
+      };
+    },
+  });
+
+  // Aufgabe 8 — eine Gerade mit Bedeutung: Steigung, Anfangswert, Nullstelle. Gemessen: 199
+  // verschiedene in 200 Würfen. Schranke: simuliertes 10⁻⁴-Quantil bei 30 Zügen für 0,8 · n — 27.
+  await pruefeAufgabe(page, bericht, {
+    nr: 8, name: "A8 Gerade mit Bedeutung", runden: 30, mindestensVerschieden: 27,
+    deute: (frage) => {
+      const m = frage.match(/Nach (\d+) \S+ beträgt \S+ ([\d.]+) \S+, nach (\d+) \S+ nur noch ([\d.]+)/);
+      if (!m) return null;
+      const zahl = (t) => Number(t.replace(/\./g, ""));
+      const t1 = Number(m[1]), h1 = zahl(m[2]), t2 = Number(m[3]), h2 = zahl(m[4]);
+      // Alles unabhängig aus den beiden Messwerten hergeleitet.
+      const steigung = (h2 - h1) / (t2 - t1);
+      const anfang = h1 - steigung * t1;
+      const nullstelle = -anfang / steigung;
+      pruefe(steigung < 0, `A8: der Wert nimmt nicht ab (Steigung ${steigung}) — „${frage}“`);
+      pruefe(Number.isInteger(steigung) && Number.isInteger(anfang) && Number.isInteger(nullstelle),
+        `A8: ein Wert geht nicht glatt auf (${steigung}, ${anfang}, ${nullstelle}) — „${frage}“`);
+      pruefe(t2 < nullstelle, `A8: die zweite Messung läge nach dem Ende (${t2} ≥ ${nullstelle}) — „${frage}“`);
+      return {
+        felder: [steigung, anfang, nullstelle],
+        toleranz: 0.0002,
+        falschFelder: [
+          [0, -steigung, "nimmt <strong>ab</strong>".replace(/<[^>]*>/g, "")],
+          [0, t2 - t1 !== 1 ? h2 - h1 : null, "geteilt"],
+          [1, t1 !== 0 ? h1 : null, "erst nach"],
+          [2, anfang, "keine Zeit"],
+          [2, anfang * -steigung, "hineinpasst"],
+          [2, t2, "übrig"],
+        ],
       };
     },
   });

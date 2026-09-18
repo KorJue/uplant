@@ -810,6 +810,11 @@ function generateAufgabe1() {
         return `${num(m + b)} wäre f(1). Gefragt ist der Wert an der Stelle x = ${num(x)}.`;
       return `Setze ${num(x)} für x ein — in Klammern: f(${num(x)}) = ${faktor(`${num(m)} · (${num(x)})`)} ${b > 0 ? "+" : "−"} ${num(Math.abs(b))}.`;
     },
+    tipps: [
+      "f(x) zu berechnen heißt: die Zahl für x einsetzen und ausrechnen.",
+      `Setze die Zahl in Klammern ein — sonst geht bei einem negativen x das Vorzeichen verloren.`,
+      `Erst multiplizieren, dann ${b > 0 ? "addieren" : "subtrahieren"}.`,
+    ],
     musterloesungHtml:
       `<strong>Einsetzen:</strong> f(${num(x)}) = ${faktor(`${num(m)} · (${num(x)})`)} ${b > 0 ? "+" : "−"} ${num(Math.abs(b))}<br>` +
       `<strong>Punkt vor Strich:</strong> ${faktor(`${num(m)} · (${num(x)})`)} = ${num(m * x)}<br>` +
@@ -868,6 +873,11 @@ function generateAufgabe2() {
         return `Die Reihenfolge muss <em>in beiden</em> Differenzen dieselbe sein: entweder ${faktor("(y₂ − y₁) : (x₂ − x₁)")} oder ${faktor("(y₁ − y₂) : (x₁ − x₂)")} — nicht gemischt.`;
       return `Bilde Δy = ${num(y2)} − ${num(y1)} und Δx = ${num(x2)} − ${num(x1)} und teile dann Δy durch Δx.`;
     },
+    tipps: [
+      "Die Steigung sagt, um wie viel y steigt, wenn x um 1 wächst.",
+      "Aus zwei Punkten bekommt man sie als Δy : Δx — der Unterschied der y-Werte, geteilt durch den der x-Werte.",
+      "Wichtig ist die Reihenfolge: In Zähler und Nenner muss derselbe Punkt zuerst stehen.",
+    ],
     musterloesungHtml:
       `<strong>Steigungsformel:</strong> m = ${faktor("(y₂ − y₁) : (x₂ − x₁)")}<br>` +
       `<strong>Einsetzen:</strong> m = ${faktor(`(${num(y2)} − ${klammer(y1)}) : (${num(x2)} − ${klammer(x1)})`)} = ${faktor(`${klammer(dy)} : ${klammer(dx)}`)} = <strong>${num(m)}</strong><br>` +
@@ -930,6 +940,11 @@ function generateAufgabe3() {
         return `Das Vorzeichen der Steigung stimmt nicht: Von P nach Q geht es ${dy > 0 ? "hinauf" : "hinunter"}, also ist m = ${num(m)}.`;
       return `Drei Schritte: erst m mit der Steigungsformel, dann b durch Einsetzen eines Punktes, dann f(${num(x3)}) berechnen.`;
     },
+    tipps: [
+      "Eine Gerade ist durch zwei Punkte eindeutig festgelegt — m und b lassen sich daraus beide bestimmen.",
+      "Zuerst die Steigung: Δy : Δx.",
+      `Dann einen der beiden Punkte in y = m · x + b einsetzen und nach b auflösen. Erst danach f(${num(x3)}) berechnen.`,
+    ],
     musterloesungHtml:
       `<strong>1. Steigung:</strong> m = ${faktor(`(${num(y2)} − ${klammer(y1)}) : (${num(x2)} − ${klammer(x1)})`)} = ` +
       `${faktor(`${klammer(dy)} : ${klammer(dx)}`)} = <strong>${num(m)}</strong><br>` +
@@ -986,8 +1001,8 @@ function generateAufgabe4() {
   return {
     promptHtml: `Zwei Geraden sind gegeben:<br>` +
       `<span style="font-family:Cambria Math,Cambria,serif;font-size:1.3rem">` +
-      `g(x) = ${num(m1)}x ${b1 > 0 ? "+" : "−"} ${num(Math.abs(b1))} &nbsp;und&nbsp; ` +
-      `h(x) = ${num(m2)}x ${b2 > 0 ? "+" : "−"} ${num(Math.abs(b2))}</span><br>` +
+      `g(x) = ${geradeText(m1, b1)} &nbsp;und&nbsp; ` +
+      `h(x) = ${geradeText(m2, b2)}</span><br>` +
       `<strong>Sie schneiden sich in einem Punkt S. Wie groß ist die y-Koordinate von S?</strong>`,
     correct: ys,
     tolerance: 0.001,
@@ -1003,6 +1018,11 @@ function generateAufgabe4() {
         return `Das ist ein y-Achsenabschnitt, also der Wert an der Stelle 0. Der Schnittpunkt liegt aber bei x = ${num(xs)}.`;
       return `Setze g(x) = h(x), löse nach x auf und setze das Ergebnis in eine der beiden Funktionen ein.`;
     },
+    tipps: [
+      "Im Schnittpunkt haben beide Geraden denselben y-Wert — dort gilt also g(x) = h(x).",
+      "Das ist eine gewöhnliche Gleichung mit x auf beiden Seiten.",
+      "Die gefundene Stelle x in <em>eine</em> der beiden Funktionen einsetzen ergibt den y-Wert; die andere liefert zur Probe denselben.",
+    ],
     musterloesungHtml:
       `<strong>1. Gleichsetzen:</strong> ${num(m1)}x${anhang(b1)} = ${num(m2)}x${anhang(b2)}<br>` +
       `<strong>2. Sortieren:</strong> ${sortierSchritt(m2, b1)} →&nbsp; ` +
@@ -1014,12 +1034,288 @@ function generateAufgabe4() {
   };
 }
 
+function randInt(min, max) {
+  return min + Math.floor(Math.random() * (max - min + 1));
+}
+// Vorzeichen und Betrag getrennt — „+ −3“ soll nicht vorkommen.
+function mitVz(z) {
+  return `${z >= 0 ? "+" : "−"} ${num(Math.abs(z))}`;
+}
+function geradeText(m, b) {
+  const vorn = m === 1 ? "x" : m === -1 ? "−x" : `${num(m)}x`;
+  return b === 0 ? vorn : `${vorn} ${mitVz(b)}`;
+}
+// Koordinaten mit typografischem Minus.
+function koord(v) {
+  return v < 0 ? `−${num(-v)}` : num(v);
+}
+
+// Aufgabe 2 — ablesen und einsetzen. Steigung und y-Achsenabschnitt stehen in der Gleichung
+// bereits da; die Punktprobe zeigt, wofür sie gut sind.
+function generateAufgabe2b() {
+  const m = pick([-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]);
+  const b = randInt(-9, 9) || 4;
+  const p = randInt(-6, 6);
+  const drauf = Math.random() < 0.5;
+  const q = m * p + b + (drauf ? 0 : pick([-4, -3, -2, -1, 1, 2, 3, 4]));
+  return {
+    promptHtml:
+      `Gegeben ist die Gerade<br><span style="font-family:Cambria Math,Cambria,serif;font-size:1.3rem">` +
+      `g(x) = ${geradeText(m, b)}</span><br>` +
+      `Außerdem der Punkt <strong>P(${koord(p)} | ${koord(q)})</strong>.<br>` +
+      `<span class="progress-note">Antworte bei der letzten Frage mit 1 für „ja“ oder 2 für „nein“.</span>`,
+    felder: [
+      {
+        name: "Steigung m", soll: m, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - b) < 0.0005) return "Das ist der <strong>y-Achsenabschnitt</strong> — die Zahl ohne x. Die Steigung steht <em>vor</em> dem x.";
+          if (Math.abs(val + m) < 0.0005) return "Das Vorzeichen gehört zur Steigung dazu.";
+          return "";
+        },
+      },
+      {
+        name: "y-Achsenabschnitt b", soll: b, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - m) < 0.0005) return "Das ist die <strong>Steigung</strong>. Der y-Achsenabschnitt ist die Zahl, die ohne x dasteht.";
+          if (Math.abs(val + b) < 0.0005) return "Das Vorzeichen gehört zum y-Achsenabschnitt dazu.";
+          return "";
+        },
+      },
+      {
+        name: `Liegt P auf g? (1 = ja, 2 = nein)`, soll: drauf ? 1 : 2, toleranz: 0.01,
+        hinweis: (roh, val) =>
+          Math.abs(val - (drauf ? 2 : 1)) < 0.01
+            ? `Setze die x-Koordinate ein: g(${koord(p)}) = ${num(m)} · (${koord(p)}) ${mitVz(b)} = ${num(m * p + b)}. ` +
+              (drauf ? `Das ist genau die y-Koordinate von P — also liegt P auf g.`
+                     : `P hat aber die y-Koordinate ${koord(q)} — die Werte sind verschieden.`)
+            : "",
+      },
+    ],
+    tipps: [
+      "In der Form y = m · x + b steht alles schon da: m vor dem x, b ohne x.",
+      "Für die Punktprobe wird die x-Koordinate des Punktes in die Gleichung eingesetzt.",
+      `Kommt dabei die y-Koordinate heraus, liegt der Punkt auf der Geraden — sonst nicht.`,
+    ],
+    musterloesungHtml:
+      `① m = <strong>${num(m)}</strong> (die Zahl vor dem x)<br>` +
+      `② b = <strong>${num(b)}</strong> (die Zahl ohne x)<br>` +
+      `③ Punktprobe: g(${koord(p)}) = ${num(m)} · (${koord(p)}) ${mitVz(b)} = <strong>${num(m * p + b)}</strong><br>` +
+      `<span class="du-urteil ${drauf ? "ja" : "nein"}">${drauf
+        ? `Das stimmt mit der y-Koordinate ${koord(q)} überein — P liegt auf g (1).`
+        : `${num(m * p + b)} ≠ ${koord(q)} — P liegt nicht auf g (2).`}</span><br>` +
+      `<span class="progress-note">Die Punktprobe braucht keine Zeichnung: Ein Punkt liegt genau dann auf der Geraden, wenn seine Koordinaten die Gleichung erfüllen. ` +
+      `Damit lässt sich auch bei großen Zahlen entscheiden, wo eine Zeichnung längst ungenau wäre.</span>`,
+  };
+}
+
+// Aufgabe 4 — die Wertetabelle. Nicht jede Tabelle gehört zu einer Geraden; entscheidend ist,
+// ob die Änderung überall gleich ist.
+function generateAufgabe4b() {
+  const m = pick([-4, -3, -2, -1, 1, 2, 3, 4, 5]);
+  const b = randInt(-8, 8);
+  const schritt = pick([1, 2, 3]);
+  const x0 = randInt(-3, 3);
+  const xs = [0, 1, 2, 3].map((i) => x0 + i * schritt);
+  const ys = xs.map((x) => m * x + b);
+  const linear = Math.random() < 0.5;
+  // Bei „nicht linear“ wird genau der letzte Wert verschoben — dann unterscheiden sich die
+  // beiden Steigungen, die in den Feldern gefragt sind, wirklich.
+  if (!linear) ys[3] += pick([-6, -4, -3, 3, 4, 6]);
+  const m1 = (ys[1] - ys[0]) / (xs[1] - xs[0]);
+  const m2 = (ys[3] - ys[2]) / (xs[3] - xs[2]);
+  const tabelle =
+    `<table class="lf-tabelle"><tr><th>x</th>${xs.map((x) => `<td>${koord(x)}</td>`).join("")}</tr>` +
+    `<tr><th>y</th>${ys.map((y) => `<td>${koord(y)}</td>`).join("")}</tr></table>`;
+  return {
+    promptHtml:
+      `Gehört diese Wertetabelle zu einer linearen Funktion?${tabelle}` +
+      `<span class="progress-note">Vergleiche die Steigung zwischen den ersten beiden und zwischen den letzten beiden Punkten. ` +
+      `Antworte zuletzt mit 1 für „ja“ oder 2 für „nein“.</span>`,
+    felder: [
+      {
+        name: "Steigung zwischen dem 1. und dem 2. Punkt", soll: m1, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (ys[1] - ys[0])) < 0.0005 && schritt !== 1) return `Der y-Unterschied allein ist noch nicht die Steigung — er muss durch den x-Unterschied ${num(schritt)} geteilt werden.`;
+          if (Math.abs(val - (xs[1] - xs[0]) / (ys[1] - ys[0])) < 0.0005) return "Der Bruch steht verkehrt herum: Die Steigung ist <strong>Δy : Δx</strong>.";
+          return "";
+        },
+      },
+      {
+        name: "Steigung zwischen dem 3. und dem 4. Punkt", soll: m2, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - m1) < 0.0005 && m1 !== m2) return "Rechne wirklich nach — die beiden Steigungen sind hier nicht gleich.";
+          if (Math.abs(val - (ys[3] - ys[2])) < 0.0005 && schritt !== 1) return `Auch hier muss durch den x-Unterschied ${num(schritt)} geteilt werden.`;
+          return "";
+        },
+      },
+      {
+        name: "Ist die Funktion linear? (1 = ja, 2 = nein)", soll: linear ? 1 : 2, toleranz: 0.01,
+        hinweis: (roh, val) =>
+          Math.abs(val - (linear ? 2 : 1)) < 0.01
+            ? `Vergleiche die beiden Steigungen: ${num(m1)} und ${num(m2)}. ` +
+              (linear ? "Sie sind gleich — die Punkte liegen auf einer Geraden."
+                      : "Sie sind verschieden — dann liegen die Punkte nicht auf <em>einer</em> Geraden.")
+            : "",
+      },
+    ],
+    tipps: [
+      "Linear heißt: Bei gleichen Schritten in x ändert sich y immer um denselben Betrag.",
+      "Die Steigung zwischen zwei Punkten ist der Unterschied der y-Werte, geteilt durch den Unterschied der x-Werte.",
+      "Stimmen alle diese Steigungen überein, liegen die Punkte auf einer Geraden.",
+    ],
+    musterloesungHtml:
+      `① m₁ = (${koord(ys[1])} − ${koord(ys[0])}) : (${koord(xs[1])} − ${koord(xs[0])}) = ${num(ys[1] - ys[0])} : ${num(schritt)} = <strong>${num(m1)}</strong><br>` +
+      `② m₂ = (${koord(ys[3])} − ${koord(ys[2])}) : (${koord(xs[3])} − ${koord(xs[2])}) = ${num(ys[3] - ys[2])} : ${num(schritt)} = <strong>${num(m2)}</strong><br>` +
+      `<span class="du-urteil ${linear ? "ja" : "nein"}">${linear
+        ? `Beide Steigungen sind ${num(m1)} — die Tabelle gehört zu einer linearen Funktion (1), nämlich zu y = ${geradeText(m, b)}.`
+        : `${num(m1)} ≠ ${num(m2)} — die Tabelle gehört zu keiner linearen Funktion (2).`}</span><br>` +
+      `<span class="progress-note">${linear
+        ? "Zur Probe: Der y-Achsenabschnitt lässt sich aus einem beliebigen Wertepaar zurückrechnen, und er passt zu allen vier."
+        : "Ein einziger Wert genügt, um die Geradheit zu zerstören — drei Punkte können auf einer Geraden liegen und der vierte trotzdem daneben."}</span>`,
+  };
+}
+
+// Aufgabe 6 — die Parallele durch einen Punkt. Die Steigung wird übernommen, der
+// y-Achsenabschnitt muss neu berechnet werden.
+function generateAufgabe6() {
+  const m = pick([-4, -3, -2, -1, 1, 2, 3, 4]);
+  // b = 0 fällt heraus: „g(x) = 3x“ hätte gar keinen y-Achsenabschnitt zum Vergleichen.
+  const b = randInt(-8, 8) || 5;
+  const p = randInt(-5, 5);
+  // Fiele der neue y-Achsenabschnitt mit dem alten zusammen, wäre die „Parallele“ die Gerade
+  // selbst. Der Punkt wird dann um eine Einheit verschoben — kein Verwerfen und Neuziehen.
+  let q = randInt(-9, 9);
+  if (q - m * p === b) q += 1;
+  const bNeu = q - m * p;
+  const x0 = randInt(-5, 8);
+  const c = m * x0 + bNeu;
+  return {
+    promptHtml:
+      `Gegeben ist die Gerade<br><span style="font-family:Cambria Math,Cambria,serif;font-size:1.3rem">` +
+      `g(x) = ${geradeText(m, b)}</span><br>` +
+      `Gesucht ist die Gerade <strong>h</strong>, die <strong>parallel</strong> zu g verläuft und durch ` +
+      `<strong>P(${koord(p)} | ${koord(q)})</strong> geht.<br>` +
+      `<strong>Für welches x ist h(x) = ${koord(c)}?</strong>`,
+    felder: [
+      {
+        name: "Steigung von h", soll: m, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val + m) < 0.0005) return "Die <em>Gegen</em>steigung gehört zu einer senkrechten Geraden, nicht zu einer parallelen.";
+          if (Math.abs(val - q / p) < 0.0005 && p !== 0) return "Die Steigung wird von g übernommen — der Punkt bestimmt nur, wie hoch die Gerade liegt.";
+          return "";
+        },
+      },
+      {
+        name: "y-Achsenabschnitt von h", soll: bNeu, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - b) < 0.0005) return "Das ist der y-Achsenabschnitt von <strong>g</strong>. Parallele Geraden haben dieselbe Steigung, aber verschiedene Achsenabschnitte.";
+          if (Math.abs(val - (q + m * p)) < 0.0005) return `Beim Umstellen dreht sich das Vorzeichen um: b = q − m · p = ${koord(q)} − ${num(m)} · (${koord(p)}).`;
+          if (Math.abs(val - q) < 0.0005) return `${koord(q)} ist die y-Koordinate von P. Der y-Achsenabschnitt gehört zu x = 0.`;
+          return "";
+        },
+      },
+      {
+        name: `x mit h(x) = ${koord(c)}`, soll: x0, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (c - bNeu) * m) < 0.0005 && m !== 1) return `Aus ${num(m)}x = ${koord(c - bNeu)} folgt x durch <strong>Teilen</strong>, nicht durch Multiplizieren.`;
+          if (Math.abs(val - (c + bNeu) / m) < 0.0005) return "Beim Hinüberbringen dreht sich das Vorzeichen um.";
+          if (Math.abs(val - c) < 0.0005) return `${koord(c)} ist der Funktionswert. Gesucht ist die Stelle x, an der er auftritt.`;
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Parallel heißt: <strong>gleiche Steigung</strong>. Die wird also einfach von g übernommen.",
+      `Den y-Achsenabschnitt liefert der Punkt: Aus ${koord(q)} = ${num(m)} · (${koord(p)}) + b folgt b.`,
+      `Mit der fertigen Gleichung h(x) = … lässt sich dann die Gleichung h(x) = ${koord(c)} nach x auflösen.`,
+    ],
+    musterloesungHtml:
+      `① parallel ⇒ dieselbe Steigung: m = <strong>${num(m)}</strong><br>` +
+      `② P einsetzen: ${koord(q)} = ${num(m)} · (${koord(p)}) + b = ${koord(m * p)} + b ⇒ b = ${koord(q)} − ${koord(m * p)} = <strong>${koord(bNeu)}</strong><br>` +
+      `&nbsp;&nbsp;&nbsp;also h(x) = ${geradeText(m, bNeu)}<br>` +
+      `③ ${geradeText(m, bNeu)} = ${koord(c)} &nbsp;|&nbsp; ${bNeu > 0 ? "−" : "+"} ${num(Math.abs(bNeu))}<br>` +
+      `&nbsp;&nbsp;&nbsp;${num(m)}x = ${koord(c - bNeu)} &nbsp;|&nbsp; : ${num(m)} ⇒ <strong>x = ${koord(x0)}</strong><br>` +
+      `<em>Probe:</em> h(${koord(x0)}) = ${num(m)} · (${koord(x0)}) ${mitVz(bNeu)} = ${koord(c)} ✓<br>` +
+      `<span class="progress-note">g und h liegen um ${num(Math.abs(bNeu - b))} Einheiten auseinander — gemessen senkrecht zur y-Achse. ` +
+      `Parallele Geraden schneiden sich nie; ihre Gleichungen unterscheiden sich nur im b.</span>`,
+  };
+}
+
+// Aufgabe 8 — eine Gerade mit Bedeutung. Steigung, y-Achsenabschnitt und Nullstelle heißen hier
+// Abnahme je Minute, Anfangswert und der Zeitpunkt, an dem nichts mehr da ist.
+const A8_KONTEXTE = [
+  { einleitung: "Die Höhe einer Kerze nimmt gleichmäßig ab.", pronomen: "sie", mehrzahl: "Höhen", einheit: "mm", je: "Minute", zeit: "Minuten", ende: "ist die Kerze heruntergebrannt" },
+  { einleitung: "Der Füllstand eines Wassertanks nimmt gleichmäßig ab.", pronomen: "er", mehrzahl: "Füllstände", einheit: "Liter", je: "Minute", zeit: "Minuten", ende: "ist der Tank leer" },
+  { einleitung: "Ein Guthaben nimmt gleichmäßig ab.", pronomen: "es", mehrzahl: "Guthaben", einheit: "€", je: "Tag", zeit: "Tagen", ende: "ist das Guthaben aufgebraucht" },
+];
+
+function generateAufgabe8() {
+  const k = pick(A8_KONTEXTE);
+  const a = pick([2, 3, 4, 5, 6]);          // Abnahme je Zeiteinheit
+  const t0 = pick([20, 25, 30, 40, 45, 50, 60]);  // Nullstelle
+  const b = a * t0;                          // Anfangswert
+  // Zwei Messzeitpunkte, beide vor dem Ende und verschieden.
+  const t1 = randInt(0, Math.floor(t0 / 2));
+  const t2 = t1 + randInt(3, Math.max(4, t0 - t1 - 2));
+  const h1 = b - a * t1, h2 = b - a * t2;
+  return {
+    promptHtml:
+      `${k.einleitung} Nach <strong>${num(t1)} ${k.zeit}</strong> beträgt ${k.pronomen} ` +
+      `<strong>${num(h1)} ${k.einheit}</strong>, nach <strong>${num(t2)} ${k.zeit}</strong> nur noch <strong>${num(h2)} ${k.einheit}</strong>.`,
+    felder: [
+      {
+        name: `Änderung je ${k.je}`, soll: -a, einheit: k.einheit, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - a) < 0.0005) return "Der Wert nimmt <strong>ab</strong> — die Steigung ist deshalb negativ.";
+          if (Math.abs(val - (h2 - h1)) < 0.0005 && t2 - t1 !== 1) return `Der Unterschied allein ist noch nicht die Änderung je ${k.je}; er muss durch die ${num(t2 - t1)} ${k.zeit} geteilt werden.`;
+          return "";
+        },
+      },
+      {
+        name: "Anfangswert (zu Beginn)", soll: b, einheit: k.einheit, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - h1) < 0.0005 && t1 !== 0) return `${num(h1)} ${k.einheit} sind es erst nach ${num(t1)} ${k.zeit}. Zu Beginn war es mehr.`;
+          if (Math.abs(val - (h1 + a * t1 * 2)) < 0.0005) return "Rechne vom ersten Messwert um genau die verstrichene Zeit zurück.";
+          return "";
+        },
+      },
+      {
+        name: `Nach wie vielen ${k.zeit} ${k.ende}?`, soll: t0, einheit: k.zeit, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - b) < 0.0005) return `${num(b)} ist der Anfangswert in ${k.einheit}, keine Zeit.`;
+          if (Math.abs(val - b * a) < 0.0005) return `Gesucht ist, wie oft die Abnahme von ${num(a)} ${k.einheit} in den Anfangswert hineinpasst — also geteilt.`;
+          if (Math.abs(val - t2) < 0.0005) return `Nach ${num(t2)} ${k.zeit} sind noch ${num(h2)} ${k.einheit} übrig.`;
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      `Die Änderung je ${k.je} ist die <em>Steigung</em>: der Unterschied der Werte, geteilt durch die verstrichene Zeit.`,
+      `Von einem Messwert aus lässt sich auf den Anfang zurückrechnen: ${num(h1)} + ${num(t1)} · Abnahme.`,
+      "Das Ende ist die <strong>Nullstelle</strong>: Dort ist der Wert 0.",
+    ],
+    musterloesungHtml:
+      `① Steigung: (${num(h2)} − ${num(h1)}) : (${num(t2)} − ${num(t1)}) = ${num(h2 - h1)} : ${num(t2 - t1)} = <strong>${num(-a)} ${k.einheit}</strong> je ${k.je}<br>` +
+      `② Anfangswert: ${num(h1)} + ${num(t1)} · ${num(a)} = <strong>${num(b)} ${k.einheit}</strong><br>` +
+      `&nbsp;&nbsp;&nbsp;also f(t) = ${num(b)} − ${num(a)} · t<br>` +
+      `③ Nullstelle: ${num(b)} − ${num(a)} · t = 0 ⇒ t = ${num(b)} : ${num(a)} = <strong>${num(t0)} ${k.zeit}</strong><br>` +
+      `<em>Probe:</em> f(${num(t2)}) = ${num(b)} − ${num(a)} · ${num(t2)} = ${num(h2)} ✓<br>` +
+      `<span class="progress-note">Die drei Zahlen der Geradengleichung haben hier eine Bedeutung: ` +
+      `die Steigung ist die Abnahme je ${k.je}, der y-Achsenabschnitt der Anfangswert, die Nullstelle der Zeitpunkt des Endes. ` +
+      `Danach beschreibt die Gerade nichts mehr — negative ${k.mehrzahl} gibt es hier nicht.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Funktionswert berechnen", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Steigung aus zwei Punkten", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — Gleichung aufstellen und auswerten", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Schnittpunkt zweier Geraden", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Ablesen und Punktprobe", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Steigung aus zwei Punkten", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Ist die Tabelle linear?", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Gleichung aufstellen und auswerten", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Die Parallele durch einen Punkt", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Schnittpunkt zweier Geraden", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Eine Gerade mit Bedeutung", generate: generateAufgabe8 },
   ]);
 }
 
