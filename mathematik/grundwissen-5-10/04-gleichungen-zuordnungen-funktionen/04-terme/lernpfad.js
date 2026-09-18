@@ -768,6 +768,11 @@ function generateAufgabe1() {
         return `x² ist x · x, nicht 2 · x. Für x = ${num(x)} ist x² = ${num(x * x)}.`;
       return `Setze in Klammern ein: ${a === 1 ? "" : num(a)} · (${num(x)})² ${b > 0 ? "+" : "−"} ${num(Math.abs(b))} · (${num(x)}) ${c > 0 ? "+" : "−"} ${num(Math.abs(c))}.`;
     },
+    tipps: [
+      "Setze die Zahl für <em>jedes</em> x ein — und zwar in Klammern, sonst gehen Vorzeichen verloren.",
+      `Hier also überall (${num(x)}) statt x.`,
+      "Rechne dann von innen nach außen: erst die Potenz, dann die Produkte, zuletzt die Summe.",
+    ],
     musterloesungHtml:
       `<strong>Einsetzen — mit Klammern:</strong> ${a === 1 ? "" : num(a) + " · "}(${num(x)})²${b > 0 ? " + " : " − "}${num(Math.abs(b))} · (${num(x)})${c > 0 ? " + " : " − "}${num(Math.abs(c))}<br>` +
       `<strong>Potenz zuerst:</strong> (${num(x)})² = ${num(x * x)}<br>` +
@@ -825,6 +830,11 @@ function generateAufgabe2() {
         return `${num(aGes)}x und ${num(bGes)} sind <em>nicht</em> gleichartig: das eine ist ein Streifen, das andere ein Kästchen. Sie bleiben getrennt stehen.`;
       return `Löse zuerst die Klammer auf, fasse dann gleichartige Terme zusammen und setze erst zum Schluss x = ${num(x)} ein.`;
     },
+    tipps: [
+      "Vor der Klammer steht ein Minus — es dreht <strong>alle</strong> Vorzeichen in der Klammer um.",
+      "Erst danach lassen sich gleichartige Terme zusammenfassen: x-Terme mit x-Termen, Zahlen mit Zahlen.",
+      `Eingesetzt wird zuletzt: x = ${num(x)} in den vereinfachten Term.`,
+    ],
     musterloesungHtml:
       `<strong>1. Klammer auflösen:</strong> Das Minus dreht beide Vorzeichen um →<br>` +
       `&nbsp;&nbsp;&nbsp;&nbsp;${num(a1)}x${vorzeichenTeil(b1, "")} − ${num(a2)}x${vorzeichenTeil(b2, "")}<br>` +
@@ -910,6 +920,11 @@ function generateAufgabe3() {
         return `Auch bei der 2. binomischen Formel ist das letzte Glied <strong>positiv</strong>: (−${num(q)})² = ${num(q * q)}.`;
       return `Multipliziere die rechte Seite aus und vergleiche Glied für Glied mit der linken.`;
     },
+    tipps: [
+      "Multipliziere die rechte Seite aus — dann steht dort ein Term derselben Bauart wie links.",
+      "Vergleiche anschließend Glied für Glied: x² mit x², die Zahl mit der Zahl.",
+      "Hier hilft die dritte binomische Formel: (x + v) · (x − v) = x² − v².",
+    ],
     musterloesungHtml:
       `${form.weg(q)}<br>` +
       `<em>Probe für x = 1:</em> links ${
@@ -983,6 +998,11 @@ function generateAufgabe4() {
         return `Du hast beide Randstreifen mit der Länge x gerechnet. Die längere Seite misst aber x + ${num(p)}, und die Ecke fehlt noch.`;
       return `Stelle beide Flächeninhalte als Term auf und subtrahiere: ${kontext.term(k)}.`;
     },
+    tipps: [
+      "Stelle für jede der beiden Größen einen eigenen Term auf — beide mit demselben x.",
+      `Der Ansatz lautet: ${kontext.term(k)}.`,
+      "Erst zusammenfassen, dann die Zahl einsetzen — so bleibt der Rechenweg kurz.",
+    ],
     musterloesungHtml:
       `<strong>1. Beide Flächen als Term:</strong> alt <span class="nw">x · (x + ${num(p)})</span>, ` +
       `neu <span class="nw">(x + ${num(d)}) · (x + ${num(p + d)})</span><br>` +
@@ -996,12 +1016,256 @@ function generateAufgabe4() {
   };
 }
 
+function randInt(min, max) {
+  return min + Math.floor(Math.random() * (max - min + 1));
+}
+// Vorzeichen und Betrag getrennt, damit „+ −3“ nicht vorkommt.
+function mitVz(z) {
+  return `${z >= 0 ? "+" : "−"} ${num(Math.abs(z))}`;
+}
+
+// Aufgabe 2 — Ausmultiplizieren. Der Fehler, der hier gemacht wird, ist immer derselbe: Nur der
+// erste Summand wird mit dem Faktor multipliziert.
+function generateAufgabe2b() {
+  const a = pick([2, 3, 4, 5, 6, -2, -3, -4]);
+  const b = randInt(2, 9);
+  const c = randInt(-9, 9) || 4;
+  return {
+    promptHtml:
+      `Multipliziere aus:<br><span style="font-family:Cambria Math,Cambria,serif;font-size:1.3rem">` +
+      `${num(a)} · (${num(b)}x ${mitVz(c)})</span><br>` +
+      `<span class="progress-note">Gesucht sind die beiden Zahlen des Ergebnisses.</span>`,
+    felder: [
+      {
+        name: "Zahl vor dem x", soll: a * b, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - b) < 0.0005) return `Der Faktor ${num(a)} gehört auch vor das x: ${num(a)} · ${num(b)}.`;
+          if (Math.abs(val - (a + b)) < 0.0005) return "Der Faktor wird mit dem Term <strong>multipliziert</strong>, nicht addiert.";
+          return "";
+        },
+      },
+      {
+        name: "Zahl ohne x", soll: a * c, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - c) < 0.0005) return `Auch die ${num(Math.abs(c))} muss mit ${num(a)} multipliziert werden — das ist der häufigste Fehler beim Ausmultiplizieren.`;
+          if (Math.abs(val + a * c) < 0.0005) return "Achte auf das Vorzeichen: Minus mal Minus ergibt Plus, Plus mal Minus ergibt Minus.";
+          if (Math.abs(val - a * b) < 0.0005) return "Das ist die Zahl vor dem x.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Der Faktor vor der Klammer wird mit <strong>jedem</strong> Summanden in der Klammer multipliziert.",
+      `Hier also ${num(a)} · ${num(b)}x und ${num(a)} · (${num(c)}).`,
+      "Auf die Vorzeichen achten: Der Faktor nimmt sein Vorzeichen mit.",
+    ],
+    musterloesungHtml:
+      `${num(a)} · (${num(b)}x ${mitVz(c)}) = ${num(a)} · ${num(b)}x ${a > 0 ? "+" : "−"} ${num(Math.abs(a))} · (${num(c)})<br>` +
+      `&nbsp;&nbsp;= <strong>${num(a * b)}x ${mitVz(a * c)}</strong><br>` +
+      `<span class="progress-note">Probe mit x = 1: links ${num(a)} · (${num(b)} ${mitVz(c)}) = ${num(a)} · ${num(b + c)} = ${num(a * (b + c))}, ` +
+      `rechts ${num(a * b)} ${mitVz(a * c)} = ${num(a * b + a * c)} ✓ &nbsp;· Eine Probe mit einer eingesetzten Zahl findet fast jeden Fehler beim Umformen.</span>`,
+  };
+}
+
+// Aufgabe 4 — die binomischen Formeln vorwärts. Der Mittelterm 2ab ist es, der übersehen wird.
+function generateAufgabe4b() {
+  const a = randInt(1, 6);
+  const b = randInt(1, 9);
+  const art = pick(["plus", "minus", "produkt"]);   // (ax+b)², (ax−b)², (ax+b)(ax−b)
+  const x2 = a * a;
+  const x1 = art === "plus" ? 2 * a * b : art === "minus" ? -2 * a * b : 0;
+  const konst = art === "produkt" ? -b * b : b * b;
+  const ausdruck = art === "produkt"
+    ? `(${a === 1 ? "" : num(a)}x + ${num(b)}) · (${a === 1 ? "" : num(a)}x − ${num(b)})`
+    : `(${a === 1 ? "" : num(a)}x ${art === "plus" ? "+" : "−"} ${num(b)})²`;
+  return {
+    promptHtml:
+      `Multipliziere aus:<br><span style="font-family:Cambria Math,Cambria,serif;font-size:1.3rem">${ausdruck}</span><br>` +
+      `<span class="progress-note">Gib die drei Zahlen des Ergebnisses an. Kommt ein Glied nicht vor, ist seine Zahl 0.</span>`,
+    felder: [
+      {
+        name: "Zahl vor x²", soll: x2, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - a) < 0.0005 && a !== 1) return `Auch die Zahl vor dem x wird quadriert: ${num(a)}² = ${num(x2)}.`;
+          if (Math.abs(val - 2 * a) < 0.0005 && a !== 1) return "Quadrieren heißt mit sich selbst multiplizieren, nicht verdoppeln.";
+          return "";
+        },
+      },
+      {
+        name: "Zahl vor x", soll: x1, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (art !== "produkt" && Math.abs(val) < 0.0005) return `Der mittlere Term fehlt: (u ${art === "plus" ? "+" : "−"} v)² = u² ${art === "plus" ? "+" : "−"} <strong>2uv</strong> + v². Er ist der am häufigsten vergessene Teil.`;
+          if (art !== "produkt" && Math.abs(val - a * b) < 0.0005) return "Der mittlere Term ist 2 · u · v — der Faktor 2 fehlt.";
+          if (art !== "produkt" && Math.abs(val + x1) < 0.0005) return art === "plus"
+            ? "Bei der ersten binomischen Formel ist der mittlere Term positiv."
+            : "Bei der zweiten binomischen Formel ist der mittlere Term negativ.";
+          if (art === "produkt" && Math.abs(val - 2 * a * b) < 0.0005) return "Beim Produkt (u + v)(u − v) heben sich die beiden mittleren Terme gegenseitig auf — es bleibt u² − v².";
+          return "";
+        },
+      },
+      {
+        name: "Zahl ohne x", soll: konst, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - b) < 0.0005) return `Auch ${num(b)} wird quadriert: ${num(b)}² = ${num(b * b)}.`;
+          if (art === "produkt" && Math.abs(val - b * b) < 0.0005) return "Bei (u + v)(u − v) ist das letzte Glied <strong>negativ</strong>: u² − v².";
+          if (art === "minus" && Math.abs(val + b * b) < 0.0005) return "Ein Quadrat ist nie negativ: (−v)² = +v².";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      art === "produkt"
+        ? "Das ist die dritte binomische Formel: (u + v) · (u − v) = u² − v²."
+        : `Das ist die ${art === "plus" ? "erste" : "zweite"} binomische Formel: (u ${art === "plus" ? "+" : "−"} v)² = u² ${art === "plus" ? "+" : "−"} 2uv + v².`,
+      `Hier ist u = ${a === 1 ? "x" : num(a) + "x"} und v = ${num(b)}.`,
+      art === "produkt"
+        ? "Der mittlere Term fällt weg — deshalb steht dort 0."
+        : "Der mittlere Term 2uv wird am häufigsten vergessen.",
+    ],
+    musterloesungHtml:
+      `u = ${a === 1 ? "x" : num(a) + "x"}, v = ${num(b)}<br>` +
+      (art === "produkt"
+        ? `(u + v)(u − v) = u² − v² = ${num(x2)}x² − ${num(b * b)}<br>` +
+          `&nbsp;&nbsp;also <strong>${num(x2)}x² + 0x ${mitVz(konst)}</strong><br>`
+        : `(u ${art === "plus" ? "+" : "−"} v)² = u² ${art === "plus" ? "+" : "−"} 2uv + v² = ${num(x2)}x² ${mitVz(x1)} ${num(b * b)}<br>` +
+          `&nbsp;&nbsp;also <strong>${num(x2)}x² ${mitVz(x1)}x ${mitVz(konst)}</strong><br>`) +
+      `<span class="progress-note">Probe mit x = 1: ${art === "produkt"
+        ? `(${num(a)} + ${num(b)}) · (${num(a)} − ${num(b)}) = ${num(a + b)} · ${num(a - b)} = ${num((a + b) * (a - b))}`
+        : `(${num(a)} ${art === "plus" ? "+" : "−"} ${num(b)})² = ${num(art === "plus" ? a + b : a - b)}² = ${num(Math.pow(art === "plus" ? a + b : a - b, 2))}`}, ` +
+      `und ${num(x2)} ${mitVz(x1)} ${mitVz(konst)} = ${num(x2 + x1 + konst)} ✓</span>`,
+  };
+}
+
+// Aufgabe 6 — Ausklammern, und zwar so weit wie möglich. Wer nur einen Teil des gemeinsamen
+// Faktors zieht, hat zwar richtig gerechnet, aber die Aufgabe nicht gelöst.
+function generateAufgabe6() {
+  const f = randInt(2, 12);
+  // Die beiden Klammerinhalte müssen teilerfremd sein, sonst wäre f nicht der größte Faktor.
+  const kandidaten = [];
+  for (let u = 2; u <= 15; u++) {
+    for (let v = 1; v <= 15; v++) {
+      if (ggt(u, v) === 1) kandidaten.push([u, v]);
+    }
+  }
+  const [u, v] = pick(kandidaten);
+  const vz = Math.random() < 0.5 ? 1 : -1;
+  const erst = f * u, zweit = vz * f * v;
+  return {
+    promptHtml:
+      `Klammere so weit wie möglich aus:<br><span style="font-family:Cambria Math,Cambria,serif;font-size:1.3rem">` +
+      `${num(erst)}x ${mitVz(zweit)}</span><br>` +
+      `<span class="progress-note">Gesucht ist die Form „Zahl · (Zahl · x + Zahl)“.</span>`,
+    felder: [
+      {
+        name: "Zahl vor der Klammer", soll: f, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - 1) < 0.0005) return `1 auszuklammern ändert nichts. Gesucht ist der <strong>größte</strong> gemeinsame Teiler von ${num(erst)} und ${num(Math.abs(zweit))}.`;
+          if (Math.abs(val - erst) < 0.0005) return `${num(erst)} teilt die zweite Zahl nicht — ausklammern lässt sich nur, was in <em>beiden</em> steckt.`;
+          if (f % val === 0 && val > 1 && val < f) return `${num(val)} ist ein gemeinsamer Teiler, aber nicht der größte: Auch ${num(f)} teilt beide Zahlen.`;
+          return "";
+        },
+      },
+      {
+        name: "Zahl vor dem x in der Klammer", soll: u, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - erst) < 0.0005) return `${num(erst)} steht vor dem Ausklammern da. In der Klammer bleibt ${num(erst)} : ${num(f)}.`;
+          if (Math.abs(val - erst * f) < 0.0005) return "In der Klammer wird <strong>geteilt</strong>, nicht multipliziert.";
+          return "";
+        },
+      },
+      {
+        name: "Zahl ohne x in der Klammer", soll: vz * v, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - zweit) < 0.0005) return `${num(zweit)} steht vor dem Ausklammern da. In der Klammer bleibt ${num(zweit)} : ${num(f)}.`;
+          if (Math.abs(val + vz * v) < 0.0005) return "Das Vorzeichen bleibt beim Teilen erhalten.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Ausklammern ist die Umkehrung des Ausmultiplizierens: Man sucht, was in <em>beiden</em> Summanden steckt.",
+      `Welche Zahl teilt sowohl ${num(erst)} als auch ${num(Math.abs(zweit))}? Gesucht ist die <strong>größte</strong> solche Zahl.`,
+      "Was in der Klammer bleibt, ergibt sich durch Teilen — Vorzeichen inbegriffen.",
+    ],
+    musterloesungHtml:
+      `① größter gemeinsamer Teiler von ${num(erst)} und ${num(Math.abs(zweit))}: <strong>${num(f)}</strong><br>` +
+      `② Klammerinhalt: ${num(erst)} : ${num(f)} = ${num(u)} und ${num(zweit)} : ${num(f)} = ${num(vz * v)}<br>` +
+      `③ ${num(erst)}x ${mitVz(zweit)} = <strong>${num(f)} · (${num(u)}x ${mitVz(vz * v)})</strong><br>` +
+      `<span class="progress-note">Probe durch Ausmultiplizieren: ${num(f)} · ${num(u)} = ${num(erst)} und ${num(f)} · (${num(vz * v)}) = ${num(zweit)} ✓ &nbsp;· ` +
+      `In der Klammer stehen jetzt ${num(u)} und ${num(Math.abs(v))} — sie haben keinen gemeinsamen Teiler mehr. Daran erkennt man, dass wirklich <em>so weit wie möglich</em> ausgeklammert wurde.</span>`,
+  };
+}
+
+// Aufgabe 8 — der Zahlentrick. Eine Folge von Rechenschritten sieht nach Zauberei aus; als Term
+// geschrieben zeigt sich, warum das Ergebnis immer dasselbe ist.
+function generateAufgabe8() {
+  const a = randInt(2, 12);       // dazuzählen
+  const k = pick([2, 3, 4]);      // vervielfachen
+  const b = randInt(1, a - 1);    // abziehen; kleiner als a, damit das Ergebnis positiv bleibt
+  // Term: ((x + a) · k − b) : k − x = a − b : k. Damit das aufgeht, muss b durch k teilbar sein.
+  const bEcht = b * k;
+  const ergebnis = a - b;
+  const probe = 7;
+  return {
+    promptHtml:
+      `Ein Zahlentrick:<div class="formula-block">` +
+      `Denk dir eine Zahl.<br>Zähle <strong>${num(a)}</strong> dazu.<br>Multipliziere das Ergebnis mit <strong>${num(k)}</strong>.<br>` +
+      `Ziehe <strong>${num(bEcht)}</strong> ab.<br>Teile durch <strong>${num(k)}</strong>.<br>Ziehe die gedachte Zahl wieder ab.</div>` +
+      `<span class="progress-note">Schreibe die Schritte als Term mit x auf und fasse zusammen.</span>`,
+    felder: [
+      {
+        name: "Term nach dem Multiplizieren: Zahl vor dem x", soll: k, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - 1) < 0.0005) return `Beim Multiplizieren mit ${num(k)} wird auch das x mit ${num(k)} multipliziert.`;
+          if (Math.abs(val - k * a) < 0.0005) return `${num(k * a)} ist die Zahl <em>ohne</em> x: ${num(k)} · ${num(a)}.`;
+          return "";
+        },
+      },
+      {
+        name: "Zahl vor dem x am Ende", soll: 0, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - 1) < 0.0005) return `Nach dem Teilen durch ${num(k)} steht wieder ein einzelnes x da — und dann wird die gedachte Zahl abgezogen. Was bleibt übrig?`;
+          if (Math.abs(val - k) < 0.0005) return `Durch ${num(k)} geteilt bleibt vom ${num(k)}x nur noch x — und das fällt gegen die gedachte Zahl weg.`;
+          return "";
+        },
+      },
+      {
+        name: "Das Ergebnis", soll: ergebnis, toleranz: 0.0005,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (a - bEcht)) < 0.0005) return `Die ${num(bEcht)} wird <em>vor</em> dem Teilen abgezogen — sie wird also auch durch ${num(k)} geteilt: ${num(bEcht)} : ${num(k)} = ${num(b)}.`;
+          if (Math.abs(val - a) < 0.0005) return `Die ${num(b)} (das ist ${num(bEcht)} : ${num(k)}) muss noch abgezogen werden.`;
+          if (Math.abs(val - probe) < 0.0005 && probe !== ergebnis) return "Das Ergebnis hängt gar nicht von der gedachten Zahl ab — das ist der Trick.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Nenne die gedachte Zahl x und schreibe jeden Schritt als Term auf.",
+      `Nach den ersten beiden Schritten: ${num(k)} · (x + ${num(a)}) = ${num(k)}x + ${num(k * a)}.`,
+      `Dann ${num(bEcht)} abziehen, durch ${num(k)} teilen — und zuletzt x abziehen.`,
+    ],
+    musterloesungHtml:
+      `① x + ${num(a)}<br>` +
+      `② · ${num(k)}: &nbsp; ${num(k)} · (x + ${num(a)}) = <strong>${num(k)}x + ${num(k * a)}</strong><br>` +
+      `③ − ${num(bEcht)}: &nbsp; ${num(k)}x + ${num(k * a - bEcht)}<br>` +
+      `④ : ${num(k)}: &nbsp; x + ${num(a - b)}<br>` +
+      `⑤ − x: &nbsp; <strong>${num(ergebnis)}</strong><br>` +
+      `<span class="progress-note">Das x fällt heraus — deshalb kommt <em>immer</em> ${num(ergebnis)} heraus, gleichgültig, welche Zahl man sich gedacht hat. ` +
+      `Probe mit ${num(probe)}: (${num(probe)} + ${num(a)}) · ${num(k)} = ${num((probe + a) * k)}, minus ${num(bEcht)} = ${num((probe + a) * k - bEcht)}, ` +
+      `geteilt durch ${num(k)} = ${num(((probe + a) * k - bEcht) / k)}, minus ${num(probe)} = ${num(ergebnis)} ✓</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — Termwert berechnen", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — zusammenfassen und einsetzen", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — binomische Formel rückwärts", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Term aufstellen und auswerten", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Ausmultiplizieren", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — zusammenfassen und einsetzen", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Binomische Formeln", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — binomische Formel rückwärts", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Ausklammern", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Term aufstellen und auswerten", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Der Zahlentrick", generate: generateAufgabe8 },
   ]);
 }
 

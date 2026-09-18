@@ -862,6 +862,11 @@ function generateAufgabe1() {
         return `Du hast die ${num(Math.abs(b))} übersehen. Erst muss sie von beiden Seiten weg, dann wird geteilt.`;
       return `Zwei Schritte: erst ${b > 0 ? "− " : "+ "}${num(Math.abs(b))} auf beiden Seiten, dann : ${num(a)}.`;
     },
+    tipps: [
+      "Was auf einer Seite geschieht, muss auch auf der anderen geschehen — die Waage bleibt im Gleichgewicht.",
+      `Erster Schritt: auf beiden Seiten ${b > 0 ? "−" : "+"} ${num(Math.abs(b))}. Dann steht links nur noch ${num(a)}x.`,
+      `Zweiter Schritt: beide Seiten : ${num(a)}.`,
+    ],
     musterloesungHtml:
       `<strong>1. Zahlen nach rechts:</strong> ${termText(a, b)} = ${num(c)} &nbsp;|&nbsp; ${b > 0 ? "−" : "+"} ${num(Math.abs(b))}<br>` +
       `&nbsp;&nbsp;&nbsp;&nbsp;${faktor(`${num(a)}x = ${num(c - b)}`)}<br>` +
@@ -916,6 +921,11 @@ function generateAufgabe2() {
         return `${num(mm)} ist die rechte Seite nach dem Sortieren: ${faktor(`${num(kk)}x = ${num(mm)}`)}. Es fehlt die Division durch ${num(kk)}.`;
       return `Sortiere zuerst: ${num(c)}x auf beiden Seiten abziehen, dann ${b > 0 ? num(b) + " abziehen" : num(-b) + " addieren"}. Danach steht ${faktor(`${num(kk)}x = ${num(mm)}`)}.`;
     },
+    tipps: [
+      "Wenn auf beiden Seiten x steht, wird zuerst <em>sortiert</em>: alle x auf eine Seite, alle Zahlen auf die andere.",
+      `${num(c)}x auf beiden Seiten abziehen — links bleiben ${num(kk)}x.`,
+      `Dann die Zahlen: rechts bleibt ${num(mm)}. Zum Schluss durch ${num(kk)} teilen.`,
+    ],
     musterloesungHtml:
       `<strong>1. x-Terme nach links:</strong> &nbsp;|&nbsp; − ${num(c)}x<br>` +
       `&nbsp;&nbsp;&nbsp;&nbsp;${termText(kk, b)} = ${num(d)}<br>` +
@@ -976,6 +986,11 @@ function generateAufgabe3() {
         return `${num(mm)} ist die rechte Seite nach dem Sortieren. Es fehlt noch die Division durch ${num(kk)}.`;
       return `Löse zuerst die Klammer auf: ${faktor(`${num(a)} · (x ${b > 0 ? "+" : "−"} ${num(Math.abs(b))}) = ${num(a)}x ${a * b > 0 ? "+" : "−"} ${num(Math.abs(a * b))}`)}.`;
     },
+    tipps: [
+      "Solange die Klammer steht, lässt sich nicht sortieren — sie muss zuerst weg.",
+      `Ausmultiplizieren heißt: <strong>jeden</strong> Summanden der Klammer mit ${num(a)} multiplizieren.`,
+      "Danach ist es eine gewöhnliche Gleichung mit x auf beiden Seiten.",
+    ],
     musterloesungHtml:
       `<strong>1. Klammer ausmultiplizieren:</strong> ${faktor(`${num(a)} · (x ${b > 0 ? "+" : "−"} ${num(Math.abs(b))})`)} = ${termText(a, a * b)}<br>` +
       `&nbsp;&nbsp;&nbsp;&nbsp;${termText(a, a * b)} = ${termText(c, d)}<br>` +
@@ -1072,6 +1087,11 @@ function generateAufgabe4() {
         return `${num(diffG)} ist der Unterschied der festen Beträge. Nach dem Sortieren steht ${faktor(`${num(diffP)}x = ${num(diffG)}`)} — es fehlt die Division durch ${num(diffP)}.`;
       return `Nenne die gesuchte Größe x, schreibe beide Seiten als Term auf und setze sie gleich: ${kontext.aufstellen(k)}.`;
     },
+    tipps: [
+      "Gib der gesuchten Größe zuerst einen Namen: x.",
+      "Schreibe dann beide Vorgänge als Term auf — jeder für sich, mit demselben x.",
+      `Gleichgesetzt ergibt das: ${kontext.aufstellen(k)}. Jetzt ist es eine gewöhnliche Gleichung.`,
+    ],
     musterloesungHtml:
       `<strong>1. Benennen:</strong> x ist ${kontext.was}.<br>` +
       `<strong>2. Gleichung aufstellen:</strong> ${kontext.aufstellen(k)}<br>` +
@@ -1084,12 +1104,290 @@ function generateAufgabe4() {
   };
 }
 
+function randInt(min, max) {
+  return min + Math.floor(Math.random() * (max - min + 1));
+}
+
+// Aufgabe 2 — die Probe. Sie steht am Ende jedes Lösungswegs und wird doch am häufigsten
+// übersprungen; hier ist sie die Aufgabe selbst.
+function generateAufgabe2b() {
+  const a = randInt(2, 9);
+  const b = randInt(-12, 12) || 5;
+  const x = randInt(-6, 10) || 3;
+  const c = a * x + b;
+  // Mal ist die vorgeschlagene Zahl die Lösung, mal knapp daneben — beides muss vorkommen.
+  const stimmt = Math.random() < 0.5;
+  const kandidat = stimmt ? x : x + pick([-3, -2, -1, 1, 2, 3]);
+  const links = a * kandidat + b;
+  return {
+    promptHtml:
+      `Gegeben ist die Gleichung<br><span style="font-family:Cambria Math,Cambria,serif;font-size:1.3rem">` +
+      `${termText(a, b)} = ${num(c)}</span><br>` +
+      `Jemand behauptet, <strong>x = ${num(kandidat)}</strong> sei eine Lösung. Prüfe das nach.<br>` +
+      `<span class="progress-note">Antworte bei der letzten Frage mit 1 für „ja“ oder 2 für „nein“.</span>`,
+    felder: [
+      {
+        name: `Wert der linken Seite für x = ${num(kandidat)}`, soll: links, toleranz: 0.001,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - c) < 0.001) return "Das ist die <strong>rechte</strong> Seite. Links muss der vorgeschlagene Wert eingesetzt und ausgerechnet werden.";
+          if (Math.abs(val - (a + kandidat + b)) < 0.001) return `${num(a)}x bedeutet ${num(a)} <strong>mal</strong> x, nicht ${num(a)} plus x.`;
+          if (Math.abs(val - a * kandidat) < 0.001) return `Die ${num(Math.abs(b))} gehört noch dazu.`;
+          return "";
+        },
+      },
+      {
+        name: "Wert der rechten Seite", soll: c, toleranz: 0.001,
+        hinweis: (roh, val) => (Math.abs(val - links) < 0.001
+          ? "Das ist der Wert der linken Seite. Rechts steht die Zahl unverändert."
+          : ""),
+      },
+      {
+        name: "Ist x = " + num(kandidat) + " eine Lösung? (1 = ja, 2 = nein)", soll: stimmt ? 1 : 2, toleranz: 0.01,
+        hinweis: (roh, val) =>
+          Math.abs(val - (stimmt ? 2 : 1)) < 0.01
+            ? `Vergleiche die beiden Werte: links ${num(links)}, rechts ${num(c)}. ` +
+              (stimmt ? "Sie stimmen überein — die Gleichung ist erfüllt." : "Sie sind verschieden — die Gleichung ist also nicht erfüllt.")
+            : "",
+      },
+    ],
+    tipps: [
+      "Eine Probe heißt: die Zahl für x einsetzen und beide Seiten getrennt ausrechnen.",
+      `Links: ${num(a)} · ${num(kandidat)} ${b > 0 ? "+" : "−"} ${num(Math.abs(b))}.`,
+      "Nur wenn beide Seiten denselben Wert ergeben, ist die Zahl eine Lösung.",
+    ],
+    musterloesungHtml:
+      `① linke Seite: ${num(a)} · ${num(kandidat)} ${b > 0 ? "+" : "−"} ${num(Math.abs(b))} = ${num(a * kandidat)} ${b > 0 ? "+" : "−"} ${num(Math.abs(b))} = <strong>${num(links)}</strong><br>` +
+      `② rechte Seite: <strong>${num(c)}</strong><br>` +
+      `<span class="du-urteil ${stimmt ? "ja" : "nein"}">${stimmt
+        ? `Beide Seiten ergeben ${num(links)} — x = ${num(kandidat)} ist eine Lösung (1).`
+        : `${num(links)} ≠ ${num(c)} — x = ${num(kandidat)} ist keine Lösung (2). Richtig wäre x = ${num(x)}.`}</span><br>` +
+      `<span class="progress-note">Die Probe braucht keinen Lösungsweg: Sie prüft nur, ob eine Zahl passt. ` +
+      `Deshalb findet sie auch Rechenfehler, die beim Umformen entstanden sind — und kostet nur zwei Zeilen.</span>`,
+  };
+}
+
+// Aufgabe 4 — eine Gleichung mit Nenner. Der erste Schritt ist ein anderer als sonst: Mit dem
+// Nenner wird multipliziert, und zwar auf beiden Seiten.
+function generateAufgabe4b() {
+  // Zwei Bauformen: (x + b) : n = c und x : n + b = c. In beiden geht die Lösung glatt auf.
+  const klammer = Math.random() < 0.5;
+  const n = randInt(2, 9);
+  const b = randInt(-10, 10) || 4;
+  // Erzeugt wird vom Zwischenwert her: So bleiben sowohl die angezeigte Gleichung als auch
+  // beide Antworten ganze Zahlen — bei „(x + b) : n = c“ ginge x + b sonst nicht auf.
+  let c = randInt(-8, 12) || 5;
+  let zwischen = klammer ? c * n : c - b;
+  let x = klammer ? zwischen - b : zwischen * n;
+  if (x === 0) { c += 1; zwischen = klammer ? c * n : c - b; x = klammer ? zwischen - b : zwischen * n; }
+  return {
+    promptHtml:
+      `Löse die Gleichung:<br><span style="font-family:Cambria Math,Cambria,serif;font-size:1.3rem">` +
+      (klammer
+        ? `(x ${b > 0 ? "+" : "−"} ${num(Math.abs(b))}) : ${num(n)} = ${num(c)}`
+        : `x : ${num(n)} ${b > 0 ? "+" : "−"} ${num(Math.abs(b))} = ${num(c)}`) +
+      `</span>`,
+    felder: [
+      {
+        name: klammer ? `Wert der Klammer (x ${b > 0 ? "+" : "−"} ${num(Math.abs(b))})` : "Wert von x : " + num(n),
+        soll: zwischen, toleranz: 0.001,
+        hinweis: (roh, val) => {
+          if (klammer && Math.abs(val - c / n) < 0.001) return `Du hast noch einmal durch ${num(n)} geteilt. Um die Division rückgängig zu machen, wird <strong>multipliziert</strong>.`;
+          if (!klammer && Math.abs(val - (c + b)) < 0.001) return `Beim Hinüberbringen dreht sich das Vorzeichen um: ${num(c)} ${b > 0 ? "−" : "+"} ${num(Math.abs(b))}.`;
+          if (Math.abs(val - c) < 0.001) return klammer
+            ? `${num(c)} steht rechts. Links steht die Klammer <em>geteilt</em> durch ${num(n)} — beide Seiten müssen erst mit ${num(n)} multipliziert werden.`
+            : `${num(c)} ist die ganze rechte Seite. Die ${num(Math.abs(b))} muss noch weg.`;
+          return "";
+        },
+      },
+      {
+        name: "x", soll: x, toleranz: 0.001,
+        hinweis: (roh, val) => {
+          if (klammer && Math.abs(val - (zwischen + b)) < 0.001) return "Beim Hinüberbringen dreht sich das Vorzeichen um.";
+          if (!klammer && Math.abs(val - zwischen / n) < 0.001) return `Du hast noch einmal geteilt. Aus x : ${num(n)} = ${num(zwischen)} folgt x durch <strong>Multiplizieren</strong>.`;
+          if (Math.abs(val - zwischen) < 0.001) return "Das ist der Zwischenwert aus dem ersten Schritt — ein Schritt fehlt noch.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      klammer
+        ? `Die ganze linke Seite ist durch ${num(n)} geteilt. Das macht man rückgängig, indem man <strong>beide</strong> Seiten mit ${num(n)} multipliziert.`
+        : `Nur das x ist durch ${num(n)} geteilt. Bringe zuerst die ${num(Math.abs(b))} weg.`,
+      klammer
+        ? `Danach steht da: x ${b > 0 ? "+" : "−"} ${num(Math.abs(b))} = ${num(zwischen)}.`
+        : `Danach steht da: x : ${num(n)} = ${num(zwischen)}.`,
+      klammer ? "Zum Schluss die Zahl auf die andere Seite bringen." : `Zum Schluss mit ${num(n)} multiplizieren.`,
+    ],
+    musterloesungHtml: klammer
+      ? `① beide Seiten · ${num(n)}: &nbsp; x ${b > 0 ? "+" : "−"} ${num(Math.abs(b))} = ${num(c)} · ${num(n)} = <strong>${num(zwischen)}</strong><br>` +
+        `② beide Seiten ${b > 0 ? "−" : "+"} ${num(Math.abs(b))}: &nbsp; <strong>x = ${num(x)}</strong><br>` +
+        `<em>Probe:</em> (${num(x)} ${b > 0 ? "+" : "−"} ${num(Math.abs(b))}) : ${num(n)} = ${num(zwischen)} : ${num(n)} = ${num(c)} ✓`
+      : `① beide Seiten ${b > 0 ? "−" : "+"} ${num(Math.abs(b))}: &nbsp; x : ${num(n)} = <strong>${num(zwischen)}</strong><br>` +
+        `② beide Seiten · ${num(n)}: &nbsp; <strong>x = ${num(x)}</strong><br>` +
+        `<em>Probe:</em> ${num(x)} : ${num(n)} ${b > 0 ? "+" : "−"} ${num(Math.abs(b))} = ${num(zwischen)} ${b > 0 ? "+" : "−"} ${num(Math.abs(b))} = ${num(c)} ✓`,
+  };
+}
+
+// Aufgabe 6 — die drei Fälle: genau eine Lösung, keine Lösung, alle Zahlen. Sie unterscheiden
+// sich erst, nachdem sortiert ist — und genau dort wird hier hingeschaut.
+function generateAufgabe6() {
+  const fall = pick(["eine", "keine", "alle"]);
+  // Bei „keine“ und „alle“ steht rechts dieselbe Zahl von x wie links — aber in einer Klammer
+  // versteckt. Ohne diese Verpackung wäre die Antwort schon an der Schreibweise abzulesen,
+  // und die Aufgabe verlöre ihren Sinn.
+  const versteckt = fall !== "eine";
+  const k = versteckt ? randInt(2, 4) : 1;
+  const m = versteckt ? randInt(2, 4) : 0;
+  const t = versteckt ? (randInt(-5, 5) || 3) : 0;
+  const a = versteckt ? k * m : randInt(2, 9);
+  const b = versteckt
+    ? (fall === "alle" ? k * t : k * t + pick([-7, -5, -3, -2, 2, 3, 5, 7]))
+    : (randInt(-9, 9) || 3);
+  const c = versteckt ? a : pick([1, 2, 3, 4, 5, 6, 7, 8].filter((v) => v !== a));
+  // Im Normalfall wird d so gewählt, dass die Division am Ende glatt aufgeht.
+  const d = versteckt ? k * t : b + (a - c) * randInt(-4, 5);
+  const kk = a - c;          // Zahl vor x nach dem Sortieren
+  const mm = d - b;          // Zahl auf der rechten Seite nach dem Sortieren
+  const kennziffer = fall === "eine" ? 1 : fall === "keine" ? 2 : 3;
+  const rechtsText = versteckt
+    ? `${num(k)} · (${termText(m, t)})`
+    : termText(c, d);
+  return {
+    promptHtml:
+      `Löse die Gleichung:<br><span style="font-family:Cambria Math,Cambria,serif;font-size:1.3rem">` +
+      `${termText(a, b)} = ${rechtsText}</span><br>` +
+      `<span class="progress-note">Sortiere zuerst: alle x nach links, alle Zahlen nach rechts. ` +
+      `Antworte zuletzt mit 1 (genau eine Lösung), 2 (keine Lösung) oder 3 (alle Zahlen).</span>`,
+    felder: [
+      {
+        name: "Zahl vor x nach dem Sortieren", soll: kk, toleranz: 0.001,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (a + c)) < 0.001) return `Die x-Terme werden <strong>subtrahiert</strong>: ${num(a)} − ${num(c)}.`;
+          if (Math.abs(val - a) < 0.001) return `${num(a)} steht nur links. Rechts stehen ${num(c)}x — die müssen abgezogen werden.`;
+          return "";
+        },
+      },
+      {
+        name: "Zahl auf der rechten Seite nach dem Sortieren", soll: mm, toleranz: 0.001,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - (d + b)) < 0.001) return `Beim Hinüberbringen dreht sich das Vorzeichen um: ${num(d)} − ${num(b)}.`;
+          if (Math.abs(val - d) < 0.001) return `${num(d)} steht schon rechts. Die ${num(Math.abs(b))} von links kommt noch dazu.`;
+          return "";
+        },
+      },
+      {
+        name: "Wie viele Lösungen? (1 = genau eine, 2 = keine, 3 = alle Zahlen)", soll: kennziffer, toleranz: 0.01,
+        hinweis: (roh, val) => {
+          if (kk !== 0 && Math.abs(val - 2) < 0.01) return `Vor dem x steht ${num(kk)} — nicht 0. Dann lässt sich die Gleichung ganz normal durch ${num(kk)} teilen.`;
+          if (kk !== 0 && Math.abs(val - 3) < 0.01) return `„Alle Zahlen“ gilt nur, wenn nach dem Sortieren 0 = 0 dasteht. Hier bleibt ${num(kk)}x = ${num(mm)}.`;
+          if (kk === 0 && mm !== 0 && Math.abs(val - 1) < 0.01) return `Nach dem Sortieren steht da 0 = ${num(mm)}. Für <em>kein</em> x wird das wahr.`;
+          if (kk === 0 && mm !== 0 && Math.abs(val - 3) < 0.01) return `Nach dem Sortieren steht da 0 = ${num(mm)} — eine falsche Aussage, und zwar für jedes x.`;
+          if (kk === 0 && mm === 0 && Math.abs(val - 1) < 0.01) return "Nach dem Sortieren steht da 0 = 0. Das ist für <em>jedes</em> x wahr, nicht nur für eines.";
+          if (kk === 0 && mm === 0 && Math.abs(val - 2) < 0.01) return "Nach dem Sortieren steht da 0 = 0 — eine wahre Aussage. Also gibt es Lösungen, und zwar alle.";
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      versteckt
+        ? "Löse zuerst die Klammer auf — erst danach lässt sich vergleichen, wie viele x auf jeder Seite stehen."
+        : "Die drei Fälle unterscheiden sich erst <em>nach</em> dem Sortieren — vorher sieht man ihnen nichts an.",
+      `Alle x nach links: ${num(a)}x − ${num(c)}x. Alle Zahlen nach rechts: ${num(d)} − ${num(b)}.`,
+      "Bleibt vor dem x eine Zahl ungleich 0, gibt es genau eine Lösung. Bleibt 0 = irgendetwas, entscheidet die rechte Seite: 0 = 0 heißt „alle Zahlen“, 0 = etwas anderes heißt „keine Lösung“.",
+    ],
+    musterloesungHtml:
+      (versteckt
+        ? `① Klammer auflösen: ${num(k)} · (${termText(m, t)}) = ${termText(c, d)}<br>`
+        : "") +
+      `${versteckt ? "②" : "①"} Sortieren: ${termText(a, b)} = ${termText(c, d)} &nbsp;|&nbsp; ${c > 0 ? "−" : "+"} ${num(Math.abs(c))}x, ${b > 0 ? "−" : "+"} ${num(Math.abs(b))}<br>` +
+      `&nbsp;&nbsp;&nbsp;${faktor(kk === 0 ? `0 = ${num(mm)}` : `${num(kk)}x = ${num(mm)}`)}<br>` +
+      `${versteckt ? "③" : "②"} ${kennziffer === 1
+        ? `Vor dem x steht ${num(kk)} ≠ 0 ⇒ teilen: <strong>x = ${num(mm)} : ${num(kk)} = ${num(mm / kk)}</strong>, also genau <strong>eine</strong> Lösung (1).`
+        : kennziffer === 2
+          ? `Es steht <strong>0 = ${num(mm)}</strong> da — eine falsche Aussage, gleichgültig welches x man einsetzt. ⇒ <strong>keine Lösung</strong> (2), L = { }.`
+          : `Es steht <strong>0 = 0</strong> da — eine wahre Aussage, gleichgültig welches x man einsetzt. ⇒ <strong>alle Zahlen</strong> (3), L = ℚ.`}<br>` +
+      `<span class="progress-note">${kennziffer === 1
+        ? "Der Normalfall. Die beiden Sonderfälle entstehen nur, wenn auf beiden Seiten gleich viele x stehen."
+        : "Hier stehen links und rechts gleich viele x — sie heben sich beim Sortieren vollständig auf. Übrig bleibt eine Aussage ganz ohne x, und die ist entweder immer wahr oder immer falsch."}</span>`,
+  };
+}
+
+// Aufgabe 8 — eine Altersaufgabe. Sie führt auf eine Gleichung, in der x auf beiden Seiten und
+// in einer Klammer steht; das Aufstellen ist hier schwerer als das Lösen.
+function generateAufgabe8() {
+  // Konstruktiv: Aus V = a·S und V + n = b·(S + n) folgt S = n·(b − 1) : (a − b).
+  const kandidaten = [];
+  for (let a = 3; a <= 8; a++) {
+    for (let b = 2; b < a; b++) {
+      for (let n = 2; n <= 14; n++) {
+        const S = (n * (b - 1)) / (a - b);
+        if (!Number.isInteger(S) || S < 4 || S > 16) continue;
+        const V = a * S;
+        if (V > 60 || V - S < 18) continue;   // ein glaubwürdiger Altersabstand
+        kandidaten.push({ a, b, n, S, V });
+      }
+    }
+  }
+  const c = pick(kandidaten);
+  return {
+    promptHtml:
+      `Ein Vater ist heute <strong>${num(c.a)}-mal</strong> so alt wie sein Sohn. ` +
+      `In <strong>${num(c.n)} Jahren</strong> wird er nur noch <strong>${num(c.b)}-mal</strong> so alt sein.`,
+    felder: [
+      {
+        name: "Wie alt ist der Sohn heute?", soll: c.S, einheit: "Jahre", toleranz: 0.001,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - c.V) < 0.001) return "Das ist das Alter des <strong>Vaters</strong>.";
+          if (Math.abs(val - c.n) < 0.001) return `${num(c.n)} ist die Zahl der Jahre, die vergehen.`;
+          if (Math.abs(val - (c.S + c.n)) < 0.001) return `So alt ist der Sohn erst in ${num(c.n)} Jahren.`;
+          return "";
+        },
+      },
+      {
+        name: "Wie alt ist der Vater heute?", soll: c.V, einheit: "Jahre", toleranz: 0.001,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - c.S) < 0.001) return "Das ist das Alter des <strong>Sohnes</strong>.";
+          if (Math.abs(val - (c.S + c.a)) < 0.001) return `${num(c.a)}-mal so alt heißt <strong>mal</strong> ${num(c.a)}, nicht plus ${num(c.a)}.`;
+          if (Math.abs(val - c.b * c.S) < 0.001) return `Heute ist er ${num(c.a)}-mal so alt; die ${num(c.b)} gilt erst in ${num(c.n)} Jahren.`;
+          return "";
+        },
+      },
+      {
+        name: `Wie alt ist der Vater in ${num(c.n)} Jahren?`, soll: c.V + c.n, einheit: "Jahre", toleranz: 0.001,
+        hinweis: (roh, val) => {
+          if (Math.abs(val - c.V) < 0.001) return `Die ${num(c.n)} Jahre kommen noch dazu.`;
+          if (Math.abs(val - (c.V + c.b * c.n)) < 0.001) return `Es vergehen für beide gleich viele Jahre — nur ${num(c.n)}, nicht ${num(c.b)} · ${num(c.n)}.`;
+          return "";
+        },
+      },
+    ],
+    tipps: [
+      "Nenne das gesuchte Alter des Sohnes x. Dann ist der Vater heute " + num(c.a) + "x Jahre alt.",
+      `In ${num(c.n)} Jahren: Sohn x + ${num(c.n)}, Vater ${num(c.a)}x + ${num(c.n)}. Und dann soll gelten: Vater = ${num(c.b)} · (Sohn).`,
+      `Die Gleichung lautet also ${num(c.a)}x + ${num(c.n)} = ${num(c.b)} · (x + ${num(c.n)}).`,
+    ],
+    musterloesungHtml:
+      `① Ansatz: Sohn heute x, Vater heute ${num(c.a)}x.<br>` +
+      `&nbsp;&nbsp;&nbsp;In ${num(c.n)} Jahren: ${faktor(`${num(c.a)}x + ${num(c.n)} = ${num(c.b)} · (x + ${num(c.n)})`)}<br>` +
+      `② Klammer auflösen: ${num(c.a)}x + ${num(c.n)} = ${num(c.b)}x + ${num(c.b * c.n)}<br>` +
+      `③ Sortieren: ${faktor(`${num(c.a - c.b)}x = ${num(c.b * c.n - c.n)}`)} ⇒ <strong>x = ${num(c.S)}</strong><br>` +
+      `④ Also: Sohn <strong>${num(c.S)}</strong>, Vater <strong>${num(c.V)}</strong>, Vater in ${num(c.n)} Jahren <strong>${num(c.V + c.n)}</strong><br>` +
+      `<em>Probe:</em> ${num(c.V)} = ${num(c.a)} · ${num(c.S)} ✓ &nbsp;und&nbsp; ${num(c.V + c.n)} = ${num(c.b)} · ${num(c.S + c.n)} ✓<br>` +
+      `<span class="progress-note">Der Altersabstand bleibt immer gleich (${num(c.V - c.S)} Jahre) — das Vielfache nicht. ` +
+      `Deshalb wird aus „${num(c.a)}-mal so alt“ mit den Jahren „${num(c.b)}-mal so alt“, und irgendwann fast „gleich alt“.</span>`,
+  };
+}
+
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
     { schwierigkeit: "einfach", titel: "Aufgabe 1 — zwei Schritte", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — x auf beiden Seiten", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — mit Klammer", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — Gleichung aufstellen", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Die Probe", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — x auf beiden Seiten", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Gleichung mit Nenner", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — mit Klammer", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Eine, keine oder alle?", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Gleichung aufstellen", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Vater und Sohn", generate: generateAufgabe8 },
   ]);
 }
 
