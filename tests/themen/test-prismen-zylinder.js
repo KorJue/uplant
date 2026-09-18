@@ -183,6 +183,10 @@ async function aufgaben(page) {
       if (!m) return null;
       const r = Number(m[1]), h = Number(m[2]);
       const G = Math.PI * r * r, M = 2 * Math.PI * r * h;
+      // Bei h = r fiele der Fehlerwert 2G + π·r·h mit G + M zusammen, bei h = 2r mit M allein.
+      // Der Generator schließt beide Höhen aus, damit jeder Hinweis eindeutig bleibt.
+      pruefe(h !== r && h !== 2 * r,
+        `A4: bei r = ${r} cm und h = ${h} cm fallen zwei Fehlerwerte zusammen — „${frage}“`);
       return {
         felder: [G, 2 * G + M],
         toleranz: 0.01,

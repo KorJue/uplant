@@ -820,7 +820,10 @@ function generateAufgabe2b() {
 // Rechteck; wer das sieht, braucht die Formel nicht auswendig zu lernen.
 function generateAufgabe4b() {
   const r = randInt(3, 12);
-  const h = randInt(3, 15);
+  // h = r und h = 2r fallen heraus: Dort trägt der Fehler „halber Umfang im Mantel“ (2G + π·r·h)
+  // dieselbe Zahl wie „Grundfläche nur einmal gezählt“ (G + M) beziehungsweise wie „nur der
+  // Mantel“ (M) — die Hinweise ließen sich dann nicht mehr auseinanderhalten.
+  const h = pick([3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].filter((k) => k !== r && k !== 2 * r));
   const G = Math.PI * r * r;
   const M = 2 * Math.PI * r * h;
   const O = 2 * G + M;
