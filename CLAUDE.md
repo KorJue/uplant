@@ -395,6 +395,15 @@ Zwei Kleinigkeiten der Helfer, die man einmal wissen muss:
   nicht `"halbe</em> Periode"`.
 * **Zahlen, die die Prüfung braucht, gehören in den Aufgabentext** — nicht nur
   in eine Feldbeschriftung. `wuerfle()` liest `.aufgabe-prompt`.
+* **Gute Schreibweise lässt Teile weg — der reguläre Ausdruck muss das
+  aushalten.** Eine Seite schreibt `x` statt `1x`, `−x` statt `−1x` und
+  `h(x) = −5x` statt `−5x + 0`. Wer den Term starr als
+  `(-?\d*)x ([+-]) (\d+)` liest, bekommt eine Prüfung, die nur **manchmal**
+  fehlschlägt — nämlich wenn der Sonderfall gezogen wird. Solche Muster gehören
+  gegen alle Randfälle einzeln geprüft, bevor man sie einbaut; ein
+  Fünfzeiler mit `node -e` genügt dafür. (Gefunden in
+  `test-lineare-funktionen.js`, A7: zwei von 3348 Prüfungen, nach vielen
+  grünen Läufen.)
 * **Streuungsschranken werden gemessen, nicht geschätzt.** `ohneKollision()`
   siebt einen guten Teil der Liste weg, und bei gemischten Zweigen (erst Fall
   wählen, dann Kandidat) liegt jede Rechnung auf dem Papier zu hoch. Der Wert
