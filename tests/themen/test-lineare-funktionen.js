@@ -232,13 +232,17 @@ async function aufgaben(page) {
     nr: 7, name: "A7 Schnittpunkt", runden: 30, mindestensVerschieden: 26,
     deute: (frage) => {
       // Die Seite schreibt „x“ statt „1x“ und „−x“ statt „−1x“ — beides muss gelesen werden.
-      const m = minus(frage).match(/g\(x\) = (-?\d*)x ([+-]) (\d+) und h\(x\) = (-?\d*)x ([+-]) (\d+)/);
+      // Und bei b = 0 lässt sie das konstante Glied ganz weg („h(x) = −5x“), denn „−5x + 0“
+      // schreibt niemand. Das kommt selten vor; steht es nicht im Muster, fällt die Prüfung
+      // nur hin und wieder aus, und zwar an einer Seite, an der nichts kaputt ist.
+      const m = minus(frage).match(/g\(x\) = (-?\d*)x(?: ([+-]) (\d+))? und h\(x\) = (-?\d*)x(?: ([+-]) (\d+))?/);
       if (!m) return null;
       const koeff = (t) => (t === "" ? 1 : t === "-" ? -1 : Number(t));
+      const glied = (vz, zahl) => (vz ? (vz === "-" ? -1 : 1) * Number(zahl) : 0);
       const m1 = koeff(m[1]);
-      const b1 = (m[2] === "-" ? -1 : 1) * Number(m[3]);
+      const b1 = glied(m[2], m[3]);
       const m2 = koeff(m[4]);
-      const b2 = (m[5] === "-" ? -1 : 1) * Number(m[6]);
+      const b2 = glied(m[5], m[6]);
       const xs = (b2 - b1) / (m1 - m2);
       const ys = m1 * xs + b1;
       return {
