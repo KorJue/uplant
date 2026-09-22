@@ -53,6 +53,14 @@ gedrehtes Teil auf halbem Weg aus dem Bild und sieht aus, als wäre es
 zerschnitten. Die Breite steht fest, die Höhe ergibt sich aus dem Inhalt — sonst
 springt die Zeichnung beim Ziehen am Regler seitlich weg.
 
+**Beschriftungen kollidieren, und zwar zuverlässig.** Zwei Maße auf halber Höhe
+liegen übereinander; ein Maß am linken Rand wird abgeschnitten, weil `mass()`
+mittig ausrichtet. Beides fällt in keiner Prüfung auf — nur im Bild. Deshalb
+gehört zu jeder neuen Zeichnung ein **Blick auf einen Screenshot**, und zwar an
+mehreren Reglerstellungen (Anfang, Mitte, Ende der Bewegung; Regler an beiden
+Anschlägen). Ausweichen durch Versatz in Bildpunkten, und der Grund gehört als
+Kommentar daneben, sonst wird er später „aufgeräumt".
+
 ## 3. Gerechnet wird mit Reglerwerten, nie mit Bildschirmkoordinaten
 
 Aus Koordinaten käme `15.749999999999998` heraus, und die Bilanz behauptete dann
@@ -64,7 +72,65 @@ als „−0" erscheint. Für „=" gegen „≈" gibt es `zeichen()`: Entscheide
 die Anzeige den Wert mit der gewählten Stellenzahl genau trifft — nicht, ob er
 ganzzahlig ist.
 
+### Regler lügen nicht
+
+Wo ein Reglerwert eingeschränkt werden muss, wird er über
+`begrenzt(id, wert, min, max)` begrenzt — und das **schreibt den Wert in den
+Regler zurück**. Ein Regler darf nie auf 5 stehen, während mit 4 gerechnet wird.
+
+`test-alle-themen.js` prüft das für jeden Regler jeder Grundwissen-Seite: Springt
+ein Regler über einen Wert hinweg, muss das Sprungziel selbst einstellbar sein
+und **dasselbe Bild** ergeben, als hätte man es direkt gewählt. Und derselbe
+Reglerwert muss zweimal dieselbe Anzeige liefern.
+
+Solche Grenzen sind oft **geometrisch notwendig**, nicht kosmetisch: Beim
+Mittellinien-Widget der Flächeninhalte klappt das Abtrennen unten nur, solange
+beide Schenkel nach innen fallen (`0 ≤ Versatz ≤ a − c`); bei negativem Versatz
+läge das überstehende Stück oben, und die Zeichnung zählte ein Stück doppelt.
+Wo eine Grenze aus der Sache folgt, ist es oft besser, den Regler einen
+**Anteil** einstellen zu lassen statt einer absoluten Länge — dann trifft er den
+gültigen Bereich immer genau, bei jeder Figur.
+
 ## 4. Aufbau einer Seite
+
+### Der Rahmen
+
+Jede Lernseite trägt denselben Rahmen — Brotkrumenpfad, Kopf, `main`, Fußzeile:
+
+```html
+<nav class="breadcrumb">…<span class="sep">/</span>… aktueller Titel</nav>
+<header class="page-header"><h1>…</h1><p>Ein Selbstlernpfad: …</p></header>
+<main class="menu-main"> … die Abschnitte … </main>
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu …</a></p>
+  <p><a href="…/haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+```
+
+Der Haftungsausschluss steht auf **jeder** Seite; die Brotkrumen enden ohne
+Verweis beim eigenen Titel.
+
+### Eine neue Seite anmelden
+
+Eine Seite, die in keinem Menü steht, findet niemand. Sie gehört in die
+`index.html` des übergeordneten Verzeichnisses als Karte:
+
+```html
+<a class="menu-card" data-section="klasse-8" href="neue-seite.html" hidden>
+  <h2>7. Titel<br><small class="menu-tiny">Untertitel</small></h2>
+</a>
+```
+
+(Der `menu-tiny`-Untertitel ist freiwillig und lohnt sich, wo der Titel allein
+nicht verrät, was auf der Seite passiert.)
+
+`hidden` und `data-section` sind beide **nötig**: `assets/access-gate.js` blendet
+nur die Karten ein, deren Bereich auf der Startseite freigeschaltet wurde. Fehlt
+`data-section`, bleibt die Karte für immer unsichtbar; fehlt `hidden`, ist sie
+schon vor der Freischaltung zu sehen. (Das ist eine Navigationshilfe, kein
+Zugriffsschutz — jede Seite bleibt über ihre Adresse erreichbar.)
+
+### Die Abschnitte
 
 ```html
 <section class="card" id="sec-…">      <!-- ein Erarbeitungsschritt -->
@@ -128,6 +194,11 @@ Vier Stufen (`einfach`, `mittel`, `schwierig`, `komplex`). Jede Aufgabe ist
 `hinweis(roh, wert)`, `tipps[]` und `musterloesungHtml`. Der vollständige
 Vertrag steht als Kommentar über `mountUebungsaufgaben()`.
 
+**Der Grundwissen-Bestand:** acht Aufgaben je Seite, **zwei auf jeder Stufe**.
+Die Klasse-8-Seiten sind freier gebaut; die Flächeninhalte haben zwölf, je eine
+Figur pro Stufe. Wie viele es sind, liest die Prüfung aus der Seite selbst
+(`aufgabenProReiter()`) — Hauptsache, alle Stufen sind gleich besetzt.
+
 Verbindlich:
 
 * **Konstruktiv würfeln, nie verwerfen.** Kandidatenlisten werden **vorher**
@@ -146,6 +217,18 @@ Verbindlich:
 * **Musterlösung immer**, mit dem gerechneten Weg in Schritten — und bei
   Umkehraufgaben mit einer **Probe**.
 
+### Figuren in der Aufgabenstellung
+
+`promptHtml` wird über `innerHTML` gesetzt, **eingebettetes SVG funktioniert
+also**. Die Flächeninhalte nutzen das für alle Aufgaben der Stufe *einfach*: Die
+Maße stehen an der Figur statt im Text, genau wie im Buch.
+
+Wo das geschieht, gilt der oberste Grundsatz doppelt — die Zeichnung muss die
+Zahlen tragen, mit denen die Musterlösung rechnet. Die Prüfung liest sie deshalb
+über `liesRoh` aus dem SVG zurück (statt aus dem Text) und rechnet damit nach;
+Vorbild ist `figurMasse()` in `test-flaecheninhalte.js`. Eine Figur, die 5 cm
+zeichnet und 6 cm meint, fiele sonst niemandem auf.
+
 ## 6. Prüfungen
 
 `tests/README.md` beschreibt Aufbau und Werkzeuge im Einzelnen und ist beim
@@ -160,8 +243,24 @@ node tests/werkzeug-streuung.js       # Streuungsschranken messen
 Ein vollständiger Lauf dauert lange: im Hintergrund starten, Ausgabe **direkt in
 eine Datei** schreiben (nicht durch eine Pipe — die puffert, und bei einem
 Abbruch ist alles weg), und keine geprüfte Datei anfassen, solange er läuft.
+Wird währenddessen doch etwas geändert, ist das Ergebnis wertlos und der Lauf
+gehört wiederholt — ein grünes Ergebnis für einen Stand, den es nicht mehr gibt,
+ist schlimmer als keines.
 
 **Eine neue Seite ohne zugehörige `tests/…/test-*.js` gilt als unfertig.**
+
+### Drei Ebenen
+
+| Ebene | Datei | Gilt für |
+| --- | --- | --- |
+| Gesamt | `test-seiten-gesamt.js` | jede Seite: lädt hell und dunkel ohne Fehler, jeder Verweis und jede Sprungmarke lösen auf |
+| Zusagen | `test-alle-themen.js` | jedes Grundwissen-Thema: Regler lügen nicht, ≥ 3 Kontrollfragen mit genau vier Antworten und genau einer richtigen, vier Reiter, alle Aufgaben mit Musterlösung und ausreichender Streuung |
+| Fachlich | `themen/test-*.js`, `klasse-8/test-*.js` | der Inhalt einer einzelnen Seite |
+
+Die ersten beiden finden ihre Seiten **selbst** (`tests/lib/themen.js` liest das
+Dateisystem). Ein neues Grundwissen-Thema wird dadurch automatisch mitgeprüft
+und kann nicht stillschweigend ungeprüft bleiben — es muss die Zusagen aber auch
+von Anfang an erfüllen.
 
 ### Was eine fachliche Prüfung leisten muss
 
@@ -196,6 +295,15 @@ Abbruch ist alles weg), und keine geprüfte Datei anfassen, solange er läuft.
 * **Punktnamen über die Gruppe zuordnen** (`.th-punkt-gruppe[data-name]`), nicht
   über den nächstgelegenen Text — bei zwei dicht beieinanderliegenden Punkten
   vertauscht das die Zuordnung.
+* **`nr` in `pruefeAufgabe()` ist die laufende Nummer in der `AUFGABEN`-Liste**,
+  aus der die erwartete Stufe zurückgerechnet wird. Wird die Liste umsortiert,
+  **muss die Prüfung mitgezogen werden** — sonst prüft sie stillschweigend die
+  falsche Aufgabe. Beim Umstellen auf Dreieck/Parallelogramm/Trapez war genau
+  das nötig.
+* **Playwright behandelt in dieser Fassung eine Zeichenkette als `pageFunction`
+  wie einen Ausdruck**, nicht wie eine Funktion. Messhelfer werden deshalb
+  einmal über `eval` auf `window` gelegt und danach aus echten Pfeilfunktionen
+  heraus aufgerufen. Einzelheiten in `tests/README.md`.
 
 ### Die Prüfung selbst prüfen
 
