@@ -456,7 +456,7 @@ function generateD1() {
     tolerance: 0.001,
     placeholder: "A in cm²",
     hinweis: (roh, val) => {
-      if (trifft(val, g * h)) return `Das ist das <strong>Parallelogramm</strong> aus zwei solchen Dreiecken. Ein einzelnes ist halb so groß: A = ½ · g · h.`;
+      if (trifft(val, g * h)) return `Das ist das <strong>umschließende Rechteck</strong> mit den Seiten ${num(g)} cm und ${num(h)} cm. Das Dreieck ist genau halb so groß: A = ½ · g · h.`;
       if (trifft(val, g + h)) return `Die beiden Zahlen werden multipliziert und dann halbiert, nicht addiert.`;
       if (trifft(val, (g + h) / 2)) return `Der Mittelwert der beiden Zahlen ist kein Flächeninhalt. Gerechnet wird ½ · g · h.`;
       if (trifft(val, g) || trifft(val, h)) return `Das ist eine der beiden Angaben. Der Flächeninhalt ist ihr halbes Produkt.`;
@@ -468,7 +468,7 @@ function generateD1() {
       `<strong>3. Einsetzen:</strong> A = ½ · ${num(g)} cm · ${num(h)} cm = ½ · ${num(g * h)} cm² = <strong>${num(A)} cm²</strong><br>` +
       (lage === "aussen"
         ? `<em>Beachte:</em> Der Fußpunkt der Höhe liegt hier <strong>außerhalb</strong> der Grundseite — die Grundseite wurde dafür als Gerade verlängert. An der Formel ändert das nichts.`
-        : `<em>Zur Kontrolle:</em> Zwei solche Dreiecke ergeben ein Parallelogramm mit ${num(g * h)} cm². Das Dreieck ist genau die Hälfte davon.`),
+        : `<em>Zur Kontrolle:</em> Das umschließende Rechteck misst ${num(g)} cm · ${num(h)} cm = ${num(g * h)} cm². Das Dreieck ist genau die Hälfte davon.`),
   };
 }
 
@@ -498,7 +498,7 @@ function generateD2() {
     tolerance: Math.max(1e-4, Math.abs(loesung) * 1e-6),
     placeholder: "A in " + ziel,
     hinweis: (roh, val) => {
-      if (trifft(val, ohneHalbieren)) return `Das Halbieren fehlt: ${num(gCm)} cm · ${num(hCm)} cm ist das Parallelogramm aus zwei solchen Dreiecken.`;
+      if (trifft(val, ohneHalbieren)) return `Das Halbieren fehlt: ${num(gCm)} cm · ${num(hCm)} cm ist das umschließende Rechteck, nicht das Dreieck.`;
       if (trifft(val, naiv)) return `Du hast ½ · ${num(a)} · ${num(b)} gerechnet und die Einheiten stehen lassen. ${eA} und ${eB} sind verschieden lang — erst umrechnen.`;
       if (trifft(val, (gCm + hCm) / F(ziel).cm2)) return `Addiert statt multipliziert.`;
       return `Erst beide Längen in dieselbe Einheit, dann A = ½ · g · h, zuletzt in ${ziel} umrechnen.`;
@@ -925,20 +925,21 @@ function generateT4() {
 
 // ================= Die Liste für die Werkbank =================
 
+// Die Reihenfolge folgt der des Lernpfads: Dreieck, Parallelogramm, Trapez.
 export const AUFGABEN = [
-  { schwierigkeit: "einfach", titel: "Parallelogramm — Flächeninhalt ablesen", generate: generateP1 },
   { schwierigkeit: "einfach", titel: "Dreieck — Flächeninhalt ablesen", generate: generateD1 },
+  { schwierigkeit: "einfach", titel: "Parallelogramm — Flächeninhalt ablesen", generate: generateP1 },
   { schwierigkeit: "einfach", titel: "Trapez — Flächeninhalt ablesen", generate: generateT1 },
 
-  { schwierigkeit: "mittel", titel: "Parallelogramm — mit Einheiten", generate: generateP2 },
   { schwierigkeit: "mittel", titel: "Dreieck — mit Einheiten", generate: generateD2 },
+  { schwierigkeit: "mittel", titel: "Parallelogramm — mit Einheiten", generate: generateP2 },
   { schwierigkeit: "mittel", titel: "Trapez — mit Einheiten", generate: generateT2 },
 
-  { schwierigkeit: "schwierig", titel: "Parallelogramm — die fehlende Größe", generate: generateP3 },
   { schwierigkeit: "schwierig", titel: "Dreieck — die fehlende Größe", generate: generateD3 },
+  { schwierigkeit: "schwierig", titel: "Parallelogramm — die fehlende Größe", generate: generateP3 },
   { schwierigkeit: "schwierig", titel: "Trapez — die fehlende Größe", generate: generateT3 },
 
-  { schwierigkeit: "komplex", titel: "Parallelogramm — zwei Seiten, zwei Höhen", generate: generateP4 },
   { schwierigkeit: "komplex", titel: "Dreieck — ein Viereck zerlegen", generate: generateD4 },
+  { schwierigkeit: "komplex", titel: "Parallelogramm — zwei Seiten, zwei Höhen", generate: generateP4 },
   { schwierigkeit: "komplex", titel: "Trapez — zerlegen statt Formel", generate: generateT4 },
 ];

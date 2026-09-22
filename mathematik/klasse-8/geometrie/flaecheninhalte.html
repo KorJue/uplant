@@ -27,11 +27,11 @@
 
   <section class="card">
     <h2>Worum geht es hier?</h2>
-    <p>Den Flächeninhalt eines Rechtecks kennst du: Länge mal Breite. Für schiefe Figuren gibt es keine neue Idee — man führt sie auf das Rechteck <strong>zurück</strong>. Dazu gibt es genau zwei Handgriffe: <span class="term">Zerlegen und Umlegen</span> (ein Stück abschneiden und woanders anfügen) und <span class="term">Verdoppeln</span> (eine gedrehte Kopie danebenlegen). Mehr braucht es nicht. Am Ende kannst du:</p>
+    <p>Den Flächeninhalt eines Rechtecks kennst du: Länge mal Breite. Für schiefe Figuren gibt es keine neue Idee — man führt sie auf das Rechteck <strong>zurück</strong>. Dazu gibt es genau drei Handgriffe: <span class="term">Ergänzen</span> (die Figur in ein Rechteck stecken und die Reststücke untersuchen), <span class="term">Zerlegen und Umlegen</span> (ein Stück abschneiden und woanders anfügen) und <span class="term">Verdoppeln</span> (eine gedrehte Kopie danebenlegen). Mehr braucht es nicht. Wir gehen der Reihe nach vor: erst das Dreieck, dann das Parallelogramm, dann das Trapez — jede Figur nur mit dem, was vorher schon bewiesen ist. Am Ende kannst du:</p>
     <ul class="lern-intro-list">
       <li>erklären, warum <span class="term">Scheren</span> den Flächeninhalt nicht ändert — und warum den Umfang schon</li>
-      <li>die Formel <strong>A = g · h</strong> für das <span class="term">Parallelogramm</span> herleiten und anwenden</li>
       <li>die Formel <strong>A = ½ · g · h</strong> für das <span class="term">Dreieck</span> herleiten und anwenden</li>
+      <li>die Formel <strong>A = g · h</strong> für das <span class="term">Parallelogramm</span> herleiten und anwenden</li>
       <li>die Formel <strong>A = ½ · (a + c) · h</strong> für das <span class="term">Trapez</span> herleiten und anwenden</li>
       <li>zu jeder Seite die <span class="term">zugehörige Höhe</span> finden — auch wenn ihr Fußpunkt außerhalb der Figur liegt</li>
       <li>aus dem Flächeninhalt eine fehlende Länge zurückrechnen und dabei die Einheiten sauber umrechnen</li>
@@ -65,9 +65,55 @@
     <div class="quiz" id="quiz-scherung"></div>
   </section>
 
-  <!-- 2. Das Parallelogramm -->
+  <!-- 2. Das Dreieck -->
+  <section class="card" id="sec-dreieck">
+    <h2>2. Das Dreieck: A = ½ · g · h</h2>
+    <p>Wir fangen mit dem Dreieck an — und dürfen dafür nur das benutzen, was schon dasteht: den Flächeninhalt des <strong>Rechtecks</strong>. Also wird das Dreieck zu einem Rechteck <span class="term">ergänzt</span>. Steck es in das kleinste Rechteck, das es umschließt: Es ist g breit und h hoch. Neben dem Dreieck bleiben zwei Reststücke übrig. Zieh den Regler <strong>Reststücke drehen</strong> und sieh nach, wo sie landen.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Grundseite g: <input type="range" id="dr-g" min="3" max="9" step="0.5" value="7" style="vertical-align:middle;width:8rem"> <span id="dr-g-anzeige" class="th-name-c"></span></label>
+        <label>Höhe h: <input type="range" id="dr-h" min="2" max="5" step="0.5" value="4" style="vertical-align:middle;width:8rem"> <span id="dr-h-anzeige" class="th-name-r"></span></label>
+        <label>Lage der Spitze: <input type="range" id="dr-cx" min="0" max="9" step="0.5" value="2" style="vertical-align:middle;width:8rem"> <span id="dr-cx-anzeige" style="font-weight:800"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>Reststücke drehen: <input type="range" id="dr-t" min="0" max="100" step="2" value="0" style="vertical-align:middle;width:14rem"> <span id="dr-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="dr-mount"></div>
+      <div class="th-bilanz" id="dr-bilanz"></div>
+      <div id="dr-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Flächeninhalt des Dreiecks</span>
+      <strong>A = ½ · g · h</strong> &nbsp;— oder gleichbedeutend <strong>A = (g · h) : 2</strong>
+      <div class="formula-block">A<sub>Dreieck</sub> = ½ · g · h</div>
+      Der Faktor ½ ist kein Zusatz, den man sich merken muss: Er entsteht, weil das Dreieck und die beiden Reststücke zusammen das Rechteck g · h füllen — und die Reststücke zusammen genauso groß sind wie das Dreieck.
+    </div>
+    <p class="hinweis-box">💡 Warum sind die Reststücke zusammen genauso groß wie das Dreieck? Die Höhe zerlegt beides auf einmal: das Rechteck in zwei Teilrechtecke, das Dreieck in zwei rechtwinklige Teile. In jedem Teilrechteck liegt ein Dreiecksteil und daneben sein Reststück — und die beiden sind <strong>deckungsgleich</strong>, denn die halbe Drehung um M₁ beziehungsweise M₂ führt das eine genau in das andere über. Jedes Teilrechteck wird also von seinem Dreiecksteil halbiert, und damit auch das ganze Rechteck vom ganzen Dreieck.</p>
+    <p>Beachte den Regler <strong>Lage der Spitze</strong>: Er ändert die Form des Dreiecks, aber nicht seinen Flächeninhalt — Grundseite und Höhe bleiben ja dieselben. Das ist wieder die Scherung aus Abschnitt 1. Er reicht nur von A bis B, denn nur dann teilt die Höhe das Rechteck wirklich in zwei Teile. Was bei einem stumpfwinkligen Dreieck geschieht, siehst du gleich darunter.</p>
+
+    <h3>Welche Höhe gehört zu welcher Grundseite?</h3>
+    <p>Jede der drei Seiten darf Grundseite sein — aber zu jeder gehört <em>ihre eigene</em> Höhe: das Lot von der gegenüberliegenden Ecke. Wähle unten eine Seite aus und sieh nach, ob der Flächeninhalt derselbe bleibt.</p>
+    <div class="widget">
+      <div class="btn-row" id="gh-wahl">
+        <label><input type="radio" name="gh-seite" value="c" checked> Grundseite c = AB</label>
+        <label><input type="radio" name="gh-seite" value="a"> Grundseite a = BC</label>
+        <label><input type="radio" name="gh-seite" value="b"> Grundseite b = CA</label>
+      </div>
+      <div class="th-wrap" id="gh-mount"></div>
+      <div class="th-bilanz" id="gh-bilanz"></div>
+      <div id="gh-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Höhe kann außerhalb liegen</span>
+      Bei einem <strong>stumpfwinkligen</strong> Dreieck liegt der Fußpunkt zweier Höhen außerhalb der zugehörigen Seite. Dann wird die Seite als Gerade verlängert und das Lot darauf gefällt. Die Formel bleibt unverändert — nur die Zeichnung sieht ungewohnt aus. Wähle oben „Grundseite b = CA“, um genau diesen Fall zu sehen.
+    </div>
+    <div class="quiz" id="quiz-dreieck"></div>
+    <div class="quiz" id="quiz-hoehe"></div>
+  </section>
+
+  <!-- 3. Das Parallelogramm -->
   <section class="card" id="sec-parallelogramm">
-    <h2>2. Das Parallelogramm: A = g · h</h2>
+    <h2>3. Das Parallelogramm: A = g · h</h2>
     <p>Die Scherung lässt sich auch rückwärts denken — und das ist die Herleitung. Schneide das Parallelogramm links entlang der Höhe durch und schiebe das abgeschnittene Dreieck ganz nach rechts. Dort passt es genau in die Lücke. Zieh den Regler <strong>Umlegen</strong> langsam nach rechts und beobachte, was entsteht.</p>
     <div class="widget">
       <div class="btn-row">
@@ -91,58 +137,19 @@
       Weil jede der beiden Seitenlängen als Grundseite dienen darf, gilt zugleich <strong>a · h<sub>a</sub> = b · h<sub>b</sub></strong>: Zur längeren Seite gehört die kürzere Höhe. Setze oben das Häkchen und vergleiche die beiden Produkte.
     </div>
     <p class="hinweis-box">💡 Warum funktioniert das Umlegen? Weil das abgeschnittene Dreieck und die Lücke rechts <strong>deckungsgleich</strong> sind — beide werden von der Höhe, einem Stück der Grundseite und einer der schrägen Seiten begrenzt, und diese sind paarweise gleich lang. Verschieben ändert an einer Figur nichts außer ihrer Lage.</p>
+    <div class="beispiel-box">
+      <span class="box-label">Derselbe Satz, zweiter Weg — mit dem Dreieck aus Abschnitt 2</span>
+      Zieh in einem Parallelogramm eine <strong>Diagonale</strong>. Sie zerlegt es in zwei deckungsgleiche Dreiecke: Beide haben dieselbe Grundseite g und dieselbe Höhe h.<br>
+      <div class="formula-block">A = 2 · ½ · g · h = g · h</div>
+      Dass zwei ganz verschiedene Überlegungen — einmal abschneiden und umlegen, einmal in Dreiecke zerlegen — zur selben Formel führen, ist kein Zufall: Beide messen dieselbe Fläche. Genau diesen zweiten Weg brauchst du gleich noch einmal beim Trapez.
+    </div>
     <div class="quiz" id="quiz-parallelogramm"></div>
-  </section>
-
-  <!-- 3. Das Dreieck -->
-  <section class="card" id="sec-dreieck">
-    <h2>3. Das Dreieck: A = ½ · g · h</h2>
-    <p>Beim Dreieck hilft der zweite Handgriff: <strong>Verdoppeln</strong>. Lege eine Kopie des Dreiecks darauf und drehe sie um 180° um die Mitte einer Seite. Beide zusammen ergeben ein Parallelogramm — und dessen Flächeninhalt kennst du seit dem vorigen Abschnitt.</p>
-    <div class="widget">
-      <div class="btn-row">
-        <label>Grundseite g: <input type="range" id="dr-g" min="3" max="9" step="0.5" value="7" style="vertical-align:middle;width:8rem"> <span id="dr-g-anzeige" class="th-name-c"></span></label>
-        <label>Höhe h: <input type="range" id="dr-h" min="2" max="5" step="0.5" value="4" style="vertical-align:middle;width:8rem"> <span id="dr-h-anzeige" class="th-name-r"></span></label>
-        <label>Lage der Spitze: <input type="range" id="dr-cx" min="-1" max="9" step="0.5" value="2" style="vertical-align:middle;width:8rem"> <span id="dr-cx-anzeige" style="font-weight:800"></span></label>
-      </div>
-      <div class="btn-row">
-        <label>Kopie drehen: <input type="range" id="dr-t" min="0" max="100" step="2" value="0" style="vertical-align:middle;width:14rem"> <span id="dr-t-anzeige" class="th-name-b"></span></label>
-      </div>
-      <div class="th-wrap" id="dr-mount"></div>
-      <div class="th-bilanz" id="dr-bilanz"></div>
-      <div id="dr-text" class="event-result"></div>
-    </div>
-    <div class="wissen-box">
-      <span class="box-label">Flächeninhalt des Dreiecks</span>
-      <strong>A = ½ · g · h</strong> &nbsp;— oder gleichbedeutend <strong>A = (g · h) : 2</strong>
-      <div class="formula-block">A<sub>Dreieck</sub> = ½ · g · h</div>
-      Der Faktor ½ ist kein Zusatz, den man sich merken muss: Er entsteht, weil <em>zwei</em> deckungsgleiche Dreiecke das Parallelogramm mit derselben Grundseite und derselben Höhe füllen.
-    </div>
-    <p>Beachte beim Regler <strong>Lage der Spitze</strong>: Schiebst du sie über B hinaus, wird das Dreieck stumpfwinklig und der Fußpunkt der Höhe rutscht aus der Grundseite heraus. Der Flächeninhalt ändert sich dadurch <em>nicht</em> — Grundseite und Höhe sind ja dieselben geblieben. Das ist wieder die Scherung aus Abschnitt 1.</p>
-
-    <h3>Welche Höhe gehört zu welcher Grundseite?</h3>
-    <p>Jede der drei Seiten darf Grundseite sein — aber zu jeder gehört <em>ihre eigene</em> Höhe: das Lot von der gegenüberliegenden Ecke. Wähle unten eine Seite aus und sieh nach, ob der Flächeninhalt derselbe bleibt.</p>
-    <div class="widget">
-      <div class="btn-row" id="gh-wahl">
-        <label><input type="radio" name="gh-seite" value="c" checked> Grundseite c = AB</label>
-        <label><input type="radio" name="gh-seite" value="a"> Grundseite a = BC</label>
-        <label><input type="radio" name="gh-seite" value="b"> Grundseite b = CA</label>
-      </div>
-      <div class="th-wrap" id="gh-mount"></div>
-      <div class="th-bilanz" id="gh-bilanz"></div>
-      <div id="gh-text" class="event-result"></div>
-    </div>
-    <div class="achtung-box">
-      <span class="box-label">Achtung — die Höhe kann außerhalb liegen</span>
-      Bei einem <strong>stumpfwinkligen</strong> Dreieck liegt der Fußpunkt zweier Höhen außerhalb der zugehörigen Seite. Dann wird die Seite als Gerade verlängert und das Lot darauf gefällt. Die Formel bleibt unverändert — nur die Zeichnung sieht ungewohnt aus. Wähle oben „Grundseite b = CA“, um genau diesen Fall zu sehen.
-    </div>
-    <div class="quiz" id="quiz-dreieck"></div>
-    <div class="quiz" id="quiz-hoehe"></div>
   </section>
 
   <!-- 4. Das Trapez -->
   <section class="card" id="sec-trapez">
     <h2>4. Das Trapez: A = ½ · (a + c) · h</h2>
-    <p>Ein <span class="term">Trapez</span> ist ein Viereck mit <strong>zwei parallelen Seiten</strong>. Man nennt sie a und c; ihr Abstand ist die Höhe h. Die Herleitung ist dieselbe wie beim Dreieck: Eine um 180° gedrehte Kopie ergänzt das Trapez zu einem Parallelogramm. Neu ist nur, was unten zu liegen kommt.</p>
+    <p>Ein <span class="term">Trapez</span> ist ein Viereck mit <strong>zwei parallelen Seiten</strong>. Man nennt sie a und c; ihr Abstand ist die Höhe h. Jetzt zahlt sich der vorige Abschnitt aus: Eine um 180° gedrehte Kopie ergänzt das Trapez zu einem <strong>Parallelogramm</strong>, und dessen Flächeninhalt kennst du seit Abschnitt 3. Neu ist nur, was unten zu liegen kommt.</p>
     <div class="widget">
       <div class="btn-row">
         <label>Seite a: <input type="range" id="tz-a" min="4" max="10" step="0.5" value="8" style="vertical-align:middle;width:8rem"> <span id="tz-a-anzeige" class="th-name-c"></span></label>
@@ -164,6 +171,12 @@
       Dabei sind a und c die beiden <strong>parallelen</strong> Seiten und h ihr Abstand. Die Strecke <span class="term">m</span> heißt <span class="term">Mittellinie</span>: Sie verbindet die Mitten der beiden Schenkel und ist genau so lang wie der Mittelwert von a und c. Damit ist das Trapez flächengleich zu einem <em>Rechteck</em> mit den Seiten m und h — setze oben das Häkchen.
     </div>
     <p class="hinweis-box">💡 Die beiden anderen Seiten (die <span class="term">Schenkel</span>) kommen in der Formel gar nicht vor. Man kann sie beliebig verändern, solange a, c und h gleich bleiben — der Flächeninhalt ändert sich nicht. Auch das ist wieder eine Scherung.</p>
+    <div class="beispiel-box">
+      <span class="box-label">Derselbe Satz, zweiter Weg — mit dem Dreieck aus Abschnitt 2</span>
+      Zieh im Trapez eine <strong>Diagonale</strong>. Sie zerlegt es in zwei Dreiecke, und beide haben dieselbe Höhe h — nur ihre Grundseiten sind verschieden: einmal a, einmal c.<br>
+      <div class="formula-block">A = ½ · a · h + ½ · c · h = ½ · (a + c) · h</div>
+      Im letzten Schritt wird ½ · h <span class="term">ausgeklammert</span>. Diesen Weg brauchst du bei jeder Figur, für die es gar keine eigene Formel gibt — in den Übungsaufgaben auf der Stufe <em>komplex</em> kommt er wieder vor.
+    </div>
     <div class="quiz" id="quiz-trapez"></div>
   </section>
 
@@ -198,7 +211,8 @@
       <li><strong>Baut auf:</strong> Dem <a href="../../grundwissen-5-10/02-geometrie/02-flaeche-umfang/index.html#sec-rechteck">Flächeninhalt des Rechtecks</a> — jede der drei Formeln wird darauf zurückgeführt. Es kommt keine neue Idee hinzu, nur neue Wege des Zerlegens und Ergänzens.</li>
       <li><strong>Baut auf:</strong> Dem <a href="../../grundwissen-5-10/02-geometrie/01-grundbegriffe/index.html#sec-abstand">Abstand als Lot</a> — die Höhe <em>ist</em> dieser senkrechte Abstand. Wer das im Kopf hat, verwechselt sie nie mit der schrägen Seite.</li>
       <li><strong>Baut auf:</strong> Der <a href="grundkonstruktionen.html">Konstruktion der Höhe</a> aus Thema 1 — dort wird das Lot mit Zirkel und Lineal gefällt, hier wird mit seiner Länge gerechnet.</li>
-      <li><strong>Gleiche Struktur:</strong> Dreieck und Trapez entstehen beide durch <em>Verdoppeln zu einem Parallelogramm</em>. Und das Dreieck ist der Sonderfall c = 0 des Trapezes.</li>
+      <li><strong>Gleiche Struktur:</strong> Alle drei Herleitungen führen auf dasselbe Rechteck zurück — nur der Handgriff wechselt: <em>Ergänzen</em> beim Dreieck, <em>Zerlegen und Umlegen</em> beim Parallelogramm, <em>Verdoppeln</em> beim Trapez. Und das Dreieck ist zugleich der Sonderfall c = 0 des Trapezes.</li>
+      <li><strong>Trägt alles Weitere:</strong> Das Dreieck ist der Baustein — Parallelogramm und Trapez lassen sich beide durch eine Diagonale in Dreiecke zerlegen. Für jedes Vieleck, das keine eigene Formel hat, ist das der Weg.</li>
       <li><strong>Führt weiter zu:</strong> Dem <a href="satz-des-thales.html">Satz des Thales</a> — dort wird die Höhe auf die längste Seite eines rechtwinkligen Dreiecks über den Flächeninhalt bestimmt: Dasselbe Dreieck wird zweimal als „Grundseite mal Höhe“ gelesen.</li>
       <li><strong>Führt weiter zu (Klasse 9):</strong> Dem <a href="../../grundwissen-5-10/02-geometrie/09-pythagoras/index.html">Satz des Pythagoras</a>. Er erlaubt es, eine fehlende Höhe zu <em>berechnen</em> statt sie zu messen — damit werden Flächen zugänglich, für die hier noch Angaben fehlen.</li>
       <li><strong>Führt weiter zu:</strong> Dem <a href="../../grundwissen-5-10/02-geometrie/10-kreisberechnungen/index.html">Flächeninhalt des Kreises</a>. Er wird nach demselben Muster hergeleitet: Man zerlegt ihn in schmale Sektoren und legt sie zu einem Fast-Rechteck um.</li>
@@ -213,14 +227,14 @@
 
     <div class="fl-formel-reihe">
       <div class="fl-formel-karte">
-        <h3>Parallelogramm</h3>
-        <div class="fl-formel">A = g · h</div>
-        <p><strong>Herleitung:</strong> Links entlang der Höhe abschneiden, das Dreieck rechts anfügen — es entsteht ein Rechteck mit den Seiten g und h.</p>
-      </div>
-      <div class="fl-formel-karte">
         <h3>Dreieck</h3>
         <div class="fl-formel">A = ½ · g · h</div>
-        <p><strong>Herleitung:</strong> Eine um 180° gedrehte Kopie ergänzt das Dreieck zu einem Parallelogramm mit derselben Grundseite und Höhe.</p>
+        <p><strong>Herleitung:</strong> Das Dreieck in das umschließende Rechteck g · h stecken. Die beiden Reststücke drehen sich genau auf das Dreieck — es ist die Hälfte des Rechtecks.</p>
+      </div>
+      <div class="fl-formel-karte">
+        <h3>Parallelogramm</h3>
+        <div class="fl-formel">A = g · h</div>
+        <p><strong>Herleitung:</strong> Links entlang der Höhe abschneiden, das Dreieck rechts anfügen — es entsteht ein Rechteck mit den Seiten g und h. Oder: eine Diagonale zerlegt es in zwei Dreiecke, also 2 · ½ · g · h.</p>
       </div>
       <div class="fl-formel-karte">
         <h3>Trapez</h3>
@@ -236,16 +250,16 @@
       </thead>
       <tbody>
         <tr>
-          <td>Parallelogramm</td>
-          <td class="fl-formel-zelle">A = g · h</td>
-          <td class="fl-formel-zelle">g = A : h</td>
-          <td class="fl-formel-zelle">h = A : g</td>
-        </tr>
-        <tr>
           <td>Dreieck</td>
           <td class="fl-formel-zelle">A = ½ · g · h</td>
           <td class="fl-formel-zelle">g = 2 · A : h</td>
           <td class="fl-formel-zelle">h = 2 · A : g</td>
+        </tr>
+        <tr>
+          <td>Parallelogramm</td>
+          <td class="fl-formel-zelle">A = g · h</td>
+          <td class="fl-formel-zelle">g = A : h</td>
+          <td class="fl-formel-zelle">h = A : g</td>
         </tr>
         <tr>
           <td>Trapez</td>

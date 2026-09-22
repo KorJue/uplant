@@ -7,9 +7,15 @@
 //      SVG zurückgelesen und ihr Flächeninhalt mit der Gaußschen Trapezformel bestimmt. Er muss
 //      mit dem übereinstimmen, was die Bilanz behauptet. Eine Zeichnung, die g · h schreibt und
 //      etwas anderes zeigt, wäre schlimmer als gar keine.
-//   2. Die BEWEGUNGEN sind starr. Das umgelegte Dreieck und die gedrehte Kopie müssen in jeder
-//      Zwischenstellung denselben Flächeninhalt haben wie am Anfang — sonst würde beim
-//      Verschieben oder Drehen etwas verschwinden, und die Herleitung wäre wertlos.
+//   2. Die BEWEGUNGEN sind starr. Die gedrehten Reststücke, das umgelegte Dreieck und die
+//      gedrehte Kopie müssen in jeder Zwischenstellung denselben Flächeninhalt haben wie am
+//      Anfang — sonst würde beim Verschieben oder Drehen etwas verschwinden, und die
+//      Herleitung wäre wertlos.
+//
+// Die Reihenfolge der Abschnitte ist selbst eine Behauptung: Dreieck, Parallelogramm, Trapez,
+// und keine Herleitung greift auf eine spätere vor. Deshalb wird beim Dreieck geprüft, dass es
+// wirklich zum Rechteck ergänzt wird — ein Rückgriff auf das Parallelogramm wäre an dieser
+// Stelle ein Zirkelschluss.
 //   3. Die AUFGABEN rechnen richtig. Jede der zwölf wird über viele Runden gewürfelt, unabhängig
 //      nachgerechnet und mit jedem vorgesehenen Fehlerwert geprüft.
 //
@@ -39,6 +45,18 @@ function polygonFlaeche(punkte) {
     s += a.x * c.y - c.x * a.y;
   }
   return Math.abs(s) / 2;
+}
+
+// Liegt der Punkt q im Dreieck? Verglichen wird über die Teilflächen: Zerlegt man das Dreieck
+// von q aus in drei Teile, so ergeben sie zusammen genau dann das Ganze, wenn q drinnen liegt.
+// Der Spielraum ist in Bildpunkten angegeben — eine Ecke darf auf dem Rand liegen.
+function imDreieck(q, ecken, spielraum = 1) {
+  const [X, Y, Z] = ecken;
+  const ganz = polygonFlaeche([X, Y, Z]);
+  const teile = polygonFlaeche([q, X, Y]) + polygonFlaeche([q, Y, Z]) + polygonFlaeche([q, Z, X]);
+  // Ein Punkt im Abstand d vom Rand vergrößert die Summe um höchstens d · Umfang.
+  const umfang = Math.hypot(Y.x - X.x, Y.y - X.y) + Math.hypot(Z.x - Y.x, Z.y - Y.y) + Math.hypot(X.x - Z.x, X.y - Z.y);
+  return teile - ganz <= spielraum * umfang;
 }
 
 // Alle Polygone einer Zeichnung, in Bildpunkten. Gelesen wird das points-Attribut; die
@@ -188,16 +206,28 @@ async function parallelogramm(page) {
   }
 }
 
-// ── Abschnitt 3: Dreieck ──────────────────────────────────────────────────
+// ── Abschnitt 2: Dreieck ──────────────────────────────────────────────────
+//
+// Die Herleitung ergänzt zum Rechteck und darf deshalb das Parallelogramm NICHT benutzen —
+// das kommt erst danach. Geprüft wird genau das, was die Zeichnung behauptet:
+//   1. Die beiden Reststücke sind zusammen so groß wie das Dreieck (sonst wäre das Dreieck
+//      nicht die Hälfte des Rechtecks).
+//   2. Das Drehen ist starr — jedes Reststück behält in jeder Stellung seinen Flächeninhalt.
+//   3. Nach der halben Drehung liegen beide Reststücke INNERHALB des Dreiecks; zusammen
+//      decken sie es genau ab.
 async function dreieck(page) {
-  for (const [g, h, cx] of [[7, 4, 2], [4, 2, 0], [9, 5, 9], [5, 3, -1], [3, 2, 1.5]]) {
+  for (const [g, h, cx] of [[7, 4, 2], [4, 2, 0], [9, 5, 9], [5, 3, 5], [3, 2, 1.5]]) {
     await setzeRegler(page, "dr-g", g);
     await setzeRegler(page, "dr-h", h);
     await setzeRegler(page, "dr-cx", cx);
     const A = (g * h) / 2;
+    // Der Regler ist auf 0 ≤ cx ≤ g begrenzt; nur dann zerlegt die Höhe das Rechteck.
+    const cxEcht = Math.min(cx, g);
+    const flaechenLinks = (cxEcht * h) / 2, flaechenRechts = ((g - cxEcht) * h) / 2;
+
     for (const t of [0, 30, 50, 80, 100]) {
       await setzeRegler(page, "dr-t", t);
-      const wo = `g = ${g}, h = ${h}, Spitze = ${cx}, Drehung = ${Math.round(t * 1.8)}°`;
+      const wo = `g = ${g}, h = ${h}, Spitze = ${cxEcht}, Drehung = ${Math.round(t * 1.8)}°`;
 
       const bilanz = await text(page, "#dr-bilanz");
       pruefe(bilanz.includes(`2 · A = g · h = ${de(g)} · ${de(h)} = ${de(g * h)} cm²`),
@@ -209,28 +239,44 @@ async function dreieck(page) {
       const skala = skalaAus(p.A, p.B, g);
       const polys = await polygone(page, "dr-mount");
       const original = polys.find((x) => x.klasse.includes("fl-flaeche-fuell"));
-      const kopie = polys.find((x) => x.klasse.includes("fl-flaeche-zweit"));
-      pruefe(!!original && !!kopie, `Dreieck: ${wo} — Original oder Kopie fehlt`);
-      if (!original || !kopie) continue;
+      const reste = polys.filter((x) => x.klasse.includes("fl-flaeche-zweit"));
+      pruefe(!!original, `Dreieck: ${wo} — das Dreieck fehlt in der Zeichnung`);
+      pruefe(reste.length === 2, `Dreieck: ${wo} — ${reste.length} Reststücke statt 2`);
+      if (!original || reste.length !== 2) continue;
 
       const aOrig = polygonFlaeche(original.punkte) / (skala * skala);
-      const aKopie = polygonFlaeche(kopie.punkte) / (skala * skala);
       pruefe(Math.abs(aOrig - A) < 0.03 * Math.max(1, A),
         `Dreieck: ${wo} — das gezeichnete Dreieck hat ${de(aOrig, 2)} cm² statt ${de(A)} cm²`);
-      // Drehen ist eine starre Bewegung: Die Kopie bleibt in jeder Stellung gleich groß.
-      pruefe(Math.abs(aKopie - A) < 0.03 * Math.max(1, A),
-        `Dreieck: ${wo} — die gedrehte Kopie hat ${de(aKopie, 2)} cm² statt ${de(A)} cm²`);
+
+      // Drehen ist eine starre Bewegung: Jedes Reststück behält seine Größe. Welches der
+      // beiden zuerst gezeichnet wird, legt die Zeichnung fest — geprüft wird das Paar.
+      const aReste = reste.map((r) => polygonFlaeche(r.punkte) / (skala * skala)).sort((x, y) => x - y);
+      const sollReste = [flaechenLinks, flaechenRechts].sort((x, y) => x - y);
+      for (let i = 0; i < 2; i++) {
+        pruefe(Math.abs(aReste[i] - sollReste[i]) < 0.03 * Math.max(1, sollReste[i]),
+          `Dreieck: ${wo} — ein Reststück hat ${de(aReste[i], 2)} cm² statt ${de(sollReste[i], 2)} cm²`);
+      }
+      // Der Kern der Herleitung: beide Reststücke zusammen sind genau das Dreieck.
+      pruefe(Math.abs(aReste[0] + aReste[1] - A) < 0.03 * Math.max(1, A),
+        `Dreieck: ${wo} — die Reststücke ergeben zusammen ${de(aReste[0] + aReste[1], 2)} cm² statt ${de(A)} cm²`);
 
       if (t === 100) {
-        // Nach der halben Drehung bilden beide Dreiecke zusammen ein Parallelogramm mit der
-        // Grundseite g und der Höhe h.
-        const alle = original.punkte.concat(kopie.punkte);
-        const ys = alle.map((q) => q.y);
+        // Nach der halben Drehung muss jeder Eckpunkt der Reststücke im Dreieck liegen.
+        for (const r of reste) {
+          for (const q of r.punkte) {
+            pruefe(imDreieck(q, original.punkte, 1.5),
+              `Dreieck: ${wo} — nach der Drehung liegt ein Reststück-Eckpunkt außerhalb des Dreiecks`);
+          }
+        }
+      }
+      if (t === 0) {
+        // Am Anfang füllen Dreieck und Reststücke zusammen genau das Rechteck g · h.
+        const alle = original.punkte.concat(...reste.map((r) => r.punkte));
+        const xs = alle.map((q) => q.x), ys = alle.map((q) => q.y);
+        const breite = (Math.max(...xs) - Math.min(...xs)) / skala;
         const hoehe = (Math.max(...ys) - Math.min(...ys)) / skala;
-        pruefe(Math.abs(hoehe - h) < 0.05,
-          `Dreieck: ${wo} — das entstandene Parallelogramm ist ${de(hoehe, 2)} cm hoch statt ${de(h)} cm`);
-        pruefe(Math.abs(aOrig + aKopie - g * h) < 0.05 * Math.max(1, g * h),
-          `Dreieck: ${wo} — beide Dreiecke ergeben ${de(aOrig + aKopie, 2)} cm² statt ${de(g * h)} cm²`);
+        pruefe(Math.abs(breite - g) < 0.05 && Math.abs(hoehe - h) < 0.05,
+          `Dreieck: ${wo} — das umschließende Rechteck misst ${de(breite, 2)} × ${de(hoehe, 2)} cm statt ${de(g)} × ${de(h)} cm`);
       }
     }
   }
@@ -462,8 +508,8 @@ async function aufgaben(page) {
   // Die Maße stehen NUR im Bild. Der Test liest sie von dort — damit ist zugleich geprüft,
   // dass die Zeichnung die Zahlen trägt, mit denen die Musterlösung rechnet.
   for (const [nr, art, name, formel] of [
-    [1, "parallelogramm", "A1 Parallelogramm ablesen", (m) => m[0] * m[1]],
-    [2, "dreieck", "A2 Dreieck ablesen", (m) => (m[0] * m[1]) / 2],
+    [1, "dreieck", "A1 Dreieck ablesen", (m) => (m[0] * m[1]) / 2],
+    [2, "parallelogramm", "A2 Parallelogramm ablesen", (m) => m[0] * m[1]],
     [3, "trapez", "A3 Trapez ablesen", (m) => ((m[0] + m[1]) * m[2]) / 2],
   ]) {
     await pruefeAufgabe(page, bericht, {
@@ -481,7 +527,7 @@ async function aufgaben(page) {
         const falsch = art === "parallelogramm"
           ? [[A / 2, "Dreieck"], [masse[0] + masse[1], "multipliziert"]]
           : art === "dreieck"
-            ? [[masse[0] * masse[1], "Parallelogramm"], [masse[0] + masse[1], "multipliziert"]]
+            ? [[masse[0] * masse[1], "Rechteck"], [masse[0] + masse[1], "multipliziert"]]
             : [[(masse[0] + masse[1]) * masse[2], "Halbieren fehlt"], [masse[0] * masse[2], "beide"]];
         return {
           richtig: A,
@@ -506,8 +552,8 @@ async function aufgaben(page) {
 
   // ---- mittel: mit Einheitenumrechnung ----
   for (const [nr, name, wort, formel] of [
-    [4, "A4 Parallelogramm mit Einheiten", "Parallelogramm", (g, h) => g * h],
-    [5, "A5 Dreieck mit Einheiten", "Dreieck", (g, h) => (g * h) / 2],
+    [4, "A4 Dreieck mit Einheiten", "Dreieck", (g, h) => (g * h) / 2],
+    [5, "A5 Parallelogramm mit Einheiten", "Parallelogramm", (g, h) => g * h],
   ]) {
     await pruefeAufgabe(page, bericht, {
       nr, name, runden: 25, mindestensVerschieden: 18,
@@ -568,8 +614,8 @@ async function aufgaben(page) {
 
   // ---- schwierig: die fehlende Größe ----
   for (const [nr, name, faktor] of [
-    [7, "A7 Parallelogramm rückwärts", 1],
-    [8, "A8 Dreieck rückwärts", 0.5],
+    [7, "A7 Dreieck rückwärts", 0.5],
+    [8, "A8 Parallelogramm rückwärts", 1],
   ]) {
     await pruefeAufgabe(page, bericht, {
       nr, name, runden: 25, mindestensVerschieden: 18,
@@ -647,7 +693,7 @@ async function aufgaben(page) {
 
   // ---- komplex ----
   await pruefeAufgabe(page, bericht, {
-    nr: 10, name: "A10 zwei Seiten, zwei Höhen", runden: 25, mindestensVerschieden: 15,
+    nr: 11, name: "A11 zwei Seiten, zwei Höhen", runden: 25, mindestensVerschieden: 15,
     deute: (frage) => {
       const mA = frage.match(/a = ([\d.,]+) cm/);
       const mB = frage.match(/b = ([\d.,]+) cm/);
@@ -676,7 +722,7 @@ async function aufgaben(page) {
     },
   });
   await pruefeAufgabe(page, bericht, {
-    nr: 11, name: "A11 Viereck zerlegen", runden: 25, mindestensVerschieden: 15,
+    nr: 10, name: "A10 Viereck zerlegen", runden: 25, mindestensVerschieden: 15,
     deute: (frage) => {
       const mE = frage.match(/AC = ([\d.,]+) cm/);
       const mH = [...frage.matchAll(/Abstand ([\d.,]+) cm/g)].map((x) => zahl(x[1]));
@@ -772,6 +818,31 @@ async function geruest(page) {
     return html.includes('href="flaecheninhalte.html"');
   });
   pruefe(inMenue, "Gerüst: die Übersichtsseite verweist nicht auf die Flächeninhalte");
+
+  // Die Reihenfolge der Herleitungen: Dreieck, Parallelogramm, Trapez. Sie ist keine
+  // Geschmacksfrage — die Trapezherleitung benutzt das Parallelogramm, und das Dreieck steht
+  // voran, weil es mit dem Rechteck allein auskommt.
+  const folge = await page.evaluate(() =>
+    [...document.querySelectorAll("main section[id]")].map((s) => s.id));
+  const drin = (id) => folge.indexOf(id);
+  pruefe(drin("sec-dreieck") < drin("sec-parallelogramm"),
+    `Gerüst: das Dreieck steht nicht vor dem Parallelogramm — ${folge.join(", ")}`);
+  pruefe(drin("sec-parallelogramm") < drin("sec-trapez"),
+    `Gerüst: das Parallelogramm steht nicht vor dem Trapez — ${folge.join(", ")}`);
+
+  // Und die Herleitung des Dreiecks darf das Parallelogramm nicht schon benutzen: Es ist an
+  // dieser Stelle noch nicht hergeleitet. Erwähnt werden darf es erst ab Abschnitt 3.
+  const drText = await page.evaluate(() => {
+    const s = document.getElementById("sec-dreieck");
+    const bis = s.querySelector("h3");   // ab „Welche Höhe gehört zu welcher Grundseite?“
+    let out = "";
+    for (const k of s.children) { if (k === bis) break; out += " " + k.innerText; }
+    return out;
+  });
+  pruefe(!/Parallelogramm/.test(drText),
+    `Gerüst: die Dreiecksherleitung benutzt das Parallelogramm, das erst danach hergeleitet wird — „${drText.slice(0, 160)}“`);
+  pruefe(/Rechteck/.test(drText),
+    `Gerüst: die Dreiecksherleitung führt nicht auf das Rechteck zurück — „${drText.slice(0, 160)}“`);
 
   // Zwölf Aufgaben, drei je Stufe.
   const proStufe = await page.evaluate(async () => {

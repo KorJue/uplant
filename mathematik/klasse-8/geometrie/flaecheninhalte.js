@@ -4,10 +4,18 @@
 // Die Übungsaufgaben stehen in flaecheninhalte-aufgaben.js.
 //
 // Leitgedanke: Es gibt nur EINE Flächenformel — die des Rechtecks. Alles Weitere entsteht
-// durch Zerlegen und Umlegen, und genau das zeigen die Zeichnungen. Deshalb bewegt sich in
-// jeder Herleitung wirklich etwas: Das abgeschnittene Dreieck wandert, die zweite Kopie
-// dreht sich. Ein Standbild könnte behaupten, die Flächen seien gleich; eine Bewegung, bei
-// der kein Stück verschwindet und keines dazukommt, zeigt es.
+// durch Zerlegen, Umlegen und Ergänzen, und genau das zeigen die Zeichnungen. Deshalb bewegt
+// sich in jeder Herleitung wirklich etwas: Die Reststücke drehen sich ins Dreieck, das
+// abgeschnittene Dreieck wandert, die zweite Kopie dreht sich. Ein Standbild könnte behaupten,
+// die Flächen seien gleich; eine Bewegung, bei der kein Stück verschwindet und keines
+// dazukommt, zeigt es.
+//
+// Reihenfolge der Herleitungen: Dreieck, Parallelogramm, Trapez. Jede steht auf dem, was
+// vorher da war, und keine greift vor:
+//   Dreieck        — ergänzt zum umschließenden Rechteck (braucht nur das Rechteck).
+//   Parallelogramm — zerlegt und umgelegt zum Rechteck (braucht ebenfalls nur das Rechteck;
+//                    lässt sich zusätzlich als zwei Dreiecke lesen).
+//   Trapez         — zu einem Parallelogramm verdoppelt (braucht das Parallelogramm).
 //
 // Zu den Zahlen: Gerechnet wird mit den Reglerwerten in Zentimetern, nicht mit
 // Bildschirmkoordinaten. Aus Koordinaten käme 15,749999999999998 heraus, und die Bilanz
@@ -259,7 +267,192 @@ function renderScherung() {
       : `Die obere Seite ist um ${num(s)} cm verschoben. Links fehlt genau das Dreieck, das rechts dazugekommen ist — deshalb bleibt die Fläche ${num(flaeche)} cm². Die Seite b ist dagegen von ${num(h)} cm auf ${num(schraeg, 2)} cm gewachsen.`;
 }
 
-// ================= 2. Das Parallelogramm =================
+// ================= 2. Das Dreieck =================
+//
+// Das Dreieck steht am Anfang, und deshalb darf seine Herleitung nichts voraussetzen außer
+// dem Rechteck. Das schließt das sonst übliche Verdoppeln zu einem Parallelogramm aus — dessen
+// Flächeninhalt wäre an dieser Stelle noch unbekannt. Stattdessen wird ERGÄNZT:
+//
+// Das Dreieck steckt in einem Rechteck der Breite g und der Höhe h. Die Höhe CF zerlegt beide
+// zugleich — das Dreieck in zwei rechtwinklige Teile, das Rechteck in zwei Teilrechtecke. In
+// jedem Teilrechteck liegt genau ein Dreiecksteil und daneben sein Restdreieck; beide sind
+// deckungsgleich, denn eine Drehung um 180° führt das eine in das andere über. Dreht man die
+// beiden Reststücke hinein, decken sie das Dreieck genau ab: Das Dreieck ist die Hälfte des
+// Rechtecks.
+//
+// Damit die Ergänzung überhaupt zwei Teilrechtecke liefert, muss der Höhenfußpunkt zwischen
+// A und B liegen. Der Regler ist deshalb auf 0 ≤ cx ≤ g begrenzt; der stumpfwinklige Fall
+// kommt gleich danach bei den drei Grundseiten vor.
+
+const DR_W = 660, DR_H = 400;
+
+function renderDreieck() {
+  const g = reglerZahl("dr-g");
+  const h = reglerZahl("dr-h");
+  const cx = begrenzt("dr-cx", reglerZahl("dr-cx"), 0, g);
+  const t = reglerZahl("dr-t") / 100;
+  document.getElementById("dr-g-anzeige").textContent = num(g) + " cm";
+  document.getElementById("dr-h-anzeige").textContent = num(h) + " cm";
+  document.getElementById("dr-cx-anzeige").textContent = num(cx) + " cm";
+  document.getElementById("dr-t-anzeige").textContent = Math.round(t * 180) + "°";
+
+  const A = { x: 0, y: 0 }, B = { x: g, y: 0 }, C = { x: cx, y: h };
+  const R1 = { x: 0, y: h }, R2 = { x: g, y: h };   // die obere Kante des Rechtecks
+  const F = { x: cx, y: 0 };                         // Höhenfußpunkt
+
+  // Die beiden Reststücke und ihre Drehpunkte: die Mitten der Dreiecksseiten AC und BC.
+  const restLinks = [A, C, R1];
+  const restRechts = [B, R2, C];
+  const ML = { x: (A.x + C.x) / 2, y: (A.y + C.y) / 2 };
+  const MR = { x: (B.x + C.x) / 2, y: (B.y + C.y) / 2 };
+
+  const b = buehneAuto(DR_W, DR_H, [
+    A, B, C, R1, R2,
+    ...drehSpur(restLinks, ML), ...drehSpur(restRechts, MR),
+  ]);
+
+  const winkel = t * Math.PI;
+  const drehUm = (M) => (p) => {
+    const dx = p.x - M.x, dy = p.y - M.y;
+    const co = Math.cos(winkel), si = Math.sin(winkel);
+    return { x: M.x + dx * co - dy * si, y: M.y + dx * si + dy * co };
+  };
+  const bewegtLinks = restLinks.map(drehUm(ML));
+  const bewegtRechts = restRechts.map(drehUm(MR));
+
+  // Das umschließende Rechteck bleibt immer sichtbar — es ist das Maß, an dem gemessen wird.
+  polygon(b, [A, B, R2, R1], null, FARBE.hilfe, 1.6, { "stroke-dasharray": "5 4", fill: "none" });
+
+  // Erst die Reststücke, dann das Dreieck darüber: Am Ende der Drehung liegen sie genau
+  // darunter, und das Dreieck bleibt als Ganzes lesbar.
+  polygon(b, bewegtLinks, "fl-flaeche-zweit", FARBE.zweit, 2.2);
+  polygon(b, bewegtRechts, "fl-flaeche-zweit", FARBE.zweit, 2.2);
+  polygon(b, [A, B, C], "fl-flaeche-fuell", FARBE.grund, 2.6);
+
+  // Die Höhe zerlegt Dreieck und Rechteck in einem Zug.
+  strecke(b, F, C, FARBE.hoehe, 2.2, { "stroke-dasharray": "6 4" });
+  rechterWinkel(b, F, { x: F.x + 1, y: 0 }, C, FARBE.hoehe);
+  mass(b, F, C, "h = " + num(h) + " cm", FARBE.hoehe, 36, 4);
+
+  strecke(b, A, B, FARBE.grund, 3.2);
+  mass(b, A, B, "g = " + num(g) + " cm", FARBE.grund, 0, 24);
+
+  // Die Drehpunkte liegen auf den Dreiecksseiten — dort hängen Teil und Reststück zusammen.
+  if (t > 0) {
+    punkt(b, ML, "M₁", -16, -6);
+    punkt(b, MR, "M₂", 16, -6);
+  }
+
+  punkt(b, A, "A", -10, 16);
+  punkt(b, B, "B", 10, 16);
+  punkt(b, C, "C", 0, -10);
+
+  zeige("dr-mount", b);
+
+  const flaeche = (g * h) / 2;
+  document.getElementById("dr-bilanz").innerHTML =
+    `<span class="wc">g = ${num(g)} cm</span> &nbsp;·&nbsp; <span class="wr">h = ${num(h)} cm</span><br>` +
+    `Das Dreieck und die beiden Reststücke füllen zusammen das Rechteck — und die Reststücke sind ` +
+    `zusammen genauso groß wie das Dreieck:<br>` +
+    `<span class="wb">2 · A = g · h = ${num(g)} · ${num(h)} = ${num(g * h)} cm²</span> &nbsp;⟹&nbsp; ` +
+    `<span class="wa">A = ½ · g · h = ${num(flaeche)} cm²</span>`;
+
+  document.getElementById("dr-text").textContent =
+    t === 0
+      ? `Das Dreieck steckt in einem Rechteck mit den Seiten ${num(g)} cm und ${num(h)} cm. Neben dem Dreieck bleiben zwei orange Reststücke übrig. Drehe sie mit dem Regler nach innen.`
+      : t < 1
+        ? `Die Reststücke sind um ${Math.round(t * 180)}° gedreht. Sie drehen sich um M₁ und M₂, die Mitten der Dreiecksseiten — dort hängen sie am Dreieck fest.`
+        : `Nach der halben Drehung liegen beide Reststücke genau auf dem Dreieck: Sie decken es lückenlos und ohne Überstand ab. Zusammen sind sie also genauso groß wie das Dreieck — und beide zusammen füllen das Rechteck ${num(g)} cm · ${num(h)} cm = ${num(g * h)} cm². Das Dreieck ist die Hälfte davon.`;
+}
+
+// ---------- 2b. Welche Höhe gehört zu welcher Grundseite? ----------
+
+const GH_W = 560, GH_H = 300;
+// Feste Zahlen statt Reglern: Hier geht es nicht um die Größe der Figur, sondern darum, dass
+// DREI verschiedene Rechnungen dieselbe Zahl ergeben. Dafür muss die Figur stillstehen.
+const GH_A = { x: 0, y: 0 }, GH_B = { x: 8, y: 0 }, GH_C = { x: 2.5, y: 4.5 };
+
+function renderGrundseite() {
+  const wahl = document.querySelector('input[name="gh-seite"]:checked').value;
+  const ecken = { A: GH_A, B: GH_B, C: GH_C };
+  // Zu jeder Wahl: die Grundseite (zwei Ecken) und die Ecke, aus der das Lot fällt.
+  const faelle = {
+    c: { von: "A", bis: "B", spitze: "C", name: "c = AB" },
+    a: { von: "B", bis: "C", spitze: "A", name: "a = BC" },
+    b: { von: "C", bis: "A", spitze: "B", name: "b = CA" },
+  };
+  const f = faelle[wahl];
+  const P = ecken[f.von], Q = ecken[f.bis], S = ecken[f.spitze];
+
+  // Der Höhenfußpunkt kann außerhalb der Seite liegen; die Bühne muss ihn mitnehmen.
+  const ux0 = Q.x - P.x, uy0 = Q.y - P.y;
+  const lam0 = ((S.x - P.x) * ux0 + (S.y - P.y) * uy0) / (ux0 * ux0 + uy0 * uy0);
+  const L0 = { x: P.x + lam0 * ux0, y: P.y + lam0 * uy0 };
+  const b = buehneAuto(GH_W, GH_H, [GH_A, GH_B, GH_C, L0]);
+
+  polygon(b, [GH_A, GH_B, GH_C], "fl-flaeche-fuell", "#6b7280", 2);
+
+  // Grundseite hervorheben.
+  strecke(b, P, Q, FARBE.grund, 3.6);
+
+  // Lot von S auf die Gerade PQ. Der Fußpunkt darf außerhalb der Strecke liegen — dann wird
+  // die Gerade verlängert gezeichnet, genau wie im Heft.
+  const ux = Q.x - P.x, uy = Q.y - P.y;
+  const lam = ((S.x - P.x) * ux + (S.y - P.y) * uy) / (ux * ux + uy * uy);
+  const L = { x: P.x + lam * ux, y: P.y + lam * uy };
+  if (lam < 0 || lam > 1) {
+    const e1 = { x: P.x + Math.min(0, lam - 0.08) * ux, y: P.y + Math.min(0, lam - 0.08) * uy };
+    const e2 = { x: P.x + Math.max(1, lam + 0.08) * ux, y: P.y + Math.max(1, lam + 0.08) * uy };
+    strecke(b, e1, e2, FARBE.hilfe, 1.4, { "stroke-dasharray": "5 4" });
+  }
+  strecke(b, S, L, FARBE.hoehe, 2.4, { "stroke-dasharray": "6 4" });
+  rechterWinkel(b, L, P, S, FARBE.hoehe);
+
+  const laenge = Math.hypot(ux, uy);
+  const hoehe = Math.hypot(S.x - L.x, S.y - L.y);
+  mass(b, P, Q, f.name, FARBE.grund, 0, lam >= 0 && lam <= 1 && wahl === "c" ? 24 : -14);
+  mass(b, S, L, "h_" + wahl, FARBE.hoehe, 24, 0);
+
+  punkt(b, GH_A, "A", -10, 16);
+  punkt(b, GH_B, "B", 12, 16);
+  punkt(b, GH_C, "C", 0, -10);
+
+  zeige("gh-mount", b);
+
+  // Der Flächeninhalt wird EINMAL exakt aus den Koordinaten bestimmt; die drei Zeilen zeigen
+  // dann, dass jedes Paar aus Seite und zugehöriger Höhe dieselbe Zahl liefert.
+  const A = polygonFlaeche([GH_A, GH_B, GH_C]);
+  const seiten = [
+    { k: "c", l: Math.hypot(GH_B.x - GH_A.x, GH_B.y - GH_A.y) },
+    { k: "a", l: Math.hypot(GH_C.x - GH_B.x, GH_C.y - GH_B.y) },
+    { k: "b", l: Math.hypot(GH_A.x - GH_C.x, GH_A.y - GH_C.y) },
+  ];
+  document.getElementById("gh-bilanz").innerHTML =
+    seiten.map((s) => {
+      const hs = (2 * A) / s.l;
+      const aktiv = s.k === wahl;
+      return `${aktiv ? "<strong>" : ""}½ · <span class="wc">${s.k} ${zeichen(s.l, 2)} ${num(s.l, 2)} cm</span> · ` +
+        `<span class="wr">h<sub>${s.k}</sub> ${zeichen(hs, 2)} ${num(hs, 2)} cm</span> = ` +
+        `<span class="wa">${num(A, 2)} cm²</span>${aktiv ? "</strong>" : ""}`;
+    }).join("<br>") +
+    `<br><span class="progress-note">Alle Längen sind an der Zeichnung gemessen. Drei verschiedene Rechnungen, ein Ergebnis: ` +
+    `<span class="wa">A = ${num(A, 2)} cm²</span>.</span>`;
+
+  document.getElementById("gh-text").textContent =
+    wahl === "c"
+      ? "Zur Seite c gehört die Höhe von C aus. Ihr Fußpunkt liegt auf der Strecke AB."
+      : wahl === "a"
+        ? "Zur Seite a gehört die Höhe von A aus — sie steht senkrecht auf BC, nicht auf der waagerechten Seite."
+        : "Zur Seite b gehört die Höhe von B aus. Hier liegt der Fußpunkt außerhalb der Strecke; dann wird die Seite als Gerade verlängert.";
+}
+
+// ================= 3. Das Parallelogramm =================
+//
+// Diese Herleitung braucht das Dreieck nicht — sie führt das Parallelogramm in einem Zug auf
+// das Rechteck zurück: links entlang der Höhe abschneiden, das Dreieck nach rechts schieben.
+// Wer mag, kann dasselbe Ergebnis aber auch aus Abschnitt 2 ablesen: Eine Diagonale zerlegt
+// das Parallelogramm in zwei deckungsgleiche Dreiecke mit derselben Grundseite g und derselben
+// Höhe h, also A = 2 · ½ · g · h = g · h. Beide Wege stehen auf der Seite.
 
 const PA_W = 620, PA_H = 320;
 
@@ -347,156 +540,6 @@ function renderParallelogramm() {
       : t < 1
         ? `Das Dreieck ist auf halbem Weg. Es verändert dabei weder Form noch Größe — es wird nur verschoben.`
         : `Fertig: Aus dem Parallelogramm ist ein Rechteck mit den Seiten ${num(g)} cm und ${num(h)} cm geworden. Kein Stück ist verschwunden, keines dazugekommen — also haben beide Figuren denselben Flächeninhalt.`;
-}
-
-// ================= 3. Das Dreieck =================
-
-const DR_W = 660, DR_H = 420;
-
-function renderDreieck() {
-  const g = reglerZahl("dr-g");
-  const h = reglerZahl("dr-h");
-  const cx = reglerZahl("dr-cx");
-  const t = reglerZahl("dr-t") / 100;
-  document.getElementById("dr-g-anzeige").textContent = num(g) + " cm";
-  document.getElementById("dr-h-anzeige").textContent = num(h) + " cm";
-  document.getElementById("dr-cx-anzeige").textContent = num(cx) + " cm";
-  document.getElementById("dr-t-anzeige").textContent = Math.round(t * 180) + "°";
-
-  const A = { x: 0, y: 0 }, B = { x: g, y: 0 }, C = { x: cx, y: h };
-
-  // Die Kopie dreht sich um den Mittelpunkt von BC. Nach 180° liegt A auf A' = B + C − A,
-  // und aus beiden Dreiecken zusammen ist ein Parallelogramm geworden.
-  const M = { x: (B.x + C.x) / 2, y: (B.y + C.y) / 2 };
-  const b = buehneAuto(DR_W, DR_H, [A, B, C, ...drehSpur([A, B, C], M)]);
-  const winkel = t * Math.PI;
-  const dreh = (p) => {
-    const dx = p.x - M.x, dy = p.y - M.y;
-    const co = Math.cos(winkel), si = Math.sin(winkel);
-    return { x: M.x + dx * co - dy * si, y: M.y + dx * si + dy * co };
-  };
-  const kopie = [A, B, C].map(dreh);
-
-  // Das Zielparallelogramm blass, sobald die Drehung begonnen hat.
-  const Astrich = { x: B.x + C.x - A.x, y: B.y + C.y - A.y };
-  if (t > 0) polygon(b, [A, B, Astrich, C], null, FARBE.hilfe, 1.5, { "stroke-dasharray": "5 4", fill: "none" });
-
-  polygon(b, kopie, "fl-flaeche-zweit", FARBE.zweit, 2.2);
-  polygon(b, [A, B, C], "fl-flaeche-fuell", FARBE.grund, 2.6);
-
-  // Höhe auf AB.
-  const F = { x: cx, y: 0 };
-  strecke(b, F, C, FARBE.hoehe, 2.2, { "stroke-dasharray": "6 4" });
-  rechterWinkel(b, F, { x: F.x + 1, y: 0 }, C, FARBE.hoehe);
-  mass(b, F, C, "h = " + num(h) + " cm", FARBE.hoehe, 36, 4);
-
-  strecke(b, A, B, FARBE.grund, 3.2);
-  mass(b, A, B, "g = " + num(g) + " cm", FARBE.grund, 0, 24);
-
-  // Der Drehpunkt ist die Mitte von BC — dort berühren sich die beiden Dreiecke immer.
-  strecke(b, B, C, FARBE.flaeche, 1.8, { "stroke-dasharray": "4 3" });
-  punkt(b, M, "M", 14, -6);
-
-  punkt(b, A, "A", -10, 16);
-  punkt(b, B, "B", 10, 16);
-  punkt(b, C, "C", 0, -10);
-
-  zeige("dr-mount", b);
-
-  const flaeche = (g * h) / 2;
-  document.getElementById("dr-bilanz").innerHTML =
-    `<span class="wc">g = ${num(g)} cm</span> &nbsp;·&nbsp; <span class="wr">h = ${num(h)} cm</span><br>` +
-    `Beide Dreiecke zusammen bilden ein Parallelogramm mit derselben Grundseite und derselben Höhe:<br>` +
-    `<span class="wb">2 · A = g · h = ${num(g)} · ${num(h)} = ${num(g * h)} cm²</span> &nbsp;⟹&nbsp; ` +
-    `<span class="wa">A = ½ · g · h = ${num(flaeche)} cm²</span>`;
-
-  document.getElementById("dr-text").textContent =
-    t === 0
-      ? "Die zweite Kopie liegt noch genau auf dem Dreieck. Drehe sie mit dem Regler um den Punkt M."
-      : t < 1
-        ? `Die Kopie ist um ${Math.round(t * 180)}° gedreht. Der Punkt M bleibt dabei fest — er ist die Mitte der Seite BC.`
-        : `Nach der halben Drehung passen beide Dreiecke lückenlos zu einem Parallelogramm zusammen. Es hat dieselbe Grundseite ${num(g)} cm und dieselbe Höhe ${num(h)} cm — also ist das Dreieck halb so groß.`;
-}
-
-// ---------- 3b. Welche Höhe gehört zu welcher Grundseite? ----------
-
-const GH_W = 560, GH_H = 300;
-// Feste Zahlen statt Reglern: Hier geht es nicht um die Größe der Figur, sondern darum, dass
-// DREI verschiedene Rechnungen dieselbe Zahl ergeben. Dafür muss die Figur stillstehen.
-const GH_A = { x: 0, y: 0 }, GH_B = { x: 8, y: 0 }, GH_C = { x: 2.5, y: 4.5 };
-
-function renderGrundseite() {
-  const wahl = document.querySelector('input[name="gh-seite"]:checked').value;
-  const ecken = { A: GH_A, B: GH_B, C: GH_C };
-  // Zu jeder Wahl: die Grundseite (zwei Ecken) und die Ecke, aus der das Lot fällt.
-  const faelle = {
-    c: { von: "A", bis: "B", spitze: "C", name: "c = AB" },
-    a: { von: "B", bis: "C", spitze: "A", name: "a = BC" },
-    b: { von: "C", bis: "A", spitze: "B", name: "b = CA" },
-  };
-  const f = faelle[wahl];
-  const P = ecken[f.von], Q = ecken[f.bis], S = ecken[f.spitze];
-
-  // Der Höhenfußpunkt kann außerhalb der Seite liegen; die Bühne muss ihn mitnehmen.
-  const ux0 = Q.x - P.x, uy0 = Q.y - P.y;
-  const lam0 = ((S.x - P.x) * ux0 + (S.y - P.y) * uy0) / (ux0 * ux0 + uy0 * uy0);
-  const L0 = { x: P.x + lam0 * ux0, y: P.y + lam0 * uy0 };
-  const b = buehneAuto(GH_W, GH_H, [GH_A, GH_B, GH_C, L0]);
-
-  polygon(b, [GH_A, GH_B, GH_C], "fl-flaeche-fuell", "#6b7280", 2);
-
-  // Grundseite hervorheben.
-  strecke(b, P, Q, FARBE.grund, 3.6);
-
-  // Lot von S auf die Gerade PQ. Der Fußpunkt darf außerhalb der Strecke liegen — dann wird
-  // die Gerade verlängert gezeichnet, genau wie im Heft.
-  const ux = Q.x - P.x, uy = Q.y - P.y;
-  const lam = ((S.x - P.x) * ux + (S.y - P.y) * uy) / (ux * ux + uy * uy);
-  const L = { x: P.x + lam * ux, y: P.y + lam * uy };
-  if (lam < 0 || lam > 1) {
-    const e1 = { x: P.x + Math.min(0, lam - 0.08) * ux, y: P.y + Math.min(0, lam - 0.08) * uy };
-    const e2 = { x: P.x + Math.max(1, lam + 0.08) * ux, y: P.y + Math.max(1, lam + 0.08) * uy };
-    strecke(b, e1, e2, FARBE.hilfe, 1.4, { "stroke-dasharray": "5 4" });
-  }
-  strecke(b, S, L, FARBE.hoehe, 2.4, { "stroke-dasharray": "6 4" });
-  rechterWinkel(b, L, P, S, FARBE.hoehe);
-
-  const laenge = Math.hypot(ux, uy);
-  const hoehe = Math.hypot(S.x - L.x, S.y - L.y);
-  mass(b, P, Q, f.name, FARBE.grund, 0, lam >= 0 && lam <= 1 && wahl === "c" ? 24 : -14);
-  mass(b, S, L, "h_" + wahl, FARBE.hoehe, 24, 0);
-
-  punkt(b, GH_A, "A", -10, 16);
-  punkt(b, GH_B, "B", 12, 16);
-  punkt(b, GH_C, "C", 0, -10);
-
-  zeige("gh-mount", b);
-
-  // Der Flächeninhalt wird EINMAL exakt aus den Koordinaten bestimmt; die drei Zeilen zeigen
-  // dann, dass jedes Paar aus Seite und zugehöriger Höhe dieselbe Zahl liefert.
-  const A = polygonFlaeche([GH_A, GH_B, GH_C]);
-  const seiten = [
-    { k: "c", l: Math.hypot(GH_B.x - GH_A.x, GH_B.y - GH_A.y) },
-    { k: "a", l: Math.hypot(GH_C.x - GH_B.x, GH_C.y - GH_B.y) },
-    { k: "b", l: Math.hypot(GH_A.x - GH_C.x, GH_A.y - GH_C.y) },
-  ];
-  document.getElementById("gh-bilanz").innerHTML =
-    seiten.map((s) => {
-      const hs = (2 * A) / s.l;
-      const aktiv = s.k === wahl;
-      return `${aktiv ? "<strong>" : ""}½ · <span class="wc">${s.k} ${zeichen(s.l, 2)} ${num(s.l, 2)} cm</span> · ` +
-        `<span class="wr">h<sub>${s.k}</sub> ${zeichen(hs, 2)} ${num(hs, 2)} cm</span> = ` +
-        `<span class="wa">${num(A, 2)} cm²</span>${aktiv ? "</strong>" : ""}`;
-    }).join("<br>") +
-    `<br><span class="progress-note">Alle Längen sind an der Zeichnung gemessen. Drei verschiedene Rechnungen, ein Ergebnis: ` +
-    `<span class="wa">A = ${num(A, 2)} cm²</span>.</span>`;
-
-  document.getElementById("gh-text").textContent =
-    wahl === "c"
-      ? "Zur Seite c gehört die Höhe von C aus. Ihr Fußpunkt liegt auf der Strecke AB."
-      : wahl === "a"
-        ? "Zur Seite a gehört die Höhe von A aus — sie steht senkrecht auf BC, nicht auf der waagerechten Seite."
-        : "Zur Seite b gehört die Höhe von B aus. Hier liegt der Fußpunkt außerhalb der Strecke; dann wird die Seite als Gerade verlängert.";
 }
 
 // ================= 4. Das Trapez =================
@@ -722,13 +765,13 @@ function initQuizzes() {
     q: "Warum steht in der Dreiecksformel der Faktor ½?",
     options: [
       "Weil ein Dreieck nur drei statt vier Ecken hat",
-      "Weil zwei gleiche Dreiecke zusammen ein Parallelogramm mit derselben Grundseite und Höhe ergeben",
+      "Weil das Dreieck und die beiden Reststücke zusammen das umschließende Rechteck füllen — und die Reststücke zusammen genauso groß sind wie das Dreieck",
       "Weil die Höhe im Dreieck immer halb so lang ist wie die Grundseite",
       "Weil man den Flächeninhalt bei schiefen Figuren grundsätzlich halbiert",
     ],
     correct: 1,
     explain:
-      "Dreht man eine Kopie des Dreiecks um 180° um die Mitte einer Seite, so passen beide lückenlos zu einem Parallelogramm zusammen. Dieses hat dieselbe Grundseite g und dieselbe Höhe h, sein Flächeninhalt ist also g · h. Weil es aus zwei deckungsgleichen Dreiecken besteht, hat ein einzelnes davon den halben Inhalt: A = ½ · g · h.",
+      "Das Dreieck steckt in einem Rechteck der Breite g und der Höhe h. Die Höhe zerlegt beide auf einmal: das Rechteck in zwei Teilrechtecke, das Dreieck in zwei rechtwinklige Teile. In jedem Teilrechteck ist der Dreiecksteil genau so groß wie das Reststück daneben — eine halbe Drehung führt das eine in das andere über. Jedes Teilrechteck wird also halbiert, und damit auch das ganze: A = ½ · g · h.",
   });
 
   mountQuiz(document.getElementById("quiz-hoehe"), {
