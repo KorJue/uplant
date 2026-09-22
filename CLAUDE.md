@@ -1,0 +1,247 @@
+# uplant — Arbeitsanweisung
+
+Statische Lernseiten für Mathematik (HTML/CSS/Vanilla-JS, kein Build-Schritt,
+Auslieferung über GitHub Pages). Jede Seite ist ein **Selbstlernpfad**: erarbeiten,
+verstehen, üben — ohne Lehrkraft daneben.
+
+Maßstab sind die zuletzt entstandenen Seiten. Wer etwas Neues baut, sieht dort
+nach, bevor er etwas erfindet:
+
+| Vorbild | Pfad |
+| --- | --- |
+| Grundwissen 5–10 (34 Themen, einheitlicher Bauplan) | `mathematik/grundwissen-5-10/` |
+| Satz des Thales (Klasse 8, freier Aufbau, Konstruktion) | `mathematik/klasse-8/geometrie/satz-des-thales.*` |
+| Flächeninhalte (Klasse 8, bewegliche Herleitungen) | `mathematik/klasse-8/geometrie/flaecheninhalte.*` |
+
+---
+
+## 1. Der oberste Grundsatz
+
+**Eine Seite darf nie etwas behaupten, was sie nicht zeigt.**
+
+Daraus folgt alles Weitere. Eine Zeichnung, die „A = g · h" schreibt und eine
+Figur mit anderem Flächeninhalt zeichnet, ist schlimmer als gar keine Zeichnung:
+Sie bringt jemandem etwas Falsches bei, der keine Möglichkeit hat, es zu merken.
+Deshalb rechnet die Prüfung jede angezeigte Zahl unabhängig nach und liest jede
+Zeichnung aus dem gezeichneten SVG zurück.
+
+Zwei Folgerungen, die oft übersehen werden:
+
+* **Kein Vorgriff.** Eine Herleitung darf nur benutzen, was vorher schon
+  hergeleitet wurde. Auf der Flächeninhalte-Seite steht das Dreieck vor dem
+  Parallelogramm, also wird es durch Ergänzen zum *Rechteck* hergeleitet — der
+  sonst übliche Weg über das Parallelogramm wäre ein Zirkelschluss. Die Prüfung
+  wacht darüber (`test-flaecheninhalte.js`, Abschnitt `geruest`).
+* **Kein Stoff aus späteren Jahrgängen.** Wo eine schräge Länge als Zahl
+  gebraucht wird, der Satz des Pythagoras aber noch nicht dran ist, steht
+  „gemessen" daran — und die Prüfung verlangt dieses Wort.
+
+## 2. Bewegung statt Standbild
+
+Jede Herleitung bewegt wirklich etwas: Das abgeschnittene Dreieck wandert, die
+Kopie dreht sich, die Reststücke klappen ein. Ein Standbild *behauptet*, die
+Flächen seien gleich; eine Bewegung, bei der kein Stück verschwindet und keines
+dazukommt, *zeigt* es.
+
+Technisch heißt das: Die Bewegung muss **starr** sein. Jedes bewegte Teil behält
+in jeder Zwischenstellung seinen Flächeninhalt, und die Prüfung misst das an
+mehreren Reglerstellungen nach — nicht nur am Anfang und am Ende.
+
+Die Bühne wird über `buehneAuto(breite, maxHoehe, punkte)` aufgespannt und
+bekommt die **gesamte Bewegungsspur** mitgegeben (`drehSpur()`), sonst ragt ein
+gedrehtes Teil auf halbem Weg aus dem Bild und sieht aus, als wäre es
+zerschnitten. Die Breite steht fest, die Höhe ergibt sich aus dem Inhalt — sonst
+springt die Zeichnung beim Ziehen am Regler seitlich weg.
+
+## 3. Gerechnet wird mit Reglerwerten, nie mit Bildschirmkoordinaten
+
+Aus Koordinaten käme `15.749999999999998` heraus, und die Bilanz behauptete dann
+etwas anderes als die Formel. Die Zeichnung ist Anzeige, nicht Rechengrundlage.
+
+Ausgabe immer über den `num()`-Helfer der Seite (deutsche Schreibweise,
+`toLocaleString("de-DE")`), gerundet **vor** der Ausgabe, damit `−0,0001` nicht
+als „−0" erscheint. Für „=" gegen „≈" gibt es `zeichen()`: Entscheidend ist, ob
+die Anzeige den Wert mit der gewählten Stellenzahl genau trifft — nicht, ob er
+ganzzahlig ist.
+
+## 4. Aufbau einer Seite
+
+```html
+<section class="card" id="sec-…">      <!-- ein Erarbeitungsschritt -->
+  <h2>…</h2>
+  <p>…</p>
+  <div class="widget">                  <!-- die bewegliche Zeichnung -->
+    <div class="btn-row"><label>… <input type="range" id="xx-…"> <span id="xx-…-anzeige"></span></label></div>
+    <div class="th-wrap" id="xx-mount"></div>
+    <div class="th-bilanz" id="xx-bilanz"></div>   <!-- die nachgerechnete Bilanz -->
+    <div id="xx-text" class="event-result"></div>  <!-- was gerade zu sehen ist -->
+  </div>
+  <div class="wissen-box">…</div>       <!-- Merksatz, rot -->
+  <div class="beispiel-box">…</div>     <!-- durchgerechnet, grün -->
+  <div class="achtung-box">…</div>      <!-- typischer Fehler -->
+  <p class="hinweis-box">💡 …</p>       <!-- Vertiefung -->
+  <div class="formula-block">…</div>    <!-- freistehende Formel -->
+  <div class="quiz" id="quiz-…"></div>  <!-- Kontrollfrage zu DIESEM Abschnitt -->
+</section>
+```
+
+Feste Reihenfolge am Seitenende: **Vernetzung** (`sec-vernetzung`,
+`<ul class="vernetzung-liste">` mit „Baut auf" / „Führt weiter zu"), dann
+**Formelsammlung** (`sec-formelsammlung`), dann **Übungsaufgaben**
+(`sec-uebungen` mit einem leeren Mount-`div`).
+
+Eingebunden werden `assets/theme.js` (vor allem anderen, gegen Aufblitzen im
+Dunkelmodus), `assets/site.css`, `mathematik/aufgaben.css`, die eigene
+`lernpfad.css` und am Ende `<script type="module" src="lernpfad.js?v=N">`.
+Die Versionsnummer im Dateinamen wird bei inhaltlichen Änderungen erhöht.
+
+**Jeder Erarbeitungsabschnitt bekommt seine eigene Kontrollfrage.** Vier
+Antworten, genau eine richtig, und eine Erklärung, die auch bei einer richtigen
+Antwort noch etwas erklärt — nicht bloß „genau!". Die richtige Antwort darf
+**nicht immer an derselben Stelle** stehen, sonst lässt sich die ganze Seite
+durchklicken, ohne eine Frage zu lesen.
+
+### Farbcodierung
+
+Durchgehend auf allen Geometrieseiten: Grundseite **blau**, Höhe **violett**,
+Flächeninhalt **grün**, zweites/umgelegtes Stück **orange**, Warnung **rot**,
+Hilfslinie **grau**. Im JS als `FARBE`-Objekt, im CSS als `.th-name-a/-b/-c/-r/-g`
+beziehungsweise `.wa/.wb/.wc/.wr/.wg`.
+
+Jede Farbe braucht eine Entsprechung unter
+`:root[data-theme="dark"]`. Dunkelgrün, Violett und Dunkelrot verschwinden auf
+dunklem Grund sonst fast vollständig — `tests/lib/kontrast.js` misst den
+Leuchtdichteabstand gegen den *wirklichen* Untergrund und verlangt mindestens 45.
+
+## 5. Übungsaufgaben
+
+Gebaut über die gemeinsame Werkbank `mathematik/aufgaben.js`:
+
+```js
+import { mountUebungsaufgaben } from "../../aufgaben.js?v=1";
+mountUebungsaufgaben(container, AUFGABEN, { parse: eigeneZahlenerkennung });
+```
+
+Vier Stufen (`einfach`, `mittel`, `schwierig`, `komplex`). Jede Aufgabe ist
+`{ schwierigkeit, titel, generate }`; `generate()` würfelt und liefert
+`promptHtml`, `correct`+`tolerance` (oder `felder[]`, oder `check(roh)`),
+`hinweis(roh, wert)`, `tipps[]` und `musterloesungHtml`. Der vollständige
+Vertrag steht als Kommentar über `mountUebungsaufgaben()`.
+
+Verbindlich:
+
+* **Konstruktiv würfeln, nie verwerfen.** Kandidatenlisten werden **vorher**
+  gefiltert; `ohneKollision(kandidaten, werte)` wählt aus dem gesiebten Rest.
+  Rejection Sampling in einer Schleife ist verboten — es kann hängen bleiben,
+  und niemand merkt es, bis es passiert.
+* **Fehlerwerte paarweise verschieden.** Fällt ein Fehlerwert mit der Lösung
+  zusammen, bekäme eine falsche Rechnung ein ✓; fallen zwei Fehlerwerte
+  zusammen, wäre die Diagnose mehrdeutig. Wo auf einem Wert kein Hinweis liegt,
+  gehört dort `NaN` in die Liste, nicht der Wert selbst.
+* **Exakt rechnen.** Vergleiche laufen über `trifft(val, soll)` mit Toleranz,
+  nie über `===` — `0,1 + 0,2` ist nicht `0,3`.
+* **Hinweise erklären den Fehler**, sie stellen ihn nicht bloß fest. „Das
+  Halbieren fehlt: … ist das umschließende Rechteck, nicht das Dreieck" statt
+  „Falsch".
+* **Musterlösung immer**, mit dem gerechneten Weg in Schritten — und bei
+  Umkehraufgaben mit einer **Probe**.
+
+## 6. Prüfungen
+
+`tests/README.md` beschreibt Aufbau und Werkzeuge im Einzelnen und ist beim
+Schreiben einer neuen Prüfung die erste Anlaufstelle. Das Wichtigste:
+
+```bash
+bash tests/alle-tests.sh              # alles (mehrere Minuten)
+bash tests/alle-tests.sh flaechen     # nur passende Dateinamen
+node tests/werkzeug-streuung.js       # Streuungsschranken messen
+```
+
+Ein vollständiger Lauf dauert lange: im Hintergrund starten, Ausgabe **direkt in
+eine Datei** schreiben (nicht durch eine Pipe — die puffert, und bei einem
+Abbruch ist alles weg), und keine geprüfte Datei anfassen, solange er läuft.
+
+**Eine neue Seite ohne zugehörige `tests/…/test-*.js` gilt als unfertig.**
+
+### Was eine fachliche Prüfung leisten muss
+
+* **Unabhängig nachrechnen.** Die Prüfung darf die Formel der Seite nicht
+  wiederverwenden, sondern muss sie zweitrechnen. Flächen aus dem SVG über die
+  Gaußsche Trapezformel, Maßstab aus zwei bekannten Punkten zurückgerechnet.
+* **Über viele Reglerstellungen laufen**, nicht nur über die Anfangsstellung.
+* **Aufgaben von beiden Seiten prüfen** (`pruefeAufgabe()`): Die richtige
+  Antwort muss anerkannt werden, und **jeder** vorgesehene Fehlerwert muss genau
+  seinen Hinweis auslösen.
+* **Auch im Dunkelmodus laufen** und dort `pruefeKontrast()` mitnehmen;
+  `pruefeNotation()` in beiden Modi.
+* **Skriptfehler sind Fehler**: `for (const s of page.stoerungen) pruefe(false, s)`.
+
+### Fallstricke, die mehrfach Zeit gekostet haben
+
+* **In `muster`-Zeichenketten darf kein HTML stehen.** Die Rückmeldung wird über
+  `innerText` gelesen, `<em>`/`<strong>` sind dort weg. Also `"halben Periode"`,
+  nicht `"halbe</em> Periode"`.
+* **Zahlen, die die Prüfung braucht, gehören in den Aufgabentext** — nicht nur
+  in eine Feldbeschriftung. `wuerfle()` liest `.aufgabe-prompt`.
+* **Streuungsschranken werden gemessen, nicht geschätzt.** `ohneKollision()`
+  siebt einen guten Teil der Liste weg, und bei gemischten Zweigen (erst Fall
+  wählen, dann Kandidat) liegt jede Rechnung auf dem Papier zu hoch. Der Wert
+  für `mindestensVerschieden` kommt aus `werkzeug-streuung.js`, die Messung als
+  Kommentar daneben.
+* **Große Kandidatenlisten nicht beim Laden des Moduls bauen.** 40 000 Einträge
+  beim Seitenaufbau sind spürbar; Faktoren getrennt ziehen.
+* **`page.mouse.click` rollt die Seite nicht.** Vor jedem Klick
+  `scrollIntoView`, sonst landet der Klick außerhalb des Fensters und geht
+  stumm verloren.
+* **Punktnamen über die Gruppe zuordnen** (`.th-punkt-gruppe[data-name]`), nicht
+  über den nächstgelegenen Text — bei zwei dicht beieinanderliegenden Punkten
+  vertauscht das die Zuordnung.
+
+### Die Prüfung selbst prüfen
+
+Eine Prüfung, die nicht fehlschlagen kann, ist wertlos. Bei jeder neuen Prüfung:
+**eine gezielte Mutation in den Code einbauen und nachsehen, ob sie anschlägt** —
+eine Ecke um 0,4 cm verschieben, einen Lösungswert um 2 % verstellen. Schlägt
+sie nicht an, fehlt eine Prüfung. Danach zurücksetzen.
+
+So wurde auf der Flächeninhalte-Seite gefunden, dass der Zusammenschau-Abschnitt
+zwar die Ecken zählte, aber den gezeichneten Flächeninhalt nie gemessen hat.
+
+## 7. Sprache und Schreibweise
+
+Alle Inhalte auf Deutsch, auch Code-Kommentare, Commit-Nachrichten und
+Prüfmeldungen. Typografisch sauber: echtes Minuszeichen `−`, Malpunkt `·`,
+Anführungszeichen „…", Dezimalkomma, Tausenderpunkt.
+
+`tests/lib/notation.js` lehnt Schreibweisen ab, die beim Aufbereiten von Zahlen
+entstehen: `−−`, `+ −`, `NaN`, `undefined`, `Infinity`, `= =`, `· ·`, `[object`,
+und `−0`. Sie sind der zuverlässigste Anzeiger für einen Fehler in der
+Zahlenaufbereitung — deshalb wird nicht das Symptom versteckt, sondern die
+Ursache behoben.
+
+Brüche werden als echte Brüche gesetzt, Zähler über Nenner:
+`<span class="bruch"><span class="z">a + c</span><span class="n">2</span></span>`.
+
+Kommentare erklären **warum**, nicht was. Eine Zeile, die festhält, warum ein
+Regler auf `0 ≤ v ≤ a − c` begrenzt ist, verhindert, dass jemand die Grenze
+später „aufräumt" und damit die Zeichnung falsch macht.
+
+## 8. Git
+
+Entwicklungszweig, Commit und Push wie in der jeweiligen Aufgabenstellung
+vorgegeben. **Kein Pull Request ohne ausdrückliche Bitte.**
+
+Commit-Nachrichten auf Deutsch: erste Zeile als Zusammenfassung, dann ein
+Absatz, der das **Warum** erklärt — besonders bei fachlichen Entscheidungen
+(„Die Dreiecksherleitung hat das Parallelogramm benutzt und hätte an erster
+Stelle vorgegriffen"). Kein Modellname in Commits, PR-Texten oder Code.
+
+## 9. Umgebung
+
+* Kein Build-Schritt, keine Abhängigkeiten zur Laufzeit. Was im Browser läuft,
+  steht als Quelltext im Repo.
+* Node für die Prüfungen: `/opt/node22/bin/node`,
+  `NODE_PATH=/opt/node22/lib/node_modules`.
+* Chromium liegt vorinstalliert unter `/opt/pw-browsers/chromium`.
+  **Kein `playwright install`** — weder nötig noch möglich.
+* Prüfserver: `python3 tests/server.py`, Port 8936 (`UPLANT_PORT`).
