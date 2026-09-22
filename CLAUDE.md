@@ -211,11 +211,57 @@ Verbindlich:
   gehört dort `NaN` in die Liste, nicht der Wert selbst.
 * **Exakt rechnen.** Vergleiche laufen über `trifft(val, soll)` mit Toleranz,
   nie über `===` — `0,1 + 0,2` ist nicht `0,3`.
+* **Vorzeichen nicht unterwegs verlieren.** `num(Math.abs(a))` in der Angabe
+  machte aus `−2 · (x − 3)²` ein `2 · (5 − 3)²` — die Aufgabe rechnete dann
+  etwas anderes, als sie zeigte. Das Vorzeichen gehört in einen einzigen
+  Helfer, nicht an jede Stelle einzeln.
+* **Ergebnisse müssen glatt sein.** Eine Aufgabe, deren Lösung
+  `7,333333…` lautet, ist keine gute Aufgabe. Kandidaten werden deshalb über
+  `glatt(x, stellen)` gefiltert — und das rechnet **ganzzahlig**
+  (`Math.round(x * f) - x * f`), damit `1,375 · 1000` nicht als `1374,9999…`
+  durchfällt.
+
+Die kleinen Helfer (`pick`, `trifft`, `glatt`, `ohneKollision`, `num`) stehen
+**in jeder Seite noch einmal**; geteilt wird nur `mountUebungsaufgaben()` und
+`parseFlexibleNumber()` aus `mathematik/aufgaben.js`. Wer sie sucht, findet sie
+also in der Nachbarseite — und wer eine davon verbessert, sollte wissen, dass
+die anderen davon nichts mitbekommen.
 * **Hinweise erklären den Fehler**, sie stellen ihn nicht bloß fest. „Das
   Halbieren fehlt: … ist das umschließende Rechteck, nicht das Dreieck" statt
   „Falsch".
 * **Musterlösung immer**, mit dem gerechneten Weg in Schritten — und bei
   Umkehraufgaben mit einer **Probe**.
+
+### Die Kollisionsprüfung — hier steckt der meiste Ärger
+
+`ohneKollision()` **wirft**, wenn nichts übrig bleibt. Das ist kein rot
+gewordener Test, sondern ein Absturz im Browser beim Würfeln — er trifft die
+Schülerin, nicht die Entwicklung. Deshalb:
+
+* **Die häufigste Ursache ist ein abgeleiteter Wert in der Liste, der mit einem
+  gegebenen zusammenfällt.** Bei der Trapezaufgabe stand `(2 · A) / (a + c)` in
+  der Liste — das *ist* die Höhe h, die schon drinstand. Also fiel jeder
+  Kandidat durch, und der Generator warf bei jedem Aufruf. In die Liste gehören
+  nur die **wirklich gegebenen** Größen und die **wirklich möglichen**
+  Fehlerwerte, jeder genau einmal.
+* Manche Fassungen haben deshalb eine **Frühwarnung**: Bleiben von mehr als 20
+  Kandidaten weniger als 2 übrig, werfen sie mit „vermutlich steht ein Wert
+  doppelt in der Liste". Diese Meldung ist fast immer wörtlich zu nehmen.
+* Ein Fall, der *nie* vorkommt, ist derselbe Fehler mit umgekehrtem Vorzeichen:
+  Bei 45° sind Sinus und Kosinus gleich, bei D = 0 fällt die Diskriminante mit
+  einem Quadrat zusammen, bei positivem Sinus ist `180° − x₂ = x₁`. Dann
+  kollidiert die Gruppe *immer* und der Sonderfall verschwindet lautlos aus dem
+  Aufgabenvorrat. Abhilfe: an dieser Stelle `NaN` eintragen
+  (`v.alpha === 45 ? NaN : …`), statt den Kandidaten zu opfern.
+* Für mehrere Eingabefelder gibt es `ohneFeldKollision(kandidaten, gruppen, eps)`:
+  Kollidieren müssen die Werte nur **innerhalb eines Feldes**, denn nur dort
+  entscheidet die Zahl über den Hinweis. Zwischen zwei Feldern darf dieselbe
+  Zahl stehen. `eps` darf eine Liste sein — ein auf ganze Grad gerundetes Feld
+  braucht einen anderen Mindestabstand als eines mit drei Nachkommastellen.
+* **Die Reihenfolge in der `falsch`-Liste ist bedeutsam.** Fallen zwei
+  Fehlerwerte auf dieselbe Zahl, nennt die Seite den zuerst geprüften Hinweis;
+  `pruefeAufgabe()` verlangt dann nur noch die Zurückweisung. Der aussagekräftigere
+  Hinweis gehört also nach vorn.
 
 ### Figuren in der Aufgabenstellung
 
@@ -256,11 +302,27 @@ ist schlimmer als keines.
 | Gesamt | `test-seiten-gesamt.js` | jede Seite: lädt hell und dunkel ohne Fehler, jeder Verweis und jede Sprungmarke lösen auf |
 | Zusagen | `test-alle-themen.js` | jedes Grundwissen-Thema: Regler lügen nicht, ≥ 3 Kontrollfragen mit genau vier Antworten und genau einer richtigen, vier Reiter, alle Aufgaben mit Musterlösung und ausreichender Streuung |
 | Fachlich | `themen/test-*.js`, `klasse-8/test-*.js` | der Inhalt einer einzelnen Seite |
+| Vollbild | `klasse-8/test-vollbild.js` | die Geometrieseiten mit „Zeichenfläche vergrößern" |
 
-Die ersten beiden finden ihre Seiten **selbst** (`tests/lib/themen.js` liest das
-Dateisystem). Ein neues Grundwissen-Thema wird dadurch automatisch mitgeprüft
-und kann nicht stillschweigend ungeprüft bleiben — es muss die Zusagen aber auch
-von Anfang an erfüllen.
+**Was sich selbst findet und was nicht** — dieser Unterschied ist die häufigste
+Quelle stillschweigend ungeprüfter Neuerungen:
+
+* `test-seiten-gesamt.js` und `test-alle-themen.js` lesen das Dateisystem
+  (`tests/lib/themen.js`). Ein neues Grundwissen-Thema wird dadurch
+  **automatisch** mitgeprüft — es muss die Zusagen also von Anfang an erfüllen.
+* `test-vollbild.js` dagegen führt seine Seiten in einer **fest verdrahteten
+  Liste** `SEITEN` samt Knopf- und SVG-Kennung. Eine neue Geometrieseite mit
+  Zeichenfläche muss dort von Hand eingetragen werden, sonst bleibt ihr Vollbild
+  ungeprüft.
+* Ebenso braucht jede neue Seite ihre eigene fachliche Prüfdatei — die entsteht
+  nicht von selbst.
+
+Das Vollbild hat drei Fehler, die nachweislich schon aufgetreten sind und
+deshalb festgehalten sind: Der Knopf zum Beenden muss sichtbar **und** anklickbar
+bleiben (sonst ließ sich das Vollbild auf dem iPad nicht mehr verlassen), die
+Zeichenfläche muss wirklich größer werden (gemessen wird die **nutzbare** Fläche,
+also der von der `viewBox` gefüllte Teil — nicht das Rechteck des Elements), und
+ein Klick muss dort ankommen, wo er hinzeigt.
 
 ### Was eine fachliche Prüfung leisten muss
 
@@ -286,12 +348,21 @@ von Anfang an erfüllen.
   siebt einen guten Teil der Liste weg, und bei gemischten Zweigen (erst Fall
   wählen, dann Kandidat) liegt jede Rechnung auf dem Papier zu hoch. Der Wert
   für `mindestensVerschieden` kommt aus `werkzeug-streuung.js`, die Messung als
-  Kommentar daneben.
+  Kommentar daneben. Eine zu hohe Schranke macht den Gesamtlauf **launisch**:
+  Er schlägt hin und wieder an einer Stelle fehl, an der nichts kaputt ist —
+  das ist schlimmer als eine etwas zu niedrige Schranke.
+* **Die Schranke hängt an der Rundenzahl.** Das Werkzeug meldet sie für
+  **30 Züge**. Prüft eine Aufgabe mit anderer `runden`-Zahl, gehört die Schranke
+  dafür neu gerechnet (`UPLANT_ZUEGE=25 node tests/werkzeug-streuung.js …`):
+  Mehr Züge bedeuten mehr verschiedene Aufgaben und damit eine höhere Schranke.
 * **Große Kandidatenlisten nicht beim Laden des Moduls bauen.** 40 000 Einträge
   beim Seitenaufbau sind spürbar; Faktoren getrennt ziehen.
 * **`page.mouse.click` rollt die Seite nicht.** Vor jedem Klick
   `scrollIntoView`, sonst landet der Klick außerhalb des Fensters und geht
-  stumm verloren.
+  stumm verloren. Und der Rahmen der Zeichenfläche gehört vor **jedem** Klick
+  neu gemessen — sonst sind die späteren Klicks um die Rollhöhe versetzt, und
+  die Prüfung meldet einen Fehler, den es gar nicht gibt.
+  `tests/lib/konstruieren.js` nimmt einem das ab (`neueWerkbank()`).
 * **Punktnamen über die Gruppe zuordnen** (`.th-punkt-gruppe[data-name]`), nicht
   über den nächstgelegenen Text — bei zwei dicht beieinanderliegenden Punkten
   vertauscht das die Zuordnung.
