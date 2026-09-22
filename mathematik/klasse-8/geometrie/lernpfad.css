@@ -599,3 +599,118 @@
 :root[data-theme="dark"] .th-urteil.aussen { border-left-color: #8ab4ff; color: #8ab4ff; }
 :root[data-theme="dark"] .th-punkt { fill: #e6e8eb; }
 :root[data-theme="dark"] .th-punkt-name { fill: #e6e8eb; }
+
+
+/* ================= Flächeninhalte (Dreieck, Parallelogramm, Trapez) ================= */
+
+/* Die Zeichenflächen dieser Seite tragen dieselben Klassen wie die des Thales-Pfads
+   (.th-wrap, .th-flaeche, .th-bilanz) — nur die Beschriftungen und die Formelübersicht
+   sind neu. */
+
+.fl-mass { font-size: 13px; font-weight: 700; }
+
+/* Die Formelübersicht: drei Karten nebeneinander, auf schmalen Schirmen untereinander. */
+.fl-formel-reihe {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.8rem;
+  margin: 1rem 0;
+}
+.fl-formel-karte {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  background: var(--card-bg);
+}
+.fl-formel-karte h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.02rem;
+}
+.fl-formel-karte .fl-formel {
+  font-family: "Cambria Math", Cambria, "STIX Two Math", serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 0.5rem 0.4rem;
+  background: var(--bg);
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+.fl-formel-karte p { margin: 0.4rem 0 0; font-size: 0.9rem; }
+
+/* Die Formelsammlung als Tabelle — zum Nachschlagen während der Übungsaufgaben. */
+.fl-tabelle {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.9rem 0;
+  font-size: 0.94rem;
+}
+.fl-tabelle th, .fl-tabelle td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.65rem;
+  text-align: left;
+  vertical-align: top;
+}
+.fl-tabelle th { background: var(--bg); font-weight: 700; }
+.fl-tabelle td.fl-formel-zelle {
+  font-family: "Cambria Math", Cambria, "STIX Two Math", serif;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Die kleinen Figuren in den Aufgabentexten. Sie ersetzen das Bild im Buch: Die Maße
+   stehen an der Figur, nicht im Text. */
+.fl-aufgaben-figur {
+  display: block;
+  margin: 0.6rem 0;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Die Formelanzeige der Zusammenschau: die zutreffende Zeile wird hervorgehoben. */
+.fl-fall-liste { list-style: none; padding: 0; margin: 0.6rem 0 0; }
+.fl-fall-liste li {
+  padding: 0.45rem 0.7rem;
+  border-radius: 6px;
+  margin-bottom: 0.3rem;
+  border-left: 3px solid transparent;
+  font-size: 0.94rem;
+}
+.fl-fall-liste li.aktiv {
+  border-left-color: var(--accent);
+  background: var(--bg);
+  font-weight: 700;
+}
+
+.fl-flaeche-fuell { fill: #1d4ed8; fill-opacity: 0.13; }
+.fl-flaeche-zweit { fill: #b3650a; fill-opacity: 0.16; }
+.fl-flaeche-teil { fill: #157347; fill-opacity: 0.2; }
+.fl-raster { stroke: #9aa4b1; stroke-width: 0.6; opacity: 0.35; }
+
+:root[data-theme="dark"] .fl-flaeche-fuell { fill: #8ab4ff; fill-opacity: 0.16; }
+:root[data-theme="dark"] .fl-flaeche-zweit { fill: #ffbf6e; fill-opacity: 0.18; }
+:root[data-theme="dark"] .fl-flaeche-teil { fill: #6fd68f; fill-opacity: 0.2; }
+
+/* Die Figuren in den Aufgabentexten bekommen ihre Farben über Klassen, damit sie im
+   dunklen Modus hell genug bleiben — ein fest eingetragenes Dunkelblau wäre dort
+   auf dunklem Grund kaum noch zu sehen. */
+.fl-fig-flaeche { fill: #1d4ed8; fill-opacity: 0.12; }
+.fl-fig-kante { stroke: #1f2328; stroke-width: 1.8; fill: none; stroke-linejoin: round; }
+.fl-fig-grund { stroke: #1d4ed8; stroke-width: 2.6; }
+.fl-fig-hoehe { stroke: #6d28d9; stroke-width: 1.8; }
+.fl-fig-hilfe { stroke: #9aa4b1; stroke-width: 1.2; }
+.fl-fig-zweit { stroke: #b3650a; stroke-width: 2.4; }
+.fl-fig-text { font-size: 12.5px; font-weight: 700; fill: #1f2328; }
+.fl-fig-grund-text { font-size: 12.5px; font-weight: 700; fill: #1d4ed8; }
+.fl-fig-hoehe-text { font-size: 12.5px; font-weight: 700; fill: #6d28d9; }
+.fl-fig-zweit-text { font-size: 12.5px; font-weight: 700; fill: #b3650a; }
+
+:root[data-theme="dark"] .fl-fig-flaeche { fill: #8ab4ff; fill-opacity: 0.15; }
+:root[data-theme="dark"] .fl-fig-kante { stroke: #e6e8eb; }
+:root[data-theme="dark"] .fl-fig-grund { stroke: #8ab4ff; }
+:root[data-theme="dark"] .fl-fig-hoehe { stroke: #c4a7ff; }
+:root[data-theme="dark"] .fl-fig-zweit { stroke: #ffbf6e; }
+:root[data-theme="dark"] .fl-fig-text { fill: #e6e8eb; }
+:root[data-theme="dark"] .fl-fig-grund-text { fill: #8ab4ff; }
+:root[data-theme="dark"] .fl-fig-hoehe-text { fill: #c4a7ff; }
+:root[data-theme="dark"] .fl-fig-zweit-text { fill: #ffbf6e; }

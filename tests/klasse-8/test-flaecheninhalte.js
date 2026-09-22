@@ -1,0 +1,815 @@
+// Fachliche Prüfung: Klasse 8, Geometrie, Thema 7 „Flächeninhalte“.
+//
+// Die Seite behauptet drei Dinge, und alle drei werden hier nachgerechnet — nicht nur
+// abgelesen:
+//
+//   1. Die HERLEITUNGEN stimmen. Bei jeder Reglerstellung wird die gezeichnete Figur aus dem
+//      SVG zurückgelesen und ihr Flächeninhalt mit der Gaußschen Trapezformel bestimmt. Er muss
+//      mit dem übereinstimmen, was die Bilanz behauptet. Eine Zeichnung, die g · h schreibt und
+//      etwas anderes zeigt, wäre schlimmer als gar keine.
+//   2. Die BEWEGUNGEN sind starr. Das umgelegte Dreieck und die gedrehte Kopie müssen in jeder
+//      Zwischenstellung denselben Flächeninhalt haben wie am Anfang — sonst würde beim
+//      Verschieben oder Drehen etwas verschwinden, und die Herleitung wäre wertlos.
+//   3. Die AUFGABEN rechnen richtig. Jede der zwölf wird über viele Runden gewürfelt, unabhängig
+//      nachgerechnet und mit jedem vorgesehenen Fehlerwert geprüft.
+//
+// Außerdem: Auf dieser Seite darf weder der Satz des Pythagoras noch eine Quadratwurzel
+// vorkommen — beides steht erst in Klasse 9 an. Wo eine schräge Länge als Zahl erscheint, muss
+// „gemessen“ daneben stehen.
+
+"use strict";
+
+const { neuerBericht } = require("../lib/pruefen");
+const { starteBrowser, neueSeite, oeffne, setzeRegler, text } = require("../lib/seite");
+const { pruefeNotation } = require("../lib/notation");
+const { pruefeKontrast } = require("../lib/kontrast");
+const { pruefeAufgabe } = require("../lib/aufgaben");
+
+const bericht = neuerBericht();
+const { pruefe } = bericht;
+const SEITE = "/mathematik/klasse-8/geometrie/flaecheninhalte.html";
+
+const de = (x, stellen = 4) => Number(x.toFixed(stellen)).toLocaleString("de-DE", { maximumFractionDigits: stellen });
+
+// Flächeninhalt eines Polygons aus seinen Eckpunkten — unabhängig von jeder Formel der Seite.
+function polygonFlaeche(punkte) {
+  let s = 0;
+  for (let i = 0; i < punkte.length; i++) {
+    const a = punkte[i], c = punkte[(i + 1) % punkte.length];
+    s += a.x * c.y - c.x * a.y;
+  }
+  return Math.abs(s) / 2;
+}
+
+// Alle Polygone einer Zeichnung, in Bildpunkten. Gelesen wird das points-Attribut; die
+// Füllklasse sagt, welches Polygon welche Rolle hat.
+async function polygone(page, mountId) {
+  return page.evaluate((id) => {
+    const out = [];
+    for (const p of document.querySelectorAll(`#${id} svg polygon`)) {
+      const punkte = p.getAttribute("points").trim().split(/\s+/).map((t) => {
+        const [x, y] = t.split(",").map(Number);
+        return { x, y };
+      });
+      out.push({ klasse: p.getAttribute("class") || "", fuellung: p.getAttribute("fill") || "", punkte });
+    }
+    return out;
+  }, mountId);
+}
+
+// Der Maßstab der Bühne: Er steckt nicht im SVG, lässt sich aber aus zwei bekannten Punkten
+// zurückrechnen. Gemessen wird an der Grundseite, deren Länge die Bilanz nennt.
+function skalaAus(punkteA, punkteB, laengeCm) {
+  return Math.hypot(punkteB.x - punkteA.x, punkteB.y - punkteA.y) / laengeCm;
+}
+
+async function punkte(page, mountId) {
+  return page.evaluate((id) => {
+    const out = {};
+    for (const g of document.querySelectorAll(`#${id} svg .th-punkt-gruppe[data-name]`)) {
+      const c = g.querySelector("circle");
+      out[g.dataset.name] = { x: +c.getAttribute("cx"), y: +c.getAttribute("cy") };
+    }
+    return out;
+  }, mountId);
+}
+
+// ── Abschnitt 1: Scherung ─────────────────────────────────────────────────
+//
+// Die Kernaussage lautet: Der Flächeninhalt hängt NICHT vom Versatz ab. Deshalb wird bei
+// festem g und h über alle Versätze gelaufen und jedes Mal dieselbe Zahl verlangt — sowohl
+// in der Bilanz als auch in der gezeichneten Figur.
+async function scherung(page) {
+  for (const g of [3, 6, 9]) {
+    for (const h of [2, 4, 5]) {
+      await setzeRegler(page, "sc-g", g);
+      await setzeRegler(page, "sc-h", h);
+      for (const s of [0, 1.5, 3, 4.5, 6]) {
+        await setzeRegler(page, "sc-s", s);
+        const wo = `g = ${g}, h = ${h}, Versatz = ${s}`;
+        const A = g * h;
+
+        const bilanz = await text(page, "#sc-bilanz");
+        pruefe(bilanz.includes(`A = g · h = ${de(g)} cm · ${de(h)} cm = ${de(A)} cm²`),
+          `Scherung: ${wo} — die Bilanz nennt nicht A = ${de(A)} cm² — „${bilanz}“`);
+
+        // Die gezeichnete Figur muss diesen Flächeninhalt wirklich haben.
+        const p = await punkte(page, "sc-mount");
+        const skala = skalaAus(p.A, p.B, g);
+        const flaeche = polygonFlaeche([p.A, p.B, p.C, p.D]) / (skala * skala);
+        pruefe(Math.abs(flaeche - A) < 0.02 * Math.max(1, A),
+          `Scherung: ${wo} — die Zeichnung hat ${de(flaeche, 2)} cm², behauptet werden ${de(A)} cm²`);
+
+        // Und die schräge Seite muss mit dem Versatz wachsen — sonst zeigte die Figur nicht,
+        // worum es geht.
+        const b = Math.hypot(p.D.x - p.A.x, p.D.y - p.A.y) / skala;
+        pruefe(Math.abs(b - Math.hypot(s, h)) < 0.05,
+          `Scherung: ${wo} — die schräge Seite misst ${de(b, 2)} cm statt ${de(Math.hypot(s, h), 2)} cm`);
+        pruefe(s === 0 ? Math.abs(b - h) < 0.05 : b > h + 1e-6,
+          `Scherung: ${wo} — die schräge Seite ist nicht länger als die Höhe`);
+      }
+    }
+  }
+  // Die Bilanz muss die gemessene Länge auch als gemessen kennzeichnen: Berechnen ließe sie
+  // sich nur mit dem Satz des Pythagoras, und der steht erst in Klasse 9 an.
+  const bilanz = await text(page, "#sc-bilanz");
+  pruefe(/gemessen/.test(bilanz), `Scherung: die schräge Seite ist nicht als gemessen gekennzeichnet — „${bilanz}“`);
+}
+
+// ── Abschnitt 2: Parallelogramm ───────────────────────────────────────────
+//
+// Geprüft wird die Bewegung: Das umgelegte Dreieck muss in JEDER Zwischenstellung
+// deckungsgleich mit dem abgeschnittenen sein, und am Ende muss ein Rechteck dastehen.
+async function parallelogramm(page) {
+  for (const [g, h, s] of [[6, 3.5, 2], [4, 5, 0], [9, 2, 5], [5, 4, 5], [3, 2, 3]]) {
+    await setzeRegler(page, "pa-g", g);
+    await setzeRegler(page, "pa-h", h);
+    await setzeRegler(page, "pa-s", s);
+    // Der Versatz kann nicht größer sein als die Grundseite — sonst genügte ein Schnitt nicht.
+    const sEcht = Math.min(s, g);
+    const reglerS = await page.evaluate(() => Number(document.getElementById("pa-s").value));
+    pruefe(reglerS === sEcht, `Parallelogramm: der Regler steht auf ${reglerS}, gerechnet wird mit ${sEcht}`);
+
+    const A = g * h;
+    let flaechenTeil = null;
+    for (const t of [0, 26, 50, 74, 100]) {
+      await setzeRegler(page, "pa-t", t);
+      const wo = `g = ${g}, h = ${h}, Versatz = ${sEcht}, Umlegen = ${t} %`;
+
+      const bilanz = await text(page, "#pa-bilanz");
+      pruefe(bilanz.includes(`A = g · h = ${de(g)} · ${de(h)} = ${de(A)} cm²`),
+        `Parallelogramm: ${wo} — die Bilanz nennt nicht A = ${de(A)} cm² — „${bilanz}“`);
+
+      const p = await punkte(page, "pa-mount");
+      const skala = skalaAus(p.A, p.B, g);
+      const polys = await polygone(page, "pa-mount");
+      const rest = polys.find((x) => x.klasse.includes("fl-flaeche-fuell"));
+      const teil = polys.find((x) => x.klasse.includes("fl-flaeche-teil"));
+      pruefe(!!rest && !!teil, `Parallelogramm: ${wo} — Reststück oder umgelegtes Dreieck fehlt`);
+      if (!rest || !teil) continue;
+
+      const aRest = polygonFlaeche(rest.punkte) / (skala * skala);
+      const aTeil = polygonFlaeche(teil.punkte) / (skala * skala);
+      // Beide Stücke zusammen ergeben immer die ganze Fläche — nichts geht verloren.
+      pruefe(Math.abs(aRest + aTeil - A) < 0.03 * Math.max(1, A),
+        `Parallelogramm: ${wo} — die beiden Stücke ergeben ${de(aRest + aTeil, 2)} cm² statt ${de(A)} cm²`);
+      // Und das bewegte Dreieck behält seine Größe.
+      if (flaechenTeil === null) flaechenTeil = aTeil;
+      pruefe(Math.abs(aTeil - flaechenTeil) < 0.03 * Math.max(1, flaechenTeil),
+        `Parallelogramm: ${wo} — das umgelegte Dreieck hat unterwegs ${de(aTeil, 2)} cm² statt ${de(flaechenTeil, 2)} cm²`);
+
+      if (t === 100) {
+        // Am Ende steht ein Rechteck: Die Vereinigung beider Stücke hat die Breite g und die
+        // Höhe h, und ihre linke Kante steht senkrecht.
+        const alle = rest.punkte.concat(teil.punkte);
+        const xs = alle.map((q) => q.x), ys = alle.map((q) => q.y);
+        const breite = (Math.max(...xs) - Math.min(...xs)) / skala;
+        const hoehe = (Math.max(...ys) - Math.min(...ys)) / skala;
+        pruefe(Math.abs(breite - g) < 0.05 && Math.abs(hoehe - h) < 0.05,
+          `Parallelogramm: ${wo} — das Ergebnis misst ${de(breite, 2)} × ${de(hoehe, 2)} statt ${de(g)} × ${de(h)}`);
+      }
+    }
+
+    // Die zweite Grundseite: b · h_b muss denselben Flächeninhalt liefern.
+    await setzeRegler(page, "pa-t", 0);
+    await page.locator("#pa-zweite").check();
+    const bilanz = await text(page, "#pa-bilanz");
+    if (sEcht > 0) {
+      const bSeite = Math.hypot(sEcht, h);
+      pruefe(bilanz.includes(`b ${Math.abs(bSeite - Number(bSeite.toFixed(2))) < 1e-12 ? "=" : "≈"} ${de(bSeite, 2)} cm`),
+        `Parallelogramm: g = ${g}, h = ${h}, s = ${sEcht} — die zweite Seite fehlt in der Bilanz — „${bilanz}“`);
+      pruefe(/gemessen/.test(bilanz),
+        `Parallelogramm: die zweite Seite ist nicht als gemessen gekennzeichnet — „${bilanz}“`);
+      const hb = A / bSeite;
+      pruefe(Math.abs(bSeite * hb - A) < 1e-9,
+        `Parallelogramm: b · h_b = ${de(bSeite * hb, 4)} statt ${de(A)}`);
+    }
+    await page.locator("#pa-zweite").uncheck();
+  }
+}
+
+// ── Abschnitt 3: Dreieck ──────────────────────────────────────────────────
+async function dreieck(page) {
+  for (const [g, h, cx] of [[7, 4, 2], [4, 2, 0], [9, 5, 9], [5, 3, -1], [3, 2, 1.5]]) {
+    await setzeRegler(page, "dr-g", g);
+    await setzeRegler(page, "dr-h", h);
+    await setzeRegler(page, "dr-cx", cx);
+    const A = (g * h) / 2;
+    for (const t of [0, 30, 50, 80, 100]) {
+      await setzeRegler(page, "dr-t", t);
+      const wo = `g = ${g}, h = ${h}, Spitze = ${cx}, Drehung = ${Math.round(t * 1.8)}°`;
+
+      const bilanz = await text(page, "#dr-bilanz");
+      pruefe(bilanz.includes(`2 · A = g · h = ${de(g)} · ${de(h)} = ${de(g * h)} cm²`),
+        `Dreieck: ${wo} — die Bilanz nennt nicht 2 · A = ${de(g * h)} cm² — „${bilanz}“`);
+      pruefe(bilanz.includes(`A = ½ · g · h = ${de(A)} cm²`),
+        `Dreieck: ${wo} — die Bilanz nennt nicht A = ${de(A)} cm² — „${bilanz}“`);
+
+      const p = await punkte(page, "dr-mount");
+      const skala = skalaAus(p.A, p.B, g);
+      const polys = await polygone(page, "dr-mount");
+      const original = polys.find((x) => x.klasse.includes("fl-flaeche-fuell"));
+      const kopie = polys.find((x) => x.klasse.includes("fl-flaeche-zweit"));
+      pruefe(!!original && !!kopie, `Dreieck: ${wo} — Original oder Kopie fehlt`);
+      if (!original || !kopie) continue;
+
+      const aOrig = polygonFlaeche(original.punkte) / (skala * skala);
+      const aKopie = polygonFlaeche(kopie.punkte) / (skala * skala);
+      pruefe(Math.abs(aOrig - A) < 0.03 * Math.max(1, A),
+        `Dreieck: ${wo} — das gezeichnete Dreieck hat ${de(aOrig, 2)} cm² statt ${de(A)} cm²`);
+      // Drehen ist eine starre Bewegung: Die Kopie bleibt in jeder Stellung gleich groß.
+      pruefe(Math.abs(aKopie - A) < 0.03 * Math.max(1, A),
+        `Dreieck: ${wo} — die gedrehte Kopie hat ${de(aKopie, 2)} cm² statt ${de(A)} cm²`);
+
+      if (t === 100) {
+        // Nach der halben Drehung bilden beide Dreiecke zusammen ein Parallelogramm mit der
+        // Grundseite g und der Höhe h.
+        const alle = original.punkte.concat(kopie.punkte);
+        const ys = alle.map((q) => q.y);
+        const hoehe = (Math.max(...ys) - Math.min(...ys)) / skala;
+        pruefe(Math.abs(hoehe - h) < 0.05,
+          `Dreieck: ${wo} — das entstandene Parallelogramm ist ${de(hoehe, 2)} cm hoch statt ${de(h)} cm`);
+        pruefe(Math.abs(aOrig + aKopie - g * h) < 0.05 * Math.max(1, g * h),
+          `Dreieck: ${wo} — beide Dreiecke ergeben ${de(aOrig + aKopie, 2)} cm² statt ${de(g * h)} cm²`);
+      }
+    }
+  }
+}
+
+// ── Abschnitt 3b: Grundseite und zugehörige Höhe ──────────────────────────
+//
+// Die Aussage: Alle drei Paare aus Seite und zugehöriger Höhe liefern denselben Flächeninhalt.
+// Geprüft wird sie an den Zahlen der Bilanz — und daran, dass die gezeichnete Höhe wirklich
+// senkrecht auf der gewählten Seite steht.
+async function grundseiten(page) {
+  const ecken = { A: { x: 0, y: 0 }, B: { x: 8, y: 0 }, C: { x: 2.5, y: 4.5 } };
+  const A = polygonFlaeche([ecken.A, ecken.B, ecken.C]);
+  const seiten = {
+    c: [ecken.A, ecken.B, ecken.C],
+    a: [ecken.B, ecken.C, ecken.A],
+    b: [ecken.C, ecken.A, ecken.B],
+  };
+  for (const wahl of ["c", "a", "b"]) {
+    await page.locator(`input[name="gh-seite"][value="${wahl}"]`).check();
+    const bilanz = await text(page, "#gh-bilanz");
+    const [P, Q, S] = seiten[wahl];
+    const laenge = Math.hypot(Q.x - P.x, Q.y - P.y);
+    const hoehe = (2 * A) / laenge;
+    // Alle drei Zeilen stehen immer da; die gewählte ist nur hervorgehoben.
+    for (const k of ["c", "a", "b"]) {
+      const [P2, Q2] = seiten[k];
+      const l2 = Math.hypot(Q2.x - P2.x, Q2.y - P2.y);
+      const h2 = (2 * A) / l2;
+      pruefe(bilanz.includes(`${de(l2, 2)} cm`) && bilanz.includes(`${de(h2, 2)} cm`),
+        `Grundseiten (${wahl}): die Zeile für ${k} (${de(l2, 2)} cm, ${de(h2, 2)} cm) fehlt — „${bilanz}“`);
+      // Der entscheidende Punkt: Alle drei Produkte ergeben denselben Flächeninhalt.
+      pruefe(Math.abs((l2 * h2) / 2 - A) < 1e-9,
+        `Grundseiten: ½ · ${de(l2, 4)} · ${de(h2, 4)} ist nicht ${de(A, 4)}`);
+    }
+    pruefe(bilanz.includes(`${de(A, 2)} cm²`),
+      `Grundseiten (${wahl}): der gemeinsame Flächeninhalt ${de(A, 2)} cm² fehlt — „${bilanz}“`);
+
+    // Die gezeichnete Höhe muss senkrecht auf der gewählten Seite stehen.
+    const linien = await page.evaluate(() => [...document.querySelectorAll("#gh-mount svg line")].map((l) => ({
+      x1: +l.getAttribute("x1"), y1: +l.getAttribute("y1"), x2: +l.getAttribute("x2"), y2: +l.getAttribute("y2"),
+      farbe: l.getAttribute("stroke"),
+    })));
+    const hoeheLinie = linien.find((l) => l.farbe === "#6d28d9");
+    const grundLinie = linien.find((l) => l.farbe === "#1d4ed8");
+    pruefe(!!hoeheLinie && !!grundLinie, `Grundseiten (${wahl}): Höhe oder Grundseite fehlt in der Zeichnung`);
+    if (hoeheLinie && grundLinie) {
+      const u = { x: grundLinie.x2 - grundLinie.x1, y: grundLinie.y2 - grundLinie.y1 };
+      const v = { x: hoeheLinie.x2 - hoeheLinie.x1, y: hoeheLinie.y2 - hoeheLinie.y1 };
+      const cos = (u.x * v.x + u.y * v.y) / (Math.hypot(u.x, u.y) * Math.hypot(v.x, v.y));
+      pruefe(Math.abs(cos) < 0.01,
+        `Grundseiten (${wahl}): die Höhe steht nicht senkrecht auf der Grundseite (cos = ${de(cos, 4)})`);
+      // Und ihre Länge muss die berechnete sein.
+      const skala = Math.hypot(u.x, u.y) / laenge;
+      const gezeichnet = Math.hypot(v.x, v.y) / skala;
+      pruefe(Math.abs(gezeichnet - hoehe) < 0.05,
+        `Grundseiten (${wahl}): die gezeichnete Höhe misst ${de(gezeichnet, 2)} cm statt ${de(hoehe, 2)} cm`);
+    }
+  }
+}
+
+// ── Abschnitt 4: Trapez ───────────────────────────────────────────────────
+async function trapez(page) {
+  for (const [a, c, h] of [[8, 4, 3.5], [10, 0.5, 2], [6, 6, 5], [4, 2, 4], [9, 5, 2.5]]) {
+    await setzeRegler(page, "tz-a", a);
+    await setzeRegler(page, "tz-c", c);
+    await setzeRegler(page, "tz-h", h);
+    const cEcht = Math.min(c, a);
+    const A = ((a + cEcht) * h) / 2;
+    for (const t of [0, 35, 60, 100]) {
+      await setzeRegler(page, "tz-t", t);
+      const wo = `a = ${a}, c = ${cEcht}, h = ${h}, Drehung = ${Math.round(t * 1.8)}°`;
+
+      const bilanz = await text(page, "#tz-bilanz");
+      pruefe(bilanz.includes(`2 · A = (a + c) · h = ${de(a + cEcht)} · ${de(h)} = ${de((a + cEcht) * h)} cm²`),
+        `Trapez: ${wo} — die Bilanz nennt nicht 2 · A — „${bilanz}“`);
+      pruefe(bilanz.includes(`A = ½ · (a + c) · h = ${de(A)} cm²`),
+        `Trapez: ${wo} — die Bilanz nennt nicht A = ${de(A)} cm² — „${bilanz}“`);
+
+      const p = await punkte(page, "tz-mount");
+      const skala = skalaAus(p.A, p.B, a);
+      const polys = await polygone(page, "tz-mount");
+      const original = polys.find((x) => x.klasse.includes("fl-flaeche-fuell"));
+      const kopie = polys.find((x) => x.klasse.includes("fl-flaeche-zweit"));
+      pruefe(!!original && !!kopie, `Trapez: ${wo} — Original oder Kopie fehlt`);
+      if (!original || !kopie) continue;
+      const aOrig = polygonFlaeche(original.punkte) / (skala * skala);
+      const aKopie = polygonFlaeche(kopie.punkte) / (skala * skala);
+      pruefe(Math.abs(aOrig - A) < 0.03 * Math.max(1, A),
+        `Trapez: ${wo} — das gezeichnete Trapez hat ${de(aOrig, 2)} cm² statt ${de(A)} cm²`);
+      pruefe(Math.abs(aKopie - A) < 0.03 * Math.max(1, A),
+        `Trapez: ${wo} — die gedrehte Kopie hat ${de(aKopie, 2)} cm² statt ${de(A)} cm²`);
+
+      if (t === 100) {
+        const alle = original.punkte.concat(kopie.punkte);
+        const ys = alle.map((q) => q.y);
+        const hoehe = (Math.max(...ys) - Math.min(...ys)) / skala;
+        pruefe(Math.abs(hoehe - h) < 0.05,
+          `Trapez: ${wo} — das entstandene Parallelogramm ist ${de(hoehe, 2)} cm hoch statt ${de(h)} cm`);
+        // Unten liegen jetzt a und c hintereinander.
+        const untenY = Math.max(...ys);
+        const unten = alle.filter((q) => Math.abs(q.y - untenY) < 1.5).map((q) => q.x);
+        const breiteUnten = (Math.max(...unten) - Math.min(...unten)) / skala;
+        pruefe(Math.abs(breiteUnten - (a + cEcht)) < 0.06,
+          `Trapez: ${wo} — die Grundseite des Parallelogramms misst ${de(breiteUnten, 2)} cm statt ${de(a + cEcht)} cm`);
+      }
+    }
+    // Die Mittellinie: m = (a + c) : 2, und m · h ist wieder der Flächeninhalt.
+    await page.locator("#tz-mitte").check();
+    const bilanz = await text(page, "#tz-bilanz");
+    const m = (a + cEcht) / 2;
+    pruefe(bilanz.includes(`Mittellinie m = (a + c) : 2 = ${de(m)} cm`),
+      `Trapez: a = ${a}, c = ${cEcht} — die Mittellinie fehlt — „${bilanz}“`);
+    pruefe(Math.abs(m * h - A) < 1e-9, `Trapez: m · h = ${de(m * h)} statt ${de(A)}`);
+    await page.locator("#tz-mitte").uncheck();
+  }
+}
+
+// ── Abschnitt 5: Zusammenschau ────────────────────────────────────────────
+//
+// Die Behauptung: Die Trapezformel enthält die beiden anderen als Sonderfälle. Geprüft wird
+// sie an den Grenzen — c = 0 muss das Dreieck liefern, c = a das Parallelogramm.
+async function zusammenschau(page) {
+  for (const a of [4, 7, 9]) {
+    for (const h of [2, 4, 5]) {
+      await setzeRegler(page, "zs-a", a);
+      await setzeRegler(page, "zs-h", h);
+      for (const c of [0, 1.5, a / 2, a, 9]) {
+        await setzeRegler(page, "zs-c", c);
+        const cEcht = Math.min(c, a);
+        const wo = `a = ${a}, h = ${h}, c = ${cEcht}`;
+        const A = ((a + cEcht) * h) / 2;
+
+        const bilanz = await text(page, "#zs-bilanz");
+        pruefe(bilanz.includes(`= ${de(A)} cm²`),
+          `Zusammenschau: ${wo} — die Bilanz nennt nicht ${de(A)} cm² — „${bilanz}“`);
+
+        // Die Sonderfälle müssen wirklich mit den anderen Formeln übereinstimmen.
+        if (cEcht === 0) pruefe(Math.abs(A - (a * h) / 2) < 1e-9, `Zusammenschau: ${wo} — c = 0 ergibt nicht ½ · a · h`);
+        if (cEcht === a) pruefe(Math.abs(A - a * h) < 1e-9, `Zusammenschau: ${wo} — c = a ergibt nicht a · h`);
+
+        // Genau ein Fall ist hervorgehoben, und es ist der richtige.
+        const aktiv = await page.evaluate(() =>
+          [...document.querySelectorAll("#zs-faelle li")].map((li) => ({ aktiv: li.classList.contains("aktiv"), text: li.textContent })));
+        pruefe(aktiv.length === 3, `Zusammenschau: ${wo} — ${aktiv.length} Fälle statt 3`);
+        const markiert = aktiv.filter((x) => x.aktiv);
+        pruefe(markiert.length === 1, `Zusammenschau: ${wo} — ${markiert.length} Fälle hervorgehoben, erwartet genau einer`);
+        if (markiert.length === 1) {
+          const erwartet = cEcht === 0 ? "Dreieck" : cEcht === a ? "Parallelogramm" : "Trapez";
+          pruefe(markiert[0].text.includes(erwartet),
+            `Zusammenschau: ${wo} — hervorgehoben ist „${markiert[0].text.slice(0, 40)}“, erwartet ${erwartet}`);
+        }
+
+        // Die gezeichnete Figur hat bei c = 0 wirklich nur drei Ecken.
+        const polys = await polygone(page, "zs-mount");
+        const figur = polys.find((x) => x.klasse.includes("fl-flaeche-fuell"));
+        pruefe(!!figur && figur.punkte.length === (cEcht === 0 ? 3 : 4),
+          `Zusammenschau: ${wo} — die Figur hat ${figur ? figur.punkte.length : 0} Ecken`);
+
+        // Und sie hat wirklich den Flächeninhalt, den die Bilanz nennt. Der Maßstab steckt in
+        // der Grundseite a: Sie ist im Polygon die Strecke von der ersten zur zweiten Ecke.
+        if (figur) {
+          const skala = skalaAus(figur.punkte[0], figur.punkte[1], a);
+          const gezeichnet = polygonFlaeche(figur.punkte) / (skala * skala);
+          pruefe(Math.abs(gezeichnet - A) < 0.02 * Math.max(1, A),
+            `Zusammenschau: ${wo} — die Zeichnung hat ${de(gezeichnet, 2)} cm², behauptet werden ${de(A)} cm²`);
+
+          // Die Deckseite muss auch wirklich c lang sein — sonst zeigte die Figur einen anderen
+          // Sonderfall, als die Liste hervorhebt.
+          if (cEcht > 0) {
+            const cGezeichnet = Math.hypot(figur.punkte[2].x - figur.punkte[3].x,
+              figur.punkte[2].y - figur.punkte[3].y) / skala;
+            pruefe(Math.abs(cGezeichnet - cEcht) < 0.05,
+              `Zusammenschau: ${wo} — die Deckseite misst ${de(cGezeichnet, 2)} cm statt ${de(cEcht)} cm`);
+          }
+        }
+      }
+    }
+  }
+}
+
+// ── Die Kontrollfragen ────────────────────────────────────────────────────
+async function quizze(page) {
+  const ids = ["quiz-scherung", "quiz-parallelogramm", "quiz-dreieck", "quiz-hoehe", "quiz-trapez", "quiz-zusammenschau"];
+  const stellen = [];
+  for (const id of ids) {
+    const anzahl = await page.evaluate((q) => document.querySelectorAll(`#${q} .quiz-opt`).length, id);
+    pruefe(anzahl >= 3, `Quiz ${id}: nur ${anzahl} Antwortmöglichkeiten`);
+    let richtige = 0;
+    for (let i = 0; i < anzahl; i++) {
+      await page.locator(`#${id} .quiz-opt`).nth(i).click();
+      const r = await page.evaluate((q) => {
+        const f = document.querySelector(`#${q} .quiz-feedback`);
+        return { ok: f.classList.contains("ok"), text: f.textContent };
+      }, id);
+      if (r.ok) { richtige++; stellen.push(i); }
+      pruefe(r.text.length > 60, `Quiz ${id}, Antwort ${i + 1}: die Erklärung ist nur ${r.text.length} Zeichen lang`);
+    }
+    pruefe(richtige === 1, `Quiz ${id}: ${richtige} Antworten gelten als richtig, erwartet genau eine`);
+  }
+  // Die richtige Antwort darf nicht immer an derselben Stelle stehen: Sonst ließen sich alle
+  // sechs Fragen richtig anklicken, ohne eine davon gelesen zu haben.
+  pruefe(new Set(stellen).size >= 3,
+    `Kontrollfragen: die richtige Antwort steht nur an ${new Set(stellen).size} verschiedenen Stellen (${stellen.join(", ")}) — das lässt sich erraten`);
+}
+
+// ── Die Übungsaufgaben ────────────────────────────────────────────────────
+
+// Deutsche Zahl aus dem Aufgabentext.
+const zahl = (s) => Number(String(s).replace(/−/g, "-").replace(/\.(?=\d{3}\b)/g, "").replace(",", "."));
+
+const LAENGE = { mm: 0.1, cm: 1, dm: 10, m: 100 };
+const FLAECHE = { "mm²": 0.01, "cm²": 1, "dm²": 100, "m²": 10000 };
+
+// Die Maße einer Aufgabenfigur: gelesen wird das gezeichnete SVG, nicht der Text. Nur so
+// fällt auf, wenn die Zeichnung etwas anderes zeigt als die Musterlösung rechnet.
+async function figurMasse(page, box) {
+  return page.evaluate((sel) => {
+    const svg = document.querySelector(`${sel} .aufgabe-prompt svg`);
+    if (!svg) return null;
+    const texte = [...svg.querySelectorAll("text")].map((t) => ({ text: t.textContent, klasse: t.getAttribute("class") }));
+    return { art: svg.dataset.figur, texte };
+  }, box);
+}
+
+async function aufgaben(page) {
+  // ---- einfach: der Flächeninhalt aus der Zeichnung ----
+  //
+  // Die Maße stehen NUR im Bild. Der Test liest sie von dort — damit ist zugleich geprüft,
+  // dass die Zeichnung die Zahlen trägt, mit denen die Musterlösung rechnet.
+  for (const [nr, art, name, formel] of [
+    [1, "parallelogramm", "A1 Parallelogramm ablesen", (m) => m[0] * m[1]],
+    [2, "dreieck", "A2 Dreieck ablesen", (m) => (m[0] * m[1]) / 2],
+    [3, "trapez", "A3 Trapez ablesen", (m) => ((m[0] + m[1]) * m[2]) / 2],
+  ]) {
+    await pruefeAufgabe(page, bericht, {
+      nr, name, runden: 25, mindestensVerschieden: 12,
+      liesRoh: async (p, box) => figurMasse(p, box),
+      deute: (frage, roh) => {
+        if (!roh || roh.art !== art) return null;
+        // Reihenfolge im SVG: erst die blauen Grundseiten, dann die violette Höhe.
+        const grund = roh.texte.filter((t) => t.klasse === "fl-fig-grund-text").map((t) => zahl(t.text));
+        const hoehe = roh.texte.filter((t) => t.klasse === "fl-fig-hoehe-text").map((t) => zahl(t.text));
+        if (hoehe.length !== 1) return null;
+        const masse = grund.concat(hoehe);
+        if (art === "trapez" ? masse.length !== 3 : masse.length !== 2) return null;
+        const A = formel(masse);
+        const falsch = art === "parallelogramm"
+          ? [[A / 2, "Dreieck"], [masse[0] + masse[1], "multipliziert"]]
+          : art === "dreieck"
+            ? [[masse[0] * masse[1], "Parallelogramm"], [masse[0] + masse[1], "multipliziert"]]
+            : [[(masse[0] + masse[1]) * masse[2], "Halbieren fehlt"], [masse[0] * masse[2], "beide"]];
+        return {
+          richtig: A,
+          toleranz: 0.0005,
+          falsch,
+          pruefe: (f, rueck) => {
+            pruefe(masse.every((x) => Number.isFinite(x) && x > 0),
+              `${name}: unlesbare Maße ${JSON.stringify(masse)} — „${f}“`);
+            // Die Musterlösung muss mit denselben Zahlen rechnen, die im Bild stehen.
+            for (const x of masse) {
+              pruefe(rueck.includes(`${de(x)} cm`), `${name}: das Maß ${de(x)} cm fehlt in der Musterlösung — „${f}“`);
+            }
+            pruefe(rueck.includes(`${de(A)} cm²`), `${name}: das Ergebnis ${de(A)} cm² fehlt in der Musterlösung`);
+            if (art === "trapez") {
+              pruefe(masse[0] !== masse[1], `${name}: beide parallelen Seiten sind ${de(masse[0])} cm lang — „${f}“`);
+            }
+          },
+        };
+      },
+    });
+  }
+
+  // ---- mittel: mit Einheitenumrechnung ----
+  for (const [nr, name, wort, formel] of [
+    [4, "A4 Parallelogramm mit Einheiten", "Parallelogramm", (g, h) => g * h],
+    [5, "A5 Dreieck mit Einheiten", "Dreieck", (g, h) => (g * h) / 2],
+  ]) {
+    await pruefeAufgabe(page, bericht, {
+      nr, name, runden: 25, mindestensVerschieden: 18,
+      deute: (frage) => {
+        const m = frage.match(/g = ([\d.,]+) (mm|cm|dm|m) und die zugehörige Höhe h = ([\d.,]+) (mm|cm|dm|m)/);
+        const z = frage.match(/Flächeninhalt in (mm²|cm²|dm²|m²)/);
+        if (!m || !z) return null;
+        const gCm = zahl(m[1]) * LAENGE[m[2]];
+        const hCm = zahl(m[3]) * LAENGE[m[4]];
+        const ziel = FLAECHE[z[1]];
+        const A = formel(gCm, hCm) / ziel;
+        return {
+          richtig: Math.round(A * 1e6) / 1e6,
+          toleranz: Math.max(1e-4, Math.abs(A) * 1e-5),
+          falsch: [
+            // Die Einheiten stehen gelassen — der Fehler, um den es in dieser Aufgabe geht.
+            [formel(zahl(m[1]), zahl(m[3])) / ziel, "Einheiten"],
+          ],
+          pruefe: (f, rueck) => {
+            pruefe(m[2] !== m[4], `${name}: beide Längen stehen in ${m[2]} — dann ist nichts umzurechnen — „${f}“`);
+            pruefe(frage.includes(wort), `${name}: der Aufgabentext nennt die Figur nicht — „${f}“`);
+            pruefe(rueck.includes(`${de(gCm)} cm`) && rueck.includes(`${de(hCm)} cm`),
+              `${name}: die Musterlösung rechnet nicht in eine gemeinsame Einheit um — „${f}“`);
+            pruefe(Math.abs(A - Math.round(A * 100) / 100) < 1e-9,
+              `${name}: das Ergebnis ${A} hat mehr als zwei Nachkommastellen — „${f}“`);
+          },
+        };
+      },
+    });
+  }
+  await pruefeAufgabe(page, bericht, {
+    nr: 6, name: "A6 Trapez mit Einheiten", runden: 25, mindestensVerschieden: 18,
+    deute: (frage) => {
+      const m = frage.match(/a = ([\d.,]+) (mm|cm|dm|m) und c = ([\d.,]+) (mm|cm|dm|m) sowie die Höhe h = ([\d.,]+) (mm|cm|dm|m)/);
+      const z = frage.match(/Flächeninhalt in (mm²|cm²|dm²|m²)/);
+      if (!m || !z) return null;
+      const aCm = zahl(m[1]) * LAENGE[m[2]];
+      const cCm = zahl(m[3]) * LAENGE[m[4]];
+      const hCm = zahl(m[5]) * LAENGE[m[6]];
+      const ziel = FLAECHE[z[1]];
+      const A = ((aCm + cCm) * hCm) / 2 / ziel;
+      return {
+        richtig: Math.round(A * 1e6) / 1e6,
+        toleranz: Math.max(1e-4, Math.abs(A) * 1e-5),
+        falsch: [
+          [((aCm + cCm) * hCm) / ziel, "Halbieren fehlt"],
+          [((zahl(m[1]) + zahl(m[3])) * zahl(m[5])) / 2 / ziel, "gleichnamige"],
+        ],
+        pruefe: (f, rueck) => {
+          pruefe(m[2] !== m[4], `A6: a und c stehen in derselben Einheit — dann ist nichts umzurechnen — „${f}“`);
+          pruefe(aCm > cCm, `A6: a = ${de(aCm)} cm ist nicht länger als c = ${de(cCm)} cm — „${f}“`);
+          pruefe(rueck.includes(`${de(aCm + cCm)} cm`),
+            `A6: die Musterlösung addiert die parallelen Seiten nicht in einer gemeinsamen Einheit — „${f}“`);
+        },
+      };
+    },
+  });
+
+  // ---- schwierig: die fehlende Größe ----
+  for (const [nr, name, faktor] of [
+    [7, "A7 Parallelogramm rückwärts", 1],
+    [8, "A8 Dreieck rückwärts", 0.5],
+  ]) {
+    await pruefeAufgabe(page, bericht, {
+      nr, name, runden: 25, mindestensVerschieden: 18,
+      deute: (frage) => {
+        const mA = frage.match(/A = ([\d.,]+) (mm²|cm²|dm²|m²)/);
+        const mG = frage.match(/(Grundseite|Höhe) ist (?:g|h) = ([\d.,]+) (mm|cm|dm|m)/);
+        const mZ = frage.match(/Antworte in (mm|cm|dm|m)\./);
+        if (!mA || !mG || !mZ) return null;
+        const flaecheCm2 = zahl(mA[1]) * FLAECHE[mA[2]];
+        const gegebenCm = zahl(mG[2]) * LAENGE[mG[3]];
+        // A = faktor · g · h  ⟹  gesucht = A : (faktor · gegeben)
+        const gesuchtCm = flaecheCm2 / (faktor * gegebenCm);
+        const gesucht = gesuchtCm / LAENGE[mZ[1]];
+        return {
+          richtig: Math.round(gesucht * 1e6) / 1e6,
+          toleranz: Math.max(1e-4, Math.abs(gesucht) * 1e-5),
+          falsch: [
+            // Die Rechenart stimmt, die Umrechnung fehlt.
+            [zahl(mA[1]) / (faktor * zahl(mG[2])), "Einheiten"],
+          ],
+          pruefe: (f, rueck) => {
+            pruefe(mG[3] === mZ[1], `${name}: gegeben in ${mG[3]}, gefragt in ${mZ[1]} — das ist unnötig verwirrend — „${f}“`);
+            // Die Probe muss in der Musterlösung stehen: Rückwärtsrechnen ohne Probe ist
+            // die häufigste Quelle unbemerkter Vorzeichen- und Faktorfehler.
+            pruefe(rueck.includes("Probe"), `${name}: die Musterlösung macht keine Probe — „${f}“`);
+            pruefe(Math.abs(faktor * gegebenCm * gesuchtCm - flaecheCm2) < 1e-6 * Math.max(1, flaecheCm2),
+              `${name}: die Probe geht nicht auf — „${f}“`);
+            if (faktor === 0.5) {
+              pruefe(/2 · A/.test(rueck), `${name}: die Musterlösung verdoppelt nicht, bevor sie teilt — „${f}“`);
+            }
+          },
+        };
+      },
+    });
+  }
+  await pruefeAufgabe(page, bericht, {
+    nr: 9, name: "A9 Trapez rückwärts", runden: 25, mindestensVerschieden: 18,
+    deute: (frage) => {
+      const mA = frage.match(/A = ([\d.,]+) cm²/);
+      const mFrage = frage.match(/Wie groß ist (die Seite a|die Seite c|die Höhe h)\?/);
+      if (!mA || !mFrage) return null;
+      const A = zahl(mA[1]);
+      if (mFrage[1] === "die Höhe h") {
+        const m = frage.match(/a = ([\d.,]+) cm<\/strong> und <strong>c = ([\d.,]+) cm/) || frage.match(/a = ([\d.,]+) cm und c = ([\d.,]+) cm/);
+        if (!m) return null;
+        const a = zahl(m[1]), c = zahl(m[2]);
+        const h = (2 * A) / (a + c);
+        return {
+          richtig: h, toleranz: 0.0005,
+          falsch: [[A / (a + c), "Verdoppeln"], [a + c, "Summe"]],
+          pruefe: (f, rueck) => {
+            pruefe(Math.abs(((a + c) * h) / 2 - A) < 1e-6, `A9: die Probe geht nicht auf — „${f}“`);
+            pruefe(rueck.includes("Probe"), `A9: die Musterlösung macht keine Probe — „${f}“`);
+          },
+        };
+      }
+      const nachA = mFrage[1] === "die Seite a";
+      const m = frage.match(/(?:c|a) = ([\d.,]+) cm.*?Höhe.*?h = ([\d.,]+) cm/);
+      if (!m) return null;
+      const bekannt = zahl(m[1]), h = zahl(m[2]);
+      const summe = (2 * A) / h;
+      const gesucht = summe - bekannt;
+      return {
+        richtig: gesucht, toleranz: 0.0005,
+        falsch: [[summe, "Summe"], [A / h - bekannt, "Verdoppeln"]],
+        pruefe: (f, rueck) => {
+          pruefe(gesucht > 0, `A9: die gesuchte Seite wäre ${de(gesucht)} cm — „${f}“`);
+          pruefe(nachA ? gesucht > bekannt : gesucht < bekannt,
+            `A9: a = ${de(nachA ? gesucht : bekannt)} cm ist nicht länger als c = ${de(nachA ? bekannt : gesucht)} cm — „${f}“`);
+          pruefe(rueck.includes("Probe"), `A9: die Musterlösung macht keine Probe — „${f}“`);
+        },
+      };
+    },
+  });
+
+  // ---- komplex ----
+  await pruefeAufgabe(page, bericht, {
+    nr: 10, name: "A10 zwei Seiten, zwei Höhen", runden: 25, mindestensVerschieden: 15,
+    deute: (frage) => {
+      const mA = frage.match(/a = ([\d.,]+) cm/);
+      const mB = frage.match(/b = ([\d.,]+) cm/);
+      const mH = frage.match(/gehört die Höhe h[^=]*= ([\d.,]+) cm/);
+      if (!mA || !mB || !mH) return null;
+      const a = zahl(mA[1]);
+      const b = zahl(mB[1]);
+      const ha = zahl(mH[1]);
+      const A = a * ha, hb = A / b;
+      return {
+        felder: [A, hb],
+        toleranz: 0.0005,
+        falschFelder: [
+          [0, a * b, "Seiten"],
+          [0, (a * ha) / 2, "Dreieck"],
+          [1, ha, "kürzere"],
+        ],
+        pruefe: (f, rueck) => {
+          pruefe(hb <= a + 1e-9 && ha <= b + 1e-9,
+            `A10: die Höhen passen nicht zu den Seiten (h_a = ${de(ha)}, b = ${de(b)}) — „${f}“`);
+          pruefe(Math.abs(b * hb - A) < 1e-6, `A10: b · h_b ergibt nicht A — „${f}“`);
+          pruefe((b > a) === (hb < ha), `A10: zur längeren Seite gehört nicht die kürzere Höhe — „${f}“`);
+          pruefe(rueck.includes("Kontrolle"), `A10: die Musterlösung kontrolliert das Ergebnis nicht — „${f}“`);
+        },
+      };
+    },
+  });
+  await pruefeAufgabe(page, bericht, {
+    nr: 11, name: "A11 Viereck zerlegen", runden: 25, mindestensVerschieden: 15,
+    deute: (frage) => {
+      const mE = frage.match(/AC = ([\d.,]+) cm/);
+      const mH = [...frage.matchAll(/Abstand ([\d.,]+) cm/g)].map((x) => zahl(x[1]));
+      if (!mE || mH.length !== 2) return null;
+      const e = zahl(mE[1]), [h1, h2] = mH;
+      const A1 = (e * h1) / 2, A2 = (e * h2) / 2;
+      return {
+        felder: [A1, A2, A1 + A2],
+        toleranz: 0.0005,
+        falschFelder: [
+          [0, e * h1, "Halbieren"],
+          [1, e * h2, "Halbieren"],
+          [2, e * (h1 + h2), "Halbieren"],
+        ],
+        pruefe: (f, rueck) => {
+          pruefe(h1 !== h2, `A11: beide Abstände sind ${de(h1)} cm — dann sind beide Felder gleich — „${f}“`);
+          // Die Abkürzung muss in der Musterlösung stehen — sie ist die Brücke zum Trapez.
+          pruefe(rueck.includes("Kürzer"), `A11: die Musterlösung zeigt das Ausklammern nicht — „${f}“`);
+          pruefe(Math.abs((e * (h1 + h2)) / 2 - (A1 + A2)) < 1e-9, `A11: das Ausklammern stimmt nicht — „${f}“`);
+        },
+      };
+    },
+  });
+  await pruefeAufgabe(page, bericht, {
+    nr: 12, name: "A12 Trapez zerlegen", runden: 25, mindestensVerschieden: 15,
+    deute: (frage) => {
+      const mA = frage.match(/a = ([\d.,]+) cm<\/strong> \(unten\)|a = ([\d.,]+) cm \(unten\)/);
+      const mC = frage.match(/c = ([\d.,]+) cm \(oben\)/);
+      const mH = frage.match(/Höhe h = ([\d.,]+) cm/);
+      if (!mA || !mC || !mH) return null;
+      const a = zahl(mA[1] || mA[2]);
+      const c = zahl(mC[1]);
+      const h = zahl(mH[1]);
+      const rechteck = c * h, dreieck = ((a - c) * h) / 2;
+      return {
+        felder: [rechteck, dreieck, rechteck + dreieck],
+        toleranz: 0.0005,
+        falschFelder: [
+          [0, a * h, "kürzere"],
+          [1, (a - c) * h, "Halbieren"],
+          [2, a * h, "umschließende"],
+        ],
+        pruefe: (f, rueck) => {
+          pruefe(a > c, `A12: a = ${de(a)} cm ist nicht länger als c = ${de(c)} cm — „${f}“`);
+          // Beide Wege müssen dasselbe liefern — das ist der Kern der Aufgabe.
+          pruefe(Math.abs(rechteck + dreieck - ((a + c) * h) / 2) < 1e-9,
+            `A12: Zerlegung und Trapezformel liefern Verschiedenes — „${f}“`);
+          pruefe(rueck.includes("Probe mit der Trapezformel"),
+            `A12: die Musterlösung prüft nicht mit der Trapezformel nach — „${f}“`);
+        },
+      };
+    },
+  });
+}
+
+// ── Seitengerüst ──────────────────────────────────────────────────────────
+async function geruest(page) {
+  const anker = ["sec-scherung", "sec-parallelogramm", "sec-dreieck", "sec-trapez",
+    "sec-zusammenschau", "sec-vernetzung", "sec-formelsammlung", "sec-uebungen"];
+  for (const a of anker) {
+    const da = await page.evaluate((id) => !!document.getElementById(id), a);
+    pruefe(da, `Gerüst: der Abschnitt #${a} fehlt`);
+  }
+
+  // Die Formelsammlung muss alle drei Formeln enthalten.
+  const fs = await text(page, "#sec-formelsammlung");
+  for (const f of ["A = g · h", "A = ½ · g · h", "A = ½ · (a + c) · h", "g = A : h", "h = 2 · A : g", "1 m² = 100 dm²"]) {
+    pruefe(fs.includes(f), `Formelsammlung: „${f}“ fehlt`);
+  }
+
+  // Pythagoras und Wurzeln kommen erst in Klasse 9 — außer als ausdrücklicher Ausblick.
+  const haupt = await page.evaluate(() => document.querySelector("main").innerText);
+  const wurzeln = haupt.match(/√|Quadratwurzel|Wurzel ziehen/g) || [];
+  pruefe(wurzeln.length === 0, `Gerüst: es kommen Wurzeln vor (${wurzeln.length}×) — die gibt es erst in Klasse 9`);
+  const pyth = [...haupt.matchAll(/.{60}Pythagoras.{60}/gs)].map((m) => m[0]);
+  for (const stelle of pyth) {
+    pruefe(/Klasse 9|noch nicht|gemessen|berechnen statt/.test(stelle),
+      `Gerüst: Pythagoras wird erwähnt, ohne ihn als Klasse-9-Stoff auszuweisen — „${stelle.trim()}“`);
+  }
+
+  // Alle Verweise müssen irgendwohin führen.
+  const links = await page.evaluate(() =>
+    [...document.querySelectorAll("main a[href]")].map((a) => a.getAttribute("href")).filter((h) => !h.startsWith("#") && !h.startsWith("http")));
+  for (const href of new Set(links)) {
+    const ziel = new URL(href.split("#")[0], "http://localhost/mathematik/klasse-8/geometrie/").pathname;
+    const antwort = await page.request.get("http://localhost:" + (process.env.UPLANT_PORT || "8936") + ziel);
+    pruefe(antwort.ok(), `Gerüst: der Verweis „${href}“ führt ins Leere (${antwort.status()})`);
+  }
+
+  // Die Menükarte auf der Übersichtsseite muss auf diese Seite zeigen.
+  const inMenue = await page.evaluate(async () => {
+    const html = await (await fetch("index.html")).text();
+    return html.includes('href="flaecheninhalte.html"');
+  });
+  pruefe(inMenue, "Gerüst: die Übersichtsseite verweist nicht auf die Flächeninhalte");
+
+  // Zwölf Aufgaben, drei je Stufe.
+  const proStufe = await page.evaluate(async () => {
+    const out = [];
+    const tabs = [...document.querySelectorAll("#exercises-mount .schwierigkeit-tabs button")];
+    for (const t of tabs) {
+      t.click();
+      out.push(document.querySelectorAll("#exercises-mount .schwierigkeit-tab-panel .aufgabe-box").length);
+    }
+    return out;
+  });
+  pruefe(proStufe.length === 4, `Gerüst: ${proStufe.length} Schwierigkeitsstufen statt 4`);
+  pruefe(proStufe.every((n) => n === 3), `Gerüst: die Stufen haben ${proStufe.join("/")} Aufgaben statt 3/3/3/3`);
+}
+
+(async () => {
+  const browser = await starteBrowser();
+  for (const dunkel of [false, true]) {
+    const wo = dunkel ? "dunkel" : "hell";
+    const page = await neueSeite(browser, { dunkel });
+    await oeffne(page, SEITE);
+    if (!dunkel) {
+      await geruest(page);
+      await scherung(page);
+      await parallelogramm(page);
+      await dreieck(page);
+      await grundseiten(page);
+      await trapez(page);
+      await zusammenschau(page);
+      await quizze(page);
+      await aufgaben(page);
+    } else {
+      await pruefeKontrast(page, bericht, "dunkel");
+    }
+    await pruefeNotation(page, bericht, wo);
+    for (const s of page.stoerungen) pruefe(false, `${wo}: ${s}`);
+    await page.close();
+  }
+  await browser.close();
+  bericht.abschluss();
+})();
