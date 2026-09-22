@@ -57,14 +57,33 @@ function schranke(n, versuche = 400000) {
   return 1;
 }
 
+// Die zu vermessenden Seiten: normalerweise die Grundwissen-Themen, die sich selbst finden.
+// Ein Argument, das mit „/“ beginnt, ist dagegen ein Seitenpfad — damit lassen sich auch die
+// Klasse-8-Seiten vermessen, die kein Thema im Sinne von alleThemen() sind.
+function seitenAuswahl(argument) {
+  if (argument.startsWith("/")) {
+    const name = argument.split("/").pop().replace(/\.html$/, "");
+    return [{ thema: name, name, pfad: argument }];
+  }
+  return alleThemen().filter((t) => !argument || t.name.includes(argument));
+}
+
 (async () => {
   const filter = process.argv[2] || "";
   const browser = await starteBrowser();
   const page = await neueSeite(browser);
   const zeilen = [];
 
-  for (const thema of alleThemen()) {
-    if (filter && !thema.name.includes(filter)) continue;
+  const seiten = seitenAuswahl(filter);
+  if (!seiten.length) {
+    console.error(`Keine Seite passt auf „${filter}“. Ein Grundwissen-Thema wird über einen Teil` +
+      ` seines Namens gewählt, jede andere Seite über ihren Pfad ab der Wurzel, z. B.` +
+      ` /mathematik/klasse-8/geometrie/flaecheninhalte.html`);
+    await browser.close();
+    process.exit(1);
+  }
+
+  for (const thema of seiten) {
     await oeffne(page, thema.pfad);
     const proReiter = await aufgabenProReiter(page);
     const anzahl = proReiter * 4;

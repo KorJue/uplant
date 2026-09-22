@@ -590,6 +590,20 @@ async function figurMasse(page, box) {
   }, box);
 }
 
+// Die Schranken für `mindestensVerschieden` sind gemessen, nicht geschätzt — mit
+//
+//   UPLANT_ZUEGE=25 node tests/werkzeug-streuung.js \
+//       /mathematik/klasse-8/geometrie/flaecheninhalte.html
+//
+// (25, weil hier mit `runden: 25` geprüft wird; die Schranke hängt an der Rundenzahl).
+// Gemessen am 2026-09-22, sichere Schranke je Aufgabe:
+//
+//   A1 13   A2 13   A3 18   A4 22   A5 22   A6 22
+//   A7 22   A8 21   A9 22   A10 19  A11 18  A12 15
+//
+// Eingetragen sind durchweg kleinere Werte: Eine zu hohe Schranke macht den Gesamtlauf
+// launisch, und verlorengehen darf dabei nichts — geprüft wird ja, ob ein Generator
+// überhaupt streut, nicht wie gut.
 async function aufgaben(page) {
   // ---- einfach: der Flächeninhalt aus der Zeichnung ----
   //

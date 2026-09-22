@@ -13,6 +13,27 @@ nach, bevor er etwas erfindet:
 | Satz des Thales (Klasse 8, freier Aufbau, Konstruktion) | `mathematik/klasse-8/geometrie/satz-des-thales.*` |
 | Flächeninhalte (Klasse 8, bewegliche Herleitungen) | `mathematik/klasse-8/geometrie/flaecheninhalte.*` |
 
+## Arbeitsablauf für eine neue Seite
+
+Die Reihenfolge ist nicht beliebig — jeder Schritt fängt Fehler, die der nächste
+sonst teuer macht:
+
+1. **Vorbild lesen.** Die nächstverwandte fertige Seite öffnen und ihren Aufbau
+   übernehmen, statt einen eigenen zu erfinden.
+2. **Didaktische Reihenfolge festlegen.** Was baut auf was auf? Keine Herleitung
+   darf auf eine spätere vorgreifen (§ 1). Diese Entscheidung zuerst treffen —
+   sie bestimmt den Rest.
+3. **Seite bauen:** HTML-Gerüst, Zeichnungen, Bilanzen, Kontrollfragen,
+   Vernetzung, Formelsammlung, Aufgaben.
+4. **Im Browser ansehen** — hell **und** dunkel, jede Zeichnung an mehreren
+   Reglerstellungen, mit Blick auf Beschriftungen (§ 2). Skriptfehler prüfen.
+5. **Im Menü anmelden** (§ 4) und die fachliche Prüfung schreiben (§ 6).
+6. **Streuungsschranken messen** und eintragen (§ 6).
+7. **Die Prüfung selbst prüfen**: Mutation einbauen, nachsehen, ob sie anschlägt,
+   zurücksetzen (§ 6).
+8. **Gesamtlauf** — und währenddessen nichts anfassen.
+9. **Commit und Push** (§ 8).
+
 ---
 
 ## 1. Der oberste Grundsatz
@@ -161,6 +182,16 @@ Dunkelmodus), `assets/site.css`, `mathematik/aufgaben.css`, die eigene
 `lernpfad.css` und am Ende `<script type="module" src="lernpfad.js?v=N">`.
 Die Versionsnummer im Dateinamen wird bei inhaltlichen Änderungen erhöht.
 
+Am Ende des Moduls werden alle Regler verdrahtet **und jede Zeichnefunktion
+einmal von Hand aufgerufen** — sonst bleibt die Seite leer, bis jemand einen
+Regler anfasst:
+
+```js
+["dr-g", "dr-h", "dr-t"].forEach((id) =>
+  document.getElementById(id).addEventListener("input", renderDreieck));
+renderDreieck();   // nicht vergessen
+```
+
 **Jeder Erarbeitungsabschnitt bekommt seine eigene Kontrollfrage.** Vier
 Antworten, genau eine richtig, und eine Erklärung, die auch bei einer richtigen
 Antwort noch etwas erklärt — nicht bloß „genau!". Die richtige Antwort darf
@@ -283,7 +314,16 @@ Schreiben einer neuen Prüfung die erste Anlaufstelle. Das Wichtigste:
 ```bash
 bash tests/alle-tests.sh              # alles (mehrere Minuten)
 bash tests/alle-tests.sh flaechen     # nur passende Dateinamen
-node tests/werkzeug-streuung.js       # Streuungsschranken messen
+```
+
+`alle-tests.sh` bringt seine Umgebung selbst mit und startet bei Bedarf den
+Prüfserver. **Wer eine Prüfdatei oder ein Werkzeug einzeln aufruft, muss beides
+selbst setzen** — sonst kommt nur `Cannot find module 'playwright'`:
+
+```bash
+python3 tests/server.py &                       # falls noch keiner läuft
+export NODE_PATH=/opt/node22/lib/node_modules
+/opt/node22/bin/node tests/klasse-8/test-flaecheninhalte.js
 ```
 
 Ein vollständiger Lauf dauert lange: im Hintergrund starten, Ausgabe **direkt in
@@ -337,6 +377,17 @@ ein Klick muss dort ankommen, wo er hinzeigt.
   `pruefeNotation()` in beiden Modi.
 * **Skriptfehler sind Fehler**: `for (const s of page.stoerungen) pruefe(false, s)`.
 
+Zwei Kleinigkeiten der Helfer, die man einmal wissen muss:
+
+* `setzeRegler()` gibt den **wirklich gesetzten** Wert zurück, nicht den
+  gewünschten. Weicht er ab, hat der Regler begrenzt oder auf sein Raster
+  gerundet — und dann ist der Rückgabewert die Wahrheit, mit der weitergerechnet
+  wird. Nie annehmen, der Wunschwert sei angekommen.
+* `wuerfle()` liefert den Aufgabentext als **Klartext mit vereinheitlichten
+  Leerzeichen** (`innerText`, dann `\s+` → ein Leerzeichen). Deshalb verschwinden
+  Auszeichnungen, und deshalb dürfen die regulären Ausdrücke in `deute()` weder
+  HTML noch doppelte Leerzeichen erwarten.
+
 ### Fallstricke, die mehrfach Zeit gekostet haben
 
 * **In `muster`-Zeichenketten darf kein HTML stehen.** Die Rückmeldung wird über
@@ -353,8 +404,21 @@ ein Klick muss dort ankommen, wo er hinzeigt.
   das ist schlimmer als eine etwas zu niedrige Schranke.
 * **Die Schranke hängt an der Rundenzahl.** Das Werkzeug meldet sie für
   **30 Züge**. Prüft eine Aufgabe mit anderer `runden`-Zahl, gehört die Schranke
-  dafür neu gerechnet (`UPLANT_ZUEGE=25 node tests/werkzeug-streuung.js …`):
-  Mehr Züge bedeuten mehr verschiedene Aufgaben und damit eine höhere Schranke.
+  dafür neu gerechnet — mehr Züge bedeuten mehr verschiedene Aufgaben und damit
+  eine höhere Schranke:
+
+  ```bash
+  export NODE_PATH=/opt/node22/lib/node_modules
+  N=/opt/node22/bin/node
+  $N tests/werkzeug-streuung.js 07-quadratwurzeln          # Grundwissen: Namensteil
+  UPLANT_ZUEGE=25 $N tests/werkzeug-streuung.js \
+      /mathematik/klasse-8/geometrie/flaecheninhalte.html  # sonst: Seitenpfad
+  ```
+
+  Das Werkzeug würfelt jede Aufgabe 200-mal, rechnet daraus die Größe der
+  gezogenen Menge zurück (Sammelbilderproblem) und simuliert das 10⁻⁴-Quantil
+  für vorsichtshalber `0,8 · n`. Diese Zahl gehört in `mindestensVerschieden`,
+  die Messung als Kommentar daneben.
 * **Große Kandidatenlisten nicht beim Laden des Moduls bauen.** 40 000 Einträge
   beim Seitenaufbau sind spürbar; Faktoren getrennt ziehen.
 * **`page.mouse.click` rollt die Seite nicht.** Vor jedem Klick
