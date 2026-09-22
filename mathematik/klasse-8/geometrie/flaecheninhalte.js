@@ -65,6 +65,12 @@ function num(x, digits = 4) {
   const gerundet = Math.round(x * f) / f;
   return (gerundet === 0 ? 0 : gerundet).toLocaleString("de-DE", { maximumFractionDigits: digits });
 }
+// Echter Bruchstrich statt „(a + c)/2“: Zähler über Nenner, wie im Heft. Gleiche Bauweise wie
+// in den Grundwissen-Pfaden, damit ein Bruch überall gleich aussieht.
+function bruch(zaehler, nenner, klasse = "") {
+  return `<span class="bruch ${klasse}"><span class="z">${zaehler}</span><span class="n">${nenner}</span></span>`;
+}
+
 // „=“ oder „≈“? Entscheidend ist, ob die Anzeige mit der gewählten Stellenzahl den Wert genau
 // trifft — nicht, ob er ganzzahlig ist (7,5 ist exakt, 7,4999… ist es nicht).
 function zeichen(x, stellen = 2) {
@@ -638,6 +644,121 @@ function renderTrapez() {
         : `Zusammen ergeben beide Trapeze ein Parallelogramm. Unten liegen jetzt a und c hintereinander: ${num(a)} cm + ${num(c)} cm = ${num(a + c)} cm. Die Höhe ist unverändert ${num(h)} cm.`;
 }
 
+// ---------- 4b. Der zweite Weg: an der Mittellinie abtrennen ----------
+//
+// Diese Herleitung liefert die Formel gleich in der Bruchschreibweise A = (a + c)/2 · h und
+// erklärt dabei, warum die Mittellinie so lang ist, wie sie ist.
+//
+// Die Länge der Mittellinie aus ihrer LAGE: Steigt man vom unteren Rand zum oberen, so rückt
+// der linke Schenkel um dL nach innen und der rechte um dR, zusammen also um dL + dR = a − c.
+// Auf halber Höhe ist erst die Hälfte davon zurückgelegt:
+//     m = a − (a − c)/2 = (2a − a + c)/2 = (a + c)/2.
+// Die Mittellinie ist also das Mittel von a und c — und das ganz ohne Strahlensätze, nur
+// daraus, dass halbe Höhe auch halben Versatz bedeutet.
+//
+// Und warum ist A = m · h? Die Mittellinie teilt jeden Schenkel in zwei Hälften. Legt man um
+// die Mittellinie das Rechteck der Breite m und der Höhe h, so ragt das Trapez unten links und
+// unten rechts über das Rechteck hinaus, und oben links und oben rechts bleibt das Rechteck
+// leer. Die überstehenden Dreiecke passen GENAU in die Lücken: Eine halbe Drehung um den
+// Mittelpunkt des jeweiligen Schenkels führt das eine in das andere über. Nichts geht verloren,
+// nichts kommt hinzu — also A = m · h.
+
+const ML_W = 640, ML_H = 380;
+
+function renderMittellinie() {
+  const a = reglerZahl("ml-a");
+  const c = begrenzt("ml-c", reglerZahl("ml-c"), 0.5, a);
+  const h = reglerZahl("ml-h");
+  // Der Versatz wird als ANTEIL von a − c eingestellt, nicht in Zentimetern. Der Grund ist
+  // geometrisch: Das Abtrennen unten und Einsetzen oben klappt nur, solange beide Schenkel
+  // nach innen fallen — also 0 ≤ Versatz ≤ a − c. Fiele ein Schenkel nach außen, läge das
+  // überstehende Stück oben statt unten, und das Bild zeigte etwas anderes als der Text sagt.
+  // Als Anteil eingestellt, trifft der Regler diesen Bereich immer genau.
+  const anteil = reglerZahl("ml-v") / 100;
+  const versatz = anteil * (a - c);
+  const t = reglerZahl("ml-t") / 100;
+  document.getElementById("ml-a-anzeige").textContent = num(a) + " cm";
+  document.getElementById("ml-c-anzeige").textContent = num(c) + " cm";
+  document.getElementById("ml-h-anzeige").textContent = num(h) + " cm";
+  document.getElementById("ml-v-anzeige").textContent = num(versatz) + " cm";
+  document.getElementById("ml-t-anzeige").textContent = Math.round(t * 180) + "°";
+
+  const A = { x: 0, y: 0 }, B = { x: a, y: 0 };
+  const C = { x: versatz + c, y: h }, D = { x: versatz, y: h };
+
+  // Die Mitten der beiden Schenkel — sie sind zugleich die Drehpunkte.
+  const P = { x: (A.x + D.x) / 2, y: h / 2 };   // Mitte des linken Schenkels AD
+  const Q = { x: (B.x + C.x) / 2, y: h / 2 };   // Mitte des rechten Schenkels BC
+  const m = Q.x - P.x;                           // = (a + c) / 2, unabhängig vom Versatz
+
+  // Das Zielrechteck steht über der Mittellinie: Breite m, Höhe h.
+  const RU1 = { x: P.x, y: 0 }, RU2 = { x: Q.x, y: 0 };
+  const RO1 = { x: P.x, y: h }, RO2 = { x: Q.x, y: h };
+
+  // Die beiden überstehenden Dreiecke unten …
+  const eckeLinks = [A, RU1, P];
+  const eckeRechts = [B, Q, RU2];
+
+  const bu = buehneAuto(ML_W, ML_H, [
+    A, B, C, D, RU1, RU2, RO1, RO2,
+    ...drehSpur(eckeLinks, P), ...drehSpur(eckeRechts, Q),
+  ]);
+
+  const winkel = t * Math.PI;
+  const drehUm = (M) => (p) => {
+    const dx = p.x - M.x, dy = p.y - M.y;
+    const co = Math.cos(winkel), si = Math.sin(winkel);
+    return { x: M.x + dx * co - dy * si, y: M.y + dx * si + dy * co };
+  };
+  const bewegtLinks = eckeLinks.map(drehUm(P));
+  const bewegtRechts = eckeRechts.map(drehUm(Q));
+
+  // Das Zielrechteck blass — es ist das Maß, an dem gemessen wird.
+  polygon(bu, [RU1, RU2, RO2, RO1], null, FARBE.hilfe, 1.6, { "stroke-dasharray": "5 4", fill: "none" });
+
+  // Der Teil des Trapezes, der liegen bleibt: das Sechseck zwischen den beiden Ecken.
+  polygon(bu, [RU1, RU2, Q, C, D, P], "fl-flaeche-fuell", FARBE.grund, 2.4);
+
+  polygon(bu, bewegtLinks, "fl-flaeche-zweit", FARBE.zweit, 2.2);
+  polygon(bu, bewegtRechts, "fl-flaeche-zweit", FARBE.zweit, 2.2);
+
+  // Die Mittellinie selbst — sie bleibt bei der ganzen Bewegung stehen.
+  strecke(bu, P, Q, FARBE.flaeche, 3, { "stroke-dasharray": "8 4" });
+  mass(bu, P, Q, "m = " + num(m) + " cm", FARBE.flaeche, 0, -10);
+
+  // Grundseiten und Höhe.
+  strecke(bu, A, B, FARBE.grund, t === 0 ? 3.2 : 1.6, t === 0 ? {} : { "stroke-dasharray": "3 4" });
+  mass(bu, A, B, "a = " + num(a) + " cm", FARBE.grund, 0, 24);
+  strecke(bu, D, C, FARBE.grund, t === 0 ? 3.2 : 1.6, t === 0 ? {} : { "stroke-dasharray": "3 4" });
+  mass(bu, D, C, "c = " + num(c) + " cm", FARBE.grund, 0, -14);
+  strecke(bu, RU1, RO1, FARBE.hoehe, 2, { "stroke-dasharray": "6 4" });
+  rechterWinkel(bu, RU1, RU2, RO1, FARBE.hoehe);
+  // Die Höhenbeschriftung steht INNEN: Links von der Linie liegt bei großem Versatz die
+  // abgetrennte Ecke, und am linken Bildrand wäre sie abgeschnitten. Auf halber Höhe sitzt
+  // außerdem schon der Punkt P — deshalb rutscht sie zusätzlich nach unten.
+  mass(bu, RU1, { x: RU1.x, y: h / 2 }, "h = " + num(h) + " cm", FARBE.hoehe, 34, 4);
+
+  punkt(bu, P, "P", -14, -4);
+  punkt(bu, Q, "Q", 14, -4);
+
+  zeige("ml-mount", bu);
+
+  const flaeche = ((a + c) * h) / 2;
+  document.getElementById("ml-bilanz").innerHTML =
+    `Die Mittellinie liegt auf <strong>halber Höhe</strong>. Von a nach c rücken die Schenkel um ` +
+    `<span class="wb">a − c = ${num(a)} − ${num(c)} = ${num(a - c)} cm</span> nach innen; auf halber Höhe ist davon erst die Hälfte geschafft:<br>` +
+    `<span class="wa">m = ${num(a)} cm − ${num((a - c) / 2)} cm = ${bruch(`${num(a)} + ${num(c)}`, "2")} = ${num(m)} cm</span> — das Mittel von a und c, gleich wie schief das Trapez steht.<br>` +
+    `Das Rechteck aus Mittellinie und Höhe ist genauso groß wie das Trapez:<br>` +
+    `<span class="wa gross">A = m · h = ${bruch("a + c", "2")} · h = ${bruch(`${num(a)} + ${num(c)}`, "2")} · ${num(h)} = ${num(flaeche)} cm²</span>`;
+
+  document.getElementById("ml-text").textContent =
+    t === 0
+      ? `Unten links und unten rechts ragt das Trapez über das Rechteck hinaus (orange), oben bleibt das Rechteck an denselben Stellen leer. Drehe die beiden Ecken um P und Q.`
+      : t < 1
+        ? `Die Ecken sind um ${Math.round(t * 180)}° gedreht. P und Q bleiben fest — sie sind die Mitten der beiden Schenkel, dort hängen die Ecken am Rumpf.`
+        : `Nach der halben Drehung füllen die beiden Ecken genau die Lücken oben. Übrig bleibt ein Rechteck mit der Breite m = ${num(m)} cm und der Höhe h = ${num(h)} cm. Kein Stück ist verschwunden, keines dazugekommen — also hat das Trapez den Flächeninhalt ${num(m)} cm · ${num(h)} cm = ${num(flaeche)} cm².`;
+}
+
 // ================= 5. Zusammenschau =================
 
 const ZS_W = 600, ZS_H = 300;
@@ -800,6 +921,19 @@ function initQuizzes() {
       "A = ½ · (a + c) · h = ½ · (9 cm + 5 cm) · 4 cm = ½ · 14 cm · 4 cm = 28 cm². Die 56 cm² wären das Parallelogramm aus beiden Trapezen — das Halbieren fehlt. Anschaulich: Die Mittellinie ist m = (9 + 5) : 2 = 7 cm lang, und das Trapez ist genauso groß wie ein Rechteck mit 7 cm und 4 cm.",
   });
 
+  mountQuiz(document.getElementById("quiz-mittellinie"), {
+    q: "Zwei Trapeze haben beide a = 10 cm, c = 4 cm und h = 3 cm — aber das eine steht aufrecht, das andere stark schief. Wie lang ist jeweils die Mittellinie?",
+    options: [
+      "Beim schiefen ist sie länger, weil sie schräger verläuft",
+      "Das hängt von den Schenkeln ab und lässt sich so nicht sagen",
+      "Beide Male 7 cm — der Versatz spielt keine Rolle",
+      "Beide Male 6 cm, denn m = (10 − 4) : 2 + 3",
+    ],
+    correct: 2,
+    explain:
+      "Die Mittellinie liegt auf halber Höhe. Von unten nach oben rücken die Schenkel zusammen um a − c = 6 cm nach innen — egal, wie sich das auf links und rechts verteilt. Auf halber Höhe ist davon die Hälfte geschafft, also 3 cm: m = 10 cm − 3 cm = 7 cm = (10 + 4) : 2. Nur die SUMME der beiden Versätze geht ein, nicht ihre Verteilung. Deshalb ist die Mittellinie immer das Mittel von a und c, und das Trapez ist immer so groß wie das Rechteck m · h = 7 cm · 3 cm = 21 cm².",
+  });
+
   mountQuiz(document.getElementById("quiz-zusammenschau"), {
     q: "Warum ist die Dreiecksformel ein Sonderfall der Trapezformel?",
     options: [
@@ -827,6 +961,7 @@ function initExercises() {
 ["dr-g", "dr-h", "dr-cx", "dr-t"].forEach((id) => document.getElementById(id).addEventListener("input", renderDreieck));
 document.querySelectorAll('input[name="gh-seite"]').forEach((r) => r.addEventListener("input", renderGrundseite));
 ["tz-a", "tz-c", "tz-h", "tz-t", "tz-mitte"].forEach((id) => document.getElementById(id).addEventListener("input", renderTrapez));
+["ml-a", "ml-c", "ml-h", "ml-v", "ml-t"].forEach((id) => document.getElementById(id).addEventListener("input", renderMittellinie));
 ["zs-a", "zs-c", "zs-h"].forEach((id) => document.getElementById(id).addEventListener("input", renderZusammenschau));
 
 renderScherung();
@@ -834,6 +969,7 @@ renderParallelogramm();
 renderDreieck();
 renderGrundseite();
 renderTrapez();
+renderMittellinie();
 renderZusammenschau();
 initQuizzes();
 initExercises();

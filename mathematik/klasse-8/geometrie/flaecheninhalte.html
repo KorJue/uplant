@@ -178,6 +178,41 @@
       Im letzten Schritt wird ½ · h <span class="term">ausgeklammert</span>. Diesen Weg brauchst du bei jeder Figur, für die es gar keine eigene Formel gibt — in den Übungsaufgaben auf der Stufe <em>komplex</em> kommt er wieder vor.
     </div>
     <div class="quiz" id="quiz-trapez"></div>
+
+    <h3>Dritter Weg: an der Mittellinie abtrennen</h3>
+    <p>Die beiden bisherigen Wege liefern die Formel mit dem Faktor ½ davor. Es gibt einen dritten, der sie gleich als <strong>Bruch</strong> hinschreibt — und dabei nebenbei erklärt, warum die Mittellinie so lang ist, wie sie ist.</p>
+
+    <div class="wissen-box">
+      <span class="box-label">Wie lang ist die Mittellinie? — aus ihrer Lage</span>
+      Geh vom unteren Rand zum oberen: Unten ist die Figur a breit, oben c. Dabei rücken die beiden Schenkel zusammen um <strong>a − c</strong> nach innen — wie sich das auf links und rechts verteilt, ist gleichgültig, nur die Summe zählt.<br>
+      Die Mittellinie liegt auf <strong>halber Höhe</strong>. Also ist dort erst die <em>Hälfte</em> dieses Zusammenrückens geschafft:
+      <div class="formula-block">m = a − <span class="bruch"><span class="z">a − c</span><span class="n">2</span></span> = <span class="bruch"><span class="z">2a − a + c</span><span class="n">2</span></span> = <span class="bruch gross"><span class="z">a + c</span><span class="n">2</span></span></div>
+      Die Mittellinie ist also das <strong>Mittel von a und c</strong> — und zwar immer, ganz gleich wie schief das Trapez steht.
+    </div>
+
+    <p>Und jetzt der Flächeninhalt. Leg um die Mittellinie ein Rechteck der Breite m und der Höhe h. Unten links und unten rechts ragt das Trapez darüber hinaus; oben links und oben rechts bleibt das Rechteck leer. Dreh die beiden überstehenden Ecken um P und Q — die Mitten der Schenkel — und sieh nach, wo sie landen.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Seite a: <input type="range" id="ml-a" min="4" max="10" step="0.5" value="9" style="vertical-align:middle;width:7rem"> <span id="ml-a-anzeige" class="th-name-c"></span></label>
+        <label>Seite c: <input type="range" id="ml-c" min="0.5" max="9" step="0.5" value="5" style="vertical-align:middle;width:7rem"> <span id="ml-c-anzeige" class="th-name-c"></span></label>
+        <label>Höhe h: <input type="range" id="ml-h" min="2" max="5" step="0.5" value="4" style="vertical-align:middle;width:7rem"> <span id="ml-h-anzeige" class="th-name-r"></span></label>
+        <label>Versatz: <input type="range" id="ml-v" min="0" max="100" step="5" value="50" style="vertical-align:middle;width:7rem"> <span id="ml-v-anzeige" style="font-weight:800"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>Ecken drehen: <input type="range" id="ml-t" min="0" max="100" step="2" value="0" style="vertical-align:middle;width:14rem"> <span id="ml-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="ml-mount"></div>
+      <div class="th-bilanz" id="ml-bilanz"></div>
+      <div id="ml-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Flächeninhalt des Trapezes — als Bruch</span>
+      Weil die beiden Ecken genau in die Lücken passen, ist das Trapez flächengleich zum Rechteck aus Mittellinie und Höhe:
+      <div class="formula-block">A<sub>Trapez</sub> = m · h = <span class="bruch gross"><span class="z">a + c</span><span class="n">2</span></span> · h</div>
+      Das ist dieselbe Formel wie oben — <span class="bruch"><span class="z">a + c</span><span class="n">2</span></span> · h und ½ · (a + c) · h sind nur zwei Schreibweisen für denselben Term. Die Bruchform sagt deutlicher, was man tut: <strong>erst mitteln, dann mit der Höhe malnehmen</strong>. Genau so rechnet man beim Rechteck auch — nur dass dort schon eine einzige Breite dasteht.
+    </div>
+    <p class="hinweis-box">💡 Zieh den Regler <strong>Versatz</strong> und beachte die Mittellinie: Ihre Länge ändert sich <em>nicht</em>. Das muss so sein — in <span class="bruch"><span class="z">a + c</span><span class="n">2</span></span> kommt der Versatz gar nicht vor. Und weil sich auch der Flächeninhalt nicht ändert, ist das wieder nichts anderes als die Scherung aus Abschnitt 1.</p>
+    <div class="quiz" id="quiz-mittellinie"></div>
   </section>
 
   <!-- 5. Zusammenschau -->
@@ -238,8 +273,8 @@
       </div>
       <div class="fl-formel-karte">
         <h3>Trapez</h3>
-        <div class="fl-formel">A = ½ · (a + c) · h</div>
-        <p><strong>Herleitung:</strong> Eine um 180° gedrehte Kopie ergänzt das Trapez zu einem Parallelogramm mit der Grundseite a + c.</p>
+        <div class="fl-formel">A = <span class="bruch"><span class="z">a + c</span><span class="n">2</span></span> · h</div>
+        <p><strong>Herleitung:</strong> Eine um 180° gedrehte Kopie ergänzt das Trapez zu einem Parallelogramm mit der Grundseite a + c. Oder: an der Mittellinie m = <span class="bruch"><span class="z">a + c</span><span class="n">2</span></span> die beiden Ecken abtrennen und umdrehen — es entsteht das Rechteck m · h.</p>
       </div>
     </div>
 

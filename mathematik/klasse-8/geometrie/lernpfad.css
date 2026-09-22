@@ -714,3 +714,20 @@
 :root[data-theme="dark"] .fl-fig-grund-text { fill: #8ab4ff; }
 :root[data-theme="dark"] .fl-fig-hoehe-text { fill: #c4a7ff; }
 :root[data-theme="dark"] .fl-fig-zweit-text { fill: #ffbf6e; }
+
+/* ---------- Bruchdarstellung ---------- */
+
+/* Echter Bruchstrich statt „(a+c)/2“: Zähler über Nenner, damit die Notation der aus dem Buch
+   entspricht. Gleiche Bauweise wie in den Grundwissen-Pfaden. */
+.bruch {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: middle;
+  margin: 0 0.18em;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+.bruch .z { padding: 0 0.3em; border-bottom: 2px solid currentColor; }
+.bruch .n { padding: 0 0.3em; }
+.bruch.gross { font-size: 1.3rem; font-weight: 700; }

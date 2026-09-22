@@ -12,12 +12,13 @@
 //      Anfang — sonst würde beim Verschieben oder Drehen etwas verschwinden, und die
 //      Herleitung wäre wertlos.
 //
+//   3. Die AUFGABEN rechnen richtig. Jede der zwölf wird über viele Runden gewürfelt, unabhängig
+//      nachgerechnet und mit jedem vorgesehenen Fehlerwert geprüft.
+//
 // Die Reihenfolge der Abschnitte ist selbst eine Behauptung: Dreieck, Parallelogramm, Trapez,
 // und keine Herleitung greift auf eine spätere vor. Deshalb wird beim Dreieck geprüft, dass es
 // wirklich zum Rechteck ergänzt wird — ein Rückgriff auf das Parallelogramm wäre an dieser
 // Stelle ein Zirkelschluss.
-//   3. Die AUFGABEN rechnen richtig. Jede der zwölf wird über viele Runden gewürfelt, unabhängig
-//      nachgerechnet und mit jedem vorgesehenen Fehlerwert geprüft.
 //
 // Außerdem: Auf dieser Seite darf weder der Satz des Pythagoras noch eine Quadratwurzel
 // vorkommen — beides steht erst in Klasse 9 an. Wo eine schräge Länge als Zahl erscheint, muss
@@ -395,6 +396,92 @@ async function trapez(page) {
   }
 }
 
+// ── Abschnitt 4b: der Weg über die Mittellinie ────────────────────────────
+//
+// Zwei Behauptungen stehen hier, und beide werden nachgemessen:
+//   1. Die Mittellinie ist (a + c)/2 lang — UNABHÄNGIG vom Versatz. Das ist der Kern des
+//      Arguments „halbe Höhe, halber Versatz“, und es wird über alle Versätze geprüft.
+//   2. Die beiden abgetrennten Ecken füllen nach der halben Drehung genau die Lücken: Am
+//      Ende muss ein Rechteck der Breite m und der Höhe h dastehen, und zwar mit derselben
+//      Fläche wie das Trapez.
+async function mittellinie(page) {
+  for (const [a, c, h] of [[9, 5, 4], [10, 2, 3], [6, 5.5, 5], [4, 4, 2], [8, 0.5, 4.5]]) {
+    await setzeRegler(page, "ml-a", a);
+    await setzeRegler(page, "ml-c", c);
+    await setzeRegler(page, "ml-h", h);
+    const cEcht = Math.min(c, a);
+    const m = (a + cEcht) / 2;
+    const A = m * h;
+
+    // Der Versatz ist ein Anteil von a − c: 0 % lässt den linken Schenkel senkrecht stehen,
+    // 100 % den rechten. Dazwischen liegen alle Trapeze, deren Schenkel beide nach innen fallen.
+    for (const v of [0, 25, 50, 75, 100]) {
+      await setzeRegler(page, "ml-v", v);
+      for (const t of [0, 40, 70, 100]) {
+        await setzeRegler(page, "ml-t", t);
+        const wo = `a = ${a}, c = ${cEcht}, h = ${h}, Versatz = ${v}, Drehung = ${Math.round(t * 1.8)}°`;
+
+        // Die Mittellinie hängt nicht vom Versatz ab — das ist die Aussage des Abschnitts.
+        const bilanz = await text(page, "#ml-bilanz");
+        pruefe(bilanz.includes(`= ${de(m)} cm — das Mittel von a und c`),
+          `Mittellinie: ${wo} — die Bilanz nennt nicht m = ${de(m)} cm — „${bilanz}“`);
+        pruefe(bilanz.includes(`= ${de(A)} cm²`),
+          `Mittellinie: ${wo} — die Bilanz nennt nicht A = ${de(A)} cm² — „${bilanz}“`);
+
+        const punkteML = await punkte(page, "ml-mount");
+        pruefe(!!punkteML.P && !!punkteML.Q, `Mittellinie: ${wo} — P oder Q fehlt`);
+        if (!punkteML.P || !punkteML.Q) continue;
+        const skala = skalaAus(punkteML.P, punkteML.Q, m);
+
+        const polys = await polygone(page, "ml-mount");
+        const rumpf = polys.find((x) => x.klasse.includes("fl-flaeche-fuell"));
+        const ecken = polys.filter((x) => x.klasse.includes("fl-flaeche-zweit"));
+        pruefe(!!rumpf, `Mittellinie: ${wo} — der Rumpf fehlt`);
+        pruefe(ecken.length === 2, `Mittellinie: ${wo} — ${ecken.length} Ecken statt 2`);
+        if (!rumpf || ecken.length !== 2) continue;
+
+        // Rumpf und Ecken ergeben zusammen immer das Trapez — beim Drehen geht nichts verloren.
+        const aRumpf = polygonFlaeche(rumpf.punkte) / (skala * skala);
+        const aEcken = ecken.map((e) => polygonFlaeche(e.punkte) / (skala * skala));
+        pruefe(Math.abs(aRumpf + aEcken[0] + aEcken[1] - A) < 0.03 * Math.max(1, A),
+          `Mittellinie: ${wo} — Rumpf und Ecken ergeben ${de(aRumpf + aEcken[0] + aEcken[1], 2)} cm² statt ${de(A)} cm²`);
+
+        if (t === 100) {
+          // Am Ende steht ein Rechteck: alles liegt zwischen den beiden Mittellinien-Enden,
+          // und die Gesamtfigur ist genau m breit und h hoch.
+          const alle = rumpf.punkte.concat(...ecken.map((e) => e.punkte));
+          const xs = alle.map((q) => q.x), ys = alle.map((q) => q.y);
+          const breite = (Math.max(...xs) - Math.min(...xs)) / skala;
+          const hoehe = (Math.max(...ys) - Math.min(...ys)) / skala;
+          pruefe(Math.abs(breite - m) < 0.05,
+            `Mittellinie: ${wo} — die entstandene Figur ist ${de(breite, 2)} cm breit statt ${de(m)} cm`);
+          pruefe(Math.abs(hoehe - h) < 0.05,
+            `Mittellinie: ${wo} — die entstandene Figur ist ${de(hoehe, 2)} cm hoch statt ${de(h)} cm`);
+          // Und die Ecken dürfen nicht mehr über die Mittellinien-Breite hinausragen.
+          const linkeKante = Math.min(punkteML.P.x, punkteML.Q.x), rechteKante = Math.max(punkteML.P.x, punkteML.Q.x);
+          for (const e of ecken) {
+            for (const q of e.punkte) {
+              pruefe(q.x >= linkeKante - 1.5 && q.x <= rechteKante + 1.5,
+                `Mittellinie: ${wo} — nach der Drehung ragt eine Ecke noch über das Rechteck hinaus`);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Die Formel muss als echter Bruch dastehen — darum geht es in diesem Abschnitt.
+  const brueche = await page.evaluate(() =>
+    [...document.querySelectorAll("#sec-trapez .bruch")].map((b) => {
+      const z = b.querySelector(".z"), n = b.querySelector(".n");
+      return (z ? z.textContent : "") + " / " + (n ? n.textContent : "");
+    }));
+  pruefe(brueche.some((b) => /^a \+ c \/ 2$/.test(b)),
+    `Mittellinie: die Formel steht nicht als Bruch (a + c)/2 — gefunden: ${brueche.join(" ; ")}`);
+  pruefe(brueche.length >= 3,
+    `Mittellinie: nur ${brueche.length} Brüche im Trapezabschnitt`);
+}
+
 // ── Abschnitt 5: Zusammenschau ────────────────────────────────────────────
 //
 // Die Behauptung: Die Trapezformel enthält die beiden anderen als Sonderfälle. Geprüft wird
@@ -460,7 +547,8 @@ async function zusammenschau(page) {
 
 // ── Die Kontrollfragen ────────────────────────────────────────────────────
 async function quizze(page) {
-  const ids = ["quiz-scherung", "quiz-parallelogramm", "quiz-dreieck", "quiz-hoehe", "quiz-trapez", "quiz-zusammenschau"];
+  const ids = ["quiz-scherung", "quiz-parallelogramm", "quiz-dreieck", "quiz-hoehe", "quiz-trapez",
+    "quiz-mittellinie", "quiz-zusammenschau"];
   const stellen = [];
   for (const id of ids) {
     const anzahl = await page.evaluate((q) => document.querySelectorAll(`#${q} .quiz-opt`).length, id);
@@ -871,6 +959,7 @@ async function geruest(page) {
       await dreieck(page);
       await grundseiten(page);
       await trapez(page);
+      await mittellinie(page);
       await zusammenschau(page);
       await quizze(page);
       await aufgaben(page);
