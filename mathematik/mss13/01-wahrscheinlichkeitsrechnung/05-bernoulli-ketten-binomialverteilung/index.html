@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bernoulli-Ketten und Binomialverteilung</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="../../../aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">MSS 13</a><span class="sep">/</span>
+  <a href="../index.html">01 Wahrscheinlichkeitsrechnung</a><span class="sep">/</span>
+  5 Bernoulli-Ketten und Binomialverteilung
+</nav>
+<header class="page-header">
+  <h1>Bernoulli-Ketten und Binomialverteilung</h1>
+  <p>Ein Selbstlernpfad: Von der Zufallsgröße über die Formel von Bernoulli bis zur Frage, wie oft man etwas versuchen muss. Jeder Abschnitt leitet sein Ergebnis an einer beweglichen Darstellung her, rechnet es nach und endet mit einer Kontrollfrage. Am Schluss stehen sechzehn Übungsaufgaben auf vier Stufen, die du hier auf der Seite löst.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Ein Würfel wird zehnmal geworfen. Wie wahrscheinlich sind genau drei Sechsen? Höchstens zwei? Wie viele Sechsen sind „normal“, wie viele schon verdächtig? Solche Fragen haben eine gemeinsame Gestalt: Ein Versuch mit nur zwei Ausgängen wird mehrmals unabhängig wiederholt, und man zählt die Treffer. Für genau diese Situation gibt es eine eigene Formel und eine eigene Verteilung. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>eine <span class="term">Zufallsgröße</span> X festlegen und ihre <span class="term">Wahrscheinlichkeitsverteilung</span> als Tabelle und Histogramm angeben</li>
+      <li><span class="term">Erwartungswert</span> μ = E(X), <span class="term">Varianz</span> V(X) und <span class="term">Standardabweichung</span> σ berechnen und entscheiden, ob ein Spiel fair ist</li>
+      <li>erkennen, wann eine <span class="term">Bernoulli-Kette</span> vorliegt, und ihre Länge n und Trefferwahrscheinlichkeit p angeben</li>
+      <li>den <span class="term">Binomialkoeffizienten</span> <span class="binom"><span>n</span><span>k</span></span> als Anzahl der Pfade deuten und berechnen</li>
+      <li>mit der <span class="term">Formel von Bernoulli</span> P(X = k) = B(n; p; k) rechnen und die <span class="term">kumulierte</span> Verteilung F(n; p; k) für „höchstens“, „mindestens“ und „zwischen“ nutzen</li>
+      <li>Erwartungswert μ = n · p und Standardabweichung σ = √(n · p · (1 − p)) einer Binomialverteilung deuten</li>
+      <li>eine fehlende Größe <span class="term">n</span>, <span class="term">k</span> oder <span class="term">p</span> zu einer vorgegebenen Mindestwahrscheinlichkeit bestimmen</li>
+    </ul>
+    <div class="notation-box">
+      <span class="box-label">Zwei Schreibweisen — dieselbe Sache</span>
+      Auf dieser Seite steht in erster Linie die Schreibweise aus <strong>Bigalke/Köhler</strong>. Das Buch <strong>Fundamente der Mathematik</strong> schreibt dieselben Größen etwas anders; wo es darauf ankommt, stehen beide nebeneinander.
+      <table class="bk-notation">
+        <thead><tr><th>Bedeutung</th><th>Bigalke/Köhler</th><th>Fundamente</th></tr></thead>
+        <tbody>
+          <tr><td>genau k Treffer</td><td>P(X = k) = B(n; p; k)</td><td>P(X = k) = B<sub>n;p</sub>(k)</td></tr>
+          <tr><td>höchstens k Treffer</td><td>P(X ≤ k) = F(n; p; k)</td><td>P(X ≤ k) = F<sub>n;p</sub>(k)</td></tr>
+          <tr><td>X ist binomialverteilt</td><td>„X ist binomialverteilt mit den Parametern n und p“</td><td>X ∼ B<sub>n;p</sub></td></tr>
+          <tr><td>Kenngrößen</td><td>μ = E(X), V(X), σ = σ(X)</td><td>μ = E(X), V(X), σ(X)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../01-grundbegriffe-baumdiagramme-vierfeldertafel/index.html">Thema 1</a> die Pfadregeln am Baumdiagramm und aus <a href="../04-stochastische-unabhaengigkeit/index.html">Thema 4</a> den Begriff der stochastischen Unabhängigkeit: Bei einer Bernoulli-Kette sind die einzelnen Versuche unabhängig voneinander, und nur deshalb darf man die Wahrscheinlichkeiten entlang eines Pfades einfach multiplizieren.</p>
+  </section>
+
+  <!-- 1. Zufallsgröße und Wahrscheinlichkeitsverteilung -->
+  <section class="card" id="sec-zufallsgroesse">
+    <h2>1. Zufallsgröße und Wahrscheinlichkeitsverteilung</h2>
+    <p>Beim Werfen zweier Würfel gibt es 36 gleich wahrscheinliche Ergebnisse. Oft interessiert aber nicht das einzelne Ergebnis, sondern nur eine <strong>Zahl</strong>, die davon abhängt — die Augensumme, der Abstand der Augenzahlen, die größere der beiden. Eine solche Zuordnung heißt <span class="term">Zufallsgröße</span>. Viele Ergebnisse bekommen dabei denselben Wert; ihre Wahrscheinlichkeiten werden zusammengezählt.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Zufallsgröße X:
+          <select id="zg-art" class="eingabe" style="padding:0.4rem">
+            <option value="summe">Augensumme</option>
+            <option value="differenz">Betrag der Differenz</option>
+            <option value="maximum">größere Augenzahl</option>
+            <option value="sechsen">Anzahl der Sechsen</option>
+          </select>
+        </label>
+        <label>Ereignis:
+          <select id="zg-rel" class="eingabe" style="padding:0.4rem">
+            <option value="eq">X = x</option>
+            <option value="le">X ≤ x</option>
+            <option value="lt">X &lt; x</option>
+            <option value="ge">X ≥ x</option>
+            <option value="gt">X &gt; x</option>
+          </select>
+        </label>
+        <label>x: <input type="range" id="zg-x" min="2" max="12" step="1" value="7" style="vertical-align:middle;width:10rem"> <span id="zg-x-anzeige" class="wert farbe-violett"></span></label>
+      </div>
+      <div class="bk-zwei">
+        <div class="geo-wrap" id="zg-gitter"></div>
+        <div class="geo-wrap" id="zg-histo"></div>
+      </div>
+      <div class="bk-tabelle-wrap" id="zg-tabelle"></div>
+      <div class="th-bilanz" id="zg-bilanz"></div>
+      <div id="zg-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Zufallsgröße und Wahrscheinlichkeitsverteilung</span>
+      Eine <strong>Zufallsgröße X</strong> ordnet jedem Ergebnis eines Zufallsversuchs eine reelle Zahl zu. „X = x“ ist das Ereignis, zu dem alle Ergebnisse gehören, denen der Wert x zugeordnet ist.<br>
+      Die Zuordnung, die jedem Wert x<sub>i</sub> die Wahrscheinlichkeit P(X = x<sub>i</sub>) zuordnet, heißt <strong>Wahrscheinlichkeitsverteilung</strong> von X. Die Summe aller P(X = x<sub>i</sub>) ist immer 1.
+      <div class="formula-block">P(X = x<sub>1</sub>) + P(X = x<sub>2</sub>) + … + P(X = x<sub>n</sub>) = 1</div>
+      Im <strong>Histogramm</strong> hat jede Säule die Breite 1, ihre Höhe — und damit ihr Flächeninhalt — ist die Wahrscheinlichkeit. Alle Säulen zusammen haben den Flächeninhalt 1.
+    </div>
+    <p class="hinweis-box">💡 Bigalke/Köhler kürzt die Wahrscheinlichkeiten mit p<sub>k</sub> = P(X = x<sub>k</sub>) ab und schreibt die Verteilung als <em>Verteilungstabelle</em>. Im Exkurs führt das Buch außerdem die <span class="term">Verteilungsfunktion</span> F<sub>X</sub>(x) = P(X &lt; x) ein; ihr Graph ist eine Treppe. In Abschnitt 7 kommt eine solche Treppe als kumulierte Binomialverteilung wieder — <strong>Achtung:</strong> Dort ist F(n; p; k) = P(X <strong>≤</strong> k), einschließlich k.</p>
+    <div class="quiz" id="quiz-zufallsgroesse"></div>
+  </section>
+
+  <!-- 2. Erwartungswert, Varianz und Standardabweichung -->
+  <section class="card" id="sec-erwartungswert">
+    <h2>2. Erwartungswert, Varianz und Standardabweichung</h2>
+    <p>Ein Glücksrad hat 8 gleich große Sektoren. Jeder Farbe ist eine Auszahlung zugeordnet; X ist die Auszahlung eines Spiels. Lohnt sich das Spiel auf Dauer? Die Antwort gibt der <span class="term">Erwartungswert</span>: der Wert, um den sich der Durchschnitt vieler Spiele einpendelt. Im Histogramm ist er der Punkt, an dem man es unterstützen müsste, damit es im <strong>Gleichgewicht</strong> ist — sein Schwerpunkt.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>rote Sektoren: <input type="range" id="ew-rot" min="0" max="8" step="1" value="4" style="vertical-align:middle;width:7rem"> <span id="ew-rot-anzeige" class="wert farbe-rot"></span></label>
+        <label>weiße Sektoren: <input type="range" id="ew-weiss" min="0" max="8" step="1" value="3" style="vertical-align:middle;width:7rem"> <span id="ew-weiss-anzeige" class="wert"></span></label>
+        <span class="bk-rest" id="ew-schwarz-anzeige"></span>
+      </div>
+      <div class="btn-row">
+        <label>Auszahlung weiß: <input type="range" id="ew-aw" min="0" max="3" step="0.25" value="0.5" style="vertical-align:middle;width:7rem"> <span id="ew-aw-anzeige" class="wert"></span></label>
+        <label>Auszahlung schwarz: <input type="range" id="ew-as" min="0" max="10" step="0.5" value="2" style="vertical-align:middle;width:7rem"> <span id="ew-as-anzeige" class="wert"></span></label>
+        <label>Einsatz: <input type="range" id="ew-einsatz" min="0" max="5" step="0.25" value="0.5" style="vertical-align:middle;width:7rem"> <span id="ew-einsatz-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="bk-zwei">
+        <div class="geo-wrap" id="ew-rad"></div>
+        <div class="geo-wrap" id="ew-waage"></div>
+      </div>
+      <div class="th-bilanz" id="ew-bilanz"></div>
+      <div id="ew-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Erwartungswert, Varianz, Standardabweichung</span>
+      X nehme die Werte x<sub>1</sub>, …, x<sub>n</sub> an. Dann heißt
+      <div class="formula-block">μ = E(X) = x<sub>1</sub> · P(X = x<sub>1</sub>) + x<sub>2</sub> · P(X = x<sub>2</sub>) + … + x<sub>n</sub> · P(X = x<sub>n</sub>)</div>
+      der <strong>Erwartungswert</strong> von X. Die mittlere quadratische Abweichung davon heißt <strong>Varianz</strong>, ihre Wurzel <strong>Standardabweichung</strong>:
+      <div class="formula-block">V(X) = (x<sub>1</sub> − μ)² · P(X = x<sub>1</sub>) + … + (x<sub>n</sub> − μ)² · P(X = x<sub>n</sub>) &nbsp;&nbsp;&nbsp; σ = √V(X)</div>
+      Ein Spiel heißt <strong>fair</strong>, wenn der Erwartungswert der Auszahlung gleich dem Einsatz ist — auf Dauer gewinnt dann weder der Spieler noch der Betreiber.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der Erwartungswert muss kein möglicher Wert sein</span>
+      Beim Glücksrad oben wird nie 0,44 € ausgezahlt — nur 0 €, 0,50 € oder 2 €. Der Erwartungswert ist ein <em>Durchschnitt auf lange Sicht</em>, keine Vorhersage für das einzelne Spiel. Genauso ist die mittlere Augenzahl eines Würfels 3,5.
+    </div>
+    <p class="hinweis-box">💡 Warum wird in der Varianz quadriert? Positive und negative Abweichungen vom Erwartungswert würden sich sonst gegenseitig aufheben: Die Summe (x<sub>1</sub> − μ) · P(X = x<sub>1</sub>) + … ist <em>immer</em> 0. Zwei Verteilungen mit demselben Erwartungswert können trotzdem ganz verschieden streuen — die Standardabweichung macht den Unterschied sichtbar. Sie hat dieselbe Einheit wie X.</p>
+    <div class="quiz" id="quiz-erwartungswert"></div>
+  </section>
+
+  <!-- 3. Bernoulli-Experiment und Bernoulli-Kette -->
+  <section class="card" id="sec-bernoulli">
+    <h2>3. Bernoulli-Experiment und Bernoulli-Kette</h2>
+    <p>Viele Zufallsversuche werden nur daraufhin angesehen, ob ein bestimmtes Ereignis eintritt oder nicht: Sechs oder keine Sechs, defekt oder in Ordnung, richtig geraten oder nicht. Wiederholt man einen solchen Versuch mehrmals <strong>unter gleichen Bedingungen</strong>, entsteht ein Baum, in dem sich auf jeder Stufe dasselbe wiederholt. Stell unten die Länge und die Trefferwahrscheinlichkeit ein und wähle eine Trefferzahl k.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Länge n: <input type="range" id="bk-n" min="1" max="4" step="1" value="4" style="vertical-align:middle;width:7rem"> <span id="bk-n-anzeige" class="wert farbe-blau"></span></label>
+        <label>Trefferwahrscheinlichkeit p:
+          <select id="bk-p" class="eingabe" style="padding:0.4rem">
+            <option value="1/6" selected>1/6 (Sechs beim Würfeln)</option>
+            <option value="1/4">1/4</option>
+            <option value="1/3">1/3</option>
+            <option value="1/2">1/2 (Münze)</option>
+            <option value="0.2">0,2</option>
+            <option value="0.4">0,4</option>
+            <option value="0.7">0,7</option>
+            <option value="0.9">0,9</option>
+          </select>
+        </label>
+        <label>Trefferzahl k: <input type="range" id="bk-k" min="0" max="4" step="1" value="2" style="vertical-align:middle;width:7rem"> <span id="bk-k-anzeige" class="wert farbe-gruen"></span></label>
+      </div>
+      <div class="geo-wrap" id="bk-mount"></div>
+      <div class="th-bilanz" id="bk-bilanz"></div>
+      <div id="bk-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Bernoulli-Experiment und Bernoulli-Kette</span>
+      Ein Zufallsversuch mit nur zwei Ausgängen — <strong>Treffer</strong> (Erfolg) und <strong>Niete</strong> (Misserfolg) — heißt <strong>Bernoulli-Experiment</strong>. Die Wahrscheinlichkeit für einen Treffer heißt <strong>Trefferwahrscheinlichkeit p</strong>, die für eine Niete ist 1 − p.<br>
+      Wird ein Bernoulli-Experiment <strong>n-mal unabhängig</strong> und mit <strong>gleichbleibender</strong> Trefferwahrscheinlichkeit wiederholt, spricht man von einer <strong>Bernoulli-Kette der Länge n</strong> mit der Trefferwahrscheinlichkeit p.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Ziehen ohne Zurücklegen ist keine Bernoulli-Kette</span>
+      Zieht man ohne Zurücklegen, ändert sich p von Zug zu Zug: Nach einer roten Kugel sind weniger rote übrig. Nur beim Ziehen <strong>mit</strong> Zurücklegen bleibt p gleich. Ist die Gesamtheit aber sehr groß — 1000 Blumenzwiebeln, aus denen zehn entnommen werden —, ändert sich p kaum, und man rechnet <strong>näherungsweise</strong> mit einer Bernoulli-Kette.
+    </div>
+    <div class="quiz" id="quiz-bernoulli"></div>
+  </section>
+
+  <!-- 4. Der Binomialkoeffizient -->
+  <section class="card" id="sec-binomialkoeffizient">
+    <h2>4. Wie viele Pfade? Der Binomialkoeffizient</h2>
+    <p>Im Baum eben hatten alle Pfade mit gleich vielen Treffern dieselbe Wahrscheinlichkeit. Für die Rechnung fehlt also nur noch ihre <strong>Anzahl</strong>. Ein Pfad mit k Treffern bei n Versuchen ist nichts anderes als eine Auswahl: <em>Bei welchen</em> der n Versuche liegen die Treffer? Diese Anzahl heißt <span class="term">Binomialkoeffizient</span> <span class="binom"><span>n</span><span>k</span></span>, gelesen „n über k“.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>n: <input type="range" id="ko-n" min="1" max="10" step="1" value="5" style="vertical-align:middle;width:8rem"> <span id="ko-n-anzeige" class="wert farbe-blau"></span></label>
+        <label>k: <input type="range" id="ko-k" min="0" max="10" step="1" value="2" style="vertical-align:middle;width:8rem"> <span id="ko-k-anzeige" class="wert farbe-gruen"></span></label>
+      </div>
+      <div class="bk-zwei">
+        <div class="geo-wrap" id="ko-pascal"></div>
+        <div class="bk-woerter" id="ko-woerter"></div>
+      </div>
+      <div class="th-bilanz" id="ko-bilanz"></div>
+      <div id="ko-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Fakultät und Binomialkoeffizient</span>
+      Für natürliche Zahlen ist n! = n · (n − 1) · … · 2 · 1 (<strong>n Fakultät</strong>), außerdem 0! = 1. Für 0 ≤ k ≤ n ist
+      <div class="formula-block"><span class="binom gross"><span>n</span><span>k</span></span> = <span class="bruch"><span class="z">n!</span><span class="n">k! · (n − k)!</span></span> = <span class="bruch"><span class="z">n · (n − 1) · … · (n − k + 1)</span><span class="n">k!</span></span></div>
+      <span class="binom"><span>n</span><span>k</span></span> ist die Anzahl der Möglichkeiten, aus n Dingen k auszuwählen, <strong>ohne</strong> Zurücklegen und <strong>ohne</strong> Beachtung der Reihenfolge — und damit die Anzahl der Pfade mit genau k Treffern in einer Bernoulli-Kette der Länge n.
+    </div>
+    <p class="hinweis-box">💡 Warum steht im Pascal'schen Dreieck jede Zahl als Summe der beiden darüber? Ein Pfad mit k Treffern in n Versuchen endet entweder mit einem Treffer — dann lagen vorher k − 1 Treffer in n − 1 Versuchen — oder mit einer Niete — dann lagen vorher schon alle k Treffer in n − 1 Versuchen. Also <span class="binom"><span>n</span><span>k</span></span> = <span class="binom"><span>n − 1</span><span>k − 1</span></span> + <span class="binom"><span>n − 1</span><span>k</span></span>. Und weil es gleichgültig ist, ob man die Treffer- oder die Nietenplätze auswählt, gilt <span class="binom"><span>n</span><span>k</span></span> = <span class="binom"><span>n</span><span>n − k</span></span> — das Dreieck ist symmetrisch.</p>
+    <div class="beispiel-box">
+      <span class="box-label">Dasselbe Zählen, andere Sache — das Lottomodell</span>
+      Beim Lotto „6 aus 49“ werden 6 Kugeln ohne Zurücklegen und ohne Reihenfolge gezogen: Es gibt <span class="binom"><span>49</span><span>6</span></span> = 13.983.816 Tipps. Für „genau 4 Richtige“ wählt man 4 der 6 Gewinnzahlen und 2 der 43 übrigen: <span class="binom"><span>6</span><span>4</span></span> · <span class="binom"><span>43</span><span>2</span></span> = 15 · 903 = 13.545 Möglichkeiten, also P ≈ 0,00097. Das ist <em>keine</em> Bernoulli-Kette — hier wird ohne Zurücklegen gezogen —, aber der Binomialkoeffizient zählt genauso.
+    </div>
+    <div class="quiz" id="quiz-binomialkoeffizient"></div>
+  </section>
+
+  <!-- 5. Die Formel von Bernoulli -->
+  <section class="card" id="sec-formel">
+    <h2>5. Die Formel von Bernoulli</h2>
+    <p>Jetzt steht alles bereit: Jeder Pfad mit genau k Treffern hat die Wahrscheinlichkeit p<sup>k</sup> · (1 − p)<sup>n − k</sup>, und es gibt <span class="binom"><span>n</span><span>k</span></span> solche Pfade. Nach der Summenregel ist P(X = k) das Produkt aus beiden. Zieh an den Reglern und verfolge die drei Faktoren.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>n: <input type="range" id="bf-n" min="1" max="20" step="1" value="10" style="vertical-align:middle;width:8rem"> <span id="bf-n-anzeige" class="wert farbe-blau"></span></label>
+        <label>p: <input type="range" id="bf-p" min="0.05" max="0.95" step="0.05" value="0.3" style="vertical-align:middle;width:8rem"> <span id="bf-p-anzeige" class="wert farbe-orange"></span></label>
+        <label>k: <input type="range" id="bf-k" min="0" max="20" step="1" value="3" style="vertical-align:middle;width:8rem"> <span id="bf-k-anzeige" class="wert farbe-gruen"></span></label>
+      </div>
+      <div class="bk-faktoren" id="bf-faktoren"></div>
+      <div class="geo-wrap" id="bf-mount"></div>
+      <div class="th-bilanz" id="bf-bilanz"></div>
+      <div id="bf-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Satz: Die Formel von Bernoulli</span>
+      Liegt eine Bernoulli-Kette der Länge n mit der Trefferwahrscheinlichkeit p vor und ist X die Anzahl der Treffer, so gilt für k = 0, 1, …, n:
+      <div class="formula-block">P(X = k) = B(n; p; k) = <span class="binom gross"><span>n</span><span>k</span></span> · p<sup>k</sup> · (1 − p)<sup>n − k</sup></div>
+      <span class="progress-note">In Fundamente: P(X = k) = B<sub>n;p</sub>(k).</span>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Durchgerechnet — Multiple-Choice-Test</span>
+      Vier Fragen mit je drei Antworten, genau eine richtig; wer mindestens zwei richtig hat, besteht. Ein Ahnungsloser kreuzt zufällig an: n = 4, p = <span class="bruch"><span class="z">1</span><span class="n">3</span></span>.<br>
+      P(X = 2) = <span class="binom"><span>4</span><span>2</span></span> · (<span class="bruch"><span class="z">1</span><span class="n">3</span></span>)² · (<span class="bruch"><span class="z">2</span><span class="n">3</span></span>)² = 6 · <span class="bruch"><span class="z">4</span><span class="n">81</span></span> = <span class="bruch"><span class="z">24</span><span class="n">81</span></span> ≈ 0,2963, &nbsp; P(X = 3) = <span class="bruch"><span class="z">8</span><span class="n">81</span></span> ≈ 0,0988, &nbsp; P(X = 4) = <span class="bruch"><span class="z">1</span><span class="n">81</span></span> ≈ 0,0123<br>
+      Bestehen: P(X ≥ 2) = <span class="bruch"><span class="z">33</span><span class="n">81</span></span> ≈ 0,4074 — gut 40 %.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — p > 0,5 in der Tabelle</span>
+      Tabellen zur Binomialverteilung reichen meist nur bis p = 0,5. Für größere p zählt man die <strong>Nieten</strong> statt der Treffer: Genau k Treffer sind genau n − k Nieten, und Nieten haben die Wahrscheinlichkeit 1 − p. Deshalb gilt <strong>B(n; p; k) = B(n; 1 − p; n − k)</strong>. In Bigalke/Köhler sind das die blau unterlegten Eingänge am rechten und unteren Tabellenrand.
+    </div>
+    <div class="quiz" id="quiz-formel"></div>
+  </section>
+
+  <!-- 6. Die Binomialverteilung -->
+  <section class="card" id="sec-binomialverteilung">
+    <h2>6. Die Binomialverteilung und ihr Histogramm</h2>
+    <p>Rechnet man B(n; p; k) für alle k = 0, 1, …, n aus, erhält man die Wahrscheinlichkeitsverteilung der Trefferzahl — die <span class="term">Binomialverteilung</span>. Wie sieht sie aus, und wie hängt ihre Gestalt von n und p ab?</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>n: <input type="range" id="hv-n" min="1" max="60" step="1" value="10" style="vertical-align:middle;width:9rem"> <span id="hv-n-anzeige" class="wert farbe-blau"></span></label>
+        <label>p: <input type="range" id="hv-p" min="0.05" max="0.95" step="0.05" value="0.3" style="vertical-align:middle;width:9rem"> <span id="hv-p-anzeige" class="wert farbe-orange"></span></label>
+        <label><input type="checkbox" id="hv-spiegel"> Verteilung mit 1 − p zum Vergleich</label>
+      </div>
+      <div class="geo-wrap" id="hv-mount"></div>
+      <div class="th-bilanz" id="hv-bilanz"></div>
+      <div id="hv-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Binomialverteilung</span>
+      Eine Zufallsgröße X mit den Werten k = 0, 1, …, n heißt <strong>binomialverteilt mit den Parametern n und p</strong>, wenn für alle k gilt: P(X = k) = B(n; p; k) = <span class="binom"><span>n</span><span>k</span></span> · p<sup>k</sup> · (1 − p)<sup>n − k</sup>. Die zugehörige Wahrscheinlichkeitsverteilung heißt <strong>Binomialverteilung</strong>. <span class="progress-note">In Fundamente kurz: X ∼ B<sub>n;p</sub>.</span>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Einfluss der Parameter</span>
+      <strong>p</strong> bestimmt die <strong>Lage</strong>: Je größer p, desto weiter rechts liegt die höchste Säule. Für p &lt; 0,5 ist die Verteilung <em>linkslastig</em> (die hohen Säulen liegen links), für p &gt; 0,5 <em>rechtslastig</em>, für p = 0,5 symmetrisch. Die Verteilungen zu p und 1 − p sind spiegelbildlich.<br>
+      <strong>n</strong> bestimmt die <strong>Breite</strong>: Je größer n, desto flacher und breiter wird die Verteilung — es gibt mehr mögliche Trefferzahlen, jede einzelne wird unwahrscheinlicher — und desto symmetrischer sieht sie aus.
+    </div>
+    <p class="hinweis-box">💡 Das <span class="term">Galtonbrett</span> macht die Binomialverteilung sichtbar: Eine Kugel fällt durch n Reihen von Nägeln und wird an jedem Nagel mit der Wahrscheinlichkeit p nach rechts abgelenkt. Das Fach, in dem sie landet, ist die Anzahl der Rechts-Ablenkungen — eine binomialverteilte Trefferzahl. Viele Kugeln stapeln sich zum Histogramm.</p>
+    <div class="quiz" id="quiz-binomialverteilung"></div>
+  </section>
+
+  <!-- 7. Kumulierte Wahrscheinlichkeiten -->
+  <section class="card" id="sec-kumuliert">
+    <h2>7. Höchstens, mindestens, zwischen — die kumulierte Verteilung</h2>
+    <p>Meist fragt man nicht nach <em>genau</em> k Treffern, sondern nach einem Bereich: höchstens 2 defekte Teile, mindestens 8 richtige Antworten, zwischen 3 und 6 Sechsen. Alle diese Fragen lassen sich auf eine einzige Größe zurückführen — die Wahrscheinlichkeit für <strong>höchstens k</strong> Treffer. Wähle ein Ereignis und sieh nach, welche Säulen dazugehören und wie es sich als F-Wert schreiben lässt.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>n: <input type="range" id="ku-n" min="2" max="30" step="1" value="20" style="vertical-align:middle;width:7rem"> <span id="ku-n-anzeige" class="wert farbe-blau"></span></label>
+        <label>p: <input type="range" id="ku-p" min="0.05" max="0.95" step="0.05" value="0.2" style="vertical-align:middle;width:7rem"> <span id="ku-p-anzeige" class="wert farbe-orange"></span></label>
+        <label>Ereignis:
+          <select id="ku-art" class="eingabe" style="padding:0.4rem">
+            <option value="le">höchstens a Treffer</option>
+            <option value="lt">weniger als a Treffer</option>
+            <option value="ge" selected>mindestens a Treffer</option>
+            <option value="gt">mehr als a Treffer</option>
+            <option value="zw">mindestens a, höchstens b Treffer</option>
+          </select>
+        </label>
+      </div>
+      <div class="btn-row">
+        <label>a: <input type="range" id="ku-a" min="0" max="30" step="1" value="6" style="vertical-align:middle;width:9rem"> <span id="ku-a-anzeige" class="wert farbe-gruen"></span></label>
+        <label>b: <input type="range" id="ku-b" min="0" max="30" step="1" value="8" style="vertical-align:middle;width:9rem"> <span id="ku-b-anzeige" class="wert farbe-gruen"></span></label>
+      </div>
+      <div class="bk-zwei">
+        <div class="geo-wrap" id="ku-histo"></div>
+        <div class="geo-wrap" id="ku-treppe"></div>
+      </div>
+      <div class="th-bilanz" id="ku-bilanz"></div>
+      <div id="ku-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Kumulierte Binomialverteilung</span>
+      Die Wahrscheinlichkeit für <strong>höchstens k</strong> Treffer heißt <strong>kumulierte Wahrscheinlichkeit</strong>:
+      <div class="formula-block">P(X ≤ k) = F(n; p; k) = B(n; p; 0) + B(n; p; 1) + … + B(n; p; k)</div>
+      <span class="progress-note">In Fundamente: P(X ≤ k) = F<sub>n;p</sub>(k).</span>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Alles auf „höchstens“ zurückführen</span>
+      <table class="bk-notation">
+        <thead><tr><th>Ereignis</th><th>Schreibweise</th><th>mit F</th></tr></thead>
+        <tbody>
+          <tr><td>höchstens k</td><td>P(X ≤ k)</td><td>F(n; p; k)</td></tr>
+          <tr><td>weniger als k</td><td>P(X &lt; k) = P(X ≤ k − 1)</td><td>F(n; p; k − 1)</td></tr>
+          <tr><td>mindestens k</td><td>P(X ≥ k) = 1 − P(X ≤ k − 1)</td><td>1 − F(n; p; k − 1)</td></tr>
+          <tr><td>mehr als k</td><td>P(X &gt; k) = 1 − P(X ≤ k)</td><td>1 − F(n; p; k)</td></tr>
+          <tr><td>zwischen a und b (einschließlich)</td><td>P(a ≤ X ≤ b)</td><td>F(n; p; b) − F(n; p; a − 1)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Grenze beim Gegenereignis</span>
+      Das Gegenereignis zu „mindestens 6“ ist „höchstens <strong>5</strong>“, nicht „höchstens 6“. Wer P(X ≥ 6) = 1 − F(n; p; 6) rechnet, zieht die Säule bei 6 zu viel ab. Und für p &gt; 0,5 liefern die blauen Tabelleneingänge die <em>Gegenwahrscheinlichkeit</em>: F(n; p; k) = 1 − F(n; 1 − p; n − k − 1).
+    </div>
+    <div class="quiz" id="quiz-kumuliert"></div>
+  </section>
+
+  <!-- 8. Erwartungswert und Standardabweichung der Binomialverteilung -->
+  <section class="card" id="sec-kenngroessen">
+    <h2>8. Erwartungswert und Standardabweichung der Binomialverteilung</h2>
+    <p>Wirft man 60-mal einen Würfel, erwartet man etwa 10 Sechsen — ein Sechstel von 60. Stimmt das auch, wenn man den Erwartungswert genau nach der Definition aus Abschnitt 2 ausrechnet, also über alle 61 möglichen Trefferzahlen? Die Darstellung unten rechnet beides nebeneinander, für jede Reglerstellung.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>n: <input type="range" id="kg-n" min="1" max="100" step="1" value="20" style="vertical-align:middle;width:9rem"> <span id="kg-n-anzeige" class="wert farbe-blau"></span></label>
+        <label>p: <input type="range" id="kg-p" min="0.05" max="0.95" step="0.05" value="0.4" style="vertical-align:middle;width:9rem"> <span id="kg-p-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap" id="kg-mount"></div>
+      <div class="th-bilanz" id="kg-bilanz"></div>
+      <div id="kg-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Satz: Kenngrößen der Binomialverteilung</span>
+      Ist X binomialverteilt mit den Parametern n und p, so gilt:
+      <div class="formula-block">μ = E(X) = n · p &nbsp;&nbsp;&nbsp;&nbsp; σ = σ(X) = √(n · p · (1 − p))</div>
+      Der Erwartungswert liegt in der Nähe der höchsten Säule. Die Standardabweichung misst die Breite: Im Intervall von μ − σ bis μ + σ liegt meist deutlich mehr als die Hälfte der Wahrscheinlichkeit.
+    </div>
+    <p class="hinweis-box">💡 Warum μ = n · p? X zählt die Treffer — man kann X als Summe von n „Einzelzählern“ schreiben, die bei jedem Versuch 1 (Treffer) oder 0 (Niete) sind. Jeder davon hat den Erwartungswert 1 · p + 0 · (1 − p) = p, und n Stück zusammen ergeben n · p. Mit demselben Gedanken kommt man auf V(X) = n · p · (1 − p). Die Darstellung oben rechnet nicht mit diesen Formeln, sondern mit der Definition — und trifft sie trotzdem jedes Mal.</p>
+    <div class="quiz" id="quiz-kenngroessen"></div>
+  </section>
+
+  <!-- 9. Parameter gesucht -->
+  <section class="card" id="sec-parameter">
+    <h2>9. Gesucht ist n, k oder p</h2>
+    <p>Bisher waren n, p und k bekannt, gesucht war eine Wahrscheinlichkeit. Oft ist es umgekehrt: Die Wahrscheinlichkeit ist vorgegeben — „mit mindestens 95 % Sicherheit“ —, und gesucht ist die Zahl der Versuche, eine Grenze für die Trefferzahl oder die nötige Trefferwahrscheinlichkeit. Wähle unten, was gesucht ist.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Gesucht:
+          <select id="pa-art" class="eingabe" style="padding:0.4rem">
+            <option value="n" selected>n — wie oft mindestens?</option>
+            <option value="k">k — welche Trefferzahl reicht?</option>
+            <option value="p">p — wie gut muss man sein?</option>
+          </select>
+        </label>
+        <label>Sicherheit: <input type="range" id="pa-sicher" min="0.5" max="0.99" step="0.01" value="0.95" style="vertical-align:middle;width:8rem"> <span id="pa-sicher-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="btn-row">
+        <label id="pa-n-label">n: <input type="range" id="pa-n" min="1" max="100" step="1" value="20" style="vertical-align:middle;width:8rem"> <span id="pa-n-anzeige" class="wert farbe-blau"></span></label>
+        <label id="pa-p-label">p: <input type="range" id="pa-p" min="0.05" max="0.95" step="0.05" value="0.25" style="vertical-align:middle;width:8rem"> <span id="pa-p-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap" id="pa-mount"></div>
+      <div class="th-bilanz" id="pa-bilanz"></div>
+      <div id="pa-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Die „mindestens-mindestens-Aufgabe“</span>
+      Wie oft muss man mindestens versuchen, um mit einer Wahrscheinlichkeit von mindestens α mindestens einen Treffer zu erzielen? Über das Gegenereignis „kein Treffer“:
+      <div class="formula-block">P(X ≥ 1) ≥ α &nbsp;⟺&nbsp; 1 − (1 − p)<sup>n</sup> ≥ α &nbsp;⟺&nbsp; (1 − p)<sup>n</sup> ≤ 1 − α &nbsp;⟺&nbsp; n ≥ <span class="bruch"><span class="z">ln(1 − α)</span><span class="n">ln(1 − p)</span></span></div>
+      Beim Teilen durch ln(1 − p) dreht sich das Ungleichheitszeichen um, denn ln(1 − p) ist negativ. n wird immer <strong>aufgerundet</strong>. Ist statt n die Trefferwahrscheinlichkeit gesucht, löst man dieselbe Ungleichung nach p auf: p ≥ 1 − <span class="nw">(1 − α)<sup>1/n</sup></span>.
+    </div>
+    <p class="hinweis-box">💡 Ist ein <strong>k</strong> gesucht — etwa: Wie viele Parkplätze braucht eine Firma, damit sie an 90 % der Tage reichen? —, so gibt es keine Umformung. Man sucht in einer Tabelle von F(n; p; k) das kleinste k, bei dem der Wert die Schranke erreicht; die Treppe in der Darstellung zeigt genau diesen Suchvorgang.</p>
+    <div class="quiz" id="quiz-parameter"></div>
+  </section>
+
+  <!-- Selbsteinschätzung -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
+    <div id="se-liste"></div>
+    <div id="se-auswertung" class="event-result"></div>
+  </section>
+
+  <!-- 10. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Den <a href="../01-grundbegriffe-baumdiagramme-vierfeldertafel/index.html">Pfadregeln am Baumdiagramm</a> — die Formel von Bernoulli ist nichts anderes als Produktregel (ein Pfad) und Summenregel (alle Pfade mit k Treffern) in einer Zeile.</li>
+      <li><strong>Baut auf:</strong> Der <a href="../04-stochastische-unabhaengigkeit/index.html">stochastischen Unabhängigkeit</a> — sie ist die Voraussetzung dafür, dass p auf jeder Stufe gleich bleibt und man entlang des Pfades einfach multiplizieren darf.</li>
+      <li><strong>Baut auf:</strong> Den <a href="../../../grundwissen-5-10/03-daten-und-zufall/01-daten-und-haeufigkeiten/index.html">Kenngrößen von Daten</a> — Erwartungswert und Standardabweichung sind die Gegenstücke zu arithmetischem Mittel und empirischer Standardabweichung, nur mit Wahrscheinlichkeiten statt relativer Häufigkeiten.</li>
+      <li><strong>Gleiche Struktur:</strong> Das <em>Pascal'sche Dreieck</em> zählt Pfade im Baum, Wege im Galtonbrett und die Koeffizienten im <em>binomischen Lehrsatz</em> (a + b)<sup>n</sup> — daher der Name „Binomialkoeffizient“.</li>
+      <li><strong>Gleiche Struktur:</strong> Das <em>Lottomodell</em> zählt mit denselben Binomialkoeffizienten, beschreibt aber das Ziehen <em>ohne</em> Zurücklegen. Bei großer Gesamtheit werden beide Modelle fast gleich — deshalb darf man bei Stichproben aus großen Lieferungen mit der Binomialverteilung rechnen.</li>
+      <li><strong>Führt weiter zu:</strong> Der <em>Normalverteilung</em> — für großes n wird das Histogramm der Binomialverteilung immer glatter und nähert sich einer Glockenkurve; μ und σ bestimmen ihre Lage und Breite.</li>
+      <li><strong>Führt weiter zu:</strong> Dem <em>Testen von Hypothesen</em> — ob ein Würfel gezinkt ist oder ein Medikament besser wirkt, entscheidet man danach, ob die beobachtete Trefferzahl im Bereich um μ liegt oder zu weit davon abweicht.</li>
+    </ul>
+  </section>
+
+  <!-- 11. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>Formelsammlung</h2>
+    <p>Zufallsgröße, Erwartungswert und Streuung, Bernoulli-Kette, Binomialkoeffizient, Formel von Bernoulli, kumulierte Verteilung mit allen Ereignistypen, μ und σ sowie die Bestimmung von n, k und p — mit gerechneten Histogrammen, Musterrechnungen und beiden Schreibweisen (Bigalke/Köhler und Fundamente) auf zwei Seiten. Zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 12. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>Übungsaufgaben</h2>
+    <p>Sechzehn Aufgaben auf vier Stufen, je vier auf jeder. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu. Tipps gibt es auf Knopfdruck, nach dem Prüfen steht die Musterlösung darunter.</p>
+    <p class="progress-note">Wahrscheinlichkeiten gibst du als Dezimalzahl mit vier Nachkommastellen ein, zum Beispiel 0,2461 — mit Komma. Taschenrechner oder Tabelle sind erlaubt.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 01 Wahrscheinlichkeitsrechnung</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
