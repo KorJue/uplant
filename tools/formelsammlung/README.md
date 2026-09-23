@@ -12,6 +12,7 @@ benennt. Vorhanden sind:
 | --- | --- | --- |
 | `tf` | Trigonometrische Funktionen (Grundwissen 5–10, Kapitel 4, Thema 12) | `mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/12-trigonometrische-funktionen/formelsammlung.pdf` |
 | `th` | Satz des Thales (Klasse 8, Geometrie, Thema 6) | `mathematik/klasse-8/geometrie/satz-des-thales.pdf` |
+| `fl` | Flächeninhalte (Klasse 8, Geometrie, Thema 7) | `mathematik/klasse-8/geometrie/flaecheninhalte.pdf` |
 
 ## Der Weg von der Quelle zum PDF
 
@@ -25,8 +26,8 @@ node render.js <praefix> <zielpfad>             # PDF schreiben (Pfad ab Projekt
 Node braucht Playwright: `NODE_PATH=/opt/node22/lib/node_modules
 /opt/node22/bin/node …`; das Chromium liegt unter `/opt/pw-browsers/chromium`.
 
-Versioniert werden nur die Quellen — `formelsammlung-<praefix>-quelle.html`,
-`<praefix>-svgs.py` und `tf_kopf.py`. `<praefix>-figuren.txt` und
+Versioniert werden die Quellen — `formelsammlung-<praefix>-quelle.html`,
+`<praefix>-svgs.py` und `tf_kopf.py` — und das fertige PDF am Ziel. `<praefix>-figuren.txt` und
 `formelsammlung-<praefix>.html` entstehen bei jedem Lauf neu.
 
 ## Eine neue Formelsammlung anlegen

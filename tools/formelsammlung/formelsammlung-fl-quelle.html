@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Formelsammlung — Flächeninhalte</title>
+<style>
+  @page { size: A4 landscape; margin: 5.5mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    color: #1f2328;
+    font-size: 8.1px;
+    line-height: 1.33;
+  }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  h1 {
+    font-size: 12.4px; margin: 0 0 1.4mm; padding-bottom: 0.8mm;
+    border-bottom: 1.6px solid #1d4ed8; color: #1d4ed8; letter-spacing: 0.01em;
+  }
+  h1 .klein { font-size: 8.4px; font-weight: 400; color: #5b6570; float: right; margin-top: 2px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2.1mm; align-items: start; }
+  .box {
+    border: 0.9px solid #c9d0d8; border-radius: 2mm; padding: 1.5mm 1.8mm;
+    background: #ffffff; break-inside: avoid;
+  }
+  .box.wide { grid-column: span 2; }
+  .box.full { grid-column: span 3; }
+  .box h2 {
+    font-size: 8.6px; margin: 0 0 1.1mm; color: #1d4ed8;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .box.warn { border-color: #e3b341; background: #fffaf0; }
+  .box.warn h2 { color: #8a5b0a; }
+  .box.merk { border-color: #7ec699; background: #f4fbf6; }
+  .box.merk h2 { color: #0f5132; }
+  p { margin: 0 0 0.9mm; }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 0.9mm; padding-left: 3.4mm; }
+  li { margin-bottom: 0.4mm; }
+  .f { font-family: "Cambria Math", Cambria, Georgia, serif; font-size: 9.2px; }
+  .zentral { text-align: center; }
+  .gross { font-size: 10.4px; font-weight: 700; }
+  .al { color: #157347; font-weight: 700; }
+  .be { color: #b3650a; font-weight: 700; }
+  .ga { color: #b3261e; font-weight: 700; }
+  .kr { color: #1d4ed8; font-weight: 700; }
+  .ra { color: #6d28d9; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { border: 0.7px solid #c9d0d8; padding: 0.5mm 0.6mm; text-align: center; }
+  th { background: #eef2f6; font-weight: 700; font-size: 7.4px; }
+  td { font-size: 7.6px; }
+  td.b { font-weight: 700; }
+  td.l { text-align: left; }
+  figure { margin: 0.8mm 0 0; }
+  figure svg { display: block; width: 100%; height: auto; }
+  .m70 { max-width: 70%; margin: 0.8mm auto 0; }
+  .m80 { max-width: 80%; margin: 0.8mm auto 0; }
+  .m88 { max-width: 88%; margin: 0.8mm auto 0; }
+  .m62 { max-width: 62%; margin: 0.8mm auto 0; }
+  .m72 { max-width: 72%; margin: 0.8mm auto 0; }
+  .m55 { max-width: 55%; margin: 0.8mm auto 0; }
+  .bu { font-size: 7.1px; color: #5b6570; text-align: center; margin-top: 0.5mm; }
+  .rechnung { background: #f4f6f8; border-radius: 1.2mm; padding: 1mm 1.2mm; margin: 0.8mm 0 0; }
+  .schritt { display: flex; gap: 1.2mm; margin-bottom: 0.5mm; }
+  .schritt b { flex: 0 0 3.6mm; color: #1d4ed8; }
+  .schritt:last-child { margin-bottom: 0; }
+  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm; align-items: start; }
+  .bruch { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; margin: 0 0.3mm; }
+  .bruch .z { border-bottom: 0.8px solid currentColor; padding: 0 0.6mm; }
+  .gh { color: #6d28d9; font-weight: 700; }
+  .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ===================== Seite 1 ===================== -->
+<div class="page">
+  <h1>Flächeninhalte — Dreieck, Parallelogramm, Trapez<span class="klein">Klasse 8 · Geometrie, Thema 7</span></h1>
+  <div class="grid">
+
+    <div class="box merk">
+      <h2>Die Grundidee: Höhe und Scherung</h2>
+      <p>Es gibt nur <b>eine</b> Flächenformel, die des Rechtecks. Jede andere Figur wird darauf zurückgeführt — durch <b>Ergänzen</b>, <b>Zerlegen und Umlegen</b> oder <b>Verdoppeln</b>.</p>
+      <p>Die <span class="gh">Höhe h</span> ist der <b>senkrechte Abstand</b> zwischen der <span class="kr">Grundseite g</span> und der gegenüberliegenden Ecke oder Seite. Sie steht immer im rechten Winkel auf der Grundseite.</p>
+      <figure class="m88">[[FIG1]]</figure>
+      <p class="bu"><b>Scheren</b> ändert den Flächeninhalt nicht: Links fällt genau das Dreieck weg, das rechts dazukommt. Die schräge Seite b wird länger — der Umfang wächst.</p>
+    </div>
+
+    <div class="box">
+      <h2>Dreieck</h2>
+      <p class="zentral f gross">A = ½ · <span class="kr">g</span> · <span class="gh">h</span> &nbsp;=&nbsp; (<span class="kr">g</span> · <span class="gh">h</span>) : 2</p>
+      <p><b>Herleitung — Ergänzen:</b> Das Dreieck steckt im Rechteck g · h. Die Höhe zerlegt beides; in jedem Teilrechteck liegen ein Dreiecksteil und ein gleich großes <span class="be">Reststück</span> — eine halbe Drehung um M₁ bzw. M₂ legt das eine auf das andere.</p>
+      <figure class="m88">[[FIG2]]</figure>
+      <p class="bu">Beispiel: g = 7 cm, h = 4 cm ⟹ A = ½ · 7 cm · 4 cm = <b>14 cm²</b></p>
+    </div>
+
+    <div class="box">
+      <h2>Parallelogramm</h2>
+      <p class="zentral f gross">A = <span class="kr">g</span> · <span class="gh">h</span></p>
+      <p><b>Herleitung — Zerlegen und Umlegen:</b> Links entlang der Höhe abschneiden, das <span class="al">Dreieck</span> nach rechts schieben: Es entsteht ein Rechteck mit den Seiten g und h. Oder: Eine Diagonale zerlegt es in zwei gleiche Dreiecke, A = 2 · ½ · g · h.</p>
+      <figure class="m88">[[FIG4]]</figure>
+      <p class="bu">Jede Seite darf Grundseite sein: <span class="f">a · h<sub>a</sub> = b · h<sub>b</sub></span> — zur längeren Seite gehört die kürzere Höhe.</p>
+    </div>
+
+    <div class="box">
+      <h2>Zu jeder Seite ihre eigene Höhe</h2>
+      <p>Die Höhe zu einer Seite ist das <b>Lot von der gegenüberliegenden Ecke</b>. Jede Seite kann Grundseite sein, und immer kommt derselbe Flächeninhalt heraus:</p>
+      <p class="zentral f">A = ½ · a · h<sub>a</sub> = ½ · b · h<sub>b</sub> = ½ · c · h<sub>c</sub></p>
+      <figure class="m88">[[FIG3]]</figure>
+      <p class="bu">Im <b>stumpfwinkligen</b> Dreieck liegt der Fußpunkt zweier Höhen außerhalb: Die Seite wird als Gerade verlängert. Die Formel bleibt dieselbe.</p>
+    </div>
+
+    <div class="box wide">
+      <h2>Trapez</h2>
+      <p class="zentral f gross">A = m · <span class="gh">h</span> = <span class="bruch"><span class="z"><span class="kr">a</span> + <span class="kr">c</span></span><span class="n">2</span></span> · <span class="gh">h</span> = ½ · (<span class="kr">a</span> + <span class="kr">c</span>) · <span class="gh">h</span></p>
+      <p>a und c sind die beiden <b>parallelen</b> Seiten, h ihr Abstand. Die <span class="al">Mittellinie m</span> verbindet die Mitten der Schenkel; sie liegt auf halber Höhe, dort ist erst die Hälfte des Zusammenrückens a − c geschafft: <span class="f">m = a − (a − c) : 2 = (a + c) : 2</span>. Die Schenkel kommen in der Formel nicht vor.</p>
+      <div class="zwei">
+        <div>
+          <figure>[[FIG5]]</figure>
+          <p class="bu"><b>1. Weg — an der Mittellinie abtrennen:</b> Das Trapez ist so groß wie das Rechteck m · h. Beispiel: m = (9 + 5) : 2 = 7 cm, A = 7 cm · 4 cm = <b>28 cm²</b>.</p>
+        </div>
+        <div>
+          <figure>[[FIG6]]</figure>
+          <p class="bu"><b>2. Weg — verdoppeln:</b> Eine um 180° gedrehte Kopie ergänzt es zum Parallelogramm mit Grundseite a + c. <b>3. Weg — Diagonale:</b> <span class="f">A = ½ · a · h + ½ · c · h</span>.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik Klasse 8 · Geometrie · Seite 1 von 2</p>
+</div>
+
+<!-- ===================== Seite 2 ===================== -->
+<div class="page">
+  <h1>Rechnen mit Flächeninhalten<span class="klein">Umstellen, Einheiten, Musterrechnungen — ohne Pythagoras</span></h1>
+  <div class="grid">
+
+    <div class="box wide">
+      <h2>Die Größen und wie man sie zurückrechnet</h2>
+      <table>
+        <tr><th>Figur</th><th>Flächeninhalt</th><th>Grundseite gesucht</th><th>Höhe gesucht</th></tr>
+        <tr><td class="l b">Dreieck</td><td class="f">A = ½ · g · h</td><td class="f">g = 2 · A : h</td><td class="f">h = 2 · A : g</td></tr>
+        <tr><td class="l b">Parallelogramm</td><td class="f">A = g · h</td><td class="f">g = A : h</td><td class="f">h = A : g</td></tr>
+        <tr><td class="l b">Trapez</td><td class="f">A = ½ · (a + c) · h</td><td class="f">a = 2 · A : h − c</td><td class="f">h = 2 · A : (a + c)</td></tr>
+        <tr><td class="l b">Rechteck (zum Vergleich)</td><td class="f">A = a · b</td><td class="f">a = A : b</td><td class="f">—</td></tr>
+      </table>
+      <p style="margin-top:0.8mm"><b>Merkhilfe:</b> Erst die Gleichung mit 2 multiplizieren, damit das ½ verschwindet — <i>dann</i> teilen. Aus A = ½ · g · h wird <span class="f">2 · A = g · h</span>.</p>
+      <figure class="m62">[[FIG7]]</figure>
+      <p class="bu">Eine Formel, drei Figuren: Die Trapezformel enthält die beiden anderen.</p>
+    </div>
+
+    <div class="box">
+      <h2>Einheiten</h2>
+      <table>
+        <tr><th>Länge</th><th>Fläche</th></tr>
+        <tr><td>1 cm = 10 mm</td><td>1 cm² = 100 mm²</td></tr>
+        <tr><td>1 dm = 10 cm</td><td>1 dm² = 100 cm²</td></tr>
+        <tr><td>1 m = 10 dm = 100 cm</td><td>1 m² = 100 dm² = 10.000 cm²</td></tr>
+        <tr><td>1 km = 1.000 m</td><td>1 km² = 1.000.000 m²</td></tr>
+      </table>
+      <p style="margin-top:0.8mm">Bei Flächen zählt der Umrechnungsfaktor <b>zweimal</b>: Aus 10 bei den Längen wird 100 bei den Flächen.</p>
+      <p><b>Erst alle Längen in dieselbe Einheit</b>, dann rechnen. Addieren (a + c) darf man nur gleichnamige Längen.</p>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 1 — Dreieck, zwei Höhen</h2>
+      <p><b>Gegeben:</b> b = 6 cm mit der zugehörigen Höhe h<sub>b</sub> = 5 cm, außerdem c = 10 cm. <b>Gesucht:</b> A und h<sub>c</sub>.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span><span class="f">A = ½ · 6 cm · 5 cm = <b>15 cm²</b></span> — Seite und <i>ihre</i> Höhe.</span></div>
+        <div class="schritt"><b>2.</b><span>Dieselbe Fläche über c: <span class="f">½ · 10 cm · h<sub>c</sub> = 15 cm²</span></span></div>
+        <div class="schritt"><b>3.</b><span><span class="f">h<sub>c</sub> = 2 · 15 cm² : 10 cm = <b>3 cm</b></span></span></div>
+      </div>
+      <p style="margin-top:1mm"><b>Probe:</b> ½ · 10 cm · 3 cm = 15 cm² ✓ — zur längeren Seite die kürzere Höhe.</p>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 2 — Trapez mit Einheiten</h2>
+      <p><b>Gegeben:</b> a = 1,2 m, c = 80 cm, h = 50 cm. <b>Gesucht:</b> A in m².</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>Alles in cm: a = 120 cm, c = 80 cm, h = 50 cm.</span></div>
+        <div class="schritt"><b>2.</b><span><span class="f">m = (120 cm + 80 cm) : 2 = 100 cm</span></span></div>
+        <div class="schritt"><b>3.</b><span><span class="f">A = 100 cm · 50 cm = 5.000 cm²</span></span></div>
+        <div class="schritt"><b>4.</b><span><span class="f">5.000 cm² = 5.000 : 10.000 m² = <b>0,5 m²</b></span></span></div>
+      </div>
+      <p style="margin-top:1mm"><b>Kontrolle in m:</b> ½ · (1,2 + 0,8) · 0,5 = 0,5 ✓</p>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 3 — die Höhe zurückrechnen</h2>
+      <p><b>Gegeben:</b> ein Trapez mit A = 28 cm², a = 9 cm, c = 5 cm. <b>Gesucht:</b> h.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>Mal 2: <span class="f">2 · 28 cm² = (9 cm + 5 cm) · h</span></span></div>
+        <div class="schritt"><b>2.</b><span><span class="f">56 cm² = 14 cm · h</span></span></div>
+        <div class="schritt"><b>3.</b><span><span class="f">h = 56 cm² : 14 cm = <b>4 cm</b></span></span></div>
+      </div>
+      <p style="margin-top:1mm"><b>Probe:</b> ½ · (9 cm + 5 cm) · 4 cm = 28 cm² ✓</p>
+      <p><b>Parallelogramm genauso:</b> A = 42 cm², g = 7 cm ⟹ h = 42 cm² : 7 cm = 6 cm. Zur zweiten Seite b = 8 cm gehört h<sub>b</sub> = 42 cm² : 8 cm = 5,25 cm.</p>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 4 — Figur ohne eigene Formel</h2>
+      <p><b>Gegeben:</b> ein Viereck; die Diagonale e = 8 cm teilt es in zwei Dreiecke, die Ecken links und rechts davon haben die Abstände h₁ = 3 cm und h₂ = 2 cm von e.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span><span class="f">A₁ = ½ · 8 cm · 3 cm = 12 cm²</span></span></div>
+        <div class="schritt"><b>2.</b><span><span class="f">A₂ = ½ · 8 cm · 2 cm = 8 cm²</span></span></div>
+        <div class="schritt"><b>3.</b><span><span class="f">A = 12 cm² + 8 cm² = <b>20 cm²</b></span></span></div>
+      </div>
+      <p style="margin-top:1mm"><b>Kurz:</b> A = ½ · e · (h₁ + h₂) = ½ · 8 cm · 5 cm = 20 cm² ✓</p>
+    </div>
+
+    <div class="box warn wide">
+      <h2>Typische Fehler</h2>
+      <ul>
+        <li><b>Schräge Seite statt Höhe.</b> Die Höhe steht senkrecht auf der Grundseite. Wer mit der schrägen Seite rechnet, bekommt einen zu großen Flächeninhalt — nur im Rechteck fallen beide zusammen.</li>
+        <li><b>Das Halbieren vergessen.</b> Beim Dreieck ist g · h das umschließende Rechteck, beim Trapez ist (a + c) · h das Parallelogramm aus zwei Trapezen.</li>
+        <li><b>Seite und Höhe aus verschiedenen Paaren.</b> Zu jeder Seite gehört ihre eigene Höhe, das Lot von der gegenüberliegenden Ecke.</li>
+        <li><b>Beim Umstellen das ½ übersehen.</b> Aus A = ½ · g · h wird <b>2 · A</b> = g · h, also h = 2 · A : g — nicht A : g.</li>
+        <li><b>Beim Trapez die Seiten multiplizieren.</b> a und c werden <i>addiert</i> (gemittelt); multipliziert wird erst mit der Höhe. Die Schenkel gehören gar nicht in die Formel.</li>
+        <li><b>Einheiten mischen.</b> 1,2 m + 80 cm ist nicht 81,2. Und 1 m² sind 10.000 cm², nicht 100 cm².</li>
+      </ul>
+    </div>
+
+    <div class="box full" style="border-style:dashed;background:#f7f8fa">
+      <h2 style="color:#5b6570">Ausblick auf Klasse 9 — was dann dazukommt</h2>
+      <p>Hier werden schräge Seiten <b>gemessen</b>. Mit dem <b>Satz des Pythagoras</b> lassen sie sich in Klasse 9 <b>berechnen</b> — und damit auch eine fehlende Höhe aus den Seiten. Der <b>Flächeninhalt des Kreises</b> wird nach demselben Muster hergeleitet wie hier: in schmale Stücke zerlegen und zu einem Fast-Rechteck umlegen. Und bei <b>Prismen</b> werden diese Flächen zu Grundflächen: <span class="f">V = G · h</span>.</p>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik Klasse 8 · Geometrie · Seite 2 von 2</p>
+</div>
+
+</body>
+</html>

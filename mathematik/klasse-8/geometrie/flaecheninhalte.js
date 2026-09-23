@@ -15,7 +15,9 @@
 //   Dreieck        — ergänzt zum umschließenden Rechteck (braucht nur das Rechteck).
 //   Parallelogramm — zerlegt und umgelegt zum Rechteck (braucht ebenfalls nur das Rechteck;
 //                    lässt sich zusätzlich als zwei Dreiecke lesen).
-//   Trapez         — zu einem Parallelogramm verdoppelt (braucht das Parallelogramm).
+//   Trapez         — zuerst an der Mittellinie zum Rechteck umgelegt (braucht nur das Rechteck),
+//                    danach zu einem Parallelogramm verdoppelt (braucht Abschnitt 3) und zuletzt
+//                    über die Diagonale in zwei Dreiecke zerlegt.
 //
 // Zu den Zahlen: Gerechnet wird mit den Reglerwerten in Zentimetern, nicht mit
 // Bildschirmkoordinaten. Aus Koordinaten käme 15,749999999999998 heraus, und die Bilanz
@@ -379,7 +381,12 @@ function renderDreieck() {
 const GH_W = 560, GH_H = 300;
 // Feste Zahlen statt Reglern: Hier geht es nicht um die Größe der Figur, sondern darum, dass
 // DREI verschiedene Rechnungen dieselbe Zahl ergeben. Dafür muss die Figur stillstehen.
-const GH_A = { x: 0, y: 0 }, GH_B = { x: 8, y: 0 }, GH_C = { x: 2.5, y: 4.5 };
+//
+// C liegt bewusst INNERHALB des Thaleskreises über AB: Dann ist der Winkel bei C stumpf
+// (rund 114°), und die Höhen auf a und b haben ihren Fußpunkt außerhalb der Seite — genau der
+// Fall, den der Achtung-Kasten darunter beschreibt. Mit einem spitzwinkligen Dreieck behauptete
+// der Text etwas, das die Zeichnung nicht zeigt.
+const GH_A = { x: 0, y: 0 }, GH_B = { x: 8, y: 0 }, GH_C = { x: 3, y: 2.5 };
 
 function renderGrundseite() {
   const wahl = document.querySelector('input[name="gh-seite"]:checked').value;
@@ -413,7 +420,10 @@ function renderGrundseite() {
   strecke(b, S, L, FARBE.hoehe, 2.4, { "stroke-dasharray": "6 4" });
   rechterWinkel(b, L, P, S, FARBE.hoehe);
 
-  mass(b, P, Q, f.name, FARBE.grund, 0, lam >= 0 && lam <= 1 && wahl === "c" ? 24 : -14);
+  // Die Beschriftung weicht nach außen aus: unter c, links über b, rechts über a. Mittig mit
+  // senkrechtem Versatz allein läge sie auf den beiden schrägen Seiten mitten auf der Linie.
+  const versatz = { c: [0, 24], a: [16, -12], b: [-26, -6] }[wahl];
+  mass(b, P, Q, f.name, FARBE.grund, versatz[0], versatz[1]);
   mass(b, S, L, "h_" + wahl, FARBE.hoehe, 24, 0);
 
   punkt(b, GH_A, "A", -10, 16);
@@ -445,8 +455,8 @@ function renderGrundseite() {
     wahl === "c"
       ? "Zur Seite c gehört die Höhe von C aus. Ihr Fußpunkt liegt auf der Strecke AB."
       : wahl === "a"
-        ? "Zur Seite a gehört die Höhe von A aus — sie steht senkrecht auf BC, nicht auf der waagerechten Seite."
-        : "Zur Seite b gehört die Höhe von B aus. Hier liegt der Fußpunkt außerhalb der Strecke; dann wird die Seite als Gerade verlängert.";
+        ? "Zur Seite a gehört die Höhe von A aus — sie steht senkrecht auf BC, nicht auf der waagerechten Seite. Weil der Winkel bei C stumpf ist, liegt ihr Fußpunkt außerhalb der Strecke BC; die Seite wird dafür als Gerade verlängert."
+        : "Zur Seite b gehört die Höhe von B aus. Auch hier liegt der Fußpunkt außerhalb der Strecke, jenseits von C — wegen des stumpfen Winkels bei C. Die Seite wird als Gerade verlängert.";
 }
 
 // ================= 3. Das Parallelogramm =================
@@ -545,6 +555,8 @@ function renderParallelogramm() {
 }
 
 // ================= 4. Das Trapez =================
+//
+// 4b. Der zweite Weg: verdoppeln. (4a, die Mittellinie, steht im Quelltext darunter.)
 
 const TZ_W = 680, TZ_H = 430;
 
@@ -634,10 +646,11 @@ function renderTrapez() {
         : `Zusammen ergeben beide Trapeze ein Parallelogramm. Unten liegen jetzt a und c hintereinander: ${num(a)} cm + ${num(c)} cm = ${num(a + c)} cm. Die Höhe ist unverändert ${num(h)} cm.`;
 }
 
-// ---------- 4b. Der zweite Weg: an der Mittellinie abtrennen ----------
+// ---------- 4a. Der erste Weg: an der Mittellinie abtrennen ----------
 //
-// Diese Herleitung liefert die Formel gleich in der Bruchschreibweise A = (a + c)/2 · h und
-// erklärt dabei, warum die Mittellinie so lang ist, wie sie ist.
+// Dieser Weg steht auf der Seite VOR dem Verdoppeln: Er kommt mit dem Rechteck allein aus, das
+// Verdoppeln braucht dagegen das Parallelogramm. Er liefert die Formel gleich in der
+// Bruchschreibweise A = (a + c)/2 · h und erklärt dabei, warum die Mittellinie so lang ist.
 //
 // Die Länge der Mittellinie aus ihrer LAGE: Steigt man vom unteren Rand zum oberen, so rückt
 // der linke Schenkel um dL nach innen und der rechte um dR, zusammen also um dL + dR = a − c.
