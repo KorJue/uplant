@@ -1,0 +1,473 @@
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  margin-bottom: 1.5rem;
+}
+.card h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+.card h3 {
+  font-size: 1.05rem;
+  margin: 1.5rem 0 0.6rem;
+  color: var(--accent-dark);
+}
+.card h3:first-of-type { margin-top: 0.5rem; }
+
+.lern-intro-list {
+  margin: 0.75rem 0 0;
+  padding-left: 1.3rem;
+}
+.lern-intro-list li { margin-bottom: 0.3rem; }
+
+.term {
+  font-weight: 700;
+  color: var(--accent-dark);
+}
+
+.hinweis-box {
+  background: var(--bg);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin: 0.9rem 0;
+  font-size: 0.92rem;
+}
+
+/* ---------- Widget-Rahmen ---------- */
+
+.widget {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 1rem 0;
+  background: var(--bg);
+}
+.widget-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.widget-col { flex: 1 1 260px; min-width: 240px; }
+
+.btn {
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  font-family: inherit;
+}
+.btn:hover { border-color: var(--accent); }
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--accent-dark); }
+.btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.75rem 0; }
+
+/* ---------- Ergebnisanzeige ---------- */
+
+.event-result {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+  margin-top: 0.5rem;
+  font-family: "Cambria Math", Cambria, serif;
+}
+
+/* ---------- Quiz ---------- */
+
+.quiz {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1.1rem 0 0.5rem;
+}
+.quiz-q { font-weight: 700; margin: 0 0 0.6rem; }
+.quiz-options { display: flex; flex-direction: column; gap: 0.5rem; }
+.quiz-opt {
+  text-align: left;
+  padding: 0.55rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.94rem;
+}
+.quiz-opt:hover { border-color: var(--accent); }
+.quiz-opt.correct { border-color: #157347; background: #e7f6ec; color: #157347; font-weight: 700; }
+.quiz-opt.wrong { border-color: #b3261e; background: #fdecec; color: #b3261e; font-weight: 700; }
+:root[data-theme="dark"] .quiz-opt.correct { background: #17321f; color: #6fd68f; border-color: #6fd68f; }
+:root[data-theme="dark"] .quiz-opt.wrong { background: #3a1f1f; color: #ff8a8a; border-color: #ff8a8a; }
+.quiz-feedback { margin-top: 0.6rem; font-size: 0.9rem; }
+.quiz-feedback.ok { color: #157347; }
+.quiz-feedback.err { color: #b3261e; }
+:root[data-theme="dark"] .quiz-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .quiz-feedback.err { color: #ff8a8a; }
+
+/* ---------- Übungsaufgaben ---------- */
+
+.exercise {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1rem 0;
+}
+.exercise h3 { margin-top: 0; }
+.exercise-input-row { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; margin-top: 0.6rem; }
+.exercise-input-row input {
+  width: 11rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: var(--card-bg);
+  color: var(--text);
+}
+.exercise-feedback { margin-top: 0.6rem; font-size: 0.92rem; font-weight: 600; }
+.exercise-feedback.ok { color: #157347; }
+.exercise-feedback.err { color: #b3261e; }
+:root[data-theme="dark"] .exercise-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .exercise-feedback.err { color: #ff8a8a; }
+
+.formula-block {
+  font-family: "Cambria Math", Cambria, "STIX Two Math", serif;
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  margin: 0.5rem 0;
+  overflow-x: auto;
+}
+
+.progress-note {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+
+/* ---------- Definition / Wissen / Beispiel — farbige Merkboxen wie im Lehrbuch ---------- */
+
+.definition-box, .wissen-box, .beispiel-box {
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin: 0.9rem 0;
+}
+.definition-box .box-label, .wissen-box .box-label, .beispiel-box .box-label {
+  display: block;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+.definition-box, .wissen-box {
+  background: #fdecec;
+  border-left: 4px solid #b3261e;
+}
+.definition-box .box-label, .wissen-box .box-label { color: #b3261e; }
+:root[data-theme="dark"] .definition-box, :root[data-theme="dark"] .wissen-box { background: #3a1f1f; }
+:root[data-theme="dark"] .definition-box .box-label, :root[data-theme="dark"] .wissen-box .box-label { color: #ff8a8a; }
+.beispiel-box {
+  background: #e7f6ec;
+  border-left: 4px solid #157347;
+}
+.beispiel-box .box-label { color: #157347; }
+:root[data-theme="dark"] .beispiel-box { background: #17321f; }
+:root[data-theme="dark"] .beispiel-box .box-label { color: #6fd68f; }
+
+/* ---------- Gestaffelte Übungsaufgaben (Reiter Mittel/Schwierig/Komplex) ---------- */
+
+.schwierigkeit-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  margin-left: 0.6rem;
+  vertical-align: middle;
+}
+.schwierigkeit-badge.einfach { background: #e7f6ec; color: #157347; }
+.schwierigkeit-badge.mittel { background: #eef2ff; color: #1d4ed8; }
+.schwierigkeit-badge.schwierig { background: #fff4e0; color: #b3650a; }
+.schwierigkeit-badge.komplex { background: #fdecec; color: #b3261e; }
+:root[data-theme="dark"] .schwierigkeit-badge.einfach { background: #17321f; color: #6fd68f; }
+:root[data-theme="dark"] .schwierigkeit-badge.mittel { background: #1e2a4a; color: #93a9ff; }
+:root[data-theme="dark"] .schwierigkeit-badge.schwierig { background: #3a2a10; color: #ffbf6e; }
+:root[data-theme="dark"] .schwierigkeit-badge.komplex { background: #3a1f1f; color: #ff8a8a; }
+
+.schwierigkeit-tabs { display: flex; gap: 0.4rem; margin: 1rem 0 0; flex-wrap: wrap; }
+.schwierigkeit-tabs button {
+  padding: 0.5rem 1rem;
+  border-radius: 8px 8px 0 0;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+.schwierigkeit-tabs button.active { background: var(--card-bg); color: var(--text); border-color: var(--accent); }
+.schwierigkeit-tab-panel { border: 1px solid var(--border); border-radius: 0 10px 10px 10px; padding: 0; margin-bottom: 1rem; }
+.schwierigkeit-tab-panel .aufgabe-box { border: none; margin: 0; }
+
+.aufgabe-box {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1rem 0;
+}
+.aufgabe-box h3 { margin: 0 0 0.5rem; display: flex; align-items: center; flex-wrap: wrap; }
+.aufgabe-box .aufgabe-prompt { margin: 0.5rem 0; }
+.aufgabe-box .btn-row { margin-top: 0.5rem; }
+.aufgabe-feedback { margin-top: 0.7rem; font-size: 0.92rem; }
+.aufgabe-feedback .status { font-weight: 700; margin-bottom: 0.3rem; }
+.aufgabe-feedback .status.ok { color: #157347; }
+.aufgabe-feedback .status.err { color: #b3261e; }
+:root[data-theme="dark"] .aufgabe-feedback .status.ok { color: #6fd68f; }
+:root[data-theme="dark"] .aufgabe-feedback .status.err { color: #ff8a8a; }
+.musterloesung {
+  background: var(--bg);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.7rem 0.9rem;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.musterloesung .ml-label { font-weight: 700; color: var(--accent-dark); display: block; margin-bottom: 0.3rem; }
+
+/* ---------- Achtung-Box: typische Fehlvorstellungen ---------- */
+
+.achtung-box {
+  background: #fff4e0;
+  border-left: 4px solid #b3650a;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin: 0.9rem 0;
+}
+.achtung-box .box-label {
+  display: block;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+  color: #b3650a;
+}
+:root[data-theme="dark"] .achtung-box { background: #3a2a10; }
+:root[data-theme="dark"] .achtung-box .box-label { color: #ffbf6e; }
+
+/* ---------- Innermathematische Vernetzung ---------- */
+
+.vernetzung-liste { list-style: none; padding: 0; margin: 0.75rem 0 0; }
+.vernetzung-liste li {
+  padding: 0.6rem 0.85rem;
+  border-left: 3px solid var(--accent);
+  background: var(--bg);
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 0.5rem;
+  font-size: 0.94rem;
+}
+.vernetzung-liste a { font-weight: 700; }
+
+
+
+/* ---------- Zeichenfläche ---------- */
+
+.geo-wrap { display: flex; justify-content: center; margin: 1rem 0; overflow-x: auto; }
+.geo-svg { max-width: 100%; height: auto; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; }
+
+
+
+/* ================= Thema 5: Bernoulli-Ketten und Binomialverteilung ================= */
+
+/* Durchgehende Farbcodierung: Treffer/Ereignis grün, Niete/Gegenereignis orange,
+   Parameter n blau, Erwartungswert violett, Streuband (μ ± σ) und Schranke rot. */
+
+.th-bilanz {
+  font-size: 0.94rem;
+  line-height: 1.75;
+  margin-top: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  background: var(--card-bg);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  overflow-x: auto;
+}
+.th-bilanz .wa { color: #157347; font-weight: 700; }
+.th-bilanz .wb { color: #b3650a; font-weight: 700; }
+.th-bilanz .wc { color: #1d4ed8; font-weight: 700; }
+.th-bilanz .wr { color: #6d28d9; font-weight: 700; }
+.th-bilanz .wg { color: #b3261e; font-weight: 700; }
+:root[data-theme="dark"] .th-bilanz .wa { color: #6fd68f; }
+:root[data-theme="dark"] .th-bilanz .wb { color: #ffbf6e; }
+:root[data-theme="dark"] .th-bilanz .wc { color: #8ab4ff; }
+:root[data-theme="dark"] .th-bilanz .wr { color: #c4a7ff; }
+:root[data-theme="dark"] .th-bilanz .wg { color: #ff8a8a; }
+
+/* Echte Brüche und Binomialkoeffizienten: Zähler über Nenner, „n über k“ in Klammern. */
+.bruch {
+  display: inline-flex; flex-direction: column; align-items: center;
+  vertical-align: middle; line-height: 1.15; margin: 0 0.1em; text-align: center;
+}
+.bruch .z { padding: 0 0.3em; border-bottom: 1.5px solid currentColor; }
+.bruch .n { padding: 0 0.3em; }
+.binom {
+  display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+  vertical-align: middle; line-height: 1.1; padding: 0 0.35em; margin: 0 0.1em;
+  border-left: 1.5px solid currentColor; border-right: 1.5px solid currentColor;
+  border-radius: 45% / 50%; font-size: 0.92em;
+}
+.binom.gross, .bruch.gross { font-size: 1.12em; font-weight: 700; }
+.nw { white-space: nowrap; }
+
+/* Zwei Schreibweisen nebeneinander */
+.notation-box {
+  margin: 1rem 0; padding: 0.8rem 1rem; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--bg);
+}
+.notation-box .box-label {
+  display: block; font-size: 0.78rem; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.05em; color: var(--accent-dark); margin-bottom: 0.4rem;
+}
+.bk-notation { width: 100%; border-collapse: collapse; margin-top: 0.6rem; font-size: 0.92rem; }
+.bk-notation th, .bk-notation td { border: 1px solid var(--border); padding: 0.35rem 0.55rem; text-align: left; }
+.bk-notation th { background: var(--card-bg); }
+
+/* Zwei Darstellungen nebeneinander, auf schmalen Schirmen untereinander */
+.bk-zwei { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; align-items: flex-start; }
+.bk-zwei > * { flex: 1 1 300px; min-width: 0; }
+.bk-rest { align-self: center; color: var(--muted); font-weight: 700; }
+
+/* Verteilungstabelle */
+.bk-tabelle-wrap { overflow-x: auto; margin: 0.6rem 0; }
+.bk-tabelle { border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 0.9rem; margin: 0 auto; }
+.bk-tabelle th, .bk-tabelle td { border: 1px solid var(--border); padding: 0.3rem 0.5rem; text-align: center; white-space: nowrap; }
+.bk-tabelle th { background: var(--bg); }
+.bk-tabelle td.aktiv { background: #e7f6ec; color: #157347; font-weight: 800; }
+:root[data-theme="dark"] .bk-tabelle td.aktiv { background: #17321f; color: #6fd68f; }
+
+/* Zeichnungen: Säulen, Treppen, Gitter, Glücksrad, Pascal'sches Dreieck */
+.bk-saeule { fill: #9aa4b1; fill-opacity: 0.45; stroke: #5f6b76; stroke-width: 0.8; }
+.bk-saeule.aktiv { fill: #157347; fill-opacity: 0.55; stroke: #157347; }
+.bk-saeule.gegen { fill: #b3650a; fill-opacity: 0.35; stroke: #b3650a; }
+.bk-saeule.vergleich { fill: none; stroke: #b3650a; stroke-width: 1.6; stroke-dasharray: 4 3; }
+:root[data-theme="dark"] .bk-saeule { fill: #9aa4b1; fill-opacity: 0.35; stroke: #c3cad3; }
+:root[data-theme="dark"] .bk-saeule.aktiv { fill: #6fd68f; fill-opacity: 0.5; stroke: #6fd68f; }
+:root[data-theme="dark"] .bk-saeule.gegen { fill: #ffbf6e; fill-opacity: 0.35; stroke: #ffbf6e; }
+:root[data-theme="dark"] .bk-saeule.vergleich { stroke: #ffbf6e; }
+.bk-achse { stroke: var(--text); stroke-width: 1.2; }
+.bk-gitterlinie { stroke: var(--border); stroke-width: 1; }
+.bk-achsentext { font-size: 11px; fill: var(--muted); font-variant-numeric: tabular-nums; }
+.bk-mu { stroke: #6d28d9; stroke-width: 2.2; }
+.bk-mu-text { font-size: 12px; font-weight: 800; fill: #6d28d9; }
+.bk-sigma { fill: #b3261e; fill-opacity: 0.08; stroke: #b3261e; stroke-width: 1.2; stroke-dasharray: 5 4; }
+.bk-sigma-text { font-size: 11px; font-weight: 800; fill: #b3261e; }
+.bk-schranke { stroke: #b3261e; stroke-width: 1.6; stroke-dasharray: 6 4; }
+.bk-treppe { fill: none; stroke: #1d4ed8; stroke-width: 2.2; }
+.bk-treppe-punkt { fill: #1d4ed8; }
+.bk-treppe-punkt.aktiv { fill: #157347; }
+.bk-kurve { fill: none; stroke: #1d4ed8; stroke-width: 2; }
+.bk-kurve-punkt { fill: #1d4ed8; }
+.bk-kurve-punkt.aktiv { fill: #157347; stroke: #157347; stroke-width: 3; }
+:root[data-theme="dark"] .bk-mu { stroke: #c4a7ff; }
+:root[data-theme="dark"] .bk-mu-text { fill: #c4a7ff; }
+:root[data-theme="dark"] .bk-sigma { fill: #ff8a8a; stroke: #ff8a8a; }
+:root[data-theme="dark"] .bk-sigma-text { fill: #ff8a8a; }
+:root[data-theme="dark"] .bk-schranke { stroke: #ff8a8a; }
+:root[data-theme="dark"] .bk-treppe, :root[data-theme="dark"] .bk-kurve { stroke: #8ab4ff; }
+:root[data-theme="dark"] .bk-treppe-punkt, :root[data-theme="dark"] .bk-kurve-punkt { fill: #8ab4ff; }
+:root[data-theme="dark"] .bk-treppe-punkt.aktiv, :root[data-theme="dark"] .bk-kurve-punkt.aktiv { fill: #6fd68f; stroke: #6fd68f; }
+
+.bk-zelle { fill: var(--card-bg); stroke: var(--border); stroke-width: 1; }
+.bk-zelle.aktiv { fill: #157347; fill-opacity: 0.28; stroke: #157347; stroke-width: 1.4; }
+:root[data-theme="dark"] .bk-zelle.aktiv { fill: #6fd68f; fill-opacity: 0.3; stroke: #6fd68f; }
+.bk-zelltext { font-size: 12px; font-weight: 700; fill: var(--text); }
+.bk-kopftext { font-size: 12px; font-weight: 800; fill: var(--muted); }
+
+.bk-sektor { stroke: var(--card-bg); stroke-width: 1.5; }
+.bk-sektor.rot { fill: #c0392b; }
+.bk-sektor.weiss { fill: #f4f1ea; stroke: #9aa4b1; }
+.bk-sektor.schwarz { fill: #1f2328; }
+:root[data-theme="dark"] .bk-sektor.schwarz { fill: #000000; stroke: #9aa4b1; }
+.bk-zeiger { fill: #1d4ed8; }
+:root[data-theme="dark"] .bk-zeiger { fill: #8ab4ff; }
+.bk-balken { fill: #6d28d9; fill-opacity: 0.18; stroke: #6d28d9; stroke-width: 1.2; }
+.bk-drehpunkt { fill: #6d28d9; }
+:root[data-theme="dark"] .bk-balken { fill: #c4a7ff; stroke: #c4a7ff; }
+:root[data-theme="dark"] .bk-drehpunkt { fill: #c4a7ff; }
+
+.bk-pascal { fill: var(--card-bg); stroke: var(--border); stroke-width: 1; }
+.bk-pascal.aktiv { fill: #157347; fill-opacity: 0.3; stroke: #157347; stroke-width: 2; }
+.bk-pascal.eltern { fill: #b3650a; fill-opacity: 0.2; stroke: #b3650a; stroke-width: 1.6; }
+:root[data-theme="dark"] .bk-pascal.aktiv { fill: #6fd68f; stroke: #6fd68f; }
+:root[data-theme="dark"] .bk-pascal.eltern { fill: #ffbf6e; stroke: #ffbf6e; }
+.bk-pascaltext { font-size: 11px; font-weight: 700; fill: var(--text); font-variant-numeric: tabular-nums; }
+
+/* Die Pfade als Wörter aus T und N */
+.bk-woerter { display: flex; flex-wrap: wrap; gap: 0.3rem; align-content: flex-start; justify-content: center; padding: 0.6rem 0; max-height: 320px; overflow-y: auto; }
+.bk-wort {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.92rem; font-weight: 700;
+  padding: 0.15rem 0.35rem; border-radius: 5px; border: 1px solid var(--border); background: var(--card-bg);
+}
+.bk-wort .t { color: #157347; }
+.bk-wort .n { color: #b3650a; }
+:root[data-theme="dark"] .bk-wort .t { color: #6fd68f; }
+:root[data-theme="dark"] .bk-wort .n { color: #ffbf6e; }
+.bk-woerter-hinweis { width: 100%; text-align: center; color: var(--muted); font-size: 0.88rem; }
+
+/* Die drei Faktoren der Formel von Bernoulli */
+.bk-faktoren { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin: 0.6rem 0; }
+.bk-faktor {
+  flex: 0 1 auto; min-width: 8.5rem; text-align: center; padding: 0.5rem 0.7rem; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--card-bg); font-variant-numeric: tabular-nums;
+}
+.bk-faktor .was { display: block; font-size: 0.78rem; color: var(--muted); font-weight: 700; }
+.bk-faktor .wert { display: block; font-size: 1.1rem; }
+.bk-faktor.mal { border: none; background: none; min-width: 0; align-self: center; font-size: 1.3rem; font-weight: 800; color: var(--muted); }
+
+/* Baumdiagramm der Bernoulli-Kette */
+.bk-ast { stroke: #9aa4b1; stroke-width: 1.3; }
+.bk-ast.treffer { stroke: #157347; }
+.bk-ast.niete { stroke: #b3650a; }
+.bk-ast.aktiv { stroke-width: 3.2; }
+.bk-knoten { fill: var(--card-bg); stroke: var(--muted); stroke-width: 1.2; }
+.bk-knotentext { font-size: 10px; font-weight: 800; fill: var(--text); }
+.bk-blatt { font-size: 11px; font-weight: 700; fill: var(--muted); font-family: ui-monospace, Menlo, Consolas, monospace; }
+.bk-blatt.aktiv { fill: #157347; font-weight: 800; }
+:root[data-theme="dark"] .bk-ast.treffer, :root[data-theme="dark"] .bk-blatt.aktiv { stroke: #6fd68f; fill: #6fd68f; }
+:root[data-theme="dark"] .bk-ast.niete { stroke: #ffbf6e; }
+:root[data-theme="dark"] .bk-blatt.aktiv { stroke: none; }
+
+/* Selbsteinschätzung */
+.se-zeile {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; justify-content: space-between;
+  padding: 0.45rem 0.2rem; border-bottom: 1px solid var(--border);
+}
+.se-text { flex: 1 1 18rem; }
+.se-knoepfe { display: flex; gap: 0.3rem; }
+.se-knoepfe button {
+  font-size: 1.15rem; padding: 0.2rem 0.5rem; border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--card-bg); color: var(--text);
+}
+.se-knoepfe button[aria-pressed="true"] { border-color: var(--accent); background: var(--bg); box-shadow: 0 0 0 2px var(--accent) inset; }

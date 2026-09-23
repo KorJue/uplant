@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Formelsammlung — Bernoulli-Ketten und Binomialverteilung</title>
+<style>
+  @page { size: A4 landscape; margin: 5.5mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    color: #1f2328;
+    font-size: 8.1px;
+    line-height: 1.33;
+  }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  h1 {
+    font-size: 12.4px; margin: 0 0 1.4mm; padding-bottom: 0.8mm;
+    border-bottom: 1.6px solid #1d4ed8; color: #1d4ed8; letter-spacing: 0.01em;
+  }
+  h1 .klein { font-size: 8.4px; font-weight: 400; color: #5b6570; float: right; margin-top: 2px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2.1mm; align-items: start; }
+  .box {
+    border: 0.9px solid #c9d0d8; border-radius: 2mm; padding: 1.5mm 1.8mm;
+    background: #ffffff; break-inside: avoid;
+  }
+  .box.wide { grid-column: span 2; }
+  .box.full { grid-column: span 3; }
+  .box h2 {
+    font-size: 8.6px; margin: 0 0 1.1mm; color: #1d4ed8;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .box.warn { border-color: #e3b341; background: #fffaf0; }
+  .box.warn h2 { color: #8a5b0a; }
+  .box.merk { border-color: #7ec699; background: #f4fbf6; }
+  .box.merk h2 { color: #0f5132; }
+  p { margin: 0 0 0.9mm; }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 0.9mm; padding-left: 3.4mm; }
+  li { margin-bottom: 0.4mm; }
+  .f { font-family: "Cambria Math", Cambria, Georgia, serif; font-size: 9.2px; }
+  .zentral { text-align: center; }
+  .gross { font-size: 10.4px; font-weight: 700; }
+  .al { color: #157347; font-weight: 700; }
+  .be { color: #b3650a; font-weight: 700; }
+  .ga { color: #b3261e; font-weight: 700; }
+  .kr { color: #1d4ed8; font-weight: 700; }
+  .ra { color: #6d28d9; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { border: 0.7px solid #c9d0d8; padding: 0.5mm 0.6mm; text-align: center; }
+  th { background: #eef2f6; font-weight: 700; font-size: 7.4px; }
+  td { font-size: 7.6px; }
+  td.b { font-weight: 700; }
+  td.l { text-align: left; }
+  figure { margin: 0.8mm 0 0; }
+  figure svg { display: block; width: 100%; height: auto; }
+  .m70 { max-width: 70%; margin: 0.8mm auto 0; }
+  .m80 { max-width: 80%; margin: 0.8mm auto 0; }
+  .m88 { max-width: 88%; margin: 0.8mm auto 0; }
+  .m62 { max-width: 62%; margin: 0.8mm auto 0; }
+  .m72 { max-width: 72%; margin: 0.8mm auto 0; }
+  .m55 { max-width: 55%; margin: 0.8mm auto 0; }
+  .bu { font-size: 7.1px; color: #5b6570; text-align: center; margin-top: 0.5mm; }
+  .rechnung { background: #f4f6f8; border-radius: 1.2mm; padding: 1mm 1.2mm; margin: 0.8mm 0 0; }
+  .schritt { display: flex; gap: 1.2mm; margin-bottom: 0.5mm; }
+  .schritt b { flex: 0 0 3.6mm; color: #1d4ed8; }
+  .schritt:last-child { margin-bottom: 0; }
+  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm; align-items: start; }
+  .bruch { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; margin: 0 0.3mm; }
+  .bruch .z { border-bottom: 0.8px solid currentColor; padding: 0 0.6mm; }
+  .binom { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; padding: 0 0.9mm; margin: 0 0.3mm; border-left: 0.9px solid currentColor; border-right: 0.9px solid currentColor; border-radius: 45% / 50%; font-size: 92%; }
+  .tr { color: #157347; font-weight: 700; }
+  .ni { color: #b3650a; font-weight: 700; }
+  .fu { color: #5b6570; font-size: 7.3px; }
+  .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ===================== Seite 1 ===================== -->
+<div class="page">
+  <h1>Bernoulli-Ketten und Binomialverteilung<span class="klein">MSS 13 · Wahrscheinlichkeitsrechnung, Thema 5 · Schreibweise Bigalke/Köhler, <span class="fu">grau: Fundamente</span></span></h1>
+  <div class="grid">
+
+    <div class="box">
+      <h2>Zufallsgröße und Verteilung</h2>
+      <p>Eine <b>Zufallsgröße X</b> ordnet jedem Ergebnis eines Zufallsversuchs eine reelle Zahl zu. Die Zuordnung <span class="f">x<sub>i</sub> ↦ P(X = x<sub>i</sub>)</span> heißt <b>Wahrscheinlichkeitsverteilung</b> von X; alle P(X = x<sub>i</sub>) zusammen ergeben <b>1</b>.</p>
+      <p>Im <b>Histogramm</b> hat jede Säule die Breite 1 und die Wahrscheinlichkeit als Höhe (= Fläche).</p>
+      <figure class="m88">[[FIG1]]</figure>
+      <p class="bu">Zwei Würfel, X: Augensumme. P(X = 7) = 6 : 36 = 1 : 6 — sechs der 36 Ergebnisse haben die Summe 7.</p>
+    </div>
+
+    <div class="box">
+      <h2>Erwartungswert, Varianz, Standardabweichung</h2>
+      <p class="zentral f">μ = E(X) = x<sub>1</sub> · P(X = x<sub>1</sub>) + … + x<sub>n</sub> · P(X = x<sub>n</sub>)</p>
+      <p class="zentral f">V(X) = (x<sub>1</sub> − μ)² · P(X = x<sub>1</sub>) + … + (x<sub>n</sub> − μ)² · P(X = x<sub>n</sub>)</p>
+      <p class="zentral f">σ = σ(X) = √V(X)</p>
+      <p>E(X) ist der Durchschnitt auf lange Sicht und muss kein möglicher Wert sein. σ misst die Streuung um μ und hat dieselbe Einheit wie X.</p>
+      <p>Ein Spiel ist <b>fair</b>, wenn der Erwartungswert der Auszahlung gleich dem Einsatz ist.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>Bsp.</b><span>Tabelle x: 1 | 2 | 3 | 4 mit P: 0,3 | 0,3 | 0,2 | 0,2.<br>
+          μ = 1 · 0,3 + 2 · 0,3 + 3 · 0,2 + 4 · 0,2 = <b>2,3</b><br>
+          V = 1,3² · 0,3 + 0,3² · 0,3 + 0,7² · 0,2 + 1,7² · 0,2 = 1,21, &nbsp; σ = <b>1,1</b></span></div>
+      </div>
+    </div>
+
+    <div class="box merk">
+      <h2>Bernoulli-Experiment und -Kette</h2>
+      <p>Ein Versuch mit nur zwei Ausgängen, <span class="tr">Treffer</span> und <span class="ni">Niete</span>, heißt <b>Bernoulli-Experiment</b>; <b>p</b> ist die Trefferwahrscheinlichkeit, 1 − p die der Niete.</p>
+      <p>Wird es <b>n-mal unabhängig</b> mit <b>gleichbleibendem p</b> wiederholt, liegt eine <b>Bernoulli-Kette der Länge n</b> vor.</p>
+      <figure class="m88">[[FIG2]]</figure>
+      <p class="bu">Alle Pfade mit gleich vielen Treffern haben dieselbe Wahrscheinlichkeit. Ziehen <b>ohne</b> Zurücklegen ist keine Bernoulli-Kette (p ändert sich).</p>
+    </div>
+
+    <div class="box">
+      <h2>Binomialkoeffizient</h2>
+      <p class="zentral f gross"><span class="binom"><span>n</span><span>k</span></span> = <span class="bruch"><span class="z">n!</span><span>k! · (n − k)!</span></span> = <span class="bruch"><span class="z">n · (n − 1) · … · (n − k + 1)</span><span>k!</span></span></p>
+      <p>n! = n · (n − 1) · … · 2 · 1, &nbsp; 0! = 1. <span class="binom"><span>n</span><span>k</span></span> ist die Anzahl der Möglichkeiten, aus n Dingen k auszuwählen (ohne Zurücklegen, ohne Reihenfolge) — also die <b>Anzahl der Pfade mit k Treffern</b>.</p>
+      <p><span class="binom"><span>n</span><span>0</span></span> = <span class="binom"><span>n</span><span>n</span></span> = 1, &nbsp; <span class="binom"><span>n</span><span>k</span></span> = <span class="binom"><span>n</span><span>n − k</span></span>, &nbsp; <span class="binom"><span>n</span><span>k</span></span> = <span class="binom"><span>n − 1</span><span>k − 1</span></span> + <span class="binom"><span>n − 1</span><span>k</span></span> (Pascal'sches Dreieck)</p>
+      <p><b>Lotto 6 aus 49:</b> <span class="binom"><span>49</span><span>6</span></span> = 13.983.816; &nbsp; genau 4 Richtige: <span class="bruch"><span class="z"><span class="binom"><span>6</span><span>4</span></span> · <span class="binom"><span>43</span><span>2</span></span></span><span><span class="binom"><span>49</span><span>6</span></span></span></span> ≈ 0,00097</p>
+    </div>
+
+    <div class="box merk wide">
+      <h2>Formel von Bernoulli — Binomialverteilung</h2>
+      <p class="zentral f gross">P(X = k) = B(n; p; k) = <span class="binom"><span>n</span><span>k</span></span> · p<sup>k</sup> · (1 − p)<sup>n − k</sup> &nbsp;&nbsp;(k = 0, 1, …, n) &nbsp;&nbsp;<span class="fu">Fundamente: B<sub>n;p</sub>(k)</span></p>
+      <div class="zwei">
+        <div>
+          <p>X zählt die Treffer einer Bernoulli-Kette; X heißt <b>binomialverteilt mit den Parametern n und p</b> <span class="fu">(X ∼ B<sub>n;p</sub>)</span>.</p>
+          <p><b>p</b> bestimmt die Lage (die höchste Säule liegt bei etwa n · p), <b>n</b> die Breite. p &lt; 0,5: linkslastig, p = 0,5: symmetrisch, p &gt; 0,5: rechtslastig. Die Verteilungen zu p und 1 − p sind spiegelbildlich:</p>
+          <p class="zentral f">B(n; p; k) = B(n; 1 − p; n − k)</p>
+          <div class="rechnung">
+            <div class="schritt"><b>Bsp.</b><span>Würfel 5-mal, genau 3 Sechsen: <span class="f">P(X = 3) = <span class="binom"><span>5</span><span>3</span></span> · (1/6)³ · (5/6)² = 10 · 25/7776 ≈ 0,0322</span></span></div>
+          </div>
+        </div>
+        <div>
+          <figure>[[FIG3]]</figure>
+          <p class="bu">B(10; p; k) für p = 0,2, 0,5 und 0,8 — die Lage folgt μ = n · p.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik MSS 13 · Wahrscheinlichkeitsrechnung · Seite 1 von 2</p>
+</div>
+
+<!-- ===================== Seite 2 ===================== -->
+<div class="page">
+  <h1>Kumulierte Verteilung, Kenngrößen und Parameter<span class="klein">Höchstens, mindestens, zwischen — μ, σ — n, k, p gesucht</span></h1>
+  <div class="grid">
+
+    <div class="box wide">
+      <h2>Kumulierte Binomialverteilung</h2>
+      <p class="zentral f">P(X ≤ k) = F(n; p; k) = B(n; p; 0) + B(n; p; 1) + … + B(n; p; k) &nbsp;&nbsp;<span class="fu">Fundamente: F<sub>n;p</sub>(k)</span></p>
+      <div class="zwei">
+        <table>
+          <tr><th>Ereignis</th><th>Schreibweise</th><th>mit F</th></tr>
+          <tr><td class="l">höchstens k</td><td class="f">P(X ≤ k)</td><td class="f">F(n; p; k)</td></tr>
+          <tr><td class="l">weniger als k</td><td class="f">P(X ≤ k − 1)</td><td class="f">F(n; p; k − 1)</td></tr>
+          <tr><td class="l">mindestens k</td><td class="f">1 − P(X ≤ k − 1)</td><td class="f">1 − F(n; p; k − 1)</td></tr>
+          <tr><td class="l">mehr als k</td><td class="f">1 − P(X ≤ k)</td><td class="f">1 − F(n; p; k)</td></tr>
+          <tr><td class="l">a bis b</td><td class="f">P(a ≤ X ≤ b)</td><td class="f">F(n; p; b) − F(n; p; a − 1)</td></tr>
+          <tr><td class="l">p &gt; 0,5 (Tabelle)</td><td class="f" colspan="2">F(n; p; k) = 1 − F(n; 1 − p; n − k − 1)</td></tr>
+        </table>
+        <div>
+          <figure>[[FIG4]]</figure>
+          <p class="bu">Das Gegenereignis zu „mindestens 6“ ist „höchstens <b>5</b>“.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box merk">
+      <h2>Erwartungswert und Streuung</h2>
+      <p class="zentral f gross">μ = E(X) = n · p</p>
+      <p class="zentral f gross">σ = √(n · p · (1 − p))</p>
+      <p>μ liegt bei der höchsten Säule; σ misst die Breite. Im Intervall [μ − σ; μ + σ] liegt meist deutlich mehr als die Hälfte der Wahrscheinlichkeit.</p>
+      <figure>[[FIG5]]</figure>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 1 — höchstens, mindestens</h2>
+      <p><b>Gegeben:</b> Tetraeder-Würfel 10-mal, X: Anzahl der Einsen, p = 0,25.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>a)</b><span>genau 3: <span class="f">B(10; 0,25; 3) = <span class="binom"><span>10</span><span>3</span></span> · 0,25³ · 0,75⁷ ≈ 0,2503</span></span></div>
+        <div class="schritt"><b>b)</b><span>höchstens 2: <span class="f">F(10; 0,25; 2) ≈ 0,0563 + 0,1877 + 0,2816 = 0,5256</span></span></div>
+        <div class="schritt"><b>c)</b><span>mindestens 3: <span class="f">1 − F(10; 0,25; 2) ≈ 0,4744</span></span></div>
+        <div class="schritt"><b>d)</b><span>mehr als 2, weniger als 6: <span class="f">F(…; 5) − F(…; 2) ≈ 0,9803 − 0,5256 = 0,4547</span></span></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 2 — n gesucht</h2>
+      <p><b>Gegeben:</b> p = 0,7. Wie viele Versuche braucht man, um mit mindestens 95 % mindestens einen Treffer zu haben?</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span><span class="f">P(X ≥ 1) = 1 − P(X = 0) = 1 − 0,3<sup>n</sup> ≥ 0,95</span></span></div>
+        <div class="schritt"><b>2.</b><span><span class="f">0,3<sup>n</sup> ≤ 0,05 ⟺ n ≥ ln 0,05 : ln 0,3 ≈ 2,49</span> (ln 0,3 &lt; 0: Zeichen dreht sich)</span></div>
+        <div class="schritt"><b>3.</b><span>Aufrunden: <b>n = 3</b>. Probe: 1 − 0,3³ = 0,973 ≥ 0,95 ✓</span></div>
+      </div>
+      <p style="margin-top:1mm"><b>p gesucht</b> (n fest): <span class="f">p ≥ 1 − (1 − α)<sup>1/n</sup></span>.</p>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 3 — k gesucht</h2>
+      <p><b>Gegeben:</b> 200 Mitarbeiter, jeder kommt mit p = 0,7 mit dem Auto. Wie viele Parkplätze reichen an mindestens 90 % der Tage?</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>Gesucht: kleinstes k mit <span class="f">F(200; 0,7; k) ≥ 0,9</span>.</span></div>
+        <div class="schritt"><b>2.</b><span>Tabelle / Rechner: <span class="f">F(…; 147) ≈ 0,877</span>, <span class="f">F(…; 148) ≈ 0,907</span></span></div>
+        <div class="schritt"><b>3.</b><span><b>148 Parkplätze</b>. Zum Vergleich: μ = 140, σ ≈ 6,5.</span></div>
+      </div>
+    </div>
+
+    <div class="box warn wide">
+      <h2>Typische Fehler</h2>
+      <ul>
+        <li><b>Den Binomialkoeffizienten vergessen.</b> p<sup>k</sup> · (1 − p)<sup>n − k</sup> ist die Wahrscheinlichkeit <i>eines</i> Pfades.</li>
+        <li><b>Um eins verzählt.</b> Mindestens k ist 1 − F(…; <b>k − 1</b>); bei „a bis b“ wird F(…; <b>a − 1</b>) abgezogen.</li>
+        <li><b>p &gt; 0,5 in der Tabelle:</b> Nieten zählen und dabei auch k in n − k umrechnen.</li>
+        <li><b>Varianz statt Standardabweichung</b> angegeben — σ ist die Wurzel.</li>
+        <li><b>n abgerundet.</b> Bei „mindestens … mit mindestens …“ wird n immer aufgerundet.</li>
+        <li><b>Ohne Zurücklegen als Bernoulli-Kette</b> gerechnet — nur bei sehr großer Gesamtheit als Näherung erlaubt.</li>
+      </ul>
+    </div>
+
+    <div class="box full" style="border-style:dashed;background:#f7f8fa">
+      <h2 style="color:#5b6570">Ausblick</h2>
+      <p>Für großes n nähert sich das Histogramm einer Glockenkurve — der <b>Normalverteilung</b> mit denselben μ und σ; Bigalke/Köhler standardisiert dazu mit <span class="f">z = (k − μ) : σ</span>. Beim <b>Testen von Hypothesen</b> entscheidet man mit denselben kumulierten Wahrscheinlichkeiten, ob eine beobachtete Trefferzahl noch zu einer vermuteten Trefferwahrscheinlichkeit passt.</p>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik MSS 13 · Wahrscheinlichkeitsrechnung · Seite 2 von 2</p>
+</div>
+
+</body>
+</html>

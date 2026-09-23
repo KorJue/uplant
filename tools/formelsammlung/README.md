@@ -13,6 +13,7 @@ benennt. Vorhanden sind:
 | `tf` | Trigonometrische Funktionen (Grundwissen 5–10, Kapitel 4, Thema 12) | `mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/12-trigonometrische-funktionen/formelsammlung.pdf` |
 | `th` | Satz des Thales (Klasse 8, Geometrie, Thema 6) | `mathematik/klasse-8/geometrie/satz-des-thales.pdf` |
 | `fl` | Flächeninhalte (Klasse 8, Geometrie, Thema 7) | `mathematik/klasse-8/geometrie/flaecheninhalte.pdf` |
+| `bk` | Bernoulli-Ketten und Binomialverteilung (MSS 13, Wahrscheinlichkeitsrechnung, Thema 5) | `mathematik/mss13/01-wahrscheinlichkeitsrechnung/05-bernoulli-ketten-binomialverteilung/formelsammlung.pdf` |
 
 ## Der Weg von der Quelle zum PDF
 
