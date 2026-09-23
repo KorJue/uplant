@@ -52,9 +52,9 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>Grundseite g = <input type="number" id="pg-g" value="7" min="2" max="12" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
-        <label>Höhe h = <input type="number" id="pg-h" value="4" min="1" max="8" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
-        <label>Schrägung: <input type="range" id="pg-scher" min="0" max="10" step="1" value="4" style="vertical-align:middle;width:10rem"> <span id="pg-scher-anzeige" style="font-weight:800"></span></label>
+        <label>Grundseite g = <input type="number" id="pg-g" value="7" min="2" max="12" style="width:4rem;padding:0.4rem" class="eingabe"> cm</label>
+        <label>Höhe h = <input type="number" id="pg-h" value="4" min="1" max="8" style="width:4rem;padding:0.4rem" class="eingabe"> cm</label>
+        <label>Schrägung: <input type="range" id="pg-scher" min="0" max="10" step="1" value="4" style="vertical-align:middle;width:10rem"> <span id="pg-scher-anzeige" class="wert"></span></label>
         <label><input type="checkbox" id="pg-umlegen" checked> Umlegen zeigen</label>
       </div>
       <div class="geo-wrap" id="pg-mount"></div>
@@ -75,8 +75,8 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>Grundseite g = <input type="number" id="dr-g" value="8" min="2" max="12" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
-        <label>Höhe h = <input type="number" id="dr-h" value="5" min="1" max="8" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>Grundseite g = <input type="number" id="dr-g" value="8" min="2" max="12" style="width:4rem;padding:0.4rem" class="eingabe"> cm</label>
+        <label>Höhe h = <input type="number" id="dr-h" value="5" min="1" max="8" style="width:4rem;padding:0.4rem" class="eingabe"> cm</label>
         <label>Spitze verschieben: <input type="range" id="dr-spitze" min="-6" max="14" step="1" value="3" style="vertical-align:middle;width:11rem"></label>
         <label><input type="checkbox" id="dr-kopie" checked> Kopie zeigen</label>
       </div>
@@ -102,9 +102,9 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>a = <input type="number" id="tz-a" value="9" min="3" max="14" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
-        <label>c = <input type="number" id="tz-c" value="5" min="1" max="12" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
-        <label>h = <input type="number" id="tz-h" value="4" min="1" max="8" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>a = <input type="number" id="tz-a" value="9" min="3" max="14" style="width:4rem;padding:0.4rem" class="eingabe"> cm</label>
+        <label>c = <input type="number" id="tz-c" value="5" min="1" max="12" style="width:4rem;padding:0.4rem" class="eingabe"> cm</label>
+        <label>h = <input type="number" id="tz-h" value="4" min="1" max="8" style="width:4rem;padding:0.4rem" class="eingabe"> cm</label>
         <label><input type="checkbox" id="tz-kopie" checked> Kopie zeigen</label>
       </div>
       <div class="geo-wrap" id="tz-mount"></div>
@@ -125,9 +125,9 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>Diagonale e = <input type="number" id="dc-e" value="8" min="2" max="14" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
-        <label>Diagonale f = <input type="number" id="dc-f" value="6" min="2" max="10" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
-        <label>Teilung von f: <input type="range" id="dc-teil" min="10" max="50" step="5" value="30" style="vertical-align:middle;width:9rem"> <span id="dc-teil-anzeige" style="font-weight:800"></span></label>
+        <label>Diagonale e = <input type="number" id="dc-e" value="8" min="2" max="14" style="width:4rem;padding:0.4rem" class="eingabe"> cm</label>
+        <label>Diagonale f = <input type="number" id="dc-f" value="6" min="2" max="10" style="width:4rem;padding:0.4rem" class="eingabe"> cm</label>
+        <label>Teilung von f: <input type="range" id="dc-teil" min="10" max="50" step="5" value="30" style="vertical-align:middle;width:9rem"> <span id="dc-teil-anzeige" class="wert"></span></label>
       </div>
       <div class="geo-wrap" id="dc-mount"></div>
       <div class="flaechen-anzeige" id="dc-flaeche"></div>
@@ -186,6 +186,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=3"></script>
+<script type="module" src="lernpfad.js?v=4"></script>
 </body>
 </html>

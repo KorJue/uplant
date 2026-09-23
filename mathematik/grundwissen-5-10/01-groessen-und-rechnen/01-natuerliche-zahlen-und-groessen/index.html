@@ -48,7 +48,7 @@
     <p>Gib unten eine Zahl ein (0 bis 999&nbsp;999) und beobachte, wie sie sich auf die Stellenwerttafel verteilt:</p>
     <div class="widget">
       <div class="btn-row">
-        <input type="number" id="swt-input" value="4708" min="0" max="999999" step="1" style="width:9rem;padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem">
+        <input type="number" id="swt-input" aria-label="Zahl" value="4708" min="0" max="999999" step="1" style="width:9rem;padding:0.45rem 0.6rem;font-size:1rem" class="eingabe">
       </div>
       <div id="swt-tafel-mount"></div>
       <div id="swt-zerlegung" class="event-result"></div>
@@ -74,8 +74,8 @@
     <p>Wähle eine Zahl und eine Rundungsstelle — die entscheidende Nachbarziffer wird farbig markiert:</p>
     <div class="widget">
       <div class="btn-row">
-        <input type="number" id="runden-input" value="47382" min="0" max="999999" step="1" style="width:9rem;padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem">
-        <select id="runden-stelle" style="padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem">
+        <input type="number" id="runden-input" aria-label="Zahl zum Runden" value="47382" min="0" max="999999" step="1" style="width:9rem;padding:0.45rem 0.6rem;font-size:1rem" class="eingabe">
+        <select id="runden-stelle" aria-label="Rundungsstelle" style="padding:0.45rem 0.6rem;font-size:1rem" class="eingabe">
           <option value="10">auf Zehner</option>
           <option value="100" selected>auf Hunderter</option>
           <option value="1000">auf Tausender</option>
@@ -95,7 +95,7 @@
     <p>Trage bis zu 6 Zahlen ein (durch Komma getrennt):</p>
     <div class="widget">
       <div class="btn-row">
-        <input type="text" id="strahl-input" value="45, 8, 120, 76, 3" style="flex:1;min-width:14rem;padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem">
+        <input type="text" id="strahl-input" aria-label="Zahl für den Zahlenstrahl" value="45, 8, 120, 76, 3" style="flex:1;min-width:14rem;padding:0.45rem 0.6rem;font-size:1rem" class="eingabe">
       </div>
       <div id="strahl-mount"></div>
       <div id="strahl-ordnung" class="event-result"></div>
@@ -110,16 +110,16 @@
     <p>Wähle eine Größenart, gib einen Wert ein und wähle die Zieleinheit:</p>
     <div class="widget">
       <div class="btn-row">
-        <select id="groessen-art" style="padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem">
+        <select id="groessen-art" aria-label="Art der Größe" style="padding:0.45rem 0.6rem;font-size:1rem" class="eingabe">
           <option value="laenge">Länge</option>
           <option value="masse">Masse</option>
           <option value="zeit">Zeit</option>
           <option value="geld">Geld</option>
         </select>
-        <input type="number" id="groessen-wert" value="3.4" step="any" style="width:7rem;padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem">
+        <input type="number" id="groessen-wert" aria-label="Wert" value="3.4" step="any" style="width:7rem;padding:0.45rem 0.6rem;font-size:1rem" class="eingabe">
         <span id="groessen-von-einheit" style="align-self:center;font-weight:700"></span>
         <span style="align-self:center">→</span>
-        <select id="groessen-ziel" style="padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem"></select>
+        <select id="groessen-ziel" aria-label="Zieleinheit" style="padding:0.45rem 0.6rem;font-size:1rem" class="eingabe"></select>
       </div>
       <div id="groessen-treppe-mount"></div>
       <div id="groessen-ergebnis" class="event-result"></div>
@@ -168,6 +168,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=3"></script>
+<script type="module" src="lernpfad.js?v=4"></script>
 </body>
 </html>

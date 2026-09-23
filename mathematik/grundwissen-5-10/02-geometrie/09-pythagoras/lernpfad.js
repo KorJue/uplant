@@ -15,7 +15,7 @@
 
 "use strict";
 
-import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=1";
+import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=2";
 
 // ---------- Helfer ----------
 
@@ -43,8 +43,17 @@ function el(tag, attrs = {}, children = []) {
   });
   return e;
 }
+// Ein Zahlformat je Stellenzahl, einmal angelegt: toLocaleString() baut bei jedem Aufruf ein neues
+// Intl.NumberFormat, und das kostet rund 40-mal so viel wie das Formatieren selbst — bei jeder
+// Reglerbewegung dutzendfach.
+const ZAHLFORMATE = new Map();
+function zahlformat(stellen) {
+  let f = ZAHLFORMATE.get(stellen);
+  if (!f) ZAHLFORMATE.set(stellen, (f = new Intl.NumberFormat("de-DE", { maximumFractionDigits: stellen })));
+  return f;
+}
 function num(x, digits = 4) {
-  return x.toLocaleString("de-DE", { maximumFractionDigits: digits });
+  return zahlformat(digits).format(x);
 }
 function randInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
@@ -754,7 +763,7 @@ function generateAufgabe3() {
         `h = √${num(p * q)} = <strong>${num(h)} cm</strong>`,
     };
   }
-  const [x, y, z] = pick([[3, 4, 5], [5, 12, 13], [8, 15, 17]]);
+  const [x, , z] = pick([[3, 4, 5], [5, 12, 13], [8, 15, 17]]);
   const t = randInt(1, 2);
   const p = x * x * t, c = z * z * t, a = x * z * t;
   return {

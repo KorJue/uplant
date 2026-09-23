@@ -14,7 +14,7 @@
 
 "use strict";
 
-import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=1";
+import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=2";
 
 // ---------- Helfer ----------
 
@@ -42,13 +42,22 @@ function el(tag, attrs = {}, children = []) {
   });
   return e;
 }
+// Ein Zahlformat je Stellenzahl, einmal angelegt: toLocaleString() baut bei jedem Aufruf ein neues
+// Intl.NumberFormat, und das kostet rund 40-mal so viel wie das Formatieren selbst — bei jeder
+// Reglerbewegung dutzendfach.
+const ZAHLFORMATE = new Map();
+function zahlformat(stellen) {
+  let f = ZAHLFORMATE.get(stellen);
+  if (!f) ZAHLFORMATE.set(stellen, (f = new Intl.NumberFormat("de-DE", { maximumFractionDigits: stellen })));
+  return f;
+}
 function num(x, digits = 4) {
   // sin 360° ergibt nicht 0, sondern −2,4·10⁻¹⁶ — angezeigt würde daraus "−0".
   // Deshalb wird erst auf die Anzeigegenauigkeit gerundet und dann über das
   // Vorzeichen entschieden; ein Wert, der als 0 erscheint, ist eine 0.
   const gerundet = Number(x.toFixed(Math.min(20, digits)));
   const z = gerundet === 0 ? 0 : x;
-  return z.toLocaleString("de-DE", { maximumFractionDigits: digits }).replace("-", "−");
+  return zahlformat(digits).format(z).replace("-", "−");
 }
 // Ist der angezeigte Wert bei dieser Stellenzahl exakt, steht dort "=", sonst "≈".
 // Das Quadrat einer negativen Zahl braucht Klammern: „−0,5²“ liest sich als
@@ -105,7 +114,6 @@ function tanG(a) { return Math.tan(a * BOGEN); }
 function atanG(x) { return Math.atan(x) / BOGEN; }
 function asinG(x) { return Math.asin(x) / BOGEN; }
 function acosG(x) { return Math.acos(x) / BOGEN; }
-function grad(a, stellen = 2) { return num(a, stellen) + "°"; }
 
 // ---------- Zeichnen des rechtwinkligen Dreiecks ----------
 
@@ -371,7 +379,7 @@ function sbBaue() {
       : k.laenge / cosG(alpha);
   const wert = sbWert(gesucht, alpha, c);
   const fw = { sin: sinG(alpha), cos: cosG(alpha), tan: tanG(alpha) }[weg.fkt];
-  const gk = SB_FARBE[gegeben], sk = SB_FARBE[gesucht];
+  const gk = SB_FARBE[gegeben];
   const gn = SB_KURZ[gegeben], sn = SB_KURZ[gesucht];
 
   const schritte = [
@@ -856,8 +864,8 @@ function renderAnwendungen() {
   const h1 = d * tanG(alpha), h = h1 + AW_AUGE;
 
   document.getElementById("aw-aufgabe").innerHTML =
-    `<strong>Aufgabe:</strong> Du stehst <span style="color:#b3650a;font-weight:800">${num(d)} m</span> vom Fuß eines Turms entfernt und ` +
-    `misst die Spitze in <span style="color:#6d28d9;font-weight:800">${num(alpha)}°</span> über der Waagerechten — ` +
+    `<strong>Aufgabe:</strong> Du stehst <span class="wert farbe-orange">${num(d)} m</span> vom Fuß eines Turms entfernt und ` +
+    `misst die Spitze in <span class="wert farbe-violett">${num(alpha)}°</span> über der Waagerechten — ` +
     `mit einem Gerät in <strong>1,60 m</strong> Augenhöhe. Wie hoch ist der Turm?`;
 
   const mount = document.getElementById("aw-mount");

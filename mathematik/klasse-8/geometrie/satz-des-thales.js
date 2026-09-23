@@ -24,13 +24,11 @@ import { drawMittelsenkrechte } from "./constructions.js?v=24";
 import { setupFreeConstruction } from "./free-ui.js?v=24";
 import { setupCanvasZoom } from "./canvas-zoom.js?v=24";
 import { beschriftung, tangentenFigur, THALES_TASK, TANGENTEN_TASK } from "./thales-construct.js?v=3";
-import { mountKonstruktionsAufgaben, mountRechenAufgaben, mountHeftAufgaben } from "./thales-aufgaben.js?v=5";
+import { mountKonstruktionsAufgaben, mountRechenAufgaben, mountHeftAufgaben } from "./thales-aufgaben.js?v=6";
 // Die Werkbank für die gestaffelten Übungsaufgaben ist dieselbe wie im Grundwissen.
-import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../aufgaben.js?v=1";
+import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../aufgaben.js?v=2";
 const mountUebungsaufgaben = (container, defs) =>
   mountUebungsaufgabenBasis(container, defs, { parse: parseFlexibleNumber });
-
-"use strict";
 
 // ---------- Helfer ----------
 
@@ -58,20 +56,26 @@ function el(tag, attrs = {}, children = []) {
   });
   return e;
 }
+// Ein Zahlformat je Stellenzahl, einmal angelegt: toLocaleString() baut bei jedem Aufruf ein neues
+// Intl.NumberFormat, und das kostet rund 40-mal so viel wie das Formatieren selbst — bei jeder
+// Reglerbewegung dutzendfach.
+const ZAHLFORMATE = new Map();
+function zahlformat(stellen) {
+  let f = ZAHLFORMATE.get(stellen);
+  if (!f) ZAHLFORMATE.set(stellen, (f = new Intl.NumberFormat("de-DE", { maximumFractionDigits: stellen })));
+  return f;
+}
 // Deutsche Schreibweise. Gerundet wird VOR der Ausgabe, damit −0,0001 nicht als „−0“ erscheint.
 function num(x, digits = 4) {
   const f = Math.pow(10, digits);
   const gerundet = Math.round(x * f) / f;
-  return (gerundet === 0 ? 0 : gerundet).toLocaleString("de-DE", { maximumFractionDigits: digits });
+  return zahlformat(digits).format(gerundet === 0 ? 0 : gerundet);
 }
 // „=“ oder „≈“? Entscheidend ist, ob die Anzeige mit der gewählten Stellenzahl den Wert genau
 // trifft — nicht, ob er ganzzahlig ist (7,5 ist exakt, 7,4999… ist es nicht).
 function zeichen(x, stellen = 2) {
   const f = Math.pow(10, stellen);
   return Math.abs(x - Math.round(x * f) / f) < 1e-12 ? "=" : "≈";
-}
-function randInt(min, max) {
-  return min + Math.floor(Math.random() * (max - min + 1));
 }
 function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];

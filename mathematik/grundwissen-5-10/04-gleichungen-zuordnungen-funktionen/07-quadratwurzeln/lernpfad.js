@@ -14,7 +14,7 @@
 
 "use strict";
 
-import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=1";
+import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=2";
 
 // ---------- Helfer ----------
 
@@ -65,9 +65,6 @@ function karte(klasse, name, inhalt) {
     el("span", { class: "name" }, name),
     el("span", { class: "wert", html: inhalt }),
   ]);
-}
-function faktor(text) {
-  return `<span class="nw">${text}</span>`;
 }
 // Das Wurzelzeichen mit Dach über dem Radikanden. Ohne das Dach wüsste man
 // nicht, wie weit die Wurzel reicht — bei √(a + b) ist genau das die Frage.
@@ -314,7 +311,6 @@ function renderEinschachteln() {
         : `Also <strong>${fest(u, sch.stelle)} &lt; √${num(a)} &lt; ${fest(o, sch.stelle)}</strong>. Die Schranken liegen ${sch.stelle === 0 ? "" : "nur noch "}${num(o - u, 6)} auseinander.`);
   }).join("");
 
-  const w = Math.sqrt(a);
   const karten = document.getElementById("es-karten");
   karten.innerHTML = "";
   karten.appendChild(karte("rad", "Radikand", num(a)));

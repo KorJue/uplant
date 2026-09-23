@@ -44,7 +44,7 @@
     <p>Zeichne einen Halbkreis über einer Strecke AB und setze einen Punkt C irgendwo auf den Bogen. Verbinde ihn mit A und mit B. Verschiebe C mit dem Regler entlang des Bogens und beobachte den Winkel bei C.</p>
     <div class="widget">
       <div class="btn-row">
-        <label>Lage von C: <input type="range" id="hk-phi" min="10" max="170" step="5" value="55" style="vertical-align:middle;width:12rem"> <span id="hk-phi-anzeige" style="font-weight:800"></span></label>
+        <label>Lage von C: <input type="range" id="hk-phi" min="10" max="170" step="5" value="55" style="vertical-align:middle;width:12rem"> <span id="hk-phi-anzeige" class="wert"></span></label>
         <label><input type="checkbox" id="hk-radien"> Radien MA, MB und MC zeigen</label>
       </div>
       <div class="th-wrap" id="hk-mount"></div>
@@ -69,7 +69,7 @@
     <p>Der Beweis braucht nur einen zusätzlichen Strich: die Verbindung <span class="th-name-r">MC</span> zum Mittelpunkt. Dadurch zerfällt das Dreieck in <strong>zwei gleichschenklige Dreiecke</strong> — denn MA, MB und MC sind alle drei Radien und damit gleich lang.</p>
     <div class="widget">
       <div class="btn-row">
-        <label>Lage von C: <input type="range" id="bw-phi" min="20" max="160" step="10" value="60" style="vertical-align:middle;width:12rem"> <span id="bw-phi-anzeige" style="font-weight:800"></span></label>
+        <label>Lage von C: <input type="range" id="bw-phi" min="20" max="160" step="10" value="60" style="vertical-align:middle;width:12rem"> <span id="bw-phi-anzeige" class="wert"></span></label>
       </div>
       <div class="th-wrap" id="bw-mount"></div>
       <div class="th-bilanz" id="bw-bilanz"></div>
@@ -92,7 +92,7 @@
     <p>Der Satz gilt auch andersherum — und das ist der eigentlich nützliche Teil: <strong>Ist der Winkel bei C ein rechter, so liegt C auf dem Thaleskreis über AB.</strong> Damit ist der Kreis nicht bloß eine Linie, auf der zufällig 90° herauskommt, sondern die Menge <em>aller</em> solchen Punkte. Verschiebe C mit den beiden Reglern nach innen und nach außen.</p>
     <div class="widget">
       <div class="btn-row">
-        <label>Richtung: <input type="range" id="uk-phi" min="20" max="160" step="10" value="70" style="vertical-align:middle;width:10rem"> <span id="uk-phi-anzeige" style="font-weight:800"></span></label>
+        <label>Richtung: <input type="range" id="uk-phi" min="20" max="160" step="10" value="70" style="vertical-align:middle;width:10rem"> <span id="uk-phi-anzeige" class="wert"></span></label>
         <label>Abstand von M: <input type="range" id="uk-d" min="40" max="170" step="5" value="100" style="vertical-align:middle;width:10rem"> <span id="uk-d-anzeige" class="th-name-r"></span></label>
       </div>
       <div class="th-wrap" id="uk-mount"></div>
@@ -343,6 +343,6 @@
   <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="satz-des-thales.js?v=6"></script>
+<script type="module" src="satz-des-thales.js?v=7"></script>
 </body>
 </html>

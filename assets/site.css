@@ -187,3 +187,47 @@ input[type="search"] {
 :root[data-theme="dark"] svg [fill="#b3650a"] { fill: #ffbf6e; }
 :root[data-theme="dark"] svg [fill="#1f2933"] { fill: #e6e8eb; }
 :root[data-theme="dark"] svg [fill="#1f2328"] { fill: #e6e8eb; }
+
+/* ---------- Verweise im Dunkelmodus ---------- */
+
+/* Verweise im Fließtext (Hinweis- und Vernetzungskästen, Formelsammlung) tragen
+   keine eigene Farbe und blieben sonst im Standardblau des Browsers stehen —
+   auf dunklem Grund ein Leuchtdichteabstand von etwa 12. :where() hält die
+   Spezifität bei null, damit jede gestaltete Karte oder Brotkrume ihre eigene
+   Farbe behält. */
+:where(:root[data-theme="dark"] a) { color: var(--accent-dark); }
+
+/* ---------- Gemeinsame Bausteine der Lernseiten ---------- */
+
+/* Regleranzeigen und hervorgehobene Werte. Früher stand die Farbe als style=""
+   am Element und hatte damit keine Entsprechung im Dunkelmodus. Die Farben
+   folgen der Farbcodierung der Geometrieseiten, die Ersatzfarben denen oben. */
+.wert { font-weight: 800; }
+.farbe-blau    { color: #1d4ed8; }
+.farbe-violett { color: #6d28d9; }
+.farbe-gruen   { color: #157347; }
+.farbe-orange  { color: #b3650a; }
+.farbe-rot     { color: #b3261e; }
+:root[data-theme="dark"] .farbe-blau    { color: #8ab4ff; }
+:root[data-theme="dark"] .farbe-violett { color: #c4a7ff; }
+:root[data-theme="dark"] .farbe-gruen   { color: #6fd68f; }
+:root[data-theme="dark"] .farbe-orange  { color: #ffbf6e; }
+:root[data-theme="dark"] .farbe-rot     { color: #ff8a8a; }
+
+/* Eingabefelder und Auswahllisten in den Zeichnungen. Breite und Innenabstand
+   wechseln von Feld zu Feld und bleiben deshalb am Element. */
+.eingabe {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: inherit;
+  background: var(--card-bg);
+  color: var(--text);
+}
+
+/* Rückmeldung an einem geprüften Eingabefeld. Als Klasse statt als style="",
+   damit der Dunkelmodus eine dunkle Füllung bekommt — die helle ließ den
+   (dort hellen) Text im Feld verschwinden. */
+.eingabe-ok     { border-color: #157347; background: #e7f6ec; }
+.eingabe-fehler { border-color: #b3261e; background: #fdecec; }
+:root[data-theme="dark"] .eingabe-ok     { border-color: #6fd68f; background: #17321f; }
+:root[data-theme="dark"] .eingabe-fehler { border-color: #ff8a8a; background: #3a1f1f; }

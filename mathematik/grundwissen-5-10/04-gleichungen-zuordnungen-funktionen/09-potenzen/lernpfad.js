@@ -14,7 +14,7 @@
 
 "use strict";
 
-import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=1";
+import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=2";
 
 // ---------- Helfer ----------
 
@@ -42,11 +42,20 @@ function el(tag, attrs = {}, children = []) {
   });
   return e;
 }
+// Ein Zahlformat je Stellenzahl, einmal angelegt: toLocaleString() baut bei jedem Aufruf ein neues
+// Intl.NumberFormat, und das kostet rund 40-mal so viel wie das Formatieren selbst — bei jeder
+// Reglerbewegung dutzendfach.
+const ZAHLFORMATE = new Map();
+function zahlformat(stellen) {
+  let f = ZAHLFORMATE.get(stellen);
+  if (!f) ZAHLFORMATE.set(stellen, (f = new Intl.NumberFormat("de-DE", { maximumFractionDigits: stellen })));
+  return f;
+}
 function num(x, digits = 4) {
   // JavaScript kennt eine negative Null: (−4) · 0 ergibt −0, und die würde als
   // "−0" angezeigt — mitten in einer Rechnung stünde dann "4 − −0".
   const z = x === 0 ? 0 : x;
-  return z.toLocaleString("de-DE", { maximumFractionDigits: digits }).replace("-", "−");
+  return zahlformat(digits).format(z).replace("-", "−");
 }
 function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];

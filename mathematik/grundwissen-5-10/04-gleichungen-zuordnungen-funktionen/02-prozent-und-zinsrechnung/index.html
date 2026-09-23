@@ -50,8 +50,8 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>Grundwert G: <input type="range" id="gb-g" min="20" max="400" step="20" value="80" style="vertical-align:middle;width:10rem"> <span id="gb-g-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
-        <label>Prozentsatz p&nbsp;%: <input type="range" id="gb-p" min="5" max="100" step="5" value="25" style="vertical-align:middle;width:10rem"> <span id="gb-p-anzeige" style="font-weight:800;color:#b3261e"></span></label>
+        <label>Grundwert G: <input type="range" id="gb-g" min="20" max="400" step="20" value="80" style="vertical-align:middle;width:10rem"> <span id="gb-g-anzeige" class="wert farbe-blau"></span></label>
+        <label>Prozentsatz p&nbsp;%: <input type="range" id="gb-p" min="5" max="100" step="5" value="25" style="vertical-align:middle;width:10rem"> <span id="gb-p-anzeige" class="wert farbe-rot"></span></label>
       </div>
       <div class="geo-wrap" id="gb-mount"></div>
       <div class="pz-karten" id="gb-karten"></div>
@@ -79,7 +79,7 @@
     <div class="widget">
       <div class="btn-row">
         <label>Gesucht ist:
-          <select id="ga-typ" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <select id="ga-typ" style="padding:0.4rem" class="eingabe">
             <option value="W">der Prozentwert W</option>
             <option value="G">der Grundwert G</option>
             <option value="p">der Prozentsatz p&nbsp;%</option>
@@ -111,10 +111,10 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>Ausgangswert G: <input type="range" id="vv-g" min="20" max="400" step="20" value="200" style="vertical-align:middle;width:9rem"> <span id="vv-g-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
-        <label>Veränderung p&nbsp;%: <input type="range" id="vv-p" min="5" max="60" step="5" value="20" style="vertical-align:middle;width:9rem"> <span id="vv-p-anzeige" style="font-weight:800;color:#b3261e"></span></label>
+        <label>Ausgangswert G: <input type="range" id="vv-g" min="20" max="400" step="20" value="200" style="vertical-align:middle;width:9rem"> <span id="vv-g-anzeige" class="wert farbe-blau"></span></label>
+        <label>Veränderung p&nbsp;%: <input type="range" id="vv-p" min="5" max="60" step="5" value="20" style="vertical-align:middle;width:9rem"> <span id="vv-p-anzeige" class="wert farbe-rot"></span></label>
         <label>Richtung:
-          <select id="vv-richtung" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <select id="vv-richtung" style="padding:0.4rem" class="eingabe">
             <option value="auf">Zunahme (+)</option>
             <option value="ab">Abnahme (−)</option>
           </select>
@@ -145,9 +145,9 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>Kapital K: <input type="range" id="zi-k" min="500" max="10000" step="500" value="3000" style="vertical-align:middle;width:9rem"> <span id="zi-k-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
-        <label>Zinssatz p&nbsp;%: <input type="range" id="zi-p" min="5" max="80" step="5" value="25" style="vertical-align:middle;width:9rem"> <span id="zi-p-anzeige" style="font-weight:800;color:#b3261e"></span></label>
-        <label>Laufzeit: <input type="range" id="zi-m" min="1" max="12" step="1" value="12" style="vertical-align:middle;width:9rem"> <span id="zi-m-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+        <label>Kapital K: <input type="range" id="zi-k" min="500" max="10000" step="500" value="3000" style="vertical-align:middle;width:9rem"> <span id="zi-k-anzeige" class="wert farbe-blau"></span></label>
+        <label>Zinssatz p&nbsp;%: <input type="range" id="zi-p" min="5" max="80" step="5" value="25" style="vertical-align:middle;width:9rem"> <span id="zi-p-anzeige" class="wert farbe-rot"></span></label>
+        <label>Laufzeit: <input type="range" id="zi-m" min="1" max="12" step="1" value="12" style="vertical-align:middle;width:9rem"> <span id="zi-m-anzeige" class="wert farbe-violett"></span></label>
       </div>
       <div class="geo-wrap" id="zi-mount"></div>
       <div class="pz-karten" id="zi-karten"></div>
@@ -174,9 +174,9 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>Startkapital K₀: <input type="range" id="ze-k" min="500" max="5000" step="500" value="2000" style="vertical-align:middle;width:9rem"> <span id="ze-k-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
-        <label>Zinssatz p&nbsp;%: <input type="range" id="ze-p" min="1" max="15" step="1" value="5" style="vertical-align:middle;width:9rem"> <span id="ze-p-anzeige" style="font-weight:800;color:#b3261e"></span></label>
-        <label>Jahre n: <input type="range" id="ze-n" min="1" max="20" step="1" value="10" style="vertical-align:middle;width:9rem"> <span id="ze-n-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+        <label>Startkapital K₀: <input type="range" id="ze-k" min="500" max="5000" step="500" value="2000" style="vertical-align:middle;width:9rem"> <span id="ze-k-anzeige" class="wert farbe-blau"></span></label>
+        <label>Zinssatz p&nbsp;%: <input type="range" id="ze-p" min="1" max="15" step="1" value="5" style="vertical-align:middle;width:9rem"> <span id="ze-p-anzeige" class="wert farbe-rot"></span></label>
+        <label>Jahre n: <input type="range" id="ze-n" min="1" max="20" step="1" value="10" style="vertical-align:middle;width:9rem"> <span id="ze-n-anzeige" class="wert farbe-violett"></span></label>
       </div>
       <div class="geo-wrap" id="ze-mount"></div>
       <div class="pz-legende">
@@ -234,6 +234,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=3"></script>
+<script type="module" src="lernpfad.js?v=4"></script>
 </body>
 </html>

@@ -14,7 +14,7 @@
 
 "use strict";
 
-import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=1";
+import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=2";
 
 // ---------- Helfer ----------
 
@@ -42,10 +42,19 @@ function el(tag, attrs = {}, children = []) {
   });
   return e;
 }
+// Ein Zahlformat je Stellenzahl, einmal angelegt: toLocaleString() baut bei jedem Aufruf ein neues
+// Intl.NumberFormat, und das kostet rund 40-mal so viel wie das Formatieren selbst — bei jeder
+// Reglerbewegung dutzendfach.
+const ZAHLFORMATE = new Map();
+function zahlformat(stellen) {
+  let f = ZAHLFORMATE.get(stellen);
+  if (!f) ZAHLFORMATE.set(stellen, (f = new Intl.NumberFormat("de-DE", { maximumFractionDigits: stellen })));
+  return f;
+}
 function num(x, digits = 4) {
   // Rechenzeichen statt Bindestrich: In einem Term steht ein Minus, kein
   // Trennstrich.
-  return x.toLocaleString("de-DE", { maximumFractionDigits: digits }).replace("-", "−");
+  return zahlformat(digits).format(x).replace("-", "−");
 }
 function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -643,7 +652,6 @@ function renderBinomisch() {
 
   const links = key === "plus" ? Math.pow(a + b, 2) : key === "minus" ? Math.pow(a - b, 2) : (a + b) * (a - b);
   const rechts = key === "plus" ? a * a + 2 * a * b + b * b : key === "minus" ? a * a - 2 * a * b + b * b : a * a - b * b;
-  const naiv = key === "diff" ? a * a + b * b : a * a + b * b;
 
   document.getElementById("bi-anzeige").innerHTML =
     key === "plus" ? `(<span class="xv">a</span> + <span class="zv">b</span>)² = <span class="xv">a²</span> <span class="op">+</span> 2<span class="xv">a</span><span class="zv">b</span> <span class="op">+</span> <span class="zv">b²</span>`

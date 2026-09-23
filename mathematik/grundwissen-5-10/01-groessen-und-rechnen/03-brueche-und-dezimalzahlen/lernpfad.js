@@ -10,7 +10,7 @@
 
 "use strict";
 
-import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=1";
+import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=2";
 
 // ---------- Helfer ----------
 
@@ -33,8 +33,17 @@ function el(tag, attrs = {}, children = []) {
   });
   return e;
 }
+// Ein Zahlformat je Stellenzahl, einmal angelegt: toLocaleString() baut bei jedem Aufruf ein neues
+// Intl.NumberFormat, und das kostet rund 40-mal so viel wie das Formatieren selbst — bei jeder
+// Reglerbewegung dutzendfach.
+const ZAHLFORMATE = new Map();
+function zahlformat(stellen) {
+  let f = ZAHLFORMATE.get(stellen);
+  if (!f) ZAHLFORMATE.set(stellen, (f = new Intl.NumberFormat("de-DE", { maximumFractionDigits: stellen })));
+  return f;
+}
 function num(x, digits = 3) {
-  return x.toLocaleString("de-DE", { maximumFractionDigits: digits });
+  return zahlformat(digits).format(x);
 }
 function randInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
@@ -648,7 +657,7 @@ function renderRunden() {
   out.innerHTML =
     (erg.entscheidend === null
       ? `${zahl} hat gar nicht so viele Stellen — es wird nur mit Nullen aufgefüllt.<br>`
-      : `Entscheidend ist die Ziffer rechts neben der ${STELLEN_NAME[stellen]}-Stelle: <strong style="color:#b3261e">${erg.entscheidend}</strong> ⇒ ${erg.aufgerundet ? "<strong>aufrunden</strong>" : "<strong>abrunden</strong>"}<br>`) +
+      : `Entscheidend ist die Ziffer rechts neben der ${STELLEN_NAME[stellen]}-Stelle: <strong class="farbe-rot">${erg.entscheidend}</strong> ⇒ ${erg.aufgerundet ? "<strong>aufrunden</strong>" : "<strong>abrunden</strong>"}<br>`) +
     `${zahl} gerundet auf ${STELLEN_NAME[stellen]} ≈ <span class="dez-ergebnis">${erg.text}</span>` +
     (erg.uebertrag
       ? `<br><span class="progress-note">Hier ist beim Aufrunden ein Übertrag bis in die Ganzen gelaufen — die Zahl vor dem Komma hat sich erhöht.</span>`

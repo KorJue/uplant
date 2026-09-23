@@ -50,8 +50,8 @@
     <p>Stelle Zähler und Nenner ein und beobachte beide Darstellungen:</p>
     <div class="widget">
       <div class="btn-row">
-        <label>Zähler = <input type="number" id="anteil-z" value="3" min="0" max="12" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
-        <label>Nenner = <input type="number" id="anteil-n" value="4" min="1" max="12" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label>Zähler = <input type="number" id="anteil-z" value="3" min="0" max="12" style="width:4.5rem;padding:0.4rem" class="eingabe"></label>
+        <label>Nenner = <input type="number" id="anteil-n" value="4" min="1" max="12" style="width:4.5rem;padding:0.4rem" class="eingabe"></label>
       </div>
       <div id="anteil-mount" class="bruch-viz"></div>
       <div id="anteil-text" class="event-result"></div>
@@ -59,10 +59,10 @@
     <p>Weil der Bruchstrich eine Division ist, berechnet man den <strong>Anteil einer Größe</strong> so: erst durch den Nenner teilen, dann mit dem Zähler multiplizieren.</p>
     <div class="widget">
       <div class="btn-row">
-        <label>Anteil <input type="number" id="groesse-z" value="3" min="1" max="20" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
-        <input type="number" id="groesse-n" value="4" min="1" max="20" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
-        <label>von <input type="number" id="groesse-wert" value="60" min="0" max="100000" style="width:6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
-        <select id="groesse-einheit" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <label>Anteil <input type="number" id="groesse-z" aria-label="Zähler des Anteils" value="3" min="1" max="20" style="width:4rem;padding:0.4rem" class="eingabe"> /
+        <input type="number" id="groesse-n" aria-label="Nenner des Anteils" value="4" min="1" max="20" style="width:4rem;padding:0.4rem" class="eingabe"></label>
+        <label>von <input type="number" id="groesse-wert" value="60" min="0" max="100000" style="width:6rem;padding:0.4rem" class="eingabe"></label>
+        <select id="groesse-einheit" aria-label="Einheit" style="padding:0.4rem 0.6rem" class="eingabe">
           <option value="min">min</option>
           <option value="g">g</option>
           <option value="cm">cm</option>
@@ -90,9 +90,9 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>Bruch <input type="number" id="erw-z" value="3" min="1" max="60" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
-        <input type="number" id="erw-n" value="4" min="1" max="60" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
-        <label>erweitern mit <input type="number" id="erw-k" value="3" min="1" max="8" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label>Bruch <input type="number" id="erw-z" aria-label="Zähler" value="3" min="1" max="60" style="width:4rem;padding:0.4rem" class="eingabe"> /
+        <input type="number" id="erw-n" aria-label="Nenner" value="4" min="1" max="60" style="width:4rem;padding:0.4rem" class="eingabe"></label>
+        <label>erweitern mit <input type="number" id="erw-k" value="3" min="1" max="8" style="width:4rem;padding:0.4rem" class="eingabe"></label>
       </div>
       <div id="erw-mount" class="bruch-viz gestapelt"></div>
       <div id="erw-text" class="event-result"></div>
@@ -100,8 +100,8 @@
     <p>Umgekehrt heißt <span class="term">vollständig kürzen</span>: durch den <strong>größten gemeinsamen Teiler</strong> (ggT) von Zähler und Nenner dividieren. Der Bruch ist dann <span class="term">teilerfremd</span> und lässt sich nicht weiter kürzen.</p>
     <div class="widget">
       <div class="btn-row">
-        <label>Kürze <input type="number" id="kuerz-z" value="18" min="1" max="999" style="width:5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
-        <input type="number" id="kuerz-n" value="24" min="1" max="999" style="width:5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label>Kürze <input type="number" id="kuerz-z" aria-label="Zähler" value="18" min="1" max="999" style="width:5rem;padding:0.4rem" class="eingabe"> /
+        <input type="number" id="kuerz-n" aria-label="Nenner" value="24" min="1" max="999" style="width:5rem;padding:0.4rem" class="eingabe"></label>
       </div>
       <div id="kuerz-mount" class="event-result"></div>
     </div>
@@ -121,11 +121,11 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label><input type="number" id="vgl-z1" value="2" min="0" max="99" style="width:3.6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
-        <input type="number" id="vgl-n1" value="3" min="1" max="99" style="width:3.6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label><input type="number" id="vgl-z1" aria-label="Zähler des ersten Bruchs" value="2" min="0" max="99" style="width:3.6rem;padding:0.4rem" class="eingabe"> /
+        <input type="number" id="vgl-n1" aria-label="Nenner des ersten Bruchs" value="3" min="1" max="99" style="width:3.6rem;padding:0.4rem" class="eingabe"></label>
         <span style="align-self:center;font-weight:700">und</span>
-        <label><input type="number" id="vgl-z2" value="3" min="0" max="99" style="width:3.6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
-        <input type="number" id="vgl-n2" value="5" min="1" max="99" style="width:3.6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label><input type="number" id="vgl-z2" aria-label="Zähler des zweiten Bruchs" value="3" min="0" max="99" style="width:3.6rem;padding:0.4rem" class="eingabe"> /
+        <input type="number" id="vgl-n2" aria-label="Nenner des zweiten Bruchs" value="5" min="1" max="99" style="width:3.6rem;padding:0.4rem" class="eingabe"></label>
       </div>
       <div id="vgl-mount"></div>
       <div id="vgl-text" class="event-result"></div>
@@ -143,8 +143,8 @@
     <p>Die Umwandlung ist nichts anderes als eine <a href="../02-rechnen-mit-natuerlichen-zahlen/index.html#sec-division">Division mit Rest</a>: Der Quotient wird die ganze Zahl, der Rest wird der neue Zähler, der Nenner bleibt.</p>
     <div class="widget">
       <div class="btn-row">
-        <label>Unechter Bruch <input type="number" id="gem-z" value="17" min="1" max="999" style="width:5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
-        <input type="number" id="gem-n" value="5" min="1" max="99" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label>Unechter Bruch <input type="number" id="gem-z" aria-label="Zähler" value="17" min="1" max="999" style="width:5rem;padding:0.4rem" class="eingabe"> /
+        <input type="number" id="gem-n" aria-label="Nenner" value="5" min="1" max="99" style="width:4.5rem;padding:0.4rem" class="eingabe"></label>
       </div>
       <div id="gem-mount" class="bruch-viz"></div>
       <div id="gem-text" class="event-result"></div>
@@ -162,7 +162,7 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <input type="text" id="dez-input" value="3,472" style="width:9rem;padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem">
+        <input type="text" id="dez-input" aria-label="Dezimalzahl" value="3,472" style="width:9rem;padding:0.45rem 0.6rem;font-size:1rem" class="eingabe">
       </div>
       <div id="dez-tafel-mount"></div>
       <div id="dez-zerlegung" class="event-result"></div>
@@ -177,7 +177,7 @@
         <label>Dezimalzahlen vergleichen und ordnen (mit <strong>Semikolon</strong> getrennt — das Komma ist ja das Dezimaltrennzeichen):</label>
       </div>
       <div class="btn-row">
-        <input type="text" id="dezvgl-input" value="0,5; 0,45; 0,405; 0,54" style="flex:1;min-width:16rem;padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem">
+        <input type="text" id="dezvgl-input" aria-label="Dezimalzahlen, durch Semikolon getrennt" value="0,5; 0,45; 0,405; 0,54" style="flex:1;min-width:16rem;padding:0.45rem 0.6rem;font-size:1rem" class="eingabe">
       </div>
       <div id="dezvgl-mount"></div>
     </div>
@@ -190,8 +190,8 @@
     <p><strong>Bruch → Dezimalzahl:</strong> Weil der Bruchstrich eine Division ist, teilt man einfach den Zähler durch den Nenner.</p>
     <div class="widget">
       <div class="btn-row">
-        <label><input type="number" id="bd-z" value="3" min="0" max="999" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
-        <input type="number" id="bd-n" value="8" min="1" max="99" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label><input type="number" id="bd-z" aria-label="Zähler" value="3" min="0" max="999" style="width:4.5rem;padding:0.4rem" class="eingabe"> /
+        <input type="number" id="bd-n" aria-label="Nenner" value="8" min="1" max="99" style="width:4.5rem;padding:0.4rem" class="eingabe"></label>
       </div>
       <div id="bd-mount" class="event-result"></div>
       <div id="bd-reste"></div>
@@ -204,7 +204,7 @@
     <p><strong>Dezimalzahl → Bruch:</strong> Eine abbrechende Dezimalzahl schreibt man mit der Stellenwert-Endung als Nenner (Zehntel, Hundertstel, …) und kürzt dann vollständig.</p>
     <div class="widget">
       <div class="btn-row">
-        <input type="text" id="db-input" value="0,375" style="width:9rem;padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem">
+        <input type="text" id="db-input" aria-label="Dezimalzahl" value="0,375" style="width:9rem;padding:0.45rem 0.6rem;font-size:1rem" class="eingabe">
       </div>
       <div id="db-mount" class="event-result"></div>
     </div>
@@ -217,8 +217,8 @@
     <p>Gerundet wird nach <a href="../01-natuerliche-zahlen-und-groessen/index.html#sec-runden">derselben Regel wie bei natürlichen Zahlen</a>: Die Ziffer <strong>rechts neben</strong> der Rundungsstelle entscheidet — 0 bis 4 abrunden, 5 bis 9 aufrunden. Alle Stellen dahinter fallen weg.</p>
     <div class="widget">
       <div class="btn-row">
-        <input type="text" id="rnd-input" value="3,4728" style="width:9rem;padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem">
-        <select id="rnd-stelle" style="padding:0.45rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text);font-size:1rem">
+        <input type="text" id="rnd-input" aria-label="Dezimalzahl zum Runden" value="3,4728" style="width:9rem;padding:0.45rem 0.6rem;font-size:1rem" class="eingabe">
+        <select id="rnd-stelle" aria-label="Rundungsstelle" style="padding:0.45rem 0.6rem;font-size:1rem" class="eingabe">
           <option value="0">auf ganze Zahlen</option>
           <option value="1" selected>auf Zehntel</option>
           <option value="2">auf Hundertstel</option>
@@ -273,6 +273,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=3"></script>
+<script type="module" src="lernpfad.js?v=4"></script>
 </body>
 </html>

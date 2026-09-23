@@ -12,7 +12,7 @@
 
 "use strict";
 
-import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=1";
+import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=2";
 
 // ---------- Helfer ----------
 
@@ -40,8 +40,17 @@ function el(tag, attrs = {}, children = []) {
   });
   return e;
 }
+// Ein Zahlformat je Stellenzahl, einmal angelegt: toLocaleString() baut bei jedem Aufruf ein neues
+// Intl.NumberFormat, und das kostet rund 40-mal so viel wie das Formatieren selbst — bei jeder
+// Reglerbewegung dutzendfach.
+const ZAHLFORMATE = new Map();
+function zahlformat(stellen) {
+  let f = ZAHLFORMATE.get(stellen);
+  if (!f) ZAHLFORMATE.set(stellen, (f = new Intl.NumberFormat("de-DE", { maximumFractionDigits: stellen })));
+  return f;
+}
 function num(x, digits = 4) {
-  return x.toLocaleString("de-DE", { maximumFractionDigits: digits });
+  return zahlformat(digits).format(x);
 }
 function randInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
@@ -79,14 +88,6 @@ function polyFlaeche(p) {
     s += p[i].x * p[j].y - p[j].x * p[i].y;
   }
   return Math.abs(s) / 2;
-}
-function polyUmfang(p) {
-  let s = 0;
-  for (let i = 0; i < p.length; i++) {
-    const j = (i + 1) % p.length;
-    s += Math.hypot(p[j].x - p[i].x, p[j].y - p[i].y);
-  }
-  return s;
 }
 function massstab(breiteEinheiten, hoeheEinheiten, platzB, platzH) {
   return Math.min(platzB / Math.max(breiteEinheiten, 0.001), platzH / Math.max(hoeheEinheiten, 0.001));

@@ -9,7 +9,7 @@
 
 "use strict";
 
-import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=1";
+import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=2";
 
 // ---------- Helfer ----------
 
@@ -36,9 +36,6 @@ function el(tag, attrs = {}, children = []) {
     e.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
   });
   return e;
-}
-function num(x, digits = 4) {
-  return x.toLocaleString("de-DE", { maximumFractionDigits: digits });
 }
 function randInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
@@ -646,7 +643,6 @@ function renderBesondereLinien() {
   const ecken = [A, B, C];
   const gegen = [[B, C], [C, A], [A, B]];
 
-  let treff = null;
   const linien = [];
   for (let i = 0; i < 3; i++) {
     const [p, q] = gegen[i];
@@ -666,7 +662,7 @@ function renderBesondereLinien() {
       linien.push([ecken[i], V.add(e1, e2)]);
     }
   }
-  treff = geradenSchnitt(linien[0][0], linien[0][1], linien[1][0], linien[1][1]);
+  const treff = geradenSchnitt(linien[0][0], linien[0][1], linien[1][0], linien[1][1]);
 
   for (const [p, r] of linien) zGerade(svg, p, r, "k-hilfslinie", W, H);
   svg.appendChild(svgEl("path", { d: `M ${A.x} ${A.y} L ${B.x} ${B.y} L ${C.x} ${C.y} Z`, fill: "none", class: "k-gegeben" }));

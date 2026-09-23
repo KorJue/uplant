@@ -6,7 +6,7 @@
 
 "use strict";
 
-import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=1";
+import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=2";
 
 // ---------- Helfer ----------
 
@@ -29,8 +29,17 @@ function el(tag, attrs = {}, children = []) {
   });
   return e;
 }
+// Ein Zahlformat je Stellenzahl, einmal angelegt: toLocaleString() baut bei jedem Aufruf ein neues
+// Intl.NumberFormat, und das kostet rund 40-mal so viel wie das Formatieren selbst — bei jeder
+// Reglerbewegung dutzendfach.
+const ZAHLFORMATE = new Map();
+function zahlformat(stellen) {
+  let f = ZAHLFORMATE.get(stellen);
+  if (!f) ZAHLFORMATE.set(stellen, (f = new Intl.NumberFormat("de-DE", { maximumFractionDigits: stellen })));
+  return f;
+}
 function num(x, digits = 3) {
-  return x.toLocaleString("de-DE", { maximumFractionDigits: digits });
+  return zahlformat(digits).format(x);
 }
 function randInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
@@ -334,7 +343,7 @@ function renderUeberschlag() {
     `Genau: ${num(a)} ${zeichen} ${num(b)} = <strong>${num(exakt)}</strong><br>` +
     `Abweichung: ${num(abw)}${exakt !== 0 ? " (das sind " + num(prozent, 1) + " % des genauen Werts)" : ""}`;
   if (op === "sub" && a < b) {
-    html += `<br><span style="color:#b3650a">Hinweis: In ℕ ist ${num(a)} − ${num(b)} nicht definiert — der Minuend muss mindestens so groß sein wie der Subtrahend.</span>`;
+    html += `<br><span class="farbe-orange">Hinweis: In ℕ ist ${num(a)} − ${num(b)} nicht definiert — der Minuend muss mindestens so groß sein wie der Subtrahend.</span>`;
   }
   document.getElementById("ue-mount").innerHTML = html;
 }
@@ -441,11 +450,6 @@ function computeSubtraction(a, b) {
     borrow = nb;
   }
   return { da, db, diff, borrowFrom, len };
-}
-
-// Prüft, ob bei a − b mindestens einmal entbündelt werden muss.
-function brauchtEntbuendeln(a, b) {
-  return computeSubtraction(a, b).borrowFrom.some(Boolean);
 }
 
 function renderSubtractionTable(mountId, a, b) {

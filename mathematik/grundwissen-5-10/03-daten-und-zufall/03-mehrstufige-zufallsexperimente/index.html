@@ -50,7 +50,7 @@
     <div class="widget">
       <div class="btn-row">
         <label>Experiment:
-          <select id="bd-exp" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <select id="bd-exp" style="padding:0.4rem" class="eingabe">
             <option value="muenze">Münze werfen (K, Z)</option>
             <option value="wuerfel6">Würfeln: 6 oder keine 6</option>
             <option value="ampel">Ampel: rot, gelb, grün</option>
@@ -81,8 +81,8 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>rote Kugeln: <input type="range" id="pr-rot" min="1" max="9" step="1" value="3" style="vertical-align:middle;width:9rem"> <span id="pr-rot-anzeige" style="font-weight:800;color:#b3261e"></span></label>
-        <label>blaue Kugeln: <input type="range" id="pr-blau" min="1" max="9" step="1" value="7" style="vertical-align:middle;width:9rem"> <span id="pr-blau-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>rote Kugeln: <input type="range" id="pr-rot" min="1" max="9" step="1" value="3" style="vertical-align:middle;width:9rem"> <span id="pr-rot-anzeige" class="wert farbe-rot"></span></label>
+        <label>blaue Kugeln: <input type="range" id="pr-blau" min="1" max="9" step="1" value="7" style="vertical-align:middle;width:9rem"> <span id="pr-blau-anzeige" class="wert farbe-blau"></span></label>
         <button type="button" class="btn" id="pr-reset">Auswahl löschen</button>
       </div>
       <div class="geo-wrap" id="pr-mount"></div>
@@ -109,7 +109,7 @@
     <div class="widget">
       <div class="btn-row">
         <label>Ereignis (3 Münzwürfe):
-          <select id="sr-ereignis" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <select id="sr-ereignis" style="padding:0.4rem" class="eingabe">
             <option value="genau1">genau einmal Kopf</option>
             <option value="genau2">genau zweimal Kopf</option>
             <option value="mind1">mindestens einmal Kopf</option>
@@ -144,8 +144,8 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>rote Kugeln: <input type="range" id="zz-rot" min="1" max="8" step="1" value="3" style="vertical-align:middle;width:9rem"> <span id="zz-rot-anzeige" style="font-weight:800;color:#b3261e"></span></label>
-        <label>blaue Kugeln: <input type="range" id="zz-blau" min="1" max="8" step="1" value="5" style="vertical-align:middle;width:9rem"> <span id="zz-blau-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>rote Kugeln: <input type="range" id="zz-rot" min="1" max="8" step="1" value="3" style="vertical-align:middle;width:9rem"> <span id="zz-rot-anzeige" class="wert farbe-rot"></span></label>
+        <label>blaue Kugeln: <input type="range" id="zz-blau" min="1" max="8" step="1" value="5" style="vertical-align:middle;width:9rem"> <span id="zz-blau-anzeige" class="wert farbe-blau"></span></label>
         <button type="button" class="btn btn-primary" id="zz-modus">ohne Zurücklegen anzeigen</button>
       </div>
       <div class="geo-wrap" id="zz-mount"></div>
@@ -171,9 +171,9 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>Regenwahrscheinlichkeit: <input type="range" id="ug-regen" min="10" max="80" step="5" value="30" style="vertical-align:middle;width:9rem"> <span id="ug-regen-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
-        <label>Bus zu spät bei Regen: <input type="range" id="ug-q1" min="10" max="90" step="5" value="40" style="vertical-align:middle;width:9rem"> <span id="ug-q1-anzeige" style="font-weight:800;color:#b3650a"></span></label>
-        <label>… bei trockenem Wetter: <input type="range" id="ug-q2" min="0" max="60" step="5" value="10" style="vertical-align:middle;width:9rem"> <span id="ug-q2-anzeige" style="font-weight:800;color:#b3650a"></span></label>
+        <label>Regenwahrscheinlichkeit: <input type="range" id="ug-regen" min="10" max="80" step="5" value="30" style="vertical-align:middle;width:9rem"> <span id="ug-regen-anzeige" class="wert farbe-blau"></span></label>
+        <label>Bus zu spät bei Regen: <input type="range" id="ug-q1" min="10" max="90" step="5" value="40" style="vertical-align:middle;width:9rem"> <span id="ug-q1-anzeige" class="wert farbe-orange"></span></label>
+        <label>… bei trockenem Wetter: <input type="range" id="ug-q2" min="0" max="60" step="5" value="10" style="vertical-align:middle;width:9rem"> <span id="ug-q2-anzeige" class="wert farbe-orange"></span></label>
       </div>
       <div class="geo-wrap" id="ug-mount"></div>
       <div class="me-karten" id="ug-karten"></div>
@@ -225,6 +225,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=3"></script>
+<script type="module" src="lernpfad.js?v=4"></script>
 </body>
 </html>

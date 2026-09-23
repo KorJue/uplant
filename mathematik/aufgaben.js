@@ -52,7 +52,9 @@ function mountAufgabe(container, def, parse) {
   const felderListe = el("div", { class: "aufgabe-felder" });
   box.appendChild(felderListe);
   const row = el("div", { class: "exercise-input-row" });
-  const input = el("input", { type: "text", placeholder: "Antwort" });
+  // Der Platzhalter ist keine Beschriftung: Er verschwindet beim Tippen, und Screenreader lesen
+  // ihn nicht zuverlässig vor. Deshalb trägt das Feld seinen Namen zusätzlich als aria-label.
+  const input = el("input", { type: "text", placeholder: "Antwort", "aria-label": "Antwort zu: " + def.titel });
   const btnPruefen = el("button", { type: "button", class: "btn btn-primary" }, "Prüfen");
   const btnTipp = el("button", { type: "button", class: "btn btn-tipp" }, "💡 Tipp");
   const btnWuerfeln = el("button", { type: "button", class: "btn btn-wuerfeln" }, def.wuerfelText || "🎲 Neue Zahlen");
@@ -63,7 +65,9 @@ function mountAufgabe(container, def, parse) {
   box.appendChild(row);
   const tippBox = el("div", { class: "aufgabe-tipps" });
   box.appendChild(tippBox);
-  const feedback = el("div", { class: "aufgabe-feedback" });
+  // aria-live: Die Rückmeldung erscheint nach einem Klick an anderer Stelle; so wird sie angesagt,
+  // ohne dass der Fokus dorthin springen muss.
+  const feedback = el("div", { class: "aufgabe-feedback", "aria-live": "polite" });
   box.appendChild(feedback);
 
   let current = null;
@@ -210,7 +214,12 @@ export function mountUebungsaufgaben(container, defs, opt = {}) {
   const stufen = STUFEN.filter((s) => defs.some((d) => d.schwierigkeit === s));
 
   function zeige(idx) {
-    [...tabBar.children].forEach((b, i) => b.classList.toggle("active", i === idx));
+    // aria-pressed sagt einem Screenreader, welcher Reiter gerade offen ist — die Farbe allein
+    // sieht er nicht.
+    [...tabBar.children].forEach((b, i) => {
+      b.classList.toggle("active", i === idx);
+      b.setAttribute("aria-pressed", String(i === idx));
+    });
     panel.innerHTML = "";
     for (const d of defs.filter((x) => x.schwierigkeit === stufen[idx])) mountAufgabe(panel, d, parse);
   }

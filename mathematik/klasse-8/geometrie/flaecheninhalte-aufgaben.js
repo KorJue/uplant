@@ -18,10 +18,19 @@
 
 // ---------- Zahlen und Einheiten ----------
 
+// Ein Zahlformat je Stellenzahl, einmal angelegt: toLocaleString() baut bei jedem Aufruf ein neues
+// Intl.NumberFormat, und das kostet rund 40-mal so viel wie das Formatieren selbst — bei jeder
+// Reglerbewegung dutzendfach.
+const ZAHLFORMATE = new Map();
+function zahlformat(stellen) {
+  let f = ZAHLFORMATE.get(stellen);
+  if (!f) ZAHLFORMATE.set(stellen, (f = new Intl.NumberFormat("de-DE", { maximumFractionDigits: stellen })));
+  return f;
+}
 export function num(x, digits = 4) {
   const f = Math.pow(10, digits);
   const gerundet = Math.round(x * f) / f;
-  return (gerundet === 0 ? 0 : gerundet).toLocaleString("de-DE", { maximumFractionDigits: digits });
+  return zahlformat(digits).format(gerundet === 0 ? 0 : gerundet);
 }
 
 function pick(arr) {
@@ -69,6 +78,14 @@ const FLAECHE = [
 ];
 const E = (name) => LAENGE.find((e) => e.name === name);
 const F = (name) => FLAECHE.find((e) => e.name === name);
+
+// Die Kandidatenlisten werden erst beim ersten Würfeln gebaut, nicht beim Laden der Seite. Alle
+// zwölf zusammen kosteten beim Seitenaufbau rund 80 ms, T2 allein über 40 ms — sichtbar ist beim
+// Laden aber nur die Stufe „einfach“. Danach bleibt die Liste liegen, gebaut wird also einmal.
+function spaeter(bauen) {
+  let liste = null;
+  return () => (liste ??= bauen());
+}
 
 // „25 dm“ — Zahl und Einheit gehören zusammen und werden nie getrennt ausgegeben.
 function mitEinheit(wert, einheit) {
@@ -185,7 +202,7 @@ const HINWEIS_BILD = `<span class="progress-note">Alle Angaben im Bild in cm. An
 // ein einziges Produkt. Der Versatz sorgt dafür, dass die Figur wirklich schief steht — bei
 // Versatz 0 wäre es ein Rechteck, und die Höhe ließe sich mit der Seite verwechseln, ohne
 // dass es auffiele.
-const P1_KANDIDATEN = (() => {
+const P1_KANDIDATEN = spaeter(() => {
   const liste = [];
   for (const g of [3, 3.5, 4, 4.5, 5, 6, 6.5, 7, 8, 9]) {
     for (const h of [2, 2.5, 3, 3.5, 4, 4.5, 5]) {
@@ -195,10 +212,10 @@ const P1_KANDIDATEN = (() => {
     }
   }
   return liste;
-})();
+});
 
 function generateP1() {
-  const k = ohneKollision(P1_KANDIDATEN, (v) => [v.g * v.h, (v.g * v.h) / 2, v.g + v.h, 2 * (v.g + v.h), v.g, v.h]);
+  const k = ohneKollision(P1_KANDIDATEN(), (v) => [v.g * v.h, (v.g * v.h) / 2, v.g + v.h, 2 * (v.g + v.h), v.g, v.h]);
   const { g, h, s, variante } = k;
   const A = g * h;
   return {
@@ -248,14 +265,14 @@ function baueEinheitenKandidaten(werteA, werteB, formel, stellen = 2) {
   return liste;
 }
 
-const P2_KANDIDATEN = baueEinheitenKandidaten(
+const P2_KANDIDATEN = spaeter(() => baueEinheitenKandidaten(
   [2, 2.5, 3, 4, 4.5, 5, 6, 7.5, 8, 12, 15, 20, 25, 40, 60, 80, 125],
   [4, 5, 6, 8, 9.5, 10, 12, 15, 24, 30, 40, 45, 55, 60, 95],
   (a, b) => a * b,
-).filter((k) => k.eA !== k.eB);
+).filter((k) => k.eA !== k.eB));
 
 function generateP2() {
-  const k = ohneKollision(P2_KANDIDATEN, (v) => {
+  const k = ohneKollision(P2_KANDIDATEN(), (v) => {
     const gCm = v.a * E(v.eA).cm, hCm = v.b * E(v.eB).cm;
     return [v.loesung, (v.a * v.b) / F(v.ziel).cm2, (gCm * hCm) / 2 / F(v.ziel).cm2, (gCm + hCm) / F(v.ziel).cm2];
   });
@@ -292,7 +309,7 @@ function generateP2() {
 //
 // Wie Aufgabe 8 und die Tabelle in Aufgabe 9: Gegeben sind der Flächeninhalt und eine der
 // beiden Größen, gesucht die andere. Die Einheiten stimmen dabei absichtlich nicht überein.
-const P3_KANDIDATEN = (() => {
+const P3_KANDIDATEN = spaeter(() => {
   const liste = [];
   for (const g of [3, 4, 5, 6, 8, 9, 10, 12, 15, 16, 20, 24, 25]) {
     for (const h of [2, 2.5, 3, 4, 5, 6, 8, 9, 12, 15]) {
@@ -318,10 +335,10 @@ const P3_KANDIDATEN = (() => {
     }
   }
   return liste;
-})();
+});
 
 function generateP3() {
-  const k = ohneKollision(P3_KANDIDATEN, (v) => [
+  const k = ohneKollision(P3_KANDIDATEN(), (v) => [
     v.gesuchtZahl, v.gegebenZahl, v.flaecheZahl,
     v.flaecheZahl * v.gegebenZahl, v.flaecheZahl / v.gegebenZahl, 2 * v.gesuchtZahl,
   ]);
@@ -364,7 +381,7 @@ function generateP3() {
 //
 // Der Flächeninhalt gehört der Figur, nicht der gewählten Grundseite. Wer das begriffen hat,
 // löst diese Aufgabe in zwei Zeilen; wer h für „die zweite Seite“ hält, kommt nicht weiter.
-const P4_KANDIDATEN = (() => {
+const P4_KANDIDATEN = spaeter(() => {
   const liste = [];
   for (const a of [6, 8, 9, 10, 12, 14, 15, 16, 18, 20]) {
     for (const ha of [3, 4, 5, 6, 7, 8, 9, 10]) {
@@ -381,10 +398,10 @@ const P4_KANDIDATEN = (() => {
     }
   }
   return liste;
-})();
+});
 
 function generateP4() {
-  const k = ohneKollision(P4_KANDIDATEN, (v) => [v.A, v.hb, v.a, v.ha, v.b, v.A / 2, v.b * v.ha]);
+  const k = ohneKollision(P4_KANDIDATEN(), (v) => [v.A, v.hb, v.a, v.ha, v.b, v.A / 2, v.b * v.ha]);
   const { a, ha, b, A, hb } = k;
   return {
     promptHtml:
@@ -428,7 +445,7 @@ function generateP4() {
 // ================= Dreieck =================
 
 // ---------- einfach: Flächeninhalt aus der Zeichnung ----------
-const D1_KANDIDATEN = (() => {
+const D1_KANDIDATEN = spaeter(() => {
   const liste = [];
   for (const g of [3, 4, 4.5, 5, 6, 7, 8, 9, 10]) {
     for (const h of [2, 2.5, 3, 3.5, 4, 4.5, 5, 6]) {
@@ -441,10 +458,10 @@ const D1_KANDIDATEN = (() => {
     }
   }
   return liste;
-})();
+});
 
 function generateD1() {
-  const k = ohneKollision(D1_KANDIDATEN, (v) => [(v.g * v.h) / 2, v.g * v.h, v.g + v.h, v.g, v.h]);
+  const k = ohneKollision(D1_KANDIDATEN(), (v) => [(v.g * v.h) / 2, v.g * v.h, v.g + v.h, v.g, v.h]);
   const { g, h, lage, variante } = k;
   const spitze = lage === "innen" ? Math.round(g * 0.35 * 2) / 2 : g + Math.min(2, Math.max(1, Math.round(g * 0.3)));
   const A = (g * h) / 2;
@@ -473,14 +490,14 @@ function generateD1() {
 }
 
 // ---------- mittel: mit Einheitenumrechnung ----------
-const D2_KANDIDATEN = baueEinheitenKandidaten(
+const D2_KANDIDATEN = spaeter(() => baueEinheitenKandidaten(
   [2, 2.5, 3, 4, 4.5, 5, 6, 8, 10, 12, 15, 16, 20, 24, 30, 40, 50],
   [4, 5, 6, 8, 10, 12, 15, 20, 24, 25, 30, 36, 40, 60, 80],
   (a, b) => (a * b) / 2,
-).filter((k) => k.eA !== k.eB);
+).filter((k) => k.eA !== k.eB));
 
 function generateD2() {
-  const k = ohneKollision(D2_KANDIDATEN, (v) => {
+  const k = ohneKollision(D2_KANDIDATEN(), (v) => {
     const gCm = v.a * E(v.eA).cm, hCm = v.b * E(v.eB).cm;
     return [v.loesung, (gCm * hCm) / F(v.ziel).cm2, (v.a * v.b) / 2 / F(v.ziel).cm2, (gCm + hCm) / F(v.ziel).cm2];
   });
@@ -512,7 +529,7 @@ function generateD2() {
 }
 
 // ---------- schwierig: die fehlende Größe ----------
-const D3_KANDIDATEN = (() => {
+const D3_KANDIDATEN = spaeter(() => {
   const liste = [];
   for (const g of [4, 5, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 24, 25]) {
     for (const h of [3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 18]) {
@@ -536,10 +553,10 @@ const D3_KANDIDATEN = (() => {
     }
   }
   return liste;
-})();
+});
 
 function generateD3() {
-  const k = ohneKollision(D3_KANDIDATEN, (v) => [
+  const k = ohneKollision(D3_KANDIDATEN(), (v) => [
     v.gesuchtZahl, v.gegebenZahl, v.flaecheZahl,
     v.gesuchtZahl / 2, 2 * v.gesuchtZahl, v.flaecheZahl / v.gegebenZahl,
   ]);
@@ -580,7 +597,7 @@ function generateD3() {
 // Die Diagonale zerlegt jedes Viereck in zwei Dreiecke. Beide haben dieselbe Grundseite —
 // die Diagonale —, aber jedes seine eigene Höhe. Das ist das Grundmuster für alle Flächen,
 // für die es keine eigene Formel gibt.
-const D4_KANDIDATEN = (() => {
+const D4_KANDIDATEN = spaeter(() => {
   const liste = [];
   for (const e of [6, 8, 9, 10, 12, 14, 15, 16, 18, 20]) {
     for (const h1 of [2, 3, 4, 5, 6, 7, 8]) {
@@ -593,10 +610,10 @@ const D4_KANDIDATEN = (() => {
     }
   }
   return liste;
-})();
+});
 
 function generateD4() {
-  const k = ohneKollision(D4_KANDIDATEN, (v) => [v.A1, v.A2, v.A, v.e * (v.h1 + v.h2), v.e, v.h1, v.h2]);
+  const k = ohneKollision(D4_KANDIDATEN(), (v) => [v.A1, v.A2, v.A, v.e * (v.h1 + v.h2), v.e, v.h1, v.h2]);
   const { e, h1, h2, A1, A2, A } = k;
   return {
     promptHtml:
@@ -648,7 +665,7 @@ function generateD4() {
 // ================= Trapez =================
 
 // ---------- einfach: Flächeninhalt aus der Zeichnung ----------
-const T1_KANDIDATEN = (() => {
+const T1_KANDIDATEN = spaeter(() => {
   const liste = [];
   for (const a of [4, 5, 6, 6.5, 7, 8, 9, 10]) {
     for (const c of [2, 2.5, 3, 3.5, 4, 4.5, 5]) {
@@ -660,10 +677,10 @@ const T1_KANDIDATEN = (() => {
     }
   }
   return liste;
-})();
+});
 
 function generateT1() {
-  const k = ohneKollision(T1_KANDIDATEN, (v) => [
+  const k = ohneKollision(T1_KANDIDATEN(), (v) => [
     ((v.a + v.c) * v.h) / 2, (v.a + v.c) * v.h, v.a * v.h, v.c * v.h, (v.a * v.c) / 2, v.a + v.c + v.h,
   ]);
   const { a, c, h, variante } = k;
@@ -699,7 +716,7 @@ function generateT1() {
 //
 // Wie Aufgabe 3 beim Trapez im Buch: a und c stehen oft in verschiedenen Einheiten
 // (a = 700 m, c = 1,7 km), und die Höhe in einer dritten.
-const T2_KANDIDATEN = (() => {
+const T2_KANDIDATEN = spaeter(() => {
   const liste = [];
   const werte = [2, 2.5, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 25, 40, 50, 60, 80, 100];
   for (const eA of LAENGE) {
@@ -727,10 +744,10 @@ const T2_KANDIDATEN = (() => {
     }
   }
   return liste;
-})();
+});
 
 function generateT2() {
-  const k = ohneKollision(T2_KANDIDATEN, (v) => {
+  const k = ohneKollision(T2_KANDIDATEN(), (v) => {
     const aCm = v.a * E(v.eA).cm, cCm = v.c * E(v.eC).cm, hCm = v.h * E(v.eH).cm;
     return [
       v.loesung,
@@ -771,7 +788,7 @@ function generateT2() {
 //
 // Wie die Tabelle in Aufgabe 6: In jeder Zeile fehlt eine andere Größe. Gefragt wird
 // abwechselnd nach einer der parallelen Seiten und nach der Höhe.
-const T3_KANDIDATEN = (() => {
+const T3_KANDIDATEN = spaeter(() => {
   const liste = [];
   for (const a of [6, 8, 10, 12, 14, 15, 16, 18, 20, 24, 27]) {
     for (const c of [3, 4, 5, 6, 7, 8, 9, 10, 12]) {
@@ -784,10 +801,10 @@ const T3_KANDIDATEN = (() => {
     }
   }
   return liste;
-})();
+});
 
 function generateT3() {
-  const k = ohneKollision(T3_KANDIDATEN, (v) => {
+  const k = ohneKollision(T3_KANDIDATEN(), (v) => {
     const soll = v.gesucht === "a" ? v.a : v.gesucht === "c" ? v.c : v.h;
     const summe = v.a + v.c;
     // Der klassische Fehler: beim Umstellen das Verdoppeln vergessen.
@@ -849,7 +866,7 @@ function generateT3() {
 // Dasselbe Trapez zweimal: einmal zerlegt in Rechteck und Dreieck, einmal mit der Formel.
 // Dass beide Wege dieselbe Zahl liefern, ist keine Selbstverständlichkeit — es ist der
 // Grund, warum die Formel überhaupt gilt.
-const T4_KANDIDATEN = (() => {
+const T4_KANDIDATEN = spaeter(() => {
   const liste = [];
   for (const c of [3, 4, 5, 6, 7, 8, 9, 10]) {
     for (const ueberhang of [2, 3, 4, 5, 6, 8]) {
@@ -864,10 +881,10 @@ const T4_KANDIDATEN = (() => {
     }
   }
   return liste;
-})();
+});
 
 function generateT4() {
-  const k = ohneKollision(T4_KANDIDATEN, (v) => [
+  const k = ohneKollision(T4_KANDIDATEN(), (v) => [
     v.rechteck, v.dreieck, v.gesamt, v.ueberhang * v.h, v.a * v.h, v.a, v.c, v.h, v.ueberhang,
   ]);
   const { a, c, h, ueberhang, rechteck, dreieck, gesamt } = k;

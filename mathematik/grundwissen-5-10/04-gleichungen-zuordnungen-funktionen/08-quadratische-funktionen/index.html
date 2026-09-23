@@ -50,7 +50,7 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>Stelle x = <input type="range" id="np-x" min="-4" max="4" step="1" value="2" style="vertical-align:middle;width:12rem"> <span id="np-x-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>Stelle x = <input type="range" id="np-x" min="-4" max="4" step="1" value="2" style="vertical-align:middle;width:12rem"> <span id="np-x-anzeige" class="wert farbe-blau"></span></label>
       </div>
       <div class="geo-wrap" id="np-mount"></div>
       <table class="qf-tabelle" id="np-tabelle"></table>
@@ -78,9 +78,9 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>a = <input type="range" id="sf-a" min="-3" max="3" step="0.5" value="1" style="vertical-align:middle;width:9rem"> <span id="sf-a-anzeige" style="font-weight:800;color:#157347"></span></label>
-        <label>d = <input type="range" id="sf-d" min="-5" max="5" step="1" value="2" style="vertical-align:middle;width:9rem"> <span id="sf-d-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
-        <label>e = <input type="range" id="sf-e" min="-6" max="6" step="1" value="-3" style="vertical-align:middle;width:9rem"> <span id="sf-e-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+        <label>a = <input type="range" id="sf-a" min="-3" max="3" step="0.5" value="1" style="vertical-align:middle;width:9rem"> <span id="sf-a-anzeige" class="wert farbe-gruen"></span></label>
+        <label>d = <input type="range" id="sf-d" min="-5" max="5" step="1" value="2" style="vertical-align:middle;width:9rem"> <span id="sf-d-anzeige" class="wert farbe-violett"></span></label>
+        <label>e = <input type="range" id="sf-e" min="-6" max="6" step="1" value="-3" style="vertical-align:middle;width:9rem"> <span id="sf-e-anzeige" class="wert farbe-violett"></span></label>
       </div>
       <div class="qf-gleichung" id="sf-gleichung"></div>
       <div class="geo-wrap" id="sf-mount"></div>
@@ -108,9 +108,9 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <button class="btn" id="qe-neu">🎲 Neues Beispiel</button>
-        <button class="btn" id="qe-schritt">Schritt weiter ▸</button>
-        <button class="btn" id="qe-alle">Alle Schritte</button>
+        <button type="button" class="btn" id="qe-neu">🎲 Neues Beispiel</button>
+        <button type="button" class="btn" id="qe-schritt">Schritt weiter ▸</button>
+        <button type="button" class="btn" id="qe-alle">Alle Schritte</button>
       </div>
       <div class="qf-gleichung" id="qe-gleichung"></div>
       <div class="qf-schritte" id="qe-schritte"></div>
@@ -137,9 +137,9 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <button class="btn" id="pq-neu">🎲 Neues Beispiel</button>
-        <button class="btn" id="pq-schritt">Schritt weiter ▸</button>
-        <button class="btn" id="pq-alle">Alle Schritte</button>
+        <button type="button" class="btn" id="pq-neu">🎲 Neues Beispiel</button>
+        <button type="button" class="btn" id="pq-schritt">Schritt weiter ▸</button>
+        <button type="button" class="btn" id="pq-alle">Alle Schritte</button>
       </div>
       <div class="qf-gleichung" id="pq-gleichung"></div>
       <div class="qf-schritte" id="pq-schritte"></div>
@@ -167,8 +167,8 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>p = <input type="range" id="di-p" min="-8" max="8" step="2" value="-2" style="vertical-align:middle;width:10rem"> <span id="di-p-anzeige" style="font-weight:800;color:#b3650a"></span></label>
-        <label>q = <input type="range" id="di-q" min="-9" max="9" step="1" value="-3" style="vertical-align:middle;width:10rem"> <span id="di-q-anzeige" style="font-weight:800;color:#b3650a"></span></label>
+        <label>p = <input type="range" id="di-p" min="-8" max="8" step="2" value="-2" style="vertical-align:middle;width:10rem"> <span id="di-p-anzeige" class="wert farbe-orange"></span></label>
+        <label>q = <input type="range" id="di-q" min="-9" max="9" step="1" value="-3" style="vertical-align:middle;width:10rem"> <span id="di-q-anzeige" class="wert farbe-orange"></span></label>
       </div>
       <div class="qf-gleichung" id="di-gleichung"></div>
       <div class="geo-wrap" id="di-mount"></div>
@@ -195,8 +195,8 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>Zaunlänge: <input type="range" id="ex-u" min="12" max="40" step="4" value="24" style="vertical-align:middle;width:10rem"> <span id="ex-u-anzeige" style="font-weight:800;color:#1d4ed8"></span> m</label>
-        <label>Breite x = <input type="range" id="ex-x" min="1" max="19" step="1" value="4" style="vertical-align:middle;width:10rem"> <span id="ex-x-anzeige" style="font-weight:800;color:#157347"></span> m</label>
+        <label>Zaunlänge: <input type="range" id="ex-u" min="12" max="40" step="4" value="24" style="vertical-align:middle;width:10rem"> <span id="ex-u-anzeige" class="wert farbe-blau"></span> m</label>
+        <label>Breite x = <input type="range" id="ex-x" min="1" max="19" step="1" value="4" style="vertical-align:middle;width:10rem"> <span id="ex-x-anzeige" class="wert farbe-gruen"></span> m</label>
       </div>
       <div id="ex-aufgabe" class="event-result"></div>
       <div class="geo-wrap" id="ex-mount"></div>
@@ -251,6 +251,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=3"></script>
+<script type="module" src="lernpfad.js?v=4"></script>
 </body>
 </html>

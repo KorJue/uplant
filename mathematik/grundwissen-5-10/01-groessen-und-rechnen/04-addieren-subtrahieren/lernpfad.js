@@ -9,7 +9,7 @@
 
 "use strict";
 
-import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=1";
+import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=2";
 
 // ---------- Helfer ----------
 
@@ -31,9 +31,6 @@ function el(tag, attrs = {}, children = []) {
     e.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
   });
   return e;
-}
-function num(x, digits = 3) {
-  return x.toLocaleString("de-DE", { maximumFractionDigits: digits });
 }
 function randInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));

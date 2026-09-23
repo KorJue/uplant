@@ -14,7 +14,7 @@
 
 "use strict";
 
-import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=1";
+import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=2";
 
 // ---------- Helfer ----------
 
@@ -42,12 +42,21 @@ function el(tag, attrs = {}, children = []) {
   });
   return e;
 }
+// Ein Zahlformat je Stellenzahl, einmal angelegt: toLocaleString() baut bei jedem Aufruf ein neues
+// Intl.NumberFormat, und das kostet rund 40-mal so viel wie das Formatieren selbst — bei jeder
+// Reglerbewegung dutzendfach.
+const ZAHLFORMATE = new Map();
+function zahlformat(stellen) {
+  let f = ZAHLFORMATE.get(stellen);
+  if (!f) ZAHLFORMATE.set(stellen, (f = new Intl.NumberFormat("de-DE", { maximumFractionDigits: stellen })));
+  return f;
+}
 function num(x, digits = 4) {
   // Erst auf die Anzeigegenauigkeit runden, dann über das Vorzeichen
   // entscheiden: Ein Wert wie −1·10⁻¹⁶ würde sonst als "−0" erscheinen.
   const gerundet = Number(x.toFixed(Math.min(20, digits)));
   const z = gerundet === 0 ? 0 : x;
-  return z.toLocaleString("de-DE", { maximumFractionDigits: digits }).replace("-", "−");
+  return zahlformat(digits).format(z).replace("-", "−");
 }
 function zeichen(x, stellen) {
   return Math.abs(Number(x.toFixed(stellen)) - x) < 1e-12 ? "=" : "≈";

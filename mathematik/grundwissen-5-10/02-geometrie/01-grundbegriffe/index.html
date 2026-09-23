@@ -56,7 +56,7 @@
     <div class="widget">
       <div class="btn-row">
         <label>Objekt:
-          <select id="lin-typ" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <select id="lin-typ" style="padding:0.4rem 0.6rem" class="eingabe">
             <option value="strecke">Strecke</option>
             <option value="strahl">Strahl</option>
             <option value="gerade">Gerade</option>
@@ -128,8 +128,8 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>x = <input type="number" id="ks-x" value="3" min="-6" max="6" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
-        <label>y = <input type="number" id="ks-y" value="2" min="-6" max="6" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label>x = <input type="number" id="ks-x" value="3" min="-6" max="6" style="width:4.5rem;padding:0.4rem" class="eingabe"></label>
+        <label>y = <input type="number" id="ks-y" value="2" min="-6" max="6" style="width:4.5rem;padding:0.4rem" class="eingabe"></label>
       </div>
       <div class="geo-wrap" id="ks-mount"></div>
       <div id="ks-text" class="event-result"></div>
@@ -172,7 +172,7 @@
     <div class="widget">
       <div class="btn-row">
         <label>Abbildung:
-          <select id="sym-art" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <select id="sym-art" style="padding:0.4rem 0.6rem" class="eingabe">
             <option value="achse">Achsenspiegelung</option>
             <option value="punkt">Punktspiegelung (Drehung um 180°)</option>
           </select>
@@ -221,6 +221,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=4"></script>
+<script type="module" src="lernpfad.js?v=5"></script>
 </body>
 </html>

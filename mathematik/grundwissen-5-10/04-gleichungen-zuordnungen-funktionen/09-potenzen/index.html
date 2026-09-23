@@ -51,8 +51,8 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>Basis a = <input type="range" id="bg-a" min="-4" max="4" step="1" value="3" style="vertical-align:middle;width:10rem"> <span id="bg-a-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
-        <label>Exponent n = <input type="range" id="bg-n" min="1" max="5" step="1" value="3" style="vertical-align:middle;width:10rem"> <span id="bg-n-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+        <label>Basis a = <input type="range" id="bg-a" min="-4" max="4" step="1" value="3" style="vertical-align:middle;width:10rem"> <span id="bg-a-anzeige" class="wert farbe-blau"></span></label>
+        <label>Exponent n = <input type="range" id="bg-n" min="1" max="5" step="1" value="3" style="vertical-align:middle;width:10rem"> <span id="bg-n-anzeige" class="wert farbe-violett"></span></label>
       </div>
       <div class="pt-gleichung" id="bg-gleichung"></div>
       <div class="geo-wrap" id="bg-mount"></div>
@@ -86,9 +86,9 @@
     <div class="widget">
       <div class="pt-schalter" id="gz-schalter"></div>
       <div class="btn-row">
-        <button class="btn" id="gz-neu">🎲 Neues Beispiel</button>
-        <button class="btn" id="gz-schritt">Schritt weiter ▸</button>
-        <button class="btn" id="gz-alle">Alle Schritte</button>
+        <button type="button" class="btn" id="gz-neu">🎲 Neues Beispiel</button>
+        <button type="button" class="btn" id="gz-schritt">Schritt weiter ▸</button>
+        <button type="button" class="btn" id="gz-alle">Alle Schritte</button>
       </div>
       <div class="pt-gleichung" id="gz-gleichung"></div>
       <div class="pt-schritte" id="gz-schritte"></div>
@@ -115,8 +115,8 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>Basis a = <input type="range" id="gz2-a" min="2" max="10" step="1" value="2" style="vertical-align:middle;width:10rem"> <span id="gz2-a-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
-        <label>Exponent n = <input type="range" id="gz2-n" min="-4" max="4" step="1" value="0" style="vertical-align:middle;width:12rem"> <span id="gz2-n-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+        <label>Basis a = <input type="range" id="gz2-a" min="2" max="10" step="1" value="2" style="vertical-align:middle;width:10rem"> <span id="gz2-a-anzeige" class="wert farbe-blau"></span></label>
+        <label>Exponent n = <input type="range" id="gz2-n" min="-4" max="4" step="1" value="0" style="vertical-align:middle;width:12rem"> <span id="gz2-n-anzeige" class="wert farbe-violett"></span></label>
       </div>
       <div class="pt-gleichung" id="gz2-gleichung"></div>
       <div class="geo-wrap" id="gz2-mount"></div>
@@ -146,8 +146,8 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>z = <input type="range" id="zp-z" min="10" max="99" step="1" value="24" style="vertical-align:middle;width:11rem"> <span id="zp-z-anzeige" style="font-weight:800;color:#157347"></span></label>
-        <label>n = <input type="range" id="zp-n" min="-9" max="12" step="1" value="7" style="vertical-align:middle;width:12rem"> <span id="zp-n-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+        <label>z = <input type="range" id="zp-z" min="10" max="99" step="1" value="24" style="vertical-align:middle;width:11rem"> <span id="zp-z-anzeige" class="wert farbe-gruen"></span></label>
+        <label>n = <input type="range" id="zp-n" min="-9" max="12" step="1" value="7" style="vertical-align:middle;width:12rem"> <span id="zp-n-anzeige" class="wert farbe-violett"></span></label>
       </div>
       <div class="pt-gleichung" id="zp-gleichung"></div>
       <div class="geo-wrap" id="zp-mount"></div>
@@ -176,8 +176,8 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>n = <input type="range" id="pf-n" min="1" max="6" step="1" value="3" style="vertical-align:middle;width:11rem"> <span id="pf-n-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
-        <label>Stelle x = <input type="range" id="pf-x" min="-16" max="16" step="1" value="15" style="vertical-align:middle;width:11rem"> <span id="pf-x-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>n = <input type="range" id="pf-n" min="1" max="6" step="1" value="3" style="vertical-align:middle;width:11rem"> <span id="pf-n-anzeige" class="wert farbe-violett"></span></label>
+        <label>Stelle x = <input type="range" id="pf-x" min="-16" max="16" step="1" value="15" style="vertical-align:middle;width:11rem"> <span id="pf-x-anzeige" class="wert farbe-blau"></span></label>
       </div>
       <div class="pt-gleichung" id="pf-gleichung"></div>
       <div class="geo-wrap" id="pf-mount"></div>
@@ -204,8 +204,8 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>Radikand a = <input type="range" id="wz-a" min="1" max="20" step="1" value="8" style="vertical-align:middle;width:11rem"> <span id="wz-a-anzeige" style="font-weight:800;color:#157347"></span></label>
-        <label>Wurzelexponent n = <input type="range" id="wz-n" min="2" max="5" step="1" value="3" style="vertical-align:middle;width:9rem"> <span id="wz-n-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+        <label>Radikand a = <input type="range" id="wz-a" min="1" max="20" step="1" value="8" style="vertical-align:middle;width:11rem"> <span id="wz-a-anzeige" class="wert farbe-gruen"></span></label>
+        <label>Wurzelexponent n = <input type="range" id="wz-n" min="2" max="5" step="1" value="3" style="vertical-align:middle;width:9rem"> <span id="wz-n-anzeige" class="wert farbe-violett"></span></label>
       </div>
       <div class="pt-gleichung" id="wz-gleichung"></div>
       <div class="geo-wrap" id="wz-mount"></div>
@@ -260,6 +260,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=3"></script>
+<script type="module" src="lernpfad.js?v=4"></script>
 </body>
 </html>

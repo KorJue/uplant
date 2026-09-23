@@ -52,10 +52,19 @@ function el(tag, attrs = {}, children = []) {
   return e;
 }
 
+// Ein Zahlformat je Stellenzahl, einmal angelegt: toLocaleString() baut bei jedem Aufruf ein neues
+// Intl.NumberFormat, und das kostet rund 40-mal so viel wie das Formatieren selbst — bei jeder
+// Reglerbewegung dutzendfach.
+const ZAHLFORMATE = new Map();
+function zahlformat(stellen) {
+  let f = ZAHLFORMATE.get(stellen);
+  if (!f) ZAHLFORMATE.set(stellen, (f = new Intl.NumberFormat("de-DE", { maximumFractionDigits: stellen })));
+  return f;
+}
 function num(x, digits = 2) {
   const f = Math.pow(10, digits);
   const gerundet = Math.round(x * f) / f;
-  return (gerundet === 0 ? 0 : gerundet).toLocaleString("de-DE", { maximumFractionDigits: digits });
+  return zahlformat(digits).format(gerundet === 0 ? 0 : gerundet);
 }
 
 // Komma wie Punkt als Dezimaltrennzeichen annehmen; „65°“ und „65 grad“ ebenfalls.
@@ -80,8 +89,6 @@ const K_W = 600, K_H = 420;
 
 // Abstand einer gezeichneten Geraden von einem Punkt, der noch als „geht hindurch“ gilt.
 const LINIE_TOL = 12;
-// Abstand zweier Punkte, die noch als derselbe gelten (Klickgenauigkeit am Bildschirm).
-const PUNKT_TOL = 14;
 
 // Abstand eines Punktes von der Geraden AB (Kreuzprodukt mit normierter Richtung).
 function abstandZurGeraden(P, A, B) {
@@ -780,7 +787,7 @@ function mountR1(container) {
   const btnLeeren = el("button", { type: "button", class: "btn" }, "↩ Felder leeren");
   btnRow.appendChild(btnPruefen);
   btnRow.appendChild(btnLeeren);
-  const feedback = el("div", { class: "aufgabe-feedback" });
+  const feedback = el("div", { class: "aufgabe-feedback", "aria-live": "polite" });
   box.appendChild(tabs);
   box.appendChild(figurEl);
   box.appendChild(liste);
@@ -813,7 +820,10 @@ function mountR1(container) {
     figurEl.appendChild(zeichneR1(v.alpha, marken));
     figurEl.appendChild(el("p", { class: "th-figur-unterschrift" }, `${v.key}) Gegeben: ${v.gegeben}`));
     liste.innerHTML = "";
-    felder.forEach((f) => liste.appendChild(el("li", {}, [ziffer(f.nr) + " " + f.name + ": ", f.input])));
+    felder.forEach((f) => {
+      f.input.setAttribute("aria-label", f.name);   // Grund: siehe Aufgabe R2 unten
+      liste.appendChild(el("li", {}, [ziffer(f.nr) + " " + f.name + ": ", f.input]));
+    });
     feedback.innerHTML = "";
   }
 
@@ -909,7 +919,7 @@ function mountR2(container) {
   const figurEl = el("div", { class: "th-figur-wrap" });
   const liste = el("ol", { class: "th-luecken-liste" });
   const btnPruefen = el("button", { type: "button", class: "btn btn-primary" }, "Prüfen");
-  const feedback = el("div", { class: "aufgabe-feedback" });
+  const feedback = el("div", { class: "aufgabe-feedback", "aria-live": "polite" });
   box.appendChild(figurEl);
   box.appendChild(liste);
   box.appendChild(el("div", { class: "btn-row" }, btnPruefen));
@@ -919,7 +929,12 @@ function mountR2(container) {
   const marken = { mitte: { frei: false, text: num(R2_MITTE, 0) + "°" } };
   felder.forEach((f) => (marken[f.schluessel] = { frei: true, nr: f.nr, text: ziffer(f.nr) }));
   figurEl.appendChild(zeichneR2(marken));
-  felder.forEach((f) => liste.appendChild(el("li", {}, [ziffer(f.nr) + " " + f.name + ": ", f.input])));
+  felder.forEach((f) => {
+    // Die Nummer vor dem Feld ist nur Text daneben, keine Beschriftung; ein Screenreader erfährt
+    // sonst nicht, welcher Winkel in dieses Feld gehört.
+    f.input.setAttribute("aria-label", f.name);
+    liste.appendChild(el("li", {}, [ziffer(f.nr) + " " + f.name + ": ", f.input]));
+  });
 
   btnPruefen.addEventListener("click", () => {
     let alleOk = true;
@@ -1037,14 +1052,17 @@ function mountR3(container) {
     html: "<strong>*</strong> und <strong>**</strong> sind Zugaben — die Aufgabe kann auch ohne diese beiden Antworten abgegeben werden.",
   });
   const btnPruefen = el("button", { type: "button", class: "btn btn-primary" }, "Prüfen");
-  const feedback = el("div", { class: "aufgabe-feedback" });
+  const feedback = el("div", { class: "aufgabe-feedback", "aria-live": "polite" });
   box.appendChild(figurEl);
   box.appendChild(liste);
   box.appendChild(legende);
   box.appendChild(el("div", { class: "btn-row" }, btnPruefen));
   box.appendChild(feedback);
 
-  const felder = R3_FELDER.map((f, i) => ({ ...f, nr: i + 1, input: el("input", { type: "text", inputmode: "decimal", placeholder: f.einheit }) }));
+  const felder = R3_FELDER.map((f, i) => ({
+    ...f, nr: i + 1,
+    input: el("input", { type: "text", inputmode: "decimal", placeholder: f.einheit, "aria-label": f.name + " in " + f.einheit }),
+  }));
   felder.forEach((f) =>
     liste.appendChild(
       el("li", { class: f.stern ? "th-zugabe" : "" }, [

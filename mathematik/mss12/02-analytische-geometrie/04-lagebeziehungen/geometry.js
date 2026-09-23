@@ -207,13 +207,11 @@ export function pointLine(P, s, u) {
   stepsA.push(E([0, 1, 2].map((i) => `${["I", "II", "III"][i]}: ${N.fmt(P[i])} = ${N.fmt(s[i])} + r·${N.fmt(u[i])}`).join("<br>")));
   let r = w[idx0].div(u[idx0]);
   stepsA.push(T(`Aus Gleichung ${["I", "II", "III"][idx0]} folgt r = ${N.fmt(r)}. Einsetzen in die übrigen Gleichungen zur Kontrolle:`));
-  let consistentA = true;
   for (const i of [0, 1, 2]) {
     if (i === idx0) continue;
     const lhs = s[i].add(u[i].mul(r));
     const ok = lhs.equals(P[i]);
     stepsA.push(E(`${["I", "II", "III"][i]}: ${N.fmt(s[i])} + ${N.fmt(r)}·${N.fmt(u[i])} = ${N.fmt(lhs)} ${ok ? "=" : "≠"} ${N.fmt(P[i])} ${ok ? "✓" : "✗"}`));
-    if (!ok) consistentA = false;
   }
 
   // ---- Verfahren 2: Lotfußpunktverfahren (Skalarprodukt) — Grundkurs-geeignet, da nur
@@ -280,7 +278,6 @@ export function pointPlane(P, plane, mode = "param") {
   stepsA.push(
     E([0, 1, 2].map((i) => `${["I", "II", "III"][i]}: ${N.fmt(P[i])} = ${N.fmt(plane.s[i])} + r·${N.fmt(plane.u[i])} + s·${N.fmt(plane.v[i])}`).join("<br>"))
   );
-  let consistentA = false;
   if (solved) {
     const { x: rVal, y: sVal, i, j } = solved;
     const k = [0, 1, 2].find((x) => x !== i && x !== j);
@@ -290,7 +287,6 @@ export function pointPlane(P, plane, mode = "param") {
     stepsA.push(
       E(`${["I", "II", "III"][k]}: ${N.fmt(plane.s[k])} + ${N.fmt(rVal)}·${N.fmt(plane.u[k])} + ${N.fmt(sVal)}·${N.fmt(plane.v[k])} = ${N.fmt(lhs)} ${ok ? "=" : "≠"} ${N.fmt(P[k])} ${ok ? "✓" : "✗"}`)
     );
-    consistentA = ok;
   }
 
   // ---- Verfahren 2: Einsetzen in die Koordinatenform ----
@@ -844,7 +840,6 @@ export function planePlane(E1, E2, m1 = "coord", m2 = "coord") {
   stepsParamSubst.push(E(`${substTerm(0)} + ${substTerm(1)} + ${substTerm(2)} = ${N.fmt(E2.d)}`));
   stepsParamSubst.push(E(`${N.fmt(A)}·${l1} + ${N.fmt(B)}·${m1p} = ${N.fmt(rhs2)}`));
 
-  let schnittgeradeM2 = null;
   if (A.isZero() && B.isZero()) {
     stepsParamSubst.push(
       T(
@@ -888,7 +883,6 @@ export function planePlane(E1, E2, m1 = "coord", m2 = "coord") {
     }
     const { vec: dirVecInt, steps: scaleStepsPS } = integerizeDirection(dirVec, "k");
     stepsParamSubst.push(...scaleStepsPS);
-    schnittgeradeM2 = { s: point0, u: dirVecInt };
     stepsParamSubst.push(E(N.lineHTML("h", point0, dirVecInt, "k")));
   }
 

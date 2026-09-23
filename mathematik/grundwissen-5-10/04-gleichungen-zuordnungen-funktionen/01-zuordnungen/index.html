@@ -50,7 +50,7 @@
     <div class="widget">
       <div class="btn-row">
         <label>Beispiel:
-          <select id="da-beispiel" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <select id="da-beispiel" style="padding:0.4rem" class="eingabe">
             <option value="broetchen">Brötchen → Preis</option>
             <option value="arbeiter">Arbeiter → Bauzeit</option>
             <option value="taxi">Fahrstrecke → Taxipreis</option>
@@ -82,8 +82,8 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>Preis für 1 Brötchen: <input type="range" id="pr-k" min="20" max="120" step="5" value="50" style="vertical-align:middle;width:10rem"> <span id="pr-k-anzeige" style="font-weight:800;color:#157347"></span></label>
-        <label>Anzahl hervorheben: <input type="range" id="pr-x" min="1" max="8" step="1" value="5" style="vertical-align:middle;width:8rem"> <span id="pr-x-anzeige" style="font-weight:800;color:#b3261e"></span></label>
+        <label>Preis für 1 Brötchen: <input type="range" id="pr-k" min="20" max="120" step="5" value="50" style="vertical-align:middle;width:10rem"> <span id="pr-k-anzeige" class="wert farbe-gruen"></span></label>
+        <label>Anzahl hervorheben: <input type="range" id="pr-x" min="1" max="8" step="1" value="5" style="vertical-align:middle;width:8rem"> <span id="pr-x-anzeige" class="wert farbe-rot"></span></label>
       </div>
       <div class="geo-wrap" id="pr-mount"></div>
       <table class="zo-tabelle" id="pr-tabelle"></table>
@@ -112,8 +112,8 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>Gesamtarbeit (Arbeitstage): <input type="range" id="ap-k" min="12" max="72" step="6" value="48" style="vertical-align:middle;width:10rem"> <span id="ap-k-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
-        <label>Arbeiterzahl hervorheben: <input type="range" id="ap-x" min="1" max="12" step="1" value="4" style="vertical-align:middle;width:8rem"> <span id="ap-x-anzeige" style="font-weight:800;color:#b3261e"></span></label>
+        <label>Gesamtarbeit (Arbeitstage): <input type="range" id="ap-k" min="12" max="72" step="6" value="48" style="vertical-align:middle;width:10rem"> <span id="ap-k-anzeige" class="wert farbe-violett"></span></label>
+        <label>Arbeiterzahl hervorheben: <input type="range" id="ap-x" min="1" max="12" step="1" value="4" style="vertical-align:middle;width:8rem"> <span id="ap-x-anzeige" class="wert farbe-rot"></span></label>
       </div>
       <div class="geo-wrap" id="ap-mount"></div>
       <table class="zo-tabelle" id="ap-tabelle"></table>
@@ -141,7 +141,7 @@
     <div class="widget">
       <div class="btn-row">
         <label>Art:
-          <select id="ds-art" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <select id="ds-art" style="padding:0.4rem" class="eingabe">
             <option value="prop">proportional (Brötchen → Preis)</option>
             <option value="anti">antiproportional (Arbeiter → Tage)</option>
           </select>
@@ -167,7 +167,7 @@
     <div class="widget">
       <div class="btn-row">
         <label>Datensatz:
-          <select id="we-satz" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <select id="we-satz" style="padding:0.4rem" class="eingabe">
             <option value="taxi">Taxi: Grundpreis und Kilometerpreis</option>
             <option value="prop">Tankstelle: Liter → Preis</option>
             <option value="anti">Pizza teilen: Personen → Stücke</option>
@@ -227,6 +227,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=4"></script>
+<script type="module" src="lernpfad.js?v=5"></script>
 </body>
 </html>

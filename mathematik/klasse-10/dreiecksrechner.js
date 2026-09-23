@@ -219,9 +219,17 @@
     return solveSSW(sides, angles, sideKeys, angleKey);
   }
 
+  // Ein Zahlformat je Stellenzahl, einmal angelegt: toLocaleString() baut bei jedem Aufruf ein neues
+  // Intl.NumberFormat, und das kostet rund 40-mal so viel wie das Formatieren selbst.
+  const ZAHLFORMATE = new Map();
+  function zahlformat(stellen) {
+    let f = ZAHLFORMATE.get(stellen);
+    if (!f) ZAHLFORMATE.set(stellen, (f = new Intl.NumberFormat("de-DE", { maximumFractionDigits: stellen })));
+    return f;
+  }
   function fmt(n, digits = 3) {
     if (n == null || Number.isNaN(n)) return "–";
-    return n.toLocaleString("de-DE", { maximumFractionDigits: digits });
+    return zahlformat(digits).format(n);
   }
 
   function circumcenter(A, B, C) {
