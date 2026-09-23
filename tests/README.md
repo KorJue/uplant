@@ -60,7 +60,8 @@ Vorbild ist `themen/test-trigonometrische-funktionen.js`. Bewährt haben sich:
   dann hin und wieder an einer Stelle fehl, an der nichts kaputt ist.
 
   ```bash
-  node tests/werkzeug-streuung.js [Namensfilter]
+  export NODE_PATH=/opt/node22/lib/node_modules     # sonst: Cannot find module 'playwright'
+  /opt/node22/bin/node tests/werkzeug-streuung.js [Namensfilter|Seitenpfad]
   ```
 
   Das Werkzeug würfelt jede Aufgabe 200-mal, rechnet aus der Zahl der
@@ -69,6 +70,14 @@ Vorbild ist `themen/test-trigonometrische-funktionen.js`. Bewährt haben sich:
   **10⁻⁴-Quantil** — vorsichtshalber für `0,8 · n`, weil die Schätzung selbst
   streut. Dieser Wert gehört in `mindestensVerschieden`, die Messung als
   Kommentar daneben.
+
+  Ein **Namensfilter** wählt unter den Grundwissen-Themen, die sich selbst
+  finden. Jede andere Seite — etwa eine der Klasse 8 — wird über ihren **Pfad ab
+  der Wurzel** gewählt, weil sie kein Thema im Sinne von `alleThemen()` ist:
+
+  ```bash
+  /opt/node22/bin/node tests/werkzeug-streuung.js /mathematik/klasse-8/geometrie/flaecheninhalte.html
+  ```
 * **Die Zusagen des Generators mitprüfen.** Wo eine Aufgabe ihre Parameter so
   wählt, dass Lösung und Fehlerwerte paarweise verschieden bleiben, gehört
   genau das in jede Runde geprüft: Fällt ein Fehlerwert mit der Lösung
