@@ -481,7 +481,8 @@ später „aufräumt" und damit die Zeichnung falsch macht.
 ## 8. Git
 
 Entwicklungszweig, Commit und Push wie in der jeweiligen Aufgabenstellung
-vorgegeben. **Kein Pull Request ohne ausdrückliche Bitte.**
+vorgegeben.
+Pull Requests werden immer automatisch durchgeführt — so vom Projektinhaber festgelegt. Ist eine Aufgabe fertig und gepusht, gehört dazu: Pull Request gegen den Standardzweig anlegen (oder den schon bestehenden des Zweigs aktualisieren), Beschreibung mit dem Prüfergebnis füllen und mergen (Merge-Commit, wie bei den bisherigen). Voraussetzung für den Merge ist ein grüner Gesamtlauf auf genau dem gepushten Stand (§ 6) und ein konfliktfreier PR; ist eines davon nicht erfüllt, wird erst behoben und dann gemergt — nie umgekehrt. Nach dem Merge ist der Zweig erledigt: Neue Arbeit beginnt auf demselben Zweignamen, neu aufgesetzt auf den Standardzweig.
 
 Commit-Nachrichten auf Deutsch: erste Zeile als Zusammenfassung, dann ein
 Absatz, der das **Warum** erklärt — besonders bei fachlichen Entscheidungen
