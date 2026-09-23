@@ -48,9 +48,9 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>Winkel α = <input type="range" id="gk-alpha" min="10" max="170" step="5" value="55" style="vertical-align:middle;width:13rem"> <span id="gk-alpha-anzeige" style="font-weight:800"></span></label>
+        <label>Winkel α = <input type="range" id="gk-alpha" min="10" max="170" step="5" value="55" style="vertical-align:middle;width:13rem"> <span id="gk-alpha-anzeige" class="wert"></span></label>
         <label>Beziehung zeigen:
-          <select id="gk-art" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <select id="gk-art" style="padding:0.4rem 0.6rem" class="eingabe">
             <option value="scheitel">Scheitelwinkel</option>
             <option value="neben">Nebenwinkel</option>
             <option value="alle">alle vier Winkel</option>
@@ -79,9 +79,9 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>Schnittwinkel α = <input type="range" id="pa-alpha" min="35" max="145" step="5" value="55" style="vertical-align:middle;width:13rem"> <span id="pa-alpha-anzeige" style="font-weight:800"></span></label>
+        <label>Schnittwinkel α = <input type="range" id="pa-alpha" min="35" max="145" step="5" value="55" style="vertical-align:middle;width:13rem"> <span id="pa-alpha-anzeige" class="wert"></span></label>
         <label>Beziehung zeigen:
-          <select id="pa-art" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <select id="pa-art" style="padding:0.4rem 0.6rem" class="eingabe">
             <option value="stufen">Stufenwinkel (F)</option>
             <option value="wechsel">Wechselwinkel (Z)</option>
             <option value="nachbar">Nachbarwinkel (U)</option>
@@ -111,8 +111,8 @@
     <p>Das ist keine Beobachtung an ein paar Beispielen, sondern eine <strong>Folgerung</strong> aus dem vorigen Abschnitt. Zieht man durch eine Ecke eine Parallele zur gegenüberliegenden Seite, liegen die drei Winkel dort nebeneinander an einer Geraden — und eine Gerade ist ein gestreckter Winkel, also 180°.</p>
     <div class="widget">
       <div class="btn-row">
-        <label>α = <input type="range" id="dr-alpha" min="15" max="120" step="5" value="50" style="vertical-align:middle;width:10rem"> <span id="dr-alpha-anzeige" style="font-weight:800"></span></label>
-        <label>β = <input type="range" id="dr-beta" min="15" max="120" step="5" value="60" style="vertical-align:middle;width:10rem"> <span id="dr-beta-anzeige" style="font-weight:800"></span></label>
+        <label>α = <input type="range" id="dr-alpha" min="15" max="120" step="5" value="50" style="vertical-align:middle;width:10rem"> <span id="dr-alpha-anzeige" class="wert"></span></label>
+        <label>β = <input type="range" id="dr-beta" min="15" max="120" step="5" value="60" style="vertical-align:middle;width:10rem"> <span id="dr-beta-anzeige" class="wert"></span></label>
         <label><input type="checkbox" id="dr-beweis"> Begründung einblenden</label>
       </div>
       <div class="geo-wrap" id="dr-mount"></div>
@@ -133,8 +133,8 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>α = <input type="range" id="aw-alpha" min="20" max="110" step="5" value="45" style="vertical-align:middle;width:10rem"> <span id="aw-alpha-anzeige" style="font-weight:800"></span></label>
-        <label>γ = <input type="range" id="aw-gamma" min="20" max="110" step="5" value="65" style="vertical-align:middle;width:10rem"> <span id="aw-gamma-anzeige" style="font-weight:800"></span></label>
+        <label>α = <input type="range" id="aw-alpha" min="20" max="110" step="5" value="45" style="vertical-align:middle;width:10rem"> <span id="aw-alpha-anzeige" class="wert"></span></label>
+        <label>γ = <input type="range" id="aw-gamma" min="20" max="110" step="5" value="65" style="vertical-align:middle;width:10rem"> <span id="aw-gamma-anzeige" class="wert"></span></label>
       </div>
       <div class="geo-wrap" id="aw-mount"></div>
       <div id="aw-text" class="event-result"></div>
@@ -154,7 +154,7 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>Eckenzahl n = <input type="range" id="vi-n" min="3" max="12" step="1" value="5" style="vertical-align:middle;width:11rem"> <span id="vi-n-anzeige" style="font-weight:800"></span></label>
+        <label>Eckenzahl n = <input type="range" id="vi-n" min="3" max="12" step="1" value="5" style="vertical-align:middle;width:11rem"> <span id="vi-n-anzeige" class="wert"></span></label>
       </div>
       <div class="geo-wrap" id="vi-mount"></div>
       <div id="vi-text" class="event-result"></div>
@@ -200,6 +200,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=3"></script>
+<script type="module" src="lernpfad.js?v=4"></script>
 </body>
 </html>

@@ -26,11 +26,20 @@ function el(tag, attrs = {}, children = []) {
   });
   return e;
 }
+// Ein Zahlformat je Stellenzahl, einmal angelegt: toLocaleString() baut bei jedem Aufruf ein neues
+// Intl.NumberFormat, und das kostet rund 40-mal so viel wie das Formatieren selbst — bei jeder
+// Reglerbewegung dutzendfach.
+const ZAHLFORMATE = new Map();
+function zahlformat(stellen) {
+  let f = ZAHLFORMATE.get(stellen);
+  if (!f) ZAHLFORMATE.set(stellen, (f = new Intl.NumberFormat("de-DE", { maximumFractionDigits: stellen })));
+  return f;
+}
 function pct(x) {
-  return (x * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 }) + " %";
+  return zahlformat(1).format(x * 100) + " %";
 }
 function num(x, digits = 3) {
-  return x.toLocaleString("de-DE", { maximumFractionDigits: digits });
+  return zahlformat(digits).format(x);
 }
 // Toleranter Zahlen-Parser: erlaubt "0,25", "1/4" und "25%" als Antwort.
 function parseFlexibleNumber(raw) {
@@ -89,7 +98,7 @@ function mountExercise(container, { title, prompt, placeholder, check, explain }
   const box = el("div", { class: "exercise" });
   box.appendChild(el("h3", {}, title));
   box.appendChild(el("p", { html: prompt }));
-  const input = el("input", { type: "text", placeholder: placeholder || "Antwort" });
+  const input = el("input", { type: "text", placeholder: placeholder || "Antwort", "aria-label": "Antwort zu: " + title });
   const btn = el("button", { type: "button", class: "btn btn-primary" }, "Prüfen");
   const feedback = el("div", { class: "exercise-feedback" });
   const row = el("div", { class: "exercise-input-row" }, [input, btn]);
@@ -285,7 +294,7 @@ function buildTreeFill(box, { stage1, stage2Fn, blankSpecs }) {
 
   const list = el("ol", { class: "exercise-blank-list" });
   blankSpecs.forEach((spec) => {
-    const inp = el("input", { type: "text", placeholder: "Dezimalzahl oder %" });
+    const inp = el("input", { type: "text", placeholder: "Dezimalzahl oder %", "aria-label": spec.labelText });
     spec.input = inp;
     list.appendChild(el("li", {}, [circled(spec.num) + " " + spec.labelText + ": ", inp]));
   });
@@ -299,8 +308,8 @@ function checkTreeBlanks(svg, blankSpecs) {
     const val = parseFlexibleNumber(spec.input.value);
     const ok = Math.abs(val - spec.correct) < 0.01;
     if (!ok) allOk = false;
-    spec.input.style.borderColor = ok ? "#157347" : "#b3261e";
-    spec.input.style.background = ok ? "#e7f6ec" : "#fdecec";
+    spec.input.classList.toggle("eingabe-ok", ok);
+    spec.input.classList.toggle("eingabe-fehler", !ok);
     const svgText = svg.querySelector(`[data-blank="${spec.num}"]`);
     if (svgText) {
       svgText.textContent = spec.render(spec.correct);
@@ -310,35 +319,21 @@ function checkTreeBlanks(svg, blankSpecs) {
   });
   return allOk;
 }
-function mountTreeFillExercise(container, { title, prompt, stage1, stage2Fn, blankSpecs, explain }) {
-  const box = el("div", { class: "exercise" });
-  box.appendChild(el("h3", {}, title));
-  box.appendChild(el("p", { html: prompt }));
-  const { svg } = buildTreeFill(box, { stage1, stage2Fn, blankSpecs });
-
-  const btn = el("button", { type: "button", class: "btn btn-primary" }, "Prüfen");
-  const feedback = el("div", { class: "exercise-feedback" });
-  box.appendChild(el("div", { class: "btn-row" }, btn));
-  box.appendChild(feedback);
-  btn.addEventListener("click", () => {
-    const allOk = checkTreeBlanks(svg, blankSpecs);
-    feedback.className = "exercise-feedback " + (allOk ? "ok" : "err");
-    feedback.textContent = (allOk ? "✓ Alles richtig! " : "✗ Noch nicht alles richtig — die korrekten Werte stehen jetzt im Baum. ") + (explain || "");
-  });
-
-  container.appendChild(box);
-}
 
 // ---------- Baustein: Vierfeldertafel mit Lücken ----------
 function buildVftFill(box, { rowLabel, colLabel, rowKeys, colKeys, given, blanks, formatFn }) {
   const cellRefs = {};
-  function cellNode(key) {
+  // name: Zeile und Spalte der Zelle. Eine Tabellenzelle hat keine sichtbare Beschriftung, ein
+  // Screenreader wüsste sonst nicht, welches Feld er gerade vorliest.
+  function cellNode(key, name) {
     if (key in given) return document.createTextNode(formatFn(given[key]));
     if (key in blanks) {
       const inp = el("input", {
         type: "text",
         placeholder: "?",
-        style: "width:4.5rem;padding:0.3rem 0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)",
+        class: "eingabe",
+        style: "width:4.5rem;padding:0.3rem 0.4rem",
+        "aria-label": name,
       });
       cellRefs[key] = inp;
       return inp;
@@ -349,11 +344,11 @@ function buildVftFill(box, { rowLabel, colLabel, rowKeys, colKeys, given, blanks
   const table = el("table", { class: "vft-table" });
   table.appendChild(el("tr", {}, [el("th", {}), ...colKeys.map((ck) => el("th", {}, (colLabel ? colLabel + ": " : "") + ck.label)), el("th", { class: "vft-gesamt" }, "gesamt")]));
   rowKeys.forEach((rk) => {
-    const cells = colKeys.map((ck) => el("td", { class: "vft-cell" }, cellNode(rk.key + "_" + ck.key)));
-    table.appendChild(el("tr", {}, [el("th", {}, (rowLabel ? rowLabel + ": " : "") + rk.label), ...cells, el("td", { class: "vft-gesamt" }, cellNode("row_" + rk.key))]));
+    const cells = colKeys.map((ck) => el("td", { class: "vft-cell" }, cellNode(rk.key + "_" + ck.key, (rowLabel ? rowLabel + ": " : "") + rk.label + ", " + (colLabel ? colLabel + ": " : "") + ck.label)));
+    table.appendChild(el("tr", {}, [el("th", {}, (rowLabel ? rowLabel + ": " : "") + rk.label), ...cells, el("td", { class: "vft-gesamt" }, cellNode("row_" + rk.key, (rowLabel ? rowLabel + ": " : "") + rk.label + ", gesamt"))]));
   });
   table.appendChild(
-    el("tr", {}, [el("th", { class: "vft-gesamt" }, "gesamt"), ...colKeys.map((ck) => el("td", { class: "vft-gesamt" }, cellNode("col_" + ck.key))), el("td", { class: "vft-gesamt" }, cellNode("grand"))])
+    el("tr", {}, [el("th", { class: "vft-gesamt" }, "gesamt"), ...colKeys.map((ck) => el("td", { class: "vft-gesamt" }, cellNode("col_" + ck.key, (colLabel ? colLabel + ": " : "") + ck.label + ", gesamt"))), el("td", { class: "vft-gesamt" }, cellNode("grand", "Gesamtsumme"))])
   );
   box.appendChild(table);
   return { cellRefs };
@@ -365,8 +360,8 @@ function checkVftBlanks(cellRefs, blanks) {
     const val = parseFlexibleNumber(inp.value);
     const ok = Math.abs(val - blanks[key]) < 0.01;
     if (!ok) allOk = false;
-    inp.style.borderColor = ok ? "#157347" : "#b3261e";
-    inp.style.background = ok ? "#e7f6ec" : "#fdecec";
+    inp.classList.toggle("eingabe-ok", ok);
+    inp.classList.toggle("eingabe-fehler", !ok);
   });
   return allOk;
 }

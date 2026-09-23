@@ -456,7 +456,6 @@ function unitToDocxBlocks(u, isTop) {
 
 function getSelectedTopUnits() {
   const checked = [...els.tree.querySelectorAll("input[type=checkbox]:checked")].map((cb) => cb.dataset.unitId);
-  const checkedSet = new Set(checked);
 
   function isDescendantOfSelected(unit, ancestors) {
     return ancestors.some((a) => a !== unit && isDescendant(a, unit));

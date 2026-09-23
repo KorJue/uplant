@@ -49,10 +49,10 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label><input type="number" id="vv-z" value="2" min="0" max="12" style="width:3.6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
-        <input type="number" id="vv-n" value="5" min="1" max="12" style="width:3.6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label><input type="number" id="vv-z" aria-label="Zähler" value="2" min="0" max="12" style="width:3.6rem;padding:0.4rem" class="eingabe"> /
+        <input type="number" id="vv-n" aria-label="Nenner" value="5" min="1" max="12" style="width:3.6rem;padding:0.4rem" class="eingabe"></label>
         <span style="align-self:center">·</span>
-        <label><input type="number" id="vv-k" value="3" min="1" max="8" style="width:3.6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label><input type="number" id="vv-k" value="3" min="1" max="8" style="width:3.6rem;padding:0.4rem" class="eingabe"></label>
       </div>
       <div id="vv-mount" class="summe-viz"></div>
       <div id="vv-text" class="event-result"></div>
@@ -72,11 +72,11 @@
     <p>Warum das stimmt, zeigt das <strong>Flächenmodell</strong>: Ein Einheitsquadrat wird waagerecht in <em>b</em> Streifen und senkrecht in <em>d</em> Streifen zerlegt. Es entstehen b·d gleich große Kästchen — und der doppelt markierte Bereich enthält genau a·c davon.</p>
     <div class="widget">
       <div class="btn-row">
-        <label><input type="number" id="bb-z1" value="2" min="0" max="8" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
-        <input type="number" id="bb-n1" value="3" min="1" max="8" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label><input type="number" id="bb-z1" aria-label="Zähler des ersten Bruchs" value="2" min="0" max="8" style="width:3.4rem;padding:0.4rem" class="eingabe"> /
+        <input type="number" id="bb-n1" aria-label="Nenner des ersten Bruchs" value="3" min="1" max="8" style="width:3.4rem;padding:0.4rem" class="eingabe"></label>
         <span style="align-self:center">·</span>
-        <label><input type="number" id="bb-z2" value="3" min="0" max="8" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
-        <input type="number" id="bb-n2" value="4" min="1" max="8" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label><input type="number" id="bb-z2" aria-label="Zähler des zweiten Bruchs" value="3" min="0" max="8" style="width:3.4rem;padding:0.4rem" class="eingabe"> /
+        <input type="number" id="bb-n2" aria-label="Nenner des zweiten Bruchs" value="4" min="1" max="8" style="width:3.4rem;padding:0.4rem" class="eingabe"></label>
       </div>
       <div id="bb-mount" class="flaechen-viz"></div>
       <div id="bb-text" class="event-result"></div>
@@ -91,11 +91,11 @@
     <p>Stehen gemeinsame Faktoren über und unter dem Bruchstrich, darf man sie <strong>vor</strong> dem Ausrechnen kürzen. Das Ergebnis ist dasselbe — aber die Zahlen bleiben klein:</p>
     <div class="widget">
       <div class="btn-row">
-        <label><input type="number" id="kv-z1" value="3" min="1" max="24" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
-        <input type="number" id="kv-n1" value="8" min="1" max="24" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label><input type="number" id="kv-z1" aria-label="Zähler des ersten Bruchs" value="3" min="1" max="24" style="width:3.4rem;padding:0.4rem" class="eingabe"> /
+        <input type="number" id="kv-n1" aria-label="Nenner des ersten Bruchs" value="8" min="1" max="24" style="width:3.4rem;padding:0.4rem" class="eingabe"></label>
         <span style="align-self:center">·</span>
-        <label><input type="number" id="kv-z2" value="4" min="1" max="24" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
-        <input type="number" id="kv-n2" value="9" min="1" max="24" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label><input type="number" id="kv-z2" aria-label="Zähler des zweiten Bruchs" value="4" min="1" max="24" style="width:3.4rem;padding:0.4rem" class="eingabe"> /
+        <input type="number" id="kv-n2" aria-label="Nenner des zweiten Bruchs" value="9" min="1" max="24" style="width:3.4rem;padding:0.4rem" class="eingabe"></label>
       </div>
       <div id="kv-mount" class="event-result"></div>
     </div>
@@ -119,11 +119,11 @@
     <p><strong>Warum?</strong> Dividieren fragt: „Wie oft passt der Divisor in den Dividenden?“ In 1 passt <span class="bruch"><span class="z">1</span><span class="n">4</span></span> genau <strong>4-mal</strong> hinein — und 4 ist der Kehrwert von <span class="bruch"><span class="z">1</span><span class="n">4</span></span>. Probiere es aus:</p>
     <div class="widget">
       <div class="btn-row">
-        <label><input type="number" id="dv-z1" value="3" min="0" max="20" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
-        <input type="number" id="dv-n1" value="4" min="1" max="20" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label><input type="number" id="dv-z1" aria-label="Zähler des ersten Bruchs" value="3" min="0" max="20" style="width:3.4rem;padding:0.4rem" class="eingabe"> /
+        <input type="number" id="dv-n1" aria-label="Nenner des ersten Bruchs" value="4" min="1" max="20" style="width:3.4rem;padding:0.4rem" class="eingabe"></label>
         <span style="align-self:center">:</span>
-        <label><input type="number" id="dv-z2" value="1" min="1" max="20" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
-        <input type="number" id="dv-n2" value="8" min="1" max="20" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label><input type="number" id="dv-z2" aria-label="Zähler des zweiten Bruchs" value="1" min="1" max="20" style="width:3.4rem;padding:0.4rem" class="eingabe"> /
+        <input type="number" id="dv-n2" aria-label="Nenner des zweiten Bruchs" value="8" min="1" max="20" style="width:3.4rem;padding:0.4rem" class="eingabe"></label>
       </div>
       <div id="dv-mount" class="summe-viz"></div>
       <div id="dv-text" class="event-result"></div>
@@ -151,9 +151,9 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <input type="text" id="dm-a" value="2,5" style="width:6.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="text" id="dm-a" aria-label="erster Faktor" value="2,5" style="width:6.5rem;padding:0.4rem" class="eingabe">
         <span style="align-self:center">·</span>
-        <input type="text" id="dm-b" value="0,4" style="width:6.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="text" id="dm-b" aria-label="zweiter Faktor" value="0,4" style="width:6.5rem;padding:0.4rem" class="eingabe">
       </div>
       <div id="dm-mount" class="event-result"></div>
     </div>
@@ -171,9 +171,9 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <input type="text" id="dd-a" value="7,2" style="width:6.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="text" id="dd-a" aria-label="Dividend" value="7,2" style="width:6.5rem;padding:0.4rem" class="eingabe">
         <span style="align-self:center">:</span>
-        <input type="text" id="dd-b" value="0,8" style="width:6.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="text" id="dd-b" aria-label="Divisor" value="0,8" style="width:6.5rem;padding:0.4rem" class="eingabe">
       </div>
       <div id="dd-mount"></div>
       <div id="dd-text" class="event-result"></div>
@@ -219,6 +219,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=4"></script>
+<script type="module" src="lernpfad.js?v=5"></script>
 </body>
 </html>

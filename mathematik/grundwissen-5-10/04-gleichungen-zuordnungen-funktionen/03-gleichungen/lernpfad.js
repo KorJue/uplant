@@ -17,7 +17,7 @@
 
 "use strict";
 
-import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=1";
+import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=2";
 
 // ---------- Helfer ----------
 
@@ -45,10 +45,19 @@ function el(tag, attrs = {}, children = []) {
   });
   return e;
 }
+// Ein Zahlformat je Stellenzahl, einmal angelegt: toLocaleString() baut bei jedem Aufruf ein neues
+// Intl.NumberFormat, und das kostet rund 40-mal so viel wie das Formatieren selbst — bei jeder
+// Reglerbewegung dutzendfach.
+const ZAHLFORMATE = new Map();
+function zahlformat(stellen) {
+  let f = ZAHLFORMATE.get(stellen);
+  if (!f) ZAHLFORMATE.set(stellen, (f = new Intl.NumberFormat("de-DE", { maximumFractionDigits: stellen })));
+  return f;
+}
 function num(x, digits = 4) {
   // Das Minuszeichen ist U+2212, nicht der Bindestrich: In einer Gleichung
   // stehen Rechenzeichen, keine Trennstriche.
-  return x.toLocaleString("de-DE", { maximumFractionDigits: digits }).replace("-", "\u2212");
+  return zahlformat(digits).format(x).replace("-", "\u2212");
 }
 function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -141,10 +150,6 @@ function loesungsart(g) {
 }
 function loesung(g) {
   return brDurch(brMinus(g.d, g.b), brMinus(g.a, g.c));
-}
-// Wert der linken bzw. rechten Seite an einer Stelle — die Grundlage der Probe.
-function seitenwert(koef, konst, x) {
-  return brZahl(koef) * x + brZahl(konst);
 }
 
 // ---------- Protokollzeilen ----------

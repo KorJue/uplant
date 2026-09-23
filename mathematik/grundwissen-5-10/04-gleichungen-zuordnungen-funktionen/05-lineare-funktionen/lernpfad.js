@@ -14,7 +14,7 @@
 
 "use strict";
 
-import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=1";
+import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../aufgaben.js?v=2";
 
 // ---------- Helfer ----------
 
@@ -42,6 +42,15 @@ function el(tag, attrs = {}, children = []) {
   });
   return e;
 }
+// Ein Zahlformat je Stellenzahl, einmal angelegt: toLocaleString() baut bei jedem Aufruf ein neues
+// Intl.NumberFormat, und das kostet rund 40-mal so viel wie das Formatieren selbst — bei jeder
+// Reglerbewegung dutzendfach.
+const ZAHLFORMATE = new Map();
+function zahlformat(stellen) {
+  let f = ZAHLFORMATE.get(stellen);
+  if (!f) ZAHLFORMATE.set(stellen, (f = new Intl.NumberFormat("de-DE", { maximumFractionDigits: stellen })));
+  return f;
+}
 function num(x, digits = 4) {
   // In einer Funktionsgleichung steht ein Minuszeichen, kein Bindestrich.
   // Außerdem: −b : m ergibt für b = 0 die negative Null, und die erschiene
@@ -49,7 +58,7 @@ function num(x, digits = 4) {
   // dann über das Vorzeichen entschieden — was als 0 erscheint, ist eine 0.
   const gerundet = Number(x.toFixed(Math.min(20, digits)));
   const z = gerundet === 0 ? 0 : x;
-  return z.toLocaleString("de-DE", { maximumFractionDigits: digits }).replace("-", "−");
+  return zahlformat(digits).format(z).replace("-", "−");
 }
 function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -599,7 +608,6 @@ function renderAufstellen() {
   mount.innerHTML = "";
   mount.appendChild(afBild(a, weg));
 
-  const dx = a.q[0] - a.p[0], dy = a.q[1] - a.p[1];
   const zeilen = [];
   if (weg === "zwei") {
     zeilen.push(schrittZeile(`m = <span class="nw">(${num(a.q[1])} − ${klammer(a.p[1])}) : (${num(a.q[0])} − ${klammer(a.p[0])})</span> = <span class="mv">${num(a.m)}</span>`,

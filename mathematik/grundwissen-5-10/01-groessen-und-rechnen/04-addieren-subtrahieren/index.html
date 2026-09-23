@@ -63,13 +63,13 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label><input type="number" id="gn-z1" value="1" min="0" max="20" style="width:3.6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
-        <select id="gn-op" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <label><input type="number" id="gn-z1" value="1" min="0" max="20" style="width:3.6rem;padding:0.4rem" class="eingabe"></label>
+        <select id="gn-op" aria-label="Rechenzeichen" style="padding:0.4rem 0.6rem" class="eingabe">
           <option value="add">+</option>
           <option value="sub">−</option>
         </select>
-        <label><input type="number" id="gn-z2" value="1" min="0" max="20" style="width:3.6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
-        <label>bei gemeinsamem Nenner <input type="number" id="gn-n" value="4" min="1" max="20" style="width:3.6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label><input type="number" id="gn-z2" value="1" min="0" max="20" style="width:3.6rem;padding:0.4rem" class="eingabe"></label>
+        <label>bei gemeinsamem Nenner <input type="number" id="gn-n" value="4" min="1" max="20" style="width:3.6rem;padding:0.4rem" class="eingabe"></label>
       </div>
       <div id="gn-mount" class="summe-viz"></div>
       <div id="gn-text" class="event-result"></div>
@@ -90,14 +90,14 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label><input type="number" id="un-z1" value="1" min="0" max="20" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
-        <input type="number" id="un-n1" value="2" min="1" max="20" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
-        <select id="un-op" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <label><input type="number" id="un-z1" aria-label="Zähler des ersten Bruchs" value="1" min="0" max="20" style="width:3.4rem;padding:0.4rem" class="eingabe"> /
+        <input type="number" id="un-n1" aria-label="Nenner des ersten Bruchs" value="2" min="1" max="20" style="width:3.4rem;padding:0.4rem" class="eingabe"></label>
+        <select id="un-op" aria-label="Rechenzeichen" style="padding:0.4rem 0.6rem" class="eingabe">
           <option value="add">+</option>
           <option value="sub">−</option>
         </select>
-        <label><input type="number" id="un-z2" value="1" min="0" max="20" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
-        <input type="number" id="un-n2" value="3" min="1" max="20" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label><input type="number" id="un-z2" aria-label="Zähler des zweiten Bruchs" value="1" min="0" max="20" style="width:3.4rem;padding:0.4rem" class="eingabe"> /
+        <input type="number" id="un-n2" aria-label="Nenner des zweiten Bruchs" value="3" min="1" max="20" style="width:3.4rem;padding:0.4rem" class="eingabe"></label>
       </div>
       <div id="un-mount" class="summe-viz"></div>
       <div id="un-text" class="event-result"></div>
@@ -120,16 +120,16 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label><input type="number" id="gm-g1" value="3" min="0" max="20" style="width:3.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
-        <input type="number" id="gm-z1" value="1" min="0" max="20" style="width:3.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
-        <input type="number" id="gm-n1" value="4" min="1" max="20" style="width:3.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
-        <select id="gm-op" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <label><input type="number" id="gm-g1" aria-label="Ganze der ersten Zahl" value="3" min="0" max="20" style="width:3.2rem;padding:0.4rem" class="eingabe">
+        <input type="number" id="gm-z1" aria-label="Zähler der ersten Zahl" value="1" min="0" max="20" style="width:3.2rem;padding:0.4rem" class="eingabe"> /
+        <input type="number" id="gm-n1" aria-label="Nenner der ersten Zahl" value="4" min="1" max="20" style="width:3.2rem;padding:0.4rem" class="eingabe"></label>
+        <select id="gm-op" aria-label="Rechenzeichen" style="padding:0.4rem 0.6rem" class="eingabe">
           <option value="sub">−</option>
           <option value="add">+</option>
         </select>
-        <label><input type="number" id="gm-g2" value="1" min="0" max="20" style="width:3.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
-        <input type="number" id="gm-z2" value="3" min="0" max="20" style="width:3.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
-        <input type="number" id="gm-n2" value="4" min="1" max="20" style="width:3.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label><input type="number" id="gm-g2" aria-label="Ganze der zweiten Zahl" value="1" min="0" max="20" style="width:3.2rem;padding:0.4rem" class="eingabe">
+        <input type="number" id="gm-z2" aria-label="Zähler der zweiten Zahl" value="3" min="0" max="20" style="width:3.2rem;padding:0.4rem" class="eingabe"> /
+        <input type="number" id="gm-n2" aria-label="Nenner der zweiten Zahl" value="4" min="1" max="20" style="width:3.2rem;padding:0.4rem" class="eingabe"></label>
       </div>
       <div id="gm-text" class="event-result"></div>
     </div>
@@ -167,12 +167,12 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <input type="text" id="dz-a" value="24,7" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
-        <select id="dz-op" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="text" id="dz-a" aria-label="erste Dezimalzahl" value="24,7" style="width:7rem;padding:0.4rem" class="eingabe">
+        <select id="dz-op" aria-label="Rechenzeichen" style="padding:0.4rem 0.6rem" class="eingabe">
           <option value="add">+</option>
           <option value="sub">−</option>
         </select>
-        <input type="text" id="dz-b" value="8,35" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="text" id="dz-b" aria-label="zweite Dezimalzahl" value="8,35" style="width:7rem;padding:0.4rem" class="eingabe">
       </div>
       <div class="schriftlich-wrap" id="dz-mount"></div>
       <div id="dz-text" class="event-result"></div>
@@ -191,11 +191,11 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label><input type="number" id="ko-z1" value="3" min="0" max="30" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
-        <input type="number" id="ko-n1" value="5" min="1" max="30" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label><input type="number" id="ko-z1" aria-label="Zähler des ersten Bruchs" value="3" min="0" max="30" style="width:3.4rem;padding:0.4rem" class="eingabe"> /
+        <input type="number" id="ko-n1" aria-label="Nenner des ersten Bruchs" value="5" min="1" max="30" style="width:3.4rem;padding:0.4rem" class="eingabe"></label>
         <span style="align-self:center">+</span>
-        <label><input type="number" id="ko-z2" value="5" min="0" max="30" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> /
-        <input type="number" id="ko-n2" value="6" min="1" max="30" style="width:3.4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label><input type="number" id="ko-z2" aria-label="Zähler des zweiten Bruchs" value="5" min="0" max="30" style="width:3.4rem;padding:0.4rem" class="eingabe"> /
+        <input type="number" id="ko-n2" aria-label="Nenner des zweiten Bruchs" value="6" min="1" max="30" style="width:3.4rem;padding:0.4rem" class="eingabe"></label>
       </div>
       <div id="ko-mount" class="event-result"></div>
     </div>
@@ -239,6 +239,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=3"></script>
+<script type="module" src="lernpfad.js?v=4"></script>
 </body>
 </html>

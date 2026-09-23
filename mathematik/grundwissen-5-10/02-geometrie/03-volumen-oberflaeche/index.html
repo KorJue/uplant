@@ -52,9 +52,9 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>Länge a = <input type="number" id="af-a" value="4" min="1" max="6" style="width:4.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
-        <label>Breite b = <input type="number" id="af-b" value="3" min="1" max="5" style="width:4.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
-        <label>Höhe c = <input type="number" id="af-c" value="2" min="1" max="5" style="width:4.2rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>Länge a = <input type="number" id="af-a" value="4" min="1" max="6" style="width:4.2rem;padding:0.4rem" class="eingabe"> cm</label>
+        <label>Breite b = <input type="number" id="af-b" value="3" min="1" max="5" style="width:4.2rem;padding:0.4rem" class="eingabe"> cm</label>
+        <label>Höhe c = <input type="number" id="af-c" value="2" min="1" max="5" style="width:4.2rem;padding:0.4rem" class="eingabe"> cm</label>
       </div>
       <div class="geo-wrap" id="af-mount"></div>
       <div id="af-text" class="event-result"></div>
@@ -75,9 +75,9 @@
     <p>Warum V = a · b · c? Weil beim Ausfüllen genau <em>c</em> Schichten übereinanderliegen und jede Schicht aus a · b Würfeln besteht. Die untere Schicht ist die Grundfläche aus <a href="../02-flaeche-umfang/index.html#sec-rechteck">Thema 2</a> — deshalb schreibt man auch <strong>V = G · h</strong>: Grundfläche mal Höhe.</p>
     <div class="widget">
       <div class="btn-row">
-        <label>a = <input type="number" id="qd-a" value="5" min="1" max="20" step="0.5" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
-        <label>b = <input type="number" id="qd-b" value="3" min="1" max="20" step="0.5" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
-        <label>c = <input type="number" id="qd-c" value="4" min="1" max="20" step="0.5" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>a = <input type="number" id="qd-a" value="5" min="1" max="20" step="0.5" style="width:4.5rem;padding:0.4rem" class="eingabe"> cm</label>
+        <label>b = <input type="number" id="qd-b" value="3" min="1" max="20" step="0.5" style="width:4.5rem;padding:0.4rem" class="eingabe"> cm</label>
+        <label>c = <input type="number" id="qd-c" value="4" min="1" max="20" step="0.5" style="width:4.5rem;padding:0.4rem" class="eingabe"> cm</label>
       </div>
       <div class="geo-wrap" id="qd-mount"></div>
       <div class="groessen-paar" id="qd-werte"></div>
@@ -97,9 +97,9 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>a = <input type="number" id="nz-a" value="5" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
-        <label>b = <input type="number" id="nz-b" value="3" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
-        <label>c = <input type="number" id="nz-c" value="4" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>a = <input type="number" id="nz-a" value="5" min="1" max="9" style="width:4rem;padding:0.4rem" class="eingabe"> cm</label>
+        <label>b = <input type="number" id="nz-b" value="3" min="1" max="9" style="width:4rem;padding:0.4rem" class="eingabe"> cm</label>
+        <label>c = <input type="number" id="nz-c" value="4" min="1" max="9" style="width:4rem;padding:0.4rem" class="eingabe"> cm</label>
       </div>
       <div class="geo-wrap" id="nz-mount"></div>
       <div id="nz-text" class="event-result"></div>
@@ -118,7 +118,7 @@
     <div class="widget">
       <div class="btn-row">
         <label>Volumen V =
-          <select id="vv-v" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></select>
+          <select id="vv-v" style="padding:0.4rem 0.6rem" class="eingabe"></select>
           cm³
         </label>
       </div>
@@ -143,10 +143,10 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <input type="number" id="re-wert" value="3" min="0" step="any" style="width:6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
-        <select id="re-von" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></select>
+        <input type="number" id="re-wert" aria-label="Wert" value="3" min="0" step="any" style="width:6rem;padding:0.4rem" class="eingabe">
+        <select id="re-von" aria-label="Ausgangseinheit" style="padding:0.4rem 0.6rem" class="eingabe"></select>
         <span style="align-self:center">→</span>
-        <select id="re-nach" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></select>
+        <select id="re-nach" aria-label="Zieleinheit" style="padding:0.4rem 0.6rem" class="eingabe"></select>
       </div>
       <div id="re-treppe"></div>
       <div id="re-text" class="event-result"></div>
@@ -176,18 +176,18 @@
     <div class="widget">
       <div class="btn-row">
         <label>Strategie:
-          <select id="zk-strategie" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <select id="zk-strategie" style="padding:0.4rem 0.6rem" class="eingabe">
             <option value="zerlegen">Zerlegen (addieren)</option>
             <option value="ergaenzen">Ergänzen (subtrahieren)</option>
           </select>
         </label>
       </div>
       <div class="btn-row">
-        <label>Gesamtlänge: <input type="number" id="zk-a" value="6" min="3" max="10" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
-        <label>Tiefe: <input type="number" id="zk-b" value="3" min="1" max="6" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
-        <label>Gesamthöhe: <input type="number" id="zk-c" value="5" min="2" max="8" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
-        <label>Stufe breit: <input type="number" id="zk-d" value="2" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
-        <label>Stufe hoch: <input type="number" id="zk-e" value="2" min="1" max="7" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>Gesamtlänge: <input type="number" id="zk-a" value="6" min="3" max="10" style="width:4rem;padding:0.4rem" class="eingabe"> cm</label>
+        <label>Tiefe: <input type="number" id="zk-b" value="3" min="1" max="6" style="width:4rem;padding:0.4rem" class="eingabe"> cm</label>
+        <label>Gesamthöhe: <input type="number" id="zk-c" value="5" min="2" max="8" style="width:4rem;padding:0.4rem" class="eingabe"> cm</label>
+        <label>Stufe breit: <input type="number" id="zk-d" value="2" min="1" max="9" style="width:4rem;padding:0.4rem" class="eingabe"> cm</label>
+        <label>Stufe hoch: <input type="number" id="zk-e" value="2" min="1" max="7" style="width:4rem;padding:0.4rem" class="eingabe"> cm</label>
       </div>
       <div class="geo-wrap" id="zk-mount"></div>
       <div class="groessen-paar" id="zk-werte"></div>
@@ -234,6 +234,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=3"></script>
+<script type="module" src="lernpfad.js?v=4"></script>
 </body>
 </html>

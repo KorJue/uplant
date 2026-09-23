@@ -50,7 +50,7 @@
     <div class="widget">
       <div class="lf-schalter" id="fu-schalter"></div>
       <div class="btn-row">
-        <label>Senkrechte bei x = <input type="range" id="fu-x" min="-6" max="6" step="1" value="2" style="vertical-align:middle;width:10rem"> <span id="fu-x-anzeige" style="font-weight:800;color:#b3261e"></span></label>
+        <label>Senkrechte bei x = <input type="range" id="fu-x" min="-6" max="6" step="1" value="2" style="vertical-align:middle;width:10rem"> <span id="fu-x-anzeige" class="wert farbe-rot"></span></label>
       </div>
       <div class="geo-wrap" id="fu-mount"></div>
       <div class="lf-karten" id="fu-karten"></div>
@@ -76,8 +76,8 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>Steigung m: <input type="range" id="ge-m" min="-6" max="6" step="1" value="2" style="vertical-align:middle;width:10rem"> <span id="ge-m-anzeige" style="font-weight:800;color:#b3650a"></span></label>
-        <label>y-Achsenabschnitt b: <input type="range" id="ge-b" min="-6" max="6" step="1" value="-3" style="vertical-align:middle;width:10rem"> <span id="ge-b-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
+        <label>Steigung m: <input type="range" id="ge-m" min="-6" max="6" step="1" value="2" style="vertical-align:middle;width:10rem"> <span id="ge-m-anzeige" class="wert farbe-orange"></span></label>
+        <label>y-Achsenabschnitt b: <input type="range" id="ge-b" min="-6" max="6" step="1" value="-3" style="vertical-align:middle;width:10rem"> <span id="ge-b-anzeige" class="wert farbe-violett"></span></label>
       </div>
       <div class="lf-gleichung" id="ge-gleichung"></div>
       <div class="geo-wrap" id="ge-mount"></div>
@@ -105,10 +105,10 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>P: x₁ = <input type="range" id="st-x1" min="-6" max="5" step="1" value="-2" style="vertical-align:middle;width:7rem"> <span id="st-x1-anzeige" style="font-weight:800;color:#157347"></span></label>
-        <label>y₁ = <input type="range" id="st-y1" min="-8" max="8" step="1" value="-1" style="vertical-align:middle;width:7rem"> <span id="st-y1-anzeige" style="font-weight:800;color:#157347"></span></label>
-        <label>Q: x₂ = <input type="range" id="st-x2" min="-5" max="6" step="1" value="2" style="vertical-align:middle;width:7rem"> <span id="st-x2-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
-        <label>y₂ = <input type="range" id="st-y2" min="-8" max="8" step="1" value="5" style="vertical-align:middle;width:7rem"> <span id="st-y2-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>P: x₁ = <input type="range" id="st-x1" min="-6" max="5" step="1" value="-2" style="vertical-align:middle;width:7rem"> <span id="st-x1-anzeige" class="wert farbe-gruen"></span></label>
+        <label>y₁ = <input type="range" id="st-y1" min="-8" max="8" step="1" value="-1" style="vertical-align:middle;width:7rem"> <span id="st-y1-anzeige" class="wert farbe-gruen"></span></label>
+        <label>Q: x₂ = <input type="range" id="st-x2" min="-5" max="6" step="1" value="2" style="vertical-align:middle;width:7rem"> <span id="st-x2-anzeige" class="wert farbe-blau"></span></label>
+        <label>y₂ = <input type="range" id="st-y2" min="-8" max="8" step="1" value="5" style="vertical-align:middle;width:7rem"> <span id="st-y2-anzeige" class="wert farbe-blau"></span></label>
       </div>
       <div class="geo-wrap" id="st-mount"></div>
       <div class="lf-schritte" id="st-schritte"></div>
@@ -163,10 +163,10 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>g: m₁ = <input type="range" id="sn-m1" min="-4" max="4" step="1" value="2" style="vertical-align:middle;width:7rem"> <span id="sn-m1-anzeige" style="font-weight:800;color:#157347"></span></label>
-        <label>b₁ = <input type="range" id="sn-b1" min="-6" max="6" step="1" value="-4" style="vertical-align:middle;width:7rem"> <span id="sn-b1-anzeige" style="font-weight:800;color:#157347"></span></label>
-        <label>h: m₂ = <input type="range" id="sn-m2" min="-4" max="4" step="1" value="-1" style="vertical-align:middle;width:7rem"> <span id="sn-m2-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
-        <label>b₂ = <input type="range" id="sn-b2" min="-6" max="6" step="1" value="2" style="vertical-align:middle;width:7rem"> <span id="sn-b2-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>g: m₁ = <input type="range" id="sn-m1" min="-4" max="4" step="1" value="2" style="vertical-align:middle;width:7rem"> <span id="sn-m1-anzeige" class="wert farbe-gruen"></span></label>
+        <label>b₁ = <input type="range" id="sn-b1" min="-6" max="6" step="1" value="-4" style="vertical-align:middle;width:7rem"> <span id="sn-b1-anzeige" class="wert farbe-gruen"></span></label>
+        <label>h: m₂ = <input type="range" id="sn-m2" min="-4" max="4" step="1" value="-1" style="vertical-align:middle;width:7rem"> <span id="sn-m2-anzeige" class="wert farbe-blau"></span></label>
+        <label>b₂ = <input type="range" id="sn-b2" min="-6" max="6" step="1" value="2" style="vertical-align:middle;width:7rem"> <span id="sn-b2-anzeige" class="wert farbe-blau"></span></label>
       </div>
       <div class="lf-gleichung" id="sn-gleichung"></div>
       <div class="geo-wrap" id="sn-mount"></div>
@@ -223,6 +223,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=4"></script>
+<script type="module" src="lernpfad.js?v=5"></script>
 </body>
 </html>

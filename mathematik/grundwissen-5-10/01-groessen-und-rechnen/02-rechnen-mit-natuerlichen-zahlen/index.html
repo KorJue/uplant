@@ -53,14 +53,14 @@
     <p>Wähle eine Rechenart und zwei Zahlen — die Bestandteile werden benannt:</p>
     <div class="widget">
       <div class="btn-row">
-        <input type="number" id="fb-a" value="12" min="0" max="9999" style="width:6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
-        <select id="fb-op" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="number" id="fb-a" aria-label="erste Zahl" value="12" min="0" max="9999" style="width:6rem;padding:0.4rem" class="eingabe">
+        <select id="fb-op" aria-label="Rechenart" style="padding:0.4rem 0.6rem" class="eingabe">
           <option value="add">+ (Addition)</option>
           <option value="sub">− (Subtraktion)</option>
           <option value="mul">· (Multiplikation)</option>
           <option value="div">: (Division)</option>
         </select>
-        <input type="number" id="fb-b" value="4" min="1" max="9999" style="width:6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="number" id="fb-b" aria-label="zweite Zahl" value="4" min="1" max="9999" style="width:6rem;padding:0.4rem" class="eingabe">
       </div>
       <div id="fb-mount"></div>
     </div>
@@ -80,9 +80,9 @@
     <p>Das Distributivgesetz lässt sich als Rechteck-Flächenmodell anschaulich machen: Ein Rechteck mit den Seiten a und (b + c) hat denselben Flächeninhalt wie zwei nebeneinanderliegende Rechtecke a·b und a·c. Probiere es aus:</p>
     <div class="widget">
       <div class="btn-row">
-        <label>a = <input type="number" id="dist-a" value="4" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
-        <label>b = <input type="number" id="dist-b" value="3" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
-        <label>c = <input type="number" id="dist-c" value="5" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label>a = <input type="number" id="dist-a" value="4" min="1" max="9" style="width:4rem;padding:0.4rem" class="eingabe"></label>
+        <label>b = <input type="number" id="dist-b" value="3" min="1" max="9" style="width:4rem;padding:0.4rem" class="eingabe"></label>
+        <label>c = <input type="number" id="dist-c" value="5" min="1" max="9" style="width:4rem;padding:0.4rem" class="eingabe"></label>
       </div>
       <div id="dist-mount"></div>
       <div id="dist-formel" class="event-result"></div>
@@ -96,8 +96,8 @@
     <p>Überzeuge dich selbst — wähle zwei Zahlen und vergleiche beide Reihenfolgen:</p>
     <div class="widget">
       <div class="btn-row">
-        <label>a = <input type="number" id="gg-a" value="12" min="1" max="99" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
-        <label>b = <input type="number" id="gg-b" value="4" min="1" max="99" style="width:4.5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label>a = <input type="number" id="gg-a" value="12" min="1" max="99" style="width:4.5rem;padding:0.4rem" class="eingabe"></label>
+        <label>b = <input type="number" id="gg-b" value="4" min="1" max="99" style="width:4.5rem;padding:0.4rem" class="eingabe"></label>
       </div>
       <div id="gg-mount"></div>
     </div>
@@ -115,9 +115,9 @@
     <p>Wähle drei Zahlen — vergleiche, wie sich das Ergebnis mit und ohne Klammern unterscheidet:</p>
     <div class="widget">
       <div class="btn-row">
-        <label>a = <input type="number" id="rang-a" value="2" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
-        <label>b = <input type="number" id="rang-b" value="3" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
-        <label>c = <input type="number" id="rang-c" value="4" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"></label>
+        <label>a = <input type="number" id="rang-a" value="2" min="1" max="9" style="width:4rem;padding:0.4rem" class="eingabe"></label>
+        <label>b = <input type="number" id="rang-b" value="3" min="1" max="9" style="width:4rem;padding:0.4rem" class="eingabe"></label>
+        <label>c = <input type="number" id="rang-c" value="4" min="1" max="9" style="width:4rem;padding:0.4rem" class="eingabe"></label>
       </div>
       <div id="rang-mount"></div>
     </div>
@@ -143,14 +143,14 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <input type="number" id="ue-a" value="4837" min="0" max="99999" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
-        <select id="ue-op" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="number" id="ue-a" aria-label="erste Zahl" value="4837" min="0" max="99999" style="width:7rem;padding:0.4rem" class="eingabe">
+        <select id="ue-op" aria-label="Rechenzeichen" style="padding:0.4rem 0.6rem" class="eingabe">
           <option value="add">+</option>
           <option value="sub">−</option>
           <option value="mul">·</option>
         </select>
-        <input type="number" id="ue-b" value="2695" min="0" max="99999" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
-        <select id="ue-stelle" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="number" id="ue-b" aria-label="zweite Zahl" value="2695" min="0" max="99999" style="width:7rem;padding:0.4rem" class="eingabe">
+        <select id="ue-stelle" aria-label="Rundungsstelle" style="padding:0.4rem 0.6rem" class="eingabe">
           <option value="10">auf Zehner runden</option>
           <option value="100">auf Hunderter runden</option>
           <option value="1000" selected>auf Tausender runden</option>
@@ -167,18 +167,18 @@
     <p>Bei der <span class="term">schriftlichen Addition</span> werden die Zahlen stellengerecht untereinandergeschrieben und spaltenweise von rechts nach links addiert. Ist eine Spaltensumme 10 oder mehr, wird ein <span class="term">Übertrag</span> in die nächste Spalte notiert.</p>
     <div class="widget">
       <div class="btn-row">
-        <input type="number" id="add-a" value="4837" min="0" max="99999" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="number" id="add-a" aria-label="erster Summand" value="4837" min="0" max="99999" style="width:7rem;padding:0.4rem" class="eingabe">
         <span style="align-self:center">+</span>
-        <input type="number" id="add-b" value="2695" min="0" max="99999" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="number" id="add-b" aria-label="zweiter Summand" value="2695" min="0" max="99999" style="width:7rem;padding:0.4rem" class="eingabe">
       </div>
       <div class="schriftlich-wrap" id="add-mount"></div>
     </div>
     <p>Bei der <span class="term">schriftlichen Subtraktion</span> wird spaltenweise subtrahiert. Reicht eine Ziffer nicht aus, wird von der nächsten Spalte <span class="term">entbündelt</span> (10 dazugeliehen, in der Nachbarspalte als −1 vermerkt).</p>
     <div class="widget">
       <div class="btn-row">
-        <input type="number" id="sub-a" value="8043" min="0" max="99999" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="number" id="sub-a" aria-label="Minuend" value="8043" min="0" max="99999" style="width:7rem;padding:0.4rem" class="eingabe">
         <span style="align-self:center">−</span>
-        <input type="number" id="sub-b" value="2758" min="0" max="99999" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="number" id="sub-b" aria-label="Subtrahend" value="2758" min="0" max="99999" style="width:7rem;padding:0.4rem" class="eingabe">
       </div>
       <div class="schriftlich-wrap" id="sub-mount"></div>
       <p class="progress-note" id="sub-hinweis"></p>
@@ -197,18 +197,18 @@
     <p>Bei der schriftlichen Multiplikation mit einer <strong>einstelligen</strong> Zahl wird jede Ziffer von rechts nach links mit dem Faktor multipliziert; ist das Teilprodukt 10 oder mehr, wird auch hier ein Übertrag notiert.</p>
     <div class="widget">
       <div class="btn-row">
-        <input type="number" id="mul-a" value="3247" min="0" max="99999" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="number" id="mul-a" aria-label="erster Faktor" value="3247" min="0" max="99999" style="width:7rem;padding:0.4rem" class="eingabe">
         <span style="align-self:center">·</span>
-        <input type="number" id="mul-b" value="6" min="1" max="9" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="number" id="mul-b" aria-label="zweiter Faktor" value="6" min="1" max="9" style="width:4rem;padding:0.4rem" class="eingabe">
       </div>
       <div class="schriftlich-wrap" id="mul-mount"></div>
     </div>
     <p>Ist der zweite Faktor <strong>mehrstellig</strong>, zerlegt man ihn mit dem <a href="#sec-rechengesetze">Distributivgesetz</a> in seine Stellenwerte und berechnet für jede Ziffer ein <span class="term">Teilprodukt</span>. Die Teilprodukte werden stellengerecht untereinandergeschrieben und addiert:</p>
     <div class="widget">
       <div class="btn-row">
-        <input type="number" id="mulm-a" value="234" min="1" max="9999" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="number" id="mulm-a" aria-label="erster Faktor" value="234" min="1" max="9999" style="width:7rem;padding:0.4rem" class="eingabe">
         <span style="align-self:center">·</span>
-        <input type="number" id="mulm-b" value="56" min="1" max="999" style="width:6rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="number" id="mulm-b" aria-label="zweiter Faktor" value="56" min="1" max="999" style="width:6rem;padding:0.4rem" class="eingabe">
       </div>
       <div class="schriftlich-wrap" id="mulm-mount"></div>
       <div id="mulm-erklaerung" class="event-result"></div>
@@ -223,9 +223,9 @@
     <div class="formula-block">Dividend : Divisor = Quotient Rest r, mit Divisor · Quotient + r = Dividend und 0 ≤ r &lt; Divisor</div>
     <div class="widget">
       <div class="btn-row">
-        <input type="number" id="div-a" value="47" min="0" max="99999" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="number" id="div-a" aria-label="Dividend" value="47" min="0" max="99999" style="width:7rem;padding:0.4rem" class="eingabe">
         <span style="align-self:center">:</span>
-        <input type="number" id="div-b" value="6" min="1" max="999" style="width:5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="number" id="div-b" aria-label="Divisor" value="6" min="1" max="999" style="width:5rem;padding:0.4rem" class="eingabe">
       </div>
       <div id="div-ergebnis" class="event-result"></div>
     </div>
@@ -238,9 +238,9 @@
     <p>Bei größeren Zahlen rechnet man <span class="term">schriftlich</span>: Man teilt von links beginnend Stelle für Stelle, zieht das jeweilige Produkt ab und „holt“ die nächste Ziffer herunter.</p>
     <div class="widget">
       <div class="btn-row">
-        <input type="number" id="ldiv-a" value="4536" min="1" max="999999" style="width:7rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="number" id="ldiv-a" aria-label="Dividend" value="4536" min="1" max="999999" style="width:7rem;padding:0.4rem" class="eingabe">
         <span style="align-self:center">:</span>
-        <input type="number" id="ldiv-b" value="7" min="1" max="99" style="width:5rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+        <input type="number" id="ldiv-b" aria-label="Divisor" value="7" min="1" max="99" style="width:5rem;padding:0.4rem" class="eingabe">
       </div>
       <div class="schriftlich-wrap" id="ldiv-mount"></div>
       <div id="ldiv-probe" class="event-result"></div>
@@ -285,6 +285,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=4"></script>
+<script type="module" src="lernpfad.js?v=5"></script>
 </body>
 </html>

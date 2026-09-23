@@ -62,7 +62,7 @@
     <div class="widget">
       <div class="btn-row">
         <label>Konstruktion:
-          <select id="kn-art" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <select id="kn-art" style="padding:0.4rem 0.6rem" class="eingabe">
             <option value="mittelsenkrechte">Mittelsenkrechte einer Strecke</option>
             <option value="winkelhalbierende">Winkelhalbierende eines Winkels</option>
             <option value="lot">Lot von einem Punkt auf eine Gerade</option>
@@ -95,9 +95,9 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>a = <input type="number" id="du-a" value="4" min="1" max="12" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
-        <label>b = <input type="number" id="du-b" value="6" min="1" max="12" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
-        <label>c = <input type="number" id="du-c" value="7" min="1" max="12" style="width:4rem;padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)"> cm</label>
+        <label>a = <input type="number" id="du-a" value="4" min="1" max="12" style="width:4rem;padding:0.4rem" class="eingabe"> cm</label>
+        <label>b = <input type="number" id="du-b" value="6" min="1" max="12" style="width:4rem;padding:0.4rem" class="eingabe"> cm</label>
+        <label>c = <input type="number" id="du-c" value="7" min="1" max="12" style="width:4rem;padding:0.4rem" class="eingabe"> cm</label>
       </div>
       <div class="geo-wrap" id="du-mount"></div>
       <div id="du-pruefung"></div>
@@ -136,7 +136,7 @@
     <div class="widget">
       <div class="btn-row">
         <label>Linienart:
-          <select id="bl-art" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <select id="bl-art" style="padding:0.4rem 0.6rem" class="eingabe">
             <option value="mittelsenkrechte">Mittelsenkrechten → Umkreismittelpunkt</option>
             <option value="winkelhalbierende">Winkelhalbierende → Inkreismittelpunkt</option>
             <option value="hoehe">Höhen → Höhenschnittpunkt</option>
@@ -189,6 +189,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=3"></script>
+<script type="module" src="lernpfad.js?v=4"></script>
 </body>
 </html>

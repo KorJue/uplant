@@ -1,5 +1,5 @@
 import { F, vec3 } from "./vectors.js?v=14";
-import { planeFromParam, planeFromCoord, planeFromNormal, pointPoint, pointLine, pointPlane, lineLine, planePlane, linePlane } from "./geometry.js?v=14";
+import { planeFromParam, planeFromCoord, planeFromNormal, pointPoint, pointLine, pointPlane, lineLine, planePlane, linePlane } from "./geometry.js?v=15";
 import * as N from "./notation.js?v=14";
 import {
   toNum3,

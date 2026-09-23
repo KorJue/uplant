@@ -46,9 +46,9 @@
     <div class="widget">
       <div class="widget-row">
         <div class="widget-col">
-          <p>Prävalenz P(infiziert): <input type="number" id="input-praevalenz" value="10" min="0.1" max="99" step="0.1" style="width:5rem;padding:0.3rem 0.5rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">&nbsp;%</p>
-          <p>Sensitivität P<sub>infiziert</sub>(positiv): <input type="number" id="input-sensitivitaet" value="96" min="0" max="100" step="0.1" style="width:5rem;padding:0.3rem 0.5rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">&nbsp;%</p>
-          <p>Spezifität P<sub>nicht infiziert</sub>(negativ): <input type="number" id="input-spezifitaet" value="99" min="0" max="100" step="0.1" style="width:5rem;padding:0.3rem 0.5rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">&nbsp;%</p>
+          <p>Prävalenz P(infiziert): <input type="number" id="input-praevalenz" aria-label="Prävalenz in Prozent" value="10" min="0.1" max="99" step="0.1" style="width:5rem;padding:0.3rem 0.5rem" class="eingabe">&nbsp;%</p>
+          <p>Sensitivität P<sub>infiziert</sub>(positiv): <input type="number" id="input-sensitivitaet" aria-label="Sensitivität in Prozent" value="96" min="0" max="100" step="0.1" style="width:5rem;padding:0.3rem 0.5rem" class="eingabe">&nbsp;%</p>
+          <p>Spezifität P<sub>nicht infiziert</sub>(negativ): <input type="number" id="input-spezifitaet" aria-label="Spezifität in Prozent" value="99" min="0" max="100" step="0.1" style="width:5rem;padding:0.3rem 0.5rem" class="eingabe">&nbsp;%</p>
         </div>
         <div class="widget-col">
           <div id="bayes-result" class="event-result"></div>
@@ -152,6 +152,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=2"></script>
+<script type="module" src="lernpfad.js?v=3"></script>
 </body>
 </html>

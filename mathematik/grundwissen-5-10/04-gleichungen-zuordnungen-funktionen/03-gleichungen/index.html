@@ -49,10 +49,10 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>Anzahl der x-Kästchen: <input type="range" id="wa-a" min="1" max="4" step="1" value="3" style="vertical-align:middle;width:7rem"> <span id="wa-a-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
-        <label>Gewichte links: <input type="range" id="wa-b" min="0" max="8" step="1" value="5" style="vertical-align:middle;width:7rem"> <span id="wa-b-anzeige" style="font-weight:800;color:#157347"></span></label>
-        <label>Gewichte rechts: <input type="range" id="wa-c" min="2" max="20" step="1" value="20" style="vertical-align:middle;width:8rem"> <span id="wa-c-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
-        <label>Probierwert für x: <input type="range" id="wa-x" min="0" max="10" step="1" value="2" style="vertical-align:middle;width:8rem"> <span id="wa-x-anzeige" style="font-weight:800;color:#b3261e"></span></label>
+        <label>Anzahl der x-Kästchen: <input type="range" id="wa-a" min="1" max="4" step="1" value="3" style="vertical-align:middle;width:7rem"> <span id="wa-a-anzeige" class="wert farbe-violett"></span></label>
+        <label>Gewichte links: <input type="range" id="wa-b" min="0" max="8" step="1" value="5" style="vertical-align:middle;width:7rem"> <span id="wa-b-anzeige" class="wert farbe-gruen"></span></label>
+        <label>Gewichte rechts: <input type="range" id="wa-c" min="2" max="20" step="1" value="20" style="vertical-align:middle;width:8rem"> <span id="wa-c-anzeige" class="wert farbe-blau"></span></label>
+        <label>Probierwert für x: <input type="range" id="wa-x" min="0" max="10" step="1" value="2" style="vertical-align:middle;width:8rem"> <span id="wa-x-anzeige" class="wert farbe-rot"></span></label>
       </div>
       <div class="gl-gleichung" id="wa-gleichung"></div>
       <div class="geo-wrap" id="wa-mount"></div>
@@ -82,7 +82,7 @@
     <div class="widget">
       <div class="btn-row">
         <label>Startgleichung:
-          <select id="uf-start" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <select id="uf-start" style="padding:0.4rem" class="eingabe">
             <option value="0">3x + 5 = 20</option>
             <option value="1">5x − 4 = 2x + 11</option>
             <option value="2">2x + 9 = 1</option>
@@ -115,10 +115,10 @@
     </div>
     <div class="widget">
       <div class="btn-row">
-        <label>a: <input type="range" id="ls-a" min="2" max="9" step="1" value="5" style="vertical-align:middle;width:6rem"> <span id="ls-a-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
-        <label>c: <input type="range" id="ls-c" min="0" max="8" step="1" value="2" style="vertical-align:middle;width:6rem"> <span id="ls-c-anzeige" style="font-weight:800;color:#6d28d9"></span></label>
-        <label>b: <input type="range" id="ls-b" min="-9" max="9" step="1" value="-4" style="vertical-align:middle;width:7rem"> <span id="ls-b-anzeige" style="font-weight:800;color:#157347"></span></label>
-        <label>Lösung x: <input type="range" id="ls-x" min="-6" max="8" step="1" value="5" style="vertical-align:middle;width:7rem"> <span id="ls-x-anzeige" style="font-weight:800;color:#b3261e"></span></label>
+        <label>a: <input type="range" id="ls-a" min="2" max="9" step="1" value="5" style="vertical-align:middle;width:6rem"> <span id="ls-a-anzeige" class="wert farbe-violett"></span></label>
+        <label>c: <input type="range" id="ls-c" min="0" max="8" step="1" value="2" style="vertical-align:middle;width:6rem"> <span id="ls-c-anzeige" class="wert farbe-violett"></span></label>
+        <label>b: <input type="range" id="ls-b" min="-9" max="9" step="1" value="-4" style="vertical-align:middle;width:7rem"> <span id="ls-b-anzeige" class="wert farbe-gruen"></span></label>
+        <label>Lösung x: <input type="range" id="ls-x" min="-6" max="8" step="1" value="5" style="vertical-align:middle;width:7rem"> <span id="ls-x-anzeige" class="wert farbe-rot"></span></label>
       </div>
       <div class="gl-gleichung" id="ls-gleichung"></div>
       <div class="gl-protokoll" id="ls-protokoll"></div>
@@ -148,14 +148,14 @@
     <div class="widget">
       <div class="btn-row">
         <label>Fall:
-          <select id="sf-fall" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <select id="sf-fall" style="padding:0.4rem" class="eingabe">
             <option value="eine">genau eine Lösung</option>
             <option value="keine">keine Lösung</option>
             <option value="alle">jede Zahl ist Lösung</option>
           </select>
         </label>
-        <label>Steigung links: <input type="range" id="sf-a" min="-3" max="4" step="1" value="3" style="vertical-align:middle;width:7rem"> <span id="sf-a-anzeige" style="font-weight:800;color:#157347"></span></label>
-        <label>Zahl rechts: <input type="range" id="sf-d" min="-6" max="6" step="1" value="4" style="vertical-align:middle;width:7rem"> <span id="sf-d-anzeige" style="font-weight:800;color:#1d4ed8"></span></label>
+        <label>Steigung links: <input type="range" id="sf-a" min="-3" max="4" step="1" value="3" style="vertical-align:middle;width:7rem"> <span id="sf-a-anzeige" class="wert farbe-gruen"></span></label>
+        <label>Zahl rechts: <input type="range" id="sf-d" min="-6" max="6" step="1" value="4" style="vertical-align:middle;width:7rem"> <span id="sf-d-anzeige" class="wert farbe-blau"></span></label>
       </div>
       <div class="gl-gleichung" id="sf-gleichung"></div>
       <div class="geo-wrap" id="sf-mount"></div>
@@ -184,7 +184,7 @@
     <div class="widget">
       <div class="btn-row">
         <label>Aufgabe:
-          <select id="au-typ" style="padding:0.4rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:var(--card-bg);color:var(--text)">
+          <select id="au-typ" style="padding:0.4rem" class="eingabe">
             <option value="zahl">Zahlenrätsel</option>
             <option value="alter">Altersaufgabe</option>
             <option value="rechteck">Umfang eines Rechtecks</option>
@@ -246,6 +246,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=3"></script>
+<script type="module" src="lernpfad.js?v=4"></script>
 </body>
 </html>

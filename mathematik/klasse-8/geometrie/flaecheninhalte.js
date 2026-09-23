@@ -28,10 +28,8 @@
 // Durchgehende Farbcodierung: Grundseite blau, Höhe violett, Flächeninhalt grün,
 // zweites/umgelegtes Stück orange, Warnung rot.
 
-import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../aufgaben.js?v=1";
-import { AUFGABEN } from "./flaecheninhalte-aufgaben.js?v=1";
-
-"use strict";
+import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../aufgaben.js?v=2";
+import { AUFGABEN } from "./flaecheninhalte-aufgaben.js?v=2";
 
 // ---------- Helfer ----------
 
@@ -59,11 +57,20 @@ function el(tag, attrs = {}, children = []) {
   });
   return e;
 }
+// Ein Zahlformat je Stellenzahl, einmal angelegt: toLocaleString() baut bei jedem Aufruf ein neues
+// Intl.NumberFormat, und das kostet rund 40-mal so viel wie das Formatieren selbst — bei jeder
+// Reglerbewegung dutzendfach.
+const ZAHLFORMATE = new Map();
+function zahlformat(stellen) {
+  let f = ZAHLFORMATE.get(stellen);
+  if (!f) ZAHLFORMATE.set(stellen, (f = new Intl.NumberFormat("de-DE", { maximumFractionDigits: stellen })));
+  return f;
+}
 // Deutsche Schreibweise. Gerundet wird VOR der Ausgabe, damit −0,0001 nicht als „−0“ erscheint.
 function num(x, digits = 4) {
   const f = Math.pow(10, digits);
   const gerundet = Math.round(x * f) / f;
-  return (gerundet === 0 ? 0 : gerundet).toLocaleString("de-DE", { maximumFractionDigits: digits });
+  return zahlformat(digits).format(gerundet === 0 ? 0 : gerundet);
 }
 // Echter Bruchstrich statt „(a + c)/2“: Zähler über Nenner, wie im Heft. Gleiche Bauweise wie
 // in den Grundwissen-Pfaden, damit ein Bruch überall gleich aussieht.
@@ -140,18 +147,20 @@ function buehneAuto(breite, maxHoehe, punkte, { rand = 54, maxSkala = 58 } = {})
   return buehne(breite, hoehe, ox, oy, skala);
 }
 
+// Drehung um M, als Funktion für .map(): punkte.map(drehUm(M, winkel)).
+function drehUm(M, winkel) {
+  const co = Math.cos(winkel), si = Math.sin(winkel);
+  return (p) => {
+    const dx = p.x - M.x, dy = p.y - M.y;
+    return { x: M.x + dx * co - dy * si, y: M.y + dx * si + dy * co };
+  };
+}
+
 // Alle Zwischenstellungen einer Drehung um M — gebraucht wird das nur, um die Bühne groß
 // genug zu machen, nicht zum Zeichnen.
 function drehSpur(punkte, M, schritte = 12) {
   const out = [];
-  for (let i = 0; i <= schritte; i++) {
-    const w = (Math.PI * i) / schritte;
-    const co = Math.cos(w), si = Math.sin(w);
-    for (const p of punkte) {
-      const dx = p.x - M.x, dy = p.y - M.y;
-      out.push({ x: M.x + dx * co - dy * si, y: M.y + dx * si + dy * co });
-    }
-  }
+  for (let i = 0; i <= schritte; i++) out.push(...punkte.map(drehUm(M, (Math.PI * i) / schritte)));
   return out;
 }
 
@@ -317,14 +326,8 @@ function renderDreieck() {
     ...drehSpur(restLinks, ML), ...drehSpur(restRechts, MR),
   ]);
 
-  const winkel = t * Math.PI;
-  const drehUm = (M) => (p) => {
-    const dx = p.x - M.x, dy = p.y - M.y;
-    const co = Math.cos(winkel), si = Math.sin(winkel);
-    return { x: M.x + dx * co - dy * si, y: M.y + dx * si + dy * co };
-  };
-  const bewegtLinks = restLinks.map(drehUm(ML));
-  const bewegtRechts = restRechts.map(drehUm(MR));
+  const bewegtLinks = restLinks.map(drehUm(ML, t * Math.PI));
+  const bewegtRechts = restRechts.map(drehUm(MR, t * Math.PI));
 
   // Das umschließende Rechteck bleibt immer sichtbar — es ist das Maß, an dem gemessen wird.
   polygon(b, [A, B, R2, R1], null, FARBE.hilfe, 1.6, { "stroke-dasharray": "5 4", fill: "none" });
@@ -390,22 +393,18 @@ function renderGrundseite() {
   const f = faelle[wahl];
   const P = ecken[f.von], Q = ecken[f.bis], S = ecken[f.spitze];
 
-  // Der Höhenfußpunkt kann außerhalb der Seite liegen; die Bühne muss ihn mitnehmen.
-  const ux0 = Q.x - P.x, uy0 = Q.y - P.y;
-  const lam0 = ((S.x - P.x) * ux0 + (S.y - P.y) * uy0) / (ux0 * ux0 + uy0 * uy0);
-  const L0 = { x: P.x + lam0 * ux0, y: P.y + lam0 * uy0 };
-  const b = buehneAuto(GH_W, GH_H, [GH_A, GH_B, GH_C, L0]);
+  // Lot von S auf die Gerade PQ. Der Fußpunkt L darf außerhalb der Strecke liegen — dann wird
+  // die Gerade verlängert gezeichnet, genau wie im Heft, und die Bühne muss ihn mitnehmen.
+  const ux = Q.x - P.x, uy = Q.y - P.y;
+  const lam = ((S.x - P.x) * ux + (S.y - P.y) * uy) / (ux * ux + uy * uy);
+  const L = { x: P.x + lam * ux, y: P.y + lam * uy };
+  const b = buehneAuto(GH_W, GH_H, [GH_A, GH_B, GH_C, L]);
 
   polygon(b, [GH_A, GH_B, GH_C], "fl-flaeche-fuell", "#6b7280", 2);
 
   // Grundseite hervorheben.
   strecke(b, P, Q, FARBE.grund, 3.6);
 
-  // Lot von S auf die Gerade PQ. Der Fußpunkt darf außerhalb der Strecke liegen — dann wird
-  // die Gerade verlängert gezeichnet, genau wie im Heft.
-  const ux = Q.x - P.x, uy = Q.y - P.y;
-  const lam = ((S.x - P.x) * ux + (S.y - P.y) * uy) / (ux * ux + uy * uy);
-  const L = { x: P.x + lam * ux, y: P.y + lam * uy };
   if (lam < 0 || lam > 1) {
     const e1 = { x: P.x + Math.min(0, lam - 0.08) * ux, y: P.y + Math.min(0, lam - 0.08) * uy };
     const e2 = { x: P.x + Math.max(1, lam + 0.08) * ux, y: P.y + Math.max(1, lam + 0.08) * uy };
@@ -414,8 +413,6 @@ function renderGrundseite() {
   strecke(b, S, L, FARBE.hoehe, 2.4, { "stroke-dasharray": "6 4" });
   rechterWinkel(b, L, P, S, FARBE.hoehe);
 
-  const laenge = Math.hypot(ux, uy);
-  const hoehe = Math.hypot(S.x - L.x, S.y - L.y);
   mass(b, P, Q, f.name, FARBE.grund, 0, lam >= 0 && lam <= 1 && wahl === "c" ? 24 : -14);
   mass(b, S, L, "h_" + wahl, FARBE.hoehe, 24, 0);
 
@@ -508,7 +505,6 @@ function renderParallelogramm() {
     // Die zweite Grundseite AD mit der zugehörigen Höhe. Beide Längen werden GEMESSEN;
     // zum Rechnen bräuchte man den Satz des Pythagoras (Klasse 9).
     strecke(b, A, D, FARBE.zweit, 3.2);
-    const bSeite = Math.hypot(s, h);
     // Fußpunkt des Lots von B auf die Gerade AD.
     const lam = (B.x * s + B.y * h) / (s * s + h * h);
     const L = { x: lam * s, y: lam * h };
@@ -576,13 +572,7 @@ function renderTrapez() {
     A, B, C, D, { x: a + c, y: 0 }, { x: versatz + c + a, y: h },
     ...drehSpur([A, B, C, D], M),
   ]);
-  const winkel = t * Math.PI;
-  const dreh = (p) => {
-    const dx = p.x - M.x, dy = p.y - M.y;
-    const co = Math.cos(winkel), si = Math.sin(winkel);
-    return { x: M.x + dx * co - dy * si, y: M.y + dx * si + dy * co };
-  };
-  const kopie = [A, B, C, D].map(dreh);
+  const kopie = [A, B, C, D].map(drehUm(M, t * Math.PI));
 
   if (t > 0) {
     // Das Zielparallelogramm: Grundseite a + c, Höhe h.
@@ -704,14 +694,8 @@ function renderMittellinie() {
     ...drehSpur(eckeLinks, P), ...drehSpur(eckeRechts, Q),
   ]);
 
-  const winkel = t * Math.PI;
-  const drehUm = (M) => (p) => {
-    const dx = p.x - M.x, dy = p.y - M.y;
-    const co = Math.cos(winkel), si = Math.sin(winkel);
-    return { x: M.x + dx * co - dy * si, y: M.y + dx * si + dy * co };
-  };
-  const bewegtLinks = eckeLinks.map(drehUm(P));
-  const bewegtRechts = eckeRechts.map(drehUm(Q));
+  const bewegtLinks = eckeLinks.map(drehUm(P, t * Math.PI));
+  const bewegtRechts = eckeRechts.map(drehUm(Q, t * Math.PI));
 
   // Das Zielrechteck blass — es ist das Maß, an dem gemessen wird.
   polygon(bu, [RU1, RU2, RO2, RO1], null, FARBE.hilfe, 1.6, { "stroke-dasharray": "5 4", fill: "none" });

@@ -41,8 +41,12 @@ async function pruefeKontrast(page, bericht, wo) {
     })).filter((p) => p.inhalt.length > 0);
     return [
       ...sammle(document.querySelectorAll("svg text"), "svg"),
+      // „label span“ sind die Regleranzeigen, „a“ die Verweise im Fließtext. Beide fielen hier
+      // früher durch: Die Anzeigen trugen ihre Farbe als style="" ohne Dunkelfassung, die Verweise
+      // standen im Standardblau des Browsers — auf dunklem Grund beides kaum lesbar.
       ...sammle(document.querySelectorAll(
-        "main table td, main table th, main .aufgabe-prompt, main .quiz-q, main p, main li, main h2, main h3"), "html"),
+        "main table td, main table th, main .aufgabe-prompt, main .quiz-q, main p, main li, main h2, main h3, " +
+        "main label span, main a"), "html"),
     ];
   }, GRUND_IM_BROWSER);
 
