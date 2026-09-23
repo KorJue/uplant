@@ -31,6 +31,8 @@ const { starteBrowser, neueSeite, oeffne, setzeRegler, text } = require("../lib/
 const { pruefeNotation } = require("../lib/notation");
 const { pruefeKontrast } = require("../lib/kontrast");
 const { pruefeAufgabe } = require("../lib/aufgaben");
+const fs = require("fs");
+const path = require("path");
 
 const bericht = neuerBericht();
 const { pruefe } = bericht;
@@ -289,7 +291,7 @@ async function dreieck(page) {
 // Geprüft wird sie an den Zahlen der Bilanz — und daran, dass die gezeichnete Höhe wirklich
 // senkrecht auf der gewählten Seite steht.
 async function grundseiten(page) {
-  const ecken = { A: { x: 0, y: 0 }, B: { x: 8, y: 0 }, C: { x: 2.5, y: 4.5 } };
+  const ecken = { A: { x: 0, y: 0 }, B: { x: 8, y: 0 }, C: { x: 3, y: 2.5 } };
   const A = polygonFlaeche([ecken.A, ecken.B, ecken.C]);
   const seiten = {
     c: [ecken.A, ecken.B, ecken.C],
@@ -335,8 +337,41 @@ async function grundseiten(page) {
       const gezeichnet = Math.hypot(v.x, v.y) / skala;
       pruefe(Math.abs(gezeichnet - hoehe) < 0.05,
         `Grundseiten (${wahl}): die gezeichnete Höhe misst ${de(gezeichnet, 2)} cm statt ${de(hoehe, 2)} cm`);
+
+      // Liegt der Fußpunkt auf der Strecke oder außerhalb? Gemessen an der Zeichnung, nicht an
+      // den Koordinaten oben: Die Seite behauptete schon einmal „außerhalb“ an einem spitzwinkligen
+      // Dreieck, dessen Fußpunkt mitten auf der Seite lag.
+      const eckenBild = await page.evaluate(() => Object.fromEntries(
+        [...document.querySelectorAll("#gh-mount .th-punkt-gruppe")].map((g) => {
+          const c = g.querySelector("circle");
+          return [g.dataset.name, { x: +c.getAttribute("cx"), y: +c.getAttribute("cy") }];
+        })));
+      const [nP, nQ, nS] = { c: ["A", "B", "C"], a: ["B", "C", "A"], b: ["C", "A", "B"] }[wahl];
+      const Pb = eckenBild[nP], Qb = eckenBild[nQ], Sb = eckenBild[nS];
+      const enden = [{ x: hoeheLinie.x1, y: hoeheLinie.y1 }, { x: hoeheLinie.x2, y: hoeheLinie.y2 }];
+      const fuss = enden.sort((e1, e2) => Math.hypot(e2.x - Sb.x, e2.y - Sb.y) - Math.hypot(e1.x - Sb.x, e1.y - Sb.y))[0];
+      const ux = Qb.x - Pb.x, uy = Qb.y - Pb.y;
+      const lam = ((fuss.x - Pb.x) * ux + (fuss.y - Pb.y) * uy) / (ux * ux + uy * uy);
+      const aussen = lam < -0.02 || lam > 1.02;
+      pruefe(aussen === (wahl !== "c"),
+        `Grundseiten (${wahl}): der gezeichnete Fußpunkt liegt ${aussen ? "außerhalb" : "auf"} der Seite (λ = ${de(lam, 2)}), ` +
+        `im stumpfwinkligen Dreieck gehört er bei a und b nach außen, bei c auf die Seite`);
+      const erklaerung = await text(page, "#gh-text");
+      pruefe(/außerhalb/.test(erklaerung) === aussen,
+        `Grundseiten (${wahl}): der Text sagt ${/außerhalb/.test(erklaerung) ? "„außerhalb“" : "nichts von „außerhalb“"}, ` +
+        `die Zeichnung zeigt den Fußpunkt ${aussen ? "außerhalb" : "auf der Seite"} — „${erklaerung}“`);
+
+      // Und der Winkel bei C muss in der Zeichnung wirklich stumpf sein — der Achtung-Kasten
+      // verspricht an diesem Dreieck genau diesen Fall.
+      const C = eckenBild.C, A_ = eckenBild.A, B_ = eckenBild.B;
+      const skalar = (A_.x - C.x) * (B_.x - C.x) + (A_.y - C.y) * (B_.y - C.y);
+      pruefe(skalar < 0, `Grundseiten: der gezeichnete Winkel bei C ist nicht stumpf`);
     }
   }
+  const achtung = await page.evaluate(() =>
+    [...document.querySelectorAll("#sec-dreieck .achtung-box")].map((e) => e.innerText).join(" "));
+  pruefe(/stumpfwinklig/.test(achtung) && /bei C/.test(achtung),
+    `Grundseiten: der Achtung-Kasten nennt das stumpfwinklige Dreieck nicht mehr beim Namen — „${achtung.slice(0, 160)}“`);
 }
 
 // ── Abschnitt 4: Trapez ───────────────────────────────────────────────────
@@ -889,10 +924,31 @@ async function geruest(page) {
     pruefe(da, `Gerüst: der Abschnitt #${a} fehlt`);
   }
 
-  // Die Formelsammlung muss alle drei Formeln enthalten.
-  const fs = await text(page, "#sec-formelsammlung");
-  for (const f of ["A = g · h", "A = ½ · g · h", "A = ½ · (a + c) · h", "g = A : h", "h = 2 · A : g", "1 m² = 100 dm²"]) {
-    pruefe(fs.includes(f), `Formelsammlung: „${f}“ fehlt`);
+  // Die Formelsammlung steht wie beim Thales-Pfad als PDF bereit. Geprüft wird der Verweis, die
+  // Datei selbst (Kopf, Größe, genau zwei Seiten A4 quer) und dass ihre Quelle alle drei Formeln,
+  // die Umkehrformeln und die Einheiten enthält — das PDF entsteht aus dieser Quelle.
+  const verweis = await page.evaluate(() => {
+    const a = document.querySelector("#sec-formelsammlung a[download]");
+    return a ? a.getAttribute("href") : null;
+  });
+  pruefe(verweis === "flaecheninhalte.pdf", `Formelsammlung: der Download-Verweis fehlt oder zeigt auf „${verweis}“`);
+  const wurzel = path.resolve(__dirname, "..", "..");
+  const pdf = path.join(wurzel, "mathematik/klasse-8/geometrie/flaecheninhalte.pdf");
+  pruefe(fs.existsSync(pdf), "Formelsammlung: flaecheninhalte.pdf fehlt");
+  if (fs.existsSync(pdf)) {
+    const roh = fs.readFileSync(pdf);
+    pruefe(roh.subarray(0, 5).toString("latin1") === "%PDF-", "Formelsammlung: die Datei ist kein PDF");
+    pruefe(roh.length > 20000, `Formelsammlung: das PDF ist nur ${roh.length} Bytes groß`);
+    const seiten = (roh.toString("latin1").match(/\/Type\s*\/Page(?!s)/g) || []).length;
+    pruefe(seiten === 2, `Formelsammlung: das PDF hat ${seiten} Seiten statt 2`);
+    const box = roh.toString("latin1").match(/\/MediaBox\s*\[\s*0 0 ([\d.]+) ([\d.]+)/);
+    pruefe(!!box && Number(box[1]) > Number(box[2]), "Formelsammlung: das PDF ist nicht im Querformat");
+  }
+  const quelle = fs.readFileSync(path.join(wurzel, "tools/formelsammlung/formelsammlung-fl-quelle.html"), "utf8")
+    .replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").replace(/\s+/g, " ");
+  for (const f of ["A = ½ · g · h", "A = g · h", "A = ½ · (a + c) · h", "g = A : h", "h = 2 · A : g",
+    "h = 2 · A : (a + c)", "1 m² = 100 dm²", "m = a − (a − c) : 2 = (a + c) : 2"]) {
+    pruefe(quelle.includes(f), `Formelsammlung: „${f}“ fehlt in der Quelle des PDFs`);
   }
 
   // Pythagoras und Wurzeln kommen erst in Klasse 9 — außer als ausdrücklicher Ausblick.
@@ -922,7 +978,7 @@ async function geruest(page) {
   pruefe(inMenue, "Gerüst: die Übersichtsseite verweist nicht auf die Flächeninhalte");
 
   // Die Reihenfolge der Herleitungen: Dreieck, Parallelogramm, Trapez. Sie ist keine
-  // Geschmacksfrage — die Trapezherleitung benutzt das Parallelogramm, und das Dreieck steht
+  // Geschmacksfrage — der zweite Trapezweg benutzt das Parallelogramm, und das Dreieck steht
   // voran, weil es mit dem Rechteck allein auskommt.
   const folge = await page.evaluate(() =>
     [...document.querySelectorAll("main section[id]")].map((s) => s.id));
@@ -931,6 +987,21 @@ async function geruest(page) {
     `Gerüst: das Dreieck steht nicht vor dem Parallelogramm — ${folge.join(", ")}`);
   pruefe(drin("sec-parallelogramm") < drin("sec-trapez"),
     `Gerüst: das Parallelogramm steht nicht vor dem Trapez — ${folge.join(", ")}`);
+
+  // Im Trapez-Abschnitt kommt die Mittellinie zuerst: Sie braucht nur das Rechteck. Das
+  // Verdoppeln steht danach, weil es das Parallelogramm aus Abschnitt 3 benutzt.
+  const trapezFolge = await page.evaluate(() => {
+    const s = document.getElementById("sec-trapez");
+    const alle = [...s.querySelectorAll("h3, #ml-mount, #tz-mount, #quiz-mittellinie, #quiz-trapez")];
+    return alle.map((e) => e.id || e.tagName + ":" + e.textContent.trim());
+  });
+  const stelle = (x) => trapezFolge.findIndex((e) => e.includes(x));
+  pruefe(stelle("ml-mount") >= 0 && stelle("ml-mount") < stelle("tz-mount"),
+    `Gerüst: im Trapez steht das Verdoppeln vor der Mittellinie — ${trapezFolge.join(" | ")}`);
+  pruefe(/Mittellinie/.test(trapezFolge[0] || ""),
+    `Gerüst: der erste Weg zum Trapez ist nicht die Mittellinie — ${trapezFolge.join(" | ")}`);
+  pruefe(stelle("quiz-mittellinie") < stelle("tz-mount"),
+    `Gerüst: die Kontrollfrage zur Mittellinie steht nicht beim ersten Weg — ${trapezFolge.join(" | ")}`);
 
   // Und die Herleitung des Dreiecks darf das Parallelogramm nicht schon benutzen: Es ist an
   // dieser Stelle noch nicht hergeleitet. Erwähnt werden darf es erst ab Abschnitt 3.

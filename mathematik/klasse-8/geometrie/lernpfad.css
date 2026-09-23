@@ -604,59 +604,10 @@
 /* ================= Flächeninhalte (Dreieck, Parallelogramm, Trapez) ================= */
 
 /* Die Zeichenflächen dieser Seite tragen dieselben Klassen wie die des Thales-Pfads
-   (.th-wrap, .th-flaeche, .th-bilanz) — nur die Beschriftungen und die Formelübersicht
-   sind neu. */
+   (.th-wrap, .th-flaeche, .th-bilanz) — nur die Beschriftungen sind neu. Die Formelsammlung
+   steht wie beim Thales-Pfad als PDF bereit (tools/formelsammlung, Präfix fl). */
 
 .fl-mass { font-size: 13px; font-weight: 700; }
-
-/* Die Formelübersicht: drei Karten nebeneinander, auf schmalen Schirmen untereinander. */
-.fl-formel-reihe {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 0.8rem;
-  margin: 1rem 0;
-}
-.fl-formel-karte {
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 0.9rem 1rem;
-  background: var(--card-bg);
-}
-.fl-formel-karte h3 {
-  margin: 0 0 0.5rem;
-  font-size: 1.02rem;
-}
-.fl-formel-karte .fl-formel {
-  font-family: "Cambria Math", Cambria, "STIX Two Math", serif;
-  font-size: 1.25rem;
-  font-weight: 700;
-  text-align: center;
-  padding: 0.5rem 0.4rem;
-  background: var(--bg);
-  border-radius: 8px;
-  margin-bottom: 0.5rem;
-}
-.fl-formel-karte p { margin: 0.4rem 0 0; font-size: 0.9rem; }
-
-/* Die Formelsammlung als Tabelle — zum Nachschlagen während der Übungsaufgaben. */
-.fl-tabelle {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 0.9rem 0;
-  font-size: 0.94rem;
-}
-.fl-tabelle th, .fl-tabelle td {
-  border: 1px solid var(--border);
-  padding: 0.5rem 0.65rem;
-  text-align: left;
-  vertical-align: top;
-}
-.fl-tabelle th { background: var(--bg); font-weight: 700; }
-.fl-tabelle td.fl-formel-zelle {
-  font-family: "Cambria Math", Cambria, "STIX Two Math", serif;
-  font-weight: 700;
-  white-space: nowrap;
-}
 
 /* Die kleinen Figuren in den Aufgabentexten. Sie ersetzen das Bild im Buch: Die Maße
    stehen an der Figur, nicht im Text. */
