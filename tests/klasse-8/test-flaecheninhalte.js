@@ -374,6 +374,130 @@ async function grundseiten(page) {
     `Grundseiten: der Achtung-Kasten nennt das stumpfwinklige Dreieck nicht mehr beim Namen — „${achtung.slice(0, 160)}“`);
 }
 
+// ── Abschnitt 3c: Drehen und Scheren ──────────────────────────────────────
+//
+// Die schräge Höhe allein erklärt nichts; das Widget dreht das Dreieck deshalb, bis die
+// gewählte Seite unten liegt, zeichnet das Rechteck g · h darüber und schiebt die Spitze an
+// dessen oberer Kante entlang, bis das Dreieck ein halbes Rechteck ist. Jede dieser Behauptungen
+// wird an vielen Reglerstellungen aus dem SVG zurückgelesen:
+//
+//   * Die Drehung ist starr: Die drei Seiten behalten ihre Längen.
+//   * Das Rechteck steht auf der Grundseite und ist g · h groß — also 2 · A.
+//   * Die Spitze liegt immer im Abstand h von der Grundseite, der Flächeninhalt bleibt A.
+//   * Nach der ganzen Drehung liegt die Grundseite waagerecht und die Spitze darüber.
+//   * Am Ende des Schiebens ist das Dreieck rechtwinklig und genau die Hälfte des Rechtecks;
+//     die orange Hälfte gibt es nur dort — vorher wäre sie eine Behauptung ohne Grundlage.
+//   * „außerhalb“ steht im Text genau dann, wenn der gezeichnete Fußpunkt außerhalb liegt.
+//   * Die Bühne springt beim Ziehen nicht.
+async function grundseitenBewegung(page) {
+  const ecken = { A: { x: 0, y: 0 }, B: { x: 8, y: 0 }, C: { x: 3, y: 2.5 } };
+  const A = polygonFlaeche([ecken.A, ecken.B, ecken.C]);
+  const laenge = (p, q) => Math.hypot(q.x - p.x, q.y - p.y);
+  const seitenCm = [laenge(ecken.A, ecken.B), laenge(ecken.B, ecken.C), laenge(ecken.C, ecken.A)].sort((x, y) => x - y);
+  const basis = { c: ["A", "B"], a: ["B", "C"], b: ["C", "A"] };
+  const lies = () => page.evaluate(() => {
+    const svg = document.querySelector("#gh-mount svg");
+    const poly = {};
+    for (const p of svg.querySelectorAll("polygon[data-rolle]")) {
+      poly[p.dataset.rolle] = p.getAttribute("points").trim().split(/\s+/).map((t) => {
+        const [x, y] = t.split(",").map(Number);
+        return { x, y };
+      });
+    }
+    const punkte = Object.fromEntries([...svg.querySelectorAll(".th-punkt-gruppe")].map((g) => {
+      const c = g.querySelector("circle");
+      return [g.dataset.name, { x: +c.getAttribute("cx"), y: +c.getAttribute("cy") }];
+    }));
+    return { viewBox: svg.getAttribute("viewBox"), poly, punkte, text: document.getElementById("gh-text").innerText };
+  });
+
+  for (const wahl of ["c", "a", "b"]) {
+    await page.locator(`input[name="gh-seite"][value="${wahl}"]`).check();
+    const [nP, nQ] = basis[wahl];
+    const nS = ["A", "B", "C"].find((n) => n !== nP && n !== nQ);
+    const gCm = laenge(ecken[nP], ecken[nQ]);
+    const hCm = (2 * A) / gCm;
+    // Bei c liegt die Grundseite schon waagerecht; der Drehregler ist dort gesperrt.
+    const gesperrt = await page.evaluate(() => document.getElementById("gh-d").disabled);
+    pruefe(gesperrt === (wahl === "c"),
+      `Drehen (${wahl}): der Drehregler ist ${gesperrt ? "gesperrt" : "frei"}, obwohl ${wahl === "c" ? "c schon unten liegt" : "gedreht werden muss"}`);
+    let viewBox = null;
+    for (const d of wahl === "c" ? [100] : [0, 20, 50, 80, 100]) {
+      if (wahl !== "c") await setzeRegler(page, "gh-d", d);
+      for (const sw of [0, 30, 70, 100]) {
+        const sEcht = await setzeRegler(page, "gh-s", sw);
+        const wo = `Drehen (${wahl}, ${d} %, Spitze ${sEcht} %)`;
+        const z = await lies();
+        if (viewBox === null) viewBox = z.viewBox;
+        pruefe(z.viewBox === viewBox, `${wo}: die Bühne springt (${z.viewBox} statt ${viewBox})`);
+        const P = z.punkte[nP], Q = z.punkte[nQ], S = z.punkte[nS];
+        const skala = laenge(P, Q) / gCm;
+        const dreieck = z.poly.dreieck, rechteck = z.poly.rechteck;
+        pruefe(!!dreieck && !!rechteck, `${wo}: Dreieck oder Rechteck fehlt`);
+        if (!dreieck || !rechteck) continue;
+
+        // Flächeninhalt des gezeichneten Dreiecks — in jeder Stellung A.
+        const aBild = polygonFlaeche(dreieck) / (skala * skala);
+        pruefe(Math.abs(aBild - A) < 0.03, `${wo}: das gezeichnete Dreieck ist ${de(aBild, 3)} cm² groß statt ${de(A, 3)} cm²`);
+        // Abstand der Spitze von der Geraden PQ — die Höhe.
+        const ux = (Q.x - P.x) / laenge(P, Q), uy = (Q.y - P.y) / laenge(P, Q);
+        const abstand = Math.abs((S.x - P.x) * uy - (S.y - P.y) * ux) / skala;
+        pruefe(Math.abs(abstand - hCm) < 0.03, `${wo}: die Spitze ist ${de(abstand, 3)} cm von der Grundseite entfernt statt ${de(hCm, 3)} cm`);
+        // Starre Drehung: Solange die Spitze nicht verschoben ist, behalten alle Seiten ihre Länge.
+        if (sEcht === 0) {
+          const s3 = [laenge(z.punkte.A, z.punkte.B), laenge(z.punkte.B, z.punkte.C), laenge(z.punkte.C, z.punkte.A)]
+            .map((l) => l / skala).sort((x, y) => x - y);
+          pruefe(s3.every((l, i) => Math.abs(l - seitenCm[i]) < 0.03),
+            `${wo}: die Drehung ist nicht starr — Seiten ${s3.map((l) => de(l, 2)).join(" / ")} cm`);
+        }
+        // Das Rechteck: steht auf P und Q, ist g · h = 2 · A groß und hat rechte Winkel.
+        const rFlaeche = polygonFlaeche(rechteck) / (skala * skala);
+        pruefe(Math.abs(rFlaeche - 2 * A) < 0.05, `${wo}: das Rechteck ist ${de(rFlaeche, 3)} cm² groß statt g · h = ${de(2 * A, 3)} cm²`);
+        const nahe = (u, v) => laenge(u, v) < 1;
+        pruefe(rechteck.some((e) => nahe(e, P)) && rechteck.some((e) => nahe(e, Q)),
+          `${wo}: das Rechteck steht nicht auf der Grundseite ${nP}${nQ}`);
+        for (let i = 0; i < 4; i++) {
+          const a = rechteck[i], m = rechteck[(i + 1) % 4], c = rechteck[(i + 2) % 4];
+          const cos = ((a.x - m.x) * (c.x - m.x) + (a.y - m.y) * (c.y - m.y)) / (laenge(a, m) * laenge(c, m));
+          pruefe(Math.abs(cos) < 0.005, `${wo}: das Rechteck hat an Ecke ${i + 1} keinen rechten Winkel`);
+        }
+        // Ganz gedreht: Grundseite waagerecht, Spitze darüber (in SVG heißt „oben“ kleineres y).
+        if (d === 100) {
+          pruefe(Math.abs(P.y - Q.y) < 0.5, `${wo}: die Grundseite liegt nach dem Drehen nicht waagerecht`);
+          pruefe(S.y < P.y - 5, `${wo}: die Spitze steht nach dem Drehen nicht über der Grundseite`);
+        }
+        // Fußpunkt der Höhe, als Anteil der Grundseite — und was der Text dazu sagt.
+        const lam = ((S.x - P.x) * ux + (S.y - P.y) * uy) / laenge(P, Q);
+        const aussen = lam < -0.01 || lam > 1.01;
+        pruefe(/außerhalb/.test(z.text) === aussen,
+          `${wo}: der Text ${/außerhalb/.test(z.text) ? "sagt" : "verschweigt"} „außerhalb“, der Fußpunkt liegt bei λ = ${de(lam, 2)} — „${z.text}“`);
+        // Am Ziel: rechtwinklig, halbes Rechteck, orange Hälfte deckungsgleich.
+        const haelfte = z.poly.haelfte;
+        if (sEcht === 100) {
+          pruefe(Math.abs(lam) < 0.005 || Math.abs(lam - 1) < 0.005,
+            `${wo}: die Spitze steht am Ende nicht über einer Ecke der Grundseite (λ = ${de(lam, 3)})`);
+          pruefe(!!haelfte, `${wo}: die andere Hälfte des Rechtecks fehlt`);
+          if (haelfte) {
+            const hF = polygonFlaeche(haelfte) / (skala * skala);
+            pruefe(Math.abs(hF - A) < 0.03, `${wo}: die orange Hälfte ist ${de(hF, 3)} cm² groß statt ${de(A, 3)} cm²`);
+            pruefe(haelfte.every((e) => rechteck.some((r) => nahe(e, r))), `${wo}: die orange Hälfte liegt nicht im Rechteck`);
+          }
+          pruefe(/Hälfte/.test(z.text) && /rechtwinklig/.test(z.text), `${wo}: der Text erklärt das halbe Rechteck nicht — „${z.text}“`);
+        } else {
+          pruefe(!haelfte, `${wo}: die orange Hälfte ist schon zu sehen, obwohl das Dreieck noch kein halbes Rechteck ist`);
+        }
+      }
+      await setzeRegler(page, "gh-s", 0);
+    }
+  }
+  // Beim Wechsel der Seite beginnen beide Schritte von vorn.
+  await setzeRegler(page, "gh-s", 60);
+  await page.locator('input[name="gh-seite"][value="a"]').check();
+  const nachWechsel = await page.evaluate(() => [document.getElementById("gh-d").value, document.getElementById("gh-s").value]);
+  pruefe(nachWechsel[0] === "0" && nachWechsel[1] === "0",
+    `Drehen: nach dem Wechsel der Seite stehen die Regler auf ${nachWechsel.join(" / ")} statt 0 / 0`);
+}
+
 // ── Abschnitt 4: Trapez ───────────────────────────────────────────────────
 async function trapez(page) {
   for (const [a, c, h] of [[8, 4, 3.5], [10, 0.5, 2], [6, 6, 5], [4, 2, 4], [9, 5, 2.5]]) {
@@ -1043,6 +1167,7 @@ async function geruest(page) {
       await parallelogramm(page);
       await dreieck(page);
       await grundseiten(page);
+      await grundseitenBewegung(page);
       await trapez(page);
       await mittellinie(page);
       await zusammenschau(page);

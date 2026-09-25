@@ -378,9 +378,10 @@ function renderDreieck() {
 
 // ---------- 2b. Welche Höhe gehört zu welcher Grundseite? ----------
 
-const GH_W = 560, GH_H = 300;
-// Feste Zahlen statt Reglern: Hier geht es nicht um die Größe der Figur, sondern darum, dass
-// DREI verschiedene Rechnungen dieselbe Zahl ergeben. Dafür muss die Figur stillstehen.
+const GH_W = 660, GH_H = 400;
+// Feste Zahlen statt Reglern für die Figur: Hier geht es nicht um ihre Größe, sondern darum,
+// dass DREI verschiedene Rechnungen dieselbe Zahl ergeben. Dafür muss das Dreieck dasselbe
+// bleiben — die beiden Regler bewegen es nur.
 //
 // C liegt bewusst INNERHALB des Thaleskreises über AB: Dann ist der Winkel bei C stumpf
 // (rund 114°), und die Höhen auf a und b haben ihren Fußpunkt außerhalb der Seite — genau der
@@ -388,47 +389,134 @@ const GH_W = 560, GH_H = 300;
 // der Text etwas, das die Zeichnung nicht zeigt.
 const GH_A = { x: 0, y: 0 }, GH_B = { x: 8, y: 0 }, GH_C = { x: 3, y: 2.5 };
 
+// Zu jeder Wahl: die Grundseite (zwei Ecken) und die Ecke, aus der das Lot fällt.
+const GH_FAELLE = {
+  c: { von: "A", bis: "B", spitze: "C" },
+  a: { von: "B", bis: "C", spitze: "A" },
+  b: { von: "C", bis: "A", spitze: "B" },
+};
+
+// Die schräge Höhe allein erklärt nichts — erst im Zusammenhang mit der Herleitung aus
+// Abschnitt 2 wird sie verständlich. Deshalb zwei Schritte:
+//
+//   1. DREHEN: Das Dreieck dreht sich starr um seinen Schwerpunkt, bis die gewählte Seite unten
+//      liegt. Dann steht die Höhe senkrecht, wie gewohnt, und über der Grundseite erscheint das
+//      Rechteck g · h, das sich von Anfang an mitdreht.
+//   2. SCHIEBEN: Die Spitze wandert auf der oberen Kante des Rechtecks (verlängert) bis über die
+//      nächste Ecke der Grundseite. Das ist die Scherung aus Abschnitt 1 — Grundseite und Höhe
+//      bleiben, also auch der Flächeninhalt. Am Ziel ist das Dreieck rechtwinklig und halbiert
+//      das Rechteck sichtbar.
+//
+// Gerechnet wird in einem „Grundseitensystem“: Grundseite von (0 | 0) bis (g | 0), Spitze bei
+// (xs | h). Die Zeichnung bildet dieses System starr in die Ebene ab; die Drehung ändert also
+// keine Länge und keinen Flächeninhalt.
+function ghSystem(wahl) {
+  const ecken = { A: GH_A, B: GH_B, C: GH_C };
+  const f = GH_FAELLE[wahl];
+  let P = ecken[f.von], Q = ecken[f.bis];
+  let namen = [f.von, f.bis];
+  const S = ecken[f.spitze];
+  // Die Spitze muss links der Richtung P → Q liegen, sonst stünde das Dreieck nach dem Drehen
+  // auf dem Kopf. Gedreht wird nur, nie gespiegelt — also notfalls P und Q tauschen.
+  if ((Q.x - P.x) * (S.y - P.y) - (Q.y - P.y) * (S.x - P.x) < 0) {
+    [P, Q] = [Q, P];
+    namen = [namen[1], namen[0]];
+  }
+  const g = Math.hypot(Q.x - P.x, Q.y - P.y);
+  const e1 = { x: (Q.x - P.x) / g, y: (Q.y - P.y) / g };
+  const e2 = { x: -e1.y, y: e1.x };
+  const xs = (S.x - P.x) * e1.x + (S.y - P.y) * e1.y;
+  const h = (S.x - P.x) * e2.x + (S.y - P.y) * e2.y;
+  // Ziel der Spitze: die Ecke der Grundseite, die dem Fußpunkt am nächsten liegt.
+  const ziel = xs <= g / 2 ? 0 : g;
+  const phi = Math.atan2(e1.y, e1.x);
+  // Schwerpunkt im Grundseitensystem und in der Ebene — um ihn wird gedreht.
+  const Gs = { x: (g + xs) / 3, y: h / 3 };
+  const Ge = { x: (P.x + Q.x + S.x) / 3, y: (P.y + Q.y + S.y) / 3 };
+  return { g, h, xs, ziel, phi, Gs, Ge, namen, spitze: f.spitze };
+}
+
+// Punkt des Grundseitensystems → Ebene, nach dem Anteil t der Drehung.
+function ghLage(sys, t) {
+  const alpha = sys.phi * (1 - t);
+  const co = Math.cos(alpha), si = Math.sin(alpha);
+  return (p) => {
+    const dx = p.x - sys.Gs.x, dy = p.y - sys.Gs.y;
+    return { x: sys.Ge.x + dx * co - dy * si, y: sys.Ge.y + dx * si + dy * co };
+  };
+}
+
 function renderGrundseite() {
   const wahl = document.querySelector('input[name="gh-seite"]:checked').value;
-  const ecken = { A: GH_A, B: GH_B, C: GH_C };
-  // Zu jeder Wahl: die Grundseite (zwei Ecken) und die Ecke, aus der das Lot fällt.
-  const faelle = {
-    c: { von: "A", bis: "B", spitze: "C", name: "c = AB" },
-    a: { von: "B", bis: "C", spitze: "A", name: "a = BC" },
-    b: { von: "C", bis: "A", spitze: "B", name: "b = CA" },
-  };
-  const f = faelle[wahl];
-  const P = ecken[f.von], Q = ecken[f.bis], S = ecken[f.spitze];
+  const sys = ghSystem(wahl);
+  const { g, h, xs, ziel } = sys;
+  // Liegt die Grundseite schon waagerecht, gibt es nichts zu drehen — dann darf der Regler
+  // auch nicht so tun, als bewege er etwas.
+  const ohneDrehung = Math.abs(sys.phi) < 1e-9;
+  const drehRegler = document.getElementById("gh-d");
+  drehRegler.disabled = ohneDrehung;
+  if (ohneDrehung) drehRegler.value = "100";
+  const t = reglerZahl("gh-d") / 100;
+  const s = reglerZahl("gh-s") / 100;
+  document.getElementById("gh-d-anzeige").textContent =
+    ohneDrehung ? "liegt schon unten" : Math.round(Math.abs(sys.phi) * t * 180 / Math.PI) + "°";
+  document.getElementById("gh-s-anzeige").textContent = Math.round(s * 100) + " %";
 
-  // Lot von S auf die Gerade PQ. Der Fußpunkt L darf außerhalb der Strecke liegen — dann wird
-  // die Gerade verlängert gezeichnet, genau wie im Heft, und die Bühne muss ihn mitnehmen.
-  const ux = Q.x - P.x, uy = Q.y - P.y;
-  const lam = ((S.x - P.x) * ux + (S.y - P.y) * uy) / (ux * ux + uy * uy);
-  const L = { x: P.x + lam * ux, y: P.y + lam * uy };
-  const b = buehneAuto(GH_W, GH_H, [GH_A, GH_B, GH_C, L]);
+  const [nP, nQ] = sys.namen;
+  const nS = sys.spitze;
+  const xNeu = xs + s * (ziel - xs);
+  const P0 = { x: 0, y: 0 }, Q0 = { x: g, y: 0 }, S0 = { x: xs, y: h }, S1 = { x: xNeu, y: h };
+  const R1 = { x: 0, y: h }, R2 = { x: g, y: h };
+  const links = Math.min(0, xs) - 0.5, rechts = Math.max(g, xs) + 0.5;
 
-  polygon(b, [GH_A, GH_B, GH_C], "fl-flaeche-fuell", "#6b7280", 2);
-
-  // Grundseite hervorheben.
-  strecke(b, P, Q, FARBE.grund, 3.6);
-
-  if (lam < 0 || lam > 1) {
-    const e1 = { x: P.x + Math.min(0, lam - 0.08) * ux, y: P.y + Math.min(0, lam - 0.08) * uy };
-    const e2 = { x: P.x + Math.max(1, lam + 0.08) * ux, y: P.y + Math.max(1, lam + 0.08) * uy };
-    strecke(b, e1, e2, FARBE.hilfe, 1.4, { "stroke-dasharray": "5 4" });
+  // Die Bühne nimmt die ganze Drehung und beide Stellungen der Spitze mit, sonst spränge die
+  // Zeichnung beim Ziehen am Regler.
+  const spur = [];
+  for (let i = 0; i <= 24; i++) {
+    const L = ghLage(sys, i / 24);
+    spur.push(...[P0, Q0, S0, { x: ziel, y: h }, R1, R2, { x: links, y: 0 }, { x: rechts, y: 0 },
+      { x: links, y: h }, { x: rechts, y: h }].map(L));
   }
-  strecke(b, S, L, FARBE.hoehe, 2.4, { "stroke-dasharray": "6 4" });
-  rechterWinkel(b, L, P, S, FARBE.hoehe);
+  const b = buehneAuto(GH_W, GH_H, spur, { rand: 36 });
+  const L = ghLage(sys, t);
+  const Pe = L(P0), Qe = L(Q0), Se = L(S1), Fe = L({ x: xNeu, y: 0 });
 
-  // Die Beschriftung weicht nach außen aus: unter c, links über b, rechts über a. Mittig mit
-  // senkrechtem Versatz allein läge sie auf den beiden schrägen Seiten mitten auf der Linie.
-  const versatz = { c: [0, 24], a: [16, -12], b: [-26, -6] }[wahl];
-  mass(b, P, Q, f.name, FARBE.grund, versatz[0], versatz[1]);
-  mass(b, S, L, "h_" + wahl, FARBE.hoehe, 24, 0);
+  // Die Gerade der Grundseite und die Parallele durch die Spitze — auf ihr wandert die Spitze.
+  strecke(b, L({ x: links, y: 0 }), L({ x: rechts, y: 0 }), FARBE.hilfe, 1.2, { "stroke-dasharray": "5 4" });
+  strecke(b, L({ x: links, y: h }), L({ x: rechts, y: h }), FARBE.hilfe, 1.2, { "stroke-dasharray": "5 4" });
+  // Das Rechteck über der Grundseite: dasselbe Maß wie in der Herleitung oben.
+  polygon(b, [P0, Q0, R2, R1].map(L), null, FARBE.flaeche, 2, { "stroke-dasharray": "7 4", fill: "none", "data-rolle": "rechteck" });
 
-  punkt(b, GH_A, "A", -10, 16);
-  punkt(b, GH_B, "B", 12, 16);
-  punkt(b, GH_C, "C", 0, -10);
+  // Wo die Spitze herkam: Umriss des Ausgangsdreiecks, sobald sie sich bewegt hat.
+  if (s > 0) polygon(b, [P0, Q0, S0].map(L), null, FARBE.hilfe, 1.4, { "stroke-dasharray": "3 3", fill: "none", "data-rolle": "vorher" });
+  // Am Ziel ist das Dreieck die eine Hälfte des Rechtecks — die andere wird sichtbar gemacht.
+  if (s === 1) {
+    const haelfte = ziel === 0 ? [Q0, R2, R1] : [P0, R2, R1];
+    polygon(b, haelfte.map(L), "fl-flaeche-zweit", FARBE.zweit, 1.6, { "data-rolle": "haelfte" });
+  }
+  polygon(b, [Pe, Qe, Se], "fl-flaeche-fuell", "#6b7280", 2, { "data-rolle": "dreieck" });
+
+  // Erst Grundseite, dann Höhe — die Prüfung liest die erste Linie jeder Farbe.
+  strecke(b, Pe, Qe, FARBE.grund, 3.6);
+  strecke(b, Se, Fe, FARBE.hoehe, 2.4, { "stroke-dasharray": "6 4" });
+  rechterWinkel(b, Fe, xNeu > g / 2 ? Pe : Qe, Se, FARBE.hoehe);
+
+  // Beschriftungen weichen immer nach außen aus, in Bildpunkten gerechnet: Die Figur dreht
+  // sich, feste Versätze lägen nach einer halben Drehung mitten auf einer Linie.
+  const alpha = sys.phi * (1 - t);
+  const nach = (dx, dy, px) => ({ x: px * dx, y: -px * dy });   // Ebene → Bildschirm (y nach unten)
+  const weg = nach(Math.sin(alpha), -Math.cos(alpha), 22);      // senkrecht unter die Grundseite
+  mass(b, Pe, Qe, wahl, FARBE.grund, weg.x, weg.y + 4);
+  const seitlich = xNeu > g / 2 ? 1 : -1;
+  const hw = nach(seitlich * Math.cos(alpha), seitlich * Math.sin(alpha), 26);
+  mass(b, Se, Fe, "h_" + wahl, FARBE.hoehe, hw.x, hw.y + 4);
+
+  const G = b.P((Pe.x + Qe.x + Se.x) / 3, (Pe.y + Qe.y + Se.y) / 3);
+  for (const [p, n] of [[Pe, nP], [Qe, nQ], [Se, nS]]) {
+    const q = b.P(p.x, p.y);
+    const l = Math.hypot(q.x - G.x, q.y - G.y) || 1;
+    punkt(b, p, n, (q.x - G.x) / l * 15, (q.y - G.y) / l * 15 + 4);
+  }
 
   zeige("gh-mount", b);
 
@@ -441,22 +529,35 @@ function renderGrundseite() {
     { k: "b", l: Math.hypot(GH_A.x - GH_C.x, GH_A.y - GH_C.y) },
   ];
   document.getElementById("gh-bilanz").innerHTML =
-    seiten.map((s) => {
-      const hs = (2 * A) / s.l;
-      const aktiv = s.k === wahl;
-      return `${aktiv ? "<strong>" : ""}½ · <span class="wc">${s.k} ${zeichen(s.l, 2)} ${num(s.l, 2)} cm</span> · ` +
-        `<span class="wr">h<sub>${s.k}</sub> ${zeichen(hs, 2)} ${num(hs, 2)} cm</span> = ` +
+    seiten.map((z) => {
+      const hs = (2 * A) / z.l;
+      const aktiv = z.k === wahl;
+      return `${aktiv ? "<strong>" : ""}½ · <span class="wc">${z.k} ${zeichen(z.l, 2)} ${num(z.l, 2)} cm</span> · ` +
+        `<span class="wr">h<sub>${z.k}</sub> ${zeichen(hs, 2)} ${num(hs, 2)} cm</span> = ` +
         `<span class="wa">${num(A, 2)} cm²</span>${aktiv ? "</strong>" : ""}`;
     }).join("<br>") +
+    // Das Produkt g · h ist exakt 2 · A, auch wenn die beiden Faktoren gerundet angezeigt werden.
+    `<br>Rechteck über ${wahl}: <span class="wc">${wahl}</span> · <span class="wr">h<sub>${wahl}</sub></span> = ` +
+    `<strong>${num(2 * A, 2)} cm²</strong> — das Dreieck ist ${s === 1 ? "sichtbar " : ""}die Hälfte davon.` +
     `<br><span class="progress-note">Alle Längen sind an der Zeichnung gemessen. Drei verschiedene Rechnungen, ein Ergebnis: ` +
     `<span class="wa">A = ${num(A, 2)} cm²</span>.</span>`;
 
-  document.getElementById("gh-text").textContent =
-    wahl === "c"
-      ? "Zur Seite c gehört die Höhe von C aus. Ihr Fußpunkt liegt auf der Strecke AB."
-      : wahl === "a"
-        ? "Zur Seite a gehört die Höhe von A aus — sie steht senkrecht auf BC, nicht auf der waagerechten Seite. Weil der Winkel bei C stumpf ist, liegt ihr Fußpunkt außerhalb der Strecke BC; die Seite wird dafür als Gerade verlängert."
-        : "Zur Seite b gehört die Höhe von B aus. Auch hier liegt der Fußpunkt außerhalb der Strecke, jenseits von C — wegen des stumpfen Winkels bei C. Die Seite wird als Gerade verlängert.";
+  const aussen = xNeu < -1e-9 || xNeu > g + 1e-9;
+  const eckeZiel = ziel === 0 ? nP : nQ;
+  let satz;
+  if (s === 1) {
+    satz = `Die Spitze ${nS} steht jetzt genau über ${eckeZiel}. Das Dreieck ist rechtwinklig und füllt genau die Hälfte des Rechtecks über ${wahl} — die andere Hälfte (orange) ist ein deckungsgleiches Dreieck. Unterwegs haben sich weder ${wahl} noch h_${wahl} geändert, also auch der Flächeninhalt nicht: A = ½ · ${wahl} · h_${wahl}.`;
+  } else if (s > 0) {
+    satz = `Die Spitze ${nS} wandert parallel zu ${wahl}, auf der verlängerten oberen Kante des Rechtecks. Das ist die Scherung aus Abschnitt 1: Grundseite und Höhe bleiben gleich, der Flächeninhalt auch.` +
+      (aussen ? ` Der Fußpunkt der Höhe liegt noch außerhalb der Strecke ${wahl}.` : "");
+  } else if (wahl === "c") {
+    satz = "Zur Seite c gehört die Höhe von C aus. Ihr Fußpunkt liegt auf der Strecke AB, c liegt schon unten — das ist die Lage aus der Herleitung oben. Schieb die Spitze mit dem zweiten Regler über A: Dann siehst du das Dreieck als halbes Rechteck.";
+  } else if (t < 1) {
+    satz = `Zur Seite ${wahl} gehört die Höhe von ${nS} aus — das Lot auf die Gerade durch ${nP} und ${nQ}. Weil der Winkel bei C stumpf ist, liegt ihr Fußpunkt außerhalb der Strecke ${wahl}; die Seite wird dafür als Gerade verlängert. Dreh das Dreieck mit dem ersten Regler, bis ${wahl} unten liegt.`;
+  } else {
+    satz = `Jetzt liegt ${wahl} unten, und die Höhe h_${wahl} steht senkrecht wie gewohnt. Ihr Fußpunkt liegt außerhalb der Strecke ${wahl}: Die Spitze ${nS} liegt zwar auf der Höhe der oberen Rechteckkante, aber seitlich neben dem Rechteck. Schieb sie mit dem zweiten Regler an dieser Kante entlang.`;
+  }
+  document.getElementById("gh-text").textContent = satz;
 }
 
 // ================= 3. Das Parallelogramm =================
@@ -956,7 +1057,13 @@ function initExercises() {
 ["sc-g", "sc-h", "sc-s"].forEach((id) => document.getElementById(id).addEventListener("input", renderScherung));
 ["pa-g", "pa-h", "pa-s", "pa-t", "pa-zweite"].forEach((id) => document.getElementById(id).addEventListener("input", renderParallelogramm));
 ["dr-g", "dr-h", "dr-cx", "dr-t"].forEach((id) => document.getElementById(id).addEventListener("input", renderDreieck));
-document.querySelectorAll('input[name="gh-seite"]').forEach((r) => r.addEventListener("input", renderGrundseite));
+// Beim Wechsel der Seite beginnen beide Schritte von vorn — sonst sähe man den Ausgangsfall nie.
+document.querySelectorAll('input[name="gh-seite"]').forEach((r) => r.addEventListener("input", () => {
+  document.getElementById("gh-d").value = "0";
+  document.getElementById("gh-s").value = "0";
+  renderGrundseite();
+}));
+["gh-d", "gh-s"].forEach((id) => document.getElementById(id).addEventListener("input", renderGrundseite));
 ["tz-a", "tz-c", "tz-h", "tz-t", "tz-mitte"].forEach((id) => document.getElementById(id).addEventListener("input", renderTrapez));
 ["ml-a", "ml-c", "ml-h", "ml-v", "ml-t"].forEach((id) => document.getElementById(id).addEventListener("input", renderMittellinie));
 ["zs-a", "zs-c", "zs-h"].forEach((id) => document.getElementById(id).addEventListener("input", renderZusammenschau));

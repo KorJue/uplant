@@ -92,12 +92,16 @@
     <p>Beachte den Regler <strong>Lage der Spitze</strong>: Er ändert die Form des Dreiecks, aber nicht seinen Flächeninhalt — Grundseite und Höhe bleiben ja dieselben. Das ist wieder die Scherung aus Abschnitt 1. Er reicht nur von A bis B, denn nur dann teilt die Höhe das Rechteck wirklich in zwei Teile. Was bei einem stumpfwinkligen Dreieck geschieht, siehst du gleich darunter.</p>
 
     <h3>Welche Höhe gehört zu welcher Grundseite?</h3>
-    <p>Jede der drei Seiten darf Grundseite sein — aber zu jeder gehört <em>ihre eigene</em> Höhe: das Lot von der gegenüberliegenden Ecke. Wähle unten eine Seite aus und sieh nach, ob der Flächeninhalt derselbe bleibt.</p>
+    <p>Jede der drei Seiten darf Grundseite sein — aber zu jeder gehört <em>ihre eigene</em> Höhe: das Lot von der gegenüberliegenden Ecke. Wähle unten eine Seite aus. Dann gehst du in zwei Schritten vor, wie im Heft: <strong>Drehen</strong>, bis die gewählte Seite unten liegt — und <strong>die Spitze verschieben</strong>, bis das Dreieck genau im Rechteck aus Grundseite und Höhe steckt.</p>
     <div class="widget">
       <div class="btn-row" id="gh-wahl">
         <label><input type="radio" name="gh-seite" value="c" checked> Grundseite c = AB</label>
         <label><input type="radio" name="gh-seite" value="a"> Grundseite a = BC</label>
         <label><input type="radio" name="gh-seite" value="b"> Grundseite b = CA</label>
+      </div>
+      <div class="btn-row">
+        <label>1. Drehen: <input type="range" id="gh-d" min="0" max="100" step="2" value="0" style="vertical-align:middle;width:10rem"> <span id="gh-d-anzeige" class="wert"></span></label>
+        <label>2. Spitze verschieben: <input type="range" id="gh-s" min="0" max="100" step="2" value="0" style="vertical-align:middle;width:10rem"> <span id="gh-s-anzeige" class="wert"></span></label>
       </div>
       <div class="th-wrap" id="gh-mount"></div>
       <div class="th-bilanz" id="gh-bilanz"></div>
@@ -105,7 +109,8 @@
     </div>
     <div class="achtung-box">
       <span class="box-label">Achtung — die Höhe kann außerhalb liegen</span>
-      Bei einem <strong>stumpfwinkligen</strong> Dreieck liegt der Fußpunkt zweier Höhen außerhalb der zugehörigen Seite. Dann wird die Seite als Gerade verlängert und das Lot darauf gefällt. Die Formel bleibt unverändert — nur die Zeichnung sieht ungewohnt aus. Das Dreieck oben ist bei C stumpfwinklig: Wähle „Grundseite a = BC“ oder „Grundseite b = CA“, um genau diesen Fall zu sehen. Nur die Höhe auf die Seite gegenüber dem stumpfen Winkel, hier c, trifft ihre Seite.
+      Bei einem <strong>stumpfwinkligen</strong> Dreieck liegt der Fußpunkt zweier Höhen außerhalb der zugehörigen Seite. Dann wird die Seite als Gerade verlängert und das Lot darauf gefällt. Die Formel bleibt unverändert — nur die Zeichnung sieht ungewohnt aus. Das Dreieck oben ist bei C stumpfwinklig: Wähle „Grundseite a = BC“ oder „Grundseite b = CA“, um genau diesen Fall zu sehen. Nur die Höhe auf die Seite gegenüber dem stumpfen Winkel, hier c, trifft ihre Seite.<br>
+      Warum gilt die Formel trotzdem? Die Spitze liegt auf der verlängerten oberen Kante des Rechtecks über der Grundseite. Schiebt man sie an dieser Kante entlang, bleiben Grundseite und Höhe gleich — und damit nach Abschnitt 1 auch der Flächeninhalt. Steht die Spitze über einer Ecke der Grundseite, halbiert das Dreieck das Rechteck genau.
     </div>
     <div class="quiz" id="quiz-dreieck"></div>
     <div class="quiz" id="quiz-hoehe"></div>
@@ -284,6 +289,6 @@
   <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="flaecheninhalte.js?v=3"></script>
+<script type="module" src="flaecheninhalte.js?v=4"></script>
 </body>
 </html>
