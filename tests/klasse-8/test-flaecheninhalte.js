@@ -1,4 +1,4 @@
-// Fachliche Prüfung: Klasse 8, Geometrie, Thema 7 „Flächeninhalte“.
+// Fachliche Prüfung: Klasse 8, Geometrie, Thema 4 „Flächeninhalte“.
 //
 // Die Seite behauptet drei Dinge, und alle drei werden hier nachgerechnet — nicht nur
 // abgelesen:

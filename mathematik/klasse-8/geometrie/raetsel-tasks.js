@@ -311,7 +311,7 @@ export const FAELLE = [
     denkfrage: "Woher weiß man, dass die konstruierte Gerade wirklich senkrecht auf der Seite steht?",
     musterantwort:
       "Die Ecke ist von den beiden Schnittpunkten X₁ und X₂ gleich weit entfernt (beide liegen auf demselben Kreis um sie herum). Der Kreuzungspunkt der beiden gleich großen Bögen ebenfalls. Beide Punkte liegen also auf der Mittelsenkrechten von X₁X₂ — und die steht per Definition senkrecht auf der Geraden durch X₁ und X₂, also auf der Seite.",
-    grundlagen: { href: "grundkonstruktionen.html", text: "1. Grundkonstruktionen → Höhe" },
+    grundlagen: { href: "grundkonstruktionen.html#sec-hoehen", text: "1. Grundkonstruktionen → Höhen" },
     minEulerSpan: 0,
     analyze: (tool, pts) => hoehenModell.analyze(tool, pts),
     check: (a) => hoehenModell.check(a),
@@ -355,7 +355,7 @@ export const FAELLE = [
     denkfrage: "Warum muss die dritte Mittelsenkrechte automatisch durch M laufen, ohne dass man sie überhaupt zeichnet?",
     musterantwort:
       "M liegt auf der Mittelsenkrechten von AB, ist also von A und B gleich weit entfernt. M liegt auch auf der von BC, ist also von B und C gleich weit entfernt. Zusammen: M ist von A und C gleich weit entfernt — und das ist genau die Bedingung für die Mittelsenkrechte von CA. M liegt also auch auf ihr.",
-    grundlagen: { href: "mittelsenkrechte-umkreis.html", text: "2. Mittelsenkrechte & Umkreis" },
+    grundlagen: { href: "grundkonstruktionen.html#sec-umkreis", text: "1. Grundkonstruktionen → Umkreis" },
     minEulerSpan: 0,
     analyze: (tool, pts) => TRI_TASKS.mittelsenkrechte.analyze(tool, pts),
     check: (a) => TRI_TASKS.mittelsenkrechte.check(a),
@@ -399,7 +399,7 @@ export const FAELLE = [
     denkfrage: "Warum darf man den Inkreisradius nicht einfach von I bis zu einer Ecke messen?",
     musterantwort:
       "Der Abstand eines Punktes von einer Geraden ist immer der <em>kürzeste</em> Abstand, und der wird über das Lot gemessen. Der Weg von I zu einer Ecke ist schräg und damit länger als das Lot. Ein Kreis mit diesem größeren Radius würde die Wege überqueren statt sie zu berühren.",
-    grundlagen: { href: "winkelhalbierende-inkreis.html", text: "3. Winkelhalbierende & Inkreis" },
+    grundlagen: { href: "grundkonstruktionen.html#sec-inkreis", text: "1. Grundkonstruktionen → Inkreis" },
     minEulerSpan: 0,
     analyze: (tool, pts) => TRI_TASKS.winkelhalbierende.analyze(tool, pts),
     check: (a) => TRI_TASKS.winkelhalbierende.check(a),
@@ -442,7 +442,7 @@ export const FAELLE = [
     denkfrage: "Wozu braucht man in dieser Konstruktion überhaupt Zirkelbögen, wo doch am Ende nur eine gerade Strecke gezeichnet wird?",
     musterantwort:
       "Der Mittelpunkt einer Strecke lässt sich mit Zirkel und Lineal nicht „abschätzen“ und nicht abmessen — er muss konstruiert werden. Zwei gleich große Kreise um die Endpunkte liefern ihn exakt: Ihre beiden Schnittpunkte sind von A und B gleich weit entfernt, und die Verbindung dieser Punkte trifft AB genau in der Mitte.",
-    grundlagen: { href: "grundkonstruktionen.html", text: "1. Grundkonstruktionen → Seitenhalbierende" },
+    grundlagen: { href: "grundkonstruktionen.html#sec-schwerpunkt", text: "1. Grundkonstruktionen → Schwerpunkt" },
     minEulerSpan: 0,
     analyze: (tool, pts) => seitenhalbierendeModell.analyze(tool, pts),
     check: (a) => seitenhalbierendeModell.check(a),
@@ -486,7 +486,7 @@ export const FAELLE = [
     denkfrage: "Warum genügen zwei Mittelsenkrechte, um M zu bestimmen — und warum ist es trotzdem sinnvoll, die dritte als Probe zu zeichnen?",
     musterantwort:
       "Zwei sich schneidende Geraden haben genau einen Schnittpunkt, damit ist M eindeutig festgelegt; die dritte Mittelsenkrechte läuft aus demselben Grund automatisch mit hindurch, den du schon beim Brunnen-Fall kennengelernt hast. Als Probe ist sie trotzdem nützlich: Geht sie nicht durch M, hat man sich beim Zeichnen irgendwo vertan.",
-    grundlagen: { href: "alle-linien.html", text: "4. Alle besonderen Linien am Dreieck" },
+    grundlagen: { href: "grundkonstruktionen.html#sec-alle", text: "1. Grundkonstruktionen → Alle vier im Vergleich" },
     minEulerSpan: EULER_MIN_SPAN,
     analyze: (tool, pts) => eulerModell.analyze(tool, pts),
     check: (a) => eulerModell.check(a),

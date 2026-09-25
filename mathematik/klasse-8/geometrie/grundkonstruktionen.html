@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Grundkonstruktionen</title>
+<title>Grundkonstruktionen und besondere Linien am Dreieck</title>
 <script src="../../../assets/theme.js"></script>
 <link rel="stylesheet" href="../../../assets/site.css">
+<link rel="stylesheet" href="../../aufgaben.css">
 <link rel="stylesheet" href="geometrie.css">
+<link rel="stylesheet" href="lernpfad.css">
 </head>
 <body>
 <nav class="breadcrumb">
@@ -14,78 +16,350 @@
   <a href="../../index.html">1 Mathematik</a><span class="sep">/</span>
   <a href="../index.html">Klasse 8</a><span class="sep">/</span>
   <a href="index.html">Geometrie</a><span class="sep">/</span>
-  Grundkonstruktionen
+  1 Grundkonstruktionen und besondere Linien am Dreieck
 </nav>
 <header class="page-header">
-  <h1>Grundkonstruktionen mit Zirkel und Lineal</h1>
-  <p>Mittelsenkrechte, Winkelhalbierende, Seitenhalbierende und Höhe. Bei jedem Laden der Seite erscheint eine neue, zufällige Aufgabe. Schau dir die Konstruktion zuerst Schritt für Schritt an — und übe sie danach selbst am Bildschirm. Bei Mittelsenkrechte und Winkelhalbierende gibt es zusätzlich die Möglichkeit, alle drei Linien plus Um- bzw. Inkreis an einem ziehbaren Dreieck selbst zu konstruieren.</p>
+  <h1>Grundkonstruktionen und besondere Linien am Dreieck</h1>
+  <p>Ein Selbstlernpfad: Vier Linien, eine Idee. Jede besondere Linie ist die Menge aller Punkte mit einer bestimmten Eigenschaft — und daraus folgen Umkreis, Inkreis, Schwerpunkt und Höhenschnittpunkt fast von selbst. Jeder Abschnitt zeigt das an einer beweglichen Zeichnung und endet mit einer Kontrollfrage. Danach konstruierst du selbst mit Zirkel und Lineal, und am Schluss stehen zwölf Übungsaufgaben.</p>
 </header>
 
 <main class="menu-main">
+
   <section class="card">
-    <div class="geo-mode-tabs" id="exercise-tabs">
-      <button type="button" class="geo-mode-tab geo-mode-tab-active" data-exercise="mittelsenkrechte">Mittelsenkrechte</button>
-      <button type="button" class="geo-mode-tab" data-exercise="winkelhalbierende">Winkelhalbierende</button>
-      <button type="button" class="geo-mode-tab" data-exercise="seitenhalbierende">Seitenhalbierende</button>
-      <button type="button" class="geo-mode-tab" data-exercise="hoehe">Höhe</button>
+    <h2>Worum geht es hier?</h2>
+    <p>Mit Zirkel und Lineal lassen sich vier Linien konstruieren, die in jedem Dreieck eine Rolle spielen: die <span class="term">Mittelsenkrechte</span>, die <span class="term">Winkelhalbierende</span>, die <span class="term">Seitenhalbierende</span> und die <span class="term">Höhe</span>. Zu jeder Art gibt es in einem Dreieck drei Stück — und in allen vier Fällen schneiden sich die drei in <em>einem</em> Punkt. Das ist kein Zufall, und für zwei der vier Fälle siehst du hier auch, warum. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>die Mittelsenkrechte als <span class="term">Ortslinie</span> beschreiben — alle Punkte, die von zwei Punkten gleich weit entfernt sind — und damit den <span class="term">Umkreis</span> begründen</li>
+      <li>die Winkelhalbierende als Ortslinie beschreiben — alle Punkte, die von zwei Schenkeln gleich weit entfernt sind — und damit den <span class="term">Inkreis</span> begründen</li>
+      <li>Seitenhalbierende und <span class="term">Schwerpunkt</span> konstruieren und das Teilungsverhältnis 2 : 1 anwenden</li>
+      <li>die drei Höhen und den <span class="term">Höhenschnittpunkt</span> finden — auch wenn er außerhalb liegt</li>
+      <li>vorhersagen, wo M, I, S und H bei spitz-, recht- und stumpfwinkligen Dreiecken liegen</li>
+      <li>alle vier Konstruktionen mit Zirkel und Lineal ausführen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst den <a href="../../grundwissen-5-10/02-geometrie/01-grundbegriffe/index.html#sec-abstand">Abstand als Lot</a>, die <a href="../../grundwissen-5-10/02-geometrie/05-winkelbetrachtungen/index.html#sec-dreieck">Winkelsumme im Dreieck</a> und die Grundkonstruktionen aus dem <a href="../../grundwissen-5-10/02-geometrie/06-konstruktionen/index.html">Grundwissen</a>. Den Satz des Pythagoras brauchst du nicht: Wo eine schräge Länge als Zahl vorkommt, ist sie an der Zeichnung gemessen.</p>
+  </section>
+
+  <!-- 1. Die Mittelsenkrechte -->
+  <section class="card" id="sec-mittelsenkrechte">
+    <h2>1. Die Mittelsenkrechte: gleich weit von A und B</h2>
+    <p>Stich mit dem Zirkel in A ein und zeichne einen Kreis, dann mit <em>derselben</em> Öffnung einen Kreis um B. Die beiden Schnittpunkte S₁ und S₂ haben etwas Besonderes: Sie sind von A <em>und</em> von B genau r entfernt. Zieh am Regler <strong>Zirkelöffnung</strong> und beobachte, wohin sie wandern.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Strecke AB: <input type="range" id="ms-g" min="4" max="9" step="0.5" value="6" style="vertical-align:middle;width:9rem"> <span id="ms-g-anzeige" class="th-name-c"></span></label>
+        <label>Zirkelöffnung r: <input type="range" id="ms-r" min="2.5" max="9" step="0.5" value="4" style="vertical-align:middle;width:9rem"> <span id="ms-r-anzeige" class="th-name-g"></span></label>
+      </div>
+      <div class="th-wrap" id="ms-mount"></div>
+      <div class="th-bilanz" id="ms-bilanz"></div>
+      <div id="ms-text" class="event-result"></div>
     </div>
+    <p>Und umgekehrt: Liegt ein Punkt <em>nicht</em> auf dieser Geraden, dann ist er einem der beiden Punkte näher. Verschiebe P und vergleiche die beiden Abstände.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>P nach rechts: <input type="range" id="mp-x" min="-1" max="7" step="0.5" value="2" style="vertical-align:middle;width:9rem"> <span id="mp-x-anzeige" class="wert"></span></label>
+        <label>P nach oben: <input type="range" id="mp-y" min="-3" max="3" step="0.5" value="2" style="vertical-align:middle;width:9rem"> <span id="mp-y-anzeige" class="wert"></span></label>
+      </div>
+      <div class="th-wrap" id="mp-mount"></div>
+      <div class="th-bilanz" id="mp-bilanz"></div>
+      <div id="mp-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Die Mittelsenkrechte als Ortslinie</span>
+      Die <strong>Mittelsenkrechte</strong> von AB ist die Gerade, die AB in der Mitte senkrecht schneidet. Sie besteht aus <strong>genau den Punkten, die von A und B gleich weit entfernt sind</strong>: Jeder Punkt auf ihr hat diese Eigenschaft, und kein Punkt außerhalb hat sie.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Konstruktion in drei Schritten</span>
+      1. Zirkel auf einen Radius einstellen, der <strong>größer als die halbe Strecke</strong> ist, und um A einen Bogen über und unter AB schlagen.<br>
+      2. Mit derselben Öffnung um B — die Bögen schneiden sich in S₁ und S₂.<br>
+      3. S₁ und S₂ verbinden. Die Gerade trifft AB in der Mitte M.<br>
+      <em>Warum senkrecht?</em> AS₁BS₂ hat vier gleich lange Seiten — eine Raute. Ihre Diagonalen stehen senkrecht aufeinander und halbieren sich.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Zirkelöffnung</span>
+      Ist die Öffnung nur halb so groß wie AB oder kleiner, berühren sich die Kreise höchstens — es gibt keine zwei Schnittpunkte, und die Konstruktion klappt nicht. Und die Öffnung darf zwischen den beiden Bögen nicht verstellt werden, sonst liegen S₁ und S₂ nicht mehr gleich weit von A und B.
+    </div>
+    <div class="quiz" id="quiz-mittelsenkrechte"></div>
+  </section>
 
-    <div class="geo-mode-tabs" id="phase-tabs"></div>
+  <!-- 2. Der Umkreis -->
+  <section class="card" id="sec-umkreis">
+    <h2>2. Der Umkreis: Die drei Mittelsenkrechten treffen sich</h2>
+    <p>In einem Dreieck hat jede Seite ihre Mittelsenkrechte: m<sub>a</sub>, m<sub>b</sub> und m<sub>c</sub>. Dass sie sich in <em>einem</em> Punkt schneiden, folgt direkt aus Abschnitt 1. Geh mit dem Regler <strong>Schritt</strong> vor: erst eine, dann zwei, dann alle drei.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Seite c: <input type="range" id="uk-c" min="4" max="9" step="0.5" value="7" style="vertical-align:middle;width:7rem"> <span id="uk-c-anzeige" class="th-name-c"></span></label>
+        <label>α: <input type="range" id="uk-alpha" min="20" max="120" step="5" value="55" style="vertical-align:middle;width:7rem"> <span id="uk-alpha-anzeige" class="wert"></span></label>
+        <label>β: <input type="range" id="uk-beta" min="20" max="120" step="5" value="65" style="vertical-align:middle;width:7rem"> <span id="uk-beta-anzeige" class="wert"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>Schritt: <input type="range" id="uk-schritt" min="1" max="3" step="1" value="1" style="vertical-align:middle;width:7rem"> <span id="uk-schritt-anzeige" class="wert"></span></label>
+      </div>
+      <div class="th-wrap" id="uk-mount"></div>
+      <div class="th-bilanz" id="uk-bilanz"></div>
+      <div id="uk-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Umkreis</span>
+      Die drei Mittelsenkrechten eines Dreiecks schneiden sich in einem Punkt <strong>M</strong>. Er ist von allen drei Ecken gleich weit entfernt: <strong>MA = MB = MC = r</strong>. Der Kreis um M mit diesem Radius geht durch alle drei Ecken — der <strong>Umkreis</strong>.
+      <div class="formula-block">M = m<sub>a</sub> ∩ m<sub>b</sub> ∩ m<sub>c</sub></div>
+      Zum Konstruieren genügen <strong>zwei</strong> Mittelsenkrechten; die dritte geht ohnehin durch ihren Schnittpunkt.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Wo liegt M?</span>
+      <strong>spitzwinklig:</strong> im Inneren &nbsp;·&nbsp; <strong>rechtwinklig:</strong> auf der Mitte der längsten Seite &nbsp;·&nbsp; <strong>stumpfwinklig:</strong> außerhalb, jenseits der längsten Seite.<br>
+      Stelle α = 50° und β = 40° ein: Dann ist γ = 90°, und M springt genau auf die Mitte von AB.
+    </div>
+    <div class="quiz" id="quiz-umkreis"></div>
+  </section>
 
-    <div class="geo-layout">
-      <div class="geo-canvas-col">
-        <div class="geo-canvas-wrap">
-          <svg id="geo-svg" class="geo-svg" viewBox="0 0 600 420">
-            <g id="layer-given"></g>
-            <g id="layer-tri-triangle"></g>
-            <g id="layer-construct"></g>
-            <g id="layer-user"></g>
-            <g id="layer-points"></g>
-            <g id="layer-tri-vertices"></g>
-          </svg>
-        </div>
-        <div class="geo-zoom-row">
-          <button type="button" class="geo-btn geo-zoom-btn" id="btn-zoom">⛶ Zeichenfläche vergrößern</button>
-        </div>
-        <div class="geo-toolbar" id="guided-controls">
-          <button type="button" class="geo-btn" id="btn-back" disabled>← Zurück</button>
-          <button type="button" class="geo-btn geo-btn-primary" id="btn-next">Weiter →</button>
-          <button type="button" class="geo-btn" id="btn-new-task">🎲 Neue Aufgabe</button>
-        </div>
-        <div id="free-controls" hidden>
-          <div class="geo-toolbar">
-            <button type="button" class="geo-btn" id="btn-tool-circle">◯ Zirkel</button>
-            <button type="button" class="geo-btn" id="btn-tool-line">／ Lineal</button>
-            <button type="button" class="geo-btn" id="btn-undo">↩ Rückgängig</button>
-            <button type="button" class="geo-btn" id="btn-clear">🗑 Zurücksetzen</button>
-            <button type="button" class="geo-btn geo-btn-primary" id="btn-check">✓ Prüfen</button>
-            <button type="button" class="geo-btn" id="btn-hint">💡 Tipp</button>
-            <button type="button" class="geo-btn" id="btn-new-task-free">🎲 Neue Aufgabe</button>
-          </div>
-          <div class="geo-toggle-row">
-            <label title="Wie beim echten Zirkel: einmal eingestellt, bleibt der Radius gleich — du klickst dann nur noch den Einstichpunkt an.">
-              <input type="checkbox" id="chk-lock-radius"> 🔒 Zirkel-Radius beibehalten (nicht verstellen)
-            </label>
-            <button type="button" class="geo-btn geo-btn-small" id="btn-reset-radius" hidden>🔄 Radius neu einstellen</button>
-          </div>
-          <p class="geo-pending-status" id="pending-status" hidden></p>
-          <p class="geo-radius-status" id="radius-status" hidden></p>
-        </div>
-        <div class="geo-feedback" id="feedback-box" hidden></div>
+  <!-- 3. Die Winkelhalbierende -->
+  <section class="card" id="sec-winkelhalbierende">
+    <h2>3. Die Winkelhalbierende: gleich weit von beiden Schenkeln</h2>
+    <p>Die Winkelhalbierende teilt einen Winkel in zwei gleiche Hälften. Wichtiger ist eine andere Eigenschaft: Jeder ihrer Punkte ist von beiden Schenkeln <em>gleich weit</em> entfernt — gemessen, wie immer beim Abstand, senkrecht. Schiebe P auf ihr entlang.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Winkel α: <input type="range" id="wh-alpha" min="30" max="150" step="5" value="70" style="vertical-align:middle;width:8rem"> <span id="wh-alpha-anzeige" class="wert"></span></label>
+        <label>Lage von P: <input type="range" id="wh-p" min="1" max="6" step="0.5" value="3" style="vertical-align:middle;width:8rem"> <span id="wh-p-anzeige" class="wert"></span></label>
+        <label>Konstruktion: <input type="range" id="wh-schritt" min="0" max="3" step="1" value="0" style="vertical-align:middle;width:6rem"> <span id="wh-schritt-anzeige" class="wert"></span></label>
+      </div>
+      <div class="th-wrap" id="wh-mount"></div>
+      <div class="th-bilanz" id="wh-bilanz"></div>
+      <div id="wh-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Die Winkelhalbierende als Ortslinie</span>
+      Die <strong>Winkelhalbierende</strong> w<sub>α</sub> teilt den Winkel α in zwei Winkel von je <strong>α : 2</strong>. Sie besteht aus <strong>genau den Punkten im Winkelfeld, die von beiden Schenkeln gleich weit entfernt sind</strong>.<br>
+      <em>Warum?</em> Fällt man von P die Lote auf beide Schenkel, entstehen zwei rechtwinklige Dreiecke mit derselben Seite SP und denselben Winkeln (α : 2 und 90°). Sie sind kongruent — also sind die Lote gleich lang.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Konstruktion in drei Schritten</span>
+      1. Bogen um den Scheitel S — er schneidet die Schenkel in X und Y.<br>
+      2. Mit derselben Öffnung Bögen um X und um Y — sie schneiden sich in Z.<br>
+      3. S mit Z verbinden. SXZY ist eine Raute, und ihre Diagonale SZ halbiert den Winkel.
+    </div>
+    <div class="quiz" id="quiz-winkelhalbierende"></div>
+  </section>
+
+  <!-- 4. Der Inkreis -->
+  <section class="card" id="sec-inkreis">
+    <h2>4. Der Inkreis: Die drei Winkelhalbierenden treffen sich</h2>
+    <p>Dieselbe Überlegung wie beim Umkreis — nur mit Seiten statt Ecken. Ändere das Dreieck, auch zu einem stumpfwinkligen, und beobachte, wo der Schnittpunkt I bleibt.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Seite c: <input type="range" id="ik-c" min="4" max="9" step="0.5" value="7" style="vertical-align:middle;width:7rem"> <span id="ik-c-anzeige" class="th-name-c"></span></label>
+        <label>α: <input type="range" id="ik-alpha" min="20" max="120" step="5" value="70" style="vertical-align:middle;width:7rem"> <span id="ik-alpha-anzeige" class="wert"></span></label>
+        <label>β: <input type="range" id="ik-beta" min="20" max="120" step="5" value="40" style="vertical-align:middle;width:7rem"> <span id="ik-beta-anzeige" class="wert"></span></label>
+      </div>
+      <div class="th-wrap" id="ik-mount"></div>
+      <div class="th-bilanz" id="ik-bilanz"></div>
+      <div id="ik-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Inkreis</span>
+      Die drei Winkelhalbierenden schneiden sich in einem Punkt <strong>I</strong>. Er ist von allen drei <em>Seiten</em> gleich weit entfernt; dieser Abstand ist der Inkreisradius <strong>ρ</strong> (sprich: rho). Der Kreis um I mit Radius ρ berührt jede Seite in genau einem Punkt — der <strong>Inkreis</strong>. I liegt <strong>immer im Inneren</strong>.
+      <div class="formula-block">I = w<sub>α</sub> ∩ w<sub>β</sub> ∩ w<sub>γ</sub></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der Radius des Inkreises</span>
+      Der Radius ist das <strong>Lot</strong> von I auf eine Seite, nicht die Strecke von I zu einer Ecke. Wer den Zirkel in I einsticht und bis zu einer Ecke öffnet, zeichnet einen viel zu großen Kreis. Also: erst das Lot von I auf eine Seite fällen, dann bis zum Fußpunkt öffnen.
+    </div>
+    <div class="quiz" id="quiz-inkreis"></div>
+  </section>
+
+  <!-- 5. Seitenhalbierende und Schwerpunkt -->
+  <section class="card" id="sec-schwerpunkt">
+    <h2>5. Seitenhalbierende und Schwerpunkt</h2>
+    <p>Die <strong>Seitenhalbierende</strong> s<sub>a</sub> verbindet die Ecke A mit der Mitte Mₐ der gegenüberliegenden Seite a. Die Mitte konstruierst du mit der Mittelsenkrechten aus Abschnitt 1 — deshalb kommt dieser Abschnitt erst jetzt.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Seite c: <input type="range" id="sh-c" min="4" max="9" step="0.5" value="7" style="vertical-align:middle;width:7rem"> <span id="sh-c-anzeige" class="th-name-c"></span></label>
+        <label>α: <input type="range" id="sh-alpha" min="20" max="120" step="5" value="60" style="vertical-align:middle;width:7rem"> <span id="sh-alpha-anzeige" class="wert"></span></label>
+        <label>β: <input type="range" id="sh-beta" min="20" max="120" step="5" value="50" style="vertical-align:middle;width:7rem"> <span id="sh-beta-anzeige" class="wert"></span></label>
+        <label><input type="checkbox" id="sh-alle"> alle drei Seitenhalbierenden</label>
+      </div>
+      <div class="th-wrap" id="sh-mount"></div>
+      <div class="th-bilanz" id="sh-bilanz"></div>
+      <div id="sh-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Schwerpunkt</span>
+      Die drei Seitenhalbierenden schneiden sich in einem Punkt <strong>S</strong>, dem <strong>Schwerpunkt</strong>. S teilt jede Seitenhalbierende im Verhältnis <strong>2 : 1</strong> — das längere Stück liegt an der Ecke.
+      <div class="formula-block">AS = ⅔ · s<sub>a</sub> &nbsp;&nbsp; SMₐ = ⅓ · s<sub>a</sub></div>
+    </div>
+    <p class="hinweis-box">💡 Das Verhältnis 2 : 1 ist hier an der Zeichnung gemessen. Beweisen lässt es sich mit den Strahlensätzen, die in Klasse 9 kommen. Im Koordinatensystem folgt daraus eine bequeme Formel: S hat als Koordinaten die <em>Mittelwerte</em> der Eckkoordinaten, S = ((x<sub>A</sub> + x<sub>B</sub> + x<sub>C</sub>) : 3 | (y<sub>A</sub> + y<sub>B</sub> + y<sub>C</sub>) : 3).</p>
+    <div class="quiz" id="quiz-schwerpunkt"></div>
+  </section>
+
+  <!-- 6. Höhen und Höhenschnittpunkt -->
+  <section class="card" id="sec-hoehen">
+    <h2>6. Höhen und Höhenschnittpunkt</h2>
+    <p>Die <strong>Höhe</strong> h<sub>a</sub> ist das Lot von der Ecke A auf die <em>Gerade</em> durch die Gegenseite a. Bei spitzen Winkeln trifft sie die Seite selbst; bei einem stumpfen Winkel muss die Seite verlängert werden. Mach den Winkel bei C stumpf, etwa mit α = 30° und β = 25°.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Seite c: <input type="range" id="ho-c" min="4" max="9" step="0.5" value="7" style="vertical-align:middle;width:7rem"> <span id="ho-c-anzeige" class="th-name-c"></span></label>
+        <label>α: <input type="range" id="ho-alpha" min="20" max="120" step="5" value="60" style="vertical-align:middle;width:7rem"> <span id="ho-alpha-anzeige" class="wert"></span></label>
+        <label>β: <input type="range" id="ho-beta" min="20" max="120" step="5" value="70" style="vertical-align:middle;width:7rem"> <span id="ho-beta-anzeige" class="wert"></span></label>
+      </div>
+      <div class="th-wrap" id="ho-mount"></div>
+      <div class="th-bilanz" id="ho-bilanz"></div>
+      <div id="ho-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Höhenschnittpunkt</span>
+      Die drei Höhen (als Geraden) schneiden sich in einem Punkt <strong>H</strong>, dem <strong>Höhenschnittpunkt</strong>.<br>
+      <strong>spitzwinklig:</strong> H innen &nbsp;·&nbsp; <strong>rechtwinklig:</strong> H ist die Ecke mit dem rechten Winkel &nbsp;·&nbsp; <strong>stumpfwinklig:</strong> H außen.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Das Lot fällen</span>
+      1. Bogen um A, der die Gerade BC zweimal schneidet — in X und Y.<br>
+      2. Zu XY die Mittelsenkrechte konstruieren (Abschnitt 1). Sie geht durch A und steht senkrecht auf BC: die Höhe h<sub>a</sub>.
+    </div>
+    <p class="hinweis-box">💡 Die Höhe ist kein Selbstzweck: Mit ihr rechnest du den Flächeninhalt aus, A = ½ · g · h. Auf der Seite <a href="flaecheninhalte.html#sec-dreieck">Flächeninhalte</a> siehst du, warum die Formel auch dann gilt, wenn der Fußpunkt außerhalb liegt.</p>
+    <div class="quiz" id="quiz-hoehen"></div>
+  </section>
+
+  <!-- 7. Alle vier im Vergleich -->
+  <section class="card" id="sec-alle">
+    <h2>7. Alle vier im Vergleich</h2>
+    <p>Blende die vier besonderen Punkte ein und verändere das Dreieck. Achte auf zwei Dinge: Welche Punkte bleiben immer innen? Und welche liegen auf einer gemeinsamen Geraden?</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Seite c: <input type="range" id="al-c" min="4" max="9" step="0.5" value="7" style="vertical-align:middle;width:7rem"> <span id="al-c-anzeige" class="th-name-c"></span></label>
+        <label>α: <input type="range" id="al-alpha" min="20" max="120" step="5" value="50" style="vertical-align:middle;width:7rem"> <span id="al-alpha-anzeige" class="wert"></span></label>
+        <label>β: <input type="range" id="al-beta" min="20" max="120" step="5" value="70" style="vertical-align:middle;width:7rem"> <span id="al-beta-anzeige" class="wert"></span></label>
+      </div>
+      <div class="btn-row">
+        <label><input type="checkbox" id="al-m" checked> <span class="bl-leg-m">M Umkreis</span></label>
+        <label><input type="checkbox" id="al-i" checked> <span class="bl-leg-i">I Inkreis</span></label>
+        <label><input type="checkbox" id="al-s" checked> <span class="bl-leg-s">S Schwerpunkt</span></label>
+        <label><input type="checkbox" id="al-h" checked> <span class="bl-leg-h">H Höhenschnittpunkt</span></label>
+        <label><input type="checkbox" id="al-euler"> Eulersche Gerade</label>
+      </div>
+      <div class="th-wrap" id="al-mount"></div>
+      <div class="th-bilanz" id="al-bilanz"></div>
+      <div id="al-text" class="event-result"></div>
+    </div>
+    <table class="bl-tabelle">
+      <thead><tr><th>Linie</th><th>Schnittpunkt</th><th>Eigenschaft</th><th>Lage</th></tr></thead>
+      <tbody>
+        <tr><td>Mittelsenkrechten</td><td>M</td><td>gleich weit von den Ecken → Umkreis</td><td>innen / auf c / außen</td></tr>
+        <tr><td>Winkelhalbierende</td><td>I</td><td>gleich weit von den Seiten → Inkreis</td><td>immer innen</td></tr>
+        <tr><td>Seitenhalbierende</td><td>S</td><td>teilt im Verhältnis 2 : 1 → Schwerpunkt</td><td>immer innen</td></tr>
+        <tr><td>Höhen</td><td>H</td><td>—</td><td>innen / Ecke / außen</td></tr>
+      </tbody>
+    </table>
+    <p class="hinweis-box">💡 Vertiefung: M, S und H liegen in jedem Dreieck auf einer Geraden, der <strong>Eulerschen Geraden</strong> — entdeckt 1765 von Leonhard Euler. S liegt zwischen M und H und ist von H doppelt so weit entfernt wie von M.</p>
+    <div class="quiz" id="quiz-alle"></div>
+  </section>
+
+  <!-- 8. Selbst konstruieren -->
+  <section class="card" id="sec-konstruieren">
+    <h2>8. Selbst konstruieren mit Zirkel und Lineal</h2>
+    <p>Jetzt bist du dran. Wähle eine der vier Linien, sieh dir die Anleitung Schritt für Schritt an und konstruiere danach selbst — „Prüfen“ sagt dir, was noch fehlt. Bei Mittelsenkrechte und Winkelhalbierende gibt es eine dritte Stufe: alle drei Linien an einem Dreieck, samt Umkreis oder Inkreis.</p>
+    <div class="th-konstruktion">
+      <div class="geo-mode-tabs" id="exercise-tabs">
+        <button type="button" class="geo-mode-tab geo-mode-tab-active" data-exercise="mittelsenkrechte">Mittelsenkrechte</button>
+        <button type="button" class="geo-mode-tab" data-exercise="winkelhalbierende">Winkelhalbierende</button>
+        <button type="button" class="geo-mode-tab" data-exercise="seitenhalbierende">Seitenhalbierende</button>
+        <button type="button" class="geo-mode-tab" data-exercise="hoehe">Höhe</button>
       </div>
 
-      <div class="geo-side-col">
-        <div class="geo-instruction-box" id="instruction-box"></div>
-        <ol class="geo-steps" id="steps-list"></ol>
+      <div class="geo-mode-tabs" id="phase-tabs"></div>
+
+      <div class="geo-layout">
+        <div class="geo-canvas-col">
+          <div class="geo-canvas-wrap">
+            <svg id="geo-svg" class="geo-svg" viewBox="0 0 600 420">
+              <g id="layer-given"></g>
+              <g id="layer-tri-triangle"></g>
+              <g id="layer-construct"></g>
+              <g id="layer-user"></g>
+              <g id="layer-points"></g>
+              <g id="layer-tri-vertices"></g>
+            </svg>
+          </div>
+          <div class="geo-zoom-row">
+            <button type="button" class="geo-btn geo-zoom-btn" id="btn-zoom">⛶ Zeichenfläche vergrößern</button>
+          </div>
+          <div class="geo-toolbar" id="guided-controls">
+            <button type="button" class="geo-btn" id="btn-back" disabled>← Zurück</button>
+            <button type="button" class="geo-btn geo-btn-primary" id="btn-next">Weiter →</button>
+            <button type="button" class="geo-btn" id="btn-new-task">🎲 Neue Aufgabe</button>
+          </div>
+          <div id="free-controls" hidden>
+            <div class="geo-toolbar">
+              <button type="button" class="geo-btn" id="btn-tool-circle">◯ Zirkel</button>
+              <button type="button" class="geo-btn" id="btn-tool-line">／ Lineal</button>
+              <button type="button" class="geo-btn" id="btn-undo">↩ Rückgängig</button>
+              <button type="button" class="geo-btn" id="btn-clear">🗑 Zurücksetzen</button>
+              <button type="button" class="geo-btn geo-btn-primary" id="btn-check">✓ Prüfen</button>
+              <button type="button" class="geo-btn" id="btn-hint">💡 Tipp</button>
+              <button type="button" class="geo-btn" id="btn-new-task-free">🎲 Neue Aufgabe</button>
+            </div>
+            <div class="geo-toggle-row">
+              <label title="Wie beim echten Zirkel: einmal eingestellt, bleibt der Radius gleich — du klickst dann nur noch den Einstichpunkt an.">
+                <input type="checkbox" id="chk-lock-radius"> 🔒 Zirkel-Radius beibehalten (nicht verstellen)
+              </label>
+              <button type="button" class="geo-btn geo-btn-small" id="btn-reset-radius" hidden>🔄 Radius neu einstellen</button>
+            </div>
+            <p class="geo-pending-status" id="pending-status" hidden></p>
+            <p class="geo-radius-status" id="radius-status" hidden></p>
+          </div>
+          <div class="geo-feedback" id="feedback-box" hidden></div>
+        </div>
+
+        <div class="geo-side-col">
+          <div class="geo-instruction-box" id="instruction-box"></div>
+          <ol class="geo-steps" id="steps-list"></ol>
+        </div>
       </div>
+    </div>
+    <div class="hinweis-box">💡 Mit „🔒 Zirkel-Radius beibehalten“ arbeitest du wie mit einem echten Zirkel: Einmal eingestellt, bleibt die Öffnung gleich. Für die Mittelsenkrechte und die Winkelhalbierende ist das genau richtig — dort darf die Öffnung zwischen zwei Bögen nicht verstellt werden.</div>
+  </section>
+
+  <!-- 9. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>9. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Dem <a href="../../grundwissen-5-10/02-geometrie/01-grundbegriffe/index.html#sec-abstand">Abstand als Lot</a> — beim Inkreis und bei der Winkelhalbierenden wird der Abstand zu einer Seite gebraucht, und der ist immer senkrecht gemessen.</li>
+      <li><strong>Baut auf:</strong> Den <a href="../../grundwissen-5-10/02-geometrie/06-konstruktionen/index.html">Grundkonstruktionen im Grundwissen</a> — hier kommt das <em>Warum</em> dazu: Beide Konstruktionen erzeugen eine Raute, und deren Symmetrie liefert das Ergebnis.</li>
+      <li><strong>Baut auf:</strong> Der <a href="../../grundwissen-5-10/02-geometrie/05-winkelbetrachtungen/index.html#sec-dreieck">Winkelsumme im Dreieck</a> — mit ihr berechnest du Winkel am Inkreis- und am Höhenschnittpunkt (Übungsaufgaben).</li>
+      <li><strong>Gleiche Struktur:</strong> Umkreis und Inkreis werden mit demselben Schluss begründet — „liegt auf zwei Ortslinien, also auch auf der dritten“. Einmal geht es um Ecken, einmal um Seiten.</li>
+      <li><strong>Führt weiter zu:</strong> Dem <a href="satz-des-thales.html">Satz des Thales</a>. Im rechtwinkligen Dreieck liegt der Umkreismittelpunkt auf der Mitte der längsten Seite — genau das ist der Thaleskreis.</li>
+      <li><strong>Führt weiter zu:</strong> Den <a href="flaecheninhalte.html">Flächeninhalten</a> — dort wird mit der Höhe gerechnet, auch wenn ihr Fußpunkt außerhalb liegt.</li>
+      <li><strong>Führt weiter zu:</strong> Dem <a href="raetsel.html">Rätsel um den Goldenen Zirkel</a> — Sachsituationen, in denen du entscheiden musst, welcher besondere Punkt gesucht ist.</li>
+      <li><strong>Führt weiter zu (Klasse 9):</strong> Den Strahlensätzen, mit denen sich das Teilungsverhältnis 2 : 1 des Schwerpunkts beweisen lässt, und der <a href="../../grundwissen-5-10/02-geometrie/08-aehnlichkeit/index.html">Ähnlichkeit</a>.</li>
+    </ul>
+  </section>
+
+  <!-- 10. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>10. Formelsammlung</h2>
+    <p>Die vier Linien als Ortslinien, ihre Schnittpunkte mit der Lage je nach Dreiecksform, die Begründungen für Umkreis und Inkreis, das Teilungsverhältnis des Schwerpunkts, die Eulersche Gerade und die typischen Fehler auf zwei Seiten.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="grundkonstruktionen-formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+    <p>Dazu die Konstruktionsschritte für Mittelsenkrechte, Winkelhalbierende, Seitenhalbierende und Höhe sowie für Umkreis und Inkreis als Anleitung zum Ausdrucken:</p>
+    <div class="btn-row">
+      <a class="btn" href="grundkonstruktionen.pdf" download>📄 Konstruktionsschritte als PDF herunterladen (DIN A4, Querformat)</a>
     </div>
   </section>
+
+  <!-- 11. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>11. Übungsaufgaben</h2>
+    <p>Zwölf Aufgaben, drei auf jeder Schwierigkeitsstufe. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu.</p>
+    <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit. Als Dezimaltrennzeichen dient das Komma.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
 </main>
 
 <footer class="site-footer">
   <p><a href="index.html">Zurück zu Geometrie</a></p>
   <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
+
+<script type="module" src="besondere-linien.js?v=1"></script>
 <script type="module" src="grundkonstruktionen.js?v=24"></script>
 </body>
 </html>

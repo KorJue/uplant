@@ -1,4 +1,4 @@
-// Fachliche Prüfung: Klasse 8, Geometrie, Thema 6 „Satz des Thales“.
+// Fachliche Prüfung: Klasse 8, Geometrie, Thema 3 „Satz des Thales“.
 //
 // Der Satz behauptet eine Gleichheit — genau 90°, nicht ungefähr. Deshalb wird an jeder
 // Reglerstellung beides geprüft: dass die Bilanz 90° schreibt UND dass der gezeichnete Punkt C

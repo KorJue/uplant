@@ -682,3 +682,75 @@
 .bruch .z { padding: 0 0.3em; border-bottom: 2px solid currentColor; }
 .bruch .n { padding: 0 0.3em; }
 .bruch.gross { font-size: 1.3rem; font-weight: 700; }
+
+
+/* ================= Grundkonstruktionen und besondere Linien am Dreieck ================= */
+
+/* Eine Farbe je Linienart, auf der ganzen Seite gleich — auch in der Bilanz und in den
+   Kästchen der Vergleichszeichnung: Mittelsenkrechte rot, Winkelhalbierende grün,
+   Seitenhalbierende orange, Höhe violett (wie auf den Flächeninhalten), Kreise blau.
+   Die Farben stehen hier und nicht im Skript, damit der Dunkelmodus sie aufhellen kann. */
+.bl-dreieck { fill: #1d4ed8; fill-opacity: 0.08; stroke: #1f2328; stroke-width: 2.2; stroke-linejoin: round; }
+.bl-strecke { stroke: #1f2328; stroke-width: 2.6; stroke-linecap: round; }
+.bl-ms { stroke: #c62828; stroke-width: 2; }
+.bl-wh { stroke: #157347; stroke-width: 2.2; }
+.bl-sh { stroke: #b3650a; stroke-width: 2.6; stroke-linecap: round; }
+.bl-sh-kurz { stroke-width: 1.6; }
+.bl-ho { stroke: #6d28d9; stroke-width: 2; }
+.bl-abstand { stroke: #6d28d9; stroke-width: 2; stroke-dasharray: 5 3; }
+.bl-radius { stroke: #1d4ed8; stroke-width: 1.6; stroke-dasharray: 4 3; }
+.bl-kreis { fill: none; stroke: #1d4ed8; stroke-width: 2; }
+.bl-kreis-i { fill: none; stroke: #157347; stroke-width: 2; }
+.bl-zirkel { fill: none; stroke: #9aa4b1; stroke-width: 1.2; stroke-dasharray: 3 3; }
+.bl-hilfe { stroke: #9aa4b1; stroke-width: 1.4; }
+.bl-gestrichelt { stroke-dasharray: 5 4; }
+.bl-duenn { stroke-width: 1.4; }
+.bl-euler { stroke: #1f2328; stroke-width: 1.2; stroke-dasharray: 8 4; opacity: 0.7; }
+.bl-winkel { stroke-width: 1.5; stroke-dasharray: none; }
+.bl-punkt-m { fill: #c62828; }
+.bl-punkt-i { fill: #157347; }
+.bl-punkt-s { fill: #b3650a; }
+.bl-punkt-h { fill: #6d28d9; }
+.bl-punkt-klein { fill: #1f2328; }
+.bl-name-m, .bl-name-i, .bl-name-s, .bl-name-h { font-size: 13px; font-weight: 700; }
+.bl-name-m { fill: #c62828; }
+.bl-name-i { fill: #157347; }
+.bl-name-s { fill: #b3650a; }
+.bl-name-h { fill: #6d28d9; }
+.bl-t-radius { font-size: 13px; font-weight: 700; fill: #1d4ed8; }
+.bl-t-wh { font-size: 12px; font-weight: 700; fill: #157347; }
+.bl-leg-m { color: #c62828; font-weight: 700; }
+.bl-leg-i { color: #157347; font-weight: 700; }
+.bl-leg-s { color: #b3650a; font-weight: 700; }
+.bl-leg-h { color: #6d28d9; font-weight: 700; }
+
+.bl-tabelle { width: 100%; border-collapse: collapse; margin: 0.8rem 0; font-size: 0.93rem; }
+.bl-tabelle th, .bl-tabelle td { border: 1px solid var(--border); padding: 0.4rem 0.6rem; text-align: left; vertical-align: top; }
+.bl-tabelle th { background: var(--bg); }
+
+:root[data-theme="dark"] .bl-dreieck { fill: #8ab4ff; fill-opacity: 0.1; stroke: #e6e8eb; }
+:root[data-theme="dark"] .bl-strecke { stroke: #e6e8eb; }
+:root[data-theme="dark"] .bl-ms { stroke: #ff8a8a; }
+:root[data-theme="dark"] .bl-wh { stroke: #6fd68f; }
+:root[data-theme="dark"] .bl-sh { stroke: #ffbf6e; }
+:root[data-theme="dark"] .bl-ho,
+:root[data-theme="dark"] .bl-abstand { stroke: #c4a7ff; }
+:root[data-theme="dark"] .bl-radius,
+:root[data-theme="dark"] .bl-kreis { stroke: #8ab4ff; }
+:root[data-theme="dark"] .bl-kreis-i { stroke: #6fd68f; }
+:root[data-theme="dark"] .bl-euler { stroke: #e6e8eb; }
+:root[data-theme="dark"] .bl-punkt-m { fill: #ff8a8a; }
+:root[data-theme="dark"] .bl-punkt-i { fill: #6fd68f; }
+:root[data-theme="dark"] .bl-punkt-s { fill: #ffbf6e; }
+:root[data-theme="dark"] .bl-punkt-h { fill: #c4a7ff; }
+:root[data-theme="dark"] .bl-punkt-klein { fill: #e6e8eb; }
+:root[data-theme="dark"] .bl-name-m { fill: #ff8a8a; }
+:root[data-theme="dark"] .bl-name-i { fill: #6fd68f; }
+:root[data-theme="dark"] .bl-name-s { fill: #ffbf6e; }
+:root[data-theme="dark"] .bl-name-h { fill: #c4a7ff; }
+:root[data-theme="dark"] .bl-t-radius { fill: #8ab4ff; }
+:root[data-theme="dark"] .bl-t-wh { fill: #6fd68f; }
+:root[data-theme="dark"] .bl-leg-m { color: #ff8a8a; }
+:root[data-theme="dark"] .bl-leg-i { color: #6fd68f; }
+:root[data-theme="dark"] .bl-leg-s { color: #ffbf6e; }
+:root[data-theme="dark"] .bl-leg-h { color: #c4a7ff; }

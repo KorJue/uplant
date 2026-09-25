@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Formelsammlung — Grundkonstruktionen und besondere Linien</title>
+<style>
+  @page { size: A4 landscape; margin: 5.5mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    color: #1f2328;
+    font-size: 8.1px;
+    line-height: 1.33;
+  }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  h1 {
+    font-size: 12.4px; margin: 0 0 1.4mm; padding-bottom: 0.8mm;
+    border-bottom: 1.6px solid #1d4ed8; color: #1d4ed8; letter-spacing: 0.01em;
+  }
+  h1 .klein { font-size: 8.4px; font-weight: 400; color: #5b6570; float: right; margin-top: 2px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2.1mm; align-items: start; }
+  .box {
+    border: 0.9px solid #c9d0d8; border-radius: 2mm; padding: 1.5mm 1.8mm;
+    background: #ffffff; break-inside: avoid;
+  }
+  .box.wide { grid-column: span 2; }
+  .box.full { grid-column: span 3; }
+  .box h2 {
+    font-size: 8.6px; margin: 0 0 1.1mm; color: #1d4ed8;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .box.warn { border-color: #e3b341; background: #fffaf0; }
+  .box.warn h2 { color: #8a5b0a; }
+  .box.merk { border-color: #7ec699; background: #f4fbf6; }
+  .box.merk h2 { color: #0f5132; }
+  p { margin: 0 0 0.9mm; }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 0.9mm; padding-left: 3.4mm; }
+  li { margin-bottom: 0.4mm; }
+  .f { font-family: "Cambria Math", Cambria, Georgia, serif; font-size: 9.2px; }
+  .zentral { text-align: center; }
+  .gross { font-size: 10.4px; font-weight: 700; }
+  .al { color: #157347; font-weight: 700; }
+  .be { color: #b3650a; font-weight: 700; }
+  .ga { color: #b3261e; font-weight: 700; }
+  .kr { color: #1d4ed8; font-weight: 700; }
+  .ra { color: #6d28d9; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { border: 0.7px solid #c9d0d8; padding: 0.5mm 0.6mm; text-align: center; }
+  th { background: #eef2f6; font-weight: 700; font-size: 7.4px; }
+  td { font-size: 7.6px; }
+  td.b { font-weight: 700; }
+  td.l { text-align: left; }
+  figure { margin: 0.8mm 0 0; }
+  figure svg { display: block; width: 100%; height: auto; }
+  .m70 { max-width: 70%; margin: 0.8mm auto 0; }
+  .m80 { max-width: 80%; margin: 0.8mm auto 0; }
+  .m88 { max-width: 88%; margin: 0.8mm auto 0; }
+  .m62 { max-width: 62%; margin: 0.8mm auto 0; }
+  .m72 { max-width: 72%; margin: 0.8mm auto 0; }
+  .m55 { max-width: 55%; margin: 0.8mm auto 0; }
+  .bu { font-size: 7.1px; color: #5b6570; text-align: center; margin-top: 0.5mm; }
+  .rechnung { background: #f4f6f8; border-radius: 1.2mm; padding: 1mm 1.2mm; margin: 0.8mm 0 0; }
+  .schritt { display: flex; gap: 1.2mm; margin-bottom: 0.5mm; }
+  .schritt b { flex: 0 0 3.6mm; color: #1d4ed8; }
+  .schritt:last-child { margin-bottom: 0; }
+  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm; align-items: start; }
+  .bruch { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; margin: 0 0.3mm; }
+  .bruch .z { border-bottom: 0.8px solid currentColor; padding: 0 0.6mm; }
+  .gh { color: #6d28d9; font-weight: 700; }
+  .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ===================== Seite 1 ===================== -->
+<div class="page">
+  <h1>Grundkonstruktionen und besondere Linien am Dreieck<span class="klein">Klasse 8 · Geometrie, Thema 1</span></h1>
+  <div class="grid">
+
+    <div class="box merk">
+      <h2>Mittelsenkrechte</h2>
+      <p>Die <span class="ga">Mittelsenkrechte m</span> von AB schneidet AB in der Mitte M senkrecht. Sie besteht aus <b>genau den Punkten, die von A und B gleich weit entfernt sind</b>.</p>
+      <figure class="m88">[[FIG1]]</figure>
+      <p class="bu"><b>Konstruktion:</b> Kreisbögen um A und B mit <b>demselben</b> Radius r &gt; AB : 2; die Schnittpunkte S₁, S₂ verbinden. AS₁BS₂ ist eine Raute — ihre Diagonalen stehen senkrecht aufeinander und halbieren sich.</p>
+    </div>
+
+    <div class="box">
+      <h2>Umkreis</h2>
+      <p class="zentral f gross">M = m<sub>a</sub> ∩ m<sub>b</sub> ∩ m<sub>c</sub> &nbsp;&nbsp; MA = MB = MC = r</p>
+      <p><b>Warum ein Punkt?</b> M auf m<sub>c</sub> ⇒ MA = MB; M auf m<sub>a</sub> ⇒ MB = MC. Also MA = MC — M liegt auch auf m<sub>b</sub>.</p>
+      <figure class="m80">[[FIG2]]</figure>
+      <p class="bu">Zum Konstruieren genügen zwei Mittelsenkrechten.</p>
+    </div>
+
+    <div class="box">
+      <h2>Winkelhalbierende</h2>
+      <p>Die <span class="al">Winkelhalbierende w<sub>α</sub></span> teilt α in zwei Winkel von je α : 2. Sie besteht aus <b>genau den Punkten, die von beiden Schenkeln gleich weit entfernt sind</b> (Abstand = Lot).</p>
+      <figure class="m88">[[FIG4]]</figure>
+      <p class="bu"><b>Konstruktion:</b> Bogen um S → X, Y; mit derselben Öffnung Bögen um X und Y → Z; S mit Z verbinden. SXZY ist eine Raute, SZ ihre Symmetrieachse.</p>
+    </div>
+
+    <div class="box">
+      <h2>Inkreis</h2>
+      <p class="zentral f gross">I = w<sub>α</sub> ∩ w<sub>β</sub> ∩ w<sub>γ</sub></p>
+      <p>I ist von allen drei <b>Seiten</b> gleich weit entfernt; dieser Abstand ist der Inkreisradius <span class="ra">ρ</span>. I liegt <b>immer innen</b>.</p>
+      <figure class="m80">[[FIG5]]</figure>
+      <p class="bu">Radius = Lot von I auf eine Seite — <b>nicht</b> die Strecke zu einer Ecke.</p>
+    </div>
+
+    <div class="box">
+      <h2>Seitenhalbierende und Schwerpunkt</h2>
+      <p>Die <span class="be">Seitenhalbierende s<sub>a</sub></span> verbindet A mit der Mitte M<sub>a</sub> von a (Mitte mit der Mittelsenkrechten konstruieren). Die drei schneiden sich im <b>Schwerpunkt S</b>.</p>
+      <figure class="m80">[[FIG6]]</figure>
+      <p class="zentral f">AS : SM<sub>a</sub> = 2 : 1 &nbsp;&nbsp; AS = ⅔ · s<sub>a</sub></p>
+      <p class="bu">Koordinaten: S = ((x<sub>A</sub> + x<sub>B</sub> + x<sub>C</sub>) : 3 | (y<sub>A</sub> + y<sub>B</sub> + y<sub>C</sub>) : 3)</p>
+    </div>
+
+    <div class="box">
+      <h2>Höhen und Höhenschnittpunkt</h2>
+      <p>Die <span class="ra">Höhe h<sub>a</sub></span> ist das Lot von A auf die <b>Gerade</b> BC. Die drei Höhen (als Geraden) schneiden sich im <b>Höhenschnittpunkt H</b>.</p>
+      <p><b>Lot fällen:</b> Bogen um A schneidet BC in X und Y; die Mittelsenkrechte von XY geht durch A und steht senkrecht auf BC.</p>
+      <p>Bei einem stumpfen Winkel liegen zwei Fußpunkte außerhalb — die Seite wird als Gerade verlängert.</p>
+    </div>
+
+
+  </div>
+  <p class="fuss">uplant · Mathematik Klasse 8 · Geometrie · Seite 1 von 2</p>
+</div>
+
+<!-- ===================== Seite 2 ===================== -->
+<div class="page">
+  <h1>Die vier besonderen Punkte im Überblick<span class="klein">Winkel, Radien, Koordinaten — ohne Pythagoras</span></h1>
+  <div class="grid">
+
+    <div class="box wide">
+      <h2>Übersicht</h2>
+      <table>
+        <tr><th>Linie</th><th>Konstruktion</th><th>Schnittpunkt</th><th>Eigenschaft</th><th>Lage</th></tr>
+        <tr><td class="l b">Mittelsenkrechte</td><td class="l">zwei Bögen gleicher Öffnung um die Endpunkte</td><td class="b">M</td><td class="l">MA = MB = MC → Umkreis</td><td>innen / auf c / außen</td></tr>
+        <tr><td class="l b">Winkelhalbierende</td><td class="l">Bogen um S, dann um X und Y</td><td class="b">I</td><td class="l">gleicher Abstand ρ zu allen Seiten → Inkreis</td><td>immer innen</td></tr>
+        <tr><td class="l b">Seitenhalbierende</td><td class="l">Seitenmitte (Mittelsenkrechte), mit Ecke verbinden</td><td class="b">S</td><td class="l">teilt jede s im Verhältnis 2 : 1 → Schwerpunkt</td><td>immer innen</td></tr>
+        <tr><td class="l b">Höhe</td><td class="l">Lot von der Ecke auf die Gegengerade</td><td class="b">H</td><td class="l">—</td><td>innen / Ecke / außen</td></tr>
+      </table>
+      <p style="margin-top:0.8mm"><b>Gleichschenklig:</b> Auf der Symmetrieachse sind Mittelsenkrechte, Winkelhalbierende, Seitenhalbierende und Höhe dieselbe Linie. <b>Gleichseitig:</b> M, I, S und H fallen zusammen.</p>
+    </div>
+
+    <div class="box">
+      <h2>Eulersche Gerade</h2>
+      <figure class="m70">[[FIG7]]</figure>
+      <p>M, S und H liegen in jedem Dreieck auf einer Geraden; S teilt MH im Verhältnis <b>1 : 2</b>:</p>
+      <p class="zentral f">S = M + (H − M) : 3</p>
+      <p class="bu">I liegt im Allgemeinen nicht darauf.</p>
+    </div>
+
+    <div class="box wide">
+      <h2>Wo liegen M und H?</h2>
+      <figure class="m62">[[FIG3]]</figure>
+      <p class="bu"><b>spitzwinklig:</b> M und H innen · <b>rechtwinklig:</b> M auf der Mitte der längsten Seite, H in der Ecke mit dem rechten Winkel · <b>stumpfwinklig:</b> M und H außen. I und S liegen immer innen.</p>
+    </div>
+
+    <div class="box">
+      <h2>Winkel an den besonderen Punkten</h2>
+      <p class="f">∠BIC = 90° + α : 2</p>
+      <p>Im Dreieck BIC liegen bei B und C die <b>halben</b> Winkel: 180° − (β + γ) : 2 = 90° + α : 2.</p>
+      <p class="f">∠BHC = 180° − α &nbsp;<span style="font-family:inherit">(spitzwinklig)</span></p>
+      <p>Viereck um A mit zwei rechten Winkeln: 360° − 90° − 90° − α.</p>
+      <p class="f">∠BMC = 2 · α &nbsp;<span style="font-family:inherit">(spitzwinklig)</span></p>
+      <p>MA = MB = MC: drei gleichschenklige Dreiecke, ihre Basiswinkel addieren sich.</p>
+    </div>
+
+    <div class="box">
+      <h2>Inkreisradius aus Fläche und Umfang</h2>
+      <p>IA, IB, IC zerlegen das Dreieck in drei Teildreiecke mit den Grundseiten a, b, c und jeweils der Höhe ρ:</p>
+      <p class="zentral f">A = ½ · a · ρ + ½ · b · ρ + ½ · c · ρ = ½ · ρ · u</p>
+      <p class="zentral f gross">ρ = 2 · A : u</p>
+      <p class="bu">Beispiel: a = 5, b = 5, c = 6 cm, A = 12 cm², u = 16 cm ⟹ ρ = 24 : 16 = 1,5 cm</p>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung — im Koordinatensystem</h2>
+      <p><b>Gegeben:</b> A(1 | 1), B(9 | 1), C(1 | 7), rechter Winkel bei A.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>m von AB ist senkrecht: x = (1 + 9) : 2 = 5</span></div>
+        <div class="schritt"><b>2.</b><span>m von AC ist waagerecht: y = (1 + 7) : 2 = 4</span></div>
+        <div class="schritt"><b>3.</b><span>Umkreismittelpunkt <b>M(5 | 4)</b> — die Mitte von BC</span></div>
+        <div class="schritt"><b>4.</b><span>Schwerpunkt S((1 + 9 + 1) : 3 | (1 + 1 + 7) : 3) = <b>S(11/3 | 3)</b></span></div>
+      </div>
+      <p style="margin-top:1mm"><b>Höhenschnittpunkt:</b> Beim rechten Winkel ist H die Ecke, also H(1 | 1). Probe Euler: M + (H − M) : 3 = (5 − 4 : 3 | 4 − 3 : 3) = (11/3 | 3) = S ✓</p>
+    </div>
+
+    <div class="box warn">
+      <h2>Typische Fehler</h2>
+      <ul>
+        <li><b>Umkreis und Inkreis verwechselt:</b> M ist gleich weit von den <i>Ecken</i>, I gleich weit von den <i>Seiten</i>.</li>
+        <li><b>Zirkelöffnung zu klein</b> (≤ halbe Strecke) oder zwischen den Bögen verstellt.</li>
+        <li><b>Inkreisradius bis zur Ecke</b> statt als Lot auf eine Seite.</li>
+        <li><b>Schwerpunkt in der Mitte</b> der Seitenhalbierenden vermutet — er teilt 2 : 1.</li>
+        <li><b>Höhe auf die Strecke</b> statt auf die Gerade gefällt: Bei stumpfen Winkeln muss verlängert werden.</li>
+      </ul>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik Klasse 8 · Geometrie · Seite 2 von 2</p>
+</div>
+
+</body>
+</html>
