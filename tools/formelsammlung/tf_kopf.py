@@ -55,7 +55,9 @@ def pruefe_im_bild(x, y, was=""):
 def txt(x, y, inhalt, farbe=SCHWARZ, groesse=7.0, gewicht=400, anker="middle", halo=False):
     """Ein Textstück. Die geschätzte Breite wird gegen den Rand geprüft, damit
     keine Beschriftung stumm über die Zeichenfläche hinausläuft."""
-    breite = len(str(inhalt)) * groesse * 0.56
+    # Eingebettete <tspan>-Auszeichnung (Tiefstellung) zählt nicht zur Breite.
+    import re
+    breite = len(re.sub(r"<[^>]+>", "", str(inhalt))) * groesse * 0.56
     links = x - (breite / 2 if anker == "middle" else breite if anker == "end" else 0)
     pruefe_im_bild(links, y, f"Text '{inhalt}' (links)")
     pruefe_im_bild(links + breite, y, f"Text '{inhalt}' (rechts)")

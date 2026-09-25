@@ -6,6 +6,7 @@
 <title>Baumdiagramme umdrehen</title>
 <script src="../../../../assets/theme.js"></script>
 <link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="../../../aufgaben.css">
 <link rel="stylesheet" href="lernpfad.css">
 </head>
 <body>
@@ -18,7 +19,7 @@
 </nav>
 <header class="page-header">
   <h1>Baumdiagramme umdrehen</h1>
-  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Simulation und endet mit einer kurzen Kontrollfrage.</p>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Zeichnung und endet mit einer Kontrollfrage. Am Schluss stehen eine Selbsteinschätzung und sechzehn Übungsaufgaben auf vier Stufen.</p>
 </header>
 
 <main class="menu-main">
@@ -32,9 +33,21 @@
       <li>ein Baumdiagramm mit <span class="term">absoluten Häufigkeiten</span> umzudrehen</li>
       <li>die <span class="term">allgemeinen Formeln</span> für ein umgedrehtes Baumdiagramm</li>
       <li>eine typische Stolperstelle beim Umdrehen zu erkennen</li>
-      <li>zum Schluss einen Ausblick auf die <span class="term">Regel von Bayes</span></li>
+      <li>die <span class="term">Regel von Bayes</span> als Kurzform dieses Weges — und im <span class="term">Flächenmodell</span>, warum ein positiver Test so oft falscher Alarm ist</li>
     </ul>
-    <p class="hinweis-box">💡 Arbeite die Abschnitte der Reihe nach durch. Probiere jedes Beispiel selbst aus, bevor du die Kontrollfrage beantwortest.</p>
+    <div class="notation-box">
+      <span class="box-label">Schreibweisen — dieselbe Sache, verschiedene Bücher</span>
+      Auf dieser Seite steht die Schreibweise aus <strong>Bigalke/Köhler</strong>. In anderen Lehrwerken und Formelsammlungen findest du auch:
+      <table class="bk-notation">
+        <thead><tr><th>Bedeutung</th><th>Bigalke/Köhler</th><th>auch üblich</th></tr></thead>
+        <tbody>
+          <tr><td>infiziert, wenn positiv</td><td>P<sub>positiv</sub>(infiziert)</td><td>P(infiziert | positiv), „positiver Vorhersagewert“</td></tr>
+          <tr><td>Regel von Bayes</td><td>P<sub>B</sub>(A) = <span class="bruch"><span class="z">P(A) · P<sub>A</sub>(B)</span><span class="n">P(B)</span></span></td><td>P(A | B) = P(B | A) · P(A) / P(B)</td></tr>
+          <tr><td>Nenner</td><td>P(B) = P(A) · P<sub>A</sub>(B) + P(Ā) · P<sub>Ā</sub>(B)</td><td>„Satz von der totalen Wahrscheinlichkeit“</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="hinweis-box">💡 Arbeite die Abschnitte der Reihe nach durch. Du brauchst aus <a href="../02-bedingte-wahrscheinlichkeit/index.html">Thema 2</a> die bedingte Wahrscheinlichkeit und das Flächenmodell mit der Bedingung als neuer „Welt“.</p>
   </section>
 
   <!-- 1. Warum umdrehen? Bayes-Rechner -->
@@ -64,6 +77,17 @@
           <div id="bayes-vft-mount"></div>
         </div>
       </div>
+    </div>
+    <h3>Warum so klein? Das Flächenmodell</h3>
+    <p>Dieselben drei Zahlen als Flächen: links die Infizierten, rechts die Nicht-Infizierten, unten jeweils der Teil mit positivem Test. Umdrehen heißt, nur die beiden umrandeten Rechtecke anzusehen — alle positiven Ergebnisse — und zu fragen, welcher Anteil davon das linke ist. Ändere oben die Prävalenz.</p>
+    <div class="widget">
+      <div class="fm-wrap" id="bm-mount"></div>
+      <div class="th-bilanz" id="bm-bilanz"></div>
+      <div id="bm-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Sensitivität ist nicht die Aussagekraft</span>
+      96 % Sensitivität heißt: 96 % der <em>Infizierten</em> werden erkannt. Wie verlässlich ein positives Ergebnis ist, hängt zusätzlich davon ab, wie viele Nicht-Infizierte getestet werden — also von der Prävalenz. Diese Verwechslung heißt <em>Prävalenzfehler</em>.
     </div>
     <div class="quiz" id="quiz-bayes-rechner"></div>
   </section>
@@ -129,20 +153,43 @@
     </div>
   </section>
 
-  <!-- 5. Formelsammlung -->
+  <!-- Selbsteinschätzung -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
+    <div id="se-liste"></div>
+    <div id="se-auswertung" class="event-result"></div>
+  </section>
+
+  <!-- Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Der <a href="../02-bedingte-wahrscheinlichkeit/index.html">bedingten Wahrscheinlichkeit</a> — P<sub>B</sub>(A) und P<sub>A</sub>(B) haben denselben Zähler und verschiedene Nenner. Umdrehen heißt: den anderen Nenner ausrechnen.</li>
+      <li><strong>Baut auf:</strong> Der <a href="../01-grundbegriffe-baumdiagramme-vierfeldertafel/index.html#sec-baum2">Vierfeldertafel</a> — sie ist der Zwischenschritt, der in beiden Bäumen gleich ist.</li>
+      <li><strong>Gleiche Struktur:</strong> Im Flächenmodell ändert sich beim Umdrehen nichts an den Rechtecken — nur die Frage, welche davon man zur „Welt“ erklärt.</li>
+      <li><strong>Führt weiter zu:</strong> Der <a href="../04-stochastische-unabhaengigkeit/index.html">stochastischen Unabhängigkeit</a> — sind A und B unabhängig, ist Umdrehen überflüssig: P<sub>B</sub>(A) = P(A).</li>
+      <li><strong>Führt weiter zu:</strong> Dem <em>Testen von Hypothesen</em> — auch dort wird gefragt, wie wahrscheinlich eine Beobachtung unter einer Annahme ist, und nicht umgekehrt.</li>
+    </ul>
+  </section>
+
+  <!-- Formelsammlung -->
   <section class="card" id="sec-formelsammlung">
-    <h2>5. Formelsammlung</h2>
+    <h2>Formelsammlung</h2>
     <p>Alle Regeln dieses Lernpfads mit Beispielen und Visualisierungen auf zwei Seiten zusammengefasst — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
     <div class="btn-row">
       <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
     </div>
   </section>
 
-  <!-- 6. Übungsaufgaben -->
+  <!-- Übungsaufgaben -->
   <section class="card" id="sec-uebungen">
-    <h2>6. Übungsaufgaben</h2>
-    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite. Sie sind nach aufsteigendem Schwierigkeitsgrad sortiert.</p>
+    <h2>Übungsaufgaben</h2>
+    <p>Sechzehn Aufgaben, vier auf jeder Stufe. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu. Wahrscheinlichkeiten darfst du als Dezimalzahl, in Prozent oder als Bruch eingeben.</p>
     <div id="exercises-mount"></div>
+    <h3>Am Baum und an der Tafel ausfüllen</h3>
+    <p>Aufgaben, bei denen du direkt ins Baumdiagramm und in die Vierfeldertafel schreibst.</p>
+    <div id="ausfuell-mount"></div>
   </section>
 
 </main>
@@ -152,6 +199,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=3"></script>
+<script type="module" src="lernpfad.js?v=4"></script>
 </body>
 </html>

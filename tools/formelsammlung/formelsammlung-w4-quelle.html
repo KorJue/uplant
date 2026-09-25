@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Formelsammlung — Stochastische Unabhängigkeit</title>
+<style>
+  @page { size: A4 landscape; margin: 5.5mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    color: #1f2328;
+    font-size: 8.1px;
+    line-height: 1.33;
+  }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  h1 {
+    font-size: 12.4px; margin: 0 0 1.4mm; padding-bottom: 0.8mm;
+    border-bottom: 1.6px solid #1d4ed8; color: #1d4ed8; letter-spacing: 0.01em;
+  }
+  h1 .klein { font-size: 8.4px; font-weight: 400; color: #5b6570; float: right; margin-top: 2px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2.1mm; align-items: start; }
+  .box {
+    border: 0.9px solid #c9d0d8; border-radius: 2mm; padding: 1.5mm 1.8mm;
+    background: #ffffff; break-inside: avoid;
+  }
+  .box.wide { grid-column: span 2; }
+  .box.full { grid-column: span 3; }
+  .box h2 {
+    font-size: 8.6px; margin: 0 0 1.1mm; color: #1d4ed8;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .box.warn { border-color: #e3b341; background: #fffaf0; }
+  .box.warn h2 { color: #8a5b0a; }
+  .box.merk { border-color: #7ec699; background: #f4fbf6; }
+  .box.merk h2 { color: #0f5132; }
+  p { margin: 0 0 0.9mm; }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 0.9mm; padding-left: 3.4mm; }
+  li { margin-bottom: 0.4mm; }
+  .f { font-family: "Cambria Math", Cambria, Georgia, serif; font-size: 9.2px; }
+  .zentral { text-align: center; }
+  .gross { font-size: 10.4px; font-weight: 700; }
+  .al { color: #157347; font-weight: 700; }
+  .be { color: #b3650a; font-weight: 700; }
+  .ga { color: #b3261e; font-weight: 700; }
+  .kr { color: #1d4ed8; font-weight: 700; }
+  .ra { color: #6d28d9; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { border: 0.7px solid #c9d0d8; padding: 0.5mm 0.6mm; text-align: center; }
+  th { background: #eef2f6; font-weight: 700; font-size: 7.4px; }
+  td { font-size: 7.6px; }
+  td.b { font-weight: 700; }
+  td.l { text-align: left; }
+  figure { margin: 0.8mm 0 0; }
+  figure svg { display: block; width: 100%; height: auto; }
+  .m70 { max-width: 70%; margin: 0.8mm auto 0; }
+  .m80 { max-width: 80%; margin: 0.8mm auto 0; }
+  .m88 { max-width: 88%; margin: 0.8mm auto 0; }
+  .m62 { max-width: 62%; margin: 0.8mm auto 0; }
+  .m72 { max-width: 72%; margin: 0.8mm auto 0; }
+  .m55 { max-width: 55%; margin: 0.8mm auto 0; }
+  .bu { font-size: 7.1px; color: #5b6570; text-align: center; margin-top: 0.5mm; }
+  .rechnung { background: #f4f6f8; border-radius: 1.2mm; padding: 1mm 1.2mm; margin: 0.8mm 0 0; }
+  .schritt { display: flex; gap: 1.2mm; margin-bottom: 0.5mm; }
+  .schritt b { flex: 0 0 3.6mm; color: #1d4ed8; }
+  .schritt:last-child { margin-bottom: 0; }
+  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm; align-items: start; }
+  .bruch { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; margin: 0 0.3mm; }
+  .bruch .z { border-bottom: 0.8px solid currentColor; padding: 0 0.6mm; }
+  .binom { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; padding: 0 0.9mm; margin: 0 0.3mm; border-left: 0.9px solid currentColor; border-right: 0.9px solid currentColor; border-radius: 45% / 50%; font-size: 92%; }
+  .tr { color: #157347; font-weight: 700; }
+  .ni { color: #b3650a; font-weight: 700; }
+  .fu { color: #5b6570; font-size: 7.3px; }
+  .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ===================== Seite 1 ===================== -->
+<div class="page">
+  <h1>Stochastische Unabhängigkeit<span class="klein">MSS 13 · Wahrscheinlichkeitsrechnung, Thema 4 · Schreibweise Bigalke/Köhler, <span class="fu">grau: andere Bücher</span></span></h1>
+  <div class="grid">
+
+    <div class="box merk">
+      <h2>Definition</h2>
+      <p>B heißt <b>(stochastisch) unabhängig</b> von A, wenn das Eintreten von A die Wahrscheinlichkeit von B nicht ändert:</p>
+      <p class="zentral f gross">P<sub>A</sub>(B) = P(B)</p>
+      <p class="zentral fu">auch üblich: P(B | A) = P(B)</p>
+      <p>Mit P(A ∩ B) = P(A) · P<sub>A</sub>(B) folgt die <b>Multiplikationsregel</b> — sie ist gleichwertig und gilt in beide Richtungen:</p>
+      <p class="zentral f gross">A, B unabhängig ⟺ P(A ∩ B) = P(A) · P(B)</p>
+      <p>Mit A und B sind auch A und B̄, Ā und B sowie Ā und B̄ unabhängig.</p>
+    </div>
+
+    <div class="box wide">
+      <h2>Im Baumdiagramm: gleiche Teilbäume</h2>
+      <div class="zwei">
+        <div>
+          <figure>[[FIG1]]</figure>
+          <p class="bu"><b>Mit</b> Zurücklegen (3 grüne, 4 rote Kugeln): Nach jedem ersten Zug steht 4/7 am Ast nach „rot“ — die zweite Ziehung „weiß nichts“ von der ersten. <b>Unabhängig.</b></p>
+        </div>
+        <div>
+          <figure>[[FIG2]]</figure>
+          <p class="bu"><b>Ohne</b> Zurücklegen: P<sub>grün</sub>(R) = 4/6, P<sub>rot</sub>(R) = 3/6 — verschieden. <b>Abhängig</b>, obwohl P(R) = 4/7 in beiden Fällen gleich ist.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box wide">
+      <h2>Im Flächenmodell: Schnitte auf gleicher Höhe</h2>
+      <div class="zwei">
+        <div>
+          <figure class="m62">[[FIG3]]</figure>
+          <p class="bu">B ist ein durchgehender Streifen der Höhe P(B) = 0,6. Das Rechteck A ∩ B ist Breite · Höhe: <span class="f">0,4 · 0,6 = 0,24 = P(A) · P(B)</span>.</p>
+        </div>
+        <div>
+          <figure class="m62">[[FIG4]]</figure>
+          <p class="bu">Die Schnitte liegen verschieden hoch: <span class="f">P(A ∩ B) = 0,24</span>, aber <span class="f">P(A) · P(B) = 0,4 · 0,42 = 0,168</span>.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Wie weit von der Unabhängigkeit?</h2>
+      <p class="zentral f gross">d = P(A ∩ B) − P(A) · P(B)</p>
+      <p class="zentral f">d = P(A) · P(Ā) · (P<sub>A</sub>(B) − P<sub>Ā</sub>(B))</p>
+      <p>d = 0 genau dann, wenn die beiden Äste nach B gleich sind — im Flächenmodell, wenn die Schnitte gleich hoch liegen. Im abhängigen Flächenmodell: <span class="f">d = 0,4 · 0,6 · 0,3 = 0,072</span>.</p>
+      <p>d &gt; 0: A macht B wahrscheinlicher; d &lt; 0: unwahrscheinlicher.</p>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik MSS 13 · Wahrscheinlichkeitsrechnung · Seite 1 von 2</p>
+</div>
+
+<!-- ===================== Seite 2 ===================== -->
+<div class="page">
+  <h1>Unabhängigkeit prüfen und nutzen<span class="klein">Vierfeldertafel — Korrelation und Kausalität — Musterrechnungen</span></h1>
+  <div class="grid">
+
+    <div class="box">
+      <h2>Test an der Vierfeldertafel</h2>
+      <p><b>Gegeben:</b> 521 Befragte, Arbeitszeit und Schlaf.</p>
+      [[FIG5]]
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span><span class="f">P(A) · P(B) = <span class="bruch"><span class="z">345</span><span>521</span></span> · <span class="bruch"><span class="z">339</span><span>521</span></span> ≈ 0,431</span></span></div>
+        <div class="schritt"><b>2.</b><span><span class="f">P(A ∩ B) = 213 : 521 ≈ 0,409</span></span></div>
+        <div class="schritt"><b>3.</b><span>Verschieden — „mehr als 40 h“ und „schläft ruhig“ sind <b>abhängig</b>.</span></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Korrelation und Kausalität</h2>
+      <p><b>Gegeben:</b> 100 Befragte, Schal und Erkältung.</p>
+      [[FIG6]]
+      <p style="margin-top:0.8mm"><span class="f">P<sub>S</sub>(E) = 35 : 50 = 0,7</span>, aber <span class="f">P(E) = 0,4</span> — abhängig, die Merkmale <b>korrelieren</b>.</p>
+      <p>Das heißt <b>nicht</b>, dass der Schal die Erkältung verursacht: Beides kann von einem dritten Merkmal abhängen — dem kalten Wetter. Kausalität zeigt erst ein Experiment.</p>
+    </div>
+
+    <div class="box warn">
+      <h2>Stolperstelle: Eriks Rechnung</h2>
+      <p>53 % der Befragten sind weiblich, 39 % haben lange Haare. Erik: „Männer mit kurzen Haaren: 0,47 · 0,61 ≈ 0,29.“</p>
+      <p>Die Gegenwahrscheinlichkeiten stimmen — aber die <b>Multiplikationsregel gilt nur bei Unabhängigkeit</b>, und die ist nicht gezeigt. Ohne sie liegt der Anteil irgendwo <b>zwischen 8 % und 47 %</b>:</p>
+      <p class="zentral f">0,47 + 0,61 − 1 = 0,08 &nbsp;&nbsp; min(0,47; 0,61) = 0,47</p>
+      <p>Nötig ist eine Angabe über das gemeinsame Auftreten, etwa „20 % sind Frauen mit langen Haaren“.</p>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 1 — mindestens einer</h2>
+      <p><b>Gegeben:</b> Zwei Rauchmelder schlagen unabhängig mit 0,9 und 0,8 an.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>Gegenereignis: keiner schlägt an. <span class="f">P = 0,1 · 0,2 = 0,02</span></span></div>
+        <div class="schritt"><b>2.</b><span><span class="f">P(mindestens einer) = 1 − 0,02 = <b>0,98</b></span></span></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 2 — Reihe und parallel</h2>
+      <p><b>Gegeben:</b> drei unabhängige Bauteile mit 0,9, 0,8 und 0,95.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>R</b><span>Reihe (alle nötig): <span class="f">0,9 · 0,8 · 0,95 = <b>0,684</b></span></span></div>
+        <div class="schritt"><b>P</b><span>Parallel (eines genügt): <span class="f">1 − 0,1 · 0,2 · 0,05 = <b>0,999</b></span></span></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 3 — die Zelle für Unabhängigkeit</h2>
+      <p><b>Gegeben:</b> 200 Personen, 80 in A, 50 in B. Wie viele müssen in A ∩ B liegen?</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span><span class="f">|A ∩ B| = 80 · 50 : 200 = <b>20</b></span></span></div>
+        <div class="schritt"><b>2.</b><span>Rest der Tafel: 60, 30 und 90. Probe: <span class="f">120 · 150 : 200 = 90</span> ✓</span></div>
+      </div>
+    </div>
+
+    <div class="box warn wide">
+      <h2>Typische Fehler</h2>
+      <ul>
+        <li><b>Multiplikationsregel ohne Unabhängigkeit</b> angewendet (Eriks Fehler).</li>
+        <li><b>Unabhängig mit unvereinbar verwechselt:</b> Schließen sich A und B aus (P(A), P(B) &gt; 0), ist P(A ∩ B) = 0 ≠ P(A) · P(B) — sie sind sogar <b>abhängig</b>. Würfel: „1 oder 2“ und „5 oder 6“.</li>
+        <li><b>Nur P(A) = P(B) geprüft</b> — das hat mit Unabhängigkeit nichts zu tun.</li>
+        <li><b>Aus Korrelation auf Ursache geschlossen.</b></li>
+      </ul>
+    </div>
+
+    <div class="box" style="border-style:dashed;background:#f7f8fa">
+      <h2 style="color:#5b6570">Ausblick</h2>
+      <p><b>Paarweise</b> unabhängig reicht für drei Ereignisse nicht: Zwei Münzen, A „1. Kopf“, B „2. Kopf“, C „beide gleich“ — je zwei erfüllen die Regel, aber P(A ∩ B ∩ C) = 1/4 ≠ 1/8. Unabhängige Wiederholungen führen zu den <b>Bernoulli-Ketten</b> (Thema 5).</p>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik MSS 13 · Wahrscheinlichkeitsrechnung · Seite 2 von 2</p>
+</div>
+
+</body>
+</html>

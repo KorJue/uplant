@@ -5,6 +5,9 @@
 
 "use strict";
 
+import { mountUebungsaufgaben } from "../../../aufgaben.js?v=2";
+import { AUFGABEN, parseZahl } from "./aufgaben-grundbegriffe.js?v=1";
+
 // ---------- Helfer ----------
 
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -1105,7 +1108,7 @@ function mountTreeFromVftExercise(container, { title, prompt, vft, stage1, stage
 }
 
 function initExercises() {
-  const mount = document.getElementById("exercises-mount");
+  const mount = document.getElementById("ausfuell-mount");
 
   // Aufgabe 1 (leicht) — Ereignis direkt erkennen, exakte Auswahl.
   mountSelectExercise(mount, {
@@ -1471,41 +1474,146 @@ function initExercises() {
   });
 }
 
-// ================= Quizze =================
+// ================= 5b. Warum multiplizieren? Das Flächenmodell =================
+//
+// Die Pfadmultiplikationsregel wird hier nicht behauptet, sondern gezeigt: Das Einheitsquadrat
+// steht für „alle Ziehungen“. Die erste Stufe teilt es senkrecht in Spalten, so breit wie ihre
+// Wahrscheinlichkeiten; die zweite Stufe teilt jede Spalte waagerecht, so hoch wie die
+// Wahrscheinlichkeit am zweiten Ast. Ein Pfad ist dann ein Rechteck, und seine Fläche ist
+// Breite · Höhe — „ein Anteil von einem Anteil“. Die vier Rechtecke füllen das Quadrat, also
+// ergeben die vier Pfade zusammen 1.
+//
+// Mit Zurücklegen liegen die waagerechten Schnitte in beiden Spalten auf derselben Höhe, ohne
+// Zurücklegen nicht — das ist der sichtbare Unterschied zwischen unabhängigen und abhängigen
+// Stufen, auf den Thema 4 zurückkommt.
+//
+// Gerechnet wird mit ganzen Kugelzahlen als Brüchen, nie mit Bildschirmkoordinaten.
 
-function initQuizzes() {
-  mountQuiz(document.getElementById("quiz-ergebnis"), {
+// „=“ nur, wenn die Anzeige mit dieser Stellenzahl den Wert genau trifft (6/25 = 0,24), sonst „≈“.
+function zeichen(x, stellen) {
+  const f = Math.pow(10, stellen);
+  return Math.abs(Math.round(x * f) - x * f) < 1e-9 ? "=" : "≈";
+}
+
+const FM_SEITE = 320, FM_RAND = 46;
+const ggT = (a, b) => (b ? ggT(b, a % b) : Math.abs(a));
+function bruchHtml(z, n) {
+  if (n === 1) return String(z);
+  return `<span class="bruch"><span class="z">${z}</span><span class="n">${n}</span></span>`;
+}
+function kuerze(z, n) {
+  const g = ggT(z, n) || 1;
+  return [z / g, n / g];
+}
+
+function renderFlaechenmodell() {
+  const r = Number(document.getElementById("fm-r").value);
+  const b = Number(document.getElementById("fm-b").value);
+  const ohne = document.getElementById("fm-ohne").checked;
+  const pfad = document.getElementById("fm-pfad").value;
+  document.getElementById("fm-r-anzeige").textContent = String(r);
+  document.getElementById("fm-b-anzeige").textContent = String(b);
+  const n = r + b;
+  // Erste Stufe: Breiten. Zweite Stufe: Höhen je Spalte — als [Zähler, Nenner].
+  const breite = { r: [r, n], b: [b, n] };
+  const hoehe = ohne
+    ? { rr: [r - 1, n - 1], rb: [b, n - 1], br: [r, n - 1], bb: [b - 1, n - 1] }
+    : { rr: [r, n], rb: [b, n], br: [r, n], bb: [b, n] };
+  const wert = ([z, m]) => z / m;
+
+  const W = FM_SEITE + 2 * FM_RAND + 40, H = FM_SEITE + 2 * FM_RAND;
+  const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, width: W, height: H, class: "fm-svg", role: "img", "aria-label": "Flächenmodell" });
+  const x0 = FM_RAND, y0 = FM_RAND, s = FM_SEITE;
+  const wR = s * wert(breite.r);
+  // Unten die zweite Stufe „rot“, oben „blau“ — y wächst in SVG nach unten.
+  const spalten = [
+    { k: "r", x: x0, w: wR, unten: "rr", oben: "rb" },
+    { k: "b", x: x0 + wR, w: s - wR, unten: "br", oben: "bb" },
+  ];
+  // Die Spalte trägt die Farbe der ersten Kugel, die Deckkraft die der zweiten (kräftig = rot) —
+  // rote Kugeln grün zu zeichnen, hätte jede Schülerin zuerst verwirrt.
+  const klasse = { rr: "fm-rot-voll", rb: "fm-rot-hell", br: "fm-blau-voll", bb: "fm-blau-hell" };
+  for (const sp of spalten) {
+    const hU = s * wert(hoehe[sp.unten]);
+    for (const [key, y, h] of [[sp.unten, y0 + s - hU, hU], [sp.oben, y0, s - hU]]) {
+      if (h < 1e-9 || sp.w < 1e-9) continue;
+      svg.appendChild(svgEl("rect", {
+        x: sp.x.toFixed(2), y: y.toFixed(2), width: sp.w.toFixed(2), height: h.toFixed(2),
+        class: klasse[key], "data-pfad": key,
+      }));
+      if (key === pfad) {
+        svg.appendChild(svgEl("rect", { x: (sp.x + 1.5).toFixed(2), y: (y + 1.5).toFixed(2), width: Math.max(0, sp.w - 3).toFixed(2), height: Math.max(0, h - 3).toFixed(2), class: "fm-aktiv" }));
+      }
+    }
+    // Der waagerechte Schnitt dieser Spalte.
+    svg.appendChild(svgEl("line", { x1: sp.x, y1: (y0 + s - hU).toFixed(2), x2: sp.x + sp.w, y2: (y0 + s - hU).toFixed(2), class: "fm-trenn-h", "data-schnitt": sp.k }));
+  }
+  svg.appendChild(svgEl("line", { x1: (x0 + wR).toFixed(2), y1: y0, x2: (x0 + wR).toFixed(2), y2: y0 + s, class: "fm-trenn" }));
+  svg.appendChild(svgEl("rect", { x: x0, y: y0, width: s, height: s, class: "fm-rahmen", "data-rolle": "quadrat" }));
+  const t = (x, y, inhalt, k = "fm-text", anker = "middle") => {
+    const e = svgEl("text", { x: x.toFixed(1), y: y.toFixed(1), class: k, "text-anchor": anker });
+    e.textContent = inhalt;
+    svg.appendChild(e);
+  };
+  // Beschriftung der Spalten unter dem Quadrat, der Zeilen rechts daneben.
+  t(x0 + wR / 2, y0 + s + 18, `1. rot  ${r}/${n}`);
+  t(x0 + wR + (s - wR) / 2, y0 + s + 18, `1. blau  ${b}/${n}`);
+  t(x0 + s / 2, y0 - 14, ohne ? "ohne Zurücklegen" : "mit Zurücklegen", "fm-text-klein");
+  const hU2 = s * wert(hoehe.br);
+  t(x0 + s + 8, y0 + s - hU2 / 2 + 4, `2. rot`, "fm-text-klein", "start");
+  t(x0 + s + 8, y0 + (s - hU2) / 2 + 4, `2. blau`, "fm-text-klein", "start");
+  const mount = document.getElementById("fm-mount");
+  mount.innerHTML = "";
+  mount.appendChild(svg);
+
+  const name = { rr: "rot → rot", rb: "rot → blau", br: "blau → rot", bb: "blau → blau" };
+  const [bz, bn] = breite[pfad[0]];
+  const [hz, hn] = hoehe[pfad];
+  const [pz, pn] = kuerze(bz * hz, bn * hn);
+  const flaechen = ["rr", "rb", "br", "bb"].map((k) => wert(breite[k[0]]) * wert(hoehe[k]));
+  document.getElementById("fm-bilanz").innerHTML =
+    `Pfad <strong>${name[pfad]}</strong>: Breite ${bruchHtml(bz, bn)} · Höhe ${bruchHtml(hz, hn)} = ` +
+    `<span class="wa">${bruchHtml(bz * hz, bn * hn)}${pz !== bz * hz ? " = " + bruchHtml(pz, pn) : ""} ${zeichen(pz / pn, 4)} ${num(pz / pn, 4)}</span><br>` +
+    `Alle vier Rechtecke zusammen: ${flaechen.map((f) => num(f, 4)).join(" + ")} = <strong>${num(flaechen.reduce((a, c) => a + c, 0), 4)}</strong> — sie füllen das ganze Quadrat.`;
+  document.getElementById("fm-text").textContent = ohne
+    ? `Ohne Zurücklegen liegen die waagerechten Schnitte in den beiden Spalten auf verschiedener Höhe: Nach einer roten Kugel ist Rot seltener geworden (${r - 1} von ${n - 1}), nach einer blauen häufiger (${r} von ${n - 1}). Die zweite Stufe hängt von der ersten ab.`
+    : `Mit Zurücklegen liegen die waagerechten Schnitte in beiden Spalten auf derselben Höhe: Die zweite Ziehung „weiß nichts“ von der ersten. So sieht Unabhängigkeit im Flächenmodell aus.`;
+}
+
+// ================= Quizze =================
+//
+// Die richtige Antwort steht bewusst nicht immer an derselben Stelle — sonst ließe sich die Seite
+// durchklicken, ohne eine Frage zu lesen.
+const QUIZZE = {
+  "quiz-ergebnis": {
     q: "Was beschreibt die Ergebnismenge Ω eines Zufallsexperiments?",
     options: [
       "Nur das wahrscheinlichste Ergebnis",
-      "Die Menge aller möglichen Ergebnisse",
       "Die Anzahl der Durchführungen",
       "Nur die Ergebnisse, die tatsächlich eingetreten sind",
+      "Die Menge aller möglichen Ergebnisse",
     ],
-    correct: 1,
-    explain: "Ω enthält alle denkbaren Ergebnisse, egal ob sie im aktuellen Versuch tatsächlich eintreten.",
-  });
-
-  mountQuiz(document.getElementById("quiz-haeufigkeit"), {
+    correct: 3,
+    explain: "Ω enthält alle denkbaren Ergebnisse, egal ob sie im aktuellen Versuch eintreten. Beim Glücksrad sind das vier Farben — auch eine Farbe, die in zehn Drehungen nie kam, gehört dazu.",
+  },
+  "quiz-haeufigkeit": {
     q: "Du drehst das Glücksrad 1000-mal. Die relative Häufigkeit von „rot“ liegt nun sehr nahe bei 0,5. Was besagt das Gesetz der großen Zahlen dazu?",
     options: [
-      "Bei noch mehr Drehungen wird „rot“ immer seltener",
       "Die relative Häufigkeit pendelt sich mit wachsendem n um einen festen Wert ein — die Wahrscheinlichkeit",
-      "Nach 1000 Drehungen ist das Experiment beendet und ändert sich nicht mehr",
-      "Absolute und relative Häufigkeit sind für große n immer identisch",
+      "Bei noch mehr Drehungen wird „rot“ immer seltener",
+      "Nach 1000 Drehungen ändert sich die relative Häufigkeit nicht mehr",
+      "Absolute und relative Häufigkeit sind für große n gleich",
     ],
-    correct: 1,
-    explain: "Dieser feste Wert, dem sich h annähert, ist per Definition die Wahrscheinlichkeit P.",
-  });
-
-  mountQuiz(document.getElementById("quiz-ereignis"), {
+    correct: 0,
+    explain: "Der Wert, dem sich h annähert, ist die Wahrscheinlichkeit. „Pendelt sich ein“ heißt aber nicht „bleibt stehen“: Auch nach 1000 Drehungen schwankt h noch ein wenig — nur immer weniger.",
+  },
+  "quiz-ereignis": {
     q: "Beim Glücksrad ist E = „blau oder grün“. Was ist das Gegenereignis Ē?",
-    options: ["„blau“", "„gelb oder rot“", "„weder blau noch grün noch gelb noch rot“", "Es gibt kein Gegenereignis"],
-    correct: 1,
-    explain: "Ē enthält genau die Ergebnisse, die nicht zu E gehören — hier also gelb und rot.",
-  });
-
-  mountQuiz(document.getElementById("quiz-laplace"), {
+    options: ["„blau“", "„weder blau noch grün noch gelb noch rot“", "„gelb oder rot“", "Es gibt kein Gegenereignis"],
+    correct: 2,
+    explain: "Ē enthält genau die Ergebnisse, die nicht zu E gehören — hier gelb und rot. Zusammen bilden E und Ē ganz Ω, deshalb gilt P(E) + P(Ē) = 1.",
+  },
+  "quiz-laplace": {
     q: "Woran erkennst du, dass ein Zufallsexperiment ein Laplace-Experiment ist?",
     options: [
       "Es hat genau zwei Ergebnisse",
@@ -1514,39 +1622,95 @@ function initQuizzes() {
       "Die Wahrscheinlichkeiten ändern sich mit jeder Durchführung",
     ],
     correct: 1,
-    explain: "Nur wenn jedes Ergebnis die gleiche Chance hat, darf man P(E) = |E|/|Ω| rechnen.",
-  });
-
-  mountQuiz(document.getElementById("quiz-baum1"), {
-    q: "Münze und Glücksrad werden hintereinander durchgeführt und beeinflussen sich nicht. Wie berechnest du die Wahrscheinlichkeit eines Pfades im Baumdiagramm?",
+    explain: "Nur wenn jedes Ergebnis dieselbe Chance hat, darf man P(E) = |E| : |Ω| rechnen. Ein gezinkter Würfel ist kein Laplace-Experiment, ein faires Glücksrad mit gleich großen Feldern schon.",
+  },
+  "quiz-baum1": {
+    q: "Münze und Glücksrad werden hintereinander durchgeführt und beeinflussen sich nicht. Wie berechnest du die Wahrscheinlichkeit eines Pfades?",
     options: [
       "Die Wahrscheinlichkeiten entlang des Pfades addieren",
-      "Die Wahrscheinlichkeiten entlang des Pfades multiplizieren",
       "Nur die Wahrscheinlichkeit der letzten Stufe verwenden",
       "Die größere der beiden Wahrscheinlichkeiten nehmen",
+      "Die Wahrscheinlichkeiten entlang des Pfades multiplizieren",
+    ],
+    correct: 3,
+    explain: "Pfadmultiplikationsregel. Sie gilt für jeden Pfad — auch bei abhängigen Stufen; dort steht am zweiten Ast eben die veränderte Wahrscheinlichkeit. Addiert wird erst, wenn ein Ereignis aus mehreren Pfaden besteht.",
+  },
+  "quiz-flaechenmodell": {
+    q: "Im Flächenmodell ist die Spalte „1. rot“ 0,4 breit, und in ihr ist das Rechteck „2. blau“ 0,6 hoch. Was bedeutet seine Fläche 0,24?",
+    options: [
+      "Die Wahrscheinlichkeit, beim zweiten Zug Blau zu ziehen",
+      "Die Wahrscheinlichkeit des Pfades rot → blau",
+      "Den Anteil der blauen Kugeln in der Urne",
+      "Die Summe der beiden Astwahrscheinlichkeiten",
     ],
     correct: 1,
-    explain: "Das ist die Pfadmultiplikationsregel — sie gilt für jeden einzelnen Pfad, unabhängig davon, ob die Stufen unabhängig oder abhängig sind.",
-  });
-
-  mountQuiz(document.getElementById("quiz-baum2"), {
+    explain: "Das Rechteck ist ein Pfad: 0,4 · 0,6 = 0,24, „60 % von 40 %“. Die Wahrscheinlichkeit für Blau beim zweiten Zug wäre dagegen die Summe ZWEIER Rechtecke — rot → blau und blau → blau.",
+  },
+  "quiz-baum2": {
     q: "Warum ändert sich beim Ziehen ohne Zurücklegen die Wahrscheinlichkeit der zweiten Stufe?",
     options: [
+      "Weil die erste Kugel fehlt und sich damit die Zusammensetzung der Urne ändert",
       "Weil sich Zufallsexperimente grundsätzlich mit der Zeit ändern",
-      "Weil die erste gezogene Kugel fehlt und sich damit die Zusammensetzung der Urne ändert",
       "Weil das Baumdiagramm das so vorschreibt",
       "Sie ändert sich gar nicht, nur die Reihenfolge der Äste",
     ],
-    correct: 1,
-    explain: "Eine Kugel weniger in der Urne bedeutet neue Gesamtzahl und neue Anteile — deshalb hängt (abhängig!) Stufe 2 vom Ergebnis von Stufe 1 ab.",
-  });
-
-  mountQuiz(document.getElementById("quiz-vft"), {
+    correct: 0,
+    explain: "Eine Kugel weniger heißt: neue Gesamtzahl und neue Anteile. Deshalb hängt die zweite Stufe vom Ergebnis der ersten ab. Im Flächenmodell sieht man es daran, dass die waagerechten Schnitte in den beiden Spalten verschieden hoch liegen.",
+  },
+  "quiz-vft": {
     q: "In der Vierfeldertafel steht in der Zelle „1. rot, 2. blau“ der Wert 240 bei insgesamt 1000 Ziehungen. Wie groß ist die zugehörige relative Häufigkeit?",
-    options: ["2,4 %", "24 %", "240 %", "0,024 %"],
-    correct: 1,
-    explain: "240/1000 = 0,24 = 24 %.",
+    options: ["2,4 %", "240 %", "0,024 %", "24 %"],
+    correct: 3,
+    explain: "240 : 1000 = 0,24 = 24 %. Die Zelle entspricht einem Blatt des Baums: Bei 4 roten und 6 blauen Kugeln mit Zurücklegen wäre der Pfad rot → blau 0,4 · 0,6 = 0,24 — die Simulation schwankt um diesen Wert.",
+  },
+};
+
+function initQuizzes() {
+  for (const [id, def] of Object.entries(QUIZZE)) mountQuiz(document.getElementById(id), def);
+}
+
+// ================= Selbsteinschätzung =================
+//
+// Die Auswahl liegt nur im Browser dieser Person — eine Lernhilfe, keine Leistungsmessung.
+const SE_PUNKTE = [
+  ["sec-ergebnis", "Ich kann zu einem Zufallsexperiment die Ergebnismenge Ω angeben."],
+  ["sec-haeufigkeit", "Ich kann absolute und relative Häufigkeit berechnen und das Gesetz der großen Zahlen erklären."],
+  ["sec-ereignis", "Ich kann Ereignisse als Mengen schreiben und mit Summenregel und Gegenereignis rechnen."],
+  ["sec-laplace", "Ich erkenne ein Laplace-Experiment und berechne P(E) = |E| : |Ω|."],
+  ["sec-baum1", "Ich kann ein Baumdiagramm zeichnen und mit den Pfadregeln auswerten — und weiß, warum multipliziert wird."],
+  ["sec-baum2", "Ich kann mit und ohne Zurücklegen rechnen und eine Vierfeldertafel aus einem Baum füllen."],
+];
+const SE_SCHLUESSEL = "uplant-mss13-grundbegriffe-selbsteinschaetzung";
+
+function leseSE() {
+  try { return JSON.parse(localStorage.getItem(SE_SCHLUESSEL) || "{}"); } catch { return {}; }
+}
+function schreibeSE(d) {
+  try { localStorage.setItem(SE_SCHLUESSEL, JSON.stringify(d)); } catch { /* ohne Speicher geht es auch */ }
+}
+function renderSelbsteinschaetzung() {
+  const liste = document.getElementById("se-liste");
+  const stand = leseSE();
+  liste.innerHTML = "";
+  SE_PUNKTE.forEach(([id, text]) => {
+    const knoepfe = el("div", { class: "se-knoepfe", role: "group", "aria-label": text });
+    [["sicher", "😀", "sicher"], ["teils", "😐", "teilweise"], ["unsicher", "🤔", "noch unsicher"]].forEach(([wert, zeichen, name]) => {
+      const b = el("button", { type: "button", "aria-pressed": String(stand[id] === wert), title: name, "aria-label": name }, zeichen);
+      b.addEventListener("click", () => { const d = leseSE(); d[id] = wert; schreibeSE(d); renderSelbsteinschaetzung(); });
+      knoepfe.appendChild(b);
+    });
+    liste.appendChild(el("div", { class: "se-zeile" }, [el("span", { class: "se-text" }, text), knoepfe]));
   });
+  const unsicher = SE_PUNKTE.filter(([id]) => stand[id] === "unsicher");
+  const sicher = SE_PUNKTE.filter(([id]) => stand[id] === "sicher").length;
+  const aus = document.getElementById("se-auswertung");
+  if (!Object.keys(stand).length) {
+    aus.textContent = "Noch nichts angekreuzt.";
+  } else if (unsicher.length) {
+    aus.innerHTML = `Wiederhole zuerst: ${unsicher.map(([id]) => `<a href="#${id}">${document.querySelector(`#${id} h2`).textContent}</a>`).join(", ")}. Danach passen die Übungsaufgaben auf den Stufen „einfach“ und „mittel“.`;
+  } else {
+    aus.textContent = `${sicher} von ${SE_PUNKTE.length} Punkten sicher — probier dich an den Aufgaben auf den Stufen „schwierig“ und „komplex“.`;
+  }
 }
 
 // ================= Start =================
@@ -1558,4 +1722,12 @@ document.addEventListener("DOMContentLoaded", () => {
   initBaum2();
   initExercises();
   initQuizzes();
+  ["fm-r", "fm-b", "fm-ohne", "fm-pfad"].forEach((id) => {
+    const e = document.getElementById(id);
+    e.addEventListener("input", renderFlaechenmodell);
+    e.addEventListener("change", renderFlaechenmodell);
+  });
+  renderFlaechenmodell();   // nicht vergessen — sonst bleibt das Modell leer, bis jemand zieht
+  renderSelbsteinschaetzung();
+  mountUebungsaufgaben(document.getElementById("exercises-mount"), AUFGABEN, { parse: parseZahl });
 });

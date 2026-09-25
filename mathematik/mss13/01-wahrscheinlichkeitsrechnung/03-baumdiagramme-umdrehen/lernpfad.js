@@ -5,6 +5,9 @@
 
 "use strict";
 
+import { mountUebungsaufgaben } from "../../../aufgaben.js?v=2";
+import { AUFGABEN, parseZahl } from "./aufgaben-umdrehen.js?v=1";
+
 // ---------- Helfer ----------
 
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -515,7 +518,11 @@ function initBayesRechner() {
       `<strong>Umgekehrte Richtung (das, was eine getestete Person eigentlich wissen will):</strong><br>` +
       `P<sub>positiv</sub>(infiziert) = ${num(iPos, 4)} / ${num(posGesamt, 4)} = <strong>${pct(pPosInfiziert)}</strong><br>` +
       `P<sub>negativ</sub>(nicht infiziert) = ${num(niNeg, 4)} / ${num(negGesamt, 4)} = <strong>${pct(pNegNichtInfiziert)}</strong><br>` +
-      `<span class="progress-note">Mit den Standardwerten (10&nbsp;%/96&nbsp;%/99&nbsp;%) ist ein positiv getesteter also nur zu etwa 91&nbsp;% wirklich infiziert — deutlich weniger als die 96&nbsp;% Sensitivität vermuten lassen! Das liegt an der niedrigen Prävalenz: es gibt schlicht viel mehr Nicht-Infizierte, bei denen der Test (selten) trotzdem positiv ausschlägt.</span>`;
+      `<span class="progress-note">` +
+      (pPosInfiziert < sens
+        ? `Ein positiv Getesteter ist hier nur zu ${pct(pPosInfiziert)} wirklich infiziert — weniger, als die Sensitivität von ${pct(sens)} vermuten lässt. Der Grund sind die ${pct(pNI)} Nicht-Infizierten: ${pct(1 - spez)} von ihnen erhalten trotzdem ein positives Ergebnis.`
+        : `Hier ist ein positives Ergebnis sogar verlässlicher als die Sensitivität von ${pct(sens)}: Es gibt so viele Infizierte, dass die falschen Alarme kaum ins Gewicht fallen. Verkleinere die Prävalenz und beobachte, wie der Wert fällt.`) +
+      `</span>`;
   }
 
   [inputP, inputSens, inputSpez].forEach((inp) => inp.addEventListener("input", refresh));
@@ -637,7 +644,7 @@ function initStolperstelle() {
 // ================= 5. Übungsaufgaben =================
 
 function initExercises() {
-  const mount = document.getElementById("exercises-mount");
+  const mount = document.getElementById("ausfuell-mount");
 
   // Aufgabe 1 (leicht) — einfache Umkehrung über einen Satz "erst multiplizieren, Gesamt bilden,
   // dann in neuer Richtung dividieren", als einzelner Zahlenwert.
@@ -796,51 +803,168 @@ function initExercises() {
   });
 }
 
-// ================= Quizze =================
+// ================= 1b. Warum so klein? Das Flächenmodell =================
+//
+// Dieselben drei Zahlen wie im Rechner oben — jetzt als Flächen. Die Spalten sind „infiziert“ und
+// „nicht infiziert“, unten in jeder Spalte liegt der Teil mit positivem Test. Die positiven
+// Ergebnisse sind also ZWEI Rechtecke: ein hohes, schmales (richtig positiv) und ein flaches,
+// breites (falsch positiv). Umdrehen heißt: nur noch diese beiden ansehen und fragen, welcher
+// Anteil davon das linke ist. Bei kleiner Prävalenz ist das flache, breite Rechteck groß — so
+// entsteht der überraschend kleine Wert.
+//
+// Das Modell liest die Eingabefelder des Rechners; es rechnet mit ihren Zahlen, nicht mit
+// Bildschirmkoordinaten.
+//
+// Die Lupe darunter: Bei 10 % Prävalenz ist das Rechteck „falsch positiv“ keine 3 Bildpunkte
+// hoch und im Quadrat kaum zu sehen. Der Balken zeigt nur noch die positiven Ergebnisse — die
+// neue „Welt“ nach dem Umdrehen — auf volle Breite gezogen; seine Teile verhalten sich wie die
+// Flächen der beiden umrandeten Rechtecke.
 
-function initQuizzes() {
-  mountQuiz(document.getElementById("quiz-bayes-rechner"), {
+const BM_SEITE = 300, BM_RAND = 44;
+
+function renderBayesModell() {
+  const p = Number(document.getElementById("input-praevalenz").value) / 100;
+  const sens = Number(document.getElementById("input-sensitivitaet").value) / 100;
+  const spez = Number(document.getElementById("input-spezifitaet").value) / 100;
+  const mount = document.getElementById("bm-mount");
+  if (!(p > 0 && p < 1) || !(sens >= 0 && sens <= 1) || !(spez >= 0 && spez <= 1)) {
+    mount.innerHTML = "";
+    document.getElementById("bm-bilanz").textContent = "Bitte gültige Prozentwerte eingeben.";
+    return;
+  }
+  const W = BM_SEITE + 2 * BM_RAND + 60, H = BM_SEITE + 2 * BM_RAND + 92;
+  const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, width: W, height: H, class: "fm-svg", role: "img", "aria-label": "Flächenmodell zum Umdrehen" });
+  const x0 = BM_RAND, y0 = BM_RAND, s = BM_SEITE;
+  const wI = s * p;
+  const hTP = s * sens, hFP = s * (1 - spez);
+  const teile = [
+    { k: "tp", x: x0, y: y0 + s - hTP, w: wI, h: hTP, klasse: "fm-a-b", pos: true },
+    { k: "fn", x: x0, y: y0, w: wI, h: s - hTP, klasse: "fm-a-nb", pos: false },
+    { k: "fp", x: x0 + wI, y: y0 + s - hFP, w: s - wI, h: hFP, klasse: "fm-na-b", pos: true },
+    { k: "tn", x: x0 + wI, y: y0, w: s - wI, h: s - hFP, klasse: "fm-na-nb", pos: false },
+  ];
+  for (const t of teile) {
+    if (t.w < 1e-9 || t.h < 1e-9) continue;
+    svg.appendChild(svgEl("rect", { x: t.x.toFixed(2), y: t.y.toFixed(2), width: t.w.toFixed(2), height: t.h.toFixed(2), class: t.klasse, "data-teil": t.k, opacity: t.pos ? "1" : "0.3" }));
+    if (t.pos) svg.appendChild(svgEl("rect", { x: (t.x + 1).toFixed(2), y: (t.y + 1).toFixed(2), width: Math.max(0, t.w - 2).toFixed(2), height: Math.max(0, t.h - 2).toFixed(2), class: "fm-aktiv", "data-positiv": t.k }));
+  }
+  svg.appendChild(svgEl("line", { x1: (x0 + wI).toFixed(2), y1: y0, x2: (x0 + wI).toFixed(2), y2: y0 + s, class: "fm-trenn" }));
+  svg.appendChild(svgEl("rect", { x: x0, y: y0, width: s, height: s, class: "fm-rahmen", "data-rolle": "quadrat" }));
+  const t = (xx, yy, inhalt, k = "fm-text-klein", anker = "middle") => {
+    const e = svgEl("text", { x: xx.toFixed(1), y: yy.toFixed(1), class: k, "text-anchor": anker });
+    e.textContent = inhalt;
+    svg.appendChild(e);
+  };
+  t(x0 + Math.max(wI, 60) / 2, y0 + s + 18, "infiziert");
+  t(x0 + wI + (s - wI) / 2, y0 + s + 18, "nicht infiziert");
+  t(x0 + s + 8, y0 + s - Math.max(hFP, 14) / 2 + 4, "positiv", "fm-text-klein", "start");
+  t(x0 + s / 2, y0 - 14, "umrandet: alle positiven Ergebnisse", "fm-text-klein");
+  const tp = p * sens, fp = (1 - p) * (1 - spez);
+  const yL = y0 + s + 52, hL = 30;
+  t(x0 + s / 2, yL - 10, "Lupe: nur die positiven Ergebnisse, auf volle Breite gezogen");
+  if (tp + fp > 0) {
+    const wTP = (s * tp) / (tp + fp);
+    if (wTP > 1e-9) svg.appendChild(svgEl("rect", { x: x0, y: yL, width: wTP.toFixed(2), height: hL, class: "fm-a-b", "data-lupe": "tp" }));
+    if (s - wTP > 1e-9) svg.appendChild(svgEl("rect", { x: (x0 + wTP).toFixed(2), y: yL, width: (s - wTP).toFixed(2), height: hL, class: "fm-na-b", "data-lupe": "fp" }));
+    svg.appendChild(svgEl("rect", { x: x0, y: yL, width: s, height: hL, class: "fm-rahmen" }));
+    t(x0, yL + hL + 14, `richtig positiv ${num((100 * tp) / (tp + fp), 1)} %`, "fm-text-klein", "start");
+    t(x0 + s, yL + hL + 14, `falsch positiv ${num((100 * fp) / (tp + fp), 1)} %`, "fm-text-klein", "end");
+  }
+  mount.innerHTML = "";
+  mount.appendChild(svg);
+
+  const n = (v) => num(v, 4);
+  document.getElementById("bm-bilanz").innerHTML =
+    `Richtig positiv: ${n(p)} · ${n(sens)} = <span class="wa">${n(tp)}</span> &nbsp;·&nbsp; falsch positiv: ${n(1 - p)} · ${n(1 - spez)} = <span class="wb">${n(fp)}</span><br>` +
+    `P<sub>positiv</sub>(infiziert) = <span class="bruch"><span class="z">${n(tp)}</span><span class="n">${n(tp)} + ${n(fp)}</span></span> = <strong>${n(tp + fp > 0 ? tp / (tp + fp) : 0)}</strong> — der Anteil des linken Rechtecks an allen umrandeten.`;
+  document.getElementById("bm-text").textContent = fp > tp
+    ? "Das flache, breite Rechteck (falsch positiv) ist größer als das schmale (richtig positiv): Die meisten positiven Ergebnisse sind falscher Alarm. Das liegt nicht am Test, sondern daran, wie wenige infiziert sind."
+    : "Das schmale Rechteck (richtig positiv) überwiegt: Ein positives Ergebnis ist meistens berechtigt. Verkleinere die Prävalenz und beobachte, wie das flache Rechteck aufholt.";
+}
+
+// ================= Quizze =================
+//
+// Die richtige Antwort steht bewusst an wechselnder Stelle.
+const QUIZZE = {
+  "quiz-bayes-rechner": {
     q: "Warum ist P_positiv(infiziert) bei niedriger Prävalenz oft viel kleiner als die Sensitivität des Tests?",
     options: [
       "Weil der Test bei niedriger Prävalenz ungenauer misst.",
-      "Weil es bei niedriger Prävalenz viel mehr Nicht-Infizierte gibt, und selbst eine kleine Falsch-positiv-Rate bei ihnen absolut viele falsche Alarme erzeugt.",
       "Weil P_positiv(infiziert) und die Sensitivität immer gleich groß sein müssen.",
-      "Weil die Prävalenz die Formel gar nicht beeinflusst.",
+      "Weil es viel mehr Nicht-Infizierte gibt und schon eine kleine Falsch-positiv-Rate bei ihnen viele falsche Alarme erzeugt.",
+      "Weil die Prävalenz die Rechnung gar nicht beeinflusst.",
     ],
-    correct: 1,
-    explain: "Bei niedriger Prävalenz überwiegt die riesige Gruppe der Nicht-Infizierten — selbst ihre kleine Falsch-positiv-Rate liefert absolut mehr falsche Positive als es echte Infizierte gibt.",
-  });
-
-  mountQuiz(document.getElementById("quiz-tafel-umkehr"), {
+    correct: 2,
+    explain: "Der Test misst immer gleich gut. Aber bei 1 % Prävalenz stehen 99 Nicht-Infizierte gegen einen Infizierten: 1 % von 99 sind 0,99 falsche Alarme, 96 % von 1 nur 0,96 echte — nur knapp die Hälfte der positiven Ergebnisse ist berechtigt. Im Flächenmodell ist das flache, breite Rechteck der Grund.",
+  },
+  "quiz-tafel-umkehr": {
     q: "Welchen Rechenschritt macht man, um aus der Vierfeldertafel die erste Stufe des umgedrehten Baums zu bekommen?",
     options: [
-      "Zellenwert ÷ Zeilensumme des Originalbaums",
-      "Spaltensumme ÷ Gesamtzahl",
-      "Zellenwert ÷ Gesamtzahl",
-      "Zeilensumme ÷ Spaltensumme",
+      "Die Äste der zweiten Stufe des Originalbaums unverändert übernehmen.",
+      "Jeden Zellenwert durch die Gesamtzahl teilen.",
+      "Die Randsummen des Merkmals, das im Originalbaum die erste Stufe war, durch die Gesamtzahl teilen.",
+      "Die Randsummen des Merkmals, das im Originalbaum die zweite Stufe war, durch die Gesamtzahl teilen.",
     ],
-    correct: 1,
-    explain: "Die neue erste Stufe entspricht den Rand-(Spalten-)Summen der Tafel, geteilt durch die Gesamtzahl.",
-  });
-
-  mountQuiz(document.getElementById("quiz-formeln"), {
+    correct: 3,
+    explain: "Der umgedrehte Baum verzweigt zuerst nach dem, was vorher die zweite Stufe war. Ob dessen Summen in den Zeilen oder Spalten stehen, hängt nur davon ab, wie die Tafel angelegt ist: In Abschnitt 2 sind es die Zeilen (50 : 10 000 = 0,005 infiziert), in Abschnitt 3 die Spalten c und d. Die Zellenwerte durch die Gesamtzahl sind dagegen Pfadwahrscheinlichkeiten, keine Äste.",
+  },
+  "quiz-formeln": {
     q: "Welcher Term berechnet c_A im umgedrehten Baumdiagramm (Abschnitt 3)?",
-    options: ["a · a₁ / c", "a₁ / a", "c / (a · a₁)", "a · a₁ / d"],
+    options: ["a · a₁ : c", "a₁ : a", "c : (a · a₁)", "a · a₁ : d"],
     correct: 0,
-    explain: "c_A = P_1(A) = P(A∩1) / P(1) = (a·a₁) / c — Zellenwert der Vierfeldertafel geteilt durch die zugehörige Spaltensumme c.",
-  });
-
-  mountQuiz(document.getElementById("quiz-stolperstelle"), {
+    explain: "c_A = P₁(A) = P(A ∩ 1) : P(1) = a · a₁ : c — der Zellenwert geteilt durch die Spaltensumme c. Mit d im Nenner bekäme man den Ast nach der anderen Spalte; a₁ : a vermischt zwei Stufen des alten Baums.",
+  },
+  "quiz-stolperstelle": {
     q: "Was hat Tim falsch gemacht?",
     options: [
       "Er hat die Prozentwerte falsch gerundet.",
-      "Er hat beim Umdrehen nur die Reihenfolge der Stufen vertauscht, aber alle Wahrscheinlichkeiten unverändert aus dem Originalbaum übernommen, statt sie neu zu berechnen (multiplizieren, Vierfeldertafel, neu dividieren).",
+      "Er hat beim Umdrehen nur die Reihenfolge der Stufen vertauscht, aber die Wahrscheinlichkeiten unverändert übernommen, statt sie neu zu berechnen.",
       "Er hat die falschen Fabriken verwendet.",
       "Ein Baumdiagramm mit Fabriken kann man grundsätzlich nicht umdrehen.",
     ],
     correct: 1,
-    explain: "Beim Umdrehen ändern sich fast immer alle Werte — man muss über die Vierfeldertafel neu multiplizieren und dann in der neuen Richtung dividieren.",
+    explain: "Beim Umdrehen ändern sich fast immer alle Werte: erst multiplizieren (Tafel), dann in der neuen Richtung teilen. Tims Baum verrät sich schon an der Probe — an der Wurzel ergeben seine Äste 5 % + 2 % = 7 % statt 100 %. Richtig ist P(defekt) = 0,3 · 0,05 + 0,7 · 0,02 = 0,029.",
+  },
+};
+
+function initQuizzes() {
+  for (const [id, def] of Object.entries(QUIZZE)) mountQuiz(document.getElementById(id), def);
+}
+
+// ================= Selbsteinschätzung =================
+const SE_PUNKTE = [
+  ["sec-bayes-rechner", "Ich kann erklären, warum ein positiver Test bei seltenen Krankheiten oft falscher Alarm ist."],
+  ["sec-tafel-umkehr", "Ich kann einen Baum über die Vierfeldertafel umdrehen: multiplizieren, dann in der neuen Richtung teilen."],
+  ["sec-formeln", "Ich kann die allgemeinen Formeln und die Regel von Bayes aufschreiben und anwenden."],
+  ["sec-stolperstelle", "Ich erkenne einen falsch umgedrehten Baum an der Probe am Knoten."],
+];
+
+const SE_SCHLUESSEL = "uplant-mss13-umdrehen-selbsteinschaetzung";
+function leseSE() {
+  try { return JSON.parse(localStorage.getItem(SE_SCHLUESSEL) || "{}"); } catch { return {}; }
+}
+function schreibeSE(d) {
+  try { localStorage.setItem(SE_SCHLUESSEL, JSON.stringify(d)); } catch { /* ohne Speicher geht es auch */ }
+}
+function renderSelbsteinschaetzung() {
+  const liste = document.getElementById("se-liste");
+  const stand = leseSE();
+  liste.innerHTML = "";
+  SE_PUNKTE.forEach(([id, text]) => {
+    const knoepfe = el("div", { class: "se-knoepfe", role: "group", "aria-label": text });
+    [["sicher", "😀", "sicher"], ["teils", "😐", "teilweise"], ["unsicher", "🤔", "noch unsicher"]].forEach(([wert, zeichen, name]) => {
+      const b = el("button", { type: "button", "aria-pressed": String(stand[id] === wert), title: name, "aria-label": name }, zeichen);
+      b.addEventListener("click", () => { const d = leseSE(); d[id] = wert; schreibeSE(d); renderSelbsteinschaetzung(); });
+      knoepfe.appendChild(b);
+    });
+    liste.appendChild(el("div", { class: "se-zeile" }, [el("span", { class: "se-text" }, text), knoepfe]));
   });
+  const unsicher = SE_PUNKTE.filter(([id]) => stand[id] === "unsicher");
+  const sicher = SE_PUNKTE.filter(([id]) => stand[id] === "sicher").length;
+  const aus = document.getElementById("se-auswertung");
+  if (!Object.keys(stand).length) aus.textContent = "Noch nichts angekreuzt.";
+  else if (unsicher.length) aus.innerHTML = `Wiederhole zuerst: ${unsicher.map(([id]) => `<a href="#${id}">${document.querySelector(`#${id} h2`).textContent}</a>`).join(", ")}. Danach passen die Übungsaufgaben auf den Stufen „einfach“ und „mittel“.`;
+  else aus.textContent = `${sicher} von ${SE_PUNKTE.length} Punkten sicher — probier dich an den Aufgaben auf den Stufen „schwierig“ und „komplex“.`;
 }
 
 // ================= Start =================
@@ -851,4 +975,12 @@ document.addEventListener("DOMContentLoaded", () => {
   initStolperstelle();
   initExercises();
   initQuizzes();
+  ["input-praevalenz", "input-sensitivitaet", "input-spezifitaet"].forEach((id) => {
+    const e = document.getElementById(id);
+    e.addEventListener("input", renderBayesModell);
+    e.addEventListener("change", renderBayesModell);
+  });
+  renderBayesModell();   // nicht vergessen — sonst bleibt das Modell leer
+  renderSelbsteinschaetzung();
+  mountUebungsaufgaben(document.getElementById("exercises-mount"), AUFGABEN, { parse: parseZahl });
 });

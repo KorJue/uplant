@@ -383,3 +383,114 @@
   color: var(--muted);
   margin-top: 0.4rem;
 }
+
+/* ================= Gemeinsame Bausteine der Themen 1–5 (Stand wie Thema 5) ================= */
+
+/* ---------- Innermathematische Vernetzung ---------- */
+
+.vernetzung-liste { list-style: none; padding: 0; margin: 0.75rem 0 0; }
+.vernetzung-liste li {
+  padding: 0.6rem 0.85rem;
+  border-left: 3px solid var(--accent);
+  background: var(--bg);
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 0.5rem;
+  font-size: 0.94rem;
+}
+.vernetzung-liste a { font-weight: 700; }
+
+.th-bilanz {
+  font-size: 0.94rem;
+  line-height: 1.75;
+  margin-top: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  background: var(--card-bg);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  overflow-x: auto;
+}
+.th-bilanz .wa { color: #157347; font-weight: 700; }
+.th-bilanz .wb { color: #b3650a; font-weight: 700; }
+.th-bilanz .wc { color: #1d4ed8; font-weight: 700; }
+.th-bilanz .wr { color: #6d28d9; font-weight: 700; }
+.th-bilanz .wg { color: #b3261e; font-weight: 700; }
+:root[data-theme="dark"] .th-bilanz .wa { color: #6fd68f; }
+:root[data-theme="dark"] .th-bilanz .wb { color: #ffbf6e; }
+:root[data-theme="dark"] .th-bilanz .wc { color: #8ab4ff; }
+:root[data-theme="dark"] .th-bilanz .wr { color: #c4a7ff; }
+:root[data-theme="dark"] .th-bilanz .wg { color: #ff8a8a; }
+
+/* Echte Brüche und Binomialkoeffizienten: Zähler über Nenner, „n über k“ in Klammern. */
+.bruch {
+  display: inline-flex; flex-direction: column; align-items: center;
+  vertical-align: middle; line-height: 1.15; margin: 0 0.1em; text-align: center;
+}
+.bruch .z { padding: 0 0.3em; border-bottom: 1.5px solid currentColor; }
+.bruch .n { padding: 0 0.3em; }
+.binom {
+  display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+  vertical-align: middle; line-height: 1.1; padding: 0 0.35em; margin: 0 0.1em;
+  border-left: 1.5px solid currentColor; border-right: 1.5px solid currentColor;
+  border-radius: 45% / 50%; font-size: 0.92em;
+}
+.binom.gross, .bruch.gross { font-size: 1.12em; font-weight: 700; }
+.nw { white-space: nowrap; }
+
+/* Zwei Schreibweisen nebeneinander */
+.notation-box {
+  margin: 1rem 0; padding: 0.8rem 1rem; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--bg);
+}
+.notation-box .box-label {
+  display: block; font-size: 0.78rem; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.05em; color: var(--accent-dark); margin-bottom: 0.4rem;
+}
+.bk-notation { width: 100%; border-collapse: collapse; margin-top: 0.6rem; font-size: 0.92rem; }
+.bk-notation th, .bk-notation td { border: 1px solid var(--border); padding: 0.35rem 0.55rem; text-align: left; }
+.bk-notation th { background: var(--card-bg); }
+
+/* Selbsteinschätzung */
+.se-zeile {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; justify-content: space-between;
+  padding: 0.45rem 0.2rem; border-bottom: 1px solid var(--border);
+}
+.se-text { flex: 1 1 18rem; }
+.se-knoepfe { display: flex; gap: 0.3rem; }
+.se-knoepfe button {
+  font-size: 1.15rem; padding: 0.2rem 0.5rem; border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--card-bg); color: var(--text);
+}
+.se-knoepfe button[aria-pressed="true"] { border-color: var(--accent); background: var(--bg); box-shadow: 0 0 0 2px var(--accent) inset; }
+
+/* Kleine Vierfeldertafel in Musterlösungen */
+.vft-mini { border-collapse: collapse; margin: 0.4rem 0; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.vft-mini th, .vft-mini td { border: 1px solid var(--border); padding: 0.25rem 0.55rem; text-align: center; }
+.vft-mini th { background: var(--card-bg); }
+
+/* ---------- Das Flächenmodell (Einheitsquadrat) ----------
+   Dasselbe Bild trägt durch alle vier Themen: Breite = erste Stufe, Höhe in jeder Spalte = zweite
+   Stufe, Fläche = Pfadwahrscheinlichkeit. Farben: A grün, Ā orange; B dunkel, B̄ hell. */
+.fm-wrap { display: flex; justify-content: center; margin: 1rem 0; overflow-x: auto; }
+.fm-svg { max-width: 100%; height: auto; background: var(--card-bg); border-radius: 8px; }
+.fm-rahmen { fill: none; stroke: var(--text); stroke-width: 1.6; }
+.fm-a-b { fill: #157347; fill-opacity: 0.55; }
+.fm-a-nb { fill: #157347; fill-opacity: 0.18; }
+.fm-na-b { fill: #b3650a; fill-opacity: 0.55; }
+.fm-na-nb { fill: #b3650a; fill-opacity: 0.18; }
+.fm-rot-voll { fill: #c0392b; fill-opacity: 0.6; }
+.fm-rot-hell { fill: #c0392b; fill-opacity: 0.18; }
+.fm-blau-voll { fill: #1d4ed8; fill-opacity: 0.55; }
+.fm-blau-hell { fill: #1d4ed8; fill-opacity: 0.16; }
+:root[data-theme="dark"] .fm-rot-voll { fill: #ff8a80; fill-opacity: 0.5; }
+:root[data-theme="dark"] .fm-rot-hell { fill: #ff8a80; fill-opacity: 0.16; }
+:root[data-theme="dark"] .fm-blau-voll { fill: #8ab4ff; fill-opacity: 0.5; }
+:root[data-theme="dark"] .fm-blau-hell { fill: #8ab4ff; fill-opacity: 0.16; }
+.fm-trenn { stroke: var(--text); stroke-width: 1.4; }
+.fm-trenn-h { stroke: var(--text); stroke-width: 1.2; stroke-dasharray: 5 3; }
+.fm-aktiv { stroke: var(--text); stroke-width: 3.2; fill: none; }
+.fm-text { font-size: 13px; font-weight: 700; fill: var(--text); }
+.fm-text-klein { font-size: 11.5px; font-weight: 600; fill: var(--muted); }
+:root[data-theme="dark"] .fm-a-b { fill: #6fd68f; fill-opacity: 0.5; }
+:root[data-theme="dark"] .fm-a-nb { fill: #6fd68f; fill-opacity: 0.16; }
+:root[data-theme="dark"] .fm-na-b { fill: #ffbf6e; fill-opacity: 0.5; }
+:root[data-theme="dark"] .fm-na-nb { fill: #ffbf6e; fill-opacity: 0.16; }

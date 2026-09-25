@@ -14,6 +14,10 @@ benennt. Vorhanden sind:
 | `gk` | Grundkonstruktionen und besondere Linien am Dreieck (Klasse 8, Geometrie, Thema 1) | `mathematik/klasse-8/geometrie/grundkonstruktionen-formelsammlung.pdf` |
 | `th` | Satz des Thales (Klasse 8, Geometrie, Thema 3) | `mathematik/klasse-8/geometrie/satz-des-thales.pdf` |
 | `fl` | Flächeninhalte (Klasse 8, Geometrie, Thema 4) | `mathematik/klasse-8/geometrie/flaecheninhalte.pdf` |
+| `w1` | Grundbegriffe, Baumdiagramme und Vierfeldertafel (MSS 13, Wahrscheinlichkeitsrechnung, Thema 1) | `mathematik/mss13/01-wahrscheinlichkeitsrechnung/01-grundbegriffe-baumdiagramme-vierfeldertafel/formelsammlung.pdf` |
+| `w2` | Bedingte Wahrscheinlichkeit (MSS 13, Wahrscheinlichkeitsrechnung, Thema 2) | `mathematik/mss13/01-wahrscheinlichkeitsrechnung/02-bedingte-wahrscheinlichkeit/formelsammlung.pdf` |
+| `w3` | Baumdiagramme umdrehen (MSS 13, Wahrscheinlichkeitsrechnung, Thema 3) | `mathematik/mss13/01-wahrscheinlichkeitsrechnung/03-baumdiagramme-umdrehen/formelsammlung.pdf` |
+| `w4` | Stochastische Unabhängigkeit (MSS 13, Wahrscheinlichkeitsrechnung, Thema 4) | `mathematik/mss13/01-wahrscheinlichkeitsrechnung/04-stochastische-unabhaengigkeit/formelsammlung.pdf` |
 | `bk` | Bernoulli-Ketten und Binomialverteilung (MSS 13, Wahrscheinlichkeitsrechnung, Thema 5) | `mathematik/mss13/01-wahrscheinlichkeitsrechnung/05-bernoulli-ketten-binomialverteilung/formelsammlung.pdf` |
 
 ## Der Weg von der Quelle zum PDF
@@ -29,7 +33,11 @@ Node braucht Playwright: `NODE_PATH=/opt/node22/lib/node_modules
 /opt/node22/bin/node …`; das Chromium liegt unter `/opt/pw-browsers/chromium`.
 
 Versioniert werden die Quellen — `formelsammlung-<praefix>-quelle.html`,
-`<praefix>-svgs.py` und `tf_kopf.py` — und das fertige PDF am Ziel. `<praefix>-figuren.txt` und
+`<praefix>-svgs.py`, `tf_kopf.py` und für die Wahrscheinlichkeitsrechnung `ws_kopf.py` — und das
+fertige PDF am Ziel. `ws_kopf.py` baut Baum, Flächenmodell und Vierfeldertafel aus den
+Wahrscheinlichkeiten und bricht ab, wenn an einem Knoten nicht 1 herauskommt oder die Flächen das
+Quadrat nicht füllen; ein absichtlich falscher Baum (Stolperstelle) muss dagegen mindestens einen
+Knoten haben, der nicht 1 ergibt. `<praefix>-figuren.txt` und
 `formelsammlung-<praefix>.html` entstehen bei jedem Lauf neu.
 
 ## Eine neue Formelsammlung anlegen
