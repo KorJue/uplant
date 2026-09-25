@@ -6,6 +6,7 @@
 <title>Grundbegriffe, Baumdiagramme und Vierfeldertafel</title>
 <script src="../../../../assets/theme.js"></script>
 <link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="../../../aufgaben.css">
 <link rel="stylesheet" href="lernpfad.css">
 </head>
 <body>
@@ -18,7 +19,7 @@
 </nav>
 <header class="page-header">
   <h1>Grundbegriffe, Baumdiagramme und Vierfeldertafel</h1>
-  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Fachbegriff, zeigt ihn an einer Simulation und endet mit einer kurzen Kontrollfrage.</p>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Fachbegriff, zeigt ihn an einer Simulation oder einer beweglichen Zeichnung und endet mit einer Kontrollfrage. Am Schluss stehen eine Selbsteinschätzung und sechzehn Übungsaufgaben auf vier Stufen, die du hier auf der Seite löst.</p>
 </header>
 
 <main class="menu-main">
@@ -35,7 +36,21 @@
       <li><span class="term">unabhängige</span> und <span class="term">abhängige Stufen</span> unterscheiden (mit/ohne Zurücklegen)</li>
       <li>eine <span class="term">Vierfeldertafel</span> mit absoluten und relativen Häufigkeiten füllen und sie mit einem Baumdiagramm verknüpfen</li>
     </ul>
-    <p class="hinweis-box">💡 Arbeite die Abschnitte der Reihe nach durch. Probiere jede Simulation selbst aus, bevor du die Kontrollfrage beantwortest — die Antwort ergibt sich meist direkt aus dem, was du gerade beobachtet hast.</p>
+    <div class="notation-box">
+      <span class="box-label">Schreibweisen — dieselbe Sache, verschiedene Bücher</span>
+      Auf dieser Seite steht die Schreibweise aus <strong>Bigalke/Köhler</strong>. In anderen Lehrwerken und in vielen Formelsammlungen findest du dieselben Begriffe auch so:
+      <table class="bk-notation">
+        <thead><tr><th>Bedeutung</th><th>Bigalke/Köhler</th><th>auch üblich</th></tr></thead>
+        <tbody>
+          <tr><td>Ergebnismenge</td><td>Ω</td><td>S</td></tr>
+          <tr><td>Gegenereignis von E</td><td>Ē</td><td>„nicht E“, E<sup>c</sup></td></tr>
+          <tr><td>A und B treten beide ein</td><td>A ∩ B</td><td>„A und B“</td></tr>
+          <tr><td>Pfadregeln</td><td>Pfadmultiplikations- und Pfadadditionsregel</td><td>1. und 2. Pfadregel, Produkt- und Summenregel</td></tr>
+          <tr><td>absolute / relative Häufigkeit</td><td>H, h = H : n</td><td>H<sub>n</sub>(E), h<sub>n</sub>(E)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="hinweis-box">💡 Arbeite die Abschnitte der Reihe nach durch. Probiere jede Simulation selbst aus, bevor du die Kontrollfrage beantwortest — die Antwort ergibt sich meist direkt aus dem, was du gerade beobachtet hast. Du brauchst aus dem Grundwissen die <a href="../../../grundwissen-5-10/03-daten-und-zufall/02-zufall-und-wahrscheinlichkeit/index.html">Wahrscheinlichkeit als Anteil</a> und die <a href="../../../grundwissen-5-10/03-daten-und-zufall/03-mehrstufige-zufallsexperimente/index.html">mehrstufigen Zufallsexperimente</a>.</p>
   </section>
 
   <!-- 1. Zufallsexperiment, Ergebnis, Ergebnismenge -->
@@ -132,6 +147,32 @@
       <div id="tree1-event"></div>
     </div>
     <div class="quiz" id="quiz-baum1"></div>
+
+    <h3>Warum multiplizieren? Das Flächenmodell</h3>
+    <p>Die Pfadmultiplikationsregel lässt sich sehen. Das Quadrat steht für <em>alle</em> Ziehungen, seine Fläche ist 1. Die erste Ziehung teilt es in Spalten, so breit wie ihre Wahrscheinlichkeiten. Die zweite Ziehung teilt jede Spalte waagerecht — so hoch wie die Wahrscheinlichkeit am zweiten Ast. Ein Pfad ist dann ein Rechteck: Seine Fläche ist <strong>Breite · Höhe</strong>, ein Anteil von einem Anteil.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>rote Kugeln: <input type="range" id="fm-r" min="1" max="8" step="1" value="4" style="vertical-align:middle;width:8rem"> <span id="fm-r-anzeige" class="wert"></span></label>
+        <label>blaue Kugeln: <input type="range" id="fm-b" min="1" max="8" step="1" value="6" style="vertical-align:middle;width:8rem"> <span id="fm-b-anzeige" class="wert"></span></label>
+        <label><input type="checkbox" id="fm-ohne"> ohne Zurücklegen</label>
+        <label>Pfad: <select id="fm-pfad">
+          <option value="rr">rot → rot</option>
+          <option value="rb">rot → blau</option>
+          <option value="br" selected>blau → rot</option>
+          <option value="bb">blau → blau</option>
+        </select></label>
+      </div>
+      <div class="fm-wrap" id="fm-mount"></div>
+      <div class="th-bilanz" id="fm-bilanz"></div>
+      <div id="fm-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Pfadregeln im Flächenmodell</span>
+      <strong>Pfadmultiplikationsregel:</strong> Die Fläche eines Rechtecks ist Breite · Höhe — die Wahrscheinlichkeit eines Pfades ist das Produkt der Wahrscheinlichkeiten an seinen Ästen.<br>
+      <strong>Pfadadditionsregel:</strong> Besteht ein Ereignis aus mehreren Rechtecken, werden ihre Flächen addiert.<br>
+      Alle Rechtecke zusammen füllen das Quadrat: Die Pfadwahrscheinlichkeiten ergeben zusammen <strong>1</strong>.
+    </div>
+    <div class="quiz" id="quiz-flaechenmodell"></div>
   </section>
 
   <!-- 6. Abhängige Stufen + Vierfeldertafel -->
@@ -182,20 +223,45 @@
     <div class="quiz" id="quiz-vft"></div>
   </section>
 
-  <!-- 7. Formelsammlung -->
+  <!-- Selbsteinschätzung -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
+    <div id="se-liste"></div>
+    <div id="se-auswertung" class="event-result"></div>
+  </section>
+
+  <!-- Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Der <a href="../../../grundwissen-5-10/03-daten-und-zufall/02-zufall-und-wahrscheinlichkeit/index.html">Wahrscheinlichkeit aus dem Grundwissen</a> — Laplace-Regel und Gegenereignis kennst du von dort; neu ist die Sprache der Mengen (Ω, E, Ē, A ∩ B).</li>
+      <li><strong>Baut auf:</strong> Den <a href="../../../grundwissen-5-10/03-daten-und-zufall/01-daten-und-haeufigkeiten/index.html">absoluten und relativen Häufigkeiten</a> — das Gesetz der großen Zahlen verbindet sie mit der Wahrscheinlichkeit.</li>
+      <li><strong>Gleiche Struktur:</strong> Baumdiagramm, Vierfeldertafel und Flächenmodell zeigen dieselben vier Zahlen: ein Blatt, eine Zelle, ein Rechteck. Die Pfadmultiplikation ist in allen dreien „Anteil vom Anteil“.</li>
+      <li><strong>Führt weiter zu:</strong> Der <a href="../02-bedingte-wahrscheinlichkeit/index.html">bedingten Wahrscheinlichkeit</a> — die Wahrscheinlichkeiten am zweiten Ast bekommen dort einen eigenen Namen, P<sub>A</sub>(B). Im Flächenmodell ist das die Höhe innerhalb einer Spalte.</li>
+      <li><strong>Führt weiter zu:</strong> Dem <a href="../03-baumdiagramme-umdrehen/index.html">Umdrehen von Baumdiagrammen</a> — über die Vierfeldertafel, die du hier aus dem Baum gefüllt hast.</li>
+      <li><strong>Führt weiter zu:</strong> Der <a href="../04-stochastische-unabhaengigkeit/index.html">stochastischen Unabhängigkeit</a> — im Flächenmodell liegen die waagerechten Schnitte dann auf gleicher Höhe, wie hier beim Ziehen mit Zurücklegen.</li>
+      <li><strong>Führt weiter zu:</strong> Den <a href="../05-bernoulli-ketten-binomialverteilung/index.html">Bernoulli-Ketten</a> — lange Bäume, in denen jede Stufe gleich aussieht; dort zählt man die Pfade, statt sie zu zeichnen.</li>
+    </ul>
+  </section>
+
+  <!-- Formelsammlung -->
   <section class="card" id="sec-formelsammlung">
-    <h2>7. Formelsammlung</h2>
+    <h2>Formelsammlung</h2>
     <p>Alle Regeln dieses Lernpfads mit Beispielen und Visualisierungen auf zwei Seiten zusammengefasst — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
     <div class="btn-row">
       <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
     </div>
   </section>
 
-  <!-- 8. Übungsaufgaben -->
+  <!-- Übungsaufgaben -->
   <section class="card" id="sec-uebungen">
-    <h2>8. Übungsaufgaben</h2>
-    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — durch Ankreuzen, Ausfüllen von Baumdiagrammen oder Vierfeldertafeln. Sie sind nach aufsteigendem Schwierigkeitsgrad sortiert.</p>
+    <h2>Übungsaufgaben</h2>
+    <p>Sechzehn Aufgaben, vier auf jeder Stufe. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu. Wahrscheinlichkeiten darfst du als Dezimalzahl, in Prozent oder als Bruch eingeben.</p>
     <div id="exercises-mount"></div>
+    <h3>Am Baum und an der Tafel ausfüllen</h3>
+    <p>Zum Schluss Aufgaben, bei denen du direkt ins Baumdiagramm und in die Vierfeldertafel schreibst — durch Ankreuzen und Ausfüllen der nummerierten Lücken.</p>
+    <div id="ausfuell-mount"></div>
   </section>
 
 </main>
@@ -205,6 +271,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=8"></script>
+<script type="module" src="lernpfad.js?v=9"></script>
 </body>
 </html>

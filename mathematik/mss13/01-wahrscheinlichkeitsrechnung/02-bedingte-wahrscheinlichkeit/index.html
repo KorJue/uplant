@@ -6,6 +6,7 @@
 <title>Bedingte Wahrscheinlichkeit</title>
 <script src="../../../../assets/theme.js"></script>
 <link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="../../../aufgaben.css">
 <link rel="stylesheet" href="lernpfad.css">
 </head>
 <body>
@@ -18,7 +19,7 @@
 </nav>
 <header class="page-header">
   <h1>Bedingte Wahrscheinlichkeit</h1>
-  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Fachbegriff, zeigt ihn an einer interaktiven Simulation und endet mit einer kurzen Kontrollfrage.</p>
+  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Fachbegriff, zeigt ihn an einer interaktiven Zeichnung und endet mit einer Kontrollfrage. Am Schluss stehen eine Selbsteinschätzung und sechzehn Übungsaufgaben auf vier Stufen.</p>
 </header>
 
 <main class="menu-main">
@@ -30,10 +31,23 @@
       <li>was eine <span class="term">bedingte Wahrscheinlichkeit</span> P<sub>A</sub>(B) bedeutet und wie sie im Baumdiagramm eingezeichnet wird</li>
       <li>wie man sie über die <span class="term">reduzierte Ergebnismenge</span> Ω<sub>A</sub> berechnet</li>
       <li>wie man sie aus einer <span class="term">Vierfeldertafel</span> abliest — und dass die Reihenfolge (Zeile oder Spalte als Bedingung) einen Unterschied macht</li>
-      <li>die <span class="term">Formel</span> P<sub>A</sub>(B) = P(A∩B) / P(A), hergeleitet aus der Pfadmultiplikationsregel</li>
+      <li>die <span class="term">Formel</span> P<sub>A</sub>(B) = P(A ∩ B) : P(A), hergeleitet aus der Pfadmultiplikationsregel und im Flächenmodell sichtbar gemacht</li>
       <li>einen typischen Fehler beim Aufstellen von Baumdiagrammen aus einer Vierfeldertafel zu erkennen und zu vermeiden</li>
     </ul>
-    <p class="hinweis-box">💡 Arbeite die Abschnitte der Reihe nach durch. Probiere jedes Beispiel selbst aus, bevor du die Kontrollfrage beantwortest.</p>
+    <div class="notation-box">
+      <span class="box-label">Schreibweisen — dieselbe Sache, verschiedene Bücher</span>
+      Auf dieser Seite steht die Schreibweise aus <strong>Bigalke/Köhler</strong>: Die Bedingung steht tief gestellt vor der Klammer. In anderen Lehrwerken und in vielen Formelsammlungen steht sie in der Klammer hinter einem senkrechten Strich:
+      <table class="bk-notation">
+        <thead><tr><th>Bedeutung</th><th>Bigalke/Köhler</th><th>auch üblich</th></tr></thead>
+        <tbody>
+          <tr><td>B unter der Bedingung A</td><td>P<sub>A</sub>(B)</td><td>P(B | A)</td></tr>
+          <tr><td>Formel</td><td>P<sub>A</sub>(B) = P(A ∩ B) : P(A)</td><td>P(B | A) = P(A ∩ B) / P(A)</td></tr>
+          <tr><td>reduzierte Ergebnismenge</td><td>Ω<sub>A</sub></td><td>„die neue Grundmenge A“</td></tr>
+        </tbody>
+      </table>
+      Achtung bei P(B | A): Die Bedingung steht <em>hinten</em>. P<sub>A</sub>(B) und P(B | A) meinen dasselbe.
+    </div>
+    <p class="hinweis-box">💡 Arbeite die Abschnitte der Reihe nach durch. Du brauchst aus <a href="../01-grundbegriffe-baumdiagramme-vierfeldertafel/index.html">Thema 1</a> die Pfadregeln, die Vierfeldertafel und das Flächenmodell.</p>
   </section>
 
   <!-- 1. Bedingte Wahrscheinlichkeit am Baumdiagramm -->
@@ -89,13 +103,13 @@
     <div class="widget">
       <p>Für den Pfad „männlich → Sehschwäche" aus Abschnitt 1 gilt nach der Pfadmultiplikationsregel:</p>
       <div class="formula-block">P(M) · P<sub>M</sub>(S) = P(M ∩ S)</div>
-      <p>Löst man diese Gleichung nach P<sub>M</sub>(S) auf (division durch P(M) auf beiden Seiten):</p>
-      <div class="formula-block">P<sub>M</sub>(S) = P(M ∩ S) / P(M) = 4,59&nbsp;% / 51&nbsp;% = 0,0459 / 0,51 = 0,09 (9&nbsp;%)</div>
+      <p>Löst man diese Gleichung nach P<sub>M</sub>(S) auf (Division durch P(M) auf beiden Seiten):</p>
+      <div class="formula-block">P<sub>M</sub>(S) = <span class="bruch"><span class="z">P(M ∩ S)</span><span class="n">P(M)</span></span> = <span class="bruch"><span class="z">0,0459</span><span class="n">0,51</span></span> = 0,09 = 9&nbsp;%</div>
       <p class="progress-note">Das ist genau der Wert, den wir in Abschnitt 1 schon direkt am zweiten Ast abgelesen hatten — die Formel liefert also dasselbe Ergebnis wie das Baumdiagramm.</p>
     </div>
     <div class="wissen-box">
       <span class="box-label">Wissen</span>
-      Für die bedingte Wahrscheinlichkeit gilt allgemein: P<sub>A</sub>(B) = P(A ∩ B) / P(A) mit P(A) &gt; 0.
+      Für die bedingte Wahrscheinlichkeit gilt allgemein: P<sub>A</sub>(B) = <span class="bruch"><span class="z">P(A ∩ B)</span><span class="n">P(A)</span></span> mit P(A) &gt; 0.
     </div>
     <p>Diese Formel gilt sowohl mit relativen Häufigkeiten (Wahrscheinlichkeiten) als auch mit absoluten Häufigkeiten — dann steht in Zähler und Nenner statt P(...) jeweils die Anzahl |...|, wie in Abschnitt&nbsp;2 und 3.</p>
     <p>In der Vierfeldertafel und im Baumdiagramm sieht das allgemein so aus:</p>
@@ -113,6 +127,23 @@
         <p style="text-align:center"><strong>Zugehöriges Baumdiagramm (1. Stufe: A/Ā)</strong></p>
         <p style="text-align:center">Die bedingten Wahrscheinlichkeiten P<sub>A</sub>(B), P<sub>A</sub>(B̄), P<sub>Ā</sub>(B), P<sub>Ā</sub>(B̄) stehen an den Ästen der <strong>zweiten Stufe</strong> — genau wie beim Geschlecht/Sehschwäche-Beispiel oben.</p>
       </div>
+    </div>
+    <h3>Die Formel im Flächenmodell</h3>
+    <p>Im Flächenmodell aus Thema 1 wird die Formel zu einem Bild. Die Bedingung schneidet ein Stück aus dem Quadrat heraus — es wird zur neuen „Welt“. Die bedingte Wahrscheinlichkeit ist der Anteil von A ∩ B an diesem Stück: <strong>Fläche durch Fläche</strong>. Schalte zwischen den Bedingungen A und B um.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>P(A): <input type="range" id="ff-a" min="10" max="90" step="5" value="40" style="vertical-align:middle;width:7rem"> <span id="ff-a-anzeige" class="wert"></span></label>
+        <label>P<sub>A</sub>(B): <input type="range" id="ff-x" min="5" max="95" step="5" value="70" style="vertical-align:middle;width:7rem"> <span id="ff-x-anzeige" class="wert"></span></label>
+        <label>P<sub>Ā</sub>(B): <input type="range" id="ff-y" min="5" max="95" step="5" value="20" style="vertical-align:middle;width:7rem"> <span id="ff-y-anzeige" class="wert"></span></label>
+        <label>Bedingung: <select id="ff-bed"><option value="A" selected>A</option><option value="B">B</option></select></label>
+      </div>
+      <div class="fm-wrap" id="ff-mount"></div>
+      <div class="th-bilanz" id="ff-bilanz"></div>
+      <div id="ff-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — P<sub>A</sub>(B) ist nicht P<sub>B</sub>(A)</span>
+      Beide haben denselben Zähler P(A ∩ B), aber verschiedene Nenner: einmal die Spalte A, einmal der Streifen B. Wer die Bedingung verwechselt, rechnet mit dem falschen Nenner — ein häufiger Fehler, und in der Medizin ein folgenschwerer (Thema 3).
     </div>
     <div class="quiz" id="quiz-formel"></div>
   </section>
@@ -139,20 +170,44 @@
     </div>
   </section>
 
-  <!-- 6. Formelsammlung -->
+  <!-- Selbsteinschätzung -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
+    <div id="se-liste"></div>
+    <div id="se-auswertung" class="event-result"></div>
+  </section>
+
+  <!-- Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Den <a href="../01-grundbegriffe-baumdiagramme-vierfeldertafel/index.html#sec-baum1">Pfadregeln</a> — die Formel ist nichts als die nach dem zweiten Ast aufgelöste Pfadmultiplikationsregel.</li>
+      <li><strong>Baut auf:</strong> Der <a href="../01-grundbegriffe-baumdiagramme-vierfeldertafel/index.html#sec-laplace">Laplace-Regel</a> — die reduzierte Ergebnismenge ist ein Laplace-Experiment in einer kleineren Welt.</li>
+      <li><strong>Gleiche Struktur:</strong> Zeile oder Spalte der Vierfeldertafel, Spalte oder Streifen im Flächenmodell, erste oder zweite Stufe im Baum — immer ist die Bedingung der <em>Nenner</em>.</li>
+      <li><strong>Führt weiter zu:</strong> Dem <a href="../03-baumdiagramme-umdrehen/index.html">Umdrehen von Baumdiagrammen</a> — dort wird P<sub>B</sub>(A) aus einem Baum gewonnen, der zuerst nach A verzweigt; der Weg führt über die Vierfeldertafel.</li>
+      <li><strong>Führt weiter zu:</strong> Der <a href="../04-stochastische-unabhaengigkeit/index.html">stochastischen Unabhängigkeit</a> — sie liegt genau dann vor, wenn die Bedingung nichts ändert: P<sub>A</sub>(B) = P(B).</li>
+      <li><strong>Führt weiter zu:</strong> Den <a href="../05-bernoulli-ketten-binomialverteilung/index.html">Bernoulli-Ketten</a>, bei denen die Wahrscheinlichkeit auf jeder Stufe dieselbe ist — die Bedingung spielt dort keine Rolle mehr.</li>
+    </ul>
+  </section>
+
+  <!-- Formelsammlung -->
   <section class="card" id="sec-formelsammlung">
-    <h2>6. Formelsammlung</h2>
+    <h2>Formelsammlung</h2>
     <p>Alle Regeln dieses Lernpfads mit Beispielen und Visualisierungen auf zwei Seiten zusammengefasst — zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
     <div class="btn-row">
       <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
     </div>
   </section>
 
-  <!-- 7. Übungsaufgaben -->
+  <!-- Übungsaufgaben -->
   <section class="card" id="sec-uebungen">
-    <h2>7. Übungsaufgaben</h2>
-    <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite. Sie sind nach aufsteigendem Schwierigkeitsgrad sortiert.</p>
+    <h2>Übungsaufgaben</h2>
+    <p>Sechzehn Aufgaben, vier auf jeder Stufe. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu. Wahrscheinlichkeiten darfst du als Dezimalzahl, in Prozent oder als Bruch eingeben.</p>
     <div id="exercises-mount"></div>
+    <h3>Am Baum und an der Tafel ausfüllen</h3>
+    <p>Aufgaben, bei denen du direkt ins Baumdiagramm und in die Vierfeldertafel schreibst.</p>
+    <div id="ausfuell-mount"></div>
   </section>
 
 </main>
@@ -162,6 +217,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=3"></script>
+<script type="module" src="lernpfad.js?v=4"></script>
 </body>
 </html>

@@ -5,6 +5,9 @@
 
 "use strict";
 
+import { mountUebungsaufgaben } from "../../../aufgaben.js?v=2";
+import { AUFGABEN, parseZahl } from "./aufgaben-bedingt.js?v=1";
+
 // ---------- Helfer ----------
 
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -572,7 +575,7 @@ function initStolperstelle() {
 // ================= 6. Übungsaufgaben =================
 
 function initExercises() {
-  const mount = document.getElementById("exercises-mount");
+  const mount = document.getElementById("ausfuell-mount");
 
   // Aufgabe 1 (leicht) — bedingte Wahrscheinlichkeit direkt aus einer gegebenen Vierfeldertafel ablesen.
   mountExercise(mount, {
@@ -730,53 +733,165 @@ function initExercises() {
   });
 }
 
-// ================= Quizze =================
+// ================= 4b. Die Formel im Flächenmodell =================
+//
+// Dieselbe Zeichnung wie in Thema 1 — jetzt wird ein Teil davon zur neuen „Welt“. Die Bedingung
+// schneidet aus dem Quadrat ein Stück heraus (die Spalte A oder die untere Zeile B), und die
+// bedingte Wahrscheinlichkeit ist der Anteil von A ∩ B an diesem Stück: Fläche durch Fläche.
+// Daraus liest man die Formel P_A(B) = P(A ∩ B) : P(A) direkt ab — und sieht zugleich, warum
+// P_B(A) eine andere Zahl ist: Der Nenner ist ein anderes Stück.
+//
+// Gerechnet wird mit den Reglerwerten in Prozent (ganze Zahlen), nicht mit Bildschirmkoordinaten.
 
-function initQuizzes() {
-  mountQuiz(document.getElementById("quiz-baum-bedingt"), {
+const FM_SEITE = 300, FM_RAND = 44;
+
+function renderFormelModell() {
+  const a = Number(document.getElementById("ff-a").value);
+  const x = Number(document.getElementById("ff-x").value);
+  const y = Number(document.getElementById("ff-y").value);
+  const bed = document.getElementById("ff-bed").value;   // "A" oder "B"
+  document.getElementById("ff-a-anzeige").textContent = a + " %";
+  document.getElementById("ff-x-anzeige").textContent = x + " %";
+  document.getElementById("ff-y-anzeige").textContent = y + " %";
+  const pA = a / 100, px = x / 100, py = y / 100;
+  const pAB = pA * px, pAqB = (1 - pA) * py, pB = pAB + pAqB;
+
+  const W = FM_SEITE + 2 * FM_RAND + 30, H = FM_SEITE + 2 * FM_RAND;
+  const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, width: W, height: H, class: "fm-svg", role: "img", "aria-label": "Flächenmodell zur bedingten Wahrscheinlichkeit" });
+  const x0 = FM_RAND, y0 = FM_RAND, s = FM_SEITE;
+  const wA = s * pA;
+  const teile = [
+    { k: "AB", x: x0, y: y0 + s - s * px, w: wA, h: s * px, klasse: "fm-a-b" },
+    { k: "ABq", x: x0, y: y0, w: wA, h: s - s * px, klasse: "fm-a-nb" },
+    { k: "AqB", x: x0 + wA, y: y0 + s - s * py, w: s - wA, h: s * py, klasse: "fm-na-b" },
+    { k: "AqBq", x: x0 + wA, y: y0, w: s - wA, h: s - s * py, klasse: "fm-na-nb" },
+  ];
+  // Die Bedingung ist die neue Welt: Was nicht zu ihr gehört, tritt zurück.
+  const inBed = (k) => (bed === "A" ? k === "AB" || k === "ABq" : k === "AB" || k === "AqB");
+  for (const t of teile) {
+    if (t.w < 1e-9 || t.h < 1e-9) continue;
+    svg.appendChild(svgEl("rect", {
+      x: t.x.toFixed(2), y: t.y.toFixed(2), width: t.w.toFixed(2), height: t.h.toFixed(2),
+      class: t.klasse, "data-teil": t.k, opacity: inBed(t.k) ? "1" : "0.25",
+    }));
+  }
+  for (const t of teile) {
+    if (!inBed(t.k) || t.w < 1e-9 || t.h < 1e-9) continue;
+    svg.appendChild(svgEl("rect", { x: (t.x + 1.5).toFixed(2), y: (t.y + 1.5).toFixed(2), width: Math.max(0, t.w - 3).toFixed(2), height: Math.max(0, t.h - 3).toFixed(2), class: "fm-aktiv", "data-bedingung": t.k }));
+  }
+  svg.appendChild(svgEl("line", { x1: (x0 + wA).toFixed(2), y1: y0, x2: (x0 + wA).toFixed(2), y2: y0 + s, class: "fm-trenn" }));
+  svg.appendChild(svgEl("rect", { x: x0, y: y0, width: s, height: s, class: "fm-rahmen", "data-rolle": "quadrat" }));
+  const t = (xx, yy, inhalt, k = "fm-text", anker = "middle") => {
+    const e = svgEl("text", { x: xx.toFixed(1), y: yy.toFixed(1), class: k, "text-anchor": anker });
+    e.textContent = inhalt;
+    svg.appendChild(e);
+  };
+  t(x0 + wA / 2, y0 + s + 18, "A");
+  t(x0 + wA + (s - wA) / 2, y0 + s + 18, "Ā");
+  t(x0 + s + 8, y0 + s - (s * py) / 2 + 4, "B", "fm-text", "start");
+  t(x0 + s + 8, y0 + (s - s * py) / 2 + 4, "B̄", "fm-text", "start");
+  t(x0 + s / 2, y0 - 14, bed === "A" ? "Bedingung A: nur die Spalte zählt" : "Bedingung B: nur der untere Streifen zählt", "fm-text-klein");
+  const mount = document.getElementById("ff-mount");
+  mount.innerHTML = "";
+  mount.appendChild(svg);
+
+  const n = (v) => num(v, 4);
+  // „=“ nur, wenn vier Stellen den Quotienten genau treffen (0,28 : 0,4 = 0,7), sonst „≈“.
+  const z = (v) => (Math.abs(Math.round(v * 1e4) - v * 1e4) < 1e-9 ? "=" : "≈");
+  document.getElementById("ff-bilanz").innerHTML = bed === "A"
+    ? `Neue Welt: die Spalte A mit der Fläche P(A) = ${n(pA)}. Darin liegt A ∩ B mit der Fläche ${n(pA)} · ${n(px)} = ${n(pAB)}.<br>` +
+      `P<sub>A</sub>(B) = <span class="bruch"><span class="z">P(A ∩ B)</span><span class="n">P(A)</span></span> = <span class="bruch"><span class="z">${n(pAB)}</span><span class="n">${n(pA)}</span></span> ${z(pAB / pA)} <span class="wa">${n(pAB / pA)}</span> — die Höhe in der Spalte.`
+    : `Neue Welt: alles, was zu B gehört — zwei Rechtecke mit P(B) = ${n(pAB)} + ${n(pAqB)} = ${n(pB)}. Davon gehört ${n(pAB)} zu A.<br>` +
+      `P<sub>B</sub>(A) = <span class="bruch"><span class="z">P(A ∩ B)</span><span class="n">P(B)</span></span> = <span class="bruch"><span class="z">${n(pAB)}</span><span class="n">${n(pB)}</span></span> ${z(pB > 0 ? pAB / pB : 0)} <span class="wa">${n(pB > 0 ? pAB / pB : 0)}</span>`;
+  document.getElementById("ff-text").innerHTML = bed === "A"
+    ? `Unter der Bedingung A ist die Spalte A „alles, was es gibt“. Der Anteil von B daran ist die Höhe des dunklen Rechtecks: ${x} %. Genau diese Zahl steht im Baum am Ast von A nach B.`
+    : `Unter der Bedingung B zählt der ganze untere Streifen — er ist über beide Spalten verteilt. Deshalb ist P<sub>B</sub>(A) ${pB > 0 && Math.abs(Math.round((pAB / pB) * 1000) - (pAB / pB) * 1000) < 1e-9 ? "=" : "≈"} ${num(pB > 0 ? (pAB / pB) * 100 : 0, 1)} % eine andere Zahl als P<sub>A</sub>(B) = ${x} %: Zähler gleich, Nenner verschieden.`;
+}
+
+// ================= Quizze =================
+//
+// Die richtige Antwort steht bewusst an wechselnder Stelle.
+const QUIZZE = {
+  "quiz-baum-bedingt": {
     q: "Was bedeutet die Schreibweise P_M(S)?",
     options: [
       "Die Wahrscheinlichkeit, dass M und S beide eintreten.",
-      "Die Wahrscheinlichkeit, dass S eintritt, unter der Bedingung, dass M bereits eingetreten ist.",
       "Die Wahrscheinlichkeit, dass M eintritt, unter der Bedingung, dass S bereits eingetreten ist.",
+      "Die Wahrscheinlichkeit, dass S eintritt, unter der Bedingung, dass M bereits eingetreten ist.",
       "Die Summe der Wahrscheinlichkeiten von M und S.",
     ],
-    correct: 1,
-    explain: "Der tiefgestellte Index (hier M) ist immer die Bedingung — das, was schon bekannt ist.",
-  });
-
-  mountQuiz(document.getElementById("quiz-reduziert"), {
-    q: "Wie berechnet man P_A(B) über die reduzierte Ergebnismenge?",
-    options: ["|A ∩ B| / |Ω|", "|A ∩ B| / |A|", "|A| / |A ∩ B|", "|B| / |A ∩ B|"],
-    correct: 1,
-    explain: "Innerhalb der reduzierten Ergebnismenge Ω_A = A zählt man den Anteil von B — also |A∩B| / |A|.",
-  });
-
-  mountQuiz(document.getElementById("quiz-vft-bedingt"), {
-    q: "In der Mobile-Banking-Tafel oben: Wie groß ist P_nein(≥ 50 Jahre) — die Wahrscheinlichkeit, mindestens 50 zu sein, unter der Bedingung, kein Mobile-Banking zu nutzen?",
-    options: ["55 %", "33 %", "94,3 %", "45 %"],
     correct: 2,
-    explain: "Spalte „nein“ (350 Personen) ist hier die Bedingung: 330/350 ≈ 0,943 = 94,3 %.",
-  });
-
-  mountQuiz(document.getElementById("quiz-formel"), {
-    q: "Welche Formel drückt die bedingte Wahrscheinlichkeit P_A(B) korrekt aus?",
-    options: ["P(A∩B) / P(A)", "P(A) / P(B)", "P(A∩B) / P(B)", "P(A) · P(B)"],
+    explain: "Der tiefgestellte Index ist immer die Bedingung — das, was schon bekannt ist. Im Baum steht P_M(S) am Ast von M nach S. „M und S beide“ ist dagegen der ganze Pfad P(M ∩ S) = P(M) · P_M(S).",
+  },
+  "quiz-reduziert": {
+    q: "Wie berechnet man P_A(B) über die reduzierte Ergebnismenge?",
+    options: ["|A ∩ B| : |Ω|", "|A| : |A ∩ B|", "|B| : |A ∩ B|", "|A ∩ B| : |A|"],
+    correct: 3,
+    explain: "Weil A schon feststeht, ist A die neue Ergebnismenge Ω_A. Darin zählt man die Ergebnisse, die auch zu B gehören. |A ∩ B| : |Ω| wäre dagegen P(A ∩ B) — gezählt in der alten, großen Welt.",
+  },
+  "quiz-vft-bedingt": {
+    q: "In der Mobile-Banking-Tafel oben: Wie groß ist P_nein(über 50 Jahre) — die Wahrscheinlichkeit, älter als 50 zu sein, unter der Bedingung, kein Mobile-Banking zu nutzen?",
+    options: ["94,3 %", "55 %", "33 %", "45 %"],
     correct: 0,
-    explain: "P_A(B) = P(A∩B) / P(A), mit P(A) > 0 — direkt aus der nach P_A(B) aufgelösten Pfadmultiplikationsregel.",
-  });
-
-  mountQuiz(document.getElementById("quiz-stolperstelle"), {
+    explain: "Die Bedingung „nein“ ist hier die Spalte (350 Personen); davon sind 330 älter als 50: 330 : 350 ≈ 0,943. Mit der Zeile „über 50“ als Bedingung käme eine ganz andere Zahl heraus — die Bedingung entscheidet über den Nenner.",
+  },
+  "quiz-formel": {
+    q: "Welche Formel drückt die bedingte Wahrscheinlichkeit P_A(B) korrekt aus?",
+    options: ["P(A) : P(B)", "P(A ∩ B) : P(A)", "P(A ∩ B) : P(B)", "P(A) · P(B)"],
+    correct: 1,
+    explain: "P_A(B) = P(A ∩ B) : P(A) mit P(A) > 0 — die nach dem zweiten Ast aufgelöste Pfadmultiplikationsregel. P(A ∩ B) : P(B) ist ebenfalls eine bedingte Wahrscheinlichkeit, aber P_B(A): anderer Nenner, andere Bedingung.",
+  },
+  "quiz-stolperstelle": {
     q: "Was hat Leon falsch gemacht?",
     options: [
-      "Er hat die absoluten Häufigkeiten statt Prozent verwendet.",
-      "Er hat die gemeinsamen Wahrscheinlichkeiten (Zellenwerte der Vierfeldertafel) direkt als zweite Astwahrscheinlichkeiten übernommen, statt sie durch die jeweilige Zeilensumme zu teilen.",
+      "Er hat absolute Häufigkeiten statt Prozent verwendet.",
       "Die erste Stufe des Baumdiagramms ist falsch.",
+      "Er hat die Zellenwerte der Vierfeldertafel direkt als zweite Äste übernommen, statt sie durch die Zeilensumme zu teilen.",
       "Man darf aus einer Vierfeldertafel gar kein Baumdiagramm erstellen.",
     ],
-    correct: 1,
-    explain: "Die zweite Stufe muss die bedingte Wahrscheinlichkeit zeigen (Zellenwert ÷ Zeilensumme): 40/50 = 80 % statt 40 %, usw.",
+    correct: 2,
+    explain: "An die zweite Stufe gehört die bedingte Wahrscheinlichkeit: Zellenwert durch Zeilensumme, 40 : 50 = 80 % statt 40 %. Die Probe verrät den Fehler sofort: An jedem Knoten müssen die Äste zusammen 1 ergeben — bei Leon ergeben sie 50 %.",
+  },
+};
+
+function initQuizzes() {
+  for (const [id, def] of Object.entries(QUIZZE)) mountQuiz(document.getElementById(id), def);
+}
+
+// ================= Selbsteinschätzung =================
+const SE_PUNKTE = [
+  ["sec-baum-bedingt", "Ich kann bedingte Wahrscheinlichkeiten an den Ästen eines Baums ablesen und erklären, was der Index bedeutet."],
+  ["sec-reduziert", "Ich kann P_A(B) über die reduzierte Ergebnismenge bestimmen."],
+  ["sec-vft-bedingt", "Ich kann bedingte Wahrscheinlichkeiten aus einer Vierfeldertafel berechnen — mit der Zeile oder der Spalte als Bedingung."],
+  ["sec-formel", "Ich kann die Formel P_A(B) = P(A ∩ B) : P(A) herleiten und im Flächenmodell deuten."],
+  ["sec-stolperstelle", "Ich erkenne, wenn in einem Baum statt bedingter Wahrscheinlichkeiten Zellenwerte an den Ästen stehen."],
+];
+const SE_SCHLUESSEL = "uplant-mss13-bedingt-selbsteinschaetzung";
+function leseSE() {
+  try { return JSON.parse(localStorage.getItem(SE_SCHLUESSEL) || "{}"); } catch { return {}; }
+}
+function schreibeSE(d) {
+  try { localStorage.setItem(SE_SCHLUESSEL, JSON.stringify(d)); } catch { /* ohne Speicher geht es auch */ }
+}
+function renderSelbsteinschaetzung() {
+  const liste = document.getElementById("se-liste");
+  const stand = leseSE();
+  liste.innerHTML = "";
+  SE_PUNKTE.forEach(([id, text]) => {
+    const knoepfe = el("div", { class: "se-knoepfe", role: "group", "aria-label": text });
+    [["sicher", "😀", "sicher"], ["teils", "😐", "teilweise"], ["unsicher", "🤔", "noch unsicher"]].forEach(([wert, zeichen, name]) => {
+      const b = el("button", { type: "button", "aria-pressed": String(stand[id] === wert), title: name, "aria-label": name }, zeichen);
+      b.addEventListener("click", () => { const d = leseSE(); d[id] = wert; schreibeSE(d); renderSelbsteinschaetzung(); });
+      knoepfe.appendChild(b);
+    });
+    liste.appendChild(el("div", { class: "se-zeile" }, [el("span", { class: "se-text" }, text), knoepfe]));
   });
+  const unsicher = SE_PUNKTE.filter(([id]) => stand[id] === "unsicher");
+  const sicher = SE_PUNKTE.filter(([id]) => stand[id] === "sicher").length;
+  const aus = document.getElementById("se-auswertung");
+  if (!Object.keys(stand).length) aus.textContent = "Noch nichts angekreuzt.";
+  else if (unsicher.length) aus.innerHTML = `Wiederhole zuerst: ${unsicher.map(([id]) => `<a href="#${id}">${document.querySelector(`#${id} h2`).textContent}</a>`).join(", ")}. Danach passen die Übungsaufgaben auf den Stufen „einfach“ und „mittel“.`;
+  else aus.textContent = `${sicher} von ${SE_PUNKTE.length} Punkten sicher — probier dich an den Aufgaben auf den Stufen „schwierig“ und „komplex“.`;
 }
 
 // ================= Start =================
@@ -788,4 +903,12 @@ document.addEventListener("DOMContentLoaded", () => {
   initStolperstelle();
   initExercises();
   initQuizzes();
+  ["ff-a", "ff-x", "ff-y", "ff-bed"].forEach((id) => {
+    const e = document.getElementById(id);
+    e.addEventListener("input", renderFormelModell);
+    e.addEventListener("change", renderFormelModell);
+  });
+  renderFormelModell();   // nicht vergessen — sonst bleibt das Modell leer
+  renderSelbsteinschaetzung();
+  mountUebungsaufgaben(document.getElementById("exercises-mount"), AUFGABEN, { parse: parseZahl });
 });

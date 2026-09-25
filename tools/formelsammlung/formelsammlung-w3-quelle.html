@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Formelsammlung — Baumdiagramme umdrehen</title>
+<style>
+  @page { size: A4 landscape; margin: 5.5mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    color: #1f2328;
+    font-size: 8.1px;
+    line-height: 1.33;
+  }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  h1 {
+    font-size: 12.4px; margin: 0 0 1.4mm; padding-bottom: 0.8mm;
+    border-bottom: 1.6px solid #1d4ed8; color: #1d4ed8; letter-spacing: 0.01em;
+  }
+  h1 .klein { font-size: 8.4px; font-weight: 400; color: #5b6570; float: right; margin-top: 2px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2.1mm; align-items: start; }
+  .box {
+    border: 0.9px solid #c9d0d8; border-radius: 2mm; padding: 1.5mm 1.8mm;
+    background: #ffffff; break-inside: avoid;
+  }
+  .box.wide { grid-column: span 2; }
+  .box.full { grid-column: span 3; }
+  .box h2 {
+    font-size: 8.6px; margin: 0 0 1.1mm; color: #1d4ed8;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .box.warn { border-color: #e3b341; background: #fffaf0; }
+  .box.warn h2 { color: #8a5b0a; }
+  .box.merk { border-color: #7ec699; background: #f4fbf6; }
+  .box.merk h2 { color: #0f5132; }
+  p { margin: 0 0 0.9mm; }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 0.9mm; padding-left: 3.4mm; }
+  li { margin-bottom: 0.4mm; }
+  .f { font-family: "Cambria Math", Cambria, Georgia, serif; font-size: 9.2px; }
+  .zentral { text-align: center; }
+  .gross { font-size: 10.4px; font-weight: 700; }
+  .al { color: #157347; font-weight: 700; }
+  .be { color: #b3650a; font-weight: 700; }
+  .ga { color: #b3261e; font-weight: 700; }
+  .kr { color: #1d4ed8; font-weight: 700; }
+  .ra { color: #6d28d9; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { border: 0.7px solid #c9d0d8; padding: 0.5mm 0.6mm; text-align: center; }
+  th { background: #eef2f6; font-weight: 700; font-size: 7.4px; }
+  td { font-size: 7.6px; }
+  td.b { font-weight: 700; }
+  td.l { text-align: left; }
+  figure { margin: 0.8mm 0 0; }
+  figure svg { display: block; width: 100%; height: auto; }
+  .m70 { max-width: 70%; margin: 0.8mm auto 0; }
+  .m80 { max-width: 80%; margin: 0.8mm auto 0; }
+  .m88 { max-width: 88%; margin: 0.8mm auto 0; }
+  .m62 { max-width: 62%; margin: 0.8mm auto 0; }
+  .m72 { max-width: 72%; margin: 0.8mm auto 0; }
+  .m55 { max-width: 55%; margin: 0.8mm auto 0; }
+  .bu { font-size: 7.1px; color: #5b6570; text-align: center; margin-top: 0.5mm; }
+  .rechnung { background: #f4f6f8; border-radius: 1.2mm; padding: 1mm 1.2mm; margin: 0.8mm 0 0; }
+  .schritt { display: flex; gap: 1.2mm; margin-bottom: 0.5mm; }
+  .schritt b { flex: 0 0 3.6mm; color: #1d4ed8; }
+  .schritt:last-child { margin-bottom: 0; }
+  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm; align-items: start; }
+  .bruch { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; margin: 0 0.3mm; }
+  .bruch .z { border-bottom: 0.8px solid currentColor; padding: 0 0.6mm; }
+  .binom { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; padding: 0 0.9mm; margin: 0 0.3mm; border-left: 0.9px solid currentColor; border-right: 0.9px solid currentColor; border-radius: 45% / 50%; font-size: 92%; }
+  .tr { color: #157347; font-weight: 700; }
+  .ni { color: #b3650a; font-weight: 700; }
+  .fu { color: #5b6570; font-size: 7.3px; }
+  .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ===================== Seite 1 ===================== -->
+<div class="page">
+  <h1>Baumdiagramme umdrehen<span class="klein">MSS 13 · Wahrscheinlichkeitsrechnung, Thema 3 · Schreibweise Bigalke/Köhler, <span class="fu">grau: andere Bücher</span></span></h1>
+  <div class="grid">
+
+    <div class="box">
+      <h2>Warum umdrehen?</h2>
+      <p>Bekannt ist oft P<sub>A</sub>(B) — gefragt ist aber die <b>umgekehrte</b> Richtung P<sub>B</sub>(A). Beim Test kennt man, wie gut er Infizierte erkennt; die getestete Person will wissen, ob sie bei positivem Ergebnis wirklich infiziert ist.</p>
+      <table>
+        <tr><th>Begriff</th><th>Bigalke/Köhler</th><th>Bsp.</th></tr>
+        <tr><td class="l">Prävalenz</td><td class="f">P(I)</td><td>10 %</td></tr>
+        <tr><td class="l">Sensitivität</td><td class="f">P<sub>I</sub>(pos.)</td><td>96 %</td></tr>
+        <tr><td class="l">Spezifität</td><td class="f">P<sub>Ī</sub>(neg.)</td><td>99 %</td></tr>
+        <tr><td class="l">positiver Vorhersagewert</td><td class="f">P<sub>pos.</sub>(I)</td><td>≈ 91,4 %</td></tr>
+      </table>
+      <p class="fu" style="margin-top:0.6mm">auch üblich: P(I | pos.), PPV</p>
+    </div>
+
+    <div class="box merk wide" style="grid-row: span 2">
+      <h2>Das Rezept: multiplizieren, dann in der neuen Richtung teilen</h2>
+      <div class="zwei">
+        <div>
+          <figure>[[FIG1]]</figure>
+          <p class="bu"><b>① Baum wie gegeben</b> — erst Infektion, dann Test. Pfade multiplizieren …</p>
+        </div>
+        <div>
+          <p class="bu" style="text-align:left"><b>② … in die Tafel</b> (Zeilen: Infektion, Spalten: Test):</p>
+          [[FIG2]]
+          <p class="bu" style="text-align:left">positiv insgesamt: 9,6 % + 0,9 % = <b>10,5 %</b></p>
+        </div>
+      </div>
+      <figure class="m72">[[FIG3]]</figure>
+      <p class="bu"><b>③ Umgedrehter Baum</b> — erst Test, dann Infektion. Erste Stufe = Spaltensumme; zweite Stufe = Zelle : Spaltensumme, z. B. 0,096 : 0,105 ≈ 0,9143.</p>
+    </div>
+
+    <div class="box warn">
+      <h2>Stolperstelle: nur die Stufen vertauscht</h2>
+      <p>Fabrik A fertigt 30 %, B 70 %; defekt sind 5 % aus A und 2 % aus B. Tim dreht den Baum um, indem er nur die Stufen vertauscht: An der Wurzel stehen bei ihm „defekt 0,05“ und „ok 0,02“.</p>
+      <p class="zentral f">0,05 + 0,02 = 0,07 ≠ 1 — die Probe am Knoten deckt den Fehler auf.</p>
+      <p>Richtig: <span class="f">P(defekt) = 0,3 · 0,05 + 0,7 · 0,02 = 0,029</span>.</p>
+    </div>
+
+    <div class="box wide">
+      <h2>Die allgemeinen Formeln</h2>
+      <div class="zwei">
+        <div>
+          <p>Baum ①: erste Stufe A/B mit a, b; zweite Stufe 1/2 mit a₁ = P<sub>A</sub>(1), a₂, b₁, b₂. Baum ②: erste Stufe 1/2 mit c, d; zweite Stufe c<sub>A</sub>, c<sub>B</sub>, d<sub>A</sub>, d<sub>B</sub>.</p>
+          <table>
+            <tr><th></th><th>1</th><th>2</th><th>Σ</th></tr>
+            <tr><th>A</th><td class="f">a · a₁</td><td class="f">a · a₂</td><td class="b">a</td></tr>
+            <tr><th>B</th><td class="f">b · b₁</td><td class="f">b · b₂</td><td class="b">b</td></tr>
+            <tr><th>Σ</th><td class="b">c</td><td class="b">d</td><td class="b">1</td></tr>
+          </table>
+        </div>
+        <div>
+          <p><b>Erste Stufe</b> = Spaltensummen:</p>
+          <p class="zentral f">c = a · a₁ + b · b₁ &nbsp;&nbsp; d = a · a₂ + b · b₂ = 1 − c</p>
+          <p><b>Zweite Stufe</b> = Zelle : Spaltensumme:</p>
+          <p class="zentral f">c<sub>A</sub> = <span class="bruch"><span class="z">a · a₁</span><span>c</span></span> &nbsp; c<sub>B</sub> = <span class="bruch"><span class="z">b · b₁</span><span>c</span></span> &nbsp; d<sub>A</sub> = <span class="bruch"><span class="z">a · a₂</span><span>d</span></span> &nbsp; d<sub>B</sub> = <span class="bruch"><span class="z">b · b₂</span><span>d</span></span></p>
+          <p>Probe: c<sub>A</sub> + c<sub>B</sub> = 1 und d<sub>A</sub> + d<sub>B</sub> = 1.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box merk">
+      <h2>Regel von Bayes</h2>
+      <p>c<sub>A</sub> ohne die Abkürzung c ausgeschrieben:</p>
+      <p class="zentral f gross">P<sub>B</sub>(A) = <span class="bruch"><span class="z">P(A) · P<sub>A</sub>(B)</span><span>P(A) · P<sub>A</sub>(B) + P(Ā) · P<sub>Ā</sub>(B)</span></span></p>
+      <p class="zentral fu">auch üblich: P(A | B) = P(B | A) · P(A) : P(B)</p>
+      <p>Der Nenner ist P(B) — die Summe der beiden Pfade, die in B enden. Die Formel ist nur eine Kurzschrift für ①–③.</p>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik MSS 13 · Wahrscheinlichkeitsrechnung · Seite 1 von 2</p>
+</div>
+
+<!-- ===================== Seite 2 ===================== -->
+<div class="page">
+  <h1>Warum so klein? — Musterrechnungen<span class="klein">Flächenmodell mit Lupe — Prävalenzfehler — typische Fehler</span></h1>
+  <div class="grid">
+
+    <div class="box wide">
+      <h2>Im Flächenmodell: Warum ist P<sub>pos.</sub>(I) so viel kleiner?</h2>
+      <div class="zwei">
+        <figure class="m62">[[FIG4]]</figure>
+        <figure class="m62">[[FIG5]]</figure>
+      </div>
+      <p>Positiv sind <b>zwei</b> Rechtecke: das schmale, hohe (richtig positiv) und das flache, breite (falsch positiv). Umdrehen heißt: nur diese beiden ansehen. Die <b>Lupe</b> zieht sie auf volle Breite. Bei 1 % Prävalenz ist das flache Rechteck so groß wie das schmale — nur knapp die Hälfte der positiven Ergebnisse ist berechtigt.</p>
+    </div>
+
+    <div class="box warn">
+      <h2>Prävalenzfehler</h2>
+      <p>96 % Sensitivität heißt: 96 % der <b>Infizierten</b> werden erkannt. Wie verlässlich ein positives Ergebnis ist, hängt zusätzlich davon ab, wie viele <b>Nicht-Infizierte</b> getestet werden.</p>
+      <table>
+        <tr><th>Prävalenz</th><th>P<sub>pos.</sub>(I)</th></tr>
+        <tr><td>10 %</td><td>≈ 91,4 %</td></tr>
+        <tr><td>1 %</td><td>≈ 49,2 %</td></tr>
+      </table>
+      <p class="bu">Derselbe Test (96 % / 99 %) — nur die erste Stufe ändert sich.</p>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 1 — aus welcher Fabrik?</h2>
+      <p><b>Gegeben:</b> Fabrik A fertigt 30 %, B 70 % der Geräte; defekt sind 5 % aus A und 2 % aus B. Ein Gerät ist defekt.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span><span class="f">P(A ∩ d) = 0,3 · 0,05 = 0,015</span>; <span class="f">P(B ∩ d) = 0,7 · 0,02 = 0,014</span></span></div>
+        <div class="schritt"><b>2.</b><span><span class="f">P(d) = 0,015 + 0,014 = 0,029</span></span></div>
+        <div class="schritt"><b>3.</b><span><span class="f">P<sub>d</sub>(A) = 0,015 : 0,029 ≈ <b>0,5172</b></span> — obwohl A nur 30 % fertigt.</span></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 2 — natürliche Häufigkeiten</h2>
+      <p><b>Gegeben:</b> Prävalenz 1 %, Sensitivität 96 %, Spezifität 99 %. Rechne mit 10.000 Personen.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>100 infiziert, davon 96 positiv.</span></div>
+        <div class="schritt"><b>2.</b><span>9.900 nicht infiziert, davon 1 %: 99 positiv.</span></div>
+        <div class="schritt"><b>3.</b><span><span class="f">P<sub>pos.</sub>(I) = 96 : (96 + 99) ≈ <b>0,4923</b></span></span></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 3 — zweimal testen</h2>
+      <p><b>Gegeben:</b> wie in Musterrechnung 2; wer positiv ist, wird unabhängig ein zweites Mal getestet und ist wieder positiv.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>Das Ergebnis des ersten Tests ist die neue Prävalenz: <span class="f">96/195 ≈ 0,4923</span>.</span></div>
+        <div class="schritt"><b>2.</b><span><span class="f">P = <span class="bruch"><span class="z">0,4923 · 0,96</span><span>0,4923 · 0,96 + 0,5077 · 0,01</span></span> ≈ <b>0,9894</b></span></span></div>
+      </div>
+    </div>
+
+    <div class="box warn wide">
+      <h2>Typische Fehler</h2>
+      <ul>
+        <li><b>Nur die Reihenfolge vertauscht</b> (Tims Fehler): Die Werte des alten Baums an den neuen geschrieben. Probe: An jedem Knoten müssen die Äste 1 ergeben — bei Tim ergeben 5 % + 2 % nur 7 %.</li>
+        <li><b>Sensitivität als Aussagekraft gelesen</b> (Prävalenzfehler): P<sub>I</sub>(pos.) ist nicht P<sub>pos.</sub>(I).</li>
+        <li><b>Im Nenner nur ein Pfad:</b> P(B) besteht aus <b>beiden</b> Pfaden, die in B enden.</li>
+        <li><b>Zelle als Ast:</b> 0,096 ist ein Pfad; an den Ast gehört 0,096 : 0,105.</li>
+      </ul>
+    </div>
+
+    <div class="box" style="border-style:dashed;background:#f7f8fa">
+      <h2 style="color:#5b6570">Ausblick</h2>
+      <p>Sind A und B <b>unabhängig</b>, ist Umdrehen überflüssig: P<sub>B</sub>(A) = P(A) (Thema 4). Beim <b>Testen von Hypothesen</b> kehrt dieselbe Frage wieder: Wie wahrscheinlich ist eine Beobachtung unter einer Annahme — und nicht umgekehrt?</p>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik MSS 13 · Wahrscheinlichkeitsrechnung · Seite 2 von 2</p>
+</div>
+
+</body>
+</html>

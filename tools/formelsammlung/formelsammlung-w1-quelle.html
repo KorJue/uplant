@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Formelsammlung — Grundbegriffe, Baumdiagramme und Vierfeldertafel</title>
+<style>
+  @page { size: A4 landscape; margin: 5.5mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    color: #1f2328;
+    font-size: 8.1px;
+    line-height: 1.33;
+  }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  h1 {
+    font-size: 12.4px; margin: 0 0 1.4mm; padding-bottom: 0.8mm;
+    border-bottom: 1.6px solid #1d4ed8; color: #1d4ed8; letter-spacing: 0.01em;
+  }
+  h1 .klein { font-size: 8.4px; font-weight: 400; color: #5b6570; float: right; margin-top: 2px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2.1mm; align-items: start; }
+  .box {
+    border: 0.9px solid #c9d0d8; border-radius: 2mm; padding: 1.5mm 1.8mm;
+    background: #ffffff; break-inside: avoid;
+  }
+  .box.wide { grid-column: span 2; }
+  .box.full { grid-column: span 3; }
+  .box h2 {
+    font-size: 8.6px; margin: 0 0 1.1mm; color: #1d4ed8;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .box.warn { border-color: #e3b341; background: #fffaf0; }
+  .box.warn h2 { color: #8a5b0a; }
+  .box.merk { border-color: #7ec699; background: #f4fbf6; }
+  .box.merk h2 { color: #0f5132; }
+  p { margin: 0 0 0.9mm; }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 0.9mm; padding-left: 3.4mm; }
+  li { margin-bottom: 0.4mm; }
+  .f { font-family: "Cambria Math", Cambria, Georgia, serif; font-size: 9.2px; }
+  .zentral { text-align: center; }
+  .gross { font-size: 10.4px; font-weight: 700; }
+  .al { color: #157347; font-weight: 700; }
+  .be { color: #b3650a; font-weight: 700; }
+  .ga { color: #b3261e; font-weight: 700; }
+  .kr { color: #1d4ed8; font-weight: 700; }
+  .ra { color: #6d28d9; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { border: 0.7px solid #c9d0d8; padding: 0.5mm 0.6mm; text-align: center; }
+  th { background: #eef2f6; font-weight: 700; font-size: 7.4px; }
+  td { font-size: 7.6px; }
+  td.b { font-weight: 700; }
+  td.l { text-align: left; }
+  figure { margin: 0.8mm 0 0; }
+  figure svg { display: block; width: 100%; height: auto; }
+  .m70 { max-width: 70%; margin: 0.8mm auto 0; }
+  .m80 { max-width: 80%; margin: 0.8mm auto 0; }
+  .m88 { max-width: 88%; margin: 0.8mm auto 0; }
+  .m62 { max-width: 62%; margin: 0.8mm auto 0; }
+  .m72 { max-width: 72%; margin: 0.8mm auto 0; }
+  .m55 { max-width: 55%; margin: 0.8mm auto 0; }
+  .bu { font-size: 7.1px; color: #5b6570; text-align: center; margin-top: 0.5mm; }
+  .rechnung { background: #f4f6f8; border-radius: 1.2mm; padding: 1mm 1.2mm; margin: 0.8mm 0 0; }
+  .schritt { display: flex; gap: 1.2mm; margin-bottom: 0.5mm; }
+  .schritt b { flex: 0 0 3.6mm; color: #1d4ed8; }
+  .schritt:last-child { margin-bottom: 0; }
+  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm; align-items: start; }
+  .bruch { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; margin: 0 0.3mm; }
+  .bruch .z { border-bottom: 0.8px solid currentColor; padding: 0 0.6mm; }
+  .binom { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; padding: 0 0.9mm; margin: 0 0.3mm; border-left: 0.9px solid currentColor; border-right: 0.9px solid currentColor; border-radius: 45% / 50%; font-size: 92%; }
+  .tr { color: #157347; font-weight: 700; }
+  .ni { color: #b3650a; font-weight: 700; }
+  .fu { color: #5b6570; font-size: 7.3px; }
+  .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ===================== Seite 1 ===================== -->
+<div class="page">
+  <h1>Grundbegriffe, Baumdiagramme und Vierfeldertafel<span class="klein">MSS 13 · Wahrscheinlichkeitsrechnung, Thema 1 · Schreibweise Bigalke/Köhler</span></h1>
+  <div class="grid">
+
+    <div class="box">
+      <h2>Zufallsexperiment und Ergebnismenge</h2>
+      <p>Ein <b>Zufallsexperiment</b> hat mehrere mögliche Ausgänge, und welcher eintritt, lässt sich nicht vorhersagen. Jeder mögliche Ausgang heißt <b>Ergebnis</b> ω; alle Ergebnisse zusammen bilden die <b>Ergebnismenge</b> Ω.</p>
+      <table>
+        <tr><th>Experiment</th><th>Ergebnismenge Ω</th><th>|Ω|</th></tr>
+        <tr><td class="l">Würfel einmal werfen</td><td class="f">{1; 2; 3; 4; 5; 6}</td><td>6</td></tr>
+        <tr><td class="l">Münze zweimal werfen</td><td class="f">{KK; KZ; ZK; ZZ}</td><td>4</td></tr>
+        <tr><td class="l">zwei Würfel werfen</td><td class="f">{(1|1); (1|2); …; (6|6)}</td><td>36</td></tr>
+      </table>
+      <p style="margin-top:0.8mm">Wie fein man Ω wählt, entscheidet die Frage: Bei „Augensumme“ genügt {2; …; 12} — dann sind die Ergebnisse aber <b>nicht</b> gleich wahrscheinlich.</p>
+    </div>
+
+    <div class="box">
+      <h2>Häufigkeit und Gesetz der großen Zahlen</h2>
+      <p>Tritt ein Ergebnis bei n Durchführungen H-mal ein, ist H die <b>absolute</b> und <span class="f">h = H : n</span> die <b>relative Häufigkeit</b> (0 ≤ h ≤ 1).</p>
+      <figure>[[FIG1]]</figure>
+      <p class="bu">600 Würfe eines fairen Würfels (gezeichnet ab n = 20): Die relative Häufigkeit der Sechs pendelt sich bei 1/6 ein.</p>
+      <p><b>Gesetz der großen Zahlen:</b> Mit wachsendem n stabilisiert sich h um einen festen Wert — die <b>Wahrscheinlichkeit</b> P. Für kleine n sind große Abweichungen normal.</p>
+    </div>
+
+    <div class="box merk">
+      <h2>Ereignis, Gegenereignis, Summenregel</h2>
+      <p>Ein <b>Ereignis</b> E ist eine Teilmenge von Ω; es tritt ein, wenn das Ergebnis in E liegt. Das <b>Gegenereignis</b> Ē enthält alle übrigen Ergebnisse.</p>
+      <p class="zentral f gross">P(E) = Summe der P(ω) mit ω ∈ E</p>
+      <p class="zentral f gross">P(Ē) = 1 − P(E)</p>
+      <p>Es gilt 0 ≤ P(E) ≤ 1, P(Ω) = 1 (sicheres Ereignis) und P(∅) = 0 (unmögliches Ereignis).</p>
+      <div class="rechnung">
+        <div class="schritt"><b>Bsp.</b><span>Glücksrad Rot 15 %, Blau 25 %, Grün 35 %, Gelb 25 %.<br>
+          P(„Grün oder Gelb“) = 0,35 + 0,25 = <b>0,6</b>; &nbsp; P(„nicht Rot“) = 1 − 0,15 = <b>0,85</b></span></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Laplace-Experiment</h2>
+      <p>Sind <b>alle</b> Ergebnisse gleich wahrscheinlich, heißt das Experiment <b>Laplace-Experiment</b>. Dann gilt:</p>
+      <p class="zentral f gross">P(E) = <span class="bruch"><span class="z">|E|</span><span>|Ω|</span></span> = <span class="bruch"><span class="z">Anzahl der günstigen Ergebnisse</span><span>Anzahl aller Ergebnisse</span></span></p>
+      <div class="rechnung">
+        <div class="schritt"><b>Bsp.</b><span>Zwei Würfel, E: „Augensumme 7“ = {(1|6); (2|5); (3|4); (4|3); (5|2); (6|1)}.<br>P(E) = 6 : 36 = <b>1/6</b></span></div>
+      </div>
+      <p style="margin-top:0.8mm">Die Augensumme selbst ist <b>kein</b> Laplace-Experiment: 7 kommt sechsmal vor, 2 nur einmal.</p>
+    </div>
+
+    <div class="box merk wide">
+      <h2>Mehrstufige Experimente — die Pfadregeln</h2>
+      <div class="zwei">
+        <div>
+          <p><b>1. Pfadregel (Produktregel):</b> Die Wahrscheinlichkeit eines Pfades ist das <b>Produkt</b> der Wahrscheinlichkeiten entlang des Pfades.</p>
+          <p><b>2. Pfadregel (Summenregel):</b> Die Wahrscheinlichkeit eines Ereignisses ist die <b>Summe</b> der Wahrscheinlichkeiten seiner Pfade.</p>
+          <p>Probe: Die Äste an jedem Knoten ergeben 1, alle Pfade zusammen ebenfalls 1.</p>
+          <figure>[[FIG2]]</figure>
+          <p class="bu">Urne mit 4 roten und 6 blauen Kugeln, zweimal ziehen <b>mit</b> Zurücklegen.</p>
+        </div>
+        <div>
+          <figure class="m62">[[FIG3]]</figure>
+          <p class="bu"><b>Warum multiplizieren?</b> Im Flächenmodell ist jeder Pfad ein Rechteck: Breite = erster Ast, Höhe = zweiter Ast, Fläche = Pfadwahrscheinlichkeit. Kräftig: zweite Kugel rot. Die vier Rechtecke füllen das Einheitsquadrat — die Pfade ergeben zusammen 1.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik MSS 13 · Wahrscheinlichkeitsrechnung · Seite 1 von 2</p>
+</div>
+
+<!-- ===================== Seite 2 ===================== -->
+<div class="page">
+  <h1>Abhängige Stufen: Baumdiagramm und Vierfeldertafel<span class="klein">Ziehen ohne Zurücklegen — Baum ⇄ Tafel — Musterrechnungen</span></h1>
+  <div class="grid">
+
+    <div class="box wide">
+      <h2>Ohne Zurücklegen: die zweite Stufe hängt von der ersten ab</h2>
+      <div class="zwei">
+        <div>
+          <figure>[[FIG4]]</figure>
+          <p class="bu">Nach einer roten Kugel liegen noch 3 rote von 9 Kugeln in der Urne, nach einer blauen noch 4 rote von 9.</p>
+        </div>
+        <div>
+          <p>Die <b>Vierfeldertafel</b> enthält die vier Pfadwahrscheinlichkeiten und ihre Summen. Zeilen: erste Stufe, Spalten: zweite Stufe.</p>
+          [[FIG5]]
+          <p class="bu">„Genau eine rote Kugel“ = die beiden fett gesetzten Zellen: 4/15 + 4/15 = 8/15.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box merk">
+      <h2>Baum ⇄ Vierfeldertafel</h2>
+      <div class="schritt"><b>→</b><span><b>Baum zur Tafel:</b> multiplizieren. Jede Zelle ist ein Pfad: <span class="f">P(A ∩ B) = P(A) · Ast von A nach B</span>.</span></div>
+      <div class="schritt"><b>←</b><span><b>Tafel zum Baum:</b> dividieren. Erste Stufe = Randsumme; zweiter Ast = Zelle : Randsumme ihrer Zeile.</span></div>
+      <p style="margin-top:0.8mm">Eine Vierfeldertafel ist mit <b>drei</b> passenden Angaben (plus Gesamtzahl) vollständig bestimmt — der Rest folgt aus den Summen.</p>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 1 — mindestens eine</h2>
+      <p><b>Gegeben:</b> Urne mit 4 roten und 6 blauen Kugeln, zweimal ohne Zurücklegen. Wie wahrscheinlich ist mindestens eine rote Kugel?</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>Gegenereignis: keine rote = blau, blau.</span></div>
+        <div class="schritt"><b>2.</b><span><span class="f">P(blau, blau) = 6/10 · 5/9 = 1/3</span></span></div>
+        <div class="schritt"><b>3.</b><span><span class="f">P(mindestens eine rote) = 1 − 1/3 = <b>2/3</b></span></span></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 2 — Tafel mit Anzahlen</h2>
+      <p><b>Gegeben:</b> 200 Befragte, 120 Mädchen, 90 fahren mit dem Rad, 50 Mädchen fahren mit dem Rad.</p>
+      [[FIG6]]
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>Jungen mit Rad: 90 − 50 = 40; Jungen ohne Rad: 80 − 40 = 40.</span></div>
+        <div class="schritt"><b>2.</b><span>Ein Junge fährt mit Wahrscheinlichkeit <span class="f">40 : 80 = <b>0,5</b></span> mit dem Rad, ein Mädchen mit <span class="f">50 : 120 ≈ 0,417</span>.</span></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 3 — von der Tafel zum Baum</h2>
+      <p><b>Gegeben:</b> die Tafel aus Musterrechnung 2. Baum mit erster Stufe „Mädchen / Junge“:</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>Erste Stufe: <span class="f">120 : 200 = 0,6</span> und <span class="f">80 : 200 = 0,4</span>.</span></div>
+        <div class="schritt"><b>2.</b><span>Zweite Stufe nach „Mädchen“: <span class="f">50 : 120 ≈ 0,417</span> und <span class="f">70 : 120 ≈ 0,583</span>.</span></div>
+        <div class="schritt"><b>3.</b><span>Probe: <span class="f">0,6 · 50/120 = 0,25 = 50 : 200</span> ✓</span></div>
+      </div>
+    </div>
+
+    <div class="box warn wide">
+      <h2>Typische Fehler</h2>
+      <ul>
+        <li><b>Entlang eines Pfades addiert</b> statt multipliziert — „und nacheinander“ heißt multiplizieren.</li>
+        <li><b>Laplace angenommen, wo keines ist:</b> Die Augensummen 2 bis 12 sind nicht gleich wahrscheinlich.</li>
+        <li><b>Ohne Zurücklegen die Urne nicht verkleinert:</b> In der zweiten Stufe fehlt eine Kugel — im Zähler <i>und</i> im Nenner.</li>
+        <li><b>Zelle und Ast verwechselt:</b> In der Tafel stehen Pfade; an die Äste der zweiten Stufe gehört Zelle : Randsumme.</li>
+        <li><b>„Mindestens eine“ durch Aufzählen</b> — über das Gegenereignis „keine“ ist es kürzer und sicherer.</li>
+      </ul>
+    </div>
+
+    <div class="box" style="border-style:dashed;background:#f7f8fa">
+      <h2 style="color:#5b6570">Ausblick</h2>
+      <p>Die Äste der zweiten Stufe sind <b>bedingte Wahrscheinlichkeiten</b> — Wahrscheinlichkeiten unter der Bedingung, dass die erste Stufe schon feststeht. Mit ihnen geht es in <b>Thema 2</b> weiter.</p>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik MSS 13 · Wahrscheinlichkeitsrechnung · Seite 2 von 2</p>
+</div>
+
+</body>
+</html>

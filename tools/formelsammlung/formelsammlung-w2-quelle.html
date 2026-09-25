@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Formelsammlung — Bedingte Wahrscheinlichkeit</title>
+<style>
+  @page { size: A4 landscape; margin: 5.5mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    color: #1f2328;
+    font-size: 8.1px;
+    line-height: 1.33;
+  }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  h1 {
+    font-size: 12.4px; margin: 0 0 1.4mm; padding-bottom: 0.8mm;
+    border-bottom: 1.6px solid #1d4ed8; color: #1d4ed8; letter-spacing: 0.01em;
+  }
+  h1 .klein { font-size: 8.4px; font-weight: 400; color: #5b6570; float: right; margin-top: 2px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2.1mm; align-items: start; }
+  .box {
+    border: 0.9px solid #c9d0d8; border-radius: 2mm; padding: 1.5mm 1.8mm;
+    background: #ffffff; break-inside: avoid;
+  }
+  .box.wide { grid-column: span 2; }
+  .box.full { grid-column: span 3; }
+  .box h2 {
+    font-size: 8.6px; margin: 0 0 1.1mm; color: #1d4ed8;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .box.warn { border-color: #e3b341; background: #fffaf0; }
+  .box.warn h2 { color: #8a5b0a; }
+  .box.merk { border-color: #7ec699; background: #f4fbf6; }
+  .box.merk h2 { color: #0f5132; }
+  p { margin: 0 0 0.9mm; }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 0.9mm; padding-left: 3.4mm; }
+  li { margin-bottom: 0.4mm; }
+  .f { font-family: "Cambria Math", Cambria, Georgia, serif; font-size: 9.2px; }
+  .zentral { text-align: center; }
+  .gross { font-size: 10.4px; font-weight: 700; }
+  .al { color: #157347; font-weight: 700; }
+  .be { color: #b3650a; font-weight: 700; }
+  .ga { color: #b3261e; font-weight: 700; }
+  .kr { color: #1d4ed8; font-weight: 700; }
+  .ra { color: #6d28d9; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { border: 0.7px solid #c9d0d8; padding: 0.5mm 0.6mm; text-align: center; }
+  th { background: #eef2f6; font-weight: 700; font-size: 7.4px; }
+  td { font-size: 7.6px; }
+  td.b { font-weight: 700; }
+  td.l { text-align: left; }
+  figure { margin: 0.8mm 0 0; }
+  figure svg { display: block; width: 100%; height: auto; }
+  .m70 { max-width: 70%; margin: 0.8mm auto 0; }
+  .m80 { max-width: 80%; margin: 0.8mm auto 0; }
+  .m88 { max-width: 88%; margin: 0.8mm auto 0; }
+  .m62 { max-width: 62%; margin: 0.8mm auto 0; }
+  .m72 { max-width: 72%; margin: 0.8mm auto 0; }
+  .m55 { max-width: 55%; margin: 0.8mm auto 0; }
+  .bu { font-size: 7.1px; color: #5b6570; text-align: center; margin-top: 0.5mm; }
+  .rechnung { background: #f4f6f8; border-radius: 1.2mm; padding: 1mm 1.2mm; margin: 0.8mm 0 0; }
+  .schritt { display: flex; gap: 1.2mm; margin-bottom: 0.5mm; }
+  .schritt b { flex: 0 0 3.6mm; color: #1d4ed8; }
+  .schritt:last-child { margin-bottom: 0; }
+  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm; align-items: start; }
+  .bruch { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; margin: 0 0.3mm; }
+  .bruch .z { border-bottom: 0.8px solid currentColor; padding: 0 0.6mm; }
+  .binom { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; padding: 0 0.9mm; margin: 0 0.3mm; border-left: 0.9px solid currentColor; border-right: 0.9px solid currentColor; border-radius: 45% / 50%; font-size: 92%; }
+  .tr { color: #157347; font-weight: 700; }
+  .ni { color: #b3650a; font-weight: 700; }
+  .fu { color: #5b6570; font-size: 7.3px; }
+  .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ===================== Seite 1 ===================== -->
+<div class="page">
+  <h1>Bedingte Wahrscheinlichkeit<span class="klein">MSS 13 · Wahrscheinlichkeitsrechnung, Thema 2 · Schreibweise Bigalke/Köhler, <span class="fu">grau: andere Bücher</span></span></h1>
+  <div class="grid">
+
+    <div class="box merk">
+      <h2>Definition</h2>
+      <p>Die Wahrscheinlichkeit von B <b>unter der Bedingung</b>, dass A schon eingetreten ist:</p>
+      <p class="zentral f gross">P<sub>A</sub>(B) = <span class="bruch"><span class="z">P(A ∩ B)</span><span>P(A)</span></span> &nbsp;&nbsp;(P(A) &gt; 0)</p>
+      <p class="zentral fu">auch üblich: P(B | A), „P von B gegeben A“</p>
+      <p>Umgestellt ergibt sich die <b>Pfadmultiplikationsregel</b> in allgemeiner Form:</p>
+      <p class="zentral f gross">P(A ∩ B) = P(A) · P<sub>A</sub>(B)</p>
+      <p>Die Bedingung steht <b>unten</b>. P<sub>A</sub>(B) und P<sub>B</sub>(A) haben denselben Zähler, aber verschiedene Nenner — sie sind fast nie gleich.</p>
+    </div>
+
+    <div class="box">
+      <h2>Am Baumdiagramm</h2>
+      <p>Die Äste der <b>zweiten Stufe</b> sind bedingte Wahrscheinlichkeiten: Am Ast von A nach B steht P<sub>A</sub>(B), am Ast von Ā nach B steht P<sub>Ā</sub>(B).</p>
+      <figure>[[FIG1]]</figure>
+      <p class="bu">P(A) = 0,4, P<sub>A</sub>(B) = 0,7, P<sub>Ā</sub>(B) = 0,3. An den Blättern stehen Pfade, also Schnitte wie P(A ∩ B).</p>
+      <p class="zentral f">P(B) = P(A) · P<sub>A</sub>(B) + P(Ā) · P<sub>Ā</sub>(B) = 0,28 + 0,18 = 0,46</p>
+    </div>
+
+    <div class="box">
+      <h2>Reduzierte Ergebnismenge</h2>
+      <p>Bei einem Laplace-Experiment ersetzt die Bedingung die Ergebnismenge: Man zählt nur noch <b>innerhalb von A</b>.</p>
+      <p class="zentral f gross">P<sub>A</sub>(B) = <span class="bruch"><span class="z">|A ∩ B|</span><span>|A|</span></span></p>
+      <figure>[[FIG2]]</figure>
+      <p class="bu">Würfel: Man erfährt „gerade“. Von {2; 4; 6} sind 4 und 6 größer als 3 — also 2/3 statt 3/6 ohne Vorwissen.</p>
+    </div>
+
+    <div class="box wide">
+      <h2>Im Flächenmodell: Die Bedingung wird die neue „Welt“</h2>
+      <div class="zwei">
+        <div>
+          <figure class="m62">[[FIG3]]</figure>
+          <p class="bu"><span class="f">P<sub>A</sub>(B) = 0,28 : 0,4 = <b>0,7</b></span> — die Höhe in der Spalte A.</p>
+        </div>
+        <div>
+          <figure class="m62">[[FIG4]]</figure>
+          <p class="bu"><span class="f">P<sub>B</sub>(A) = 0,28 : (0,28 + 0,18) ≈ <b>0,6087</b></span> — der Anteil von A am Streifen B.</p>
+        </div>
+      </div>
+      <p>Dasselbe Rechteck A ∩ B, zwei verschiedene Welten: Unter A zählt die Spalte, unter B der Streifen über beide Spalten.</p>
+    </div>
+
+    <div class="box merk">
+      <h2>Drei Wege — eine Zahl</h2>
+      <table>
+        <tr><th>Darstellung</th><th>P<sub>A</sub>(B) ist …</th></tr>
+        <tr><td class="l">Baum</td><td class="l">der Ast von A nach B</td></tr>
+        <tr><td class="l">Vierfeldertafel</td><td class="l">Zelle A ∩ B : Summe der Zeile A</td></tr>
+        <tr><td class="l">Laplace</td><td class="l">|A ∩ B| : |A|</td></tr>
+        <tr><td class="l">Flächenmodell</td><td class="l">Höhe von B in der Spalte A</td></tr>
+      </table>
+      <p style="margin-top:0.8mm">Frage vor jeder Rechnung: <b>Was weiß ich schon?</b> Das ist die Bedingung und gehört in den Nenner.</p>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik MSS 13 · Wahrscheinlichkeitsrechnung · Seite 1 von 2</p>
+</div>
+
+<!-- ===================== Seite 2 ===================== -->
+<div class="page">
+  <h1>Bedingte Wahrscheinlichkeit aus der Vierfeldertafel<span class="klein">Zeile oder Spalte? — Musterrechnungen — Stolperstelle</span></h1>
+  <div class="grid">
+
+    <div class="box wide">
+      <h2>Zeile oder Spalte als Bedingung</h2>
+      <div class="zwei">
+        <div>
+          <p><b>Gegeben:</b> 400 Befragte, Rauchen und Husten.</p>
+          [[FIG5]]
+        </div>
+        <div>
+          <div class="rechnung">
+            <div class="schritt"><b>Z</b><span>Bedingung „Raucher“ (Zeile): <span class="f">P<sub>R</sub>(H) = 36 : 120 = <b>0,3</b></span></span></div>
+            <div class="schritt"><b>S</b><span>Bedingung „Husten“ (Spalte): <span class="f">P<sub>H</sub>(R) = 36 : 60 = <b>0,6</b></span></span></div>
+            <div class="schritt"><b>—</b><span>Ohne Bedingung: <span class="f">P(R ∩ H) = 36 : 400 = 0,09</span></span></div>
+          </div>
+          <p style="margin-top:0.8mm">„30 % der <b>Raucher</b> husten“ und „60 % der <b>Hustenden</b> rauchen“ sind zwei verschiedene Aussagen über dieselbe Zelle.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 1 — aus der Formel</h2>
+      <p><b>Gegeben:</b> P(A) = 0,3 und P(A ∩ B) = 0,12.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span><span class="f">P<sub>A</sub>(B) = 0,12 : 0,3 = <b>0,4</b></span></span></div>
+        <div class="schritt"><b>2.</b><span>Gegenast: <span class="f">P<sub>A</sub>(B̄) = 1 − 0,4 = 0,6</span> — die Äste an A ergeben 1.</span></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 2 — zwei Würfel mit Vorwissen</h2>
+      <p><b>Gegeben:</b> Die Augensumme ist mindestens 9. Mit welcher Wahrscheinlichkeit ist mindestens eine 6 dabei?</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>Neue Welt: (3|6), (4|5), (4|6), (5|4), (5|5), (5|6), (6|3), (6|4), (6|5), (6|6) — <b>10</b> Paare.</span></div>
+        <div class="schritt"><b>2.</b><span>Davon mit einer 6: <b>7</b> Paare.</span></div>
+        <div class="schritt"><b>3.</b><span><span class="f">P = 7/10 = <b>0,7</b></span>; ohne Vorwissen wären es nur 11/36 ≈ 0,31.</span></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 3 — der fehlende Ast</h2>
+      <p><b>Gegeben:</b> P(A) = 0,4, P<sub>A</sub>(B) = 0,7 und P(B) = 0,46. Gesucht: P<sub>Ā</sub>(B).</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span><span class="f">P(Ā ∩ B) = P(B) − P(A ∩ B) = 0,46 − 0,28 = 0,18</span></span></div>
+        <div class="schritt"><b>2.</b><span><span class="f">P<sub>Ā</sub>(B) = 0,18 : 0,6 = <b>0,3</b></span></span></div>
+        <div class="schritt"><b>3.</b><span>Probe: <span class="f">0,4 · 0,7 + 0,6 · 0,3 = 0,46</span> ✓</span></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 4 — Anteil oder Anteil?</h2>
+      <p><b>Gegeben:</b> 25 % der Erwachsenen rauchen. 10 % <b>aller</b> Erwachsenen rauchen und husten. Wie viel Prozent der Raucher husten?</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>„aller“: P(R ∩ H) = 0,10, nicht P<sub>R</sub>(H).</span></div>
+        <div class="schritt"><b>2.</b><span><span class="f">P<sub>R</sub>(H) = 0,10 : 0,25 = <b>0,4</b></span> — 40 % der Raucher.</span></div>
+      </div>
+    </div>
+
+    <div class="box warn wide">
+      <h2>Stolperstelle: Baum aus der Tafel</h2>
+      <div class="zwei">
+        <div>
+          <figure>[[FIG6]]</figure>
+          <p class="bu"><b>Falsch:</b> Leon schreibt die Zellen 36/400 und 84/400 an die Äste. Am Knoten R ergeben sie 120/400 = 0,3 statt 1.</p>
+        </div>
+        <div>
+          <figure>[[FIG7]]</figure>
+          <p class="bu"><b>Richtig:</b> Zelle : Zeilensumme — 36/120 = 0,3 und 84/120 = 0,7. Probe: 120/400 · 36/120 = 36/400 ✓</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box" style="border-style:dashed;background:#f7f8fa">
+      <h2 style="color:#5b6570">Ausblick</h2>
+      <p>Aus P<sub>A</sub>(B) die umgekehrte Richtung P<sub>B</sub>(A) zu gewinnen, heißt <b>Baumdiagramm umdrehen</b> (Thema 3). Ändert die Bedingung gar nichts, P<sub>A</sub>(B) = P(B), sind A und B <b>unabhängig</b> (Thema 4).</p>
+    </div>
+
+    <div class="box warn full">
+      <h2>Typische Fehler</h2>
+      <ul>
+        <li><b>P<sub>A</sub>(B) mit P(A ∩ B) verwechselt:</b> Der Ast ist nicht der Pfad. „… von allen“ ist ein Schnitt, „… von den A“ eine bedingte Wahrscheinlichkeit.</li>
+        <li><b>Bedingung und Ereignis vertauscht:</b> P<sub>A</sub>(B) statt P<sub>B</sub>(A) — der Nenner ist das, was man schon weiß.</li>
+        <li><b>Den Baum aus der Tafel falsch gebaut</b> (Leons Fehler): Tafelzellen direkt an die zweiten Äste geschrieben. An jedem Knoten müssen die Äste 1 ergeben.</li>
+        <li><b>Bei der reduzierten Ergebnismenge durch |Ω| geteilt</b> statt durch |A|.</li>
+      </ul>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik MSS 13 · Wahrscheinlichkeitsrechnung · Seite 2 von 2</p>
+</div>
+
+</body>
+</html>

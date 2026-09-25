@@ -6,6 +6,9 @@
 
 "use strict";
 
+import { mountUebungsaufgaben } from "../../../aufgaben.js?v=2";
+import { AUFGABEN, parseZahl } from "./aufgaben-unabhaengig.js?v=1";
+
 // ---------- Helfer ----------
 
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -415,13 +418,14 @@ function initIndependenceVft(mountId, explainId, { rowLabel, colLabel, rows, col
       pAB = v / grand,
       pApB = pA * pB;
     const unabhaengig = Math.abs(pAB - pApB) < 0.005;
+    const a = r.label, b = c.label;
     explainBox.innerHTML =
-      `P(${aName}) = ${rowSum(r)}/${grand} = ${num(pA, 3)} &nbsp;&nbsp; P(${bName}) = ${colSum(c.key)}/${grand} = ${num(pB, 3)}<br>` +
-      `P(${aName}) · P(${bName}) = ${num(pA, 3)} · ${num(pB, 3)} ≈ <strong>${num(pApB, 3)}</strong><br>` +
-      `P(${aName} ∩ ${bName}) = ${v}/${grand} = <strong>${num(pAB, 3)}</strong><br>` +
+      `P(${a}) = ${rowSum(r)}/${grand} = ${num(pA, 3)} &nbsp;&nbsp; P(${b}) = ${colSum(c.key)}/${grand} = ${num(pB, 3)}<br>` +
+      `P(${a}) · P(${b}) = ${num(pA, 3)} · ${num(pB, 3)} ≈ <strong>${num(pApB, 3)}</strong><br>` +
+      `P(${a} ∩ ${b}) = ${v}/${grand} ≈ <strong>${num(pAB, 3)}</strong><br>` +
       (unabhaengig
-        ? `<span class="farbe-gruen">✓ P(A∩B) ≈ P(A)·P(B) — die Ereignisse sind (in dieser Zelle) unabhängig.</span>`
-        : `<span class="farbe-rot">✗ P(A∩B) ≠ P(A)·P(B) — die Ereignisse sind abhängig (korreliert).</span>`);
+        ? `<span class="farbe-gruen">✓ Beide Werte stimmen überein — „${a}“ und „${b}“ sind unabhängig.</span>`
+        : `<span class="farbe-rot">✗ Die Werte weichen um ${num(Math.abs(pAB - pApB), 3)} voneinander ab — „${a}“ und „${b}“ sind abhängig (korreliert).</span>`);
   }
 }
 
@@ -533,7 +537,7 @@ function initKorrelationKausalitaet() {
 // ================= 6. Übungsaufgaben =================
 
 function initExercises() {
-  const mount = document.getElementById("exercises-mount");
+  const mount = document.getElementById("ausfuell-mount");
 
   // Aufgabe 1 (leicht) — Abhängigkeit direkt aus einer Vierfeldertafel ablesen.
   mountExercise(mount, {
@@ -641,56 +645,161 @@ function initExercises() {
   });
 }
 
-// ================= Quizze =================
+// ================= 2b. Unabhängigkeit im Flächenmodell =================
+//
+// Unabhängig heißt: Die Bedingung ändert nichts, P_A(B) = P_Ā(B). Im Flächenmodell liegen die
+// waagerechten Schnitte dann in beiden Spalten auf DERSELBEN Höhe — der untere Streifen B ist
+// ein durchgehendes Band, und seine Fläche P(B) ist genau diese Höhe. Dann ist das Rechteck
+// A ∩ B einfach Breite · Höhe = P(A) · P(B): die Multiplikationsregel.
+//
+// Sobald die Schnitte verschieden hoch liegen, weicht P(A ∩ B) von P(A) · P(B) ab — und zwar um
+// d = P(A) · P(Ā) · (P_A(B) − P_Ā(B)). Die Bilanz rechnet d aus den Reglerwerten.
 
-function initQuizzes() {
-  mountQuiz(document.getElementById("quiz-urne"), {
+const UM_SEITE = 300, UM_RAND = 44;
+
+function renderUnabhModell() {
+  const a = Number(document.getElementById("um-a").value) / 100;
+  const x = Number(document.getElementById("um-x").value) / 100;
+  const y = Number(document.getElementById("um-y").value) / 100;
+  document.getElementById("um-a-anzeige").textContent = Math.round(a * 100) + " %";
+  document.getElementById("um-x-anzeige").textContent = Math.round(x * 100) + " %";
+  document.getElementById("um-y-anzeige").textContent = Math.round(y * 100) + " %";
+  const W = UM_SEITE + 2 * UM_RAND + 30, H = UM_SEITE + 2 * UM_RAND;
+  const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, width: W, height: H, class: "fm-svg", role: "img", "aria-label": "Flächenmodell zur Unabhängigkeit" });
+  const x0 = UM_RAND, y0 = UM_RAND, s = UM_SEITE;
+  const wA = s * a;
+  const teile = [
+    { k: "AB", x: x0, y: y0 + s - s * x, w: wA, h: s * x, klasse: "fm-a-b" },
+    { k: "ABq", x: x0, y: y0, w: wA, h: s - s * x, klasse: "fm-a-nb" },
+    { k: "AqB", x: x0 + wA, y: y0 + s - s * y, w: s - wA, h: s * y, klasse: "fm-na-b" },
+    { k: "AqBq", x: x0 + wA, y: y0, w: s - wA, h: s - s * y, klasse: "fm-na-nb" },
+  ];
+  for (const t of teile) {
+    if (t.w < 1e-9 || t.h < 1e-9) continue;
+    svg.appendChild(svgEl("rect", { x: t.x.toFixed(2), y: t.y.toFixed(2), width: t.w.toFixed(2), height: t.h.toFixed(2), class: t.klasse, "data-teil": t.k }));
+  }
+  // Die waagerechten Schnitte — auf gleicher Höhe genau dann, wenn unabhängig.
+  svg.appendChild(svgEl("line", { x1: x0, y1: (y0 + s - s * x).toFixed(2), x2: (x0 + wA).toFixed(2), y2: (y0 + s - s * x).toFixed(2), class: "fm-trenn-h", "data-schnitt": "A" }));
+  svg.appendChild(svgEl("line", { x1: (x0 + wA).toFixed(2), y1: (y0 + s - s * y).toFixed(2), x2: x0 + s, y2: (y0 + s - s * y).toFixed(2), class: "fm-trenn-h", "data-schnitt": "Aq" }));
+  svg.appendChild(svgEl("line", { x1: (x0 + wA).toFixed(2), y1: y0, x2: (x0 + wA).toFixed(2), y2: y0 + s, class: "fm-trenn" }));
+  svg.appendChild(svgEl("rect", { x: x0, y: y0, width: s, height: s, class: "fm-rahmen", "data-rolle": "quadrat" }));
+  const t = (xx, yy, inhalt, k = "fm-text", anker = "middle") => {
+    const e = svgEl("text", { x: xx.toFixed(1), y: yy.toFixed(1), class: k, "text-anchor": anker });
+    e.textContent = inhalt;
+    svg.appendChild(e);
+  };
+  t(x0 + wA / 2, y0 + s + 18, "A");
+  t(x0 + wA + (s - wA) / 2, y0 + s + 18, "Ā");
+  t(x0 + s + 8, y0 + s - (s * y) / 2 + 4, "B", "fm-text", "start");
+  const mount = document.getElementById("um-mount");
+  mount.innerHTML = "";
+  mount.appendChild(svg);
+
+  const ab = a * x, b = a * x + (1 - a) * y, d = ab - a * b;
+  const gleich = Math.abs(x - y) < 1e-9;
+  // Vor der Ausgabe runden (sonst „−0“) und das echte Minuszeichen setzen; ein negativer Faktor
+  // steht in Klammern — „0,9 · 0,1 · −0,9“ wäre keine saubere Schreibweise.
+  const n = (v) => {
+    const g = Math.round(v * 1e4) / 1e4;
+    return num(g === 0 ? 0 : g, 4).replace("-", "−");
+  };
+  const faktor = (v) => (Math.round(v * 1e4) < 0 ? `(${n(v)})` : n(v));
+  document.getElementById("um-bilanz").innerHTML =
+    `P(A ∩ B) = ${n(a)} · ${n(x)} = <span class="wa">${n(ab)}</span> &nbsp;·&nbsp; P(B) = ${n(ab)} + ${n((1 - a) * y)} = ${n(b)} &nbsp;·&nbsp; P(A) · P(B) = <span class="wc">${n(a * b)}</span><br>` +
+    `d = P(A ∩ B) − P(A) · P(B) = <strong>${n(d)}</strong> = P(A) · P(Ā) · (P<sub>A</sub>(B) − P<sub>Ā</sub>(B)) = ${n(a)} · ${n(1 - a)} · ${faktor(x - y)}`;
+  document.getElementById("um-text").textContent = gleich
+    ? "Beide Schnitte liegen auf derselben Höhe: B ist ein durchgehender Streifen, und das Wissen um A ändert nichts. A und B sind unabhängig — und P(A ∩ B) = P(A) · P(B) ist einfach Breite mal Höhe."
+    : `Die Schnitte liegen verschieden hoch: Unter A ist B ${x > y ? "häufiger" : "seltener"} als unter Ā. A und B sind abhängig, und P(A ∩ B) weicht um ${n(Math.abs(d))} von P(A) · P(B) ab.`;
+}
+
+// ================= Quizze =================
+//
+// Die richtige Antwort steht bewusst an wechselnder Stelle.
+const QUIZZE = {
+  "quiz-urne": {
     q: "Woran erkennt man im Baumdiagramm, ob zwei Ereignisse unabhängig sind?",
     options: [
       "Die erste Stufe hat gleich große Äste.",
-      "Die beiden Teilbäume der zweiten Stufe sind identisch.",
       "Der Baum hat genau vier Blätter.",
       "Alle Pfadwahrscheinlichkeiten sind gleich groß.",
+      "Die beiden Teilbäume der zweiten Stufe sind identisch.",
     ],
-    correct: 1,
-    explain: "Sind die zweiten Stufen nach jedem Ast der ersten Stufe gleich, beeinflusst das Ergebnis der ersten Stufe die zweite nicht — das ist Unabhängigkeit.",
-  });
-
-  mountQuiz(document.getElementById("quiz-multiplikationsregel"), {
+    correct: 3,
+    explain: "Stehen nach jedem Ast der ersten Stufe dieselben Wahrscheinlichkeiten, beeinflusst die erste Stufe die zweite nicht. Im Flächenmodell liegen die waagerechten Schnitte dann auf gleicher Höhe — wie beim Ziehen mit Zurücklegen.",
+  },
+  "quiz-multiplikationsregel": {
     q: "Wie prüft man mithilfe der Multiplikationsregel, ob A und B unabhängig sind?",
     options: [
-      "P(A∩B) mit P(A)·P(B) vergleichen — stimmen sie überein, sind A und B unabhängig.",
       "P(A) und P(B) addieren und mit 1 vergleichen.",
+      "P(A ∩ B) mit P(A) · P(B) vergleichen — stimmen sie überein, sind A und B unabhängig.",
       "Prüfen, ob P(A) = P(B) gilt.",
       "Die Randsummen der Vierfeldertafel vergleichen.",
     ],
-    correct: 0,
-    explain: "A und B sind genau dann stochastisch unabhängig, wenn P(A∩B) = P(A)·P(B) gilt.",
-  });
-
-  mountQuiz(document.getElementById("quiz-korrelation"), {
+    correct: 1,
+    explain: "Genau dann unabhängig, wenn P(A ∩ B) = P(A) · P(B). Der Unterschied d = P(A ∩ B) − P(A) · P(B) misst sogar, wie weit A und B davon entfernt sind; im Flächenmodell ist d genau dann 0, wenn die Schnitte gleich hoch liegen.",
+  },
+  "quiz-korrelation": {
     q: "Was folgt korrekt aus einer nachgewiesenen Korrelation zwischen zwei Merkmalen?",
     options: [
-      "Das eine Merkmal verursacht zwangsläufig das andere.",
       "Es besteht ein statistischer Zusammenhang, aber die Ursache muss nicht direkt zwischen den Merkmalen liegen.",
+      "Das eine Merkmal verursacht zwangsläufig das andere.",
       "Die Merkmale sind unabhängig.",
       "Man kann daraus überhaupt nichts schließen.",
     ],
-    correct: 1,
-    explain: "Korrelation zeigt einen statistischen Zusammenhang — die Ursache kann auch in einem gemeinsamen weiteren Merkmal liegen (Kausalität ist nicht automatisch belegt).",
-  });
-
-  mountQuiz(document.getElementById("quiz-stolperstelle"), {
+    correct: 0,
+    explain: "Korrelation heißt: stochastisch abhängig. Die Ursache kann ein drittes Merkmal sein — Schal und Erkältung hängen beide vom kalten Wetter ab. Um Kausalität zu zeigen, braucht man mehr als eine Vierfeldertafel, etwa ein Experiment.",
+  },
+  "quiz-stolperstelle": {
     q: "Was ist der Fehler in Eriks Argumentation?",
     options: [
       "Die Prozentzahlen 47 % und 61 % sind falsch umgerechnet.",
-      "Er hat die Multiplikationsregel P(A∩B) = P(A)·P(B) angewendet, obwohl die Unabhängigkeit von Geschlecht und Haarlänge nirgends gezeigt wurde.",
       "Man darf Prozentwerte grundsätzlich nicht multiplizieren.",
+      "Er hat die Multiplikationsregel angewendet, obwohl die Unabhängigkeit von Geschlecht und Haarlänge nirgends gezeigt wurde.",
       "„Männlich“ und „kurze Haare“ sind gar keine Ereignisse.",
     ],
-    correct: 1,
-    explain: "Die Multiplikationsregel P(A∩B) = P(A)·P(B) gilt nur bei nachgewiesener Unabhängigkeit — die wurde hier nicht gezeigt, also ist die Rechnung unbegründet.",
+    correct: 2,
+    explain: "Die Gegenwahrscheinlichkeiten 47 % und 61 % stimmen. Aber P(A ∩ B) = P(A) · P(B) gilt nur bei Unabhängigkeit — ohne sie braucht man eine Angabe über das gemeinsame Auftreten, etwa den Anteil der Frauen mit langen Haaren, und rechnet über die Vierfeldertafel.",
+  },
+};
+
+function initQuizzes() {
+  for (const [id, def] of Object.entries(QUIZZE)) mountQuiz(document.getElementById(id), def);
+}
+
+// ================= Selbsteinschätzung =================
+const SE_PUNKTE = [
+  ["sec-urne-unabhaengig", "Ich kann an einem Baum erkennen, ob zwei Ereignisse unabhängig sind."],
+  ["sec-multiplikationsregel", "Ich kann mit der Multiplikationsregel prüfen, ob A und B unabhängig sind, und das im Flächenmodell deuten."],
+  ["sec-korrelation-kausalitaet", "Ich kann Korrelation und Kausalität unterscheiden."],
+  ["sec-stolperstelle", "Ich wende die Multiplikationsregel nur an, wenn die Unabhängigkeit gezeigt oder vorausgesetzt ist."],
+];
+
+const SE_SCHLUESSEL = "uplant-mss13-unabhaengig-selbsteinschaetzung";
+function leseSE() {
+  try { return JSON.parse(localStorage.getItem(SE_SCHLUESSEL) || "{}"); } catch { return {}; }
+}
+function schreibeSE(d) {
+  try { localStorage.setItem(SE_SCHLUESSEL, JSON.stringify(d)); } catch { /* ohne Speicher geht es auch */ }
+}
+function renderSelbsteinschaetzung() {
+  const liste = document.getElementById("se-liste");
+  const stand = leseSE();
+  liste.innerHTML = "";
+  SE_PUNKTE.forEach(([id, text]) => {
+    const knoepfe = el("div", { class: "se-knoepfe", role: "group", "aria-label": text });
+    [["sicher", "😀", "sicher"], ["teils", "😐", "teilweise"], ["unsicher", "🤔", "noch unsicher"]].forEach(([wert, zeichen, name]) => {
+      const b = el("button", { type: "button", "aria-pressed": String(stand[id] === wert), title: name, "aria-label": name }, zeichen);
+      b.addEventListener("click", () => { const d = leseSE(); d[id] = wert; schreibeSE(d); renderSelbsteinschaetzung(); });
+      knoepfe.appendChild(b);
+    });
+    liste.appendChild(el("div", { class: "se-zeile" }, [el("span", { class: "se-text" }, text), knoepfe]));
   });
+  const unsicher = SE_PUNKTE.filter(([id]) => stand[id] === "unsicher");
+  const sicher = SE_PUNKTE.filter(([id]) => stand[id] === "sicher").length;
+  const aus = document.getElementById("se-auswertung");
+  if (!Object.keys(stand).length) aus.textContent = "Noch nichts angekreuzt.";
+  else if (unsicher.length) aus.innerHTML = `Wiederhole zuerst: ${unsicher.map(([id]) => `<a href="#${id}">${document.querySelector(`#${id} h2`).textContent}</a>`).join(", ")}. Danach passen die Übungsaufgaben auf den Stufen „einfach“ und „mittel“.`;
+  else aus.textContent = `${sicher} von ${SE_PUNKTE.length} Punkten sicher — probier dich an den Aufgaben auf den Stufen „schwierig“ und „komplex“.`;
 }
 
 // ================= Start =================
@@ -701,4 +810,12 @@ document.addEventListener("DOMContentLoaded", () => {
   initKorrelationKausalitaet();
   initExercises();
   initQuizzes();
+  ["um-a", "um-x", "um-y"].forEach((id) => {
+    const e = document.getElementById(id);
+    e.addEventListener("input", renderUnabhModell);
+    e.addEventListener("change", renderUnabhModell);
+  });
+  renderUnabhModell();   // nicht vergessen — sonst bleibt das Modell leer
+  renderSelbsteinschaetzung();
+  mountUebungsaufgaben(document.getElementById("exercises-mount"), AUFGABEN, { parse: parseZahl });
 });
