@@ -7,7 +7,7 @@ import * as GS from "./geo-svg.js?v=24";
 import { norm, sub } from "./geo-core.js?v=24";
 import { setupCanvasZoom } from "./canvas-zoom.js?v=24";
 import { setupFreeConstruction } from "./free-ui.js?v=24";
-import { FAELLE, LOESUNGSWORT, randomCaseTriangle, W, H } from "./raetsel-tasks.js?v=24";
+import { FAELLE, LOESUNGSWORT, randomCaseTriangle, W, H } from "./raetsel-tasks.js?v=25";
 
 const STORAGE_KEY = "uplant-geo-raetsel";
 const AMPEL = [

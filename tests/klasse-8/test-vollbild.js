@@ -25,9 +25,6 @@ const BASIS = "/mathematik/klasse-8/geometrie/";
 
 const SEITEN = [
   ["grundkonstruktionen.html", "#btn-zoom", "#geo-svg"],
-  ["mittelsenkrechte-umkreis.html", "#btn-zoom", "#geo-svg"],
-  ["winkelhalbierende-inkreis.html", "#btn-zoom", "#geo-svg"],
-  ["alle-linien.html", "#btn-zoom", "#geo-svg"],
   ["raetsel.html", "#btn-zoom", "#geo-svg"],
   ["satz-des-thales.html", "#btn-zoom", "#geo-svg"],
   ["satz-des-thales.html", "#tk-zoom", "#tk-svg"],

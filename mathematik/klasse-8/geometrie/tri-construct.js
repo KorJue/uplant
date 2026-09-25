@@ -1,7 +1,7 @@
 // Gemeinsames Modell für das freie Konstruieren am Dreieck: alle drei Mittelsenkrechten + Umkreis
-// bzw. alle drei Winkelhalbierenden + Inkreis. Genutzt von mittelsenkrechte-umkreis.js,
-// winkelhalbierende-inkreis.js und der dritten Phase der Grundkonstruktionen — Prüfung,
-// Einrastpunkte, Markierungen und Texte sind dadurch überall identisch.
+// bzw. alle drei Winkelhalbierenden + Inkreis. Genutzt von der dritten Phase der
+// Grundkonstruktionen, den Thales-Konstruktionen und dem Rätsel — Prüfung, Einrastpunkte,
+// Markierungen und Texte sind dadurch überall identisch.
 //
 // Kernbegriff ist die "analyse": Sie sucht zu jeder Teilkonstruktion die Kreise und Punkte, aus denen
 // sie tatsächlich entstanden ist. Daraus ergibt sich beides — die Prüfung ("was fehlt noch?") und die
