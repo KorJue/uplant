@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grenzwerte und Stetigkeit</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="../../../aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">MSS 11</a><span class="sep">/</span>
+  <a href="../index.html">01 Analysis</a><span class="sep">/</span>
+  2 Grenzwerte und Stetigkeit
+</nav>
+<header class="page-header">
+  <h1>Grenzwerte und Stetigkeit</h1>
+  <p>Ein Selbstlernpfad: Was tut eine Funktion, wenn x sehr groß wird — und was an einer Stelle, an der man nicht einfach einsetzen kann? Jeder Abschnitt leitet sein Ergebnis an einer beweglichen Darstellung her, rechnet es nach und endet mit einer Kontrollfrage. Am Schluss stehen sechzehn Übungsaufgaben auf vier Stufen, die du hier auf der Seite löst.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Die Funktion f(x) = (x² − 1)/(x − 1) ist an der Stelle 1 nicht definiert — man würde durch 0 teilen. Trotzdem hat ihr Graph dort kein Loch, in das man fallen könnte, sondern nur einen fehlenden Punkt: Kommt x der 1 nahe, kommt f(x) der 2 beliebig nahe. Solche Fragen beantwortet der <span class="term">Grenzwert einer Funktion</span>. Er ist das Werkzeug, mit dem später die Ableitung gebaut wird. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>den Grenzwert lim<sub>x→∞</sub> f(x) mit dem ε-Streifen erklären und eine <span class="term">waagerechte Asymptote</span> angeben</li>
+      <li>mit <span class="term">Testfolgen</span> untersuchen, was f an einer Stelle x₀ tut — auch von links und von rechts getrennt</li>
+      <li>Grenzwerte gebrochenrationaler Funktionen für x → ±∞ mit den <span class="term">Grenzwertsätzen</span> berechnen</li>
+      <li>entscheiden, ob eine Funktion an einer Stelle <span class="term">stetig</span> ist, und Parameter so wählen, dass sie es wird</li>
+      <li><span class="term">hebbare Definitionslücken</span> von <span class="term">Polstellen</span> unterscheiden und eine stetige Fortsetzung angeben</li>
+      <li>mit dem <span class="term">Zwischenwertsatz</span> begründen, dass eine Nullstelle existiert, und sie durch Intervallhalbierung einschachteln</li>
+    </ul>
+    <div class="notation-box">
+      <span class="box-label">Schreibweisen — dieselbe Sache, verschiedene Bücher</span>
+      Die Lehrwerke <strong>Elemente der Mathematik</strong> und <strong>Fundamente der Mathematik</strong> und die Formelsammlungen schreiben Grenzwerte nicht immer gleich. Diese Seite benutzt die linke Spalte.
+      <table class="bk-notation">
+        <thead><tr><th>Bedeutung</th><th>auf dieser Seite</th><th>auch üblich</th></tr></thead>
+        <tbody>
+          <tr><td>Grenzwert für x → ∞</td><td>lim<sub>x→∞</sub> f(x) = g</td><td>f(x) → g für x → ∞</td></tr>
+          <tr><td>linksseitiger Grenzwert</td><td>lim<sub>x→x₀, x&lt;x₀</sub> f(x)</td><td>lim<sub>x→x₀⁻</sub> f(x), lim<sub>x↗x₀</sub> f(x)</td></tr>
+          <tr><td>rechtsseitiger Grenzwert</td><td>lim<sub>x→x₀, x&gt;x₀</sub> f(x)</td><td>lim<sub>x→x₀⁺</sub> f(x), lim<sub>x↘x₀</sub> f(x)</td></tr>
+          <tr><td>h-Methode</td><td>lim<sub>h→0</sub> f(x₀ + h)</td><td>„x = x₀ + h mit h → 0“</td></tr>
+        </tbody>
+      </table>
+      Einige Bücher definieren den Grenzwert an einer Stelle über <em>Testfolgen</em>, andere über einen ε-Streifen um g und einen δ-Streifen um x₀. Beides sagt dasselbe; diese Seite nimmt die Testfolgen, weil du Folgen schon kennst.
+    </div>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../01-folgen-und-reihen/index.html">Thema 1</a> den <a href="../01-folgen-und-reihen/index.html#sec-grenzwert">Grenzwert einer Folge</a> mit dem ε-Streifen und die Grenzwertsätze, außerdem das Faktorisieren von Termen und die binomischen Formeln aus der Mittelstufe.</p>
+  </section>
+
+  <!-- 1. x gegen unendlich -->
+  <section class="card" id="sec-unendlich">
+    <h2>1. Grenzwert für x → ∞ — der ε-Streifen kommt wieder</h2>
+    <p>Bei Folgen ging n in Schritten 1, 2, 3, … nach rechts. Bei einer Funktion läuft x stetig über alle reellen Zahlen — sonst ändert sich nichts: Ein Streifen der Breite ε um g, und ab einer Stelle x₀ verlässt der Graph ihn nicht mehr. Stell ε kleiner und beobachte, wie x₀ nach rechts wandert.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="gu-art" class="eingabe" style="padding:0.4rem">
+            <option value="a">f(x) = (2x + 1)/x</option>
+            <option value="b">f(x) = (3x² − 1)/(x² + 1)</option>
+            <option value="c">f(x) = sin(x)/x</option>
+            <option value="d">f(x) = x²/(x + 1)</option>
+          </select>
+        </label>
+        <label>ε: <input type="range" id="gu-e" min="0" max="6" step="1" value="2" style="vertical-align:middle;width:10rem"> <span id="gu-e-anzeige" class="wert farbe-violett"></span></label>
+      </div>
+      <div class="geo-wrap" id="gu-mount"></div>
+      <div class="th-bilanz" id="gu-bilanz"></div>
+      <div id="gu-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Grenzwert für x → ±∞, waagerechte Asymptote</span>
+      f hat für x → ∞ den <strong>Grenzwert g</strong>, wenn es zu jedem ε &gt; 0 eine Stelle x₀ gibt mit
+      <div class="formula-block">|f(x) − g| &lt; ε &nbsp; für alle x &gt; x₀.</div>
+      Man schreibt lim<sub>x→∞</sub> f(x) = g. Die Gerade y = g heißt dann <strong>waagerechte Asymptote</strong>. Für x → −∞ entsprechend mit x &lt; x₀. Wächst f(x) über jede Schranke, schreibt man lim<sub>x→∞</sub> f(x) = ∞ — das ist <em>kein</em> Grenzwert im eigentlichen Sinn (man nennt es <strong>uneigentlichen Grenzwert</strong>).
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: x₀ ausrechnen</span>
+      f(x) = (2x + 1)/x = 2 + <span class="bruch"><span class="z">1</span><span class="n">x</span></span>. Für x &gt; 0: |f(x) − 2| = <span class="bruch"><span class="z">1</span><span class="n">x</span></span> &lt; ε ⟺ x &gt; <span class="bruch"><span class="z">1</span><span class="n">ε</span></span>. Bei ε = 0,01 also ab x₀ = 100.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — eine Asymptote darf geschnitten werden</span>
+      sin(x)/x schneidet die Asymptote y = 0 unendlich oft. Das stört nicht: Es kommt nur darauf an, dass der Graph irgendwann den ε-Streifen nicht mehr verlässt — nicht, dass er die Gerade nie berührt.
+    </div>
+    <div class="quiz" id="quiz-unendlich"></div>
+  </section>
+
+  <!-- 2. Grenzwert an einer Stelle -->
+  <section class="card" id="sec-stelle">
+    <h2>2. Grenzwert an einer Stelle — Testfolgen von links und rechts</h2>
+    <p>Was tut f in der Nähe von x₀, auch wenn man x₀ selbst nicht einsetzen darf? Man nähert sich mit Folgen: von links mit xₙ = x₀ − <span class="bruch"><span class="z">1</span><span class="n">n</span></span>, von rechts mit xₙ = x₀ + <span class="bruch"><span class="z">1</span><span class="n">n</span></span>. Konvergieren die Funktionswerte f(xₙ) auf beiden Seiten gegen dieselbe Zahl, ist sie der Grenzwert. Erhöhe n.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="ts-art" class="eingabe" style="padding:0.4rem">
+            <option value="luecke">f(x) = (x² − 1)/(x − 1), x₀ = 1</option>
+            <option value="sprung">f(x) = |x − 1|/(x − 1), x₀ = 1</option>
+            <option value="pol">f(x) = 1/(x − 1)², x₀ = 1</option>
+            <option value="stetig">f(x) = x² − 2x + 2, x₀ = 1</option>
+          </select>
+        </label>
+        <label>n: <input type="range" id="ts-n" min="1" max="10" step="1" value="2" style="vertical-align:middle;width:10rem"> <span id="ts-n-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap" id="ts-mount"></div>
+      <div class="fr-tabelle-wrap" id="ts-tabelle"></div>
+      <div class="th-bilanz" id="ts-bilanz"></div>
+      <div id="ts-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Grenzwert an einer Stelle</span>
+      f hat an der Stelle x₀ den <strong>Grenzwert g</strong>, wenn für <em>jede</em> Folge (xₙ) mit xₙ → x₀ und xₙ ≠ x₀ (alle xₙ in der Definitionsmenge) gilt: f(xₙ) → g. Man schreibt lim<sub>x→x₀</sub> f(x) = g.<br>
+      Nimmt man nur Folgen mit xₙ &lt; x₀ (bzw. xₙ &gt; x₀), erhält man den <strong>linksseitigen</strong> (bzw. <strong>rechtsseitigen</strong>) Grenzwert. Der Grenzwert existiert genau dann, wenn beide existieren und gleich sind.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: die h-Methode</span>
+      Statt Folgen setzt man x = 1 + h mit h → 0 (h ≠ 0): <span class="bruch"><span class="z">(1 + h)² − 1</span><span class="n">(1 + h) − 1</span></span> = <span class="bruch"><span class="z">2h + h²</span><span class="n">h</span></span> = 2 + h → 2. Das Kürzen durch h ist erlaubt, weil h ≠ 0 ist — genau dafür nähert man sich nur an.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — eine Testfolge reicht nicht</span>
+      Zwei Testfolgen von links und rechts zeigen, ob beide Seiten zusammenpassen — sie beweisen aber noch nicht, dass es für <em>jede</em> Folge klappt. Dafür rechnet man allgemein, etwa mit der h-Methode für beliebiges h → 0.
+    </div>
+    <div class="quiz" id="quiz-stelle"></div>
+  </section>
+
+  <!-- 3. Grenzwertsätze und gebrochenrationale Funktionen -->
+  <section class="card" id="sec-rational">
+    <h2>3. Grenzwertsätze: gebrochenrationale Funktionen für x → ±∞</h2>
+    <p>Für Funktionen gelten dieselben Grenzwertsätze wie für Folgen: Grenzwert einer Summe ist die Summe der Grenzwerte, ebenso für Produkt und Quotient. Bei einem Bruch aus Polynomen klammert man die höchste Potenz des <strong>Nenners</strong> aus — dann bleiben Nullfolgen und Konstanten übrig. Wähle eine Funktion und schiebe x nach außen.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="ra-art" class="eingabe" style="padding:0.4rem">
+            <option value="a">f(x) = (2x + 3)/(x² + 1)</option>
+            <option value="b">f(x) = (3x² − x)/(2x² + 1)</option>
+            <option value="c">f(x) = (4 − x²)/(x² + 2)</option>
+            <option value="d">f(x) = (x³ − 2)/(x² + 4)</option>
+          </select>
+        </label>
+        <label>x: <input type="range" id="ra-x" min="-20" max="20" step="1" value="6" style="vertical-align:middle;width:12rem"> <span id="ra-x-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap" id="ra-mount"></div>
+      <div class="th-bilanz" id="ra-bilanz"></div>
+      <div id="ra-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Gebrochenrationale Funktionen für x → ±∞</span>
+      f(x) = <span class="bruch"><span class="z">aₘxᵐ + … + a₀</span><span class="n">bₖxᵏ + … + b₀</span></span> mit aₘ, bₖ ≠ 0:
+      <div class="formula-block">m &lt; k: Grenzwert 0 (Asymptote y = 0) &nbsp;·&nbsp; m = k: Grenzwert <span class="bruch"><span class="z">aₘ</span><span class="n">bₖ</span></span> (Asymptote y = aₘ/bₖ) &nbsp;·&nbsp; m &gt; k: kein Grenzwert, |f(x)| wächst über jede Schranke</div>
+      Grenzwertsätze: Existieren lim f(x) = a und lim g(x) = b, dann ist lim (f ± g) = a ± b, lim (f · g) = a · b und lim (f : g) = a : b, falls b ≠ 0.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — „∞ : ∞“ ist keine Zahl</span>
+      Zähler und Nenner von (3x² − x)/(2x² + 1) wachsen beide über jede Grenze. Den Quotientensatz darf man darauf nicht anwenden — erst nach dem Ausklammern stehen dort zwei Folgen mit endlichen Grenzwerten 3 und 2.
+    </div>
+    <div class="quiz" id="quiz-rational"></div>
+  </section>
+
+  <!-- 4. Stetigkeit -->
+  <section class="card" id="sec-stetigkeit">
+    <h2>4. Stetigkeit: Grenzwert und Funktionswert passen zusammen</h2>
+    <p>Eine Funktion ist an einer Stelle <span class="term">stetig</span>, wenn ihr Graph dort keinen Sprung und kein Loch hat — man könnte ihn ohne Absetzen zeichnen. Genauer: Der Grenzwert an der Stelle muss existieren und gleich dem Funktionswert sein. Die Funktion unten ist links von 1 eine Parabel und ab 1 eine Gerade. Stelle a und b so ein, dass der Sprung verschwindet.</p>
+    <div class="widget">
+      <div class="formula-block" style="text-align:center">f(x) = x² für x &lt; 1 &nbsp;&nbsp;·&nbsp;&nbsp; f(x) = a · x + b für x ≥ 1</div>
+      <div class="btn-row">
+        <label>a: <input type="range" id="st-a" min="-3" max="3" step="0.5" value="1" style="vertical-align:middle;width:9rem"> <span id="st-a-anzeige" class="wert farbe-orange"></span></label>
+        <label>b: <input type="range" id="st-b" min="-3" max="3" step="0.5" value="1.5" style="vertical-align:middle;width:9rem"> <span id="st-b-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap" id="st-mount"></div>
+      <div class="th-bilanz" id="st-bilanz"></div>
+      <div id="st-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Stetigkeit</span>
+      f heißt <strong>stetig an der Stelle x₀</strong> ∈ D, wenn
+      <div class="formula-block">lim<sub>x→x₀</sub> f(x) = f(x₀),</div>
+      wenn also der Grenzwert existiert (links- und rechtsseitiger Grenzwert gleich) und gleich dem Funktionswert ist. f heißt <strong>stetig</strong>, wenn f an jeder Stelle ihrer Definitionsmenge stetig ist.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Diese Funktionen sind stetig</span>
+      Polynome, gebrochenrationale Funktionen (auf ihrer Definitionsmenge), sin, cos und √x. Summen, Differenzen, Produkte, Quotienten (wo der Nenner ≠ 0 ist) und Verkettungen stetiger Funktionen sind wieder stetig. Deshalb darf man bei ihnen den Grenzwert durch <em>Einsetzen</em> berechnen.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel</span>
+      Links von 1 strebt x² gegen 1, rechts ist der Grenzwert a · 1 + b = a + b, und f(1) = a + b. Stetig also genau dann, wenn a + b = 1 — zum Beispiel a = 2, b = −1 (dann setzt die Gerade sogar ohne Knick an).
+    </div>
+    <div class="quiz" id="quiz-stetigkeit"></div>
+  </section>
+
+  <!-- 5. Definitionslücken -->
+  <section class="card" id="sec-luecken">
+    <h2>5. Definitionslücken: hebbar oder Polstelle?</h2>
+    <p>Eine gebrochenrationale Funktion ist dort nicht definiert, wo ihr Nenner 0 wird. Was der Graph dort tut, entscheidet der <strong>Zähler</strong>. Wird er an derselben Stelle ebenfalls 0, kann man den Faktor kürzen, und es bleibt nur ein fehlender Punkt — eine <span class="term">hebbare Lücke</span>. Sonst wächst |f(x)| über alle Grenzen — eine <span class="term">Polstelle</span>. Verschiebe die Nullstelle a des Zählers und die Nennernullstelle p.</p>
+    <div class="widget">
+      <div class="formula-block" style="text-align:center">f(x) = <span class="bruch"><span class="z">(x − a)(x + 1)</span><span class="n">x − p</span></span></div>
+      <div class="btn-row">
+        <label>a: <input type="range" id="dl-a" min="-3" max="3" step="0.5" value="2" style="vertical-align:middle;width:9rem"> <span id="dl-a-anzeige" class="wert farbe-blau"></span></label>
+        <label>p: <input type="range" id="dl-p" min="-3" max="3" step="0.5" value="1" style="vertical-align:middle;width:9rem"> <span id="dl-p-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="geo-wrap" id="dl-mount"></div>
+      <div class="th-bilanz" id="dl-bilanz"></div>
+      <div id="dl-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Hebbare Lücke und Polstelle</span>
+      Ist x₀ eine Nullstelle des Nenners, aber <strong>keine</strong> des Zählers, so ist x₀ eine <strong>Polstelle</strong>: |f(x)| → ∞ für x → x₀, die Gerade x = x₀ ist eine <strong>senkrechte Asymptote</strong>.<br>
+      Ist x₀ auch Nullstelle des Zählers, kürzt man den gemeinsamen Faktor (x − x₀). Hat der gekürzte Term an x₀ einen endlichen Wert, ist die Lücke <strong>hebbar</strong>, und die <strong>stetige Fortsetzung</strong> setzt genau diesen Wert ein.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel</span>
+      f(x) = <span class="bruch"><span class="z">x² − 4</span><span class="n">x − 2</span></span> = <span class="bruch"><span class="z">(x − 2)(x + 2)</span><span class="n">x − 2</span></span> = x + 2 für x ≠ 2. Die Lücke bei 2 ist hebbar; die stetige Fortsetzung hat dort den Wert 4.
+    </div>
+    <p class="hinweis-box">💡 Ob f an einer Polstelle das Vorzeichen wechselt, verrät die Vielfachheit der Nennernullstelle: Bei (x − p) wechselt es (der Graph springt von −∞ nach +∞), bei (x − p)² nicht (beide Äste gehen in dieselbe Richtung) — wie bei 1/(x − 1)² in Abschnitt 2.</p>
+    <div class="quiz" id="quiz-luecken"></div>
+  </section>
+
+  <!-- 6. Zwischenwertsatz -->
+  <section class="card" id="sec-zwischenwert">
+    <h2>6. Der Zwischenwertsatz und die Intervallhalbierung</h2>
+    <p>Wenn eine stetige Funktion bei a negativ und bei b positiv ist, muss ihr Graph dazwischen die x-Achse kreuzen — ohne Absetzen kommt man nicht von unten nach oben. Das nutzt die <span class="term">Intervallhalbierung</span>: Man halbiert das Intervall, prüft das Vorzeichen in der Mitte und behält die Hälfte mit dem Vorzeichenwechsel. Schritt für Schritt wird die Nullstelle eingeschachtelt.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="zw-art" class="eingabe" style="padding:0.4rem">
+            <option value="stetig">f(x) = x³ − 2x − 5 (stetig)</option>
+            <option value="sprung">g(x) mit Sprung bei 2,5</option>
+          </select>
+        </label>
+        <label>Halbierungsschritte: <input type="range" id="zw-k" min="0" max="10" step="1" value="3" style="vertical-align:middle;width:10rem"> <span id="zw-k-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap" id="zw-mount"></div>
+      <div class="fr-tabelle-wrap" id="zw-tabelle"></div>
+      <div class="th-bilanz" id="zw-bilanz"></div>
+      <div id="zw-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Zwischenwertsatz und Nullstellensatz</span>
+      Ist f auf [a; b] <strong>stetig</strong>, so nimmt f jeden Wert zwischen f(a) und f(b) an.<br>
+      Insbesondere (<strong>Nullstellensatz</strong>): Haben f(a) und f(b) verschiedene Vorzeichen, so hat f in (a; b) mindestens eine Nullstelle.
+      <div class="formula-block">Nach k Halbierungen ist das Intervall (b − a) : 2ᵏ lang — nach 10 Schritten also nur noch rund ein Tausendstel so lang wie am Anfang.</div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — ohne Stetigkeit kein Satz</span>
+      g ist links von 2,5 gleich −1 und ab 2,5 gleich +1: Vorzeichenwechsel, aber keine Nullstelle. Die Intervallhalbierung läuft trotzdem auf 2,5 zu — und findet dort einen Sprung statt einer Nullstelle. Der Satz verlangt deshalb ausdrücklich Stetigkeit.
+    </div>
+    <div class="quiz" id="quiz-zwischenwert"></div>
+  </section>
+
+  <!-- 7. Stolperstelle -->
+  <section class="card" id="sec-stolperstelle">
+    <h2>7. Stolperstelle: Ist 1/x stetig?</h2>
+    <p>Ben sagt: „Der Graph von f(x) = 1/x springt bei 0 von −∞ nach +∞ — also ist f nicht stetig.“ Lea sagt: „f ist stetig.“ Wähle eine Stelle x₀ und prüfe dort: Gehört sie zur Definitionsmenge? Stimmen links- und rechtsseitiger Grenzwert mit f(x₀) überein?</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>x₀: <input type="range" id="sp-x" min="-2" max="2" step="0.5" value="1" style="vertical-align:middle;width:10rem"> <span id="sp-x-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap" id="sp-mount"></div>
+      <div class="th-bilanz" id="sp-bilanz"></div>
+      <div id="sp-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Stetigkeit fragt nur nach Stellen der Definitionsmenge</span>
+      0 gehört nicht zur Definitionsmenge von 1/x. Dort ist f weder stetig noch unstetig — die Frage stellt sich gar nicht. An jeder Stelle x₀ ≠ 0 ist f stetig. Also ist f eine <strong>stetige Funktion</strong>, obwohl man ihren Graphen nicht in einem Zug zeichnen kann: Er besteht aus zwei Teilen, weil die Definitionsmenge aus zwei Teilen besteht. „Ohne Absetzen zeichnen“ ist eine Faustregel für Intervalle, keine Definition.
+    </div>
+    <div class="quiz" id="quiz-stolperstelle"></div>
+  </section>
+
+  <!-- Selbsteinschätzung -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
+    <div id="se-liste"></div>
+    <div id="se-auswertung" class="event-result"></div>
+  </section>
+
+  <!-- Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Dem <a href="../01-folgen-und-reihen/index.html#sec-grenzwert">Grenzwert einer Folge</a> — der ε-Streifen für x → ∞ ist derselbe wie für n → ∞, und der Grenzwert an einer Stelle wird über Testfolgen auf Folgengrenzwerte zurückgeführt.</li>
+      <li><strong>Baut auf:</strong> Den <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/04-terme/index.html">Termumformungen</a> — Faktorisieren und Kürzen entscheiden, ob eine Definitionslücke hebbar ist.</li>
+      <li><strong>Baut auf:</strong> Den <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/08-quadratische-funktionen/index.html">quadratischen Funktionen</a> — ihre Nullstellen liefern die Faktoren im Zähler und Nenner.</li>
+      <li><strong>Gleiche Struktur:</strong> Die Intervallhalbierung ist eine Intervallschachtelung — genauso werden √2 und andere irrationale Zahlen eingegrenzt.</li>
+      <li><strong>Führt weiter zu:</strong> Der <em>Differentialrechnung</em> — die Ableitung ist der Grenzwert des Differenzenquotienten lim<sub>h→0</sub> (f(x₀ + h) − f(x₀))/h. Die h-Methode aus Abschnitt 2 ist genau das Werkzeug dafür.</li>
+      <li><strong>Führt weiter zu:</strong> Den <em>Kurvenuntersuchungen</em> — Asymptoten, Polstellen und Lücken gehören zu jeder Untersuchung einer gebrochenrationalen Funktion; der Zwischenwertsatz sichert, dass eine Nullstelle wirklich existiert.</li>
+    </ul>
+  </section>
+
+  <!-- Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>Formelsammlung</h2>
+    <p>Grenzwert für x → ±∞ mit ε-Streifen und Asymptote, Grenzwert an einer Stelle mit Testfolgen und h-Methode, links- und rechtsseitige Grenzwerte, die Regeln für gebrochenrationale Funktionen, Stetigkeit, hebbare Lücken und Polstellen sowie Zwischenwertsatz und Intervallhalbierung — mit gerechneten Figuren und Musterrechnungen auf zwei Seiten.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>Übungsaufgaben</h2>
+    <p>Sechzehn Aufgaben auf vier Stufen, je vier auf jeder. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu. Tipps gibt es auf Knopfdruck, nach dem Prüfen steht die Musterlösung darunter.</p>
+    <p class="progress-note">Zahlen gibst du mit Komma ein, zum Beispiel 1,5; Brüche wie 3/2 sind ebenfalls erlaubt.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 01 Analysis</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>

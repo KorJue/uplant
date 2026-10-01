@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Folgen und Reihen</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="../../../aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">MSS 11</a><span class="sep">/</span>
+  <a href="../index.html">01 Analysis</a><span class="sep">/</span>
+  1 Folgen und Reihen
+</nav>
+<header class="page-header">
+  <h1>Folgen und Reihen</h1>
+  <p>Ein Selbstlernpfad: von der Zahlenfolge über ihren Grenzwert bis zur unendlichen Summe, die trotzdem endlich ist. Jeder Abschnitt leitet sein Ergebnis an einer beweglichen Darstellung her, rechnet es nach und endet mit einer Kontrollfrage. Am Schluss stehen sechzehn Übungsaufgaben auf vier Stufen, die du hier auf der Seite löst.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Ein Ball springt nach jedem Aufprall auf drei Viertel seiner Höhe zurück. Wie hoch springt er beim zehnten Mal? Hört er irgendwann auf? Und welchen Weg legt er <em>insgesamt</em> zurück — unendlich viele Sprünge, aber vielleicht doch eine endliche Strecke? Solche Fragen handeln von <span class="term">Folgen</span>: Zahlen, die der Reihe nach entstehen. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>eine Folge <span class="term">explizit</span> und <span class="term">rekursiv</span> angeben und ihren Graphen als Punktmenge zeichnen</li>
+      <li><span class="term">arithmetische</span> und <span class="term">geometrische</span> Folgen erkennen und ihr n-tes Glied berechnen</li>
+      <li>eine Folge auf <span class="term">Monotonie</span> und <span class="term">Beschränktheit</span> untersuchen — und begründen, warum das für <em>alle</em> n gilt</li>
+      <li>mit dem <span class="term">ε-Streifen</span> erklären, was <span class="nw">lim aₙ = g</span> bedeutet, und zu einem ε das passende n₀ bestimmen</li>
+      <li>Partialsummen arithmetischer und geometrischer Folgen mit einer Formel berechnen und beide Formeln herleiten</li>
+      <li>den Wert einer <span class="term">unendlichen geometrischen Reihe</span> angeben — und erkennen, wann eine Reihe <em>nicht</em> konvergiert</li>
+    </ul>
+    <div class="notation-box">
+      <span class="box-label">Schreibweisen — dieselbe Sache, verschiedene Bücher</span>
+      Die Lehrwerke <strong>Elemente der Mathematik</strong> und <strong>Fundamente der Mathematik</strong> und die Formelsammlungen schreiben dieselben Begriffe nicht immer gleich. Diese Seite benutzt die linke Spalte; die rechte kommt dir ebenfalls häufig entgegen.
+      <table class="bk-notation">
+        <thead><tr><th>Bedeutung</th><th>auf dieser Seite</th><th>auch üblich</th></tr></thead>
+        <tbody>
+          <tr><td>die Folge als Ganzes</td><td>(aₙ)</td><td>(aₙ)<sub>n∈ℕ*</sub>, a: n ↦ aₙ, ⟨aₙ⟩</td></tr>
+          <tr><td>Grenzwert</td><td>lim<sub>n→∞</sub> aₙ = g</td><td>aₙ → g für n → ∞, „(aₙ) konvergiert gegen g“</td></tr>
+          <tr><td>Partialsumme</td><td>sₙ = a₁ + a₂ + … + aₙ</td><td>sₙ = Σ<sub>k=1</sub><sup>n</sup> a<sub>k</sub></td></tr>
+          <tr><td>unendliche Reihe</td><td>a₁ + a₂ + a₃ + …</td><td>Σ<sub>k=1</sub><sup>∞</sup> a<sub>k</sub> = lim<sub>n→∞</sub> sₙ</td></tr>
+        </tbody>
+      </table>
+      Manche Bücher beginnen mit a₀ statt a₁. Dann verschiebt sich jede Formel um eins: Aus a₁ · q<sup>n−1</sup> wird a₀ · q<sup>n</sup>. Prüfe deshalb immer zuerst, mit welchem Index die Folge anfängt.
+    </div>
+    <p class="hinweis-box">💡 Du brauchst aus der Mittelstufe <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/05-lineare-funktionen/index.html">lineare Funktionen</a> (konstanter Zuwachs) und <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/11-exponentialfunktionen/index.html">Exponentialfunktionen</a> (konstanter Faktor) sowie das Rechnen mit <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/09-potenzen/index.html">Potenzen</a>. Logarithmen brauchst du hier nicht — sie kommen später.</p>
+  </section>
+
+  <!-- 1. Was ist eine Folge? -->
+  <section class="card" id="sec-folge">
+    <h2>1. Was ist eine Folge?</h2>
+    <p>Eine Folge ordnet jeder natürlichen Zahl n = 1, 2, 3, … eine Zahl aₙ zu: das <strong>erste</strong>, <strong>zweite</strong>, <strong>dritte</strong> … Glied. Man kann sie auf zwei Arten angeben. <span class="term">Explizit</span> steht aₙ als Term in n da — man setzt n ein und ist fertig. <span class="term">Rekursiv</span> stehen der Anfang und eine Regel da, wie man vom Vorgänger zum Nachfolger kommt. Wähle eine Folge und ein n.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Folge:
+          <select id="fo-art" class="eingabe" style="padding:0.4rem">
+            <option value="ungerade">ungerade Zahlen</option>
+            <option value="halbieren">immer halbieren</option>
+            <option value="kehrwert">Kehrwerte</option>
+            <option value="quadrat">Quadratzahlen</option>
+            <option value="fibonacci">Fibonacci-Zahlen</option>
+          </select>
+        </label>
+        <label>n: <input type="range" id="fo-n" min="1" max="10" step="1" value="5" style="vertical-align:middle;width:10rem"> <span id="fo-n-anzeige" class="wert farbe-gruen"></span></label>
+      </div>
+      <div class="geo-wrap" id="fo-mount"></div>
+      <div class="fr-tabelle-wrap" id="fo-tabelle"></div>
+      <div class="th-bilanz" id="fo-bilanz"></div>
+      <div id="fo-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Folge</span>
+      Eine <strong>Folge</strong> (aₙ) ist eine Funktion, die jeder natürlichen Zahl n ≥ 1 eine reelle Zahl aₙ zuordnet. aₙ heißt das <strong>n-te Glied</strong>, n sein <strong>Index</strong>.<br>
+      <strong>Explizit:</strong> aₙ ist ein Term in n, z. B. aₙ = 2n − 1. &nbsp; <strong>Rekursiv:</strong> Anfangsglied und Bildungsregel, z. B. a₁ = 1, a<sub>n+1</sub> = aₙ + 2.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der Graph einer Folge ist keine Linie</span>
+      Zwischen n = 2 und n = 3 gibt es kein Glied a<sub>2,5</sub>. Der Graph besteht aus <em>einzelnen Punkten</em> (n | aₙ). Wer sie verbindet, behauptet Werte, die es gar nicht gibt.
+    </div>
+    <p class="hinweis-box">💡 Rekursiv ist oft die natürlichere Beschreibung — „jedes Jahr kommen 2 % dazu“, „jede Zahl ist die Summe der beiden davor“. Aber um a₁₀₀ zu bekommen, braucht man rekursiv alle 99 Vorgänger. Deshalb sucht man gern eine explizite Darstellung. Für die Fibonacci-Zahlen gibt es eine — die Formel von Binet —, sie enthält aber √5 und ist weit weniger handlich als die Regel.</p>
+    <div class="quiz" id="quiz-folge"></div>
+  </section>
+
+  <!-- 2. Arithmetische und geometrische Folgen -->
+  <section class="card" id="sec-arith-geo">
+    <h2>2. Arithmetische und geometrische Folgen</h2>
+    <p>Zwei Bildungsregeln kommen so oft vor, dass sie eigene Namen haben. Bei einer <span class="term">arithmetischen</span> Folge kommt in jedem Schritt <strong>dieselbe Zahl d</strong> dazu, bei einer <span class="term">geometrischen</span> wird in jedem Schritt <strong>mit derselben Zahl q</strong> multipliziert. Wie kommt man von a₁ direkt zu aₙ? Zähle die Pfeile.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Art:
+          <select id="ag-art" class="eingabe" style="padding:0.4rem">
+            <option value="arith">arithmetisch</option>
+            <option value="geo">geometrisch</option>
+          </select>
+        </label>
+        <label>a₁: <input type="range" id="ag-a" min="-4" max="8" step="1" value="2" style="vertical-align:middle;width:7rem"> <span id="ag-a-anzeige" class="wert farbe-blau"></span></label>
+        <label id="ag-d-label">d: <input type="range" id="ag-d" min="-3" max="3" step="0.5" value="1.5" style="vertical-align:middle;width:7rem"> <span id="ag-d-anzeige" class="wert farbe-orange"></span></label>
+        <label id="ag-q-label">q: <input type="range" id="ag-q" min="-1.5" max="1.5" step="0.25" value="0.5" style="vertical-align:middle;width:7rem"> <span id="ag-q-anzeige" class="wert farbe-orange"></span></label>
+        <label>n: <input type="range" id="ag-n" min="1" max="8" step="1" value="6" style="vertical-align:middle;width:7rem"> <span id="ag-n-anzeige" class="wert farbe-gruen"></span></label>
+      </div>
+      <div class="geo-wrap" id="ag-mount"></div>
+      <div class="th-bilanz" id="ag-bilanz"></div>
+      <div id="ag-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Arithmetische und geometrische Folge</span>
+      <strong>Arithmetisch:</strong> a<sub>n+1</sub> − aₙ = d für alle n &nbsp;⟹&nbsp; aₙ = a₁ + (n − 1) · d<br>
+      <strong>Geometrisch:</strong> a<sub>n+1</sub> : aₙ = q für alle n (a₁ ≠ 0, q ≠ 0) &nbsp;⟹&nbsp; aₙ = a₁ · q<sup>n−1</sup>
+      <div class="formula-block">n Glieder, aber nur n − 1 Schritte: Von a₁ bis aₙ kommt d genau (n − 1)-mal dazu, q genau (n − 1)-mal als Faktor.</div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel</span>
+      Eine arithmetische Folge hat a₃ = 11 und a₇ = 23. Von a₃ nach a₇ sind es 4 Schritte, also 4 · d = 12, d = 3, und a₁ = 11 − 2 · 3 = 5. Damit ist aₙ = 5 + (n − 1) · 3 = 3n + 2.<br>
+      Eine geometrische Folge hat a₂ = 6 und a₄ = 24: zwei Schritte, q² = 4, also q = 2 <em>oder</em> q = −2 — beide Folgen passen.
+    </div>
+    <p class="hinweis-box">💡 Arithmetische Folgen sind <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/05-lineare-funktionen/index.html">lineare Funktionen</a>, nur an den Stellen 1, 2, 3, … abgelesen: d ist die Steigung. Geometrische Folgen sind <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/11-exponentialfunktionen/index.html">Exponentialfunktionen</a>, q ist der Wachstumsfaktor. Ein negatives q lässt die Glieder abwechselnd das Vorzeichen wechseln — man nennt solche Folgen <span class="term">alternierend</span>.</p>
+    <div class="quiz" id="quiz-arith-geo"></div>
+  </section>
+
+  <!-- 3. Monotonie und Beschränktheit -->
+  <section class="card" id="sec-monotonie">
+    <h2>3. Monotonie und Beschränktheit</h2>
+    <p>Zwei Fragen an jede Folge: Wird sie immer größer (oder immer kleiner)? Und gibt es eine Zahl, über die sie nie hinauskommt? Die Zeichnung zeigt nur endlich viele Glieder — sie kann einen Verdacht wecken, aber nichts beweisen. Bewiesen wird mit der Differenz a<sub>n+1</sub> − aₙ und mit einer Abschätzung, die für <strong>alle</strong> n gilt. Verschiebe die beiden Schranken.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Folge:
+          <select id="mb-art" class="eingabe" style="padding:0.4rem">
+            <option value="kehrwert">aₙ = 1/n</option>
+            <option value="bruch">aₙ = (n − 1)/n</option>
+            <option value="alternierend">aₙ = (−1)ⁿ/n</option>
+            <option value="quadrat">aₙ = n²/10</option>
+          </select>
+        </label>
+        <label>obere Schranke S: <input type="range" id="mb-S" min="-1" max="2" step="0.1" value="1.2" style="vertical-align:middle;width:8rem"> <span id="mb-S-anzeige" class="wert farbe-violett"></span></label>
+        <label>untere Schranke s: <input type="range" id="mb-s" min="-1.5" max="1" step="0.1" value="-0.2" style="vertical-align:middle;width:8rem"> <span id="mb-s-anzeige" class="wert farbe-violett"></span></label>
+      </div>
+      <div class="geo-wrap" id="mb-mount"></div>
+      <div class="th-bilanz" id="mb-bilanz"></div>
+      <div id="mb-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Monotonie und Beschränktheit</span>
+      (aₙ) heißt <strong>monoton steigend</strong>, wenn a<sub>n+1</sub> ≥ aₙ für alle n gilt, und <strong>monoton fallend</strong>, wenn a<sub>n+1</sub> ≤ aₙ für alle n gilt (mit &gt; bzw. &lt;: <em>streng</em> monoton).<br>
+      (aₙ) heißt <strong>nach oben beschränkt</strong>, wenn es eine Zahl S gibt mit aₙ ≤ S für alle n (S heißt <strong>obere Schranke</strong>), und <strong>nach unten beschränkt</strong> mit einer unteren Schranke s: aₙ ≥ s für alle n. Beides zusammen: <strong>beschränkt</strong>.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: aₙ = (n − 1)/n</span>
+      a<sub>n+1</sub> − aₙ = <span class="bruch"><span class="z">n</span><span class="n">n + 1</span></span> − <span class="bruch"><span class="z">n − 1</span><span class="n">n</span></span> = <span class="bruch"><span class="z">n² − (n − 1)(n + 1)</span><span class="n">n(n + 1)</span></span> = <span class="bruch"><span class="z">1</span><span class="n">n(n + 1)</span></span> &gt; 0 — also streng monoton steigend, für jedes n.<br>
+      aₙ = 1 − <span class="bruch"><span class="z">1</span><span class="n">n</span></span> &lt; 1 für alle n, und aₙ ≥ a₁ = 0: beschränkt durch s = 0 und S = 1.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — ein paar Glieder beweisen nichts</span>
+      Die ersten zehn Glieder können steigen und das elfte trotzdem kleiner sein. „Sieht steigend aus“ ist eine Vermutung; erst die Rechnung a<sub>n+1</sub> − aₙ &gt; 0 <em>für alle n</em> ist eine Begründung. Die Bilanz unten prüft deshalb die Schranken gegen den genauen kleinsten und größten Wert der Folge — nicht gegen die gezeichneten Punkte.
+    </div>
+    <div class="quiz" id="quiz-monotonie"></div>
+  </section>
+
+  <!-- 4. Grenzwert -->
+  <section class="card" id="sec-grenzwert">
+    <h2>4. Der Grenzwert einer Folge — der ε-Streifen</h2>
+    <p>Die Folge aₙ = (2n + 1)/n kommt der 2 immer näher, erreicht sie aber nie. Was heißt „immer näher“ genau? Lege einen Streifen der Breite ε über und unter die 2. Egal wie schmal du ihn machst: Ab einem bestimmten Glied a<sub>n₀</sub> liegen <strong>alle</strong> weiteren Glieder darin — nur endlich viele bleiben draußen. Genau das bedeutet Konvergenz.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Folge:
+          <select id="gw-art" class="eingabe" style="padding:0.4rem">
+            <option value="a">aₙ = (2n + 1)/n</option>
+            <option value="b">aₙ = 3 + 2 · (−1)ⁿ/n</option>
+            <option value="c">aₙ = (n + 3)/(n + 1)</option>
+            <option value="d">aₙ = (−1)ⁿ</option>
+          </select>
+        </label>
+        <label>ε: <input type="range" id="gw-e" min="0" max="6" step="1" value="2" style="vertical-align:middle;width:10rem"> <span id="gw-e-anzeige" class="wert farbe-violett"></span></label>
+      </div>
+      <div class="geo-wrap" id="gw-mount"></div>
+      <div class="th-bilanz" id="gw-bilanz"></div>
+      <div id="gw-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Grenzwert einer Folge</span>
+      Eine Zahl g heißt <strong>Grenzwert</strong> der Folge (aₙ), wenn es zu <em>jedem</em> ε &gt; 0 einen Index n₀ gibt, so dass
+      <div class="formula-block">|aₙ − g| &lt; ε &nbsp; für alle n ≥ n₀.</div>
+      Man schreibt lim<sub>n→∞</sub> aₙ = g und sagt: (aₙ) <strong>konvergiert</strong> gegen g. Eine Folge mit dem Grenzwert 0 heißt <strong>Nullfolge</strong>. Eine Folge ohne Grenzwert heißt <strong>divergent</strong>.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: n₀ ausrechnen</span>
+      aₙ = (2n + 1)/n = 2 + <span class="bruch"><span class="z">1</span><span class="n">n</span></span>, also |aₙ − 2| = <span class="bruch"><span class="z">1</span><span class="n">n</span></span>. Gesucht sind alle n mit <span class="bruch"><span class="z">1</span><span class="n">n</span></span> &lt; ε, das heißt n &gt; <span class="bruch"><span class="z">1</span><span class="n">ε</span></span>. Für ε = 0,01: n &gt; 100, also n₀ = 101. Für jedes noch so kleine ε findet sich so ein n₀ — der Grenzwert ist 2.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Wichtige Nullfolgen — und die Grenzwertsätze</span>
+      (1/n), (1/n²), (1/√n) und (qⁿ) mit |q| &lt; 1 sind Nullfolgen. Konvergieren (aₙ) gegen a und (bₙ) gegen b, dann konvergiert
+      <div class="formula-block">(aₙ ± bₙ) gegen a ± b, &nbsp; (aₙ · bₙ) gegen a · b, &nbsp; (aₙ : bₙ) gegen a : b (falls b ≠ 0 und alle bₙ ≠ 0).</div>
+      So erledigt man Brüche: <span class="bruch"><span class="z">3n² + n</span><span class="n">2n² − 5</span></span> = <span class="bruch"><span class="z">3 + 1/n</span><span class="n">2 − 5/n²</span></span> → <span class="bruch"><span class="z">3</span><span class="n">2</span></span>. Man kürzt durch die höchste Potenz von n und lässt die Nullfolgen verschwinden.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — „kommt immer näher“ reicht nicht</span>
+      Auch aₙ = 1/n kommt der Zahl −1 immer näher — trotzdem ist −1 nicht der Grenzwert, denn der Abstand wird nie kleiner als 1. Es kommt nicht auf „näher“ an, sondern auf „<em>beliebig nah, und dann für immer</em>“.
+    </div>
+    <div class="quiz" id="quiz-grenzwert"></div>
+  </section>
+
+  <!-- 5. Arithmetische Reihe -->
+  <section class="card" id="sec-arith-reihe">
+    <h2>5. Reihen: die Summe einer arithmetischen Folge</h2>
+    <p>Addiert man die Glieder einer Folge der Reihe nach, entsteht eine neue Folge: die <span class="term">Partialsummen</span> s₁ = a₁, s₂ = a₁ + a₂, s₃ = a₁ + a₂ + a₃, … Diese Folge (sₙ) heißt <span class="term">Reihe</span>. Für eine arithmetische Folge gibt es einen Trick, der den Schüler Gauß berühmt gemacht hat: Jedes Glied ist eine Säule. Eine zweite Kopie der Treppe, um 180° gedreht, passt genau auf die erste — zusammen bilden sie ein Rechteck.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a₁: <input type="range" id="ga-a" min="1" max="4" step="1" value="1" style="vertical-align:middle;width:6rem"> <span id="ga-a-anzeige" class="wert farbe-blau"></span></label>
+        <label>d: <input type="range" id="ga-d" min="0" max="3" step="1" value="1" style="vertical-align:middle;width:6rem"> <span id="ga-d-anzeige" class="wert farbe-blau"></span></label>
+        <label>n: <input type="range" id="ga-n" min="2" max="8" step="1" value="6" style="vertical-align:middle;width:6rem"> <span id="ga-n-anzeige" class="wert farbe-blau"></span></label>
+        <label>Kopie drehen: <input type="range" id="ga-t" min="0" max="100" step="1" value="0" style="vertical-align:middle;width:9rem"> <span id="ga-t-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap" id="ga-mount"></div>
+      <div class="th-bilanz" id="ga-bilanz"></div>
+      <div id="ga-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Summenformel der arithmetischen Folge</span>
+      Erstes und letztes, zweites und vorletztes Glied … ergeben jeweils dieselbe Summe a₁ + aₙ. Zwei Treppen bilden deshalb ein Rechteck aus n Säulen der Höhe a₁ + aₙ:
+      <div class="formula-block">2 · sₙ = n · (a₁ + aₙ) &nbsp;⟹&nbsp; sₙ = <span class="bruch"><span class="z">n · (a₁ + aₙ)</span><span class="n">2</span></span> = n · a₁ + <span class="bruch"><span class="z">n · (n − 1)</span><span class="n">2</span></span> · d</div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: 1 + 2 + … + 100</span>
+      n = 100, a₁ = 1, a₁₀₀ = 100: s₁₀₀ = 100 · 101 : 2 = 5050. Die gerade Zahlen 2 + 4 + … + 100: n = 50, s₅₀ = 50 · (2 + 100) : 2 = 2550.
+    </div>
+    <p class="hinweis-box">💡 Warum ist a₁ + aₙ = a₂ + a<sub>n−1</sub>? Das zweite Glied ist um d größer als das erste, das vorletzte um d kleiner als das letzte — die Summe bleibt gleich. In der Zeichnung heißt das: Jede gedrehte Säule füllt die Lücke über ihrem Gegenstück genau bis zur selben Höhe.</p>
+    <div class="quiz" id="quiz-arith-reihe"></div>
+  </section>
+
+  <!-- 6. Geometrische Reihe -->
+  <section class="card" id="sec-geo-reihe">
+    <h2>6. Die Summe einer geometrischen Folge</h2>
+    <p>Bei einer geometrischen Folge hilft das Drehen nicht. Ein anderer Trick hilft: Multipliziere die ganze Summe sₙ mit q. Dann entstehen fast dieselben Summanden — nur um eine Stelle verschoben. Schiebe die untere Zeile nach rechts und sieh zu, was beim Abziehen übrig bleibt.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a₁: <input type="range" id="gs-a" min="1" max="5" step="1" value="3" style="vertical-align:middle;width:6rem"> <span id="gs-a-anzeige" class="wert farbe-blau"></span></label>
+        <label>q: <input type="range" id="gs-q" min="-2" max="3" step="0.5" value="2" style="vertical-align:middle;width:7rem"> <span id="gs-q-anzeige" class="wert farbe-orange"></span></label>
+        <label>n: <input type="range" id="gs-n" min="2" max="6" step="1" value="5" style="vertical-align:middle;width:6rem"> <span id="gs-n-anzeige" class="wert farbe-blau"></span></label>
+        <label>q · sₙ verschieben: <input type="range" id="gs-t" min="0" max="100" step="1" value="0" style="vertical-align:middle;width:9rem"> <span id="gs-t-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap" id="gs-mount"></div>
+      <div class="th-bilanz" id="gs-bilanz"></div>
+      <div id="gs-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Summenformel der geometrischen Folge</span>
+      sₙ − q · sₙ = a₁ − a₁ · qⁿ, also (1 − q) · sₙ = a₁ · (1 − qⁿ). Für q ≠ 1 folgt
+      <div class="formula-block">sₙ = a₁ + a₁q + … + a₁q<sup>n−1</sup> = a₁ · <span class="bruch"><span class="z">1 − qⁿ</span><span class="n">1 − q</span></span> = a₁ · <span class="bruch"><span class="z">qⁿ − 1</span><span class="n">q − 1</span></span></div>
+      Für q = 1 sind alle Glieder gleich, und sₙ = n · a₁.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: das Schachbrett</span>
+      Auf das erste Feld ein Reiskorn, auf jedes weitere doppelt so viele: a₁ = 1, q = 2, n = 64. s₆₄ = (2⁶⁴ − 1) : (2 − 1) = 2⁶⁴ − 1 ≈ 1,8 · 10¹⁹ Körner — mehr Reis, als je geerntet wurde.
+    </div>
+    <div class="quiz" id="quiz-geo-reihe"></div>
+  </section>
+
+  <!-- 7. Unendliche geometrische Reihe -->
+  <section class="card" id="sec-unendlich">
+    <h2>7. Die unendliche geometrische Reihe</h2>
+    <p>Was passiert mit sₙ = a₁ · (1 − qⁿ)/(1 − q), wenn n immer größer wird? Ist |q| &lt; 1, dann ist (qⁿ) eine Nullfolge (Abschnitt 4) — der Summand qⁿ im Zähler verschwindet, und die Partialsummen streben gegen einen festen Wert. Unendlich viele Summanden, aber eine endliche Summe. Beobachte, wie die Lücke bis zur Summe schrumpft.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a₁: <input type="range" id="ug-a" min="0.5" max="3" step="0.5" value="1" style="vertical-align:middle;width:6rem"> <span id="ug-a-anzeige" class="wert farbe-blau"></span></label>
+        <label>q: <input type="range" id="ug-q" min="-0.8" max="0.8" step="0.1" value="0.5" style="vertical-align:middle;width:8rem"> <span id="ug-q-anzeige" class="wert farbe-orange"></span></label>
+        <label>n: <input type="range" id="ug-n" min="1" max="12" step="1" value="3" style="vertical-align:middle;width:8rem"> <span id="ug-n-anzeige" class="wert farbe-gruen"></span></label>
+      </div>
+      <div class="geo-wrap" id="ug-mount"></div>
+      <div class="th-bilanz" id="ug-bilanz"></div>
+      <div id="ug-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Unendliche geometrische Reihe</span>
+      Für |q| &lt; 1 konvergiert die Reihe a₁ + a₁q + a₁q² + …, und ihr Wert ist
+      <div class="formula-block">s = lim<sub>n→∞</sub> sₙ = <span class="bruch"><span class="z">a₁</span><span class="n">1 − q</span></span>. &nbsp;&nbsp; Der Abstand ist s − sₙ = <span class="bruch"><span class="z">a₁ · qⁿ</span><span class="n">1 − q</span></span>.</div>
+      Für |q| ≥ 1 (und a₁ ≠ 0) divergiert sie.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: periodische Dezimalzahlen</span>
+      0,<span style="text-decoration:overline">3</span> = 0,3 + 0,03 + 0,003 + … mit a₁ = 0,3 und q = 0,1: s = 0,3 : 0,9 = <span class="bruch"><span class="z">1</span><span class="n">3</span></span>.<br>
+      0,<span style="text-decoration:overline">9</span> = 0,9 : 0,9 = 1 — kein „fast 1“, sondern genau 1. Und 0,<span style="text-decoration:overline">27</span> = 0,27 : 0,99 = <span class="bruch"><span class="z">27</span><span class="n">99</span></span> = <span class="bruch"><span class="z">3</span><span class="n">11</span></span>.
+    </div>
+    <div class="quiz" id="quiz-unendlich"></div>
+  </section>
+
+  <!-- 8. Stolperstelle -->
+  <section class="card" id="sec-stolperstelle">
+    <h2>8. Stolperstelle: Die Summanden werden klein — und trotzdem keine Summe</h2>
+    <p>Lena meint: „Bei 1 + <span class="bruch"><span class="z">1</span><span class="n">2</span></span> + <span class="bruch"><span class="z">1</span><span class="n">3</span></span> + <span class="bruch"><span class="z">1</span><span class="n">4</span></span> + … werden die Summanden immer kleiner und gehen gegen 0. Also muss die Summe irgendwann aufhören zu wachsen.“ Die Zeichnung fasst die Summanden zu Blöcken zusammen: 1/2, dann 1/3 + 1/4, dann 1/5 bis 1/8, dann 1/9 bis 1/16 … Jeder Block ist mindestens so groß wie die gestrichelte Hälfte.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Anzahl der Blöcke: <input type="range" id="hr-k" min="1" max="6" step="1" value="3" style="vertical-align:middle;width:10rem"> <span id="hr-k-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap" id="hr-mount"></div>
+      <div class="th-bilanz" id="hr-bilanz"></div>
+      <div id="hr-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — eine Nullfolge als Summanden genügt nicht</span>
+      Der Block von 1/(2<sup>k−1</sup> + 1) bis 1/2<sup>k</sup> hat 2<sup>k−1</sup> Summanden, jeder mindestens 1/2<sup>k</sup> — zusammen mindestens <span class="bruch"><span class="z">1</span><span class="n">2</span></span>. Nach k Blöcken ist die Summe also mindestens 1 + k/2, und das wächst über jede Grenze. Die <strong>harmonische Reihe</strong> 1 + 1/2 + 1/3 + … divergiert. Damit eine Reihe konvergiert, müssen die Summanden gegen 0 gehen — aber das allein reicht nicht.
+    </div>
+    <div class="quiz" id="quiz-stolperstelle"></div>
+  </section>
+
+  <!-- Selbsteinschätzung -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
+    <div id="se-liste"></div>
+    <div id="se-auswertung" class="event-result"></div>
+  </section>
+
+  <!-- Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Den <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/05-lineare-funktionen/index.html">linearen Funktionen</a> — eine arithmetische Folge ist eine lineare Funktion, die man nur an den Stellen n = 1, 2, 3, … abliest; d ist die Steigung.</li>
+      <li><strong>Baut auf:</strong> Den <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/11-exponentialfunktionen/index.html">Exponentialfunktionen</a> — eine geometrische Folge wächst oder zerfällt mit dem festen Faktor q, genau wie ein Kapital mit Zinseszins.</li>
+      <li><strong>Gleiche Struktur:</strong> Der Gauß-Trick (zwei Treppen ergeben ein Rechteck) ist dieselbe Idee wie die Flächenformel des Trapezes: Zwei gleiche Trapeze ergeben ein Parallelogramm.</li>
+      <li><strong>Gleiche Struktur:</strong> Der Zinseszins und die Sparrate führen auf geometrische Summen; periodische Dezimalbrüche sind unendliche geometrische Reihen.</li>
+      <li><strong>Führt weiter zu:</strong> Den <a href="../02-grenzwerte-und-stetigkeit/index.html">Grenzwerten von Funktionen</a> — der ε-Streifen kommt dort für x → ∞ wieder, und mit Folgen x<sub>n</sub> → x₀ untersucht man, was eine Funktion an einer Stelle tut.</li>
+      <li><strong>Führt weiter zu:</strong> Der <em>Differentialrechnung</em> — die Steigung einer Kurve ist der Grenzwert einer Folge von Sekantensteigungen.</li>
+      <li><strong>Führt weiter zu:</strong> Der <em>Integralrechnung</em> — Flächen unter Kurven entstehen als Grenzwert von Summen immer schmalerer Rechtecke, und die Summenformeln aus diesem Thema rechnen sie aus.</li>
+    </ul>
+  </section>
+
+  <!-- Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>Formelsammlung</h2>
+    <p>Explizite und rekursive Darstellung, arithmetische und geometrische Folgen, Monotonie und Beschränktheit, Grenzwert mit ε-Streifen und Grenzwertsätzen, beide Summenformeln mit ihren Herleitungen und die unendliche geometrische Reihe — mit gerechneten Figuren und Musterrechnungen auf zwei Seiten. Zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>Übungsaufgaben</h2>
+    <p>Sechzehn Aufgaben auf vier Stufen, je vier auf jeder. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu. Tipps gibt es auf Knopfdruck, nach dem Prüfen steht die Musterlösung darunter.</p>
+    <p class="progress-note">Zahlen gibst du mit Komma ein, zum Beispiel 2,5; Brüche wie 3/11 sind ebenfalls erlaubt.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 01 Analysis</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Formelsammlung — Folgen und Reihen</title>
+<style>
+  @page { size: A4 landscape; margin: 5.5mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    color: #1f2328;
+    font-size: 8.1px;
+    line-height: 1.33;
+  }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  h1 {
+    font-size: 12.4px; margin: 0 0 1.4mm; padding-bottom: 0.8mm;
+    border-bottom: 1.6px solid #1d4ed8; color: #1d4ed8; letter-spacing: 0.01em;
+  }
+  h1 .klein { font-size: 8.4px; font-weight: 400; color: #5b6570; float: right; margin-top: 2px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2.1mm; align-items: start; }
+  .box {
+    border: 0.9px solid #c9d0d8; border-radius: 2mm; padding: 1.5mm 1.8mm;
+    background: #ffffff; break-inside: avoid;
+  }
+  .box.wide { grid-column: span 2; }
+  .box.full { grid-column: span 3; }
+  .box h2 {
+    font-size: 8.6px; margin: 0 0 1.1mm; color: #1d4ed8;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .box.warn { border-color: #e3b341; background: #fffaf0; }
+  .box.warn h2 { color: #8a5b0a; }
+  .box.merk { border-color: #7ec699; background: #f4fbf6; }
+  .box.merk h2 { color: #0f5132; }
+  p { margin: 0 0 0.9mm; }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 0.9mm; padding-left: 3.4mm; }
+  li { margin-bottom: 0.4mm; }
+  .f { font-family: "Cambria Math", Cambria, Georgia, serif; font-size: 9.2px; }
+  .zentral { text-align: center; }
+  .gross { font-size: 10.4px; font-weight: 700; }
+  .al { color: #157347; font-weight: 700; }
+  .be { color: #b3650a; font-weight: 700; }
+  .ga { color: #b3261e; font-weight: 700; }
+  .kr { color: #1d4ed8; font-weight: 700; }
+  .ra { color: #6d28d9; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { border: 0.7px solid #c9d0d8; padding: 0.5mm 0.6mm; text-align: center; }
+  th { background: #eef2f6; font-weight: 700; font-size: 7.4px; }
+  td { font-size: 7.6px; }
+  td.b { font-weight: 700; }
+  td.l { text-align: left; }
+  figure { margin: 0.8mm 0 0; }
+  figure svg { display: block; width: 100%; height: auto; }
+  .m70 { max-width: 70%; margin: 0.8mm auto 0; }
+  .m80 { max-width: 80%; margin: 0.8mm auto 0; }
+  .m88 { max-width: 88%; margin: 0.8mm auto 0; }
+  .m62 { max-width: 62%; margin: 0.8mm auto 0; }
+  .m72 { max-width: 72%; margin: 0.8mm auto 0; }
+  .m55 { max-width: 55%; margin: 0.8mm auto 0; }
+  .bu { font-size: 7.1px; color: #5b6570; text-align: center; margin-top: 0.5mm; }
+  .rechnung { background: #f4f6f8; border-radius: 1.2mm; padding: 1mm 1.2mm; margin: 0.8mm 0 0; }
+  .schritt { display: flex; gap: 1.2mm; margin-bottom: 0.5mm; }
+  .schritt b { flex: 0 0 3.6mm; color: #1d4ed8; }
+  .schritt:last-child { margin-bottom: 0; }
+  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm; align-items: start; }
+  .bruch { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; margin: 0 0.3mm; }
+  .bruch .z { border-bottom: 0.8px solid currentColor; padding: 0 0.6mm; }
+  .binom { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; padding: 0 0.9mm; margin: 0 0.3mm; border-left: 0.9px solid currentColor; border-right: 0.9px solid currentColor; border-radius: 45% / 50%; font-size: 92%; }
+  .tr { color: #157347; font-weight: 700; }
+  .ni { color: #b3650a; font-weight: 700; }
+  .fu { color: #5b6570; font-size: 7.3px; }
+  .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ===================== Seite 1 ===================== -->
+<div class="page">
+  <h1>Folgen und Reihen<span class="klein">MSS 11 · Analysis, Thema 1 · <span class="fu">grau: andere Schreibweisen</span></span></h1>
+  <div class="grid">
+
+    <div class="box merk">
+      <h2>Folge — explizit und rekursiv</h2>
+      <p>Eine <b>Folge</b> (aₙ) ordnet jeder natürlichen Zahl n ≥ 1 eine reelle Zahl aₙ zu (n-tes Glied, n = Index). Der Graph besteht aus <b>einzelnen Punkten</b> (n | aₙ).</p>
+      <p><b>Explizit:</b> aₙ als Term in n — direkt einsetzen. <span class="f">aₙ = 2n − 1</span></p>
+      <p><b>Rekursiv:</b> Anfangsglied + Bildungsregel — man braucht die Vorgänger. <span class="f">a₁ = 1, a<sub>n+1</sub> = aₙ + 2</span></p>
+      <p class="fu">auch: (aₙ)<sub>n∈ℕ*</sub>, ⟨aₙ⟩; manche Bücher beginnen mit a₀ — dann verschieben sich alle Exponenten um eins.</p>
+    </div>
+
+    <div class="box wide">
+      <h2>Arithmetische und geometrische Folgen</h2>
+      <div class="zwei">
+        <div>
+          <p><b>Arithmetisch:</b> a<sub>n+1</sub> − aₙ = d (konstant)</p>
+          <p class="zentral f gross">aₙ = a₁ + (n − 1) · d</p>
+          <figure class="m70">[[FIG1]]</figure>
+        </div>
+        <div>
+          <p><b>Geometrisch:</b> a<sub>n+1</sub> : aₙ = q (konstant, a₁, q ≠ 0)</p>
+          <p class="zentral f gross">aₙ = a₁ · q<sup>n−1</sup></p>
+          <figure class="m70">[[FIG2]]</figure>
+        </div>
+      </div>
+      <p class="bu">n Glieder, aber n − 1 Schritte. Arithmetisch = lineare Funktion an den Stellen 1, 2, 3, …; geometrisch = Exponentialfunktion. q &lt; 0: alternierend.</p>
+    </div>
+
+    <div class="box">
+      <h2>Monotonie und Beschränktheit</h2>
+      <table>
+        <tr><th>Eigenschaft</th><th>für alle n</th></tr>
+        <tr><td class="l">(streng) monoton steigend</td><td class="f">a<sub>n+1</sub> ≥ aₙ (&gt;)</td></tr>
+        <tr><td class="l">(streng) monoton fallend</td><td class="f">a<sub>n+1</sub> ≤ aₙ (&lt;)</td></tr>
+        <tr><td class="l">nach oben beschränkt</td><td class="f">aₙ ≤ S</td></tr>
+        <tr><td class="l">nach unten beschränkt</td><td class="f">aₙ ≥ s</td></tr>
+      </table>
+      <div class="rechnung">
+        <div class="schritt"><b>Bsp.</b><span><span class="f">aₙ = (n − 1)/n</span>: a<sub>n+1</sub> − aₙ = 1/(n(n + 1)) &gt; 0 — streng steigend; 0 ≤ aₙ &lt; 1 — beschränkt.</span></div>
+      </div>
+      <p>Endlich viele Glieder beweisen nichts — die Begründung muss für <b>jedes</b> n gelten.</p>
+    </div>
+
+    <div class="box merk wide">
+      <h2>Grenzwert einer Folge — der ε-Streifen</h2>
+      <div class="zwei">
+        <div>
+          <p>g heißt <b>Grenzwert</b> von (aₙ), wenn es zu <b>jedem</b> ε &gt; 0 ein n₀ gibt mit</p>
+          <p class="zentral f gross">|aₙ − g| &lt; ε für alle n ≥ n₀</p>
+          <p>Schreibweise: <span class="f">lim<sub>n→∞</sub> aₙ = g</span> <span class="fu">(auch: aₙ → g für n → ∞)</span>. Grenzwert 0: <b>Nullfolge</b>; kein Grenzwert: <b>divergent</b>.</p>
+          <div class="rechnung">
+            <div class="schritt"><b>n₀</b><span><span class="f">|2 + 1/n − 2| = 1/n &lt; 0,2 ⟺ n &gt; 5</span> ⟹ n₀ = 6. Bei n = 5 ist der Abstand genau ε — noch draußen.</span></div>
+          </div>
+        </div>
+        <div>
+          <figure>[[FIG3]]</figure>
+          <p class="bu">Grün: im Streifen, rot: draußen. Nur endlich viele Glieder bleiben draußen.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Nullfolgen und Grenzwertsätze</h2>
+      <p>Nullfolgen: <span class="f">1/n, 1/n², 1/√n, qⁿ (|q| &lt; 1)</span></p>
+      <p>Aus aₙ → a und bₙ → b folgt</p>
+      <p class="zentral f">aₙ ± bₙ → a ± b, &nbsp; aₙ · bₙ → a · b, &nbsp; aₙ : bₙ → a : b (b ≠ 0)</p>
+      <div class="rechnung">
+        <div class="schritt"><b>Bsp.</b><span><span class="f"><span class="bruch"><span class="z">3n² + n</span><span>2n² − 5</span></span> = <span class="bruch"><span class="z">3 + 1/n</span><span>2 − 5/n²</span></span> → <span class="bruch"><span class="z">3</span><span>2</span></span></span> — durch die höchste Potenz kürzen.</span></div>
+      </div>
+      <p><b>Divergent</b> sind z. B. (n²), (2ⁿ) und (−1)ⁿ — die letzte ist beschränkt, aber springt zwischen −1 und 1.</p>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik MSS 11 · Analysis · Seite 1 von 2</p>
+</div>
+
+<!-- ===================== Seite 2 ===================== -->
+<div class="page">
+  <h1>Reihen: Partialsummen und unendliche Summen<span class="klein">Gauß-Trick — Verschiebetrick — unendliche geometrische Reihe</span></h1>
+  <div class="grid">
+
+    <div class="box merk wide">
+      <h2>Partialsummen</h2>
+      <p>Die Folge der Partialsummen <span class="f">sₙ = a₁ + a₂ + … + aₙ</span> heißt <b>Reihe</b>. <span class="fu">Auch: sₙ = Σ<sub>k=1</sub><sup>n</sup> a<sub>k</sub></span></p>
+      <div class="zwei">
+        <div>
+          <p><b>Arithmetisch</b> (Gauß): zwei Treppen = Rechteck</p>
+          <p class="zentral f gross">sₙ = <span class="bruch"><span class="z">n · (a₁ + aₙ)</span><span>2</span></span></p>
+          <figure class="m80">[[FIG4]]</figure>
+        </div>
+        <div>
+          <p><b>Geometrisch</b> (q ≠ 1): sₙ − q · sₙ = a₁ − a₁qⁿ</p>
+          <p class="zentral f gross">sₙ = a₁ · <span class="bruch"><span class="z">1 − qⁿ</span><span>1 − q</span></span></p>
+          <figure class="m80">[[FIG5]]</figure>
+          <p class="bu">Für q = 1: sₙ = n · a₁.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box merk">
+      <h2>Unendliche geometrische Reihe</h2>
+      <p>Für <b>|q| &lt; 1</b> ist qⁿ eine Nullfolge, und</p>
+      <p class="zentral f gross">a₁ + a₁q + a₁q² + … = <span class="bruch"><span class="z">a₁</span><span>1 − q</span></span></p>
+      <p>Abstand: <span class="f">s − sₙ = a₁qⁿ : (1 − q)</span>. Für |q| ≥ 1 divergiert die Reihe.</p>
+      <figure class="m80">[[FIG6]]</figure>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 1 — Summe</h2>
+      <p><b>Gegeben:</b> 3 + 7 + 11 + … + 79.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>d = 4, Anzahl: (79 − 3) : 4 + 1 = 20</span></div>
+        <div class="schritt"><b>2.</b><span><span class="f">s₂₀ = 20 · (3 + 79) : 2 = <b>820</b></span></span></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 2 — periodisch</h2>
+      <p><b>Gegeben:</b> 0,<span style="text-decoration:overline">27</span> als Bruch.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>0,27 + 0,0027 + … mit a₁ = 0,27, q = 0,01</span></div>
+        <div class="schritt"><b>2.</b><span><span class="f">s = 0,27 : 0,99 = 27/99 = <b>3/11</b></span></span></div>
+      </div>
+      <p>Ebenso 0,<span style="text-decoration:overline">9</span> = 0,9 : 0,9 = 1 genau.</p>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 3 — springender Ball</h2>
+      <p><b>Gegeben:</b> Fall aus 2 m, Rücksprung jeweils auf ¾ der Höhe.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>Sprunghöhen: 1,5 + 1,125 + … = 1,5 : (1 − ¾) = 6</span></div>
+        <div class="schritt"><b>2.</b><span>Jede Sprunghöhe zweimal: <span class="f">2 + 2 · 6 = <b>14 m</b></span></span></div>
+      </div>
+    </div>
+
+    <div class="box warn wide">
+      <h2>Typische Fehler</h2>
+      <ul>
+        <li><b>n statt n − 1 Schritte:</b> a₁₀ = a₁ + 9d, nicht a₁ + 10d.</li>
+        <li><b>„Kommt immer näher“ als Grenzwert:</b> 1/n kommt −1 immer näher, aber nie näher als 1. Entscheidend ist „beliebig nah, und dann für immer“.</li>
+        <li><b>≤ statt &lt; beim n₀:</b> Bei |aₙ − g| = ε liegt das Glied noch nicht im Streifen.</li>
+        <li><b>Summanden → 0 heißt nicht konvergent:</b> Die harmonische Reihe 1 + ½ + ⅓ + … wächst über jede Grenze — jeder Block 1/(2<sup>k−1</sup> + 1) bis 1/2<sup>k</sup> bringt mindestens ½.</li>
+        <li><b>a₁/(1 − q) für |q| ≥ 1</b> angewendet — dort gibt es keinen Grenzwert.</li>
+      </ul>
+    </div>
+
+    <div class="box" style="border-style:dashed;background:#f7f8fa">
+      <h2 style="color:#5b6570">Ausblick</h2>
+      <p>Der ε-Streifen kehrt bei den <b>Grenzwerten von Funktionen</b> wieder (Thema 2). Die Ableitung ist der Grenzwert einer Folge von Sekantensteigungen, das Integral der Grenzwert von Rechtecksummen — dort helfen die Summenformeln.</p>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik MSS 11 · Analysis · Seite 2 von 2</p>
+</div>
+
+</body>
+</html>
