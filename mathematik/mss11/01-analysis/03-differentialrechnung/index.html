@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Differentialrechnung</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="../../../aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">MSS 11</a><span class="sep">/</span>
+  <a href="../index.html">01 Analysis</a><span class="sep">/</span>
+  3 Differentialrechnung
+</nav>
+<header class="page-header">
+  <h1>Differentialrechnung</h1>
+  <p>Ein Selbstlernpfad: Wie schnell ändert sich etwas — nicht im Durchschnitt, sondern genau jetzt? Aus dieser Frage entsteht die Ableitung. Jeder Abschnitt leitet sein Ergebnis an einer beweglichen Darstellung her, rechnet es nach und endet mit einer Kontrollfrage. Am Schluss stehen zwanzig Übungsaufgaben auf vier Stufen, die du hier auf der Seite löst.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Ein Stein fällt, ein Kurs steigt, ein Wasserstand sinkt: Überall ändert sich eine Größe mit der Zeit oder mit einer anderen Größe. Wie stark sie sich <em>im Mittel</em> ändert, sagt ein Quotient aus zwei Differenzen. Wie stark sie sich <em>in einem Augenblick</em> ändert, sagt die <span class="term">Ableitung</span> — der Grenzwert dieser Quotienten. Sie ist der Grundbegriff der Differentialrechnung, und mit ihr werden in Thema 5 Funktionen untersucht. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>die <span class="term">mittlere Änderungsrate</span> als Sekantensteigung und die <span class="term">lokale Änderungsrate</span> als Tangentensteigung deuten und berechnen</li>
+      <li>die Ableitung f′(x₀) als Grenzwert des Differenzenquotienten erklären und mit der <span class="term">h-Methode</span> bestimmen</li>
+      <li>zu einem Graphen den Graphen der <span class="term">Ableitungsfunktion</span> skizzieren</li>
+      <li>mit <span class="term">Potenz-, Faktor- und Summenregel</span> ableiten, dazu sin und cos — und Produkte und Verkettungen</li>
+      <li>Gleichungen von <span class="term">Tangente und Normale</span> aufstellen und Steigungs- und Schnittwinkel berechnen</li>
+      <li>entscheiden, ob eine Funktion an einer Stelle <span class="term">differenzierbar</span> ist</li>
+      <li>ganzrationale Funktionen auf Verlauf für x → ±∞, <span class="term">Symmetrie</span> und <span class="term">Nullstellen mit Vielfachheit</span> untersuchen</li>
+      <li>am Graphen von f′ ablesen, wo f steigt, fällt und <span class="term">Hoch- und Tiefpunkte</span> hat</li>
+    </ul>
+    <div class="notation-box" id="wegweiser">
+      <span class="box-label">Wegweiser — wo steht das in deinem Buch?</span>
+      Die beiden Lehrwerke gehen verschieden vor. <strong>Elemente der Mathematik</strong> beginnt mit den Änderungsraten und baut die Ableitung Schritt für Schritt auf. <strong>Fundamente der Mathematik</strong> stellt die ganzrationalen Funktionen mit Symmetrie, Nullstellen und Extrempunkten an den Anfang. Diese Seite folgt dem Weg über die Änderungsraten, weil die Ableitung dort entsteht, wo man sie braucht. Die ganzrationalen Funktionen kommen danach in den Abschnitten 11 und 12. Du kannst sie auch vorziehen: Sie setzen von der Ableitung nichts voraus — nur die mit „Verbindung zur Ableitung“ überschriebenen Kästen liest du dann erst später.
+      <table class="bk-notation">
+        <thead><tr><th>Abschnitt auf dieser Seite</th><th>Elemente der Mathematik</th><th>Fundamente der Mathematik</th></tr></thead>
+        <tbody>
+          <tr><td>1 Mittlere Änderungsrate</td><td>2.1.1</td><td>Mittlere Änderungsrate</td></tr>
+          <tr><td>2 Lokale Änderungsrate</td><td>2.1.2</td><td>Lokale Änderungsrate, Steigung und Ableitung</td></tr>
+          <tr><td>3 Ableitung an einer Stelle</td><td>2.1.2, 2.1.4, Blickpunkt Newton und Leibniz</td><td>Lokale Änderungsrate, Steigung und Ableitung</td></tr>
+          <tr><td>4 Grafisches Differenzieren</td><td>2.1.3, 2.2.1</td><td>—</td></tr>
+          <tr><td>5 Potenzregel</td><td>2.1.4, 2.1.5</td><td>Potenzregel</td></tr>
+          <tr><td>6 Faktor- und Summenregel</td><td>2.3.1, 2.3.2</td><td>Faktorregel, Summenregel</td></tr>
+          <tr><td>7 Sinus und Kosinus</td><td>2.2.3</td><td>Sinus- und Kosinusfunktion</td></tr>
+          <tr><td>8 Produkt- und Kettenregel</td><td>2.3.3</td><td>—</td></tr>
+          <tr><td>9 Tangente, Normale, Winkel</td><td>—</td><td>Tangenten- und Normalengleichung; Steigung, Steigungs- und Schnittwinkel</td></tr>
+          <tr><td>10 Differenzierbarkeit</td><td>2.4</td><td>Stetigkeit und Differenzierbarkeit</td></tr>
+          <tr><td>11 Ganzrationale Funktionen</td><td>—</td><td>Ganzrationale Funktionen; Symmetrieverhalten</td></tr>
+          <tr><td>12 Nullstellen und Vielfachheit</td><td>—</td><td>Methoden zum Ermitteln von Nullstellen</td></tr>
+          <tr><td>13 f und f′: Monotonie, Extrempunkte</td><td>2.2.2</td><td>Monotonie, lokale und globale Extrema</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="notation-box">
+      <span class="box-label">Schreibweisen — dieselbe Sache, verschiedene Bücher</span>
+      Diese Seite benutzt die linke Spalte.
+      <table class="bk-notation">
+        <thead><tr><th>Bedeutung</th><th>auf dieser Seite</th><th>auch üblich</th></tr></thead>
+        <tbody>
+          <tr><td>Differenzenquotient</td><td><span class="bruch"><span class="z">f(x₀ + h) − f(x₀)</span><span class="n">h</span></span></td><td><span class="bruch"><span class="z">f(x) − f(x₀)</span><span class="n">x − x₀</span></span>, <span class="bruch"><span class="z">Δy</span><span class="n">Δx</span></span></td></tr>
+          <tr><td>Ableitung an der Stelle x₀</td><td>f′(x₀)</td><td><span class="bruch"><span class="z">df</span><span class="n">dx</span></span>(x₀), <span class="bruch"><span class="z">dy</span><span class="n">dx</span></span> (Leibniz), ṡ(t₀) bei der Zeit (Newton)</td></tr>
+          <tr><td>Ableitungsfunktion</td><td>f′</td><td>y′, <span class="bruch"><span class="z">df</span><span class="n">dx</span></span></td></tr>
+          <tr><td>Tangente in P(x₀ | f(x₀))</td><td>t(x) = f′(x₀) · (x − x₀) + f(x₀)</td><td>t(x) = m · x + n (Fundamente), y = mx + b</td></tr>
+          <tr><td>Steigungswinkel</td><td>α = tan⁻¹(m)</td><td>α = arctan(m)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../02-grenzwerte-und-stetigkeit/index.html">Thema 2</a> den <a href="../02-grenzwerte-und-stetigkeit/index.html#sec-stelle">Grenzwert an einer Stelle mit der h-Methode</a>, aus der Mittelstufe die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/05-lineare-funktionen/index.html#sec-steigung">Steigung einer Geraden</a>, die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/04-terme/index.html#sec-binomisch">binomischen Formeln</a>, die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/08-quadratische-funktionen/index.html#sec-pq">pq-Formel</a> und das <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/12-trigonometrische-funktionen/index.html#sec-bogenmass">Bogenmaß</a>.</p>
+  </section>
+
+  <!-- 1. Mittlere Änderungsrate -->
+  <section class="card" id="sec-mittlere">
+    <h2>1. Mittlere Änderungsrate und Sekantensteigung</h2>
+    <p>Ein Stein fällt aus der Ruhe. Nach t Sekunden hat er ungefähr s(t) = 5t² Meter zurückgelegt (das ist ½ · g · t² mit der auf 10 m/s² gerundeten Fallbeschleunigung, ohne Luftwiderstand). Wie schnell ist er? Eine erste ehrliche Antwort ist die <span class="term">Durchschnittsgeschwindigkeit</span>: zurückgelegter Weg durch die dafür gebrauchte Zeit. Allgemein heißt dieser Quotient <span class="term">mittlere Änderungsrate</span>. Im Graphen ist er die Steigung der Geraden durch die beiden Punkte — der <span class="term">Sekante</span>. Das Steigungsdreieck kennst du von den linearen Funktionen. Wähle das Intervall [a; b].</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="mr-art" class="eingabe" style="padding:0.4rem">
+            <option value="fall">freier Fall: s(t) = 5t²</option>
+            <option value="para">f(x) = x²</option>
+            <option value="kubik">f(x) = 0,5x³ − 1,5x</option>
+          </select>
+        </label>
+        <label>a: <input type="range" id="mr-a" min="0" max="3.5" step="0.5" value="1" style="vertical-align:middle;width:9rem"> <span id="mr-a-anzeige" class="wert farbe-orange"></span></label>
+        <label>b: <input type="range" id="mr-b" min="0.5" max="4" step="0.5" value="3" style="vertical-align:middle;width:9rem"> <span id="mr-b-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap" id="mr-mount"></div>
+      <div class="th-bilanz" id="mr-bilanz"></div>
+      <div id="mr-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Mittlere Änderungsrate</span>
+      Für eine Funktion f und ein Intervall [a; b] heißt
+      <div class="formula-block"><span class="bruch gross"><span class="z">f(b) − f(a)</span><span class="n">b − a</span></span></div>
+      die <strong>mittlere Änderungsrate</strong> von f im Intervall [a; b]; man nennt den Quotienten auch <strong>Differenzenquotient</strong>. Geometrisch ist er die Steigung der <strong>Sekante</strong> durch A(a | f(a)) und B(b | f(b)).
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      f(x) = x² im Intervall [1; 2]: <span class="bruch"><span class="z">f(2) − f(1)</span><span class="n">2 − 1</span></span> = <span class="bruch"><span class="z">4 − 1</span><span class="n">1</span></span> = 3.<br>
+      Freier Fall von t = 1 s bis t = 3 s: <span class="bruch"><span class="z">s(3) − s(1)</span><span class="n">3 − 1</span></span> = <span class="bruch"><span class="z">45 m − 5 m</span><span class="n">2 s</span></span> = 20 <span class="bruch"><span class="z">m</span><span class="n">s</span></span>. Der Stein ist in diesen zwei Sekunden im Mittel 20 Meter pro Sekunde schnell — am Anfang langsamer, am Ende schneller.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — ein Mittelwert verschweigt, was dazwischen passiert</span>
+      Bei f(x) = 0,5x³ − 1,5x im Intervall [−2; 2] ist f(−2) = −1 und f(2) = 1, die mittlere Änderungsrate also <span class="bruch"><span class="z">2</span><span class="n">4</span></span> = 0,5 — positiv. Trotzdem fällt der Graph zwischen −1 und 1. Und eine Änderungsrate hat eine <strong>Einheit</strong>: „Einheit von f pro Einheit von x“, also m/s, °C pro Stunde oder Euro pro Stück.
+    </div>
+    <div class="quiz" id="quiz-mittlere"></div>
+  </section>
+
+  <!-- 2. Lokale Änderungsrate -->
+  <section class="card" id="sec-lokal">
+    <h2>2. Lokale Änderungsrate: von der Sekante zur Tangente</h2>
+    <p>Die Durchschnittsgeschwindigkeit hängt vom Intervall ab. Die Geschwindigkeit <em>in einem Augenblick</em> t₀ — die Momentangeschwindigkeit, die ein Tacho anzeigt — bekommt man, indem man das Intervall immer kleiner macht. Man hält den Punkt P(x₀ | f(x₀)) fest und lässt den zweiten Punkt Q(x₀ + h | f(x₀ + h)) auf P zulaufen. Die Sekanten durch P und Q drehen sich dabei in eine Grenzlage. Schiebe h gegen 0 — von rechts und von links.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="lr-art" class="eingabe" style="padding:0.4rem">
+            <option value="para">f(x) = x²</option>
+            <option value="kubik">f(x) = 0,5x³ − 1,5x</option>
+            <option value="wurzel">f(x) = √x</option>
+          </select>
+        </label>
+        <label>x₀: <input type="range" id="lr-x" min="-2" max="2" step="0.5" value="1" style="vertical-align:middle;width:8rem"> <span id="lr-x-anzeige" class="wert farbe-blau"></span></label>
+        <label>h: <input type="range" id="lr-h" min="0" max="9" step="1" value="9" style="vertical-align:middle;width:10rem"> <span id="lr-h-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap" id="lr-mount"></div>
+      <div class="fr-tabelle-wrap" id="lr-tabelle"></div>
+      <div class="th-bilanz" id="lr-bilanz"></div>
+      <div id="lr-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Lokale Änderungsrate und Tangente</span>
+      Nähern sich die Differenzenquotienten
+      <div class="formula-block"><span class="bruch gross"><span class="z">f(x₀ + h) − f(x₀)</span><span class="n">h</span></span> &nbsp; für h → 0</div>
+      von beiden Seiten derselben Zahl, so heißt sie <strong>lokale</strong> (oder momentane) <strong>Änderungsrate</strong> von f an der Stelle x₀. Die Gerade durch P mit dieser Steigung ist die Grenzlage der Sekanten; sie heißt <strong>Tangente</strong> an den Graphen im Punkt P.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: eine Vermutung aus der Tabelle</span>
+      f(x) = x² bei x₀ = 1: h = 0,1 liefert <span class="bruch"><span class="z">1,1² − 1²</span><span class="n">0,1</span></span> = 2,1; h = 0,01 liefert 2,01; h = 0,001 liefert 2,001. Von links (h = −0,001) kommt 1,999. Vermutung: Die lokale Änderungsrate ist 2.<br>
+      Freier Fall bei t₀ = 2 s: <span class="bruch"><span class="z">5 · (2 + h)² − 20</span><span class="n">h</span></span> = <span class="bruch"><span class="z">20h + 5h²</span><span class="n">h</span></span> = 20 + 5h → 20. Die Momentangeschwindigkeit ist 20 m/s.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — h = 0 einsetzen geht nicht</span>
+      Mit h = 0 fielen P und Q zusammen, und der Differenzenquotient wäre <span class="bruch"><span class="z">0</span><span class="n">0</span></span> — durch eine Sekante durch nur einen Punkt ist keine Gerade bestimmt. Deshalb braucht man den <em>Grenzwert</em> aus Thema 2: erst vereinfachen, dann h gegen 0 gehen lassen.
+    </div>
+    <div class="quiz" id="quiz-lokal"></div>
+  </section>
+
+  <!-- 3. Ableitung an einer Stelle -->
+  <section class="card" id="sec-ableitung">
+    <h2>3. Die Ableitung an einer Stelle — und das Funktionenmikroskop</h2>
+    <p>Die lokale Änderungsrate bekommt jetzt einen Namen: <span class="term">Ableitung</span>. Es gibt noch eine dritte Sicht auf dieselbe Zahl. Vergrößere einen immer kleineren Ausschnitt um P, so als ob du den Graphen unter ein Mikroskop legst. Der Graph wird dabei immer gerader und ist schließlich von der Tangente nicht mehr zu unterscheiden. Die Ableitung ist die Steigung, die der Graph „im Kleinen“ hat. Stell eine starke Vergrößerung ein und probiere auch die Stellen ±1 bei |x² − 1|.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="fm-art" class="eingabe" style="padding:0.4rem">
+            <option value="para">f(x) = x²</option>
+            <option value="kubik">f(x) = 0,5x³ − 1,5x</option>
+            <option value="betrag">f(x) = |x² − 1|</option>
+          </select>
+        </label>
+        <label>x₀: <input type="range" id="fm-x" min="-2" max="2" step="0.5" value="1" style="vertical-align:middle;width:8rem"> <span id="fm-x-anzeige" class="wert farbe-blau"></span></label>
+        <label>Vergrößerung: <input type="range" id="fm-z" min="0" max="5" step="1" value="0" style="vertical-align:middle;width:9rem"> <span id="fm-z-anzeige" class="wert farbe-violett"></span></label>
+      </div>
+      <div class="geo-wrap" id="fm-mount"></div>
+      <div class="th-bilanz" id="fm-bilanz"></div>
+      <div id="fm-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Ableitung an einer Stelle</span>
+      Existiert der Grenzwert
+      <div class="formula-block">f′(x₀) = lim<sub>h→0</sub> <span class="bruch gross"><span class="z">f(x₀ + h) − f(x₀)</span><span class="n">h</span></span> &nbsp; = &nbsp; lim<sub>x→x₀</sub> <span class="bruch gross"><span class="z">f(x) − f(x₀)</span><span class="n">x − x₀</span></span>,</div>
+      so heißt f an der Stelle x₀ <strong>differenzierbar</strong>, und f′(x₀) heißt <strong>Ableitung</strong> von f an der Stelle x₀ (gelesen „f Strich von x₀“). Beide Schreibweisen sagen dasselbe: Setzt man x = x₀ + h, wird x − x₀ zu h.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Drei Sichten auf dieselbe Zahl f′(x₀)</span>
+      <strong>lokale Änderungsrate</strong> — wie stark sich f an der Stelle x₀ ändert (beim freien Fall: die Momentangeschwindigkeit);<br>
+      <strong>Tangentensteigung</strong> — die Steigung der Tangente an den Graphen in P(x₀ | f(x₀));<br>
+      <strong>Steigung im Kleinen</strong> — unter starker Vergrößerung sieht der Graph um P aus wie eine Gerade mit der Steigung f′(x₀).
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: die h-Methode</span>
+      f(x) = x², x₀ = 1:
+      <div class="formula-block">f′(1) = lim<sub>h→0</sub> <span class="bruch"><span class="z">(1 + h)² − 1</span><span class="n">h</span></span> = lim<sub>h→0</sub> <span class="bruch"><span class="z">2h + h²</span><span class="n">h</span></span> = lim<sub>h→0</sub> (2 + h) = 2</div>
+      Das Kürzen durch h ist erlaubt, weil h ≠ 0 ist. Die Vermutung aus der Tabelle in Abschnitt 2 ist damit bewiesen.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — ein Knick bleibt ein Knick</span>
+      Bei |x² − 1| an der Stelle 1 wird der Graph unter dem Mikroskop nicht gerade: Links fällt er mit der Steigung −2, rechts steigt er mit der Steigung 2 — bei jeder Vergrößerung. Es gibt keine Tangente und keine Ableitung. Wann das passiert, untersucht Abschnitt 10.
+    </div>
+    <p class="hinweis-box">💡 <strong>Blickpunkt: Newton und Leibniz.</strong> Isaac Newton entwickelte seine „Fluxionsrechnung“ um 1665/66, veröffentlichte sie aber erst Jahrzehnte später. Gottfried Wilhelm Leibniz kam unabhängig auf dieselben Ideen und veröffentlichte 1684 als Erster. Daraus wurde einer der bittersten Prioritätsstreite der Wissenschaftsgeschichte: 1712 erklärte ein Ausschuss der Royal Society — gelenkt von Newton selbst — Newton zum Erfinder. Heute gilt als sicher, dass beide die Differentialrechnung unabhängig voneinander gefunden haben. Durchgesetzt hat sich vor allem Leibniz’ Schreibweise: <span class="bruch"><span class="z">dy</span><span class="n">dx</span></span> erinnert daran, dass die Ableitung aus dem Quotienten <span class="bruch"><span class="z">Δy</span><span class="n">Δx</span></span> entsteht. Newtons Punkt (ṡ für die Geschwindigkeit) lebt in der Physik weiter.</p>
+    <div class="quiz" id="quiz-ableitung"></div>
+  </section>
+
+  <!-- 4. Grafisches Differenzieren -->
+  <section class="card" id="sec-grafisch">
+    <h2>4. Grafisches Differenzieren: Die Ableitungsfunktion entsteht</h2>
+    <p>Zu jeder Stelle x₀ gehört eine Tangentensteigung f′(x₀). Ordnet man jeder Stelle x diese Zahl zu, entsteht eine neue Funktion — die <span class="term">Ableitungsfunktion</span> f′. Ihren Graphen kann man zeichnen, ohne eine Formel zu kennen: Lege an P die Tangente und gehe vom Berührpunkt <strong>eine Einheit nach rechts</strong>. Wie weit die Tangente dabei steigt oder fällt, ist f′(x₀). Diesen Wert trägst du unten als Punkt (x₀ | f′(x₀)) ein. Fahre mit x₀ über den Graphen.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="gd-art" class="eingabe" style="padding:0.4rem">
+            <option value="para">f(x) = x²</option>
+            <option value="kubik">f(x) = 0,5x³ − 1,5x</option>
+            <option value="quartik">f(x) = 0,5x⁴ − x² + 0,5</option>
+            <option value="sinus">f(x) = sin x</option>
+          </select>
+        </label>
+        <label>x₀: <input type="range" id="gd-x" min="-2.5" max="2.5" step="0.1" value="-2" style="vertical-align:middle;width:12rem"> <span id="gd-x-anzeige" class="wert farbe-blau"></span></label>
+        <label><input type="checkbox" id="gd-ganz"> <span class="farbe-gruen">ganzen Graphen von f′ zeigen</span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="gd-mount"></div>
+      <div class="th-bilanz" id="gd-bilanz"></div>
+      <div id="gd-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Ableitungsfunktion</span>
+      Die Funktion f′, die jeder Stelle x, an der f differenzierbar ist, die Ableitung f′(x) zuordnet, heißt <strong>Ableitungsfunktion</strong> oder kurz <strong>Ableitung</strong> von f. Das Bestimmen von f′ heißt <strong>Ableiten</strong> oder <strong>Differenzieren</strong>.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">So liest man den Graphen von f′</span>
+      Wo f steigt, liegt der Graph von f′ oberhalb der x-Achse; wo f fällt, liegt er unterhalb. Wo f eine waagerechte Tangente hat, hat f′ eine Nullstelle. Je steiler f, desto weiter ist f′ von der x-Achse entfernt. Die <em>Höhe</em> des Graphen von f spielt dabei keine Rolle — nur seine Steigung.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: f(x) = x²</span>
+      Die Tangentensteigungen an den Stellen −2, −1, 0, 1, 2 sind −4, −2, 0, 2, 4. Die Punkte liegen auf einer Geraden durch den Ursprung mit der Steigung 2. Vermutung: f′(x) = 2x. Abschnitt 5 beweist sie.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — f′ ist nicht f</span>
+      Eine Nullstelle von f ist keine Nullstelle von f′: x² − 4 hat bei 2 eine Nullstelle, ist dort aber steil (f′(2) = 4). Und wo f einen Hochpunkt hat, ist f′ gleich 0 — nicht groß. Wer beim Zeichnen von f′ auf die Höhe von f schaut statt auf die Steigung, zeichnet f noch einmal.
+    </div>
+    <div class="quiz" id="quiz-grafisch"></div>
+  </section>
+
+  <!-- 5. Potenzregel -->
+  <section class="card" id="sec-potenz">
+    <h2>5. Ableitungen berechnen: x² und die Potenzregel</h2>
+    <p>Jetzt rechnerisch und an einer beliebigen Stelle x. Für f(x) = x² liefert die h-Methode <span class="bruch"><span class="z">(x + h)² − x²</span><span class="n">h</span></span> = <span class="bruch"><span class="z">2xh + h²</span><span class="n">h</span></span> = 2x + h → 2x. Warum gerade 2x? Ein Quadrat mit der Seite x hat den Flächeninhalt x². Verlängert man die Seite um h, kommen zwei Streifen x · h und ein kleines Eckquadrat h · h dazu. Mach h klein und sieh zu, wie das Eckquadrat viel schneller verschwindet als die Streifen.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>x: <input type="range" id="pq-x" min="1" max="3" step="0.5" value="2" style="vertical-align:middle;width:9rem"> <span id="pq-x-anzeige" class="wert farbe-blau"></span></label>
+        <label>h: <input type="range" id="pq-h" min="0.05" max="1" step="0.05" value="0.8" style="vertical-align:middle;width:12rem"> <span id="pq-h-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap" id="pq-mount"></div>
+      <div class="th-bilanz" id="pq-bilanz"></div>
+      <div id="pq-text" class="event-result"></div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Dieselbe Rechnung für x³, <span class="bruch"><span class="z">1</span><span class="n">x</span></span> und √x</span>
+      <strong>x³:</strong> (x + h)³ = x³ + 3x²h + 3xh² + h³, also <span class="bruch"><span class="z">(x + h)³ − x³</span><span class="n">h</span></span> = 3x² + 3xh + h² → 3x².<br>
+      <strong><span class="bruch"><span class="z">1</span><span class="n">x</span></span> (x ≠ 0):</strong> <span class="bruch"><span class="z">1</span><span class="n">h</span></span> · (<span class="bruch"><span class="z">1</span><span class="n">x + h</span></span> − <span class="bruch"><span class="z">1</span><span class="n">x</span></span>) = <span class="bruch"><span class="z">1</span><span class="n">h</span></span> · <span class="bruch"><span class="z">x − (x + h)</span><span class="n">x(x + h)</span></span> = <span class="bruch"><span class="z">−1</span><span class="n">x(x + h)</span></span> → <span class="bruch"><span class="z">−1</span><span class="n">x²</span></span> = −1 · x⁻².<br>
+      <strong>√x (x &gt; 0):</strong> Erweitern mit √(x + h) + √x wie bei den Wurzeltermen in Thema 2: <span class="bruch"><span class="z">√(x + h) − √x</span><span class="n">h</span></span> = <span class="bruch"><span class="z">(x + h) − x</span><span class="n">h · (√(x + h) + √x)</span></span> = <span class="bruch"><span class="z">1</span><span class="n">√(x + h) + √x</span></span> → <span class="bruch"><span class="z">1</span><span class="n">2√x</span></span> = <span class="bruch"><span class="z">1</span><span class="n">2</span></span> · x<sup>−½</sup>.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Potenzregel</span>
+      <div class="formula-block">f(x) = xⁿ &nbsp; ⟹ &nbsp; f′(x) = n · xⁿ⁻¹ &nbsp; (n ∈ ℤ, n ≠ 0; für n &lt; 0 ist x ≠ 0)</div>
+      Für natürliche n zeigt es die h-Methode: (x + h)ⁿ = xⁿ + n · xⁿ⁻¹ · h + (Summanden mit h², h³, …). Nach Abziehen von xⁿ und Teilen durch h bleibt n · xⁿ⁻¹ plus Summanden, die noch den Faktor h enthalten — und die gehen gegen 0. Für negative n = −k (k ∈ ℕ) rechnet man mit Brüchen wie oben bei <span class="bruch"><span class="z">1</span><span class="n">x</span></span> und benutzt das Ergebnis für k: <span class="bruch"><span class="z">1</span><span class="n">h</span></span> · (<span class="bruch"><span class="z">1</span><span class="n">(x + h)ᵏ</span></span> − <span class="bruch"><span class="z">1</span><span class="n">xᵏ</span></span>) = −<span class="bruch"><span class="z">(x + h)ᵏ − xᵏ</span><span class="n">h</span></span> · <span class="bruch"><span class="z">1</span><span class="n">(x + h)ᵏ · xᵏ</span></span> → −k · xᵏ⁻¹ · <span class="bruch"><span class="z">1</span><span class="n">x²ᵏ</span></span> = −k · x⁻ᵏ⁻¹. Außerdem: Eine Konstante hat die Ableitung 0, und x hat die Ableitung 1.<br>
+      Die Regel gilt sogar für rationale Exponenten (x &gt; 0): √x = x<sup>½</sup> hat die Ableitung <span class="bruch"><span class="z">1</span><span class="n">2</span></span> · x<sup>−½</sup>, wie eben nachgerechnet. Allgemein folgt das in Abschnitt 8 aus der Kettenregel.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — „Exponent nach vorn, Exponent minus 1“ gilt auch bei negativen Exponenten</span>
+      <span class="bruch"><span class="z">1</span><span class="n">x²</span></span> = x⁻² hat die Ableitung −2 · x⁻³ = <span class="bruch"><span class="z">−2</span><span class="n">x³</span></span> — nicht −2 · x⁻¹. Der Exponent wird um 1 <em>kleiner</em>, also von −2 auf −3.
+    </div>
+    <div class="quiz" id="quiz-potenz"></div>
+  </section>
+
+  <!-- 6. Faktor- und Summenregel -->
+  <section class="card" id="sec-regeln">
+    <h2>6. Faktorregel und Summenregel</h2>
+    <p>Mit der Potenzregel allein kann man 3x² oder x³ + x² noch nicht ableiten. Zwei Regeln schließen die Lücke, und beide sieht man am Steigungsdreieck der Breite 1. Streckt man einen Graphen mit dem Faktor k in y-Richtung, wird jedes Steigungsdreieck k-mal so hoch. Addiert man zwei Funktionen, stapeln sich ihre Steigungsdreiecke übereinander.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Regel:
+          <select id="rg-art" class="eingabe" style="padding:0.4rem">
+            <option value="faktor">Faktorregel: f(x) = k · 0,5x²</option>
+            <option value="summe">Summenregel: f(x) = 0,5x² + 0,2x³</option>
+          </select>
+        </label>
+        <label>x₀: <input type="range" id="rg-x" min="-2" max="2" step="0.5" value="1" style="vertical-align:middle;width:8rem"> <span id="rg-x-anzeige" class="wert farbe-blau"></span></label>
+        <label id="rg-k-label">k: <input type="range" id="rg-k" min="-2" max="3" step="0.5" value="2" style="vertical-align:middle;width:8rem"> <span id="rg-k-anzeige" class="wert farbe-violett"></span></label>
+      </div>
+      <div class="geo-wrap" id="rg-mount"></div>
+      <div class="th-bilanz" id="rg-bilanz"></div>
+      <div id="rg-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Faktorregel und Summenregel</span>
+      <div class="formula-block">f(x) = k · g(x) &nbsp; ⟹ &nbsp; f′(x) = k · g′(x) &nbsp;&nbsp;&nbsp;&nbsp; f(x) = g(x) + h(x) &nbsp; ⟹ &nbsp; f′(x) = g′(x) + h′(x)</div>
+      <strong>Begründung:</strong> Der Differenzenquotient von k · g ist k-mal der Differenzenquotient von g, und der Differenzenquotient von g + h ist die Summe der beiden Differenzenquotienten. Nach den Grenzwertsätzen aus Thema 1 und 2 darf man Faktor und Summe mit dem Grenzwert vertauschen.<br>
+      <strong>Folgerung:</strong> Jede ganzrationale Funktion wird Summand für Summand abgeleitet. Ihr Grad sinkt dabei um 1.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      f(x) = 3x² ⟹ f′(x) = 3 · 2x = 6x &nbsp;·&nbsp; s(t) = −2t⁴ ⟹ s′(t) = −8t³<br>
+      f(x) = x² + 4x ⟹ f′(x) = 2x + 4 &nbsp;·&nbsp; s(t) = 2t³ − 3t² ⟹ s′(t) = 6t² − 6t<br>
+      f(x) = 0,5x⁴ − x² + 0,5 ⟹ f′(x) = 2x³ − 2x
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Faktor bleibt, Summand verschwindet</span>
+      Ein konstanter <em>Faktor</em> bleibt beim Ableiten stehen: (5x²)′ = 10x. Ein konstanter <em>Summand</em> fällt weg: (x² + 5)′ = 2x. Er verschiebt den Graphen nur nach oben und ändert keine einzige Steigung.
+    </div>
+    <div class="quiz" id="quiz-regeln"></div>
+  </section>
+
+  <!-- 7. Sinus und Kosinus -->
+  <section class="card" id="sec-sinus">
+    <h2>7. Die Ableitung von Sinus und Kosinus</h2>
+    <p>Beim grafischen Differenzieren in Abschnitt 4 sah der Graph von sin′ genau aus wie der von cos. Am Einheitskreis sieht man, warum — wenn x im Bogenmaß gemessen wird. Der Punkt P(cos x | sin x) wandert auf dem Einheitskreis um den Bogen der Länge h weiter. Für kleines h ist dieser Bogen fast eine gerade Strecke, die senkrecht auf dem Radius steht. Der Radius bildet mit der x-Achse den Winkel x, also bildet die kleine Strecke mit der Senkrechten ebenfalls den Winkel x. Sie steigt deshalb um ungefähr h · cos x. Mach h klein.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>x: <input type="range" id="si-x" min="0" max="6.2" step="0.1" value="0.8" style="vertical-align:middle;width:12rem"> <span id="si-x-anzeige" class="wert farbe-blau"></span></label>
+        <label>h: <input type="range" id="si-h" min="0.05" max="1.2" step="0.05" value="0.8" style="vertical-align:middle;width:10rem"> <span id="si-h-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap geo-paar" id="si-mount"></div>
+      <div class="th-bilanz" id="si-bilanz"></div>
+      <div id="si-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Ableitung von Sinus und Kosinus (x im Bogenmaß)</span>
+      <div class="formula-block">f(x) = sin x &nbsp; ⟹ &nbsp; f′(x) = cos x &nbsp;&nbsp;&nbsp;&nbsp; f(x) = cos x &nbsp; ⟹ &nbsp; f′(x) = −sin x</div>
+      Dieselbe kleine Strecke geht um ungefähr h · sin x nach <em>links</em>: Deshalb nimmt cos um h · sin x ab, und die Ableitung des Kosinus ist −sin x.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      f(x) = 3 sin x ⟹ f′(x) = 3 cos x &nbsp;·&nbsp; f(x) = x² + cos x ⟹ f′(x) = 2x − sin x<br>
+      Steigung von sin an der Stelle 0: cos 0 = 1 — dort verläuft der Graph wie die Gerade y = x, unter dem Mikroskop nicht zu unterscheiden.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — nur im Bogenmaß</span>
+      Die Rechnung benutzt, dass der Bogen zum Winkel h die Länge h hat. Das gilt nur im Bogenmaß. Misst man in Grad, wäre die Ableitung <span class="bruch"><span class="z">π</span><span class="n">180</span></span> · cos x. In der Analysis rechnet man deshalb immer im Bogenmaß; der Taschenrechner gehört auf RAD.
+    </div>
+    <p class="hinweis-box">💡 Das ist eine anschauliche Begründung: „Der Bogen ist fast eine Strecke“ wird hier gezeigt und gemessen, aber nicht bewiesen. Einen strengen Beweis liefern die Additionstheoreme für sin(x + h), die in manchen Kursen später folgen.</p>
+    <div class="quiz" id="quiz-sinus"></div>
+  </section>
+
+  <!-- 8. Produkt- und Kettenregel -->
+  <section class="card" id="sec-produkt-kette">
+    <h2>8. Zum Selbstlernen: Produktregel und Kettenregel</h2>
+    <p>Wie leitet man ein Produkt u(x) · v(x) ab — oder eine Verkettung wie (x² + 1)³? Die naheliegende Vermutung „(u · v)′ = u′ · v′“ ist falsch: Schon x · x = x² hätte dann die Ableitung 1 · 1 = 1 statt 2x. Beim Produkt hilft dasselbe Bild wie beim Quadrat: Ein Rechteck mit den Seiten u(x) und v(x) wächst um zwei Streifen und eine Ecke. Bei der Verkettung hilft die Vorstellung der Ableitung als <span class="term">Verstärkungsfaktor</span>: Ein kleines Intervall um x wird von der inneren Funktion gestreckt, das Ergebnis von der äußeren noch einmal.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Regel:
+          <select id="pk-art" class="eingabe" style="padding:0.4rem">
+            <option value="produkt">Produktregel: u(x) = x, v(x) = 0,25x² + 1</option>
+            <option value="kette">Kettenregel: f(x) = sin(x²)</option>
+          </select>
+        </label>
+        <label>x: <input type="range" id="pk-x" min="0.5" max="2" step="0.25" value="1" style="vertical-align:middle;width:8rem"> <span id="pk-x-anzeige" class="wert farbe-blau"></span></label>
+        <label>h: <input type="range" id="pk-h" min="0.05" max="0.5" step="0.05" value="0.4" style="vertical-align:middle;width:9rem"> <span id="pk-h-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap" id="pk-mount"></div>
+      <div class="th-bilanz" id="pk-bilanz"></div>
+      <div id="pk-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Produktregel und Kettenregel</span>
+      <div class="formula-block">f(x) = u(x) · v(x) &nbsp; ⟹ &nbsp; f′(x) = u′(x) · v(x) + u(x) · v′(x)</div>
+      <div class="formula-block">f(x) = g(u(x)) &nbsp; ⟹ &nbsp; f′(x) = g′(u(x)) · u′(x) &nbsp; — „äußere Ableitung mal innere Ableitung“</div>
+      <strong>Begründung:</strong> Beim Produkt ist die Änderung Δ(u · v) = Δu · v + u · Δv + Δu · Δv. Nach Teilen durch h geht die Ecke <span class="bruch"><span class="z">Δu · Δv</span><span class="n">h</span></span> = <span class="bruch"><span class="z">Δu</span><span class="n">h</span></span> · Δv gegen u′ · 0 = 0. Bei der Verkettung ist <span class="bruch"><span class="z">Δf</span><span class="n">h</span></span> = <span class="bruch"><span class="z">Δf</span><span class="n">Δu</span></span> · <span class="bruch"><span class="z">Δu</span><span class="n">h</span></span>, und beide Faktoren gehen gegen die jeweiligen Ableitungen (solange Δu ≠ 0 ist; der allgemeine Beweis braucht einen kleinen Kunstgriff).
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      f(x) = (x² + 1)³: außen g(u) = u³, innen u(x) = x² + 1. f′(x) = 3(x² + 1)² · 2x = 6x(x² + 1)². <strong>Probe</strong> durch Ausmultiplizieren: (x² + 1)³ = x⁶ + 3x⁴ + 3x² + 1, abgeleitet 6x⁵ + 12x³ + 6x = 6x(x² + 1)² ✓<br>
+      f(x) = x · sin x ⟹ f′(x) = 1 · sin x + x · cos x &nbsp;·&nbsp; f(x) = sin(2x) ⟹ f′(x) = cos(2x) · 2<br>
+      <strong>Potenzregel für ½:</strong> (√x)² = x. Ableiten mit der Kettenregel: 2√x · (√x)′ = 1, also (√x)′ = <span class="bruch"><span class="z">1</span><span class="n">2√x</span></span> — wie in Abschnitt 5. Genauso begründet man die Potenzregel für jeden rationalen Exponenten — vorausgesetzt, man weiß schon, dass die Ableitung existiert.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die innere Ableitung nicht vergessen</span>
+      ((2x + 1)³)′ = 3(2x + 1)² · 2 = 6(2x + 1)², nicht 3(2x + 1)². Das innere 2x + 1 läuft doppelt so schnell wie x — dieser Verstärkungsfaktor 2 gehört dazu.
+    </div>
+    <div class="quiz" id="quiz-produkt-kette"></div>
+  </section>
+
+  <!-- 9. Tangente, Normale, Winkel -->
+  <section class="card" id="sec-tangente">
+    <h2>9. Tangente und Normale, Steigungs- und Schnittwinkel</h2>
+    <p>Mit f′(x₀) kennt man die Steigung der Tangente. Weil sie durch P(x₀ | f(x₀)) geht, kennt man auch ihre Gleichung. Die <span class="term">Normale</span> steht in P senkrecht auf der Tangente. Welche Steigung hat sie? Dreh das Steigungsdreieck der Tangente um 90° um P: Aus „1 nach rechts, m nach oben“ wird „m nach links, 1 nach oben“. Die Normale hat also die Steigung <span class="bruch"><span class="z">1</span><span class="n">−m</span></span> = −<span class="bruch"><span class="z">1</span><span class="n">m</span></span>.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Darstellung:
+          <select id="tn-art" class="eingabe" style="padding:0.4rem">
+            <option value="normale">Tangente und Normale an f(x) = x²</option>
+            <option value="winkel">Schnittwinkel von f(x) = x² und einer Geraden g durch P(1 | 1)</option>
+          </select>
+        </label>
+        <label id="tn-x-label">x₀: <input type="range" id="tn-x" min="-2" max="2" step="0.5" value="1" style="vertical-align:middle;width:8rem"> <span id="tn-x-anzeige" class="wert farbe-blau"></span></label>
+        <label id="tn-d-label">Drehung: <input type="range" id="tn-d" min="0" max="1" step="0.05" value="0" style="vertical-align:middle;width:9rem"> <span id="tn-d-anzeige" class="wert farbe-violett"></span></label>
+        <label id="tn-m-label" hidden>Steigung von g: <input type="range" id="tn-m" min="-3" max="3" step="0.25" value="0.25" style="vertical-align:middle;width:9rem"> <span id="tn-m-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap" id="tn-mount"></div>
+      <div class="th-bilanz" id="tn-bilanz"></div>
+      <div id="tn-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Tangente, Normale, Steigungswinkel, Schnittwinkel</span>
+      <strong>Tangente</strong> in P(x₀ | f(x₀)): &nbsp; t(x) = f′(x₀) · (x − x₀) + f(x₀)<br>
+      <strong>Normale</strong> in P (falls f′(x₀) ≠ 0): &nbsp; n(x) = −<span class="bruch"><span class="z">1</span><span class="n">f′(x₀)</span></span> · (x − x₀) + f(x₀). Ist f′(x₀) = 0, ist die Normale die senkrechte Gerade x = x₀.<br>
+      <strong>Steigungswinkel</strong> einer Geraden mit der Steigung m: tan α = m, also α = tan⁻¹(m) mit −90° &lt; α &lt; 90°.<br>
+      <strong>Schnittwinkel</strong> zweier Graphen in einem gemeinsamen Punkt: der Winkel zwischen ihren Tangenten. Mit den Steigungswinkeln α und β ist er |α − β|, falls das höchstens 90° ist, sonst 180° − |α − β|.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel</span>
+      f(x) = x², P(1 | 1), f′(1) = 2. Tangente: t(x) = 2(x − 1) + 1 = 2x − 1. Normale: n(x) = −<span class="bruch"><span class="z">1</span><span class="n">2</span></span>(x − 1) + 1 = −<span class="bruch"><span class="z">1</span><span class="n">2</span></span>x + <span class="bruch"><span class="z">3</span><span class="n">2</span></span>.<br>
+      Steigungswinkel: α = tan⁻¹(2) ≈ 63,43°. Die Gerade g(x) = 0,25x + 0,75 geht auch durch P und hat β = tan⁻¹(0,25) ≈ 14,04°. Schnittwinkel: γ = |α − β| ≈ 49,40°. Mit den schon gerundeten Winkeln käme 63,43° − 14,04° = 49,39° heraus — deshalb erst am Ende runden.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — negativer Kehrwert, nicht nur negativ</span>
+      Die Normale zu einer Tangente mit der Steigung 2 hat die Steigung −<span class="bruch"><span class="z">1</span><span class="n">2</span></span>, nicht −2. Probe: Das Produkt der beiden Steigungen ist −1. Und beim Winkel gehört der Taschenrechner auf DEG, sonst kommt tan⁻¹(2) ≈ 1,107 im Bogenmaß heraus.
+    </div>
+    <div class="quiz" id="quiz-tangente"></div>
+  </section>
+
+  <!-- 10. Differenzierbarkeit -->
+  <section class="card" id="sec-differenzierbar">
+    <h2>10. Differenzierbarkeit: Wann gibt es keine Ableitung?</h2>
+    <p>Nicht jede Funktion hat an jeder Stelle eine Ableitung. Entscheidend ist, ob die Differenzenquotienten von links und von rechts gegen <em>dieselbe endliche</em> Zahl gehen. Die erste Funktion besteht aus einer Parabel links von 2 und einer Geraden mit der Steigung m ab 2. Die Gerade setzt immer im Punkt (2 | 3) an, f ist also stetig. Gibt es auch keinen Knick?</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="df-art" class="eingabe" style="padding:0.4rem">
+            <option value="naht">x² − 2x + 3 für x &lt; 2, Gerade mit Steigung m für x ≥ 2</option>
+            <option value="betrag">f(x) = |x| an der Stelle 0</option>
+            <option value="wurzel3">f(x) = ∛x an der Stelle 0</option>
+          </select>
+        </label>
+        <label id="df-m-label">m: <input type="range" id="df-m" min="0" max="4" step="0.5" value="3" style="vertical-align:middle;width:8rem"> <span id="df-m-anzeige" class="wert farbe-orange"></span></label>
+        <label>|h|: <input type="range" id="df-h" min="0" max="4" step="1" value="0" style="vertical-align:middle;width:8rem"> <span id="df-h-anzeige" class="wert farbe-violett"></span></label>
+      </div>
+      <div class="geo-wrap" id="df-mount"></div>
+      <div class="fr-tabelle-wrap" id="df-tabelle"></div>
+      <div class="th-bilanz" id="df-bilanz"></div>
+      <div id="df-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Differenzierbarkeit</span>
+      f ist an der Stelle x₀ <strong>differenzierbar</strong>, wenn der Grenzwert des Differenzenquotienten für h → 0 existiert — wenn also der links- und der rechtsseitige Grenzwert existieren, endlich sind und übereinstimmen. f heißt differenzierbar, wenn f an jeder Stelle ihrer Definitionsmenge differenzierbar ist.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Differenzierbar ⟹ stetig — aber nicht umgekehrt</span>
+      Ist f an x₀ differenzierbar, dann ist f(x₀ + h) − f(x₀) = <span class="bruch"><span class="z">f(x₀ + h) − f(x₀)</span><span class="n">h</span></span> · h → f′(x₀) · 0 = 0. Also strebt f(x₀ + h) gegen f(x₀): f ist an x₀ stetig.<br>
+      Die Umkehrung ist falsch: |x| ist an der Stelle 0 stetig, hat dort aber einen <strong>Knick</strong> (links Steigung −1, rechts 1). ∛x ist an der Stelle 0 stetig, hat dort aber eine <strong>senkrechte Tangente</strong>: Die Differenzenquotienten wachsen über jede Grenze.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: eine Nahtstelle</span>
+      f(x) = x² − 2x + 3 für x &lt; 2 und f(x) = 2x − 1 für x ≥ 2. Stetig: Links strebt f gegen 4 − 4 + 3 = 3, rechts ist f(2) = 3.<br>
+      Von links (h &lt; 0): <span class="bruch"><span class="z">(2 + h)² − 2(2 + h) + 3 − 3</span><span class="n">h</span></span> = <span class="bruch"><span class="z">2h + h²</span><span class="n">h</span></span> = 2 + h → 2. Von rechts (h &gt; 0): <span class="bruch"><span class="z">2(2 + h) − 1 − 3</span><span class="n">h</span></span> = 2. Beide Grenzwerte sind 2: f ist an der Stelle 2 differenzierbar, f′(2) = 2.
+    </div>
+    <p class="hinweis-box">💡 Manche Bücher vergleichen an einer Nahtstelle statt der Differenzenquotienten die Ableitungen der beiden Teile: links f′(x) = 2x − 2 → 2, rechts f′(x) = 2. Das ist ein bequemer Weg, setzt aber voraus, dass f an der Nahtstelle stetig ist. Ohne Stetigkeit passen die Steigungen manchmal zusammen, obwohl der Graph springt — und dann ist f dort sicher nicht differenzierbar.</p>
+    <div class="quiz" id="quiz-differenzierbar"></div>
+  </section>
+
+  <!-- 11. Ganzrationale Funktionen -->
+  <section class="card" id="sec-ganzrational">
+    <h2>11. Ganzrationale Funktionen: Grad, Verhalten für x → ±∞, Symmetrie</h2>
+    <p>Die Funktionen, die man mit Potenz-, Faktor- und Summenregel ableiten kann, heißen <span class="term">ganzrationale Funktionen</span>. Sie sind die wichtigsten Gegenstände der Funktionsuntersuchung in Thema 5. Zwei Eigenschaften liest man direkt am Term ab: wie der Graph ganz außen verläuft und ob er symmetrisch ist. Zoome heraus — oder klappe den Graphen an der y-Achse um und dreh ihn um den Ursprung.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Untersuchung:
+          <select id="gr-modus" class="eingabe" style="padding:0.4rem">
+            <option value="aussen">Verhalten für x → ±∞</option>
+            <option value="achse">Achsensymmetrie: an der y-Achse umklappen</option>
+            <option value="punkt">Punktsymmetrie: um den Ursprung drehen</option>
+          </select>
+        </label>
+        <label>Funktion:
+          <select id="gr-f" class="eingabe" style="padding:0.4rem">
+            <option value="f">f(x) = 0,5x⁴ − x² + 0,5</option>
+            <option value="g">g(x) = −0,5x⁵ + 1,5x³ + 2x</option>
+            <option value="h">h(x) = 0,5x³ − x² + 1</option>
+          </select>
+        </label>
+        <label id="gr-z-label">Fenster: <input type="range" id="gr-z" min="0" max="5" step="1" value="0" style="vertical-align:middle;width:8rem"> <span id="gr-z-anzeige" class="wert farbe-violett"></span></label>
+        <label id="gr-t-label" hidden>Bewegung: <input type="range" id="gr-t" min="0" max="1" step="0.05" value="0" style="vertical-align:middle;width:9rem"> <span id="gr-t-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap" id="gr-mount"></div>
+      <div class="th-bilanz" id="gr-bilanz"></div>
+      <div id="gr-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Ganzrationale Funktion</span>
+      Eine Funktion f mit
+      <div class="formula-block">f(x) = aₙxⁿ + aₙ₋₁xⁿ⁻¹ + … + a₂x² + a₁x + a₀ &nbsp; (n ∈ ℕ, a₀, …, aₙ ∈ ℝ, aₙ ≠ 0)</div>
+      heißt <strong>ganzrationale Funktion</strong> vom <strong>Grad</strong> n. Die Zahlen a₀, …, aₙ heißen <strong>Koeffizienten</strong>, aₙ ist der Leitkoeffizient. Beispiel: f(x) = 0,5x⁴ − x² + 0,5 hat den Grad 4 und die Koeffizienten a₄ = 0,5; a₃ = 0; a₂ = −1; a₁ = 0; a₀ = 0,5.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Verhalten für x → ±∞ und Symmetrie</span>
+      <strong>Für x → ±∞</strong> verhält sich f wie der Summand mit der höchsten Potenz, aₙxⁿ. Begründung mit Thema 2: f(x) = aₙxⁿ · (1 + <span class="bruch"><span class="z">aₙ₋₁</span><span class="n">aₙx</span></span> + … + <span class="bruch"><span class="z">a₀</span><span class="n">aₙxⁿ</span></span>), und die Klammer strebt gegen 1.<br>
+      <strong>Achsensymmetrie</strong> zur y-Achse: f(−x) = f(x) für alle x. Bei ganzrationalen Funktionen gilt sie genau dann, wenn der Term <strong>nur gerade</strong> Exponenten hat — a₀ = a₀x⁰ zählt als gerade.<br>
+      <strong>Punktsymmetrie</strong> zum Ursprung: f(−x) = −f(x) für alle x. Sie gilt genau dann, wenn der Term <strong>nur ungerade</strong> Exponenten hat.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      f(x) = 0,5x⁴ − x² + 0,5: Exponenten 4, 2, 0 — achsensymmetrisch. Für x → ±∞ wie 0,5x⁴, also f(x) → ∞ auf beiden Seiten.<br>
+      g(x) = −0,5x⁵ + 1,5x³ + 2x: Exponenten 5, 3, 1 — punktsymmetrisch. Wie −0,5x⁵: g(x) → −∞ für x → ∞ und g(x) → ∞ für x → −∞.<br>
+      h(x) = 0,5x³ − x² + 1: gerade und ungerade Exponenten gemischt — weder achsensymmetrisch zur y-Achse noch punktsymmetrisch zum Ursprung.
+    </div>
+    <p class="hinweis-box">💡 <strong>Verbindung zur Ableitung:</strong> Beim Ableiten wird jeder Exponent um 1 kleiner — aus geraden Exponenten werden ungerade und umgekehrt (das Absolutglied fällt weg). Ist f achsensymmetrisch, so ist f′ punktsymmetrisch, und umgekehrt. Im Bild: Am Spiegelbild einer steigenden Stelle fällt der Graph genauso steil.</p>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — das Absolutglied zählt mit</span>
+      x³ + 1 hat die Exponenten 3 und 0: gemischt. Der Graph ist nicht punktsymmetrisch zum Ursprung, sondern zum Punkt (0 | 1). Die Regel „nur gerade / nur ungerade Exponenten“ prüft ausschließlich die Symmetrie zur y-Achse und zum Ursprung.
+    </div>
+    <div class="quiz" id="quiz-ganzrational"></div>
+  </section>
+
+  <!-- 12. Nullstellen -->
+  <section class="card" id="sec-nullstellen">
+    <h2>12. Nullstellen ganzrationaler Funktionen und ihre Vielfachheit</h2>
+    <p>Ist ein Funktionsterm als Produkt von Linearfaktoren geschrieben, liest man die Nullstellen sofort ab: Ein Produkt ist genau dann 0, wenn ein Faktor 0 ist. Der Exponent eines Faktors verrät außerdem, <em>wie</em> der Graph durch die x-Achse geht. Schiebe die beiden Nullstellen, ändere ihre Vielfachheiten und lass sie zusammenfallen.</p>
+    <div class="widget">
+      <div class="formula-block" style="text-align:center" id="ns-term"></div>
+      <div class="btn-row">
+        <label>r₁: <input type="range" id="ns-r1" min="-3" max="3" step="0.5" value="-1.5" style="vertical-align:middle;width:8rem"> <span id="ns-r1-anzeige" class="wert farbe-blau"></span></label>
+        <label>Vielfachheit k₁:
+          <select id="ns-k1" class="eingabe" style="padding:0.3rem"><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option></select>
+        </label>
+        <label>r₂: <input type="range" id="ns-r2" min="-3" max="3" step="0.5" value="1.5" style="vertical-align:middle;width:8rem"> <span id="ns-r2-anzeige" class="wert farbe-orange"></span></label>
+        <label>Vielfachheit k₂:
+          <select id="ns-k2" class="eingabe" style="padding:0.3rem"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option></select>
+        </label>
+        <label><input type="checkbox" id="ns-q"> <span>Faktor (x² + 1) dazu</span></label>
+      </div>
+      <div class="geo-wrap" id="ns-mount"></div>
+      <div class="th-bilanz" id="ns-bilanz"></div>
+      <div id="ns-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Nullstellen und Vielfachheit</span>
+      Eine ganzrationale Funktion vom Grad n hat <strong>höchstens n Nullstellen</strong>. Ist x<sub>N</sub> eine Nullstelle, lässt sich der <strong>Linearfaktor</strong> (x − x<sub>N</sub>) abspalten: f(x) = (x − x<sub>N</sub>) · r(x) mit einer ganzrationalen Funktion r vom Grad n − 1 (zum Beispiel durch Polynomdivision).<br>
+      Ist der Term so weit wie möglich faktorisiert, gibt der Exponent eines Linearfaktors die <strong>Vielfachheit</strong> der Nullstelle an. Die Summe aller Vielfachheiten ist höchstens n. Bei <strong>ungerader</strong> Vielfachheit wechselt f das Vorzeichen (der Graph schneidet die x-Achse), bei <strong>gerader</strong> nicht (der Graph berührt sie).
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Drei Wege zu den Nullstellen</span>
+      <strong>1. Ablesen aus der faktorisierten Form:</strong> f(x) = 0,5x⁴ − x² + 0,5 = 0,5(x − 1)²(x + 1)². Doppelte Nullstellen 1 und −1; Summe der Vielfachheiten 4.<br>
+      <strong>2. Potenzen von x ausklammern:</strong> g(x) = −0,5x⁵ + 1,5x³ + 2x = −0,5x(x⁴ − 3x² − 4) = −0,5x(x − 2)(x + 2)(x² + 1). Nullstellen 0, 2, −2 — nur drei, denn x² + 1 zerfällt nicht in Linearfaktoren.<br>
+      <strong>3. Substitution</strong> bei f(x) = ax⁴ + bx² + c: h(x) = x⁴ − 3x² − 4. Mit u = x²: u² − 3u − 4 = 0, pq-Formel: u₁ = 4, u₂ = −1. Rücksubstitution: x² = 4 ⟹ x = ±2; x² = −1 hat keine Lösung. Nullstellen: 2 und −2.
+    </div>
+    <p class="hinweis-box">💡 <strong>Verbindung zur Ableitung:</strong> An einer mindestens doppelten Nullstelle ist auch f′ gleich 0. Mit der Produktregel: f(x) = (x − a)² · r(x) ⟹ f′(x) = 2(x − a) · r(x) + (x − a)² · r′(x), und an der Stelle a ist beides 0. Der Graph berührt die x-Achse dort mit waagerechter Tangente.</p>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Rücksubstitution nicht vergessen</span>
+      Die Lösungen u₁ = 4 und u₂ = −1 sind <em>nicht</em> die Nullstellen von h — gesucht ist x, nicht u. Erst aus x² = u entstehen die Nullstellen, und ein negatives u liefert keine.
+    </div>
+    <div class="quiz" id="quiz-nullstellen"></div>
+  </section>
+
+  <!-- 13. f und f′ -->
+  <section class="card" id="sec-monotonie">
+    <h2>13. f und f′: Monotonie, Hoch- und Tiefpunkte</h2>
+    <p>Jetzt fügt sich alles zusammen. Oben steht der Graph von f, unten der von f′. Wo f′ positiv ist, steigt f (grün), wo f′ negativ ist, fällt f (orange). An den Nullstellen von f′ liegen die Kandidaten für Hoch- und Tiefpunkte — aber nicht jeder Kandidat ist einer. Fahre mit x₀ durch und achte darauf, ob f′ an einer Nullstelle das Vorzeichen wechselt.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="mo-art" class="eingabe" style="padding:0.4rem">
+            <option value="quartik">f(x) = 0,5x⁴ − x² + 0,5</option>
+            <option value="kubik">f(x) = 0,5x³ − 1,5x</option>
+            <option value="sattel">f(x) = 0,25x⁴ − x³</option>
+          </select>
+        </label>
+        <label>x₀: <input type="range" id="mo-x" min="-2" max="2" step="0.1" value="-1.5" style="vertical-align:middle;width:12rem"> <span id="mo-x-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="mo-mount"></div>
+      <div class="th-bilanz" id="mo-bilanz"></div>
+      <div id="mo-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Monotonie und Extrempunkte</span>
+      f ist auf einem Intervall I <strong>streng monoton steigend</strong> (bzw. <strong>fallend</strong>), wenn für alle x₁, x₂ aus I mit x₁ &lt; x₂ gilt: f(x₁) &lt; f(x₂) (bzw. f(x₁) &gt; f(x₂)).<br>
+      Der Graph hat an der Stelle x<sub>E</sub> einen <strong>Hochpunkt</strong> (bzw. <strong>Tiefpunkt</strong>), wenn f(x<sub>E</sub>) in einer Umgebung von x<sub>E</sub> der größte (bzw. kleinste) Funktionswert ist. f(x<sub>E</sub>) heißt dann <strong>lokales Maximum</strong> (bzw. <strong>lokales Minimum</strong>). Ist f(x<sub>E</sub>) sogar der größte (kleinste) Wert in der ganzen Definitionsmenge, ist er ein <strong>globales</strong> Maximum (Minimum).
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Was f′ über f verrät</span>
+      <strong>Monotoniesatz:</strong> Ist f′(x) &gt; 0 für alle x eines Intervalls, so ist f dort streng monoton steigend; ist f′(x) &lt; 0, streng monoton fallend.<br>
+      <strong>Notwendige Bedingung:</strong> Hat f an einer inneren Stelle x<sub>E</sub> einen Hoch- oder Tiefpunkt und ist f dort differenzierbar, so ist f′(x<sub>E</sub>) = 0 — die Tangente ist waagerecht.<br>
+      <strong>Vorzeichenwechsel:</strong> Wechselt f′ an einer Nullstelle von + nach −, steigt f davor und fällt danach: Hochpunkt. Von − nach +: Tiefpunkt. Ohne Vorzeichenwechsel liegt kein Extrempunkt vor — ist f′ dort 0, nennt man den Punkt <strong>Sattelpunkt</strong>.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: f(x) = 0,5x⁴ − x² + 0,5</span>
+      f′(x) = 2x³ − 2x = 2x(x² − 1) = 2x(x − 1)(x + 1) — ausgeklammert wie in Abschnitt 12. Nullstellen von f′: −1, 0, 1.<br>
+      Vorzeichen von f′: negativ für x &lt; −1, positiv für −1 &lt; x &lt; 0, negativ für 0 &lt; x &lt; 1, positiv für x &gt; 1. Also fällt f für x &lt; −1 und für 0 &lt; x &lt; 1 und steigt für −1 &lt; x &lt; 0 und für x &gt; 1.<br>
+      Hochpunkt H(0 | 0,5), Tiefpunkte T₁(−1 | 0) und T₂(1 | 0). f(0) = 0,5 ist ein lokales Maximum, aber kein globales (f wächst über jede Grenze). f(±1) = 0 ist zugleich das globale Minimum.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — f′(x) = 0 heißt noch nicht Extrempunkt</span>
+      Bei f(x) = 0,25x⁴ − x³ ist f′(x) = x³ − 3x² = x²(x − 3). An der Stelle 0 ist f′ gleich 0, wechselt aber das Vorzeichen nicht (x² ist auf beiden Seiten positiv, x − 3 negativ): Sattelpunkt, kein Extrempunkt. Erst an der Stelle 3 wechselt f′ von − nach +: Tiefpunkt. Ebenso ist f(x) = x³ streng monoton steigend, obwohl f′(0) = 0 ist — der Monotoniesatz gilt nur in einer Richtung.
+    </div>
+    <p class="hinweis-box">💡 Warum gilt der Monotoniesatz? Anschaulich: Wenn jede Tangente steigt, kann der Graph nirgends fallen. Ein Beweis braucht den Mittelwertsatz der Differentialrechnung, den man meist erst im Studium kennenlernt. Wie man Extrempunkte rechnerisch sicher bestimmt — auch mit der zweiten Ableitung — zeigt Thema 5.</p>
+    <div class="quiz" id="quiz-monotonie"></div>
+  </section>
+
+  <!-- 14. Stolperstelle -->
+  <section class="card" id="sec-stolperstelle">
+    <h2>14. Stolperstelle: Berührt eine Tangente den Graphen nur in einem Punkt?</h2>
+    <p>Ben sagt: „Eine Tangente hat mit dem Graphen genau einen Punkt gemeinsam — so haben wir es beim Kreis gelernt.“ Lea sagt: „Bei f(x) = 0,5x³ − 1,5x schneidet die Tangente den Graphen noch ein zweites Mal.“ Schiebe x₀ und zähle die gemeinsamen Punkte.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>x₀: <input type="range" id="sp-x" min="-1.25" max="1.25" step="0.25" value="1" style="vertical-align:middle;width:12rem"> <span id="sp-x-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap" id="sp-mount"></div>
+      <div class="th-bilanz" id="sp-bilanz"></div>
+      <div id="sp-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Kreistangente ist ein Sonderfall</span>
+      Beim Kreis hat die Tangente genau einen Punkt mit ihm gemeinsam. Für Funktionsgraphen taugt das nicht als Definition: Die Tangente ist durch f′(x₀) erklärt — durch das, was der Graph <em>in der Nähe von P</em> tut. Weiter weg darf sie ihn schneiden, und an der Stelle 0 durchsetzt sie ihn sogar in P selbst. Umgekehrt ist nicht jede Gerade mit nur einem gemeinsamen Punkt eine Tangente: Die y-Achse trifft die Normalparabel nur im Ursprung, berührt sie aber nicht.
+    </div>
+    <p class="hinweis-box">💡 Richtig ist eine algebraische Fassung: f(x) − t(x) = 0,5(x − x₀)²(x + 2x₀). Die Berührstelle x₀ ist eine <strong>doppelte Nullstelle</strong> der Differenz f − t (Abschnitt 12) — daran erkennt man eine Tangente. Die einfache Nullstelle −2x₀ ist der zweite Schnittpunkt; bei x₀ = 0 fallen alle drei zusammen.</p>
+    <div class="quiz" id="quiz-stolperstelle"></div>
+  </section>
+
+  <!-- Selbsteinschätzung -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
+    <div id="se-liste"></div>
+    <div id="se-auswertung" class="event-result"></div>
+  </section>
+
+  <!-- Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Dem <a href="../02-grenzwerte-und-stetigkeit/index.html#sec-stelle">Grenzwert an einer Stelle</a> — die Ableitung ist der Grenzwert des Differenzenquotienten, berechnet mit der h-Methode; einseitige Grenzwerte entscheiden über die Differenzierbarkeit.</li>
+      <li><strong>Baut auf:</strong> Der <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/05-lineare-funktionen/index.html#sec-steigung">Steigung einer Geraden</a> und dem Steigungsdreieck — Sekante und Tangente sind Geraden, ihr Steigungswinkel kommt aus der <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/10-trigonometrie/index.html">Trigonometrie</a>.</li>
+      <li><strong>Baut auf:</strong> Den <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/09-potenzen/index.html#sec-potenzfunktionen">Potenzfunktionen</a> und den <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/04-terme/index.html#sec-binomisch">binomischen Formeln</a> — sie tragen die Potenzregel; die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/08-quadratische-funktionen/index.html#sec-pq">pq-Formel</a> löst die Gleichungen nach der Substitution.</li>
+      <li><strong>Baut auf:</strong> Dem <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/12-trigonometrische-funktionen/index.html#sec-bogenmass">Bogenmaß</a> — nur darin ist (sin x)′ = cos x.</li>
+      <li><strong>Gleiche Struktur:</strong> Wie die <a href="../01-folgen-und-reihen/index.html#sec-unendlich">unendliche Reihe</a> der Grenzwert ihrer Partialsummen ist, ist die Ableitung der Grenzwert ihrer Differenzenquotienten: Erst etwas Endliches berechnen, dann einen Grenzübergang machen.</li>
+      <li><strong>Führt weiter zu:</strong> Den <em>Exponential- und Logarithmusfunktionen</em> (Thema 4) — dort gibt es eine Funktion, die mit ihrer eigenen Ableitung übereinstimmt.</li>
+      <li><strong>Führt weiter zu:</strong> Den <em>Anwendungen der Differentialrechnung</em> (Thema 5) — Funktionsuntersuchungen mit Monotonie, Extrem- und Wendepunkten, Extremwertprobleme. Abschnitt 13 ist der Anfang davon.</li>
+      <li><strong>Führt weiter zu:</strong> Der <em>Integralrechnung</em> (Thema 6) — sie kehrt das Ableiten um: Zu f′ wird f gesucht.</li>
+    </ul>
+  </section>
+
+  <!-- Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>Formelsammlung</h2>
+    <p>Mittlere und lokale Änderungsrate, Differenzenquotient und Ableitung mit der h-Methode, die drei Sichten auf f′(x₀), Potenz-, Faktor-, Summen-, Produkt- und Kettenregel, Ableitungen von sin und cos, Tangente, Normale und Winkel, Differenzierbarkeit, ganzrationale Funktionen mit Symmetrie, Nullstellen und Vielfachheit sowie der Zusammenhang zwischen f und f′ — mit gerechneten Figuren und Musterrechnungen auf zwei Seiten.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>Übungsaufgaben</h2>
+    <p>Zwanzig Aufgaben auf vier Stufen, je fünf auf jeder. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu. Tipps gibt es auf Knopfdruck, nach dem Prüfen steht die Musterlösung darunter.</p>
+    <p class="progress-note">Zahlen gibst du mit Komma ein, zum Beispiel 1,5; Brüche wie 3/2 sind ebenfalls erlaubt.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 01 Analysis</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Formelsammlung — Differentialrechnung</title>
+<style>
+  @page { size: A4 landscape; margin: 5.5mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    color: #1f2328;
+    font-size: 8.1px;
+    line-height: 1.33;
+  }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  h1 {
+    font-size: 12.4px; margin: 0 0 1.4mm; padding-bottom: 0.8mm;
+    border-bottom: 1.6px solid #1d4ed8; color: #1d4ed8; letter-spacing: 0.01em;
+  }
+  h1 .klein { font-size: 8.4px; font-weight: 400; color: #5b6570; float: right; margin-top: 2px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2.1mm; align-items: start; }
+  .box {
+    border: 0.9px solid #c9d0d8; border-radius: 2mm; padding: 1.5mm 1.8mm;
+    background: #ffffff; break-inside: avoid;
+  }
+  .box.wide { grid-column: span 2; }
+  .box.full { grid-column: span 3; }
+  .box h2 {
+    font-size: 8.6px; margin: 0 0 1.1mm; color: #1d4ed8;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .box.warn { border-color: #e3b341; background: #fffaf0; }
+  .box.warn h2 { color: #8a5b0a; }
+  .box.merk { border-color: #7ec699; background: #f4fbf6; }
+  .box.merk h2 { color: #0f5132; }
+  p { margin: 0 0 0.9mm; }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 0.9mm; padding-left: 3.4mm; }
+  li { margin-bottom: 0.4mm; }
+  .f { font-family: "Cambria Math", Cambria, Georgia, serif; font-size: 9.2px; }
+  .zentral { text-align: center; }
+  .gross { font-size: 10.4px; font-weight: 700; }
+  .al { color: #157347; font-weight: 700; }
+  .be { color: #b3650a; font-weight: 700; }
+  .ga { color: #b3261e; font-weight: 700; }
+  .kr { color: #1d4ed8; font-weight: 700; }
+  .ra { color: #6d28d9; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { border: 0.7px solid #c9d0d8; padding: 0.5mm 0.6mm; text-align: center; }
+  th { background: #eef2f6; font-weight: 700; font-size: 7.4px; }
+  td { font-size: 7.6px; }
+  td.b { font-weight: 700; }
+  td.l { text-align: left; }
+  figure { margin: 0.8mm 0 0; }
+  figure svg { display: block; width: 100%; height: auto; }
+  .m70 { max-width: 70%; margin: 0.8mm auto 0; }
+  .m80 { max-width: 80%; margin: 0.8mm auto 0; }
+  .m88 { max-width: 88%; margin: 0.8mm auto 0; }
+  .m62 { max-width: 62%; margin: 0.8mm auto 0; }
+  .m72 { max-width: 72%; margin: 0.8mm auto 0; }
+  .m55 { max-width: 55%; margin: 0.8mm auto 0; }
+  .bu { font-size: 7.1px; color: #5b6570; text-align: center; margin-top: 0.5mm; }
+  .rechnung { background: #f4f6f8; border-radius: 1.2mm; padding: 1mm 1.2mm; margin: 0.8mm 0 0; }
+  .schritt { display: flex; gap: 1.2mm; margin-bottom: 0.5mm; }
+  .schritt b { flex: 0 0 3.6mm; color: #1d4ed8; }
+  .schritt:last-child { margin-bottom: 0; }
+  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm; align-items: start; }
+  .bruch { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; margin: 0 0.3mm; }
+  .bruch .z { border-bottom: 0.8px solid currentColor; padding: 0 0.6mm; }
+  .binom { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; padding: 0 0.9mm; margin: 0 0.3mm; border-left: 0.9px solid currentColor; border-right: 0.9px solid currentColor; border-radius: 45% / 50%; font-size: 92%; }
+  .tr { color: #157347; font-weight: 700; }
+  .ni { color: #b3650a; font-weight: 700; }
+  .fu { color: #5b6570; font-size: 7.3px; }
+  .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ===================== Seite 1 ===================== -->
+<div class="page">
+  <h1>Differentialrechnung<span class="klein">MSS 11 · Analysis, Thema 3 · <span class="fu">grau: andere Schreibweisen</span></span></h1>
+  <div class="grid">
+
+    <div class="box">
+      <h2>Mittlere Änderungsrate</h2>
+      <p class="zentral f gross"><span class="bruch"><span class="z">f(b) − f(a)</span><span>b − a</span></span> <span class="fu">= <span class="bruch"><span class="z">Δy</span><span>Δx</span></span></span></p>
+      <p>Differenzenquotient = Steigung der <b>Sekante</b> durch A(a | f(a)) und B(b | f(b)). Einheit: „Einheit von f pro Einheit von x“ (m/s, °C/h, €/Stück).</p>
+      <figure style="max-width:56%;margin:0.8mm auto 0">[[FIG1]]</figure>
+    </div>
+
+    <div class="box merk">
+      <h2>Ableitung an einer Stelle</h2>
+      <p class="zentral f">f′(x₀) = lim<sub>h→0</sub> <span class="bruch"><span class="z">f(x₀ + h) − f(x₀)</span><span>h</span></span> = lim<sub>x→x₀</sub> <span class="bruch"><span class="z">f(x) − f(x₀)</span><span>x − x₀</span></span></p>
+      <p>Existiert der Grenzwert, ist f an x₀ <b>differenzierbar</b>. <span class="fu">auch: <span class="bruch"><span class="z">df</span><span>dx</span></span>(x₀), ṡ(t₀)</span></p>
+      <p><b>Drei Sichten:</b> lokale Änderungsrate · Steigung der <b>Tangente</b> in P(x₀ | f(x₀)) · Steigung „im Kleinen“ (stark vergrößert ist der Graph eine Gerade).</p>
+      <figure style="max-width:56%;margin:0.8mm auto 0">[[FIG2]]</figure>
+    </div>
+
+    <div class="box">
+      <h2>h-Methode</h2>
+      <div class="rechnung">
+        <div class="schritt"><b>Bsp.</b><span><span class="f">f(x) = x², x₀ = 1: <span class="bruch"><span class="z">(1 + h)² − 1</span><span>h</span></span> = <span class="bruch"><span class="z">2h + h²</span><span>h</span></span> = 2 + h → 2</span></span></div>
+      </div>
+      <table>
+        <tr><th>h</th><td>0,1</td><td>0,01</td><td>0,001</td><td>−0,001</td></tr>
+        <tr><th>Differenzenquotient</th><td>2,1</td><td>2,01</td><td>2,001</td><td>1,999</td></tr>
+      </table>
+      <p style="margin-top:0.8mm">Erst vereinfachen, dann h → 0 — h = 0 einsetzen ergäbe 0 : 0. Allgemein: f′(x) = lim (2x + h) = 2x.</p>
+      <h2 style="margin-top:2mm">Ableitungsfunktion</h2>
+      <p>f′ ordnet jeder Stelle x die Tangentensteigung f′(x) zu. <b>Grafisch:</b> Tangente anlegen, 1 nach rechts gehen, Höhenänderung ablesen = f′(x).</p>
+    </div>
+
+    <div class="box wide merk">
+      <h2>Ableitungsregeln</h2>
+      <table>
+        <tr><th>Regel</th><th>Funktion</th><th>Ableitung</th><th>Beispiele</th></tr>
+        <tr><td>Konstante, x</td><td class="f">c, x</td><td class="f">0, 1</td><td class="f">(7)′ = 0</td></tr>
+        <tr><td>Potenzregel</td><td class="f">xʳ (r ≠ 0)</td><td class="f">r · xʳ⁻¹</td><td class="f">(x⁵)′ = 5x⁴ · (x⁻²)′ = −2x⁻³ · (√t)′ = <span class="bruch"><span class="z">1</span><span>2√t</span></span></td></tr>
+        <tr><td>Faktorregel</td><td class="f">k · g(x)</td><td class="f">k · g′(x)</td><td class="f">(3x²)′ = 6x · (−2t⁴)′ = −8t³</td></tr>
+        <tr><td>Summenregel</td><td class="f">g(x) + h(x)</td><td class="f">g′(x) + h′(x)</td><td class="f">(x² + 4x)′ = 2x + 4 · (2t³ − 3t²)′ = 6t² − 6t</td></tr>
+        <tr><td>Produktregel</td><td class="f">u(x) · v(x)</td><td class="f">u′v + uv′</td><td class="f">(x · sin x)′ = sin x + x cos x</td></tr>
+        <tr><td>Kettenregel</td><td class="f">g(u(x))</td><td class="f">g′(u(x)) · u′(x)</td><td class="f">((x² + 1)³)′ = 3(x² + 1)² · 2x</td></tr>
+        <tr><td>Sinus, Kosinus</td><td class="f">sin x, cos x</td><td class="f">cos x, −sin x</td><td>x im <b>Bogenmaß</b>!</td></tr>
+      </table>
+      <p style="margin-top:0.8mm">Ganzrationale Funktionen: Summand für Summand ableiten, der Grad sinkt um 1. Ein konstanter <b>Faktor</b> bleibt, ein konstanter <b>Summand</b> fällt weg.</p>
+    </div>
+
+    <div class="box">
+      <h2>f und f′ untereinander</h2>
+      <figure class="m62">[[FIG3]]</figure>
+      <p class="bu">Wo f steigt, ist f′ &gt; 0; wo f fällt, f′ &lt; 0. Unter H und T hat f′ Nullstellen.</p>
+    </div>
+
+    <div class="box">
+      <h2>Differenzierbarkeit</h2>
+      <p>Differenzierbar an x₀ ⟺ links- und rechtsseitiger Grenzwert des Differenzenquotienten existieren, sind endlich und gleich.</p>
+      <p><b>Differenzierbar</b> ⟹ <b>stetig</b>, aber nicht umgekehrt: Knick (|x| bei 0), senkrechte Tangente (∛x bei 0).</p>
+      <figure style="max-width:54%;margin:0.8mm auto 0">[[FIG4]]</figure>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung — Nahtstelle</h2>
+      <p><b>Gegeben:</b> f(x) = x² − 2x + 3 für x &lt; 2, f(x) = 2x − 1 für x ≥ 2</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>Stetig: links → 3, f(2) = 3 ✓</span></div>
+        <div class="schritt"><b>2.</b><span>links: <span class="bruch"><span class="z">(2 + h)² − 2(2 + h) + 3 − 3</span><span>h</span></span> = 2 + h → 2</span></div>
+        <div class="schritt"><b>3.</b><span>rechts: <span class="bruch"><span class="z">2(2 + h) − 1 − 3</span><span>h</span></span> = 2 → 2</span></div>
+        <div class="schritt"><b>4.</b><span>Gleich: differenzierbar, <b>f′(2) = 2</b></span></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung — Kettenregel</h2>
+      <p><b>Gegeben:</b> f(x) = (2x − 1)³, gesucht f′(2)</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>außen u³ → 3u², innen 2x − 1 → 2</span></div>
+        <div class="schritt"><b>2.</b><span>f′(x) = 3(2x − 1)² · 2 = 6(2x − 1)²</span></div>
+        <div class="schritt"><b>3.</b><span>f′(2) = 6 · 3² = <b>54</b></span></div>
+      </div>
+      <p class="fu">Fehler: 3(2x − 1)² ohne die innere Ableitung 2.</p>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik MSS 11 · Analysis · Seite 1 von 2</p>
+</div>
+
+<!-- ===================== Seite 2 ===================== -->
+<div class="page">
+  <h1>Tangente, ganzrationale Funktionen, f und f′<span class="klein">Normale und Winkel — Symmetrie und Nullstellen — Monotonie und Extrempunkte</span></h1>
+  <div class="grid">
+
+    <div class="box merk wide">
+      <h2>Tangente, Normale, Steigungs- und Schnittwinkel</h2>
+      <div class="zwei">
+        <div>
+          <p class="f">t(x) = f′(x₀) · (x − x₀) + f(x₀) <span class="fu">t(x) = mx + n</span></p>
+          <p class="f">n(x) = −<span class="bruch"><span class="z">1</span><span>f′(x₀)</span></span> · (x − x₀) + f(x₀) &nbsp; (f′(x₀) ≠ 0)</p>
+          <p>Normale senkrecht zur Tangente: m<sub>t</sub> · m<sub>n</sub> = −1. Ist f′(x₀) = 0, ist die Normale die senkrechte Gerade x = x₀.</p>
+          <p><b>Steigungswinkel:</b> tan α = m, α = tan⁻¹(m), −90° &lt; α &lt; 90°. <span class="fu">auch arctan</span></p>
+          <p><b>Schnittwinkel</b> zweier Graphen in einem gemeinsamen Punkt: γ = |α − β|, falls ≤ 90°, sonst 180° − |α − β|.</p>
+          <div class="rechnung">
+            <div class="schritt"><b>Bsp.</b><span>f(x) = x², P(1 | 1): α = tan⁻¹(2) ≈ 63,43°; g(x) = 0,25x + 0,75: β ≈ 14,04°; γ ≈ 49,40° (erst am Ende runden!)</span></div>
+          </div>
+        </div>
+        <figure class="m70">[[FIG5]]</figure>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:2.1mm">
+    <div class="box">
+      <h2>Ganzrationale Funktionen</h2>
+      <p class="zentral f">f(x) = aₙxⁿ + … + a₁x + a₀, &nbsp; aₙ ≠ 0, Grad n</p>
+      <p><b>Für x → ±∞</b> wie aₙxⁿ:</p>
+      <figure>[[FIG8]]</figure>
+      <p><b>Symmetrie:</b> nur gerade Exponenten (a₀ = a₀x⁰ zählt mit) ⟺ achsensymmetrisch zur y-Achse, f(−x) = f(x); nur ungerade ⟺ punktsymmetrisch zum Ursprung, f(−x) = −f(x).</p>
+    </div>
+    <div class="box" style="border-style:dashed;background:#f7f8fa">
+      <h2 style="color:#5b6570">Ausblick</h2>
+      <p>Thema 4: die Exponentialfunktion, die mit ihrer eigenen Ableitung übereinstimmt. Thema 5: Funktionsuntersuchungen mit der zweiten Ableitung, Wendepunkte, Extremwertprobleme.</p>
+    </div>
+    </div>
+
+    <div class="box wide">
+      <h2>Nullstellen und Vielfachheit</h2>
+      <div class="zwei">
+        <div>
+          <p>Grad n ⟹ höchstens n Nullstellen. Nullstelle x<sub>N</sub> ⟹ f(x) = (x − x<sub>N</sub>) · r(x) (Polynomdivision).</p>
+          <p><b>1. Ablesen</b> aus der faktorisierten Form (Satz vom Nullprodukt).<br><b>2. Ausklammern:</b> x³ − 4x = x(x − 2)(x + 2).<br><b>3. Substitution</b> bei ax⁴ + bx² + c: u = x², pq-Formel, <b>Rücksubstitution</b> x = ±√u (u &lt; 0: keine Lösung).</p>
+          <p><b>Vielfachheit</b> = Exponent des Linearfaktors. Ungerade: Vorzeichenwechsel, der Graph schneidet; gerade: kein Wechsel, er berührt (f′ = 0).</p>
+        </div>
+        <figure class="m80">[[FIG6]]</figure>
+      </div>
+    </div>
+
+    <div class="box merk">
+      <h2>Monotonie und Extrempunkte</h2>
+      <p><b>Streng monoton steigend</b> auf I: x₁ &lt; x₂ ⟹ f(x₁) &lt; f(x₂) (fallend: &gt;).</p>
+      <p><b>Monotoniesatz:</b> f′ &gt; 0 auf I ⟹ f steigt dort; f′ &lt; 0 ⟹ f fällt. (Umkehrung nicht ganz: x³.)</p>
+      <p><b>Notwendig:</b> innerer Extrempunkt ⟹ f′(x<sub>E</sub>) = 0. <b>Hinreichend:</b> Vorzeichenwechsel von f′: + → − Hochpunkt, − → + Tiefpunkt; ohne Wechsel: Sattelpunkt.</p>
+      <figure class="m62">[[FIG7]]</figure>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung — f′ untersuchen</h2>
+      <p><b>Gegeben:</b> f(x) = 0,5x⁴ − x² + 0,5</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>f′(x) = 2x³ − 2x = 2x(x − 1)(x + 1)</span></div>
+        <div class="schritt"><b>2.</b><span>Nullstellen von f′: −1; 0; 1</span></div>
+        <div class="schritt"><b>3.</b><span>f′: − | + | − | + ⟹ T₁(−1 | 0), H(0 | 0,5), T₂(1 | 0)</span></div>
+        <div class="schritt"><b>4.</b><span>f(±1) = 0 globales Minimum; f(0) nur lokales Maximum</span></div>
+      </div>
+    </div>
+
+    <div class="box warn wide">
+      <h2>Typische Fehler</h2>
+      <ul>
+        <li><b>Sekante statt Tangente:</b> Ein Differenzenquotient mit h ≠ 0 ist nie die Ableitung, auch nicht bei kleinem h.</li>
+        <li><b>(x⁻²)′ = −2x⁻¹</b> — falsch: der Exponent wird um 1 <i>kleiner</i>, −2x⁻³.</li>
+        <li><b>(u · v)′ = u′ · v′</b> — falsch, Produktregel. Bei Verkettungen die <b>innere Ableitung</b> nicht vergessen.</li>
+        <li><b>Normale −m statt −1/m</b>; Winkel im Bogenmaß statt in Grad.</li>
+        <li><b>f′(x) = 0</b> ⟹ <b>Extrempunkt</b> — nur mit Vorzeichenwechsel. <b>Tangente berührt nur einmal</b> — nein, sie darf den Graphen woanders schneiden.</li>
+      </ul>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik MSS 11 · Analysis · Seite 2 von 2</p>
+</div>
+
+</body>
+</html>
