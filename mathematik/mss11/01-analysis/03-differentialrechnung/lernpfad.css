@@ -547,3 +547,27 @@
 :root[data-theme="dark"] .dr-punkt-v { fill: #c4a7ff; }
 :root[data-theme="dark"] .dr-dreieck.h { stroke: #ffbf6e; }
 .dr-dreieck.duenn { stroke-width: 1.6; stroke-dasharray: 4 3; }
+
+/* Reiter: x₀-Methode oder h-Methode */
+.reiter { margin: 0.4rem 0; }
+.reiter-leiste { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.reiter-leiste button {
+  border: 1px solid var(--border); background: var(--bg); color: var(--text);
+  padding: 0.3rem 0.7rem; border-radius: 8px 8px 0 0; font-weight: 700; cursor: pointer; font-size: 0.88rem;
+}
+.reiter-leiste button[aria-selected="true"] { background: var(--card-bg); border-color: var(--accent); box-shadow: inset 0 -2px 0 var(--accent); }
+.reiter-feld { line-height: 1.6; }
+.reiter-widget { margin-top: 0; }
+.reflexion-box {
+  margin: 1rem 0; padding: 0.8rem 1rem; border-radius: 10px;
+  border: 1px solid #1d4ed8; border-left-width: 5px; background: #eef2ff;
+}
+.reflexion-box .box-label { display: block; font-weight: 800; color: #1d4ed8; margin-bottom: 0.4rem; }
+.reflexion-box ol { margin: 0; padding-left: 1.3rem; }
+.reflexion-box li { margin-bottom: 0.4rem; }
+:root[data-theme="dark"] .reflexion-box { background: #1e2a4a; border-color: #8ab4ff; }
+:root[data-theme="dark"] .reflexion-box .box-label { color: #8ab4ff; }
+
+/* Die Kathetennamen am Steigungsdreieck (Abschnitt 2) kreuzen je nach Reglerstellung den Graphen
+   oder eine Achse; ein Rand in der Hintergrundfarbe hält sie lesbar. */
+.dr-halo { paint-order: stroke; stroke: var(--card-bg); stroke-width: 4px; stroke-linejoin: round; }

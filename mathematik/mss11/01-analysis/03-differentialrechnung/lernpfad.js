@@ -2,10 +2,13 @@
 //
 // Didaktische Reihenfolge — jede Stufe benutzt nur, was davor steht:
 //    1. Mittlere Änderungsrate          (Steigung einer Geraden, Steigungsdreieck: Mittelstufe)
-//    2. Lokale Änderungsrate            (Sekanten mit h → 0: Grenzwert aus Thema 2; Wert nur vermutet)
-//    3. Ableitung an einer Stelle       (Definition über den Grenzwert, h-Methode, lokale Linearität)
+//    2. Lokale Änderungsrate            (Sekante PQ mit x → x₀: Grenzwert aus Thema 2; Wert nur vermutet)
+//    3. Ableitung an einer Stelle       (Differentialquotient lim (f(x) − f(x₀))/(x − x₀), lokale Linearität)
+//
+// Schreibweise wie in Elemente der Mathematik: zuerst die x₀-Methode, weil sie das Steigungsdreieck
+// zwischen P und Q sichtbar hält; die h-Methode (x = x₀ + h) steht jeweils in einem Reiter daneben.
 //    4. Grafisches Differenzieren        (Tangentensteigung aus 3 an jeder Stelle → Funktion f′)
-//    5. Potenzregel                     (h-Methode aus 3 allgemein; binomische Formeln, Erweitern)
+//    5. Ableitungsfunktion, Potenzregel (erst f′(3), dann f′(x₀), dann f′; Faktor x − x₀ abspalten)
 //    6. Faktor- und Summenregel         (Grenzwertsätze aus Thema 1/2; braucht 5 für g′)
 //    7. Sinus und Kosinus               (Einheitskreis, Bogenmaß; 4 hat die Vermutung geliefert)
 //    8. Produkt- und Kettenregel        (dieselbe Flächenidee wie 5; Verstärkungsfaktor)
@@ -24,7 +27,7 @@
 // Normale violett, Warnung (Knick, keine Ableitung) rot, Hilfslinien grau.
 
 import { mountUebungsaufgaben } from "../../../aufgaben.js?v=2";
-import { AUFGABEN, parseZahl } from "./aufgaben-differentialrechnung.js?v=1";
+import { AUFGABEN, parseZahl } from "./aufgaben-differentialrechnung.js?v=2";
 
 // ---------- Helfer ----------
 
@@ -128,6 +131,24 @@ function setzeBereich(id, min, max, start) {
   e.min = String(min);
   e.max = String(max);
   e.value = String(start);
+}
+// Reiter (x₀-Methode / h-Methode): Die Wahl steht am Reiter-Element als data-aktiv.
+function reiterWahl(name) {
+  const r = document.querySelector(`.reiter[data-reiter="${name}"]`);
+  return (r && r.dataset.aktiv) || "x";
+}
+function verdrahteReiter(beiWechsel) {
+  document.querySelectorAll(".reiter").forEach((r) => {
+    r.dataset.aktiv = "x";
+    r.querySelectorAll(".reiter-leiste button").forEach((b) => {
+      b.addEventListener("click", () => {
+        r.dataset.aktiv = b.dataset.wahl;
+        r.querySelectorAll(".reiter-leiste button").forEach((x) => x.setAttribute("aria-selected", String(x === b)));
+        r.querySelectorAll(".reiter-feld").forEach((f) => { f.hidden = f.dataset.feld !== b.dataset.wahl; });
+        beiWechsel(r.dataset.reiter);
+      });
+    });
+  });
 }
 function setzeAnzeige(id, text) {
   document.getElementById(id).textContent = text;
@@ -354,35 +375,63 @@ function renderLokal() {
   const d = LR[wahl("lr-art")];
   const x0 = reglerRaster("lr-x");
   const h = H_LR[regler("lr-h")];
+  // Derselbe Regler, zwei Schreibweisen: in der x₀-Methode heißt der zweite Punkt Q(x | f(x)),
+  // in der h-Methode Q(x₀ + h | f(x₀ + h)). Gerechnet wird in beiden Fällen mit h = x − x₀.
+  const mitX = reiterWahl("lr") === "x";
+  const x = x0 + h;
+  setzeText("lr-h-name", mitX ? "x" : "h");
   setzeAnzeige("lr-x-anzeige", num(x0));
-  setzeAnzeige("lr-h-anzeige", num(h, 3));
-  const f = d.fn.f, f0 = f(x0), fq = f(x0 + h), q = dq(f, x0, h), m = d.fn.d(x0);
+  setzeAnzeige("lr-h-anzeige", mitX ? num(x, 3) : num(h, 3));
+  const f = d.fn.f, f0 = f(x0), fq = f(x), q = dq(f, x0, h), m = d.fn.d(x0);
   const [xmin, xmax, ymin, ymax] = d.bild;
   const K = koordinatenXY({ xmin, xmax, ymin, ymax });
   graph(K, f, Math.max(xmin, 0), xmax, { schritte: 500 });
   gerade(K, m, x0, f0, "dr-tangente grenze", { "data-rolle": "tangente" });
   gerade(K, q, x0, f0, "dr-sekante", { "data-rolle": "sekante" });
+  // Das Steigungsdreieck der Sekante: Grundseite x − x₀, Höhe f(x) − f(x₀).
+  strecke(K, x0, f0, x, f0, "dr-dreieck dx", { "data-rolle": "dx", "data-wert": String(h) });
+  strecke(K, x, f0, x, fq, "dr-dreieck", { "data-rolle": "dy", "data-wert": String(fq - f0) });
   punkt(K, x0, f0, "fr-punkt", { "data-rolle": "p" });
-  punkt(K, x0 + h, fq, "fr-punkt dr-punkt-q", { "data-rolle": "q" });
-  beschrift(K, x0, f0, "P", "dr-text-b", { dx: -12, dy: -8 });
-  // Q liegt bei kleinem h fast auf P — dann bekäme die Beschriftung keinen eigenen Platz.
-  if (Math.abs(h) >= 0.1) beschrift(K, x0 + h, fq, "Q", "dr-text-o", { dx: 12, dy: 14 });
+  punkt(K, x, fq, "fr-punkt dr-punkt-q", { "data-rolle": "q" });
+  beschrift(K, x0, f0, "P", "dr-text-b dr-halo", { dx: -12, dy: -8 });
+  // Q liegt bei kleinem Abstand fast auf P — dann bekäme die Beschriftung keinen eigenen Platz.
+  // Q steht außen am Dreieck, vom Dreieck weg — so kommt es dem Namen der senkrechten Kathete,
+  // der auf derselben Seite auf halber Höhe steht, nicht in die Quere.
+  if (Math.abs(h) >= 0.1) beschrift(K, x, fq, "Q", "dr-text-o dr-halo", { dx: h > 0 ? 10 : -10, dy: fq >= f0 ? -8 : 16 });
+  // Die Katheten tragen ihre Namen — die Zahlen dazu stehen in der Bilanz darunter. Beschriftet
+  // wird nur auf der Außenseite des Dreiecks (innen läuft die Sekante hindurch) und nur, wenn die
+  // Kathete lang genug ist: an einer kurzen säße der Name über P oder Q. Passt die Außenseite
+  // nicht mehr ins Bild, entfällt der Name lieber, als dass er auf die Sekante rutscht.
+  const nameDx = mitX ? "x − x₀" : "h", nameDy = mitX ? "f(x) − f(x₀)" : "f(x₀ + h) − f(x₀)";
+  if (Math.abs(K.X(x) - K.X(x0)) >= 70) {
+    beschrift(K, (x0 + x) / 2, f0, nameDx, "dr-text-k dr-halo", { dy: fq >= f0 ? 16 : -8 });
+  }
+  const breiteDy = nameDy.length * 7 + 8;
+  const aussenPasst = h > 0 ? K.X(x) + breiteDy < K.breite - 4 : K.X(x) - breiteDy > 4;
+  if (Math.abs(K.Y(fq) - K.Y(f0)) >= 40 && aussenPasst) {
+    beschrift(K, x, (f0 + fq) / 2, nameDy, "dr-text-v dr-halo", { dx: h > 0 ? 8 : -8, dy: 4, anker: h > 0 ? "start" : "end" });
+  }
   zeige("lr-mount", K.svg);
 
-  const kopf = H_LR.map((w) => `<th>${num(w, 3)}</th>`).join("");
+  const kopf = H_LR.map((w) => `<th>${mitX ? num(x0 + w, 3) : num(w, 3)}</th>`).join("");
   const werte = H_LR.map((w) => {
     const v = dq(f, x0, w);
     return `<td data-h="${w}" class="${w === h ? "aktiv" : ""}">${num(v, 6)}</td>`;
   }).join("");
-  setzeHtml("lr-tabelle", `<table class="fr-tabelle"><tr><th>h</th>${kopf}</tr><tr><th>Differenzenquotient</th>${werte}</tr></table>`);
+  setzeHtml("lr-tabelle", `<table class="fr-tabelle"><tr><th>${mitX ? "x" : "h"}</th>${kopf}</tr><tr><th>Differenzenquotient</th>${werte}</tr></table>`);
   const genauQ = zeichen(fq, 6) === "=" && zeichen(f0, 6) === "=";
+  const formel = mitX
+    ? `${bruch(`f(${num(x, 3)}) − f(${num(x0)})`, `${num(x, 3)} − ${numK(x0)}`)}`
+    : `${bruch(`f(${num(x0)} ${plusMinus(h, 3)}) − f(${num(x0)})`, num(h, 3))}`;
   setzeHtml("lr-bilanz",
-    `${bruch(`f(${num(x0)} ${plusMinus(h, 3)}) − f(${num(x0)})`, num(h, 3))} ${genauQ ? "=" : "≈"} ${bruch(`${num(fq, 6)} − ${numK(f0, 6)}`, num(h, 3))} ${zeichen(q, 6)} <span class="wo">${num(q, 6)}</span> — Steigung der Sekante PQ.<br>` +
+    `${formel} ${genauQ ? "=" : "≈"} ${bruch(`${num(fq, 6)} − ${numK(f0, 6)}`, num(h, 3))} ${zeichen(q, 6)} <span class="wo">${num(q, 6)}</span> — Steigung der Sekante PQ.<br>` +
     `Grenzlage (gestrichelt): Steigung ${zeichen(m)} <span class="wa">${num(m)}</span>; Abstand der Sekantensteigung davon: ${num(Math.abs(q - m), 6)}.`);
+  const naeher = mitX ? `Schiebe x näher an x₀ = ${num(x0)}.` : "Verkleinere h.";
+  const links = mitX ? `Probiere auch x &lt; x₀: Dann liegt Q links von P.` : `Probiere auch negative h: Dann liegt Q links von P.`;
   setzeText("lr-text", Math.abs(h) >= 0.5
-    ? `Q liegt noch weit von P entfernt; die Sekante ist deutlich steiler oder flacher als die gestrichelte Grenzlage. Verkleinere h.`
+    ? `Q liegt noch weit von P entfernt; die Sekante ist deutlich steiler oder flacher als die gestrichelte Grenzlage. ${naeher}`
     : Math.abs(h) >= 0.1
-      ? `Die Sekante dreht sich auf die gestrichelte Gerade zu. Probiere auch negative h: Dann liegt Q links von P.`
+      ? `Die Sekante dreht sich auf die gestrichelte Gerade zu. ${links.replace("&lt;", "<")}`
       : `Q ist von P kaum noch zu trennen, die Sekante kaum noch von der gestrichelten Geraden. Von links und von rechts nähern sich die Differenzenquotienten derselben Zahl ${num(m)} — das ist die lokale Änderungsrate an der Stelle ${num(x0)}.`);
 }
 
@@ -499,25 +548,25 @@ function renderQuadrat() {
   const x = reglerRaster("pq-x");
   const h = reglerRaster("pq-h");
   setzeAnzeige("pq-x-anzeige", num(x));
-  setzeAnzeige("pq-h-anzeige", num(h, 2));
+  setzeAnzeige("pq-h-anzeige", `${num(h, 2)} (x = ${num(x + h, 2)})`);
   // 420 × 406 Bildpunkte bei 0 … 4,2 in beiden Richtungen: unverzerrt, damit Flächen Flächen bleiben.
   const K = koordinatenXY({ breite: 420, hoehe: 406, xmin: 0, xmax: 4.2, ymin: 0, ymax: 4.2, xName: "", yName: "", zahlen: false });
   rechteck(K, 0, 0, x, x, "dr-quadrat", { "data-rolle": "quadrat" });
   rechteck(K, x, 0, x + h, x, "dr-streifen", { "data-rolle": "streifen-rechts" });
   rechteck(K, 0, x, x, x + h, "dr-streifen oben", { "data-rolle": "streifen-oben" });
   rechteck(K, x, x, x + h, x + h, "dr-ecke", { "data-rolle": "ecke" });
-  beschrift(K, x / 2, x / 2, "x²", "dr-text-b", { dy: 5 });
-  beschrift(K, x / 2, 0, `x = ${num(x)}`, "dr-text-b", { dy: -8 });
-  beschrift(K, x + h, x / 2, "x · h", "dr-text-o", { dx: 6, dy: 4, anker: "start" });
-  beschrift(K, x / 2, x + h, "x · h", "dr-text-v", { dy: -7 });
-  beschrift(K, x + h, x + h, "h²", "dr-text-r", { dx: 6, dy: -6, anker: "start" });
+  beschrift(K, x / 2, x / 2, "x₀²", "dr-text-b", { dy: 5 });
+  beschrift(K, x / 2, 0, `x₀ = ${num(x)}`, "dr-text-b", { dy: -8 });
+  beschrift(K, x + h, x / 2, "x₀ · Δx", "dr-text-o", { dx: 6, dy: 4, anker: "start" });
+  beschrift(K, x / 2, x + h, "x₀ · Δx", "dr-text-v", { dy: -7 });
+  beschrift(K, x + h, x + h, "Δx²", "dr-text-r", { dx: 6, dy: -6, anker: "start" });
   zeige("pq-mount", K.svg);
   const zuwachs = 2 * x * h + h * h;
   setzeHtml("pq-bilanz",
-    `Zuwachs: (x + h)² − x² = 2 · x · h + h² = 2 · ${num(x)} · ${num(h, 2)} + ${num(h, 2)}² = ${num(2 * x * h)} + ${num(h * h)} = ${num(zuwachs)}<br>` +
-    `Geteilt durch h: ${bruch("(x + h)² − x²", "h")} = 2x + h = ${num(2 * x)} + ${num(h, 2)} = <span class="wo">${num(2 * x + h)}</span>. Für h → 0 bleibt <span class="wa">2x = ${num(2 * x)}</span>.`);
+    `Zuwachs: x² − x₀² = 2 · x₀ · Δx + Δx² = 2 · ${num(x)} · ${num(h, 2)} + ${num(h, 2)}² = ${num(2 * x * h)} + ${num(h * h)} = ${num(zuwachs)}<br>` +
+    `Geteilt durch Δx = x − x₀: ${bruch("x² − x₀²", "x − x₀")} = 2x₀ + Δx = x + x₀ = ${num(2 * x)} + ${num(h, 2)} = <span class="wo">${num(2 * x + h)}</span>. Für x → x₀ bleibt <span class="wa">2x₀ = ${num(2 * x)}</span>.`);
   const anteil = (100 * h * h) / zuwachs;
-  setzeText("pq-text", `Das Eckquadrat h² macht ${zeichen(anteil, 1)} ${num(anteil, 1)} % des Zuwachses aus. Halbiert man h, werden die Streifen halb so breit, das Eckquadrat aber nur noch ein Viertel so groß — nach dem Teilen durch h bleiben die beiden Streifen x · h übrig, also 2x.`);
+  setzeText("pq-text", `Das Eckquadrat Δx² macht ${zeichen(anteil, 1)} ${num(anteil, 1)} % des Zuwachses aus. Halbiert man Δx, werden die Streifen halb so breit, das Eckquadrat aber nur noch ein Viertel so groß — nach dem Teilen durch Δx bleiben die beiden Streifen x₀ · Δx übrig, also 2x₀.`);
 }
 
 // ================= 6. Faktorregel und Summenregel =================
@@ -836,12 +885,14 @@ function renderDifferenzierbar() {
   zeige("df-mount", K.svg);
   const kopf = H_DF.map((w) => `<th>${num(w, 3)}</th>`).join("");
   const zeile = (fn, seite) => H_DF.map((w) => `<td data-seite="${seite}" data-h="${w}" class="${w === h ? "aktiv" : ""}">${num(fn(w), 4)}</td>`).join("");
-  setzeHtml("df-tabelle", `<table class="fr-tabelle"><tr><th>|h|</th>${kopf}</tr><tr><th>von links</th>${zeile(links, "links")}</tr><tr><th>von rechts</th>${zeile(rechts, "rechts")}</tr></table>`);
+  setzeHtml("df-tabelle", `<table class="fr-tabelle"><tr><th>|x − x₀|</th>${kopf}</tr><tr><th>von links</th>${zeile(links, "links")}</tr><tr><th>von rechts</th>${zeile(rechts, "rechts")}</tr></table>`);
   const L = links(h), R = rechts(h);
-  const kopfzeile = `Von links: ${bruch(`f(${num(x0)} − h) − f(${num(x0)})`, "−h")} ${zeichen(L)} <span class="wo">${num(L)}</span>; &nbsp; von rechts: ${bruch(`f(${num(x0)} + h) − f(${num(x0)})`, "h")} ${zeichen(R)} <span class="wr">${num(R)}</span><br>`;
+  // x₀-Methode: links ist x = x₀ − |x − x₀|, rechts x = x₀ + |x − x₀|.
+  const xl = x0 - h, xr = x0 + h;
+  const kopfzeile = `Von links, x = ${num(xl, 3)}: ${bruch(`f(${num(xl, 3)}) − f(${num(x0)})`, `${num(xl, 3)} − ${numK(x0)}`)} ${zeichen(L)} <span class="wo">${num(L)}</span>; &nbsp; von rechts, x = ${num(xr, 3)}: ${bruch(`f(${num(xr, 3)}) − f(${num(x0)})`, `${num(xr, 3)} − ${numK(x0)}`)} ${zeichen(R)} <span class="wr">${num(R)}</span><br>`;
   if (art === "naht") {
     const glatt = Math.abs(m - 2) < 1e-12;
-    setzeHtml("df-bilanz", kopfzeile + `Links = 2 − h → 2, rechts = ${num(m)} für jedes h. ` +
+    setzeHtml("df-bilanz", kopfzeile + `Links ist der Quotient gleich x → 2, rechts ist er ${num(m)} für jedes x. ` +
       (glatt ? `<span class="wa">Beide Grenzwerte sind 2: f ist an der Stelle 2 differenzierbar, f′(2) = 2.</span>` : `<span class="wg">Grenzwerte 2 und ${num(m)} verschieden: Knick — f ist an der Stelle 2 stetig, aber nicht differenzierbar.</span>`));
     setzeText("df-text", glatt
       ? "Mit m = 2 setzt die Gerade ohne Knick an die Parabel an — sie ist sogar die Tangente der Parabel im Punkt (2 | 3)."
@@ -850,10 +901,10 @@ function renderDifferenzierbar() {
   }
   if (art === "betrag") {
     setzeHtml("df-bilanz", kopfzeile + `<span class="wg">Links immer −1, rechts immer 1: verschiedene Grenzwerte — |x| ist an der Stelle 0 nicht differenzierbar.</span>`);
-    setzeText("df-text", "Egal wie klein h wird: Die linke Sekante fällt mit −1, die rechte steigt mit 1. Der Graph hat einen Knick. Stetig ist |x| bei 0 trotzdem.");
+    setzeText("df-text", "Egal wie nah x an 0 heranrückt: Die linke Sekante fällt mit −1, die rechte steigt mit 1. Der Graph hat einen Knick. Stetig ist |x| bei 0 trotzdem.");
     return;
   }
-  setzeHtml("df-bilanz", kopfzeile + `Beide Differenzenquotienten sind ${bruch("∛h", "h")} = h<sup>−2/3</sup> und <span class="wg">wachsen über jede Grenze — kein endlicher Grenzwert, also nicht differenzierbar.</span>`);
+  setzeHtml("df-bilanz", kopfzeile + `Beide Differenzenquotienten sind ${bruch("∛x", "x")} = |x|<sup>−2/3</sup> und <span class="wg">wachsen über jede Grenze — kein endlicher Grenzwert, also nicht differenzierbar.</span>`);
   setzeText("df-text", "Die Sekanten werden immer steiler und nähern sich der senkrechten Geraden x = 0. Eine senkrechte Tangente hat keine Steigung — ∛x ist bei 0 stetig, aber nicht differenzierbar.");
 }
 
@@ -1075,15 +1126,15 @@ const QUIZZE = {
     explain: "(80 m − 20 m) : (4 s − 2 s) = 30 m/s. 60 m ist der zurückgelegte Weg, keine Geschwindigkeit. 20 m/s und 40 m/s sind die Momentangeschwindigkeiten bei 2 s und 4 s — der Durchschnitt liegt dazwischen.",
   },
   "quiz-lokal": {
-    q: "Für f(x) = x³ und x₀ = 1 liefert der Differenzenquotient mit h = 0,1 den Wert 3,31. Was ist die beste Deutung?",
+    q: "Für f(x) = x³, x₀ = 1 und x = 1,1 hat der Differenzenquotient den Wert 3,31. Was ist die beste Deutung?",
     options: [
       "Die lokale Änderungsrate an der Stelle 1 ist 3,31.",
-      "Die Tangente hat die Steigung 3,31, weil h schon klein ist.",
-      "Man darf h = 0 einsetzen und erhält 3.",
-      "3,31 ist die Steigung der Sekante durch P(1 | 1) und Q(1,1 | 1,331); für h → 0 nähern sich die Werte 3.",
+      "Die Tangente hat die Steigung 3,31, weil x schon nah bei 1 liegt.",
+      "Man darf x = 1 einsetzen und erhält 3.",
+      "3,31 ist die Steigung der Sekante durch P(1 | 1) und Q(1,1 | 1,331); für x → 1 nähern sich die Werte 3.",
     ],
     correct: 3,
-    explain: "Ein Differenzenquotient mit h ≠ 0 ist immer eine Sekantensteigung, so klein h auch ist. Die lokale Änderungsrate ist der Grenzwert: ((1 + h)³ − 1) : h = 3 + 3h + h² → 3. „h = 0 einsetzen“ ergäbe 0 : 0 — erst vereinfachen, dann den Grenzwert bilden.",
+    explain: "Ein Differenzenquotient mit x ≠ x₀ ist immer eine Sekantensteigung, so nah x auch an x₀ liegt. Die lokale Änderungsrate ist der Grenzwert: (x³ − 1) : (x − 1) = x² + x + 1 → 3 für x → 1. „x = 1 einsetzen“ ergäbe 0 : 0 — erst den Faktor x − 1 kürzen, dann den Grenzwert bilden.",
   },
   "quiz-ableitung": {
     q: "Was zeigt das Funktionenmikroskop an einer Stelle, an der f differenzierbar ist?",
@@ -1146,7 +1197,7 @@ const QUIZZE = {
       "Jede an einer Stelle differenzierbare Funktion ist dort auch stetig.",
     ],
     correct: 3,
-    explain: "Differenzierbarkeit ist die stärkere Eigenschaft: Aus ihr folgt Stetigkeit, denn f(x₀ + h) − f(x₀) = Differenzenquotient · h → f′(x₀) · 0 = 0. Umgekehrt nicht: |x| ist bei 0 definiert (|0| = 0) und stetig, hat dort aber einen Knick und keine Ableitung.",
+    explain: "Differenzierbarkeit ist die stärkere Eigenschaft: Aus ihr folgt Stetigkeit, denn f(x) − f(x₀) = Differenzenquotient · (x − x₀) → f′(x₀) · 0 = 0. Umgekehrt nicht: |x| ist bei 0 definiert (|0| = 0) und stetig, hat dort aber einen Knick und keine Ableitung.",
   },
   "quiz-ganzrational": {
     q: "Welche Funktion ist punktsymmetrisch zum Ursprung?",
@@ -1189,10 +1240,10 @@ const QUIZZE = {
 // Die Auswahl liegt nur im Browser dieser Person — eine Lernhilfe, keine Leistungsmessung.
 const SE_PUNKTE = [
   ["sec-mittlere", "Ich kann eine mittlere Änderungsrate berechnen und als Sekantensteigung deuten — mit Einheit."],
-  ["sec-lokal", "Ich kann erklären, wie aus Sekanten mit h → 0 die Tangente und die lokale Änderungsrate werden."],
-  ["sec-ableitung", "Ich kann f′(x₀) mit der h-Methode berechnen und die drei Sichten auf die Ableitung nennen."],
+  ["sec-lokal", "Ich kann erklären, wie aus Sekanten PQ mit x → x₀ die Tangente und die lokale Änderungsrate werden."],
+  ["sec-ableitung", "Ich kann f′(x₀) als Differentialquotienten mit der x₀-Methode (oder der h-Methode) berechnen und die drei Sichten auf die Ableitung nennen."],
   ["sec-grafisch", "Ich kann zu einem Graphen den Graphen der Ableitungsfunktion skizzieren."],
-  ["sec-potenz", "Ich kann die Potenzregel anwenden — auch bei negativen Exponenten und bei √x."],
+  ["sec-potenz", "Ich kann die Ableitungsfunktion erst an einer Stelle, dann allgemein herleiten und die Potenzregel anwenden — auch bei negativen Exponenten und bei √x."],
   ["sec-regeln", "Ich kann ganzrationale Funktionen mit Faktor- und Summenregel ableiten."],
   ["sec-sinus", "Ich kenne die Ableitungen von sin und cos und weiß, warum sie nur im Bogenmaß gelten."],
   ["sec-produkt-kette", "Ich kann Produkte und Verkettungen ableiten."],
@@ -1254,6 +1305,8 @@ const REGLER = [
   [["sp-x"], renderStolperstelle],
 ];
 for (const bereich of Object.values(BEREICHE)) bereich();
+// Der Reiter im Sekanten-Widget schaltet die Schreibweise um; die übrigen Reiter zeigen nur Text.
+verdrahteReiter((name) => { if (name === "lr") renderLokal(); });
 for (const [ids, render] of REGLER) {
   ids.forEach((id) => {
     const e = document.getElementById(id);

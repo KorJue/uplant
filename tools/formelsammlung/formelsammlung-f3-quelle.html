@@ -92,22 +92,23 @@
 
     <div class="box merk">
       <h2>Ableitung an einer Stelle</h2>
-      <p class="zentral f">f′(x₀) = lim<sub>h→0</sub> <span class="bruch"><span class="z">f(x₀ + h) − f(x₀)</span><span>h</span></span> = lim<sub>x→x₀</sub> <span class="bruch"><span class="z">f(x) − f(x₀)</span><span>x − x₀</span></span></p>
-      <p>Existiert der Grenzwert, ist f an x₀ <b>differenzierbar</b>. <span class="fu">auch: <span class="bruch"><span class="z">df</span><span>dx</span></span>(x₀), ṡ(t₀)</span></p>
+      <p class="zentral f">f′(x₀) = lim<sub>x→x₀</sub> <span class="bruch"><span class="z">f(x) − f(x₀)</span><span>x − x₀</span></span> <span class="fu">= lim<sub>h→0</sub> <span class="bruch"><span class="z">f(x₀ + h) − f(x₀)</span><span>h</span></span> &nbsp;(h = x − x₀)</span></p>
+      <p>Dieser <b>Differentialquotient</b> heißt Ableitung von f an der Stelle x₀; existiert er, ist f an x₀ <b>differenzierbar</b>. <span class="fu">auch: <span class="bruch"><span class="z">df</span><span>dx</span></span>(x₀), ṡ(t₀)</span></p>
       <p><b>Drei Sichten:</b> lokale Änderungsrate · Steigung der <b>Tangente</b> in P(x₀ | f(x₀)) · Steigung „im Kleinen“ (stark vergrößert ist der Graph eine Gerade).</p>
-      <figure style="max-width:56%;margin:0.8mm auto 0">[[FIG2]]</figure>
+      <figure style="max-width:52%;margin:0.8mm auto 0">[[FIG2]]</figure>
     </div>
 
     <div class="box">
-      <h2>h-Methode</h2>
+      <h2>Differentialquotient berechnen</h2>
       <div class="rechnung">
-        <div class="schritt"><b>Bsp.</b><span><span class="f">f(x) = x², x₀ = 1: <span class="bruch"><span class="z">(1 + h)² − 1</span><span>h</span></span> = <span class="bruch"><span class="z">2h + h²</span><span>h</span></span> = 2 + h → 2</span></span></div>
+        <div class="schritt"><b>Bsp.</b><span><span class="f">f(x) = x², x₀ = 1: <span class="bruch"><span class="z">x² − 1</span><span>x − 1</span></span> = <span class="bruch"><span class="z">(x − 1)(x + 1)</span><span>x − 1</span></span> = x + 1 → 2</span></span></div>
       </div>
       <table>
-        <tr><th>h</th><td>0,1</td><td>0,01</td><td>0,001</td><td>−0,001</td></tr>
+        <tr><th>x</th><td>1,1</td><td>1,01</td><td>1,001</td><td>0,999</td></tr>
         <tr><th>Differenzenquotient</th><td>2,1</td><td>2,01</td><td>2,001</td><td>1,999</td></tr>
       </table>
-      <p style="margin-top:0.8mm">Erst vereinfachen, dann h → 0 — h = 0 einsetzen ergäbe 0 : 0. Allgemein: f′(x) = lim (2x + h) = 2x.</p>
+      <p style="margin-top:0.8mm">Erst kürzen, dann x → x₀ — x = x₀ einsetzen ergäbe 0 : 0. <span class="fu" style="white-space:nowrap">h-Methode: <span class="bruch"><span class="z">(1 + h)² − 1</span><span>h</span></span> = 2 + h → 2.</span></p>
+      <p><b>Allgemein</b> an der Stelle x₀: <span class="bruch"><span class="z">x² − x₀²</span><span>x − x₀</span></span> = x + x₀ → 2x₀, also f′(x) = 2x.</p>
       <h2 style="margin-top:2mm">Ableitungsfunktion</h2>
       <p>f′ ordnet jeder Stelle x die Tangentensteigung f′(x) zu. <b>Grafisch:</b> Tangente anlegen, 1 nach rechts gehen, Höhenänderung ablesen = f′(x).</p>
     </div>
@@ -145,8 +146,8 @@
       <p><b>Gegeben:</b> f(x) = x² − 2x + 3 für x &lt; 2, f(x) = 2x − 1 für x ≥ 2</p>
       <div class="rechnung">
         <div class="schritt"><b>1.</b><span>Stetig: links → 3, f(2) = 3 ✓</span></div>
-        <div class="schritt"><b>2.</b><span>links: <span class="bruch"><span class="z">(2 + h)² − 2(2 + h) + 3 − 3</span><span>h</span></span> = 2 + h → 2</span></div>
-        <div class="schritt"><b>3.</b><span>rechts: <span class="bruch"><span class="z">2(2 + h) − 1 − 3</span><span>h</span></span> = 2 → 2</span></div>
+        <div class="schritt"><b>2.</b><span>links: <span class="bruch"><span class="z">x² − 2x + 3 − 3</span><span>x − 2</span></span> = <span class="bruch"><span class="z">x(x − 2)</span><span>x − 2</span></span> = x → 2</span></div>
+        <div class="schritt"><b>3.</b><span>rechts: <span class="bruch"><span class="z">2x − 1 − 3</span><span>x − 2</span></span> = 2 → 2</span></div>
         <div class="schritt"><b>4.</b><span>Gleich: differenzierbar, <b>f′(2) = 2</b></span></div>
       </div>
     </div>
@@ -236,7 +237,7 @@
     <div class="box warn wide">
       <h2>Typische Fehler</h2>
       <ul>
-        <li><b>Sekante statt Tangente:</b> Ein Differenzenquotient mit h ≠ 0 ist nie die Ableitung, auch nicht bei kleinem h.</li>
+        <li><b>Sekante statt Tangente:</b> Ein Differenzenquotient mit x ≠ x₀ ist nie die Ableitung, auch nicht, wenn x dicht bei x₀ liegt.</li>
         <li><b>(x⁻²)′ = −2x⁻¹</b> — falsch: der Exponent wird um 1 <i>kleiner</i>, −2x⁻³.</li>
         <li><b>(u · v)′ = u′ · v′</b> — falsch, Produktregel. Bei Verkettungen die <b>innere Ableitung</b> nicht vergessen.</li>
         <li><b>Normale −m statt −1/m</b>; Winkel im Bogenmaß statt in Grad.</li>

@@ -143,19 +143,20 @@ def fig_sekanten():
     x0 = 1.0
     A = Achsen(150.0, 96.0, -0.5, 2.6, -0.5, 5, 0.5, 1, "Sekanten → Tangente in P(1 | 1)")
     A.graph(fn, -0.5, 2.6)
-    for h, farbe, strich in ((1.0, ORANGE, None), (0.5, ORANGE, "3 1.5"), (0.25, ORANGE, "1 1.2")):
-        m = (fn(x0 + h) - fn(x0)) / h
-        assert abs(m - (2 + h)) < 1e-12, "Sekanten: Differenzenquotient ist nicht 2 + h"
+    # x₀-Methode wie auf der Seite: der zweite Punkt heißt Q(x | f(x)), der Quotient ist x + x₀.
+    for x, farbe, strich in ((2.0, ORANGE, None), (1.5, ORANGE, "3 1.5"), (1.25, ORANGE, "1 1.2")):
+        m = (fn(x) - fn(x0)) / (x - x0)
+        assert abs(m - (x + x0)) < 1e-12, "Sekanten: Differenzenquotient ist nicht x + x₀"
         A.gerade(m, x0, fn(x0), farbe, 0.8, strich)
-        A.punkt(x0 + h, fn(x0 + h), ORANGE, 1.3)
+        A.punkt(x, fn(x), ORANGE, 1.3)
     mt = ableitung(fn, x0)
     assert abs(mt - 2) < 1e-6, "Tangente: Steigung ist nicht 2"
     A.gerade(mt, x0, fn(x0), GRUEN, 1.3)
     A.punkt(x0, fn(x0), BLAU)
     # Rechts unterhalb der Tangente ist frei: Dort stören die Steigungen keine Linie.
-    A.t.append(etikett(A.X(2.55), A.Y(1.75), "h = 1: 3", ORANGE, 5.0, 700, "end"))
-    A.t.append(etikett(A.X(2.55), A.Y(1.25), "h = 0,5: 2,5", ORANGE, 5.0, 700, "end"))
-    A.t.append(etikett(A.X(2.55), A.Y(0.75), "h = 0,25: 2,25", ORANGE, 5.0, 700, "end"))
+    A.t.append(etikett(A.X(2.55), A.Y(1.75), "x = 2: 3", ORANGE, 5.0, 700, "end"))
+    A.t.append(etikett(A.X(2.55), A.Y(1.25), "x = 1,5: 2,5", ORANGE, 5.0, 700, "end"))
+    A.t.append(etikett(A.X(2.55), A.Y(0.75), "x = 1,25: 2,25", ORANGE, 5.0, 700, "end"))
     A.t.append(etikett(A.X(2.55), A.Y(0.2), "Tangente: 2", GRUEN, 5.4, 700, "end"))
     return svg(A.B, A.H, A.t)
 

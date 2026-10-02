@@ -123,14 +123,21 @@ async function geruest(page) {
   // Die Nummern in den Überschriften laufen durch, und der Wegweiser führt dieselben Nummern.
   const titel = await page.evaluate((ids) => ids.map((id) => document.querySelector(`#${id} h2`).textContent), ABSCHNITTE);
   titel.forEach((t, i) => pruefe(t.startsWith(`${i + 1}. `), `Gerüst: Überschrift „${t}“ trägt nicht die Nummer ${i + 1}`));
-  const weg = await page.evaluate(() => [...document.querySelectorAll("#wegweiser tbody tr")].map((r) => [...r.cells].map((c) => c.textContent.trim())));
-  pruefe(weg.length === 13, `Wegweiser: ${weg.length} Zeilen statt 13`);
-  weg.forEach((z, i) => pruefe(z[0].startsWith(`${i + 1} `) && z.length === 3, `Wegweiser: Zeile ${i + 1} „${z.join(" | ")}“`));
-  const wegText = await text(page, "#wegweiser");
-  pruefe(/Elemente der Mathematik/.test(wegText) && /Fundamente der Mathematik/.test(wegText), "Wegweiser: nicht beide Lehrwerke genannt");
+  // Die beiden Übersichtstabellen am Anfang sind bewusst entfallen; die Seite folgt der Schreibweise von Elemente.
+  pruefe(await page.evaluate(() => !document.querySelector("#wegweiser, .notation-box")), "Gerüst: Wegweiser oder Schreibweisen-Kasten ist zurück");
+  pruefe(/Elemente der Mathematik/.test(await text(page, "main")), "Gerüst: Die Schreibweise nach Elemente wird nicht genannt");
   pruefe(fs.existsSync(path.join(WURZEL, path.dirname(SEITE), "formelsammlung.pdf")), "Formelsammlung: formelsammlung.pdf fehlt");
-  const notation = await page.evaluate(() => [...document.querySelectorAll(".notation-box")].map((b) => b.innerText).join(" "));
-  pruefe(/Leibniz/.test(notation) && /tan⁻¹/.test(notation) && /arctan/.test(notation), "Gerüst: Der Kasten mit den Schreibweisen ist unvollständig");
+  // Jeder Reiter beginnt mit der x₀-Methode; die h-Methode liegt verborgen daneben.
+  const reiter = await page.evaluate(() => [...document.querySelectorAll(".reiter")].map((r) => ({
+    name: r.dataset.reiter,
+    knoepfe: [...r.querySelectorAll(":scope > .reiter-leiste button")].map((b) => b.dataset.wahl + ":" + b.getAttribute("aria-selected")),
+    felder: [...r.querySelectorAll(":scope > .reiter-feld")].map((f) => f.dataset.feld + ":" + (f.hidden ? "zu" : "auf")),
+  })));
+  pruefe(reiter.length >= 5, `Reiter: nur ${reiter.length} Reiter`);
+  for (const r of reiter) {
+    pruefe(r.knoepfe.join() === "x:true,h:false", `Reiter ${r.name}: Knöpfe ${r.knoepfe.join()}`);
+    if (r.name !== "lr") pruefe(r.felder.join() === "x:auf,h:zu", `Reiter ${r.name}: Felder ${r.felder.join()}`);
+  }
   const links = await page.evaluate(() =>
     [...document.querySelectorAll("main a[href]")].map((a) => a.getAttribute("href")).filter((h) => !h.startsWith("#") && !h.startsWith("http")));
   for (const href of new Set(links)) {
@@ -197,14 +204,27 @@ const LR = {
   wurzel: { f: Math.sqrt, xs: [1, 2, 3] },
 };
 const H_LR = [-1, -0.5, -0.1, -0.01, -0.001, 0.001, 0.01, 0.1, 0.5, 1];
+async function reiter(page, name, wahl) {
+  await page.click(`.reiter[data-reiter="${name}"] > .reiter-leiste button[data-wahl="${wahl}"]`);
+}
 async function lokal(page) {
+  // Zuerst die x₀-Methode (Voreinstellung), dann derselbe Durchlauf im Reiter der h-Methode, aber
+  // nur für die erste Funktion — die Zeichnung ist dieselbe, nur Regleranzeige und Tabelle wechseln.
+  for (const modus of ["x", "h"]) {
+  if (modus === "h") await reiter(page, "lr", "h");
   for (const [art, def] of Object.entries(LR)) {
+    if (modus === "h" && art !== "para") continue;
     await waehle(page, "lr-art", art);
     for (const x of def.xs) {
       const x0 = await setzeRegler(page, "lr-x", x);
       for (let i = 0; i < H_LR.length; i += (x === def.xs[0] ? 1 : 3)) {
         await setzeRegler(page, "lr-h", i);
-        const h = H_LR[i], wo = `lokal ${art}, x₀ = ${x0}, h = ${h}`;
+        const h = H_LR[i], wo = `lokal (${modus}-Reiter) ${art}, x₀ = ${x0}, h = ${h}`;
+        pruefe((await text(page, "#lr-h-name")) === modus, `${wo}: Regler heißt „${await text(page, "#lr-h-name")}“`);
+        const anzeige = zahl(await text(page, "#lr-h-anzeige"));
+        pruefe(nahe(anzeige, modus === "x" ? x0 + h : h, 1e-9), `${wo}: Regleranzeige ${anzeige}`);
+        const kopf = await page.evaluate(() => [...document.querySelectorAll("#lr-tabelle tr:first-child th")].slice(1).map((c) => c.textContent));
+        kopf.forEach((t, j) => pruefe(nahe(zahl(t), modus === "x" ? x0 + H_LR[j] : H_LR[j], 1e-9), `${wo}: Tabellenkopf ${t}`));
         const q = (def.f(x0 + h) - def.f(x0)) / h, m = ableitung(def.f, x0);
         const d = await lies(page, "#lr-mount svg");
         const s = linie(d, "sekante"), t = linie(d, "tangente");
@@ -221,9 +241,20 @@ async function lokal(page) {
           pruefe(nahe(zahl(z.t), soll, 1e-6 * (1 + Math.abs(soll))), `${wo}: Tabelle bei h = ${z.h}: ${z.t} statt ${soll}`);
           pruefe(z.aktiv === (z.h === h), `${wo}: Tabellenzelle h = ${z.h} falsch hervorgehoben`);
         }
+        // Das Steigungsdreieck: waagerecht x − x₀, senkrecht f(x) − f(x₀).
+        const dx = d.linien.find((l) => l.rolle === "dx"), dy = d.linien.find((l) => l.rolle === "dy");
+        pruefe(dx && nahe(Math.abs(dx.x2 - dx.x1), Math.abs(h), 0.01) && nahe(dx.y1, def.f(x0), 0.03), `${wo}: Steigungsdreieck waagerecht falsch`);
+        pruefe(dy && nahe(dy.y2 - dy.y1, def.f(x0 + h) - def.f(x0), 0.03) && nahe(dy.x1, x0 + h, 0.01), `${wo}: Steigungsdreieck senkrecht falsch`);
+        // Die Kathetennamen, sofern gezeichnet, gehören zur gewählten Methode.
+        const masse = await page.evaluate(() => [...document.querySelectorAll("#lr-mount svg text.dr-text-k, #lr-mount svg text.dr-text-v")].map((t) => t.textContent));
+        const namen = modus === "x" ? ["x − x₀", "f(x) − f(x₀)"] : ["h", "f(x₀ + h) − f(x₀)"];
+        for (const t of masse) pruefe(namen.includes(t), `${wo}: Kathetenname „${t}“`);
+        if (art === "para" && x0 === -2 && h === 1) pruefe(masse.length === 2, `${wo}: Kathetennamen fehlen (${masse.join(", ")})`);
       }
     }
   }
+  }
+  await reiter(page, "lr", "x");
 }
 
 // ---------- 3. Funktionenmikroskop ----------
@@ -798,11 +829,11 @@ async function aufgaben(page) {
     return { richtig: xs, toleranz: T, pruefe: () => pruefe(Math.abs(ableitung(polyFn(k), xs, 1e-6)) < 1e-6, "A5: An der Lösungsstelle ist f′ nicht 0"), falsch: [[-xs, "Vorzeichen"], [-k[1] / k[2], "der Faktor 2 fehlt"]] };
   });
   await A(6, "A6 Differenzenquotient", (q) => {
-    const m = q.match(new RegExp(`f\\(x\\) = (.+?)\\. Berechne den Differenzenquotienten .* für x₀ = ${ZAHL} und h = ${ZAHL}\\.`));
+    const m = q.match(new RegExp(`f\\(x\\) = (.+?)\\. Berechne den Differenzenquotienten .* für x₀ = ${ZAHL} und x = ${ZAHL}\\.`));
     if (!m) return null;
-    const f = polyFn(liesPoly(m[1])), x0 = zahl(m[2]), h = zahl(m[3]);
+    const f = polyFn(liesPoly(m[1])), x0 = zahl(m[2]), h = zahl(m[3]) - x0;
     const soll = (f(x0 + h) - f(x0)) / h;
-    return { richtig: soll, toleranz: T, falsch: [[ableitung(f, x0, 1e-5), "schon der Grenzwert"], [h === 1 ? NaN : soll * h, "Noch durch h"], [ableitung(f, x0 + h, 1e-5), "Steigung an der Stelle x₀ + h"]] };
+    return { richtig: soll, toleranz: T, falsch: [[ableitung(f, x0, 1e-5), "schon der Grenzwert"], [Math.abs(h - 1) < 1e-9 ? NaN : soll * h, "Noch durch x − x₀"], [ableitung(f, x0 + h, 1e-5), "Steigung an der Stelle x ="]] };
   });
   await A(7, "A7 Tangentengleichung", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = (.+?)\\. Bestimme die Gleichung der Tangente an den Graphen im Punkt mit x₀ = ${ZAHL}`));
