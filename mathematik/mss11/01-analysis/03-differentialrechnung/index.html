@@ -45,23 +45,24 @@
   <!-- 1. Mittlere Änderungsrate -->
   <section class="card" id="sec-mittlere">
     <h2>1. Mittlere Änderungsrate und Sekantensteigung</h2>
-    <p>Ein Stein fällt aus der Ruhe. Nach t Sekunden hat er ungefähr s(t) = 5t² Meter zurückgelegt (das ist ½ · g · t² mit der auf 10 m/s² gerundeten Fallbeschleunigung, ohne Luftwiderstand). Wie schnell ist er? Eine erste ehrliche Antwort ist die <span class="term">Durchschnittsgeschwindigkeit</span>: zurückgelegter Weg durch die dafür gebrauchte Zeit. Allgemein heißt dieser Quotient <span class="term">mittlere Änderungsrate</span>. Im Graphen ist er die Steigung der Geraden durch die beiden Punkte — der <span class="term">Sekante</span>. Das Steigungsdreieck kennst du von den linearen Funktionen. Wähle das Intervall [a; b].</p>
+    <p>Wie stark ändert sich f(x) = x², wenn x wächst? Von x = 1 bis x = 2 nimmt f(x) um 4 − 1 = 3 zu, von x = 2 bis x = 3 schon um 9 − 4 = 5 — der Graph wird immer steiler. Ein Maß dafür ist der Quotient aus der Änderung von f und der Änderung von x, die <span class="term">mittlere Änderungsrate</span>. Im Graphen ist er die Steigung der Geraden durch die beiden Punkte — der <span class="term">Sekante</span>. Das Steigungsdreieck kennst du von den linearen Funktionen. Die Normalparabel begleitet dich über die ganze Seite: An ihr wird in den Abschnitten 2 bis 5 die Ableitung entwickelt. Wähle das Intervall [a; b].</p>
     <div class="widget">
       <div class="btn-row">
         <label>Funktion:
           <select id="mr-art" class="eingabe" style="padding:0.4rem">
-            <option value="fall">freier Fall: s(t) = 5t²</option>
             <option value="para">f(x) = x²</option>
+            <option value="fall">freier Fall: s(t) = 5t²</option>
             <option value="kubik">f(x) = 0,5x³ − 1,5x</option>
           </select>
         </label>
-        <label>a: <input type="range" id="mr-a" min="0" max="3.5" step="0.5" value="1" style="vertical-align:middle;width:9rem"> <span id="mr-a-anzeige" class="wert farbe-orange"></span></label>
-        <label>b: <input type="range" id="mr-b" min="0.5" max="4" step="0.5" value="3" style="vertical-align:middle;width:9rem"> <span id="mr-b-anzeige" class="wert farbe-orange"></span></label>
+        <label>a: <input type="range" id="mr-a" min="-2" max="2.5" step="0.5" value="1" style="vertical-align:middle;width:9rem"> <span id="mr-a-anzeige" class="wert farbe-orange"></span></label>
+        <label>b: <input type="range" id="mr-b" min="-1.5" max="3" step="0.5" value="2" style="vertical-align:middle;width:9rem"> <span id="mr-b-anzeige" class="wert farbe-orange"></span></label>
       </div>
       <div class="geo-wrap" id="mr-mount"></div>
       <div class="th-bilanz" id="mr-bilanz"></div>
       <div id="mr-text" class="event-result"></div>
     </div>
+    <p>Dieselbe Rechnung beschreibt Bewegungen. Ein Stein fällt aus der Ruhe; nach t Sekunden hat er ungefähr s(t) = 5t² Meter zurückgelegt (das ist ½ · g · t² mit der auf 10 m/s² gerundeten Fallbeschleunigung, ohne Luftwiderstand) — eine gestreckte Normalparabel. Hier ist die mittlere Änderungsrate die <span class="term">Durchschnittsgeschwindigkeit</span>: zurückgelegter Weg durch die dafür gebrauchte Zeit. Wähle im Widget den freien Fall.</p>
     <div class="definition-box">
       <span class="box-label">Mittlere Änderungsrate</span>
       Für eine Funktion f und ein Intervall [a; b] heißt
@@ -83,7 +84,7 @@
   <!-- 2. Lokale Änderungsrate -->
   <section class="card" id="sec-lokal">
     <h2>2. Lokale Änderungsrate: von der Sekante zur Tangente</h2>
-    <p>Die Durchschnittsgeschwindigkeit hängt vom Intervall ab. Die Geschwindigkeit <em>in einem Augenblick</em> t₀ — die Momentangeschwindigkeit, die ein Tacho anzeigt — bekommt man, indem man das Intervall immer kleiner macht. Man hält den Punkt P(x₀ | f(x₀)) fest und nimmt einen zweiten Punkt Q(x | f(x)) auf dem Graphen. Das Steigungsdreieck der Sekante PQ hat die Grundseite x − x₀ und die Höhe f(x) − f(x₀) — genau wie in Abschnitt 1, nur heißen die Stellen jetzt x₀ und x. Lass x gegen x₀ laufen, von rechts und von links: Die Sekanten drehen sich in eine Grenzlage.</p>
+    <p>Die mittlere Änderungsrate hängt vom Intervall ab: Bei f(x) = x² ist sie auf [1; 2] gleich 3, auf [1; 1,5] nur noch 2,5. Wie steil ist der Graph <em>an der Stelle</em> 1 selbst? Beim fallenden Stein ist das die Geschwindigkeit in einem Augenblick — die Momentangeschwindigkeit, die ein Tacho anzeigt. Man bekommt sie, indem man das Intervall immer kleiner macht. Man hält den Punkt P(x₀ | f(x₀)) fest und nimmt einen zweiten Punkt Q(x | f(x)) auf dem Graphen. Das Steigungsdreieck der Sekante PQ hat die Grundseite x − x₀ und die Höhe f(x) − f(x₀) — genau wie in Abschnitt 1, nur heißen die Stellen jetzt x₀ und x. Lass x gegen x₀ laufen, von rechts und von links: Die Sekanten drehen sich in eine Grenzlage.</p>
     <div class="widget">
       <div class="reiter reiter-widget" data-reiter="lr">
         <div class="reiter-leiste" role="tablist"><button type="button" role="tab" aria-selected="true" data-wahl="x">x₀-Methode: Q(x | f(x))</button><button type="button" role="tab" aria-selected="false" data-wahl="h">Alternative: h-Methode, x = x₀ + h</button></div>
