@@ -791,23 +791,23 @@ function initQuizzes() {
   mountQuiz(document.getElementById("quiz-vervielfachen"), {
     q: "Was passiert beim Rechnen 2/5 · 3 mit dem Nenner?",
     options: [
-      "Er wird auch mit 3 multipliziert",
       "Er bleibt 5, denn die Teilegröße ändert sich nicht",
+      "Er wird auch mit 3 multipliziert",
       "Er wird durch 3 geteilt",
       "Das hängt davon ab, ob der Bruch echt ist",
     ],
-    correct: 1,
+    correct: 0,
     explain: "Der Nenner sagt, wie groß die Teile sind. Beim Vervielfachen werden es mehr Teile, aber nicht andere: 2/5 · 3 = 6/5.",
   });
   mountQuiz(document.getElementById("quiz-bruchmalbruch"), {
     q: "Was ergibt 1/2 · 1/2?",
     options: [
       "1, denn zweimal die Hälfte ist ein Ganzes",
-      "1/4 — die Hälfte von einer Hälfte",
-      "2/4 = 1/2",
       "1/2, Multiplizieren mit einem halben ändert nichts",
+      "2/4 = 1/2",
+      "1/4 — die Hälfte von einer Hälfte",
     ],
-    correct: 1,
+    correct: 3,
     explain: "Zähler mal Zähler, Nenner mal Nenner: 1·1 / 2·2 = 1/4. Multiplizieren mit einer Zahl unter 1 verkleinert das Ergebnis.",
   });
   mountQuiz(document.getElementById("quiz-division"), {
@@ -818,19 +818,19 @@ function initQuizzes() {
   });
   mountQuiz(document.getElementById("quiz-dezmal"), {
     q: "Wie viel ist 0,2 · 0,3?",
-    options: ["0,6", "0,06", "6", "0,5"],
-    correct: 1,
+    options: ["0,6", "6", "0,06", "0,5"],
+    correct: 2,
     explain: "Ohne Komma: 2 · 3 = 6. Nachkommastellen: 1 + 1 = 2, also 0,06. Beide Faktoren sind kleiner als 1 — das Ergebnis muss noch kleiner sein.",
   });
   mountQuiz(document.getElementById("quiz-dezdurch"), {
     q: "Warum darf man bei 7,2 : 0,8 in beiden Zahlen das Komma um eine Stelle verschieben?",
     options: [
       "Weil das Ergebnis dadurch schöner wird",
-      "Weil beide Zahlen mit 10 multipliziert werden und sich der Quotient dabei nicht ändert",
       "Weil der Dividend dadurch ganzzahlig wird",
+      "Weil beide Zahlen mit 10 multipliziert werden und sich der Quotient dabei nicht ändert",
       "Das darf man gar nicht, es ist nur eine Näherung",
     ],
-    correct: 1,
+    correct: 2,
     explain: "72 : 8 ist derselbe Quotient wie 7,2 : 0,8 — genau wie beim Erweitern eines Bruchs ändert das gleichzeitige Vervielfachen von Zähler und Nenner den Wert nicht.",
   });
 }

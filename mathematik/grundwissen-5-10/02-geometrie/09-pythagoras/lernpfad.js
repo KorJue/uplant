@@ -1091,39 +1091,39 @@ function initQuizzes() {
     q: "Worauf beruht der Zerlegungsbeweis?",
     options: [
       "darauf, dass die vier Dreiecke gleichschenklig sind",
-      "darauf, dass beide Anordnungen dasselbe Quadrat mit denselben vier Dreiecken füllen",
       "darauf, dass a + b = c gilt",
+      "darauf, dass beide Anordnungen dasselbe Quadrat mit denselben vier Dreiecken füllen",
       "darauf, dass man die Seiten misst und vergleicht",
     ],
-    correct: 1,
+    correct: 2,
     explain: "Gleich großer Rahmen, gleiche vier Dreiecke — also muss auch die Restfläche gleich groß sein. Links ist sie a² + b², rechts c². Gemessen wird dabei nichts, es wird nur verglichen.",
   });
   mountQuiz(document.getElementById("quiz-umkehrung"), {
     q: "Ein Dreieck hat die Seiten 6 cm, 7 cm und 9 cm. Was gilt?",
     options: [
       "es ist rechtwinklig, denn 36 + 49 = 85",
-      "es ist spitzwinklig, denn 36 + 49 = 85 > 81",
       "es ist stumpfwinklig, denn 85 > 81",
+      "es ist spitzwinklig, denn 36 + 49 = 85 > 81",
       "das lässt sich ohne Winkelmesser nicht sagen",
     ],
-    correct: 1,
+    correct: 2,
     explain: "Die längste Seite ist 9, ihr Quadrat ist 81. Die Summe der anderen beiden Quadrate ist 36 + 49 = 85. Weil 85 > 81 ist, ist das Dreieck spitzwinklig. Bei Gleichheit wäre es rechtwinklig.",
   });
   mountQuiz(document.getElementById("quiz-satzgruppe"), {
     q: "Die Höhe teilt die Hypotenuse in p = 4 cm und q = 9 cm. Wie lang ist die Höhe?",
-    options: ["13 cm", "6 cm", "6,5 cm", "36 cm"],
-    correct: 1,
+    options: ["6 cm", "13 cm", "6,5 cm", "36 cm"],
+    correct: 0,
     explain: "Höhensatz: h² = p · q = 4 · 9 = 36, also h = 6 cm. Die 13 cm wären p + q, also die ganze Hypotenuse; 6,5 cm wäre der Mittelwert — gefragt ist aber das geometrische Mittel.",
   });
   mountQuiz(document.getElementById("quiz-anwendungen"), {
     q: "Warum darf man für die Raumdiagonale den Satz zweimal hintereinander anwenden?",
     options: [
       "weil ein Quader sechs Flächen hat",
-      "weil die Bodendiagonale senkrecht auf der Höhe steht, also wieder ein rechtwinkliges Dreieck entsteht",
-      "weil alle Kanten gleich lang sind",
       "das darf man gar nicht, man braucht eine eigene Formel",
+      "weil alle Kanten gleich lang sind",
+      "weil die Bodendiagonale senkrecht auf der Höhe steht, also wieder ein rechtwinkliges Dreieck entsteht",
     ],
-    correct: 1,
+    correct: 3,
     explain: "Die senkrechte Kante steht auf der ganzen Grundfläche senkrecht, also auch auf der Bodendiagonalen. Bodendiagonale und Höhe bilden damit erneut ein rechtwinkliges Dreieck, dessen Hypotenuse die Raumdiagonale ist.",
   });
 }

@@ -1509,18 +1509,18 @@ function initQuizzes() {
   mountQuiz(document.getElementById("quiz-system"), {
     q: "Das Paar (3 | 1) erfüllt Gleichung I, aber nicht Gleichung II. Ist es eine Lösung des Systems?",
     options: [
-      "Nein — eine Lösung muss beide Gleichungen erfüllen",
       "Ja, eine erfüllte Gleichung genügt",
+      "Nein — eine Lösung muss beide Gleichungen erfüllen",
       "Ja, wenn I die erste Gleichung ist",
       "Das lässt sich ohne Zeichnung nicht entscheiden",
     ],
-    correct: 0,
+    correct: 1,
     explain: "Im Bild liegt der Punkt dann auf der einen Geraden, aber nicht auf der anderen — er ist kein Schnittpunkt. Gesucht ist immer ein Paar, das beide Bedingungen gleichzeitig erfüllt.",
   });
   mountQuiz(document.getElementById("quiz-gleichsetzen"), {
     q: "Aus y = 3x − 2 und y = x + 4 folgt durch Gleichsetzen:",
-    options: ["3x − 2 = x + 4", "3x − 2 = 0", "y = 4x + 2", "3x + x = −2 + 4"],
-    correct: 0,
+    options: ["3x + x = −2 + 4", "3x − 2 = 0", "y = 4x + 2", "3x − 2 = x + 4"],
+    correct: 3,
     explain: "Beide rechten Seiten beschreiben denselben Wert y, also sind sie gleich. Daraus wird 2x = 6, also x = 3 und y = 7. Die letzte Antwort addiert die beiden Gleichungen — das ist ein anderes Verfahren und in dieser Form falsch.",
   });
   mountQuiz(document.getElementById("quiz-einsetzen"), {
@@ -1532,23 +1532,23 @@ function initQuizzes() {
   mountQuiz(document.getElementById("quiz-addieren"), {
     q: "Bei I: 3x + 2y = 7 und II: 5x − 4y = 3 soll y weggehoben werden. Womit multipliziert man?",
     options: [
-      "I mit 2, II bleibt unverändert",
-      "I mit 4 und II mit 2",
       "I mit 5 und II mit 3",
+      "I mit 4 und II mit 2",
+      "I mit 2, II bleibt unverändert",
       "I mit −2, II bleibt unverändert",
     ],
-    correct: 0,
+    correct: 2,
     explain: "Aus 2y wird durch die Multiplikation mit 2 gerade 4y, und 4y + (−4y) = 0. Die Antwort „I mit 5 und II mit 3“ würde die x-Koeffizienten gleich machen — dann müsste man subtrahieren. Mit −2 entstünde −4y, das sich mit −4y nicht weghebt, sondern zu −8y summiert.",
   });
   mountQuiz(document.getElementById("quiz-faelle"), {
     q: "Beim Lösen eines Systems bleibt am Ende die Zeile 0 = 5 übrig. Was heißt das?",
     options: [
-      "Das System hat keine Lösung; die Geraden sind parallel",
       "Die Lösung ist x = 0 und y = 5",
+      "Das System hat keine Lösung; die Geraden sind parallel",
       "Das System hat unendlich viele Lösungen",
       "Es wurde falsch gerechnet",
     ],
-    correct: 0,
+    correct: 1,
     explain: "0 = 5 ist eine falsche Aussage — kein Zahlenpaar kann beide Gleichungen erfüllen. Das ist kein Rechenfehler, sondern das Ergebnis: Die Geraden haben dieselbe Steigung, aber verschiedene y-Achsenabschnitte. Bei 0 = 0 wäre es umgekehrt: unendlich viele Lösungen.",
   });
   mountQuiz(document.getElementById("quiz-aufstellen"), {

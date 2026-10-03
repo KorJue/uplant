@@ -597,14 +597,16 @@ async function testQuizze(page) {
   for (const id of ids) {
     const n = await page.locator(`#${id} .quiz-opt`).count();
     pruefe(n === 4, `${id}: ${n} Antwortmöglichkeiten statt 4`);
-    // Die erste Antwort ist in allen Quizzen dieses Pfades die richtige.
-    await page.locator(`#${id} .quiz-opt`).first().click();
-    const f = await text(page, `#${id} .quiz-feedback`);
-    pruefe(f.startsWith("✓ Richtig"), `${id}: erste Antwort gilt nicht als richtig`);
-    pruefe(f.length > 60, `${id}: Erklärung zu knapp`);
-    await page.locator(`#${id} .quiz-opt`).nth(1).click();
-    const g = await text(page, `#${id} .quiz-feedback`);
-    pruefe(g.startsWith("✗ Nicht ganz"), `${id}: zweite Antwort gilt nicht als falsch`);
+    // Die richtige Antwort steht nicht immer an derselben Stelle; gesucht wird sie deshalb durch
+    // Anklicken aller vier, und genau eine muss es sein.
+    let richtige = 0;
+    for (let i = 0; i < n; i++) {
+      await page.locator(`#${id} .quiz-opt`).nth(i).click();
+      const f = await text(page, `#${id} .quiz-feedback`);
+      if (f.startsWith("✓ Richtig")) { richtige++; pruefe(f.length > 60, `${id}: Erklärung zu knapp`); }
+      else pruefe(f.startsWith("✗ Nicht ganz"), `${id}: Antwort ${i + 1} ohne klare Rückmeldung`);
+    }
+    pruefe(richtige === 1, `${id}: ${richtige} Antworten gelten als richtig`);
   }
 }
 

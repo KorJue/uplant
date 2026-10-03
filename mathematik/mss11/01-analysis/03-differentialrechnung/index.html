@@ -29,7 +29,8 @@
     <p>Ein Stein fällt, ein Kurs steigt, ein Wasserstand sinkt: Überall ändert sich eine Größe mit der Zeit oder mit einer anderen Größe. Wie stark sie sich <em>im Mittel</em> ändert, sagt ein Quotient aus zwei Differenzen. Wie stark sie sich <em>in einem Augenblick</em> ändert, sagt die <span class="term">Ableitung</span> — der Grenzwert dieser Quotienten. Sie ist der Grundbegriff der Differentialrechnung, und mit ihr werden in Thema 5 Funktionen untersucht. Am Ende kannst du:</p>
     <ul class="lern-intro-list">
       <li>die <span class="term">mittlere Änderungsrate</span> als Sekantensteigung und die <span class="term">lokale Änderungsrate</span> als Tangentensteigung deuten und berechnen</li>
-      <li>die Ableitung f′(x₀) als Grenzwert des Differenzenquotienten erklären und mit der <span class="term">h-Methode</span> bestimmen</li>
+      <li>die Ableitung f′(x₀) als Grenzwert des Differenzenquotienten — den <span class="term">Differentialquotienten</span> — erklären und mit der <span class="term">x₀-Methode</span> (oder der h-Methode) bestimmen</li>
+      <li>die <span class="term">Ableitungsfunktion</span> erst an einer konkreten Stelle, dann an einer beliebigen Stelle x₀ herleiten</li>
       <li>zu einem Graphen den Graphen der <span class="term">Ableitungsfunktion</span> skizzieren</li>
       <li>mit <span class="term">Potenz-, Faktor- und Summenregel</span> ableiten, dazu sin und cos — und Produkte und Verkettungen</li>
       <li>Gleichungen von <span class="term">Tangente und Normale</span> aufstellen und Steigungs- und Schnittwinkel berechnen</li>
@@ -37,43 +38,8 @@
       <li>ganzrationale Funktionen auf Verlauf für x → ±∞, <span class="term">Symmetrie</span> und <span class="term">Nullstellen mit Vielfachheit</span> untersuchen</li>
       <li>am Graphen von f′ ablesen, wo f steigt, fällt und <span class="term">Hoch- und Tiefpunkte</span> hat</li>
     </ul>
-    <div class="notation-box" id="wegweiser">
-      <span class="box-label">Wegweiser — wo steht das in deinem Buch?</span>
-      Die beiden Lehrwerke gehen verschieden vor. <strong>Elemente der Mathematik</strong> beginnt mit den Änderungsraten und baut die Ableitung Schritt für Schritt auf. <strong>Fundamente der Mathematik</strong> stellt die ganzrationalen Funktionen mit Symmetrie, Nullstellen und Extrempunkten an den Anfang. Diese Seite folgt dem Weg über die Änderungsraten, weil die Ableitung dort entsteht, wo man sie braucht. Die ganzrationalen Funktionen kommen danach in den Abschnitten 11 und 12. Du kannst sie auch vorziehen: Sie setzen von der Ableitung nichts voraus — nur die mit „Verbindung zur Ableitung“ überschriebenen Kästen liest du dann erst später.
-      <table class="bk-notation">
-        <thead><tr><th>Abschnitt auf dieser Seite</th><th>Elemente der Mathematik</th><th>Fundamente der Mathematik</th></tr></thead>
-        <tbody>
-          <tr><td>1 Mittlere Änderungsrate</td><td>2.1.1</td><td>Mittlere Änderungsrate</td></tr>
-          <tr><td>2 Lokale Änderungsrate</td><td>2.1.2</td><td>Lokale Änderungsrate, Steigung und Ableitung</td></tr>
-          <tr><td>3 Ableitung an einer Stelle</td><td>2.1.2, 2.1.4, Blickpunkt Newton und Leibniz</td><td>Lokale Änderungsrate, Steigung und Ableitung</td></tr>
-          <tr><td>4 Grafisches Differenzieren</td><td>2.1.3, 2.2.1</td><td>—</td></tr>
-          <tr><td>5 Potenzregel</td><td>2.1.4, 2.1.5</td><td>Potenzregel</td></tr>
-          <tr><td>6 Faktor- und Summenregel</td><td>2.3.1, 2.3.2</td><td>Faktorregel, Summenregel</td></tr>
-          <tr><td>7 Sinus und Kosinus</td><td>2.2.3</td><td>Sinus- und Kosinusfunktion</td></tr>
-          <tr><td>8 Produkt- und Kettenregel</td><td>2.3.3</td><td>—</td></tr>
-          <tr><td>9 Tangente, Normale, Winkel</td><td>—</td><td>Tangenten- und Normalengleichung; Steigung, Steigungs- und Schnittwinkel</td></tr>
-          <tr><td>10 Differenzierbarkeit</td><td>2.4</td><td>Stetigkeit und Differenzierbarkeit</td></tr>
-          <tr><td>11 Ganzrationale Funktionen</td><td>—</td><td>Ganzrationale Funktionen; Symmetrieverhalten</td></tr>
-          <tr><td>12 Nullstellen und Vielfachheit</td><td>—</td><td>Methoden zum Ermitteln von Nullstellen</td></tr>
-          <tr><td>13 f und f′: Monotonie, Extrempunkte</td><td>2.2.2</td><td>Monotonie, lokale und globale Extrema</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="notation-box">
-      <span class="box-label">Schreibweisen — dieselbe Sache, verschiedene Bücher</span>
-      Diese Seite benutzt die linke Spalte.
-      <table class="bk-notation">
-        <thead><tr><th>Bedeutung</th><th>auf dieser Seite</th><th>auch üblich</th></tr></thead>
-        <tbody>
-          <tr><td>Differenzenquotient</td><td><span class="bruch"><span class="z">f(x₀ + h) − f(x₀)</span><span class="n">h</span></span></td><td><span class="bruch"><span class="z">f(x) − f(x₀)</span><span class="n">x − x₀</span></span>, <span class="bruch"><span class="z">Δy</span><span class="n">Δx</span></span></td></tr>
-          <tr><td>Ableitung an der Stelle x₀</td><td>f′(x₀)</td><td><span class="bruch"><span class="z">df</span><span class="n">dx</span></span>(x₀), <span class="bruch"><span class="z">dy</span><span class="n">dx</span></span> (Leibniz), ṡ(t₀) bei der Zeit (Newton)</td></tr>
-          <tr><td>Ableitungsfunktion</td><td>f′</td><td>y′, <span class="bruch"><span class="z">df</span><span class="n">dx</span></span></td></tr>
-          <tr><td>Tangente in P(x₀ | f(x₀))</td><td>t(x) = f′(x₀) · (x − x₀) + f(x₀)</td><td>t(x) = m · x + n (Fundamente), y = mx + b</td></tr>
-          <tr><td>Steigungswinkel</td><td>α = tan⁻¹(m)</td><td>α = arctan(m)</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="hinweis-box">💡 Du brauchst aus <a href="../02-grenzwerte-und-stetigkeit/index.html">Thema 2</a> den <a href="../02-grenzwerte-und-stetigkeit/index.html#sec-stelle">Grenzwert an einer Stelle mit der h-Methode</a>, aus der Mittelstufe die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/05-lineare-funktionen/index.html#sec-steigung">Steigung einer Geraden</a>, die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/04-terme/index.html#sec-binomisch">binomischen Formeln</a>, die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/08-quadratische-funktionen/index.html#sec-pq">pq-Formel</a> und das <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/12-trigonometrische-funktionen/index.html#sec-bogenmass">Bogenmaß</a>.</p>
+    <p>Die Seite folgt der Schreibweise von <strong>Elemente der Mathematik</strong>: Differenzenquotient <span class="bruch"><span class="z">f(x) − f(x₀)</span><span class="n">x − x₀</span></span>, Ableitung f′(x₀) als Grenzwert für x → x₀. Die h-Methode steht überall als Alternative in einem eigenen Reiter daneben.</p>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../02-grenzwerte-und-stetigkeit/index.html">Thema 2</a> den <a href="../02-grenzwerte-und-stetigkeit/index.html#sec-stelle">Grenzwert an einer Stelle</a>, aus der Mittelstufe die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/05-lineare-funktionen/index.html#sec-steigung">Steigung einer Geraden</a>, die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/04-terme/index.html#sec-binomisch">binomischen Formeln</a>, die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/08-quadratische-funktionen/index.html#sec-pq">pq-Formel</a> und das <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/12-trigonometrische-funktionen/index.html#sec-bogenmass">Bogenmaß</a>.</p>
   </section>
 
   <!-- 1. Mittlere Änderungsrate -->
@@ -117,8 +83,11 @@
   <!-- 2. Lokale Änderungsrate -->
   <section class="card" id="sec-lokal">
     <h2>2. Lokale Änderungsrate: von der Sekante zur Tangente</h2>
-    <p>Die Durchschnittsgeschwindigkeit hängt vom Intervall ab. Die Geschwindigkeit <em>in einem Augenblick</em> t₀ — die Momentangeschwindigkeit, die ein Tacho anzeigt — bekommt man, indem man das Intervall immer kleiner macht. Man hält den Punkt P(x₀ | f(x₀)) fest und lässt den zweiten Punkt Q(x₀ + h | f(x₀ + h)) auf P zulaufen. Die Sekanten durch P und Q drehen sich dabei in eine Grenzlage. Schiebe h gegen 0 — von rechts und von links.</p>
+    <p>Die Durchschnittsgeschwindigkeit hängt vom Intervall ab. Die Geschwindigkeit <em>in einem Augenblick</em> t₀ — die Momentangeschwindigkeit, die ein Tacho anzeigt — bekommt man, indem man das Intervall immer kleiner macht. Man hält den Punkt P(x₀ | f(x₀)) fest und nimmt einen zweiten Punkt Q(x | f(x)) auf dem Graphen. Das Steigungsdreieck der Sekante PQ hat die Grundseite x − x₀ und die Höhe f(x) − f(x₀) — genau wie in Abschnitt 1, nur heißen die Stellen jetzt x₀ und x. Lass x gegen x₀ laufen, von rechts und von links: Die Sekanten drehen sich in eine Grenzlage.</p>
     <div class="widget">
+      <div class="reiter reiter-widget" data-reiter="lr">
+        <div class="reiter-leiste" role="tablist"><button type="button" role="tab" aria-selected="true" data-wahl="x">x₀-Methode: Q(x | f(x))</button><button type="button" role="tab" aria-selected="false" data-wahl="h">Alternative: h-Methode, x = x₀ + h</button></div>
+      </div>
       <div class="btn-row">
         <label>Funktion:
           <select id="lr-art" class="eingabe" style="padding:0.4rem">
@@ -128,7 +97,7 @@
           </select>
         </label>
         <label>x₀: <input type="range" id="lr-x" min="-2" max="2" step="0.5" value="1" style="vertical-align:middle;width:8rem"> <span id="lr-x-anzeige" class="wert farbe-blau"></span></label>
-        <label>h: <input type="range" id="lr-h" min="0" max="9" step="1" value="9" style="vertical-align:middle;width:10rem"> <span id="lr-h-anzeige" class="wert farbe-orange"></span></label>
+        <label><span id="lr-h-name">x</span>: <input type="range" id="lr-h" min="0" max="9" step="1" value="9" style="vertical-align:middle;width:10rem"> <span id="lr-h-anzeige" class="wert farbe-orange"></span></label>
       </div>
       <div class="geo-wrap" id="lr-mount"></div>
       <div class="fr-tabelle-wrap" id="lr-tabelle"></div>
@@ -138,17 +107,20 @@
     <div class="wissen-box">
       <span class="box-label">Lokale Änderungsrate und Tangente</span>
       Nähern sich die Differenzenquotienten
-      <div class="formula-block"><span class="bruch gross"><span class="z">f(x₀ + h) − f(x₀)</span><span class="n">h</span></span> &nbsp; für h → 0</div>
-      von beiden Seiten derselben Zahl, so heißt sie <strong>lokale</strong> (oder momentane) <strong>Änderungsrate</strong> von f an der Stelle x₀. Die Gerade durch P mit dieser Steigung ist die Grenzlage der Sekanten; sie heißt <strong>Tangente</strong> an den Graphen im Punkt P.
+      <div class="formula-block"><span class="bruch gross"><span class="z">f(x) − f(x₀)</span><span class="n">x − x₀</span></span> &nbsp; für x → x₀</div>
+      von links und von rechts derselben Zahl, so heißt sie <strong>lokale</strong> (oder momentane) <strong>Änderungsrate</strong> von f an der Stelle x₀. Die Gerade durch P mit dieser Steigung ist die Grenzlage der Sekanten; sie heißt <strong>Tangente</strong> an den Graphen im Punkt P.
     </div>
     <div class="beispiel-box">
       <span class="box-label">Beispiel: eine Vermutung aus der Tabelle</span>
-      f(x) = x² bei x₀ = 1: h = 0,1 liefert <span class="bruch"><span class="z">1,1² − 1²</span><span class="n">0,1</span></span> = 2,1; h = 0,01 liefert 2,01; h = 0,001 liefert 2,001. Von links (h = −0,001) kommt 1,999. Vermutung: Die lokale Änderungsrate ist 2.<br>
-      Freier Fall bei t₀ = 2 s: <span class="bruch"><span class="z">5 · (2 + h)² − 20</span><span class="n">h</span></span> = <span class="bruch"><span class="z">20h + 5h²</span><span class="n">h</span></span> = 20 + 5h → 20. Die Momentangeschwindigkeit ist 20 m/s.
+    <div class="reiter" data-reiter="lr-beispiel">
+      <div class="reiter-leiste" role="tablist"><button type="button" role="tab" aria-selected="true" data-wahl="x">x₀-Methode: x → x₀</button><button type="button" role="tab" aria-selected="false" data-wahl="h">Alternative: h-Methode</button></div>
+      <div class="reiter-feld" data-feld="x" role="tabpanel">f(x) = x² bei x₀ = 1: x = 1,1 liefert <span class="bruch"><span class="z">1,1² − 1²</span><span class="n">1,1 − 1</span></span> = 2,1; x = 1,01 liefert 2,01; x = 1,001 liefert 2,001. Von links (x = 0,999) kommt 1,999. Vermutung: Die lokale Änderungsrate ist 2.<br>Freier Fall bei t₀ = 2 s: <span class="bruch"><span class="z">5t² − 20</span><span class="n">t − 2</span></span> = <span class="bruch"><span class="z">5(t − 2)(t + 2)</span><span class="n">t − 2</span></span> = 5(t + 2) → 20 für t → 2. Die Momentangeschwindigkeit ist 20 m/s.</div>
+      <div class="reiter-feld" data-feld="h" role="tabpanel" hidden>Mit x = x₀ + h ist h = x − x₀ der Abstand der beiden Stellen. f(x) = x² bei x₀ = 1: h = 0,1 liefert <span class="bruch"><span class="z">1,1² − 1²</span><span class="n">0,1</span></span> = 2,1; h = 0,01 liefert 2,01; h = 0,001 liefert 2,001; h = −0,001 liefert 1,999.<br>Freier Fall bei t₀ = 2 s: <span class="bruch"><span class="z">5 · (2 + h)² − 20</span><span class="n">h</span></span> = <span class="bruch"><span class="z">20h + 5h²</span><span class="n">h</span></span> = 20 + 5h → 20 für h → 0.</div>
+    </div>
     </div>
     <div class="achtung-box">
-      <span class="box-label">Achtung — h = 0 einsetzen geht nicht</span>
-      Mit h = 0 fielen P und Q zusammen, und der Differenzenquotient wäre <span class="bruch"><span class="z">0</span><span class="n">0</span></span> — durch eine Sekante durch nur einen Punkt ist keine Gerade bestimmt. Deshalb braucht man den <em>Grenzwert</em> aus Thema 2: erst vereinfachen, dann h gegen 0 gehen lassen.
+      <span class="box-label">Achtung — x = x₀ einsetzen geht nicht</span>
+      Mit x = x₀ fielen P und Q zusammen, und der Differenzenquotient wäre <span class="bruch"><span class="z">0</span><span class="n">0</span></span> — durch nur einen Punkt ist keine Sekante bestimmt. Deshalb braucht man den <em>Grenzwert</em> aus Thema 2: erst umformen (den Faktor x − x₀ kürzen), dann x gegen x₀ gehen lassen.
     </div>
     <div class="quiz" id="quiz-lokal"></div>
   </section>
@@ -174,10 +146,11 @@
       <div id="fm-text" class="event-result"></div>
     </div>
     <div class="definition-box">
-      <span class="box-label">Ableitung an einer Stelle</span>
-      Existiert der Grenzwert
-      <div class="formula-block">f′(x₀) = lim<sub>h→0</sub> <span class="bruch gross"><span class="z">f(x₀ + h) − f(x₀)</span><span class="n">h</span></span> &nbsp; = &nbsp; lim<sub>x→x₀</sub> <span class="bruch gross"><span class="z">f(x) − f(x₀)</span><span class="n">x − x₀</span></span>,</div>
-      so heißt f an der Stelle x₀ <strong>differenzierbar</strong>, und f′(x₀) heißt <strong>Ableitung</strong> von f an der Stelle x₀ (gelesen „f Strich von x₀“). Beide Schreibweisen sagen dasselbe: Setzt man x = x₀ + h, wird x − x₀ zu h.
+      <span class="box-label">Differentialquotient — Ableitung an einer Stelle</span>
+      Existiert der Grenzwert des Differenzenquotienten
+      <div class="formula-block">f′(x₀) = lim<sub>x→x₀</sub> <span class="bruch gross"><span class="z">f(x) − f(x₀)</span><span class="n">x − x₀</span></span>,</div>
+      so heißt f an der Stelle x₀ <strong>differenzierbar</strong>. Der Grenzwert heißt <strong>Differentialquotient</strong> oder <strong>Ableitung</strong> von f an der Stelle x₀ (gelesen „f Strich von x₀“).<br>
+      <span class="progress-note">h-Methode, gleichwertig: Mit x = x₀ + h wird x − x₀ zu h und x → x₀ zu h → 0: f′(x₀) = lim<sub>h→0</sub> <span class="bruch"><span class="z">f(x₀ + h) − f(x₀)</span><span class="n">h</span></span>.</span>
     </div>
     <div class="wissen-box">
       <span class="box-label">Drei Sichten auf dieselbe Zahl f′(x₀)</span>
@@ -186,10 +159,23 @@
       <strong>Steigung im Kleinen</strong> — unter starker Vergrößerung sieht der Graph um P aus wie eine Gerade mit der Steigung f′(x₀).
     </div>
     <div class="beispiel-box">
-      <span class="box-label">Beispiel: die h-Methode</span>
-      f(x) = x², x₀ = 1:
-      <div class="formula-block">f′(1) = lim<sub>h→0</sub> <span class="bruch"><span class="z">(1 + h)² − 1</span><span class="n">h</span></span> = lim<sub>h→0</sub> <span class="bruch"><span class="z">2h + h²</span><span class="n">h</span></span> = lim<sub>h→0</sub> (2 + h) = 2</div>
-      Das Kürzen durch h ist erlaubt, weil h ≠ 0 ist. Die Vermutung aus der Tabelle in Abschnitt 2 ist damit bewiesen.
+      <span class="box-label">Beispiel: f′(1) für f(x) = x²</span>
+    <div class="reiter" data-reiter="ab-beispiel">
+      <div class="reiter-leiste" role="tablist"><button type="button" role="tab" aria-selected="true" data-wahl="x">x₀-Methode: x → x₀</button><button type="button" role="tab" aria-selected="false" data-wahl="h">Alternative: h-Methode</button></div>
+      <div class="reiter-feld" data-feld="x" role="tabpanel"><div class="formula-block">f′(1) = lim<sub>x→1</sub> <span class="bruch"><span class="z">x² − 1</span><span class="n">x − 1</span></span> = lim<sub>x→1</sub> <span class="bruch"><span class="z">(x − 1)(x + 1)</span><span class="n">x − 1</span></span> = lim<sub>x→1</sub> (x + 1) = 2</div>Der Zähler wird mit der 3. binomischen Formel zerlegt; dann steht der Faktor x − 1 oben und unten. Kürzen darf man, weil x ≠ 1 ist — x läuft nur gegen 1. Die Vermutung aus Abschnitt 2 ist damit bewiesen.</div>
+      <div class="reiter-feld" data-feld="h" role="tabpanel" hidden><div class="formula-block">f′(1) = lim<sub>h→0</sub> <span class="bruch"><span class="z">(1 + h)² − 1</span><span class="n">h</span></span> = lim<sub>h→0</sub> <span class="bruch"><span class="z">2h + h²</span><span class="n">h</span></span> = lim<sub>h→0</sub> (2 + h) = 2</div>Hier wird der Zähler ausmultipliziert; dann lässt sich h ausklammern und kürzen (h ≠ 0). Beide Wege rechnen dasselbe — der Faktor h ist der Faktor x − 1.</div>
+    </div>
+    </div>
+    <div class="reflexion-box">
+      <span class="box-label">Nachgedacht: vom Differenzenquotienten zum Differentialquotienten</span>
+      <ol>
+        <li><strong>Der Differenzenquotient ist ein echter Quotient.</strong> Zähler und Nenner sind Differenzen, Δy = f(x) − f(x₀) und Δx = x − x₀ — die beiden Seiten eines Steigungsdreiecks. Er hat eine geometrische Bedeutung (Sekantensteigung) und eine inhaltliche (mittlere Änderungsrate, mit Einheit).</li>
+        <li><strong>Der Differentialquotient ist kein Quotient mehr, sondern ein Grenzwert.</strong> Zähler und Nenner gehen beide gegen 0; „0 : 0“ ist keine Zahl. Gerechnet wird deshalb nie mit x = x₀, sondern mit x ≠ x₀: erst den Bruch so umformen, dass der Faktor x − x₀ wegfällt, dann den Grenzwert bilden.</li>
+        <li><strong>Warum der Faktor x − x₀ immer herausfällt:</strong> Für x = x₀ wird der Zähler f(x) − f(x₀) zu 0. Bei ganzrationalen Funktionen ist x₀ also eine Nullstelle des Zählers, und der Linearfaktor (x − x₀) lässt sich abspalten — derselbe Gedanke wie in Abschnitt 12.</li>
+        <li><strong>Zwei Blickrichtungen auf den Grenzwert:</strong> dynamisch — Q wandert auf P zu, die Sekante dreht sich, die Tabelle zeigt Zahlen, die sich nähern; statisch — f′(x₀) ist die eine Zahl, der die Quotienten beliebig nahe kommen (der ε-Gedanke aus Thema 1 und 2). Die Tabelle legt eine Vermutung nahe, beweisen kann sie erst die Umformung.</li>
+        <li><strong>x₀-Methode oder h-Methode?</strong> Beide sind dieselbe Rechnung, h = x − x₀. Die x₀-Methode hält beide Punkte P und Q mit ihren Koordinaten im Blick — das Steigungsdreieck bleibt sichtbar. Die h-Methode beschreibt Q über den Abstand von P; sie ist bequemer, wenn man ausmultipliziert.</li>
+        <li><strong>Leibniz’ Schreibweise <span class="bruch"><span class="z">dy</span><span class="n">dx</span></span></strong> erinnert an den Quotienten <span class="bruch"><span class="z">Δy</span><span class="n">Δx</span></span>, aus dem der Grenzwert entsteht. Sie ist ein Symbol für den Grenzwert, keine Division zweier Zahlen dy und dx.</li>
+      </ol>
     </div>
     <div class="achtung-box">
       <span class="box-label">Achtung — ein Knick bleibt ein Knick</span>
@@ -241,12 +227,21 @@
 
   <!-- 5. Potenzregel -->
   <section class="card" id="sec-potenz">
-    <h2>5. Ableitungen berechnen: x² und die Potenzregel</h2>
-    <p>Jetzt rechnerisch und an einer beliebigen Stelle x. Für f(x) = x² liefert die h-Methode <span class="bruch"><span class="z">(x + h)² − x²</span><span class="n">h</span></span> = <span class="bruch"><span class="z">2xh + h²</span><span class="n">h</span></span> = 2x + h → 2x. Warum gerade 2x? Ein Quadrat mit der Seite x hat den Flächeninhalt x². Verlängert man die Seite um h, kommen zwei Streifen x · h und ein kleines Eckquadrat h · h dazu. Mach h klein und sieh zu, wie das Eckquadrat viel schneller verschwindet als die Streifen.</p>
+    <h2>5. Von f′(3) zur Ableitungsfunktion — und die Potenzregel</h2>
+    <p>Abschnitt 4 hat für f(x) = x² die Vermutung f′(x) = 2x geliefert. Bewiesen wird sie in drei Schritten: erst an einer konkreten Stelle, dann an einer beliebigen, aber festen Stelle x₀ — und weil die Rechnung für jede Stelle gleich aussieht, entsteht daraus die Ableitungsfunktion.</p>
+    <div class="beispiel-box">
+      <span class="box-label">Die Ableitungsfunktion von f(x) = x² in drei Schritten</span>
+    <div class="reiter" data-reiter="pq-herleitung">
+      <div class="reiter-leiste" role="tablist"><button type="button" role="tab" aria-selected="true" data-wahl="x">x₀-Methode: x → x₀</button><button type="button" role="tab" aria-selected="false" data-wahl="h">Alternative: h-Methode</button></div>
+      <div class="reiter-feld" data-feld="x" role="tabpanel"><strong>Schritt 1 — an der Stelle x₀ = 3:</strong> <span class="bruch"><span class="z">x² − 9</span><span class="n">x − 3</span></span> = <span class="bruch"><span class="z">(x − 3)(x + 3)</span><span class="n">x − 3</span></span> = x + 3 → 6 für x → 3. Also f′(3) = 6.<br><strong>Schritt 2 — an einer beliebigen Stelle x₀:</strong> <span class="bruch"><span class="z">x² − x₀²</span><span class="n">x − x₀</span></span> = <span class="bruch"><span class="z">(x − x₀)(x + x₀)</span><span class="n">x − x₀</span></span> = x + x₀ → 2x₀ für x → x₀. Also f′(x₀) = 2x₀ — dieselbe Rechnung wie in Schritt 1, nur steht x₀ an der Stelle der 3.<br><strong>Schritt 3 — die Ableitungsfunktion:</strong> Das Ergebnis gilt für jede Stelle. Ordnet man jeder Stelle ihre Ableitung zu, entsteht die Funktion f′ mit <strong>f′(x) = 2x</strong>. Erst jetzt wird x₀ wieder x genannt: x₀ war die feste Stelle, an der abgeleitet wurde; x ist die Variable der neuen Funktion.</div>
+      <div class="reiter-feld" data-feld="h" role="tabpanel" hidden><strong>Schritt 1 — an der Stelle 3:</strong> <span class="bruch"><span class="z">(3 + h)² − 9</span><span class="n">h</span></span> = <span class="bruch"><span class="z">6h + h²</span><span class="n">h</span></span> = 6 + h → 6 für h → 0.<br><strong>Schritt 2 — an einer beliebigen Stelle x₀:</strong> <span class="bruch"><span class="z">(x₀ + h)² − x₀²</span><span class="n">h</span></span> = <span class="bruch"><span class="z">2x₀h + h²</span><span class="n">h</span></span> = 2x₀ + h → 2x₀.<br><strong>Schritt 3:</strong> f′(x₀) = 2x₀ an jeder Stelle, also f′(x) = 2x.</div>
+    </div>
+    </div>
+    <p>Warum gerade 2x₀? Ein Quadrat mit der Seite x₀ hat den Flächeninhalt x₀². Verlängert man die Seite auf x, also um Δx = x − x₀, kommen zwei Streifen x₀ · Δx und ein kleines Eckquadrat Δx² dazu. Mach Δx klein und sieh zu, wie das Eckquadrat viel schneller verschwindet als die Streifen.</p>
     <div class="widget">
       <div class="btn-row">
-        <label>x: <input type="range" id="pq-x" min="1" max="3" step="0.5" value="2" style="vertical-align:middle;width:9rem"> <span id="pq-x-anzeige" class="wert farbe-blau"></span></label>
-        <label>h: <input type="range" id="pq-h" min="0.05" max="1" step="0.05" value="0.8" style="vertical-align:middle;width:12rem"> <span id="pq-h-anzeige" class="wert farbe-orange"></span></label>
+        <label>x₀: <input type="range" id="pq-x" min="1" max="3" step="0.5" value="2" style="vertical-align:middle;width:9rem"> <span id="pq-x-anzeige" class="wert farbe-blau"></span></label>
+        <label>Δx = x − x₀: <input type="range" id="pq-h" min="0.05" max="1" step="0.05" value="0.8" style="vertical-align:middle;width:12rem"> <span id="pq-h-anzeige" class="wert farbe-orange"></span></label>
       </div>
       <div class="geo-wrap" id="pq-mount"></div>
       <div class="th-bilanz" id="pq-bilanz"></div>
@@ -254,14 +249,17 @@
     </div>
     <div class="beispiel-box">
       <span class="box-label">Dieselbe Rechnung für x³, <span class="bruch"><span class="z">1</span><span class="n">x</span></span> und √x</span>
-      <strong>x³:</strong> (x + h)³ = x³ + 3x²h + 3xh² + h³, also <span class="bruch"><span class="z">(x + h)³ − x³</span><span class="n">h</span></span> = 3x² + 3xh + h² → 3x².<br>
-      <strong><span class="bruch"><span class="z">1</span><span class="n">x</span></span> (x ≠ 0):</strong> <span class="bruch"><span class="z">1</span><span class="n">h</span></span> · (<span class="bruch"><span class="z">1</span><span class="n">x + h</span></span> − <span class="bruch"><span class="z">1</span><span class="n">x</span></span>) = <span class="bruch"><span class="z">1</span><span class="n">h</span></span> · <span class="bruch"><span class="z">x − (x + h)</span><span class="n">x(x + h)</span></span> = <span class="bruch"><span class="z">−1</span><span class="n">x(x + h)</span></span> → <span class="bruch"><span class="z">−1</span><span class="n">x²</span></span> = −1 · x⁻².<br>
-      <strong>√x (x &gt; 0):</strong> Erweitern mit √(x + h) + √x wie bei den Wurzeltermen in Thema 2: <span class="bruch"><span class="z">√(x + h) − √x</span><span class="n">h</span></span> = <span class="bruch"><span class="z">(x + h) − x</span><span class="n">h · (√(x + h) + √x)</span></span> = <span class="bruch"><span class="z">1</span><span class="n">√(x + h) + √x</span></span> → <span class="bruch"><span class="z">1</span><span class="n">2√x</span></span> = <span class="bruch"><span class="z">1</span><span class="n">2</span></span> · x<sup>−½</sup>.
+    <div class="reiter" data-reiter="pq-weitere">
+      <div class="reiter-leiste" role="tablist"><button type="button" role="tab" aria-selected="true" data-wahl="x">x₀-Methode: x → x₀</button><button type="button" role="tab" aria-selected="false" data-wahl="h">Alternative: h-Methode</button></div>
+      <div class="reiter-feld" data-feld="x" role="tabpanel"><strong>x³:</strong> x³ − x₀³ = (x − x₀)(x² + x · x₀ + x₀²) (ausmultiplizieren zur Probe), also <span class="bruch"><span class="z">x³ − x₀³</span><span class="n">x − x₀</span></span> = x² + x · x₀ + x₀² → 3x₀².<br><strong><span class="bruch"><span class="z">1</span><span class="n">x</span></span> (x₀ ≠ 0):</strong> <span class="bruch"><span class="z">1</span><span class="n">x − x₀</span></span> · (<span class="bruch"><span class="z">1</span><span class="n">x</span></span> − <span class="bruch"><span class="z">1</span><span class="n">x₀</span></span>) = <span class="bruch"><span class="z">1</span><span class="n">x − x₀</span></span> · <span class="bruch"><span class="z">x₀ − x</span><span class="n">x · x₀</span></span> = <span class="bruch"><span class="z">−1</span><span class="n">x · x₀</span></span> → <span class="bruch"><span class="z">−1</span><span class="n">x₀²</span></span> = −1 · x₀⁻².<br><strong>√x (x₀ &gt; 0):</strong> Der Nenner zerfällt mit der 3. binomischen Formel, x − x₀ = (√x − √x₀)(√x + √x₀): <span class="bruch"><span class="z">√x − √x₀</span><span class="n">x − x₀</span></span> = <span class="bruch"><span class="z">1</span><span class="n">√x + √x₀</span></span> → <span class="bruch"><span class="z">1</span><span class="n">2√x₀</span></span> = <span class="bruch"><span class="z">1</span><span class="n">2</span></span> · x₀<sup>−½</sup>.</div>
+      <div class="reiter-feld" data-feld="h" role="tabpanel" hidden><strong>x³:</strong> (x₀ + h)³ = x₀³ + 3x₀²h + 3x₀h² + h³, also <span class="bruch"><span class="z">(x₀ + h)³ − x₀³</span><span class="n">h</span></span> = 3x₀² + 3x₀h + h² → 3x₀².<br><strong><span class="bruch"><span class="z">1</span><span class="n">x</span></span>:</strong> <span class="bruch"><span class="z">1</span><span class="n">h</span></span> · (<span class="bruch"><span class="z">1</span><span class="n">x₀ + h</span></span> − <span class="bruch"><span class="z">1</span><span class="n">x₀</span></span>) = <span class="bruch"><span class="z">−1</span><span class="n">x₀(x₀ + h)</span></span> → <span class="bruch"><span class="z">−1</span><span class="n">x₀²</span></span>.<br><strong>√x:</strong> Erweitern mit √(x₀ + h) + √x₀ wie bei den Wurzeltermen in Thema 2: <span class="bruch"><span class="z">√(x₀ + h) − √x₀</span><span class="n">h</span></span> = <span class="bruch"><span class="z">1</span><span class="n">√(x₀ + h) + √x₀</span></span> → <span class="bruch"><span class="z">1</span><span class="n">2√x₀</span></span>.</div>
+    </div>
     </div>
     <div class="wissen-box">
       <span class="box-label">Potenzregel</span>
       <div class="formula-block">f(x) = xⁿ &nbsp; ⟹ &nbsp; f′(x) = n · xⁿ⁻¹ &nbsp; (n ∈ ℤ, n ≠ 0; für n &lt; 0 ist x ≠ 0)</div>
-      Für natürliche n zeigt es die h-Methode: (x + h)ⁿ = xⁿ + n · xⁿ⁻¹ · h + (Summanden mit h², h³, …). Nach Abziehen von xⁿ und Teilen durch h bleibt n · xⁿ⁻¹ plus Summanden, die noch den Faktor h enthalten — und die gehen gegen 0. Für negative n = −k (k ∈ ℕ) rechnet man mit Brüchen wie oben bei <span class="bruch"><span class="z">1</span><span class="n">x</span></span> und benutzt das Ergebnis für k: <span class="bruch"><span class="z">1</span><span class="n">h</span></span> · (<span class="bruch"><span class="z">1</span><span class="n">(x + h)ᵏ</span></span> − <span class="bruch"><span class="z">1</span><span class="n">xᵏ</span></span>) = −<span class="bruch"><span class="z">(x + h)ᵏ − xᵏ</span><span class="n">h</span></span> · <span class="bruch"><span class="z">1</span><span class="n">(x + h)ᵏ · xᵏ</span></span> → −k · xᵏ⁻¹ · <span class="bruch"><span class="z">1</span><span class="n">x²ᵏ</span></span> = −k · x⁻ᵏ⁻¹. Außerdem: Eine Konstante hat die Ableitung 0, und x hat die Ableitung 1.<br>
+      <strong>Begründung für natürliche n:</strong> xⁿ − x₀ⁿ = (x − x₀)(xⁿ⁻¹ + xⁿ⁻² · x₀ + … + x · x₀ⁿ⁻² + x₀ⁿ⁻¹) — beim Ausmultiplizieren heben sich alle Summanden bis auf xⁿ und −x₀ⁿ auf. Nach dem Kürzen bleiben n Summanden, und jeder geht für x → x₀ gegen x₀ⁿ⁻¹: zusammen n · x₀ⁿ⁻¹.<br>
+      <strong>Für negative n = −k (k ∈ ℕ):</strong> <span class="bruch"><span class="z">1</span><span class="n">x − x₀</span></span> · (<span class="bruch"><span class="z">1</span><span class="n">xᵏ</span></span> − <span class="bruch"><span class="z">1</span><span class="n">x₀ᵏ</span></span>) = −<span class="bruch"><span class="z">xᵏ − x₀ᵏ</span><span class="n">x − x₀</span></span> · <span class="bruch"><span class="z">1</span><span class="n">xᵏ · x₀ᵏ</span></span> → −k · x₀ᵏ⁻¹ · <span class="bruch"><span class="z">1</span><span class="n">x₀²ᵏ</span></span> = −k · x₀⁻ᵏ⁻¹ — mit dem Ergebnis für k. Außerdem: Eine Konstante hat die Ableitung 0, und x hat die Ableitung 1.<br>
       Die Regel gilt sogar für rationale Exponenten (x &gt; 0): √x = x<sup>½</sup> hat die Ableitung <span class="bruch"><span class="z">1</span><span class="n">2</span></span> · x<sup>−½</sup>, wie eben nachgerechnet. Allgemein folgt das in Abschnitt 8 aus der Kettenregel.
     </div>
     <div class="achtung-box">
@@ -431,7 +429,7 @@
           </select>
         </label>
         <label id="df-m-label">m: <input type="range" id="df-m" min="0" max="4" step="0.5" value="3" style="vertical-align:middle;width:8rem"> <span id="df-m-anzeige" class="wert farbe-orange"></span></label>
-        <label>|h|: <input type="range" id="df-h" min="0" max="4" step="1" value="0" style="vertical-align:middle;width:8rem"> <span id="df-h-anzeige" class="wert farbe-violett"></span></label>
+        <label>Abstand |x − x₀|: <input type="range" id="df-h" min="0" max="4" step="1" value="0" style="vertical-align:middle;width:8rem"> <span id="df-h-anzeige" class="wert farbe-violett"></span></label>
       </div>
       <div class="geo-wrap" id="df-mount"></div>
       <div class="fr-tabelle-wrap" id="df-tabelle"></div>
@@ -440,17 +438,17 @@
     </div>
     <div class="definition-box">
       <span class="box-label">Differenzierbarkeit</span>
-      f ist an der Stelle x₀ <strong>differenzierbar</strong>, wenn der Grenzwert des Differenzenquotienten für h → 0 existiert — wenn also der links- und der rechtsseitige Grenzwert existieren, endlich sind und übereinstimmen. f heißt differenzierbar, wenn f an jeder Stelle ihrer Definitionsmenge differenzierbar ist.
+      f ist an der Stelle x₀ <strong>differenzierbar</strong>, wenn der Grenzwert des Differenzenquotienten <span class="bruch"><span class="z">f(x) − f(x₀)</span><span class="n">x − x₀</span></span> für x → x₀ existiert — wenn also der linksseitige (x &lt; x₀) und der rechtsseitige (x &gt; x₀) Grenzwert existieren, endlich sind und übereinstimmen. f heißt differenzierbar, wenn f an jeder Stelle ihrer Definitionsmenge differenzierbar ist.
     </div>
     <div class="wissen-box">
       <span class="box-label">Differenzierbar ⟹ stetig — aber nicht umgekehrt</span>
-      Ist f an x₀ differenzierbar, dann ist f(x₀ + h) − f(x₀) = <span class="bruch"><span class="z">f(x₀ + h) − f(x₀)</span><span class="n">h</span></span> · h → f′(x₀) · 0 = 0. Also strebt f(x₀ + h) gegen f(x₀): f ist an x₀ stetig.<br>
+      Ist f an x₀ differenzierbar, dann ist f(x) − f(x₀) = <span class="bruch"><span class="z">f(x) − f(x₀)</span><span class="n">x − x₀</span></span> · (x − x₀) → f′(x₀) · 0 = 0 für x → x₀. Also strebt f(x) gegen f(x₀): f ist an x₀ stetig.<br>
       Die Umkehrung ist falsch: |x| ist an der Stelle 0 stetig, hat dort aber einen <strong>Knick</strong> (links Steigung −1, rechts 1). ∛x ist an der Stelle 0 stetig, hat dort aber eine <strong>senkrechte Tangente</strong>: Die Differenzenquotienten wachsen über jede Grenze.
     </div>
     <div class="beispiel-box">
       <span class="box-label">Beispiel: eine Nahtstelle</span>
       f(x) = x² − 2x + 3 für x &lt; 2 und f(x) = 2x − 1 für x ≥ 2. Stetig: Links strebt f gegen 4 − 4 + 3 = 3, rechts ist f(2) = 3.<br>
-      Von links (h &lt; 0): <span class="bruch"><span class="z">(2 + h)² − 2(2 + h) + 3 − 3</span><span class="n">h</span></span> = <span class="bruch"><span class="z">2h + h²</span><span class="n">h</span></span> = 2 + h → 2. Von rechts (h &gt; 0): <span class="bruch"><span class="z">2(2 + h) − 1 − 3</span><span class="n">h</span></span> = 2. Beide Grenzwerte sind 2: f ist an der Stelle 2 differenzierbar, f′(2) = 2.
+      Von links (x &lt; 2): <span class="bruch"><span class="z">x² − 2x + 3 − 3</span><span class="n">x − 2</span></span> = <span class="bruch"><span class="z">x(x − 2)</span><span class="n">x − 2</span></span> = x → 2. Von rechts (x &gt; 2): <span class="bruch"><span class="z">2x − 1 − 3</span><span class="n">x − 2</span></span> = <span class="bruch"><span class="z">2(x − 2)</span><span class="n">x − 2</span></span> = 2. Beide Grenzwerte sind 2: f ist an der Stelle 2 differenzierbar, f′(2) = 2.
     </div>
     <p class="hinweis-box">💡 Manche Bücher vergleichen an einer Nahtstelle statt der Differenzenquotienten die Ableitungen der beiden Teile: links f′(x) = 2x − 2 → 2, rechts f′(x) = 2. Das ist ein bequemer Weg, setzt aber voraus, dass f an der Nahtstelle stetig ist. Ohne Stetigkeit passen die Steigungen manchmal zusammen, obwohl der Graph springt — und dann ist f dort sicher nicht differenzierbar.</p>
     <div class="quiz" id="quiz-differenzierbar"></div>
@@ -660,6 +658,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=1"></script>
+<script type="module" src="lernpfad.js?v=2"></script>
 </body>
 </html>

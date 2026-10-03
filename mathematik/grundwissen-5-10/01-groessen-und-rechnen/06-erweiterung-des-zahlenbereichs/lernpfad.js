@@ -747,18 +747,18 @@ function initQuizzes() {
   mountQuiz(document.getElementById("quiz-warum"), {
     q: "Warum wurden die negativen Zahlen eingeführt?",
     options: [
-      "Damit man Schulden aufschreiben kann — einen mathematischen Grund gibt es nicht",
       "Damit jede Subtraktion lösbar ist, auch wenn der Minuend kleiner ist als der Subtrahend",
+      "Damit man Schulden aufschreiben kann — einen mathematischen Grund gibt es nicht",
       "Damit man durch 0 dividieren kann",
       "Damit Brüche kürzbar werden",
     ],
-    correct: 1,
+    correct: 0,
     explain: "In ℕ hat 5 − 8 keine Lösung. Mit ℤ ist die Subtraktion uneingeschränkt möglich — dieselbe Idee, mit der später ℚ die Division vollständig macht.",
   });
   mountQuiz(document.getElementById("quiz-betrag"), {
     q: "Wie groß ist der Betrag von −7?",
-    options: ["−7", "7", "0", "Der Betrag ist nur für positive Zahlen definiert"],
-    correct: 1,
+    options: ["−7", "Der Betrag ist nur für positive Zahlen definiert", "0", "7"],
+    correct: 3,
     explain: "Der Betrag ist der Abstand zur Null und damit nie negativ: |−7| = |7| = 7.",
   });
   mountQuiz(document.getElementById("quiz-ordnen"), {
@@ -769,30 +769,30 @@ function initQuizzes() {
   });
   mountQuiz(document.getElementById("quiz-addieren"), {
     q: "Wie viel ist 3 − (−5)?",
-    options: ["−8", "−2", "8", "2"],
-    correct: 2,
+    options: ["−8", "−2", "2", "8"],
+    correct: 3,
     explain: "Subtrahieren heißt, die Gegenzahl zu addieren: 3 − (−5) = 3 + 5 = 8.",
   });
   mountQuiz(document.getElementById("quiz-vorzeichen"), {
     q: "Warum ist (−2) · (−3) = +6?",
     options: [
-      "Das ist eine reine Vereinbarung ohne Begründung",
       "Weil die Rechenregeln weiter gelten sollen — setzt man die Reihe 2·(−3) = −6, 1·(−3) = −3, 0·(−3) = 0 fort, muss (−1)·(−3) = +3 sein",
+      "Das ist eine reine Vereinbarung ohne Begründung",
       "Weil zwei Minuszeichen sich immer wegkürzen lassen",
       "Es ist falsch, das Ergebnis ist −6",
     ],
-    correct: 1,
+    correct: 0,
     explain: "Das Permanenzprinzip: Die neuen Zahlen werden so definiert, dass die bekannten Muster und Rechengesetze erhalten bleiben.",
   });
   mountQuiz(document.getElementById("quiz-zahlbereiche"), {
     q: "Welche Aussage über die Zahlbereiche stimmt?",
     options: [
       "ℤ und ℕ haben keine gemeinsamen Elemente",
-      "Jede natürliche Zahl ist auch eine ganze und eine rationale Zahl",
       "ℚ enthält nur Brüche, keine ganzen Zahlen",
+      "Jede natürliche Zahl ist auch eine ganze und eine rationale Zahl",
       "ℕ ist der größte Zahlbereich",
     ],
-    correct: 1,
+    correct: 2,
     explain: "Es gilt ℕ ⊂ ℤ ⊂ ℚ — jeder Bereich enthält den vorigen vollständig. Die 5 ist zugleich natürlich, ganz und rational (5 = 5/1).",
   });
 }

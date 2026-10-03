@@ -1306,14 +1306,14 @@ function initExercises() {
 function initQuizzes() {
   mountQuiz(document.getElementById("quiz-baum"), {
     q: "Ein Würfel wird dreimal geworfen. Wie viele Pfade hat das Baumdiagramm?",
-    options: ["18", "36", "216", "729"],
-    correct: 2,
+    options: ["18", "36", "729", "216"],
+    correct: 3,
     explain: "Jede der 3 Stufen hat 6 Ausgänge: |Ω| = 6³ = 216. Die 18 wäre 6 · 3 — das zählt die Äste, nicht die Pfade. Die 729 wäre 3⁶, also Basis und Exponent vertauscht.",
   });
   mountQuiz(document.getElementById("quiz-produktregel"), {
     q: "In einer Urne sind 2 rote und 3 blaue Kugeln. Es wird zweimal mit Zurücklegen gezogen. Wie groß ist P(rot, rot)?",
-    options: ["2 : 5", "4 : 25", "2 : 20", "4 : 10"],
-    correct: 1,
+    options: ["4 : 25", "2 : 5", "2 : 20", "4 : 10"],
+    correct: 0,
     explain: "Mit Zurücklegen tragen beide Stufen dieselben Zahlen: P = 2 : 5 · 2 : 5 = 4 : 25 = 0,16. Zähler mal Zähler, Nenner mal Nenner — nicht nur der Zähler.",
   });
   mountQuiz(document.getElementById("quiz-summenregel"), {
@@ -1330,8 +1330,8 @@ function initQuizzes() {
   });
   mountQuiz(document.getElementById("quiz-ungleich"), {
     q: "Eine Firma bezieht 80 % ihrer Schrauben von Werk A (2 % Ausschuss) und 20 % von Werk B (7 % Ausschuss). Wie hoch ist der Ausschussanteil insgesamt?",
-    options: ["4,5 %", "3 %", "9 %", "1,8 %"],
-    correct: 1,
+    options: ["3 %", "4,5 %", "9 %", "1,8 %"],
+    correct: 0,
     explain: "0,80 · 0,02 + 0,20 · 0,07 = 0,016 + 0,014 = 0,03, also 3 %. Der Mittelwert (2 % + 7 %) : 2 = 4,5 % wäre falsch: Werk A liefert viermal so viele Schrauben und zieht das Ergebnis zu sich herunter.",
   });
 }

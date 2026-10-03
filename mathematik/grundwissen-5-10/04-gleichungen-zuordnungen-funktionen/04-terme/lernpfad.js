@@ -1289,18 +1289,18 @@ function initQuizzes() {
   mountQuiz(document.getElementById("quiz-struktur"), {
     q: "Welcher der folgenden Terme ist ein <em>Produkt</em>?",
     options: [
-      "5 · (x + 2)",
-      "5x + 2",
       "x² + 5",
+      "5x + 2",
+      "5 · (x + 2)",
       "5 + x · 2",
     ],
-    correct: 0,
+    correct: 2,
     explain: "Man fragt nach dem letzten Rechenschritt. Bei 5 · (x + 2) wird zuerst die Klammer gerechnet und zuletzt multipliziert — also ein Produkt. Bei den anderen dreien wird zuletzt addiert; das sind Summen, auch wenn darin multipliziert wird.",
   });
   mountQuiz(document.getElementById("quiz-zusammenfassen"), {
     q: "Was ergibt 4x² + 3x − x² + 5x zusammengefasst?",
-    options: ["3x² + 8x", "11x²", "3x² + 8x²", "11x"],
-    correct: 0,
+    options: ["11x²", "3x² + 8x", "3x² + 8x²", "11x"],
+    correct: 1,
     explain: "Gleichartig sind nur die x²-Terme untereinander (4x² − x² = 3x²) und die x-Terme untereinander (3x + 5x = 8x). Zwischen ihnen darf nicht zusammengefasst werden — x und x² sind verschiedene Sorten.",
   });
   mountQuiz(document.getElementById("quiz-ausmultiplizieren"), {
@@ -1311,8 +1311,8 @@ function initQuizzes() {
   });
   mountQuiz(document.getElementById("quiz-binomisch"), {
     q: "Wie lautet x² + 14x + 49 als Quadrat geschrieben?",
-    options: ["(x + 7)²", "(x + 14)²", "(x + 49)²", "(x + 7) · (x − 7)"],
-    correct: 0,
+    options: ["(x + 7) · (x − 7)", "(x + 14)²", "(x + 49)²", "(x + 7)²"],
+    correct: 3,
     explain: "49 ist 7², und der mittlere Koeffizient 14 ist genau 2 · 7. Damit passt die 1. binomische Formel: x² + 2 · 7 · x + 7² = (x + 7)². Die letzte Antwort wäre x² − 49 — dort fehlt das mittlere Glied.",
   });
 }

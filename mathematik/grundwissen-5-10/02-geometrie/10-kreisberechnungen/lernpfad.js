@@ -917,11 +917,11 @@ function initQuizzes() {
     q: "Warum ist das Rechteck aus den umgelegten Sektoren π · r breit und nicht 2 · π · r?",
     options: [
       "weil die Hälfte der Stücke fehlt",
-      "weil die Bögen abwechselnd oben und unten liegen — jede Seite bekommt den halben Umfang",
-      "weil π · r einfacher zu rechnen ist",
       "weil der Radius die Breite halbiert",
+      "weil π · r einfacher zu rechnen ist",
+      "weil die Bögen abwechselnd oben und unten liegen — jede Seite bekommt den halben Umfang",
     ],
-    correct: 1,
+    correct: 3,
     explain: "Der ganze Umfang 2 · π · r verteilt sich auf die Oberkante und die Unterkante des Streifens. Jede der beiden Kanten bekommt deshalb die Hälfte, also π · r.",
   });
   mountQuiz(document.getElementById("quiz-ausschnitt"), {
@@ -932,8 +932,8 @@ function initQuizzes() {
   });
   mountQuiz(document.getElementById("quiz-zusammengesetzt"), {
     q: "Ein Kreisring hat den Außenradius 5 cm und den Innenradius 3 cm. Wie groß ist seine Fläche?",
-    options: ["4π cm²", "16π cm²", "2π cm²", "64π cm²"],
-    correct: 1,
+    options: ["4π cm²", "2π cm²", "16π cm²", "64π cm²"],
+    correct: 2,
     explain: "A = π · (5² − 3²) = π · (25 − 9) = 16π cm². Die 4π kämen aus π · (5 − 3)² — dort wird zu früh subtrahiert. Erst quadrieren, dann subtrahieren.",
   });
   mountQuiz(document.getElementById("quiz-rueckwaerts"), {

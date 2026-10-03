@@ -1019,8 +1019,8 @@ function initExercises() {
 function initQuizzes() {
   mountQuiz(document.getElementById("quiz-geradenkreuz"), {
     q: "Zwei Geraden schneiden sich, einer der Winkel ist 130°. Wie groß sind die anderen drei?",
-    options: ["alle 130°", "130°, 50° und 50°", "50°, 50° und 50°", "130°, 130° und 50°"],
-    correct: 1,
+    options: ["alle 130°", "130°, 130° und 50°", "50°, 50° und 50°", "130°, 50° und 50°"],
+    correct: 3,
     explain: "Der Scheitelwinkel ist ebenfalls 130°, die beiden Nebenwinkel je 180° − 130° = 50°. Es gibt immer genau zwei verschiedene Größen.",
   });
   mountQuiz(document.getElementById("quiz-parallelen"), {
@@ -1038,17 +1038,17 @@ function initQuizzes() {
     q: "Kann ein Dreieck zwei rechte Winkel haben?",
     options: [
       "ja, dann ist der dritte 0°",
-      "nein, denn 90° + 90° = 180°, für den dritten Winkel bliebe nichts übrig",
-      "ja, in einem sehr großen Dreieck",
       "nur wenn es gleichschenklig ist",
+      "ja, in einem sehr großen Dreieck",
+      "nein, denn 90° + 90° = 180°, für den dritten Winkel bliebe nichts übrig",
     ],
-    correct: 1,
+    correct: 3,
     explain: "Zwei rechte Winkel verbrauchen die gesamte Winkelsumme. Der dritte Winkel müsste 0° sein — dann fielen zwei Seiten zusammen und es entstünde kein Dreieck. Jedes Dreieck hat höchstens einen rechten oder stumpfen Winkel.",
   });
   mountQuiz(document.getElementById("quiz-aussenwinkel"), {
     q: "Im Dreieck ist α = 40° und γ = 70°. Wie groß ist der Außenwinkel bei B?",
-    options: ["70°", "110°", "140°", "180°"],
-    correct: 1,
+    options: ["110°", "70°", "140°", "180°"],
+    correct: 0,
     explain: "Nach dem Außenwinkelsatz ist er die Summe der nicht anliegenden Innenwinkel: 40° + 70° = 110°. Zur Probe: β = 180° − 110° = 70°, und 40° + 70° + 70° = 180° ✓",
   });
   mountQuiz(document.getElementById("quiz-vieleck"), {

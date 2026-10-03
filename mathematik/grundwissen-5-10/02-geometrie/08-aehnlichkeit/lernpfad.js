@@ -999,19 +999,19 @@ function initExercises() {
 function initQuizzes() {
   mountQuiz(document.getElementById("quiz-streckung"), {
     q: "Eine Strecke ist 6 cm lang. Sie wird zentrisch gestreckt mit k = 0,5. Wie lang ist die Bildstrecke?",
-    options: ["6,5 cm", "3 cm", "12 cm", "5,5 cm"],
-    correct: 1,
+    options: ["3 cm", "6,5 cm", "12 cm", "5,5 cm"],
+    correct: 0,
     explain: "ZP' = k · ZP = 0,5 · 6 cm = 3 cm. Bei 0 < k < 1 wird die Figur kleiner — trotz des Wortes „Streckung“.",
   });
   mountQuiz(document.getElementById("quiz-aehnlich"), {
     q: "Zwei Rechtecke: das erste 3 cm × 5 cm, das zweite 6 cm × 8 cm. Sind sie ähnlich?",
     options: [
       "ja, beide Seiten wurden vergrößert",
-      "nein, denn 6 : 3 = 2, aber 8 : 5 = 1,6",
       "ja, denn alle Winkel sind 90°",
+      "nein, denn 6 : 3 = 2, aber 8 : 5 = 1,6",
       "das lässt sich ohne die Diagonalen nicht entscheiden",
     ],
-    correct: 1,
+    correct: 2,
     explain: "Gleiche Winkel allein genügen bei Vierecken nicht. Die Seitenverhältnisse müssen übereinstimmen — hier tun sie es nicht: 2 ≠ 1,6. Ähnlich wäre 6 cm × 10 cm.",
   });
   mountQuiz(document.getElementById("quiz-strahlensaetze"), {
@@ -1023,18 +1023,18 @@ function initQuizzes() {
   mountQuiz(document.getElementById("quiz-saetze"), {
     q: "Zwei Dreiecke stimmen in zwei Winkeln überein. Was folgt daraus?",
     options: [
-      "gar nichts, man braucht noch eine Seite",
       "sie sind ähnlich, denn der dritte Winkel ergibt sich aus der Winkelsumme",
+      "gar nichts, man braucht noch eine Seite",
       "sie sind kongruent",
       "nur wenn die Winkel gleich groß sind wie 60°",
     ],
-    correct: 1,
+    correct: 0,
     explain: "Wegen der Winkelsumme von 180° ist auch der dritte Winkel festgelegt. Damit haben beide Dreiecke dieselbe Form — das ist der Ähnlichkeitssatz WW. Kongruent sind sie deshalb aber nicht: Die Größe bleibt offen.",
   });
   mountQuiz(document.getElementById("quiz-potenzen"), {
     q: "Ein Aquarium wird in allen Maßen verdoppelt. Wie viel Wasser passt jetzt hinein?",
-    options: ["doppelt so viel", "achtmal so viel", "viermal so viel", "sechsmal so viel"],
-    correct: 1,
+    options: ["doppelt so viel", "sechsmal so viel", "viermal so viel", "achtmal so viel"],
+    correct: 3,
     explain: "Das Volumen wächst mit k³ = 2³ = 8. Viermal so viel wäre die Antwort für die Glasfläche (k² = 4), doppelt so viel gilt nur für einzelne Längen.",
   });
 }

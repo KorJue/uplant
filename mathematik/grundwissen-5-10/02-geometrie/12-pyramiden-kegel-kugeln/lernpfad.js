@@ -1153,14 +1153,14 @@ function initExercises() {
 function initQuizzes() {
   mountQuiz(document.getElementById("quiz-pyramide"), {
     q: "Wie viele Flächen hat eine Pyramide mit sechseckiger Grundfläche?",
-    options: ["6", "7", "8", "12"],
-    correct: 1,
+    options: ["7", "6", "8", "12"],
+    correct: 0,
     explain: "Sechs Seitendreiecke und dazu die Grundfläche: 6 + 1 = 7 Flächen. Ein Prisma über demselben Sechseck hätte 8, denn es hat zusätzlich eine Deckfläche.",
   });
   mountQuiz(document.getElementById("quiz-drittel"), {
     q: "Ein Prisma und eine Pyramide haben dieselbe Grundfläche und dieselbe Höhe. Das Prisma fasst 60 cm³. Wie viel fasst die Pyramide?",
-    options: ["30 cm³", "20 cm³", "180 cm³", "60 cm³"],
-    correct: 1,
+    options: ["30 cm³", "60 cm³", "180 cm³", "20 cm³"],
+    correct: 3,
     explain: "V = ⅓ · G · h, also genau ein Drittel: 60 : 3 = 20 cm³. Die 30 cm³ wären die Hälfte — der Faktor ist aber ⅓, nicht ½.",
   });
   mountQuiz(document.getElementById("quiz-hoehen"), {
@@ -1171,14 +1171,14 @@ function initQuizzes() {
   });
   mountQuiz(document.getElementById("quiz-kegel"), {
     q: "Ein Kegel hat r = 3 cm und h = 4 cm. Wie groß ist seine Mantelfläche?",
-    options: ["12π cm²", "15π cm²", "9π cm²", "20π cm²"],
-    correct: 1,
+    options: ["12π cm²", "20π cm²", "9π cm²", "15π cm²"],
+    correct: 3,
     explain: "Zuerst die Mantellinie: s = √(3² + 4²) = 5 cm. Dann M = π · r · s = π · 3 · 5 = 15π cm². Die 12π kämen aus π · r · h — dort steht aber s, nicht h.",
   });
   mountQuiz(document.getElementById("quiz-kugel"), {
     q: "Eine Kugel und der Zylinder, in den sie genau hineinpasst, werden verglichen. Wie groß ist das Kugelvolumen im Verhältnis zum Zylindervolumen?",
-    options: ["die Hälfte", "zwei Drittel", "ein Drittel", "drei Viertel"],
-    correct: 1,
+    options: ["zwei Drittel", "die Hälfte", "ein Drittel", "drei Viertel"],
+    correct: 0,
     explain: "Der Zylinder hat den Radius r und die Höhe 2r, also V = π · r² · 2r = 2πr³. Die Kugel hat ⁴⁄₃ πr³. Das Verhältnis ist (⁴⁄₃) : 2 = ⅔.",
   });
 }

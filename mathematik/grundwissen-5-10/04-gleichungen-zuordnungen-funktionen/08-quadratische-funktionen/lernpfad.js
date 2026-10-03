@@ -1250,20 +1250,20 @@ function initQuizzes() {
   });
   mountQuiz(document.getElementById("quiz-scheitelform"), {
     q: "Wo liegt der Scheitel von f(x) = 2(x + 3)² − 5?",
-    options: ["S(−3 | −5)", "S(3 | −5)", "S(−3 | 5)", "S(2 | −3)"],
-    correct: 0,
+    options: ["S(2 | −3)", "S(3 | −5)", "S(−3 | 5)", "S(−3 | −5)"],
+    correct: 3,
     explain: "Die Klammer (x + 3) wird null für x = −3 — dort liegt der Scheitel. Die Zahl hinter der Klammer ist die Höhe: −5. Die 2 davor formt die Parabel nur, sie verschiebt sie nicht.",
   });
   mountQuiz(document.getElementById("quiz-ergaenzung"), {
     q: "Welche Zahl muss man bei x² + 6x ergänzen, um eine binomische Formel zu erhalten?",
-    options: ["9", "6", "3", "36"],
-    correct: 0,
+    options: ["6", "9", "3", "36"],
+    correct: 1,
     explain: "Die halbe Zahl vor dem x ist 3, ihr Quadrat 9: x² + 6x + 9 = (x + 3)². Die 3 selbst steht in der Klammer, nicht im Term; die 36 wäre 6², also das Quadrat der ganzen statt der halben Zahl.",
   });
   mountQuiz(document.getElementById("quiz-pq"), {
     q: "Welche Lösungen hat x² − 5x + 6 = 0?",
-    options: ["2 und 3", "−2 und −3", "5 und 6", "1 und 6"],
-    correct: 0,
+    options: ["1 und 6", "−2 und −3", "5 und 6", "2 und 3"],
+    correct: 3,
     explain: "p : 2 = −2,5 und D = 6,25 − 6 = 0,25, also x = 2,5 ± 0,5 — das sind 2 und 3. Schnellkontrolle: Die Summe der Lösungen muss −p = 5 sein und ihr Produkt q = 6. Bei −2 und −3 wäre die Summe −5.",
   });
   mountQuiz(document.getElementById("quiz-diskriminante"), {
@@ -1280,12 +1280,12 @@ function initQuizzes() {
   mountQuiz(document.getElementById("quiz-extremwert"), {
     q: "Ein 40 m langer Zaun umschließt ein Rechteck. Wann ist die Fläche am größten?",
     options: [
-      "bei einem Quadrat mit 10 m Seitenlänge",
-      "bei einem Rechteck mit 15 m und 5 m",
       "bei einem Rechteck mit 20 m und 20 m",
+      "bei einem Rechteck mit 15 m und 5 m",
+      "bei einem Quadrat mit 10 m Seitenlänge",
       "bei einem möglichst langen, schmalen Streifen",
     ],
-    correct: 0,
+    correct: 2,
     explain: "Aus 2x + 2y = 40 folgt y = 20 − x, also A(x) = x(20 − x) = −(x − 10)² + 100. Der Scheitel liegt bei x = 10, die größte Fläche ist 100 m². 15 m × 5 m ergäbe nur 75 m²; 20 m × 20 m hätte den Umfang 80 m.",
   });
 }

@@ -927,26 +927,26 @@ function initExercises() {
 function initQuizzes() {
   mountQuiz(document.getElementById("quiz-ergebnis"), {
     q: "Beim Werfen zweier Münzen ist Ω = {KK; KZ; ZK; ZZ}. Wie groß ist die Wahrscheinlichkeit für „genau einmal Kopf“?",
-    options: ["1 : 4", "1 : 2", "1 : 3", "2 : 3"],
-    correct: 1,
+    options: ["1 : 4", "1 : 3", "1 : 2", "2 : 3"],
+    correct: 2,
     explain: "Genau einmal Kopf tritt bei KZ und ZK ein, also bei 2 von 4 Ergebnissen: P = 2 : 4 = 1 : 2. Wer nur „einmal Kopf“ als ein Ergebnis zählt, übersieht, dass die Reihenfolge zwei verschiedene Ergebnisse liefert.",
   });
   mountQuiz(document.getElementById("quiz-laplace"), {
     q: "In einer Urne sind 4 rote und 6 blaue Kugeln. Wie groß ist P(rot)?",
-    options: ["4 : 6 ≈ 0,67", "4 : 10 = 0,4", "6 : 10 = 0,6", "1 : 4 = 0,25"],
-    correct: 1,
+    options: ["4 : 6 ≈ 0,67", "6 : 10 = 0,6", "4 : 10 = 0,4", "1 : 4 = 0,25"],
+    correct: 2,
     explain: "Im Nenner steht die Gesamtzahl 4 + 6 = 10, nicht die Zahl der blauen Kugeln. Die 0,67 wäre größer als der Anteil aller roten Kugeln überhaupt sein kann — ein Wert über 1 wäre sogar unmöglich.",
   });
   mountQuiz(document.getElementById("quiz-grosse-zahlen"), {
     q: "Eine Münze zeigte fünfmal hintereinander Kopf. Wie groß ist die Wahrscheinlichkeit für Zahl beim sechsten Wurf?",
-    options: ["größer als ½, weil Zahl „fällig“ ist", "genau ½ wie immer", "kleiner als ½, weil Kopf gerade läuft", "das hängt von der Münze ab"],
-    correct: 1,
+    options: ["genau ½ wie immer", "größer als ½, weil Zahl „fällig“ ist", "kleiner als ½, weil Kopf gerade läuft", "das hängt von der Münze ab"],
+    correct: 0,
     explain: "Die Münze hat kein Gedächtnis: Jeder Wurf hat P = ½, unabhängig von allen vorigen. Was sich mit wachsender Wurfzahl ausgleicht, ist der Anteil — nicht die Differenz der Anzahlen.",
   });
   mountQuiz(document.getElementById("quiz-gegen"), {
     q: "Für ein Ereignis gilt P(E) = 0,35. Wie groß ist P(Ē)?",
-    options: ["0,35", "0,65", "1,35", "0,5"],
-    correct: 1,
+    options: ["0,35", "0,5", "1,35", "0,65"],
+    correct: 3,
     explain: "P(Ē) = 1 − P(E) = 1 − 0,35 = 0,65. Zusammen ergeben beide immer genau 1, denn eines von beiden tritt sicher ein.",
   });
   mountQuiz(document.getElementById("quiz-nichtlaplace"), {

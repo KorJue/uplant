@@ -1223,11 +1223,11 @@ function initQuizzes() {
     q: "Ein Pullover kostet nach einer Preissenkung um 20 % nur noch 48 €. Welche Größe ist hier der <em>Grundwert</em> G?",
     options: [
       "die 48 €, denn das ist der Preis, den man zahlt",
-      "die 20 %",
       "der Preis vor der Senkung",
+      "die 20 %",
       "die Ersparnis in Euro",
     ],
-    correct: 2,
+    correct: 1,
     explain: "Die 20 % beziehen sich auf den alten Preis — er ist deshalb der Grundwert und entspricht 100 %. Die 48 € sind der verminderte Grundwert, nämlich 80 % davon. Wer die 48 € als 100 % nimmt, rechnet die ganze Aufgabe falsch.",
   });
   mountQuiz(document.getElementById("quiz-grundaufgaben"), {
@@ -1240,23 +1240,23 @@ function initQuizzes() {
     q: "Ein Preis steigt um 20 % und wird danach um 20 % gesenkt. Wie steht er dann?",
     options: [
       "genau wie vorher, die Änderungen heben sich auf",
-      "4 % unter dem alten Preis",
-      "4 % über dem alten Preis",
       "20 % unter dem alten Preis",
+      "4 % über dem alten Preis",
+      "4 % unter dem alten Preis",
     ],
-    correct: 1,
+    correct: 3,
     explain: "Man multipliziert die Faktoren: 1,2 · 0,8 = 0,96, also 96 % des alten Preises — 4 % weniger. Der Grund ist der Bezugspunkt: Die Senkung von 20 % bezieht sich auf den bereits erhöhten Preis und ist deshalb in Euro größer als die vorherige Erhöhung.",
   });
   mountQuiz(document.getElementById("quiz-zinsen"), {
     q: "2400 € werden zu 3 % pro Jahr angelegt und nach 5 Monaten abgehoben. Wie hoch sind die Zinsen?",
-    options: ["30 €", "72 €", "360 €", "12 €"],
-    correct: 0,
+    options: ["72 €", "30 €", "360 €", "12 €"],
+    correct: 1,
     explain: "Der Jahreszins beträgt 2400 € · 3 : 100 = 72 €. Davon sind 5 von 12 Monaten fällig: 72 € · 5 : 12 = 30 €. Die 72 € wären der volle Jahreszins, die 360 € entstünden, wenn man mit 5 multipliziert, aber nicht durch 12 teilt.",
   });
   mountQuiz(document.getElementById("quiz-zinseszins"), {
     q: "1000 € werden zwei Jahre lang zu 5 % mit Zinseszins angelegt. Wie hoch ist das Endkapital?",
-    options: ["1102,50 €", "1100,00 €", "1050,00 €", "1010,25 €"],
-    correct: 0,
+    options: ["1050,00 €", "1100,00 €", "1102,50 €", "1010,25 €"],
+    correct: 2,
     explain: "K₂ = 1000 € · 1,05² = 1000 € · 1,1025 = 1102,50 €. Die 1100 € kämen ohne Zinseszins heraus (2 · 50 €); die fehlenden 2,50 € sind genau die Zinsen, die die Zinsen des ersten Jahres erwirtschaftet haben.",
   });
 }

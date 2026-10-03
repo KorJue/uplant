@@ -1106,8 +1106,8 @@ function initExercises() {
 function initQuizzes() {
   mountQuiz(document.getElementById("quiz-urliste"), {
     q: "Bei einer Umfrage unter 40 Personen antworteten 10 mit „Ja“. Wie groß ist die relative Häufigkeit?",
-    options: ["10", "0,25", "4", "30"],
-    correct: 1,
+    options: ["10", "4", "0,25", "30"],
+    correct: 2,
     explain: "h = H : n = 10 : 40 = 0,25, also 25 %. Die 10 ist die absolute Häufigkeit, die 4 wäre 40 : 10 — also genau verkehrt herum geteilt.",
   });
   mountQuiz(document.getElementById("quiz-diagramme"), {
@@ -1118,14 +1118,14 @@ function initQuizzes() {
   });
   mountQuiz(document.getElementById("quiz-mittelwerte"), {
     q: "Fünf Häuser kosten 200, 210, 220, 230 und 3140 (in Tausend Euro). Welcher Kennwert beschreibt den „üblichen“ Preis besser?",
-    options: ["das arithmetische Mittel, weil alle Werte eingehen", "der Median, weil der eine sehr teure Preis ihn nicht verzerrt", "die Spannweite", "der Modalwert"],
-    correct: 1,
+    options: ["der Median, weil der eine sehr teure Preis ihn nicht verzerrt", "das arithmetische Mittel, weil alle Werte eingehen", "die Spannweite", "der Modalwert"],
+    correct: 0,
     explain: "Das Mittel ist 800 — teurer als vier der fünf Häuser. Der Median ist 220 und liegt mitten im Feld. Genau dafür gibt es ihn.",
   });
   mountQuiz(document.getElementById("quiz-waage"), {
     q: "Eine Datenreihe hat das arithmetische Mittel 12. Was ergibt die Summe aller Abweichungen vom Mittelwert?",
-    options: ["12", "0", "die Anzahl der Werte", "das kann man nicht sagen"],
-    correct: 1,
+    options: ["12", "das kann man nicht sagen", "die Anzahl der Werte", "0"],
+    correct: 3,
     explain: "Die Summe der Abweichungen vom arithmetischen Mittel ist immer 0 — die Abweichungen nach oben und nach unten gleichen sich genau aus.",
   });
   mountQuiz(document.getElementById("quiz-taeuschung"), {

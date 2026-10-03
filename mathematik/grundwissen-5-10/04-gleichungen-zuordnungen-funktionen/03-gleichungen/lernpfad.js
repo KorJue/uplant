@@ -1401,47 +1401,47 @@ function initExercises() {
 function initQuizzes() {
   mountQuiz(document.getElementById("quiz-gleichung"), {
     q: "Welche Zahl ist eine Lösung der Gleichung 4x − 7 = 2x + 3?",
-    options: ["x = 5", "x = 2", "x = −5", "x = 10"],
-    correct: 0,
+    options: ["x = −5", "x = 2", "x = 5", "x = 10"],
+    correct: 2,
     explain: "Einsetzen von 5: links 4 · 5 − 7 = 13, rechts 2 · 5 + 3 = 13. Beide Seiten stimmen überein, also ist 5 eine Lösung. Bei x = 2 wäre links 1 und rechts 7 — die Waage stünde schief.",
   });
   mountQuiz(document.getElementById("quiz-umformen"), {
     q: "Welche Umformung ist <em>keine</em> Äquivalenzumformung?",
     options: [
-      "auf beiden Seiten 7 addieren",
-      "beide Seiten durch 3 teilen",
       "beide Seiten mit 0 multiplizieren",
+      "beide Seiten durch 3 teilen",
+      "auf beiden Seiten 7 addieren",
       "auf beiden Seiten 2x subtrahieren",
     ],
-    correct: 2,
+    correct: 0,
     explain: "Aus 3x = 12 würde durch „· 0“ die Gleichung 0 = 0 — plötzlich wäre jede Zahl eine Lösung. Die Umformung lässt sich nicht rückgängig machen, weil man nicht durch 0 teilen darf. Alle anderen drei sind erlaubt.",
   });
   mountQuiz(document.getElementById("quiz-loesen"), {
     q: "Aus 6x + 5 = 2x + 21 folgt nach dem ersten Schritt (− 2x) welche Gleichung?",
-    options: ["4x + 5 = 21", "8x + 5 = 21", "4x + 5 = 23", "6x + 5 = 19"],
-    correct: 0,
+    options: ["6x + 5 = 19", "8x + 5 = 21", "4x + 5 = 23", "4x + 5 = 21"],
+    correct: 3,
     explain: "Auf beiden Seiten wird 2x abgezogen: links 6x − 2x = 4x, rechts fällt der x-Term weg. Die Zahlen 5 und 21 bleiben unberührt — sie kommen erst im zweiten Schritt an die Reihe.",
   });
   mountQuiz(document.getElementById("quiz-sonderfaelle"), {
     q: "Beim Lösen bleibt am Ende 7 = 7 stehen. Was bedeutet das?",
     options: [
       "Die Gleichung hat keine Lösung.",
-      "Die Lösung ist x = 7.",
       "Jede Zahl ist eine Lösung.",
+      "Die Lösung ist x = 7.",
       "Man hat sich verrechnet.",
     ],
-    correct: 2,
+    correct: 1,
     explain: "7 = 7 ist wahr — und zwar unabhängig davon, was für x eingesetzt wurde. Die Gleichung ist also für jede Zahl erfüllt: L = ℚ. Am Graphen liegen die beiden Geraden aufeinander. Bliebe dagegen 7 = 9 stehen, gäbe es keine Lösung.",
   });
   mountQuiz(document.getElementById("quiz-aufstellen"), {
     q: "„Ein Rechteck ist 5 cm länger als breit, sein Umfang beträgt 38 cm.“ Welche Gleichung gehört dazu, wenn x die Breite ist?",
     options: [
-      "2 · (x + 5) + 2 · x = 38",
+      "2 · x + 5 = 38",
       "x + (x + 5) = 38",
       "x · (x + 5) = 38",
-      "2 · x + 5 = 38",
+      "2 · (x + 5) + 2 · x = 38",
     ],
-    correct: 0,
+    correct: 3,
     explain: "Der Umfang setzt sich aus zwei Längen und zwei Breiten zusammen. Die Länge ist x + 5, die Breite x, also 2 · (x + 5) + 2 · x = 38. Antwort 2 erfasst nur eine Länge und eine Breite, Antwort 3 wäre der Flächeninhalt.",
   });
 }

@@ -1210,31 +1210,31 @@ function initQuizzes() {
   });
   mountQuiz(document.getElementById("quiz-einschachteln"), {
     q: "Zwischen welchen ganzen Zahlen liegt √50?",
-    options: ["zwischen 7 und 8", "zwischen 6 und 7", "zwischen 24 und 26", "zwischen 25 und 26"],
-    correct: 0,
+    options: ["zwischen 25 und 26", "zwischen 6 und 7", "zwischen 24 und 26", "zwischen 7 und 8"],
+    correct: 3,
     explain: "7² = 49 und 8² = 64, also 49 < 50 < 64 und damit 7 < √50 < 8. Genauer: √50 ≈ 7,07. Die Antwort „24 bis 26“ entsteht, wenn man halbiert statt die Wurzel zu ziehen.",
   });
   mountQuiz(document.getElementById("quiz-irrational"), {
     q: "Welche dieser Zahlen ist <em>irrational</em>?",
-    options: ["√7", "√36", "0,25", "1 : 3"],
-    correct: 0,
+    options: ["√36", "√7", "0,25", "1 : 3"],
+    correct: 1,
     explain: "7 ist keine Quadratzahl, also lässt sich √7 nicht als Bruch schreiben — die Dezimaldarstellung ist unendlich und nicht periodisch. √36 = 6 ist natürlich, 0,25 = 1 : 4 bricht ab, und 1 : 3 = 0,333… ist periodisch: alle drei sind rational.",
   });
   mountQuiz(document.getElementById("quiz-regeln"), {
     q: "Welche Umformung ist <em>falsch</em>?",
     options: [
-      "√(9 + 16) = √9 + √16",
-      "√(9 · 16) = √9 · √16",
       "√(36 : 4) = √36 : √4",
+      "√(9 · 16) = √9 · √16",
+      "√(9 + 16) = √9 + √16",
       "√2 + √2 = 2√2",
     ],
-    correct: 0,
+    correct: 2,
     explain: "√(9 + 16) = √25 = 5, aber √9 + √16 = 3 + 4 = 7. Für Summen gibt es keine solche Regel. Produkt und Quotient darf man dagegen aufteilen, und √2 + √2 = 2√2 ist nur das Zusammenfassen gleichartiger Summanden.",
   });
   mountQuiz(document.getElementById("quiz-teilweise"), {
     q: "Wie lautet √48 in der Form c · √r mit möglichst großem c?",
-    options: ["4√3", "2√12", "16√3", "3√4"],
-    correct: 0,
+    options: ["16√3", "2√12", "4√3", "3√4"],
+    correct: 2,
     explain: "48 = 16 · 3, und 16 = 4² ist die größte Quadratzahl darin: √48 = √16 · √3 = 4√3. Bei 2√12 steckt in der 12 noch die Quadratzahl 4; 16√3 wäre √(256 · 3) = √768; und 3√4 ist einfach 6.",
   });
   mountQuiz(document.getElementById("quiz-laengen"), {

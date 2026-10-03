@@ -1037,14 +1037,14 @@ function initExercises() {
 function initQuizzes() {
   mountQuiz(document.getElementById("quiz-fachbegriffe"), {
     q: "Wie heißt das Ergebnis einer Division?",
-    options: ["Produkt", "Differenz", "Quotient", "Summe"],
-    correct: 2,
+    options: ["Quotient", "Differenz", "Produkt", "Summe"],
+    correct: 0,
     explain: "Dividend : Divisor = Quotient. Das Produkt gehört zur Multiplikation, die Differenz zur Subtraktion.",
   });
   mountQuiz(document.getElementById("quiz-rechengesetze"), {
     q: "Für welche Rechenarten gilt das Kommutativgesetz?",
-    options: ["Für alle vier Grundrechenarten", "Nur für Addition und Multiplikation", "Nur für Subtraktion und Division", "Nur für die Addition"],
-    correct: 1,
+    options: ["Für alle vier Grundrechenarten", "Nur für Subtraktion und Division", "Nur für Addition und Multiplikation", "Nur für die Addition"],
+    correct: 2,
     explain: "Nur Addition und Multiplikation sind kommutativ. Bei Subtraktion und Division ändert das Vertauschen das Ergebnis: 12 − 4 = 8, aber 4 − 12 ist in ℕ gar nicht definiert.",
   });
   mountQuiz(document.getElementById("quiz-rangfolge"), {
@@ -1056,23 +1056,23 @@ function initQuizzes() {
   mountQuiz(document.getElementById("quiz-ueberschlag"), {
     q: "Wozu dient ein Überschlag?",
     options: [
-      "Er ersetzt das genaue Rechnen und liefert das endgültige Ergebnis",
       "Er liefert schnell die Größenordnung und dient der Kontrolle des genauen Ergebnisses",
+      "Er ersetzt das genaue Rechnen und liefert das endgültige Ergebnis",
       "Er wird nur bei Divisionen gebraucht",
       "Er macht das Ergebnis genauer",
     ],
-    correct: 1,
+    correct: 0,
     explain: "Der Überschlag ist eine Kontrolle: Weicht das genaue Ergebnis stark von ihm ab, steckt meist ein Stellenwert- oder Übertragsfehler in der Rechnung.",
   });
   mountQuiz(document.getElementById("quiz-schriftlich-addition"), {
     q: "Was bedeutet ein Übertrag beim schriftlichen Addieren im Stellenwertsystem?",
     options: [
       "Dass man sich verrechnet hat",
-      "Dass 10 Einheiten einer Stelle zu 1 Einheit der nächsthöheren Stelle gebündelt werden",
-      "Dass die Zahlen gleich lang sein müssen",
       "Dass man die Spalte noch einmal rechnen muss",
+      "Dass die Zahlen gleich lang sein müssen",
+      "Dass 10 Einheiten einer Stelle zu 1 Einheit der nächsthöheren Stelle gebündelt werden",
     ],
-    correct: 1,
+    correct: 3,
     explain: "Ein Übertrag ist genau ein neues Bündel: 10 Einer werden zu 1 Zehner, 10 Zehner zu 1 Hunderter usw. Deshalb wandert er eine Spalte nach links.",
   });
   mountQuiz(document.getElementById("quiz-schriftlich-multiplikation"), {

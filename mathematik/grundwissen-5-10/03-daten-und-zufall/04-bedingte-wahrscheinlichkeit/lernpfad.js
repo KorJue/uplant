@@ -1257,8 +1257,8 @@ function initExercises() {
 function initQuizzes() {
   mountQuiz(document.getElementById("quiz-bedingt"), {
     q: "In einer Klasse mit 25 Kindern fahren 10 mit dem Rad; 4 davon tragen eine Brille. Wie groß ist P(Brille | Rad)?",
-    options: ["4 : 25 = 0,16", "4 : 10 = 0,4", "10 : 25 = 0,4", "4 : 14 ≈ 0,29"],
-    correct: 1,
+    options: ["4 : 25 = 0,16", "4 : 14 ≈ 0,29", "10 : 25 = 0,4", "4 : 10 = 0,4"],
+    correct: 3,
     explain: "Die Bedingung „Rad“ macht die 10 Radfahrenden zur neuen Grundmenge. Von ihnen tragen 4 eine Brille: 4 : 10 = 0,4. Die 4 : 25 wäre P(Brille ∩ Rad) — der Anteil an der ganzen Klasse.",
   });
   mountQuiz(document.getElementById("quiz-vierfeldertafel"), {
@@ -1281,8 +1281,8 @@ function initQuizzes() {
   });
   mountQuiz(document.getElementById("quiz-basisrate"), {
     q: "Ein Test erkennt 99 % der Kranken und schlägt bei 1 % der Gesunden fälschlich an. Die Krankheit haben 10 von 10 000 Personen. Wie viele der positiv Getesteten sind wirklich krank?",
-    options: ["99 %", "etwa 50 %", "etwa 1 %", "etwa 9 %"],
-    correct: 3,
+    options: ["etwa 9 %", "etwa 50 %", "etwa 1 %", "99 %"],
+    correct: 0,
     explain: "Richtig positiv: 99 % von 10 ≈ 10. Falsch positiv: 1 % von 9990 ≈ 100. Von rund 110 positiven Tests sind also nur etwa 10 richtig — das sind rund 9 %. Die 99 % sind P(Test + | krank), nicht P(krank | Test +).",
   });
 }

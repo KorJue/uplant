@@ -2,7 +2,7 @@
 //
 //   einfach   — mittlere Änderungsrate, Ableitung an einer Stelle, Potenzregel mit negativen
 //               Exponenten und √x, Steigungswinkel, waagerechte Tangente.
-//   mittel    — Differenzenquotient für ein festes h, Tangente, Normale, Nullstellen durch
+//   mittel    — Differenzenquotient für ein festes x, Tangente, Normale, Nullstellen durch
 //               Substitution, Hoch- oder Tiefpunkt einer kubischen Funktion.
 //   schwierig — Schnittwinkel, differenzierbar zusammensetzen, Kettenregel, Produktregel,
 //               Tangenten von einem Punkt außerhalb.
@@ -326,7 +326,7 @@ function generateE5() {
 
 // ================= mittel =================
 
-// ---------- M1: Differenzenquotient für ein festes h ----------
+// ---------- M1: Differenzenquotient für ein festes x ----------
 const M1_KANDIDATEN = spaeter(() => {
   const out = [];
   for (const a of [1, 2, -1, 0.5, 3]) for (const b of [-3, -1, 0, 2, 3]) for (const x0 of [-2, -1, 0, 1, 2, 3]) for (const h of [0.1, 0.5, 2, -0.5, 1]) out.push({ a, b, x0, h });
@@ -345,21 +345,23 @@ function generateM1() {
   const c = pick([-2, 1, 3]);
   const f = (x) => a * x * x + b * x + c;
   const w = m1Werte(k);
+  const x = x0 + h;
   return {
-    promptHtml: `Gegeben ist f(x) = ${poly([[a, "x²"], [b, "x"], [c, ""]])}.<br><strong>Berechne den Differenzenquotienten ${bruch("f(x₀ + h) − f(x₀)", "h")} für x₀ = ${num(x0)} und h = ${num(h)}.</strong>` + ZAHL,
+    // x₀-Methode wie in Elemente: die zweite Stelle heißt x, gerechnet wird mit h = x − x₀.
+    promptHtml: `Gegeben ist f(x) = ${poly([[a, "x²"], [b, "x"], [c, ""]])}.<br><strong>Berechne den Differenzenquotienten ${bruch("f(x) − f(x₀)", "x − x₀")} für x₀ = ${num(x0)} und x = ${num(x)}.</strong>` + ZAHL,
     correct: w.soll,
     tolerance: TOL,
     placeholder: "Differenzenquotient",
     hinweis: (roh, v) => {
-      if (nahe(v, w.grenz, TOL)) return `Das ist schon der Grenzwert für h → 0, also f′(${num(x0)}). Gefragt ist der Quotient für das feste h = ${num(h)} — die Sekantensteigung.`;
-      if (nahe(v, w.ungeteilt, TOL)) return `Das ist f(x₀ + h) − f(x₀). Noch durch h = ${num(h)} teilen.`;
-      if (nahe(v, w.rechts, TOL)) return `Das ist die Steigung an der Stelle x₀ + h = ${num(x0 + h)}. Gesucht ist die Sekantensteigung zwischen x₀ und x₀ + h.`;
-      return `Berechne f(${num(x0 + h)}) und f(${num(x0)}), bilde die Differenz und teile durch ${num(h)}.`;
+      if (nahe(v, w.grenz, TOL)) return `Das ist schon der Grenzwert für x → x₀, also f′(${num(x0)}). Gefragt ist der Quotient für das feste x = ${num(x)} — die Sekantensteigung.`;
+      if (nahe(v, w.ungeteilt, TOL)) return `Das ist f(x) − f(x₀). Noch durch x − x₀ = ${num(h)} teilen.`;
+      if (nahe(v, w.rechts, TOL)) return `Das ist die Steigung an der Stelle x = ${num(x)}. Gesucht ist die Sekantensteigung zwischen x₀ und x.`;
+      return `Berechne f(${num(x)}) und f(${num(x0)}), bilde die Differenz und teile durch x − x₀ = ${num(h)}.`;
     },
-    tipps: [`x₀ + h = ${num(x0 + h)}; f(${num(x0 + h)}) = ${num(f(x0 + h))}`, `f(${num(x0)}) = ${num(f(x0))}`],
-    musterloesungHtml: `f(${num(x0 + h)}) = ${num(f(x0 + h))}, &nbsp; f(${num(x0)}) = ${num(f(x0))}<br>` +
-      `${bruch(`${num(f(x0 + h))} − ${numK(f(x0))}`, num(h))} = ${bruch(num(f(x0 + h) - f(x0)), num(h))} = <strong>${num(w.soll)}</strong><br>` +
-      `Zum Vergleich: f′(${num(x0)}) = ${num(w.grenz)} — die Sekantensteigung weicht um ${num(Math.abs(w.soll - w.grenz))} = |${num(a)} · h| davon ab.`,
+    tipps: [`f(${num(x)}) = ${num(f(x))}`, `f(${num(x0)}) = ${num(f(x0))}; x − x₀ = ${num(x)} − ${numK(x0)} = ${num(h)}`],
+    musterloesungHtml: `f(${num(x)}) = ${num(f(x))}, &nbsp; f(${num(x0)}) = ${num(f(x0))}<br>` +
+      `${bruch(`${num(f(x))} − ${numK(f(x0))}`, `${num(x)} − ${numK(x0)}`)} = ${bruch(num(f(x) - f(x0)), num(h))} = <strong>${num(w.soll)}</strong><br>` +
+      `Zum Vergleich: f′(${num(x0)}) = ${num(w.grenz)} — die Sekantensteigung weicht um ${num(Math.abs(w.soll - w.grenz))} = |${num(a)} · (x − x₀)| davon ab.`,
   };
 }
 
@@ -773,7 +775,7 @@ export const AUFGABEN = [
   { schwierigkeit: "einfach", titel: "Negative Exponenten und Wurzeln", generate: generateE3 },
   { schwierigkeit: "einfach", titel: "Steigungswinkel", generate: generateE4 },
   { schwierigkeit: "einfach", titel: "Waagerechte Tangente", generate: generateE5 },
-  { schwierigkeit: "mittel", titel: "Differenzenquotient für festes h", generate: generateM1 },
+  { schwierigkeit: "mittel", titel: "Differenzenquotient für festes x", generate: generateM1 },
   { schwierigkeit: "mittel", titel: "Tangentengleichung", generate: generateM2 },
   { schwierigkeit: "mittel", titel: "Normalengleichung", generate: generateM3 },
   { schwierigkeit: "mittel", titel: "Nullstellen durch Substitution", generate: generateM4 },
