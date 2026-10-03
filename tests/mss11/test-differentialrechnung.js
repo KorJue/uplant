@@ -120,6 +120,11 @@ async function geruest(page) {
   const folge = await page.evaluate(() => [...document.querySelectorAll("main section[id]")].map((s) => s.id));
   const soll = [...ABSCHNITTE, "sec-selbsteinschaetzung", "sec-vernetzung", "sec-formelsammlung", "sec-uebungen"];
   pruefe(JSON.stringify(folge) === JSON.stringify(soll), `Gerüst: Abschnitte ${folge.join(", ")} statt ${soll.join(", ")}`);
+  // Die Normalparabel trägt die ganze Herleitung; deshalb steht sie in Abschnitt 1 bis 4 vorn.
+  const start = await page.evaluate(() => ["mr-art", "lr-art", "fm-art", "gd-art"].map((id) => document.getElementById(id).value));
+  pruefe(start.every((w) => w === "para"), `Gerüst: Die Zeichnungen beginnen nicht alle mit f(x) = x² (${start.join(", ")})`);
+  const mrStart = await page.evaluate(() => [document.getElementById("mr-a").value, document.getElementById("mr-b").value].join(" "));
+  pruefe(mrStart === "1 2", `Gerüst: Abschnitt 1 startet nicht im Intervall [1; 2] (${mrStart})`);
   // Die Nummern in den Überschriften laufen durch, und der Wegweiser führt dieselben Nummern.
   const titel = await page.evaluate((ids) => ids.map((id) => document.querySelector(`#${id} h2`).textContent), ABSCHNITTE);
   titel.forEach((t, i) => pruefe(t.startsWith(`${i + 1}. `), `Gerüst: Überschrift „${t}“ trägt nicht die Nummer ${i + 1}`));
