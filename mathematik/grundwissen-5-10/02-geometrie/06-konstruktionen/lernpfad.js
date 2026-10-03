@@ -1052,23 +1052,23 @@ function initQuizzes() {
   mountQuiz(document.getElementById("quiz-grundkonstruktionen"), {
     q: "Warum liegen die beiden Schnittpunkte der Hilfskreise auf der Mittelsenkrechten von AB?",
     options: [
-      "weil sie zufällig dort liegen",
       "weil beide Kreise denselben Radius haben und die Schnittpunkte damit von A und B gleich weit entfernt sind",
+      "weil sie zufällig dort liegen",
       "weil die Kreise gleich groß aussehen",
       "weil die Strecke AB halbiert wurde",
     ],
-    correct: 1,
+    correct: 0,
     explain: "Die Mittelsenkrechte ist genau die Menge aller Punkte mit gleichem Abstand zu A und B. Beide Schnittpunkte haben von A und B den Radius als Abstand — deshalb liegen sie zwangsläufig darauf.",
   });
   mountQuiz(document.getElementById("quiz-ungleichung"), {
     q: "Gibt es ein Dreieck mit den Seiten 3 cm, 4 cm und 7 cm?",
     options: [
       "ja, denn 3 + 4 = 7",
-      "nein, denn 3 + 4 ist genau 7 — es entsteht nur eine Strecke",
-      "ja, es ist rechtwinklig",
       "das hängt von den Winkeln ab",
+      "ja, es ist rechtwinklig",
+      "nein, denn 3 + 4 ist genau 7 — es entsteht nur eine Strecke",
     ],
-    correct: 1,
+    correct: 3,
     explain: "Die Dreiecksungleichung verlangt „echt kleiner“: 7 < 3 + 4 ist falsch, denn 3 + 4 = 7. Die beiden Zirkelbögen berühren sich nur in einem Punkt auf der Strecke — das Dreieck fällt in sich zusammen.",
   });
   mountQuiz(document.getElementById("quiz-kongruenz"), {
@@ -1086,11 +1086,11 @@ function initQuizzes() {
     q: "Welcher Punkt hat von allen drei Seiten des Dreiecks denselben Abstand?",
     options: [
       "der Umkreismittelpunkt",
-      "der Inkreismittelpunkt",
       "der Höhenschnittpunkt",
+      "der Inkreismittelpunkt",
       "der Schwerpunkt",
     ],
-    correct: 1,
+    correct: 2,
     explain: "Der Inkreismittelpunkt ist der Schnittpunkt der Winkelhalbierenden und hat von allen drei Seiten den gleichen Abstand. Der Umkreismittelpunkt hat den gleichen Abstand von allen drei Ecken — Seiten und Ecken nicht verwechseln.",
   });
 }

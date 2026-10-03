@@ -1512,12 +1512,12 @@ function initQuizzes() {
   mountQuiz(document.getElementById("quiz-wachstum"), {
     q: "Eine Tabelle zeigt die Werte 3, 6, 12, 24, 48. Welches Wachstum ist das?",
     options: [
-      "exponentiell — der Quotient ist immer 2",
+      "weder linear noch exponentiell",
       "linear — die Differenz ist immer 3",
       "linear — der Quotient ist immer 2",
-      "weder linear noch exponentiell",
+      "exponentiell — der Quotient ist immer 2",
     ],
-    correct: 0,
+    correct: 3,
     explain: "Die Quotienten sind 6:3 = 2, 12:6 = 2, 24:12 = 2 — konstant. Die Differenzen dagegen sind 3, 6, 12, 24 und wachsen. Konstanter Quotient heißt exponentiell; „linear“ und „Quotient konstant“ passen nie zusammen.",
   });
   mountQuiz(document.getElementById("quiz-funktion"), {
@@ -1528,14 +1528,14 @@ function initQuizzes() {
   });
   mountQuiz(document.getElementById("quiz-prozent"), {
     q: "Ein Preis steigt um 25 %. Welcher Faktor gehört dazu?",
-    options: ["1,25", "0,25", "0,75", "25"],
-    correct: 0,
+    options: ["0,75", "0,25", "1,25", "25"],
+    correct: 2,
     explain: "Zum vollen Preis (100 % = 1) kommen 25 % (= 0,25) dazu: q = 1 + 0,25 = 1,25. Der Faktor 0,75 gehört zu einer Abnahme um 25 %, und 0,25 wäre eine Abnahme um 75 %.",
   });
   mountQuiz(document.getElementById("quiz-zeiten"), {
     q: "Eine Bakterienkultur verdoppelt sich alle 3 Stunden. Wie lange dauert es von 400 auf 3200 Bakterien?",
-    options: ["9 Stunden", "3 Stunden", "8 Stunden", "24 Stunden"],
-    correct: 0,
+    options: ["3 Stunden", "9 Stunden", "8 Stunden", "24 Stunden"],
+    correct: 1,
     explain: "3200 : 400 = 8 = 2³, also sind drei Verdopplungen nötig: 400 → 800 → 1600 → 3200. Bei je 3 Stunden macht das 9 Stunden. Der Anfangswert spielt dabei keine Rolle — von 50 auf 400 dauerte es genauso lange.",
   });
   mountQuiz(document.getElementById("quiz-vergleich"), {
@@ -1551,8 +1551,8 @@ function initQuizzes() {
   });
   mountQuiz(document.getElementById("quiz-anwendungen"), {
     q: "1000 € werden mit 2 % pro Jahr verzinst. Wie viel sind es nach 2 Jahren?",
-    options: ["1040,40 €", "1040,00 €", "1020,00 €", "1400,00 €"],
-    correct: 0,
+    options: ["1400,00 €", "1040,00 €", "1020,00 €", "1040,40 €"],
+    correct: 3,
     explain: "1000 · 1,02² = 1000 · 1,0404 = 1040,40 €. Die 1040,00 € kämen ohne Zinseszins heraus (2 · 20 €); die 40 Cent Unterschied sind die Zinsen auf die Zinsen des ersten Jahres. Bei größeren Zeiträumen wächst dieser Unterschied stark an.",
   });
 }

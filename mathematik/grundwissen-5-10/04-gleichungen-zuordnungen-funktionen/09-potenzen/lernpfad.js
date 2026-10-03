@@ -1576,18 +1576,18 @@ function initQuizzes() {
   mountQuiz(document.getElementById("quiz-begriff"), {
     q: "Welche Aussage über (−3)<sup>4</sup> und −3<sup>4</sup> ist richtig?",
     options: [
-      "(−3)<sup>4</sup> = 81 und −3<sup>4</sup> = −81",
-      "Beide sind 81",
       "Beide sind −81",
+      "Beide sind 81",
+      "(−3)<sup>4</sup> = 81 und −3<sup>4</sup> = −81",
       "(−3)<sup>4</sup> = −81 und −3<sup>4</sup> = 81",
     ],
-    correct: 0,
+    correct: 2,
     explain: "In (−3)⁴ ist die ganze Zahl −3 die Basis; vier Minuszeichen heben sich paarweise auf, das ergibt +81. In −3⁴ gehört das Minus nicht zur Basis: Potenziert wird nur die 3, und das Minus bleibt davor stehen — also −81.",
   });
   mountQuiz(document.getElementById("quiz-gesetze"), {
     q: "Wozu lässt sich a<sup>2</sup> · a<sup>3</sup> zusammenfassen?",
-    options: ["a<sup>5</sup>", "a<sup>6</sup>", "2a<sup>3</sup>", "a<sup>2·3</sup> = a<sup>6</sup>"],
-    correct: 0,
+    options: ["a<sup>6</sup>", "a<sup>5</sup>", "2a<sup>3</sup>", "a<sup>2·3</sup> = a<sup>6</sup>"],
+    correct: 1,
     explain: "Schreibt man die Faktoren hin, so stehen da (a·a)·(a·a·a), also fünf Stück: a⁵. Bei gleicher Basis werden die Exponenten addiert. Multipliziert werden sie nur bei der Potenz einer Potenz: (a²)³ = a⁶.",
   });
   mountQuiz(document.getElementById("quiz-ganzzahlig"), {
@@ -1598,20 +1598,20 @@ function initQuizzes() {
   });
   mountQuiz(document.getElementById("quiz-zehnerpotenzen"), {
     q: "Wie lautet 0,000 45 in wissenschaftlicher Schreibweise?",
-    options: ["4,5 · 10<sup>−4</sup>", "45 · 10<sup>−5</sup>", "4,5 · 10<sup>−3</sup>", "4,5 · 10<sup>4</sup>"],
-    correct: 0,
+    options: ["4,5 · 10<sup>4</sup>", "45 · 10<sup>−5</sup>", "4,5 · 10<sup>−3</sup>", "4,5 · 10<sup>−4</sup>"],
+    correct: 3,
     explain: "Das Komma muss um vier Stellen nach rechts wandern, damit aus 0,000 45 die Zahl 4,5 wird — also ist der Exponent −4. Die Angabe 45 · 10⁻⁵ ist zwar derselbe Wert, aber keine wissenschaftliche Schreibweise: Der Faktor muss zwischen 1 und 10 liegen.",
   });
   mountQuiz(document.getElementById("quiz-potenzfunktionen"), {
     q: "Welcher Graph ist punktsymmetrisch zum Ursprung?",
-    options: ["y = x<sup>5</sup>", "y = x<sup>4</sup>", "y = x<sup>2</sup>", "y = x<sup>6</sup>"],
-    correct: 0,
+    options: ["y = x<sup>4</sup>", "y = x<sup>5</sup>", "y = x<sup>2</sup>", "y = x<sup>6</sup>"],
+    correct: 1,
     explain: "Bei ungeradem Exponenten ist (−1)ⁿ = −1, also f(−x) = −f(x): Der Graph dreht sich um den Ursprung. Bei geradem Exponenten ist (−1)ⁿ = +1, dann ist der Graph achsensymmetrisch zur y-Achse und liegt nie unter der x-Achse.",
   });
   mountQuiz(document.getElementById("quiz-wurzeln"), {
     q: "Wie viele Lösungen hat die Gleichung x<sup>4</sup> = 81?",
-    options: ["zwei: 3 und −3", "eine: 3", "vier", "keine"],
-    correct: 0,
+    options: ["vier", "eine: 3", "zwei: 3 und −3", "keine"],
+    correct: 2,
     explain: "Weil 4 gerade ist, gilt (−3)⁴ = 3⁴ = 81 — es gibt zwei Lösungen. Die Wurzel ⁴√81 ist dagegen als die nicht negative Zahl festgelegt und deshalb nur 3. Gleichung und Wurzel sind hier verschiedene Dinge.",
   });
 }

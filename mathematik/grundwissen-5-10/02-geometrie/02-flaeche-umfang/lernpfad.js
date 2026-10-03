@@ -775,31 +775,31 @@ function initExercises() {
 function initQuizzes() {
   mountQuiz(document.getElementById("quiz-auslegen"), {
     q: "In welcher Einheit wird ein Flächeninhalt angegeben?",
-    options: ["in cm", "in cm²", "in cm³", "das ist beliebig"],
-    correct: 1,
+    options: ["in cm", "in cm³", "in cm²", "das ist beliebig"],
+    correct: 2,
     explain: "Der Flächeninhalt zählt Einheitsquadrate, also cm², m² und so weiter. Der Umfang dagegen ist eine Länge und steht in cm oder m.",
   });
   mountQuiz(document.getElementById("quiz-rechteck"), {
     q: "Ein Quadrat hat die Seitenlänge 5 cm. Wie groß sind Flächeninhalt und Umfang?",
-    options: ["A = 20 cm², u = 25 cm", "A = 25 cm², u = 20 cm", "A = 25 cm², u = 25 cm", "A = 10 cm², u = 20 cm"],
-    correct: 1,
+    options: ["A = 20 cm², u = 25 cm", "A = 25 cm², u = 25 cm", "A = 25 cm², u = 20 cm", "A = 10 cm², u = 20 cm"],
+    correct: 2,
     explain: "A = a² = 5 · 5 = 25 cm². u = 4 · a = 4 · 5 = 20 cm. Die beiden Zahlen sind leicht zu vertauschen — die Einheit hilft: cm² gehört zur Fläche.",
   });
   mountQuiz(document.getElementById("quiz-vergleich"), {
     q: "Zwei Rechtecke haben denselben Umfang. Was folgt daraus für ihren Flächeninhalt?",
     options: [
-      "Er ist ebenfalls gleich",
       "Nichts — er kann sehr verschieden sein; am größten ist er beim quadratischsten Rechteck",
+      "Er ist ebenfalls gleich",
       "Das längere Rechteck hat mehr Fläche",
       "Das lässt sich nur mit dem Satz des Pythagoras entscheiden",
     ],
-    correct: 1,
+    correct: 0,
     explain: "Bei u = 24 cm etwa reicht die Fläche von 11 cm² (1 × 11) bis 36 cm² (6 × 6). Umfang und Flächeninhalt sind unabhängige Größen.",
   });
   mountQuiz(document.getElementById("quiz-einheiten"), {
     q: "Wie viele Quadratzentimeter sind 1 dm²?",
-    options: ["10 cm²", "100 cm²", "1000 cm²", "10 000 cm²"],
-    correct: 1,
+    options: ["10 cm²", "10 000 cm²", "1000 cm²", "100 cm²"],
+    correct: 3,
     explain: "1 dm = 10 cm, und ein Quadrat mit 10 cm Seitenlänge enthält 10 · 10 = 100 cm². Bei Flächen ist jede Stufe 100 groß, nicht 10.",
   });
   mountQuiz(document.getElementById("quiz-zusammengesetzt"), {

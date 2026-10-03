@@ -972,25 +972,25 @@ function initExercises() {
 function initQuizzes() {
   mountQuiz(document.getElementById("quiz-ausfuellen"), {
     q: "In welcher Einheit wird ein Volumen angegeben?",
-    options: ["in cm", "in cm²", "in cm³", "in Liter oder cm² — beides geht"],
-    correct: 2,
+    options: ["in cm", "in cm²", "in Liter oder cm² — beides geht", "in cm³"],
+    correct: 3,
     explain: "Das Volumen zählt Einheitswürfel, also cm³, m³ und so weiter. Liter sind ebenfalls Raumeinheiten (1 l = 1 dm³), cm² dagegen ist eine Flächeneinheit.",
   });
   mountQuiz(document.getElementById("quiz-quader"), {
     q: "Ein Würfel hat die Kantenlänge 4 cm. Wie groß sind Volumen und Oberflächeninhalt?",
-    options: ["V = 12 cm³, O = 16 cm²", "V = 64 cm³, O = 96 cm²", "V = 64 cm³, O = 16 cm²", "V = 16 cm³, O = 64 cm²"],
-    correct: 1,
+    options: ["V = 64 cm³, O = 96 cm²", "V = 12 cm³, O = 16 cm²", "V = 64 cm³, O = 16 cm²", "V = 16 cm³, O = 64 cm²"],
+    correct: 0,
     explain: "V = a³ = 4 · 4 · 4 = 64 cm³ und O = 6 · a² = 6 · 16 = 96 cm². Die 12 cm³ im ersten Vorschlag wären die Kantensumme geteilt durch nichts — 12 · 4 = 48 cm ist die Kantensumme.",
   });
   mountQuiz(document.getElementById("quiz-netz"), {
     q: "Warum steht in O = 2 · (a·b + a·c + b·c) überall der Faktor 2?",
     options: [
       "Weil jede Fläche doppelt gezählt werden muss",
-      "Weil gegenüberliegende Flächen gleich groß sind und es deshalb von jedem der drei Rechtecke genau zwei gibt",
       "Weil der Quader zwei Grundflächen hat",
+      "Weil gegenüberliegende Flächen gleich groß sind und es deshalb von jedem der drei Rechtecke genau zwei gibt",
       "Das ist nur eine Rechenvereinfachung",
     ],
-    correct: 1,
+    correct: 2,
     explain: "Das Netz hat sechs Rechtecke, aber nur drei verschiedene Sorten — Deckel/Boden, vorn/hinten, rechts/links. Jede Sorte kommt genau zweimal vor.",
   });
   mountQuiz(document.getElementById("quiz-vergleich"), {
@@ -1006,19 +1006,19 @@ function initQuizzes() {
   });
   mountQuiz(document.getElementById("quiz-einheiten"), {
     q: "Wie viele Liter sind 2 m³?",
-    options: ["2 l", "200 l", "2000 l", "20 000 l"],
-    correct: 2,
+    options: ["2000 l", "200 l", "2 l", "20 000 l"],
+    correct: 0,
     explain: "1 m³ = 1000 dm³ und 1 dm³ = 1 l, also 1 m³ = 1000 l. Damit sind 2 m³ genau 2000 l.",
   });
   mountQuiz(document.getElementById("quiz-zusammengesetzt"), {
     q: "Ein Körper wird in zwei Quader zerlegt. Was darf man addieren?",
     options: [
       "Volumen und Oberflächen beider Teile",
-      "nur die Volumen — die Oberflächen nicht",
-      "nur die Oberflächen — die Volumen nicht",
       "weder das eine noch das andere",
+      "nur die Oberflächen — die Volumen nicht",
+      "nur die Volumen — die Oberflächen nicht",
     ],
-    correct: 1,
+    correct: 3,
     explain: "Die Volumen ergänzen sich lückenlos. Die Schnittfläche zwischen den Teilen liegt aber innen und gehört gar nicht zur Außenhaut — beim Addieren der Oberflächen würde sie sogar doppelt gezählt.",
   });
 }

@@ -1007,19 +1007,19 @@ function initExercises() {
 function initQuizzes() {
   mountQuiz(document.getElementById("quiz-prisma"), {
     q: "Wie viele Flächen hat ein Prisma mit fünfeckiger Grundfläche?",
-    options: ["5", "7", "10", "6"],
-    correct: 1,
+    options: ["7", "5", "10", "6"],
+    correct: 0,
     explain: "Fünf Seitenflächen bilden den Mantel, dazu kommen Grund- und Deckfläche: 5 + 2 = 7 Flächen.",
   });
   mountQuiz(document.getElementById("quiz-volumen"), {
     q: "Zwei Prismen haben dieselbe Höhe und gleich große Grundflächen, aber ganz verschiedene Grundformen. Was gilt für ihre Volumina?",
     options: [
       "das mit der runderen Grundfläche ist größer",
-      "sie sind gleich groß",
-      "das lässt sich ohne die Seitenlängen nicht sagen",
       "das mit mehr Ecken ist größer",
+      "das lässt sich ohne die Seitenlängen nicht sagen",
+      "sie sind gleich groß",
     ],
-    correct: 1,
+    correct: 3,
     explain: "In V = G · h kommen nur der Flächeninhalt der Grundfläche und die Höhe vor. Die Form der Grundfläche spielt keine Rolle.",
   });
   mountQuiz(document.getElementById("quiz-oberflaeche"), {
@@ -1032,17 +1032,17 @@ function initQuizzes() {
     q: "Warum gilt für den Zylinder dieselbe Formel V = G · h wie für jedes Prisma?",
     options: [
       "das ist Zufall",
-      "weil der Zylinder der Grenzfall eines Prismas mit immer mehr Ecken ist",
       "weil ein Kreis ein Vieleck mit unendlich kurzen Seiten ist und deshalb keine Fläche hat",
+      "weil der Zylinder der Grenzfall eines Prismas mit immer mehr Ecken ist",
       "das gilt gar nicht, der Zylinder hat eine eigene Formel",
     ],
-    correct: 1,
+    correct: 2,
     explain: "Erhöht man die Eckenzahl eines regelmäßigen Prismas, nähert sich die Grundfläche dem Kreis. Die Formel V = G · h bleibt dabei unverändert — man setzt am Ende nur G = π · r² ein.",
   });
   mountQuiz(document.getElementById("quiz-hohlmasse"), {
     q: "Ein Behälter hat das Volumen 5000 cm³. Wie viele Liter sind das?",
-    options: ["500 l", "5 l", "50 l", "5000 l"],
-    correct: 1,
+    options: ["500 l", "50 l", "5 l", "5000 l"],
+    correct: 2,
     explain: "1 Liter = 1 dm³ = 1000 cm³. Also sind 5000 cm³ genau 5 Liter. Bei Raummaßen wird immer durch 1000 geteilt, nicht durch 10 oder 100.",
   });
 }

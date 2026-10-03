@@ -1800,26 +1800,26 @@ function initExercises() {
 function initQuizzes() {
   mountQuiz(document.getElementById("quiz-einheitskreis"), {
     q: "In welchem Quadranten ist sin α negativ und cos α positiv?",
-    options: ["im IV. (270°–360°)", "im II. (90°–180°)", "im III. (180°–270°)", "im I. (0°–90°)"],
-    correct: 0,
+    options: ["im I. (0°–90°)", "im II. (90°–180°)", "im III. (180°–270°)", "im IV. (270°–360°)"],
+    correct: 3,
     explain: "cos α positiv heißt: Der Punkt liegt rechts von der y-Achse. sin α negativ heißt: Er liegt unterhalb der x-Achse. Rechts und unten — das ist genau der IV. Quadrant, zum Beispiel α = 300° mit cos 300° = 0,5 und sin 300° ≈ −0,87.",
   });
   mountQuiz(document.getElementById("quiz-bogenmass"), {
     q: "Welchem Winkel im Gradmaß entspricht das Bogenmaß <sup>3</sup>⁄<sub>4</sub>π?",
-    options: ["135°", "270°", "75°", "240°"],
-    correct: 0,
+    options: ["270°", "135°", "75°", "240°"],
+    correct: 1,
     explain: "π entspricht 180°, also ist ¾π gerade ¾ · 180° = 135°. Die 270° gehören zu 3⁄2π und 240° zu 4⁄3π. Wer 75° tippt, hat 3 und 4 wohl voneinander abgezogen statt sie als Bruch zu lesen.",
   });
   mountQuiz(document.getElementById("quiz-kurven"), {
     q: "Wie viele Lösungen hat die Gleichung sin x = 0,5 im Bereich 0° ≤ x &lt; 360°?",
-    options: ["zwei: 30° und 150°", "eine: 30°", "vier", "keine"],
-    correct: 0,
+    options: ["vier", "eine: 30°", "zwei: 30° und 150°", "keine"],
+    correct: 2,
     explain: "Die waagerechte Gerade y = 0,5 schneidet die Sinuskurve in einer Periode zweimal: einmal beim Steigen (30°) und einmal beim Fallen (150°). Auf dem Einheitskreis sind das die beiden Punkte gleicher Höhe — links und rechts von der y-Achse. Über alle Winkel hinweg gibt es unendlich viele Lösungen, denn nach je 360° wiederholt sich alles.",
   });
   mountQuiz(document.getElementById("quiz-amplitude"), {
     q: "Welche Periode hat f(x) = 3 · sin(4x)?",
-    options: ["90°", "1440°", "360°", "3°"],
-    correct: 0,
+    options: ["360°", "1440°", "90°", "3°"],
+    correct: 2,
     explain: "p = 360° : b = 360° : 4 = 90°. Probe: Bei x = 90° ist das Argument 4 · 90° = 360°, also genau eine volle Schwingung. Die 1440° kämen von 360° · 4 heraus — ein größeres b macht die Periode aber kürzer, nicht länger. Die 3 ist die Amplitude.",
   });
   mountQuiz(document.getElementById("quiz-verschiebung"), {
@@ -1830,8 +1830,8 @@ function initQuizzes() {
   });
   mountQuiz(document.getElementById("quiz-anwendungen"), {
     q: "Ein Riesenrad mit 40 m Durchmesser dreht sich in 300 s einmal. Der tiefste Punkt liegt 2 m über dem Boden. Wie hoch ist die Gondel nach 150 s, wenn sie unten startet?",
-    options: ["42 m", "22 m", "40 m", "20 m"],
-    correct: 0,
+    options: ["20 m", "22 m", "40 m", "42 m"],
+    correct: 3,
     explain: "150 s sind eine halbe Umdrehung — die Gondel steht also ganz oben. Der höchste Punkt liegt 2 m + 40 m = 42 m über dem Boden. Die 22 m wären die Höhe der Achse (nach einer Viertel- oder Dreivierteldrehung), und 40 m wäre der Durchmesser ohne den Bodenabstand.",
   });
 }

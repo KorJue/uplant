@@ -926,30 +926,30 @@ function initExercises() {
 function initQuizzes() {
   mountQuiz(document.getElementById("quiz-parallelogramm"), {
     q: "Ein Parallelogramm hat die Grundseite 6 cm, die Höhe 4 cm und die schräge Seite 5 cm. Wie groß ist die Fläche?",
-    options: ["30 cm²", "24 cm²", "20 cm²", "12 cm²"],
-    correct: 1,
+    options: ["30 cm²", "20 cm²", "24 cm²", "12 cm²"],
+    correct: 2,
     explain: "A = g · h = 6 · 4 = 24 cm². Die schräge Seite von 5 cm gehört nicht in die Formel — mit ihr käme 30 cm² heraus, also zu viel.",
   });
   mountQuiz(document.getElementById("quiz-dreieck"), {
     q: "Zwei Dreiecke haben dieselbe Grundseite und dieselbe Höhe, sehen aber ganz verschieden aus. Was gilt für ihre Flächen?",
     options: [
-      "das spitzere ist kleiner",
       "sie sind gleich groß",
+      "das spitzere ist kleiner",
       "das mit der längeren schrägen Seite ist größer",
       "das lässt sich ohne die Winkel nicht sagen",
     ],
-    correct: 1,
+    correct: 0,
     explain: "In A = ½ · g · h kommen nur g und h vor. Verschiebt man die Spitze parallel zur Grundseite, ändert sich die Form, aber weder g noch h — und damit auch nicht die Fläche.",
   });
   mountQuiz(document.getElementById("quiz-trapez"), {
     q: "Warum steht in der Trapezformel (a + c) und nicht nur a?",
     options: [
       "weil a und c zusammen den Umfang ergeben",
-      "weil die gedrehte Kopie ein Parallelogramm mit der Grundseite a + c ergibt",
-      "weil beide Seiten gleich lang sein müssen",
       "das ist nur eine Rechenvereinfachung",
+      "weil beide Seiten gleich lang sein müssen",
+      "weil die gedrehte Kopie ein Parallelogramm mit der Grundseite a + c ergibt",
     ],
-    correct: 1,
+    correct: 3,
     explain: "Trapez und gedrehte Kopie bilden zusammen ein Parallelogramm mit der Grundseite a + c und derselben Höhe. Das Trapez ist die Hälfte davon: ½ · (a + c) · h.",
   });
   mountQuiz(document.getElementById("quiz-drachen"), {
@@ -962,11 +962,11 @@ function initQuizzes() {
     q: "Setzt man in die Trapezformel c = 0 ein, was ergibt sich?",
     options: [
       "nichts Sinnvolles",
-      "die Formel für das Dreieck, denn ½ · (a + 0) · h = ½ · a · h",
-      "die Formel für das Rechteck",
       "die Formel für den Drachen",
+      "die Formel für das Rechteck",
+      "die Formel für das Dreieck, denn ½ · (a + 0) · h = ½ · a · h",
     ],
-    correct: 1,
+    correct: 3,
     explain: "Ein Trapez, dessen obere Seite zu einem Punkt zusammenschrumpft, ist ein Dreieck. Die Formeln hängen zusammen: Das Dreieck ist der Grenzfall c = 0 des Trapezes.",
   });
 }

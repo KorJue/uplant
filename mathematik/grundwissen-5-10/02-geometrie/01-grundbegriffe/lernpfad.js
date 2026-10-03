@@ -859,11 +859,11 @@ function initQuizzes() {
     q: "Welche Aussage über eine Gerade ist richtig?",
     options: [
       "Eine Gerade hat zwei Endpunkte",
-      "Eine Gerade ist nach beiden Seiten unbegrenzt und hat deshalb keine Länge",
       "Eine Gerade ist genauso lang wie die Strecke zwischen ihren beiden Punkten",
+      "Eine Gerade ist nach beiden Seiten unbegrenzt und hat deshalb keine Länge",
       "Eine Gerade hat einen Anfangspunkt, aber kein Ende",
     ],
-    correct: 1,
+    correct: 2,
     explain: "Nur die Strecke hat zwei Endpunkte und eine Länge. Der Strahl hat einen Anfangspunkt, die Gerade gar keinen.",
   });
   mountQuiz(document.getElementById("quiz-lage"), {
@@ -875,18 +875,18 @@ function initQuizzes() {
   mountQuiz(document.getElementById("quiz-abstand"), {
     q: "Wie bestimmt man den Abstand eines Punktes P von einer Geraden g?",
     options: [
-      "Man misst irgendeine Verbindungsstrecke von P zu g",
       "Man misst die Länge des Lots, also die senkrechte Verbindung",
+      "Man misst irgendeine Verbindungsstrecke von P zu g",
       "Man misst die Strecke von P zum Anfangspunkt von g",
       "Der Abstand ist immer gleich null, wenn P nicht auf g liegt",
     ],
-    correct: 1,
+    correct: 0,
     explain: "Jede schräge Verbindung ist länger. Der Abstand ist immer die kürzeste Verbindung — und die steht senkrecht auf g.",
   });
   mountQuiz(document.getElementById("quiz-koordinaten"), {
     q: "Wo liegt der Punkt P(−4 | 2)?",
-    options: ["im I. Quadranten", "im II. Quadranten", "im III. Quadranten", "im IV. Quadranten"],
-    correct: 1,
+    options: ["im I. Quadranten", "im IV. Quadranten", "im III. Quadranten", "im II. Quadranten"],
+    correct: 3,
     explain: "x = −4 liegt links, y = 2 liegt oben — das ist der II. Quadrant. Zuerst wird immer der x-Wert genannt.",
   });
   mountQuiz(document.getElementById("quiz-winkel"), {
@@ -904,11 +904,11 @@ function initQuizzes() {
     q: "Woran erkennt man eine Punktspiegelung im Unterschied zur Achsenspiegelung?",
     options: [
       "Die Bildfigur ist spiegelverkehrt",
-      "Die Bildfigur ist nur gedreht, nicht spiegelverkehrt — sie entsteht durch Drehung um 180°",
       "Die Bildfigur ist größer als die Urfigur",
+      "Die Bildfigur ist nur gedreht, nicht spiegelverkehrt — sie entsteht durch Drehung um 180°",
       "Es gibt keinen Unterschied",
     ],
-    correct: 1,
+    correct: 2,
     explain: "Eine Punktspiegelung ist eine Drehung um 180° um das Zentrum Z; Z liegt jeweils in der Mitte zwischen Punkt und Bildpunkt. Nur die Achsenspiegelung kehrt den Umlaufsinn um.",
   });
 }

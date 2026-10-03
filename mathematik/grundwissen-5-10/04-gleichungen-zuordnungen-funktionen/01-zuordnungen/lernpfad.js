@@ -1238,33 +1238,33 @@ function initQuizzes() {
     options: [
       "Anzahl der Brötchen ↦ Preis",
       "Schülerin ↦ ihr Geburtstag",
-      "Geburtsmonat ↦ Schülerin einer Klasse",
       "Kantenlänge eines Würfels ↦ sein Volumen",
+      "Geburtsmonat ↦ Schülerin einer Klasse",
     ],
-    correct: 2,
+    correct: 3,
     explain: "Zu einem Geburtsmonat gehören in einer Klasse meist mehrere Schülerinnen — es gingen also mehrere Pfeile von einem Wert aus. Eine Zuordnung verlangt, dass jedem Wert genau ein Wert zugeordnet wird. Umgekehrt geht es: Jede Schülerin hat genau einen Geburtstag.",
   });
   mountQuiz(document.getElementById("quiz-proportional"), {
     q: "7 gleiche Fliesen wiegen 3,5 kg. Wie schwer sind 12 Fliesen?",
-    options: ["6 kg", "8,5 kg", "5,5 kg", "42 kg"],
-    correct: 0,
+    options: ["8,5 kg", "6 kg", "5,5 kg", "42 kg"],
+    correct: 1,
     explain: "Eine Fliese wiegt 3,5 kg : 7 = 0,5 kg, also wiegen 12 Fliesen 12 · 0,5 kg = 6 kg. Die 8,5 kg entstünden, wenn man den Unterschied von 5 Fliesen einfach addierte — bei proportionalen Zuordnungen wird aber vervielfacht.",
   });
   mountQuiz(document.getElementById("quiz-antiproportional"), {
     q: "6 Pumpen leeren ein Becken in 8 Stunden. Wie lange brauchen 4 Pumpen?",
-    options: ["5⅓ Stunden", "12 Stunden", "10 Stunden", "6 Stunden"],
-    correct: 1,
+    options: ["5⅓ Stunden", "6 Stunden", "10 Stunden", "12 Stunden"],
+    correct: 3,
     explain: "Das Produkt bleibt gleich: 6 · 8 = 48 Pumpenstunden. Mit 4 Pumpen sind es 48 : 4 = 12 Stunden. Weniger Pumpen bedeutet mehr Zeit — wer 5⅓ herausbekommt, hat proportional gerechnet.",
   });
   mountQuiz(document.getElementById("quiz-dreisatz"), {
     q: "Beim antiproportionalen Dreisatz — was passiert im mittleren Schritt auf der rechten Seite?",
     options: [
-      "dasselbe wie links: geteilt",
       "das Gegenteil: multipliziert",
+      "dasselbe wie links: geteilt",
       "gar nichts, die rechte Seite bleibt",
       "sie wird quadriert",
     ],
-    correct: 1,
+    correct: 0,
     explain: "Links wird auf eine Einheit heruntergerechnet (geteilt), rechts muss deshalb multipliziert werden — sonst bliebe das Produkt x · y nicht konstant. Genau darin unterscheidet sich der antiproportionale vom proportionalen Dreisatz.",
   });
   mountQuiz(document.getElementById("quiz-weder"), {

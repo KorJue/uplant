@@ -1334,23 +1334,23 @@ function initQuizzes() {
     q: "Welche der folgenden Zuordnungen ist <em>keine</em> Funktion?",
     options: [
       "jedem x seine Quadratzahl x²",
-      "jeder Zahl x ihr Doppeltes",
       "jedem x alle Zahlen y mit x² + y² = 25",
+      "jeder Zahl x ihr Doppeltes",
       "jedem x die Zahl 7",
     ],
-    correct: 2,
+    correct: 1,
     explain: "Der Kreis ordnet x = 3 gleich zwei Werte zu, nämlich 4 und −4 — die Bedingung „genau ein y“ ist verletzt. Bei x² ist es umgekehrt: Zwei verschiedene x haben denselben Wert, und das ist erlaubt. Auch die konstante Zuordnung x ↦ 7 ist eine Funktion.",
   });
   mountQuiz(document.getElementById("quiz-gerade"), {
     q: "Welche Gerade hat die Steigung −3 und den y-Achsenabschnitt 2?",
-    options: ["y = −3x + 2", "y = 2x − 3", "y = 3x − 2", "y = −2x + 3"],
-    correct: 0,
+    options: ["y = 3x − 2", "y = 2x − 3", "y = −3x + 2", "y = −2x + 3"],
+    correct: 2,
     explain: "In y = m · x + b steht die Steigung als Faktor <em>vor dem x</em> und der y-Achsenabschnitt als Summand dahinter. m = −3 bedeutet: ein Schritt nach rechts, drei nach unten. b = 2 heißt, dass die Gerade die y-Achse bei 2 schneidet.",
   });
   mountQuiz(document.getElementById("quiz-steigung"), {
     q: "Eine Gerade geht durch P(2 | 1) und Q(6 | 9). Wie groß ist ihre Steigung?",
-    options: ["2", "0,5", "8", "4"],
-    correct: 0,
+    options: ["8", "0,5", "2", "4"],
+    correct: 2,
     explain: "Δy = 9 − 1 = 8 und Δx = 6 − 2 = 4, also m = 8 : 4 = 2. Die 0,5 entsteht, wenn man den Bruch umdreht; die 8 ist nur Δy, die 4 nur Δx.",
   });
   mountQuiz(document.getElementById("quiz-aufstellen"), {
@@ -1362,12 +1362,12 @@ function initQuizzes() {
   mountQuiz(document.getElementById("quiz-schnitt"), {
     q: "Warum haben g(x) = 2x + 1 und h(x) = 2x − 4 keinen Schnittpunkt?",
     options: [
-      "weil ihre Steigungen gleich sind, die Achsenabschnitte aber nicht",
+      "weil die Steigung 2 zu groß ist",
       "weil beide Steigungen positiv sind",
       "weil ihre y-Achsenabschnitte verschiedene Vorzeichen haben",
-      "weil die Steigung 2 zu groß ist",
+      "weil ihre Steigungen gleich sind, die Achsenabschnitte aber nicht",
     ],
-    correct: 0,
+    correct: 3,
     explain: "Setzt man gleich, so fällt das x heraus: 2x + 1 = 2x − 4 wird zu 1 = −4, einer falschen Aussage. Gleiche Steigung heißt parallel; verschiedene Achsenabschnitte heißen, dass die Geraden nicht aufeinanderliegen. Sie haben überall den senkrechten Abstand 5.",
   });
 }

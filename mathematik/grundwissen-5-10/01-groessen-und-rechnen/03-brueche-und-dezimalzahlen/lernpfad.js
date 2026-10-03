@@ -1026,44 +1026,44 @@ function initQuizzes() {
     q: "Was passiert mit dem Wert eines Bruchs, wenn man ihn kürzt?",
     options: [
       "Er wird kleiner",
-      "Er bleibt gleich — nur die Schreibweise wird kürzer",
       "Er wird größer",
+      "Er bleibt gleich — nur die Schreibweise wird kürzer",
       "Das hängt davon ab, womit man kürzt",
     ],
-    correct: 1,
+    correct: 2,
     explain: "Kürzen teilt Zähler und Nenner durch dieselbe Zahl. Der Anteil bleibt derselbe, er wird nur gröber eingeteilt aufgeschrieben.",
   });
   mountQuiz(document.getElementById("quiz-vergleichen"), {
     q: "Welcher Bruch ist größer: ein Drittel oder ein Fünftel?",
     options: [
       "Ein Fünftel, weil 5 größer als 3 ist",
-      "Ein Drittel, weil das Ganze in weniger und damit größere Teile zerlegt wird",
       "Beide sind gleich groß",
+      "Ein Drittel, weil das Ganze in weniger und damit größere Teile zerlegt wird",
       "Das lässt sich ohne Taschenrechner nicht entscheiden",
     ],
-    correct: 1,
+    correct: 2,
     explain: "Je größer der Nenner, desto kleiner die einzelnen Teile. Auf den Hauptnenner 15 gebracht: 5/15 gegen 3/15.",
   });
   mountQuiz(document.getElementById("quiz-gemischt"), {
     q: "Wie wandelt man den unechten Bruch 17/5 in eine gemischte Zahl um?",
     options: [
-      "17 − 5 = 12, also 12 Ganze und Rest 5",
       "Division mit Rest: 17 : 5 = 3 Rest 2, also 3 und 2/5",
+      "17 − 5 = 12, also 12 Ganze und Rest 5",
       "Man kürzt 17/5 vollständig",
       "17 + 5 = 22, also 22/5",
     ],
-    correct: 1,
+    correct: 0,
     explain: "Der Quotient wird die ganze Zahl, der Rest der neue Zähler, der Nenner bleibt unverändert.",
   });
   mountQuiz(document.getElementById("quiz-dezimal"), {
     q: "Welche Zahl ist größer: 0,5 oder 0,45?",
     options: [
       "0,45, weil 45 größer als 5 ist",
-      "0,5, denn 0,5 = 0,50 und 50 Hundertstel sind mehr als 45 Hundertstel",
-      "Beide sind gleich groß",
       "0,45, weil sie mehr Stellen hat",
+      "Beide sind gleich groß",
+      "0,5, denn 0,5 = 0,50 und 50 Hundertstel sind mehr als 45 Hundertstel",
     ],
-    correct: 1,
+    correct: 3,
     explain: "Nachkommastellen sind keine eigene Zahl. Gleich lang machen (0,50 gegen 0,45) macht den Vergleich eindeutig.",
   });
   mountQuiz(document.getElementById("quiz-umwandeln"), {
@@ -1079,8 +1079,8 @@ function initQuizzes() {
   });
   mountQuiz(document.getElementById("quiz-runden"), {
     q: "Was ergibt 2,97 gerundet auf Zehntel?",
-    options: ["2,9", "2,10", "3,0", "3"],
-    correct: 2,
+    options: ["2,9", "2,10", "3", "3,0"],
+    correct: 3,
     explain: "Die Hundertstelziffer 7 führt zum Aufrunden. Dabei entsteht ein Übertrag: 2,9 + 0,1 = 3,0. Die Null bleibt stehen, weil auf Zehntel gerundet wurde.",
   });
 }

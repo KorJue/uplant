@@ -1540,18 +1540,18 @@ function initQuizzes() {
   mountQuiz(document.getElementById("quiz-verhaeltnisse"), {
     q: "Ein rechtwinkliges Dreieck wird auf das Dreifache vergrößert. Was passiert mit sin α?",
     options: [
-      "sin α bleibt gleich",
-      "sin α wird dreimal so groß",
       "sin α wird ein Drittel so groß",
+      "sin α wird dreimal so groß",
+      "sin α bleibt gleich",
       "sin α wird neunmal so groß",
     ],
-    correct: 0,
+    correct: 2,
     explain: "Beim Vergrößern werden Gegenkathete und Hypotenuse mit demselben Faktor multipliziert; im Quotienten kürzt er sich weg: (3a) : (3c) = a : c. Genau deshalb hängt sin α allein vom Winkel ab — das ist der Grund, warum es überhaupt eine Sinustabelle geben kann.",
   });
   mountQuiz(document.getElementById("quiz-seiten"), {
     q: "Gegeben sind α und die Ankathete b. Gesucht ist die Hypotenuse c. Welche Rechnung stimmt?",
-    options: ["c = b : cos α", "c = b · cos α", "c = b : sin α", "c = b · tan α"],
-    correct: 0,
+    options: ["c = b : sin α", "c = b · cos α", "c = b : cos α", "c = b · tan α"],
+    correct: 2,
     explain: "In cos α = b : c kommen genau die gegebene und die gesuchte Seite vor. Die gesuchte Seite c steht im Nenner — also wird durch cos α geteilt. Eine Kontrolle: cos α ist kleiner als 1, und beim Teilen durch eine Zahl unter 1 wird das Ergebnis größer. Die Hypotenuse muss ja länger sein als die Kathete.",
   });
   mountQuiz(document.getElementById("quiz-winkel"), {
@@ -1562,25 +1562,25 @@ function initQuizzes() {
   });
   mountQuiz(document.getElementById("quiz-besondere"), {
     q: "Wie groß ist cos 60°?",
-    options: ["0,5", "√3 : 2 ≈ 0,87", "√2 : 2 ≈ 0,71", "2"],
-    correct: 0,
+    options: ["2", "√3 : 2 ≈ 0,87", "√2 : 2 ≈ 0,71", "0,5"],
+    correct: 3,
     explain: "Im halbierten gleichseitigen Dreieck mit der Seite 2 ist die Ankathete zu 60° genau 1 und die Hypotenuse 2, also cos 60° = 1 : 2 = 0,5. Der Wert √3 : 2 gehört zu sin 60° beziehungsweise cos 30°. Und größer als 1 kann ein Kosinus nie werden, denn die Kathete ist nie länger als die Hypotenuse.",
   });
   mountQuiz(document.getElementById("quiz-einheitskreis"), {
     q: "Welche Vorzeichen haben sin α und cos α für α = 150°?",
     options: [
-      "sin > 0 und cos < 0",
       "sin < 0 und cos > 0",
+      "sin > 0 und cos < 0",
       "beide negativ",
       "beide positiv",
     ],
-    correct: 0,
+    correct: 1,
     explain: "150° liegt im zweiten Quadranten: links oben. Die Höhe des Punktes ist positiv (sin 150° = 0,5), seine Breite negativ (cos 150° ≈ −0,87). Merkhilfe: sin ist die Höhe, cos die Breite — man sieht die Vorzeichen dem Bild direkt an.",
   });
   mountQuiz(document.getElementById("quiz-anwendungen"), {
     q: "Eine Straße hat 10 % Steigung. Welcher Winkel gehört dazu?",
-    options: ["etwa 5,7°", "10°", "etwa 45°", "etwa 84°"],
-    correct: 0,
+    options: ["etwa 84°", "10°", "etwa 45°", "etwa 5,7°"],
+    correct: 3,
     explain: "10 % bedeutet 10 m Höhe auf 100 m waagerechte Strecke, also tan α = 0,1 und α = tan⁻¹(0,1) ≈ 5,7°. Prozent und Grad sind nicht dasselbe: 100 % Steigung wären erst 45°.",
   });
 }

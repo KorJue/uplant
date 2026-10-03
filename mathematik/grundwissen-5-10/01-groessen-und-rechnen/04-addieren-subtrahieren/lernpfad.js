@@ -878,33 +878,33 @@ function initQuizzes() {
     q: "Was ist der erste Schritt bei 1/2 + 1/3?",
     options: [
       "Zähler und Nenner jeweils addieren",
-      "Beide Brüche auf den Hauptnenner 6 erweitern",
-      "Beide Brüche kürzen",
       "Die Brüche in Dezimalzahlen umwandeln, anders geht es nicht",
+      "Beide Brüche kürzen",
+      "Beide Brüche auf den Hauptnenner 6 erweitern",
     ],
-    correct: 1,
+    correct: 3,
     explain: "Erst gleichnamig machen: 1/2 = 3/6 und 1/3 = 2/6. Dann 3/6 + 2/6 = 5/6.",
   });
   mountQuiz(document.getElementById("quiz-gemischt"), {
     q: "Warum ist 3¼ − 1¾ nicht einfach „2 minus ein halbes“?",
     options: [
-      "Weil man gemischte Zahlen gar nicht subtrahieren darf",
       "Weil ein Viertel kleiner als drei Viertel ist — man muss erst ein Ganzes zerlegen",
+      "Weil man gemischte Zahlen gar nicht subtrahieren darf",
       "Weil die Nenner verschieden sind",
       "Der Ansatz ist völlig richtig",
     ],
-    correct: 1,
+    correct: 0,
     explain: "Der Bruchteil reicht nicht aus. Man zerlegt ein Ganzes: 3¼ = 2⁵⁄₄, dann 2⁵⁄₄ − 1¾ = 1½.",
   });
   mountQuiz(document.getElementById("quiz-dezimal"), {
     q: "Wie schreibt man 2,5 + 0,25 für die schriftliche Addition untereinander?",
     options: [
       "Rechtsbündig, wie bei natürlichen Zahlen",
-      "Komma unter Komma, 2,5 wird zu 2,50 aufgefüllt",
       "Linksbündig",
+      "Komma unter Komma, 2,5 wird zu 2,50 aufgefüllt",
       "Das ist egal, das Ergebnis wird gleich",
     ],
-    correct: 1,
+    correct: 2,
     explain: "Nur bei Komma unter Komma stehen gleiche Stellenwerte übereinander. Rechtsbündig stünde ein Zehntel über einem Hundertstel.",
   });
   mountQuiz(document.getElementById("quiz-kontrolle"), {

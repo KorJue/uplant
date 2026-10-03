@@ -699,26 +699,26 @@ function initExercises() {
 function initQuizzes() {
   mountQuiz(document.getElementById("quiz-stellenwertsystem"), {
     q: "Welchen Stellenwert hat die Ziffer 7 in der Zahl 4708?",
-    options: ["Zehner", "Hunderter", "Tausender", "Einer"],
-    correct: 1,
+    options: ["Zehner", "Tausender", "Hunderter", "Einer"],
+    correct: 2,
     explain: "4708 = 4 Tausender, 7 Hunderter, 0 Zehner, 8 Einer.",
   });
   mountQuiz(document.getElementById("quiz-runden"), {
     q: "Welche Ziffer entscheidet beim Runden auf Hunderter, ob auf- oder abgerundet wird?",
-    options: ["Die Einerziffer", "Die Zehnerziffer", "Die Hunderterziffer selbst", "Die Tausenderziffer"],
-    correct: 1,
+    options: ["Die Zehnerziffer", "Die Einerziffer", "Die Hunderterziffer selbst", "Die Tausenderziffer"],
+    correct: 0,
     explain: "Man schaut immer auf die Ziffer direkt rechts neben der Rundungsstelle — bei Hunderter-Rundung ist das die Zehnerziffer.",
   });
   mountQuiz(document.getElementById("quiz-zahlenstrahl"), {
     q: "Auf dem Zahlenstrahl steht 45 links von 76. Welche Aussage stimmt?",
-    options: ["45 > 76", "45 < 76", "45 = 76", "Man kann es nicht sagen"],
-    correct: 1,
+    options: ["45 > 76", "Man kann es nicht sagen", "45 = 76", "45 < 76"],
+    correct: 3,
     explain: "Auf dem Zahlenstrahl wachsen die Zahlen nach rechts. Was weiter links steht, ist also kleiner: 45 < 76. Das Zeichen < zeigt dabei immer zur kleineren Zahl. Gleich sind zwei Zahlen nur, wenn sie an derselben Stelle stehen — hier liegen sie sichtbar auseinander.",
   });
   mountQuiz(document.getElementById("quiz-groessen"), {
     q: "Du rechnest 3,4 m in cm um. Was musst du tun?",
-    options: ["Mit 100 multiplizieren", "Durch 100 dividieren", "Mit 10 multiplizieren", "Durch 1000 dividieren"],
-    correct: 0,
+    options: ["Durch 100 dividieren", "Mit 100 multiplizieren", "Mit 10 multiplizieren", "Durch 1000 dividieren"],
+    correct: 1,
     explain: "cm ist die kleinere Einheit (1 m = 100 cm) — beim Umrechnen in eine kleinere Einheit wird multipliziert.",
   });
 }

@@ -91,6 +91,9 @@ async function pruefeRegler(page, thema) {
 
 async function pruefeQuizze(page, thema) {
   const ids = await page.evaluate(() => [...document.querySelectorAll(".quiz")].map((e) => e.id));
+  // An welcher Stelle die richtige Antwort steht — sie darf nicht immer dieselbe sein, sonst
+  // lässt sich die Seite durchklicken, ohne eine Frage zu lesen.
+  const stellen = [];
   for (const id of ids) {
     const n = await page.locator(`#${id} .quiz-opt`).count();
     b.pruefe(n === 4, `${thema}/${id}: ${n} Antwortmöglichkeiten statt 4`);
@@ -101,13 +104,16 @@ async function pruefeQuizze(page, thema) {
       await page.locator(`#${id} .quiz-opt`).nth(i).click();
       for (const s of page.stoerungen) b.pruefe(false, `${thema}/${id}: ${s}`);
       const rueck = (await page.locator(`#${id} .quiz-feedback`).innerText()).replace(/\s+/g, " ").trim();
-      if (rueck.startsWith("✓")) richtige++;
+      if (rueck.startsWith("✓")) { richtige++; stellen.push(i); }
       else b.pruefe(rueck.startsWith("✗"), `${thema}/${id}: unklare Rückmeldung „${rueck.slice(0, 40)}“`);
       b.pruefe(rueck.length > 40, `${thema}/${id}: Erklärung zu Antwort ${i + 1} ist zu knapp (${rueck.length} Zeichen)`);
     }
     b.pruefe(richtige === 1, `${thema}/${id}: ${richtige} der vier Antworten gelten als richtig`);
   }
   b.pruefe(ids.length >= 3, `${thema}: nur ${ids.length} Kontrollfragen`);
+  const haeufigste = Math.max(0, ...[0, 1, 2, 3].map((i) => stellen.filter((x) => x === i).length));
+  b.pruefe(new Set(stellen).size >= Math.min(3, stellen.length) && haeufigste <= Math.ceil(stellen.length / 2),
+    `${thema}: die richtige Antwort steht zu oft an derselben Stelle (${stellen.map((i) => i + 1).join(", ")})`);
 }
 
 const STUFEN = ["einfach", "mittel", "schwierig", "komplex"];

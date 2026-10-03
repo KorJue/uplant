@@ -899,20 +899,20 @@ function initExercises() {
 function initQuizzes() {
   mountQuiz(document.getElementById("quiz-kreis"), {
     q: "Eine Gerade berührt einen Kreis in genau einem Punkt. Wie heißt sie?",
-    options: ["Sehne", "Sekante", "Tangente", "Durchmesser"],
-    correct: 2,
+    options: ["Sehne", "Sekante", "Durchmesser", "Tangente"],
+    correct: 3,
     explain: "Die Tangente berührt in genau einem Punkt und steht dort senkrecht auf dem Radius. Eine Sekante schneidet in zwei Punkten, eine Sehne ist die Strecke dazwischen.",
   });
   mountQuiz(document.getElementById("quiz-winkel"), {
     q: "Wie groß ist ein stumpfer Winkel?",
-    options: ["kleiner als 90°", "genau 90°", "zwischen 90° und 180°", "größer als 180°"],
-    correct: 2,
+    options: ["kleiner als 90°", "zwischen 90° und 180°", "genau 90°", "größer als 180°"],
+    correct: 1,
     explain: "Spitz ist kleiner als 90°, rechter Winkel genau 90°, stumpf zwischen 90° und 180°, gestreckt genau 180° und überstumpf zwischen 180° und 360°.",
   });
   mountQuiz(document.getElementById("quiz-messen"), {
     q: "Beim Messen zeigt die eine Skala 130°, die andere 50°. Der Winkel sieht spitz aus. Wie groß ist er?",
-    options: ["130°", "50°", "180°", "80°"],
-    correct: 1,
+    options: ["130°", "180°", "50°", "80°"],
+    correct: 2,
     explain: "Ein spitzer Winkel ist kleiner als 90°, also gilt die Ablesung 50°. Die beiden Skalen ergänzen sich immer zu 180° — 130° + 50° = 180°.",
   });
   mountQuiz(document.getElementById("quiz-kreisdiagramm"), {
