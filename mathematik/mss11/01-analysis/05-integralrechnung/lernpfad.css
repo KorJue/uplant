@@ -1,0 +1,659 @@
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  margin-bottom: 1.5rem;
+}
+.card h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+.card h3 {
+  font-size: 1.05rem;
+  margin: 1.5rem 0 0.6rem;
+  color: var(--accent-dark);
+}
+.card h3:first-of-type { margin-top: 0.5rem; }
+
+.lern-intro-list {
+  margin: 0.75rem 0 0;
+  padding-left: 1.3rem;
+}
+.lern-intro-list li { margin-bottom: 0.3rem; }
+
+.term {
+  font-weight: 700;
+  color: var(--accent-dark);
+}
+
+.hinweis-box {
+  background: var(--bg);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin: 0.9rem 0;
+  font-size: 0.92rem;
+}
+
+/* ---------- Widget-Rahmen ---------- */
+
+.widget {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 1rem 0;
+  background: var(--bg);
+}
+.widget-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.widget-col { flex: 1 1 260px; min-width: 240px; }
+
+.btn {
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  font-family: inherit;
+}
+.btn:hover { border-color: var(--accent); }
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--accent-dark); }
+.btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.75rem 0; }
+
+/* ---------- Ergebnisanzeige ---------- */
+
+.event-result {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+  margin-top: 0.5rem;
+  font-family: "Cambria Math", Cambria, serif;
+}
+
+/* ---------- Quiz ---------- */
+
+.quiz {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1.1rem 0 0.5rem;
+}
+.quiz-q { font-weight: 700; margin: 0 0 0.6rem; }
+.quiz-options { display: flex; flex-direction: column; gap: 0.5rem; }
+.quiz-opt {
+  text-align: left;
+  padding: 0.55rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.94rem;
+}
+.quiz-opt:hover { border-color: var(--accent); }
+.quiz-opt.correct { border-color: #157347; background: #e7f6ec; color: #157347; font-weight: 700; }
+.quiz-opt.wrong { border-color: #b3261e; background: #fdecec; color: #b3261e; font-weight: 700; }
+:root[data-theme="dark"] .quiz-opt.correct { background: #17321f; color: #6fd68f; border-color: #6fd68f; }
+:root[data-theme="dark"] .quiz-opt.wrong { background: #3a1f1f; color: #ff8a8a; border-color: #ff8a8a; }
+.quiz-feedback { margin-top: 0.6rem; font-size: 0.9rem; }
+.quiz-feedback.ok { color: #157347; }
+.quiz-feedback.err { color: #b3261e; }
+:root[data-theme="dark"] .quiz-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .quiz-feedback.err { color: #ff8a8a; }
+
+/* ---------- Übungsaufgaben ---------- */
+
+.exercise {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1rem 0;
+}
+.exercise h3 { margin-top: 0; }
+.exercise-input-row { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; margin-top: 0.6rem; }
+.exercise-input-row input {
+  width: 11rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: var(--card-bg);
+  color: var(--text);
+}
+.exercise-feedback { margin-top: 0.6rem; font-size: 0.92rem; font-weight: 600; }
+.exercise-feedback.ok { color: #157347; }
+.exercise-feedback.err { color: #b3261e; }
+:root[data-theme="dark"] .exercise-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .exercise-feedback.err { color: #ff8a8a; }
+
+.formula-block {
+  font-family: "Cambria Math", Cambria, "STIX Two Math", serif;
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  margin: 0.5rem 0;
+  overflow-x: auto;
+}
+
+.progress-note {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+
+/* ---------- Definition / Wissen / Beispiel — farbige Merkboxen wie im Lehrbuch ---------- */
+
+.definition-box, .wissen-box, .beispiel-box {
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin: 0.9rem 0;
+}
+.definition-box .box-label, .wissen-box .box-label, .beispiel-box .box-label {
+  display: block;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+.definition-box, .wissen-box {
+  background: #fdecec;
+  border-left: 4px solid #b3261e;
+}
+.definition-box .box-label, .wissen-box .box-label { color: #b3261e; }
+:root[data-theme="dark"] .definition-box, :root[data-theme="dark"] .wissen-box { background: #3a1f1f; }
+:root[data-theme="dark"] .definition-box .box-label, :root[data-theme="dark"] .wissen-box .box-label { color: #ff8a8a; }
+.beispiel-box {
+  background: #e7f6ec;
+  border-left: 4px solid #157347;
+}
+.beispiel-box .box-label { color: #157347; }
+:root[data-theme="dark"] .beispiel-box { background: #17321f; }
+:root[data-theme="dark"] .beispiel-box .box-label { color: #6fd68f; }
+
+/* ---------- Gestaffelte Übungsaufgaben (Reiter Mittel/Schwierig/Komplex) ---------- */
+
+.schwierigkeit-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  margin-left: 0.6rem;
+  vertical-align: middle;
+}
+.schwierigkeit-badge.einfach { background: #e7f6ec; color: #157347; }
+.schwierigkeit-badge.mittel { background: #eef2ff; color: #1d4ed8; }
+.schwierigkeit-badge.schwierig { background: #fff4e0; color: #b3650a; }
+.schwierigkeit-badge.komplex { background: #fdecec; color: #b3261e; }
+:root[data-theme="dark"] .schwierigkeit-badge.einfach { background: #17321f; color: #6fd68f; }
+:root[data-theme="dark"] .schwierigkeit-badge.mittel { background: #1e2a4a; color: #93a9ff; }
+:root[data-theme="dark"] .schwierigkeit-badge.schwierig { background: #3a2a10; color: #ffbf6e; }
+:root[data-theme="dark"] .schwierigkeit-badge.komplex { background: #3a1f1f; color: #ff8a8a; }
+
+.schwierigkeit-tabs { display: flex; gap: 0.4rem; margin: 1rem 0 0; flex-wrap: wrap; }
+.schwierigkeit-tabs button {
+  padding: 0.5rem 1rem;
+  border-radius: 8px 8px 0 0;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+.schwierigkeit-tabs button.active { background: var(--card-bg); color: var(--text); border-color: var(--accent); }
+.schwierigkeit-tab-panel { border: 1px solid var(--border); border-radius: 0 10px 10px 10px; padding: 0; margin-bottom: 1rem; }
+.schwierigkeit-tab-panel .aufgabe-box { border: none; margin: 0; }
+
+.aufgabe-box {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1rem 0;
+}
+.aufgabe-box h3 { margin: 0 0 0.5rem; display: flex; align-items: center; flex-wrap: wrap; }
+.aufgabe-box .aufgabe-prompt { margin: 0.5rem 0; }
+.aufgabe-box .btn-row { margin-top: 0.5rem; }
+.aufgabe-feedback { margin-top: 0.7rem; font-size: 0.92rem; }
+.aufgabe-feedback .status { font-weight: 700; margin-bottom: 0.3rem; }
+.aufgabe-feedback .status.ok { color: #157347; }
+.aufgabe-feedback .status.err { color: #b3261e; }
+:root[data-theme="dark"] .aufgabe-feedback .status.ok { color: #6fd68f; }
+:root[data-theme="dark"] .aufgabe-feedback .status.err { color: #ff8a8a; }
+.musterloesung {
+  background: var(--bg);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.7rem 0.9rem;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.musterloesung .ml-label { font-weight: 700; color: var(--accent-dark); display: block; margin-bottom: 0.3rem; }
+
+/* ---------- Achtung-Box: typische Fehlvorstellungen ---------- */
+
+.achtung-box {
+  background: #fff4e0;
+  border-left: 4px solid #b3650a;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin: 0.9rem 0;
+}
+.achtung-box .box-label {
+  display: block;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+  color: #b3650a;
+}
+:root[data-theme="dark"] .achtung-box { background: #3a2a10; }
+:root[data-theme="dark"] .achtung-box .box-label { color: #ffbf6e; }
+
+/* ---------- Innermathematische Vernetzung ---------- */
+
+.vernetzung-liste { list-style: none; padding: 0; margin: 0.75rem 0 0; }
+.vernetzung-liste li {
+  padding: 0.6rem 0.85rem;
+  border-left: 3px solid var(--accent);
+  background: var(--bg);
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 0.5rem;
+  font-size: 0.94rem;
+}
+.vernetzung-liste a { font-weight: 700; }
+
+
+
+/* ---------- Zeichenfläche ---------- */
+
+.geo-wrap { display: flex; justify-content: center; margin: 1rem 0; overflow-x: auto; }
+.geo-svg { max-width: 100%; height: auto; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; }
+
+
+
+
+/* ================= Bausteine aus MSS 13 ================= */
+
+.th-bilanz {
+  font-size: 0.94rem;
+  line-height: 1.75;
+  margin-top: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  background: var(--card-bg);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  overflow-x: auto;
+}
+.th-bilanz .wa { color: #157347; font-weight: 700; }
+.th-bilanz .wb { color: #b3650a; font-weight: 700; }
+.th-bilanz .wc { color: #1d4ed8; font-weight: 700; }
+.th-bilanz .wr { color: #6d28d9; font-weight: 700; }
+.th-bilanz .wg { color: #b3261e; font-weight: 700; }
+:root[data-theme="dark"] .th-bilanz .wa { color: #6fd68f; }
+:root[data-theme="dark"] .th-bilanz .wb { color: #ffbf6e; }
+:root[data-theme="dark"] .th-bilanz .wc { color: #8ab4ff; }
+:root[data-theme="dark"] .th-bilanz .wr { color: #c4a7ff; }
+:root[data-theme="dark"] .th-bilanz .wg { color: #ff8a8a; }
+
+/* Echte Brüche und Binomialkoeffizienten: Zähler über Nenner, „n über k“ in Klammern. */
+.bruch {
+  display: inline-flex; flex-direction: column; align-items: center;
+  vertical-align: middle; line-height: 1.15; margin: 0 0.1em; text-align: center;
+}
+.bruch .z { padding: 0 0.3em; border-bottom: 1.5px solid currentColor; }
+.bruch .n { padding: 0 0.3em; }
+.binom {
+  display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+  vertical-align: middle; line-height: 1.1; padding: 0 0.35em; margin: 0 0.1em;
+  border-left: 1.5px solid currentColor; border-right: 1.5px solid currentColor;
+  border-radius: 45% / 50%; font-size: 0.92em;
+}
+.binom.gross, .bruch.gross { font-size: 1.12em; font-weight: 700; }
+.nw { white-space: nowrap; }
+
+/* Zwei Schreibweisen nebeneinander */
+.notation-box {
+  margin: 1rem 0; padding: 0.8rem 1rem; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--bg);
+}
+.notation-box .box-label {
+  display: block; font-size: 0.78rem; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.05em; color: var(--accent-dark); margin-bottom: 0.4rem;
+}
+.bk-notation { width: 100%; border-collapse: collapse; margin-top: 0.6rem; font-size: 0.92rem; }
+.bk-notation th, .bk-notation td { border: 1px solid var(--border); padding: 0.35rem 0.55rem; text-align: left; }
+.bk-notation th { background: var(--card-bg); }
+
+/* Zwei Darstellungen nebeneinander, auf schmalen Schirmen untereinander */
+.bk-zwei { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; align-items: flex-start; }
+.bk-zwei > * { flex: 1 1 300px; min-width: 0; }
+.bk-rest { align-self: center; color: var(--muted); font-weight: 700; }
+
+
+/* Selbsteinschätzung */
+.se-zeile {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; justify-content: space-between;
+  padding: 0.45rem 0.2rem; border-bottom: 1px solid var(--border);
+}
+.se-text { flex: 1 1 18rem; }
+.se-knoepfe { display: flex; gap: 0.3rem; }
+.se-knoepfe button {
+  font-size: 1.15rem; padding: 0.2rem 0.5rem; border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--card-bg); color: var(--text);
+}
+.se-knoepfe button[aria-pressed="true"] { border-color: var(--accent); background: var(--bg); box-shadow: 0 0 0 2px var(--accent) inset; }
+
+
+/* ================= MSS 11, Analysis: gemeinsame Zeichenbausteine ================= */
+
+/* Farbcodierung wie auf den Geometrieseiten: Folge/Graph blau, Grenzwert und Schranken violett,
+   Glieder im Streifen und Summen grün, Kopie, Verschiebung und Gegenstück orange, Ausreißer rot,
+   Hilfslinien grau. */
+
+.fr-achse { stroke: var(--text); stroke-width: 1.2; }
+.fr-gitter { stroke: var(--border); stroke-width: 1; }
+.fr-text { font-size: 11px; fill: var(--muted); font-variant-numeric: tabular-nums; }
+.fr-text-stark { font-size: 12px; font-weight: 800; fill: var(--text); }
+.fr-punkt { fill: #1d4ed8; }
+.fr-punkt.aktiv { fill: #157347; stroke: #157347; stroke-width: 3; }
+.fr-punkt.draussen { fill: #b3261e; }
+.fr-punkt.duenn { fill-opacity: 0.3; }
+.fr-punkt.drin { fill: #157347; }
+.fr-linie { fill: none; stroke: #1d4ed8; stroke-width: 2; }
+.fr-linie.duenn { stroke-width: 1.2; stroke-dasharray: 4 3; }
+.fr-grenze { stroke: #6d28d9; stroke-width: 2; stroke-dasharray: 7 4; }
+.fr-grenze-text { font-size: 12px; font-weight: 800; fill: #6d28d9; }
+.fr-streifen { fill: #6d28d9; fill-opacity: 0.1; stroke: #6d28d9; stroke-width: 1; stroke-dasharray: 4 3; }
+.fr-schranke { stroke: #6d28d9; stroke-width: 1.8; }
+.fr-schranke.verletzt { stroke: #b3261e; stroke-dasharray: 6 4; }
+.fr-pfeil { stroke: #b3650a; stroke-width: 1.6; fill: none; }
+.fr-pfeil-text { font-size: 11px; font-weight: 800; fill: #b3650a; }
+.fr-spitze { fill: #b3650a; }
+:root[data-theme="dark"] .fr-spitze { fill: #ffbf6e; }
+.fr-saeule { fill: #1d4ed8; fill-opacity: 0.35; stroke: #1d4ed8; stroke-width: 1; }
+.fr-saeule.kopie { fill: #b3650a; fill-opacity: 0.35; stroke: #b3650a; }
+.fr-saeule.block-a { fill: #157347; fill-opacity: 0.35; stroke: #157347; }
+.fr-saeule.block-b { fill: #b3650a; fill-opacity: 0.35; stroke: #b3650a; }
+.fr-rahmen { fill: none; stroke: #157347; stroke-width: 2.4; stroke-dasharray: 6 4; }
+.fr-feld { fill: var(--card-bg); stroke: #1d4ed8; stroke-width: 1.3; }
+.fr-feld.kopie { stroke: #b3650a; }
+.fr-feld.weg { fill: #9aa4b1; fill-opacity: 0.22; stroke: #9aa4b1; }
+.fr-feld.bleibt { stroke-width: 2.6; }
+.fr-feldtext { font-size: 12px; font-weight: 700; fill: var(--text); font-variant-numeric: tabular-nums; }
+.fr-feldtext.weg { fill: var(--muted); text-decoration: line-through; }
+.fr-strecke { stroke: #157347; stroke-width: 5; stroke-linecap: round; }
+.fr-strecke.b { stroke: #1d4ed8; }
+.fr-luecke { stroke: #b3261e; stroke-width: 2; }
+:root[data-theme="dark"] .fr-punkt, :root[data-theme="dark"] .fr-linie { fill: #8ab4ff; stroke: #8ab4ff; }
+:root[data-theme="dark"] .fr-linie { fill: none; }
+:root[data-theme="dark"] .fr-punkt.aktiv, :root[data-theme="dark"] .fr-punkt.drin { fill: #6fd68f; stroke: #6fd68f; }
+:root[data-theme="dark"] .fr-punkt.draussen { fill: #ff8a8a; }
+:root[data-theme="dark"] .fr-grenze, :root[data-theme="dark"] .fr-schranke { stroke: #c4a7ff; }
+:root[data-theme="dark"] .fr-schranke.verletzt { stroke: #ff8a8a; }
+:root[data-theme="dark"] .fr-grenze-text { fill: #c4a7ff; }
+:root[data-theme="dark"] .fr-streifen { fill: #c4a7ff; stroke: #c4a7ff; }
+:root[data-theme="dark"] .fr-pfeil { stroke: #ffbf6e; }
+:root[data-theme="dark"] .fr-pfeil-text { fill: #ffbf6e; }
+:root[data-theme="dark"] .fr-saeule { fill: #8ab4ff; stroke: #8ab4ff; }
+:root[data-theme="dark"] .fr-saeule.kopie, :root[data-theme="dark"] .fr-saeule.block-b { fill: #ffbf6e; stroke: #ffbf6e; }
+:root[data-theme="dark"] .fr-saeule.block-a { fill: #6fd68f; stroke: #6fd68f; }
+:root[data-theme="dark"] .fr-rahmen { stroke: #6fd68f; }
+:root[data-theme="dark"] .fr-feld { stroke: #8ab4ff; }
+:root[data-theme="dark"] .fr-feld.kopie { stroke: #ffbf6e; }
+:root[data-theme="dark"] .fr-strecke { stroke: #6fd68f; }
+:root[data-theme="dark"] .fr-strecke.b { stroke: #8ab4ff; }
+:root[data-theme="dark"] .fr-luecke { stroke: #ff8a8a; }
+
+.farbe-blau { color: #1d4ed8; }
+.farbe-gruen { color: #157347; }
+.farbe-orange { color: #b3650a; }
+.farbe-violett { color: #6d28d9; }
+.farbe-rot { color: #b3261e; }
+:root[data-theme="dark"] .farbe-blau { color: #8ab4ff; }
+:root[data-theme="dark"] .farbe-gruen { color: #6fd68f; }
+:root[data-theme="dark"] .farbe-orange { color: #ffbf6e; }
+:root[data-theme="dark"] .farbe-violett { color: #c4a7ff; }
+:root[data-theme="dark"] .farbe-rot { color: #ff8a8a; }
+.wert { font-weight: 800; font-variant-numeric: tabular-nums; }
+
+/* Kleine Wertetabelle */
+.fr-tabelle-wrap { overflow-x: auto; margin: 0.6rem 0; }
+.fr-tabelle { border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 0.9rem; margin: 0 auto; }
+.fr-tabelle th, .fr-tabelle td { border: 1px solid var(--border); padding: 0.3rem 0.5rem; text-align: center; white-space: nowrap; }
+.fr-tabelle th { background: var(--bg); }
+.fr-tabelle td.aktiv { background: #e7f6ec; color: #157347; font-weight: 800; }
+.fr-tabelle td.draussen { color: #b3261e; font-weight: 700; }
+:root[data-theme="dark"] .fr-tabelle td.aktiv { background: #17321f; color: #6fd68f; }
+:root[data-theme="dark"] .fr-tabelle td.draussen { color: #ff8a8a; }
+
+/* ================= Thema 2: Differentialrechnung ================= */
+/* Farbcodierung: Graph f blau, Sekante orange, Tangente und f′ grün, Steigungsdreieck und
+   Normale violett, Warnung (Knick, keine Ableitung) rot, Hilfslinien grau. */
+
+.geo-stapel { flex-direction: column; align-items: center; gap: 0.4rem; }
+.geo-paar { flex-wrap: wrap; gap: 0.6rem; }
+.fr-loch { fill: var(--card-bg); stroke: #1d4ed8; stroke-width: 2; }
+.dr-sekante { stroke: #b3650a; stroke-width: 2.2; }
+.dr-tangente { stroke: #157347; stroke-width: 2.2; }
+.dr-tangente.grenze { stroke-dasharray: 7 4; stroke-width: 1.8; }
+.dr-tangente.halb { stroke: #b3261e; stroke-width: 2.2; }
+.dr-normale { stroke: #6d28d9; stroke-width: 2.2; }
+.dr-gerade-g { stroke: #b3650a; stroke-width: 2.2; }
+.dr-dreieck { stroke: #6d28d9; stroke-width: 2.6; stroke-linecap: round; }
+.dr-dreieck.dx { stroke: #5b6570; stroke-width: 2; }
+.dr-dreieck-flaeche { fill: #6d28d9; fill-opacity: 0.1; stroke: none; }
+.dr-dreieck-flaeche.gedreht { fill: #6d28d9; fill-opacity: 0.18; stroke: #6d28d9; stroke-width: 1.2; stroke-dasharray: 4 3; }
+.dr-ableitung { fill: none; stroke: #157347; stroke-width: 2.4; }
+.dr-ableitung.loesung { stroke-dasharray: 5 4; stroke-width: 1.6; stroke-opacity: 0.75; }
+.dr-balken { stroke: #6d28d9; stroke-width: 4; stroke-linecap: round; }
+.fr-linie.duenn2 { stroke-width: 1.4; stroke-dasharray: 6 4; }
+.fr-linie.steigt { stroke: #157347; stroke-width: 2.6; }
+.fr-linie.faellt { stroke: #b3650a; stroke-width: 2.6; }
+.fr-linie.positiv { stroke: #157347; }
+.fr-linie.negativ { stroke: #b3650a; }
+.fr-linie.kopie { stroke: #b3650a; stroke-width: 2.4; stroke-dasharray: 7 4; }
+.dr-punkt-q { fill: #b3650a; }
+.dr-punkt-t { fill: #157347; }
+.dr-punkt-x { fill: #b3261e; }
+.dr-quadrat { fill: #1d4ed8; fill-opacity: 0.22; stroke: #1d4ed8; stroke-width: 1.4; }
+.dr-streifen { fill: #b3650a; fill-opacity: 0.3; stroke: #b3650a; stroke-width: 1.2; }
+.dr-streifen.oben { fill: #6d28d9; stroke: #6d28d9; fill-opacity: 0.25; }
+.dr-ecke { fill: #b3261e; fill-opacity: 0.45; stroke: #b3261e; stroke-width: 1.2; }
+.dr-kreis { fill: none; stroke: var(--text); stroke-width: 1.4; }
+.dr-radius { stroke: #5b6570; stroke-width: 1.4; }
+.dr-bogen { fill: none; stroke: #b3650a; stroke-width: 3.2; stroke-linecap: round; }
+.dr-hub { stroke: #6d28d9; stroke-width: 3; stroke-linecap: round; }
+.dr-winkel { fill: none; stroke: #6d28d9; stroke-width: 1.8; }
+.dr-winkel.b { stroke: #b3650a; }
+.dr-winkel.g { stroke: #157347; stroke-width: 2.4; }
+.dr-zahlenstrahl { stroke: var(--text); stroke-width: 1.4; }
+.dr-intervall { stroke-width: 7; stroke-linecap: butt; stroke-opacity: 0.85; }
+.dr-intervall.x { stroke: #1d4ed8; }
+.dr-intervall.u { stroke: #6d28d9; }
+.dr-intervall.f { stroke: #157347; }
+.dr-verbinder { stroke: #5b6570; stroke-width: 1; stroke-dasharray: 3 3; }
+.dr-markierung { stroke: #b3261e; stroke-width: 2; }
+.dr-schnitt { fill: #b3261e; }
+.dr-beruehrt { fill: var(--card-bg); stroke: #157347; stroke-width: 2.6; }
+.dr-schneidet { fill: #157347; }
+.dr-text-b { font-size: 12px; font-weight: 800; fill: #1d4ed8; }
+.dr-text-o { font-size: 12px; font-weight: 800; fill: #b3650a; }
+.dr-text-g { font-size: 12px; font-weight: 800; fill: #157347; }
+.dr-text-v { font-size: 12px; font-weight: 800; fill: #6d28d9; }
+.dr-text-r { font-size: 12px; font-weight: 800; fill: #b3261e; }
+.dr-text-k { font-size: 12px; font-weight: 800; fill: var(--text); }
+.th-bilanz .wo { color: #b3650a; font-weight: 700; }
+.panel-titel { font-size: 12px; font-weight: 800; fill: var(--text); }
+
+:root[data-theme="dark"] .fr-loch { stroke: #8ab4ff; }
+:root[data-theme="dark"] .dr-sekante, :root[data-theme="dark"] .dr-gerade-g, :root[data-theme="dark"] .fr-linie.faellt,
+:root[data-theme="dark"] .fr-linie.negativ, :root[data-theme="dark"] .fr-linie.kopie, :root[data-theme="dark"] .dr-bogen,
+:root[data-theme="dark"] .dr-winkel.b { stroke: #ffbf6e; }
+:root[data-theme="dark"] .dr-tangente, :root[data-theme="dark"] .dr-ableitung, :root[data-theme="dark"] .fr-linie.steigt,
+:root[data-theme="dark"] .fr-linie.positiv, :root[data-theme="dark"] .dr-winkel.g, :root[data-theme="dark"] .dr-intervall.f,
+:root[data-theme="dark"] .dr-beruehrt { stroke: #6fd68f; }
+:root[data-theme="dark"] .dr-tangente.halb, :root[data-theme="dark"] .dr-markierung, :root[data-theme="dark"] .dr-ecke { stroke: #ff8a8a; }
+:root[data-theme="dark"] .dr-normale, :root[data-theme="dark"] .dr-dreieck, :root[data-theme="dark"] .dr-balken,
+:root[data-theme="dark"] .dr-hub, :root[data-theme="dark"] .dr-winkel, :root[data-theme="dark"] .dr-intervall.u,
+:root[data-theme="dark"] .dr-streifen.oben, :root[data-theme="dark"] .dr-dreieck-flaeche.gedreht { stroke: #c4a7ff; }
+:root[data-theme="dark"] .dr-dreieck.dx, :root[data-theme="dark"] .dr-radius, :root[data-theme="dark"] .dr-verbinder { stroke: #9aa4b1; }
+:root[data-theme="dark"] .dr-dreieck-flaeche, :root[data-theme="dark"] .dr-streifen.oben { fill: #c4a7ff; }
+:root[data-theme="dark"] .dr-quadrat { fill: #8ab4ff; stroke: #8ab4ff; }
+:root[data-theme="dark"] .dr-intervall.x { stroke: #8ab4ff; }
+:root[data-theme="dark"] .dr-streifen { fill: #ffbf6e; stroke: #ffbf6e; }
+:root[data-theme="dark"] .dr-streifen.oben { fill: #c4a7ff; stroke: #c4a7ff; }
+:root[data-theme="dark"] .dr-ecke { fill: #ff8a8a; }
+:root[data-theme="dark"] .dr-punkt-q { fill: #ffbf6e; }
+:root[data-theme="dark"] .dr-punkt-t, :root[data-theme="dark"] .dr-schneidet { fill: #6fd68f; }
+:root[data-theme="dark"] .dr-punkt-x, :root[data-theme="dark"] .dr-schnitt { fill: #ff8a8a; }
+:root[data-theme="dark"] .dr-text-b { fill: #8ab4ff; }
+:root[data-theme="dark"] .dr-text-o { fill: #ffbf6e; }
+:root[data-theme="dark"] .dr-text-g { fill: #6fd68f; }
+:root[data-theme="dark"] .dr-text-v { fill: #c4a7ff; }
+:root[data-theme="dark"] .dr-text-r { fill: #ff8a8a; }
+:root[data-theme="dark"] .th-bilanz .wo { color: #ffbf6e; }
+.dr-sekante.rechts { stroke: #6d28d9; }
+.dr-punkt-v { fill: #6d28d9; }
+.dr-dreieck.h { stroke: #b3650a; }
+:root[data-theme="dark"] .dr-sekante.rechts { stroke: #c4a7ff; }
+:root[data-theme="dark"] .dr-punkt-v { fill: #c4a7ff; }
+:root[data-theme="dark"] .dr-dreieck.h { stroke: #ffbf6e; }
+.dr-dreieck.duenn { stroke-width: 1.6; stroke-dasharray: 4 3; }
+
+/* Reiter: x₀-Methode oder h-Methode */
+.reiter { margin: 0.4rem 0; }
+.reiter-leiste { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.reiter-leiste button {
+  border: 1px solid var(--border); background: var(--bg); color: var(--text);
+  padding: 0.3rem 0.7rem; border-radius: 8px 8px 0 0; font-weight: 700; cursor: pointer; font-size: 0.88rem;
+}
+.reiter-leiste button[aria-selected="true"] { background: var(--card-bg); border-color: var(--accent); box-shadow: inset 0 -2px 0 var(--accent); }
+.reiter-feld { line-height: 1.6; }
+.reiter-widget { margin-top: 0; }
+.reflexion-box {
+  margin: 1rem 0; padding: 0.8rem 1rem; border-radius: 10px;
+  border: 1px solid #1d4ed8; border-left-width: 5px; background: #eef2ff;
+}
+.reflexion-box .box-label { display: block; font-weight: 800; color: #1d4ed8; margin-bottom: 0.4rem; }
+.reflexion-box ol { margin: 0; padding-left: 1.3rem; }
+.reflexion-box li { margin-bottom: 0.4rem; }
+:root[data-theme="dark"] .reflexion-box { background: #1e2a4a; border-color: #8ab4ff; }
+:root[data-theme="dark"] .reflexion-box .box-label { color: #8ab4ff; }
+
+/* Die Kathetennamen am Steigungsdreieck (Abschnitt 2) kreuzen je nach Reglerstellung den Graphen
+   oder eine Achse; ein Rand in der Hintergrundfarbe hält sie lesbar. */
+.dr-halo { paint-order: stroke; stroke: var(--card-bg); stroke-width: 4px; stroke-linejoin: round; }
+
+/* ================= Thema 3: Funktionsuntersuchung ================= */
+/* Farbcodierung: f blau, f′ grün, f″ violett; Linkskurve violett, Rechtskurve orange (wie f″ > 0 und
+   f″ < 0); Extrempunkte blau, Wendepunkte violett, Randpunkte und Warnungen rot, Hilfslinien grau. */
+.fr-linie.links { stroke: #6d28d9; stroke-width: 2.8; }
+.fr-linie.rechts { stroke: #b3650a; stroke-width: 2.8; }
+.fr-linie.gerade { stroke: #5b6570; stroke-width: 2.4; }
+.dr-ableitung2 { fill: none; stroke: #6d28d9; stroke-width: 2.4; }
+.dr-wende { fill: #6d28d9; }
+.dr-extrem { fill: #1d4ed8; }
+.dr-rand { fill: #b3261e; }
+.dr-schar { fill: none; stroke: #1d4ed8; stroke-width: 1.2; stroke-opacity: 0.35; }
+.dr-ortskurve { fill: none; stroke: #b3261e; stroke-width: 2; stroke-dasharray: 6 4; }
+.dr-wendetangente { stroke: #6d28d9; stroke-width: 2; stroke-dasharray: 7 4; }
+.dr-intervallrand { stroke: #b3261e; stroke-width: 1.6; stroke-dasharray: 4 3; }
+.dr-blatt { fill: #1d4ed8; fill-opacity: 0.08; stroke: #1d4ed8; stroke-width: 1.4; }
+.dr-ausschnitt { fill: #b3261e; fill-opacity: 0.35; stroke: #b3261e; stroke-width: 1.2; }
+.dr-boden { fill: #157347; fill-opacity: 0.22; stroke: #157347; stroke-width: 1.4; }
+.dr-falz { stroke: #157347; stroke-width: 1.2; stroke-dasharray: 4 3; }
+.dr-kante { fill: none; stroke: var(--text); stroke-width: 1.4; }
+.dr-flaeche { fill: #157347; fill-opacity: 0.22; stroke: #157347; stroke-width: 1.6; }
+.dr-newton { stroke: #b3650a; stroke-width: 1.8; }
+.dr-lot { stroke: #5b6570; stroke-width: 1.2; stroke-dasharray: 3 3; }
+.dr-pfeil-k { fill: none; stroke-width: 2.4; stroke-linecap: round; }
+.dr-pfeil-k.links { stroke: #6d28d9; }
+.dr-pfeil-k.rechts { stroke: #b3650a; }
+.schritt-liste { margin: 0.4rem 0 0; padding-left: 1.3rem; }
+.schritt-liste li { margin-bottom: 0.25rem; }
+.schritt-liste li.offen { color: var(--muted); }
+:root[data-theme="dark"] .fr-linie.links, :root[data-theme="dark"] .dr-ableitung2, :root[data-theme="dark"] .dr-wendetangente,
+:root[data-theme="dark"] .dr-pfeil-k.links { stroke: #c4a7ff; }
+:root[data-theme="dark"] .fr-linie.rechts, :root[data-theme="dark"] .dr-newton, :root[data-theme="dark"] .dr-pfeil-k.rechts { stroke: #ffbf6e; }
+:root[data-theme="dark"] .fr-linie.gerade, :root[data-theme="dark"] .dr-lot { stroke: #9aa4b1; }
+:root[data-theme="dark"] .dr-wende { fill: #c4a7ff; }
+:root[data-theme="dark"] .dr-extrem { fill: #8ab4ff; }
+:root[data-theme="dark"] .dr-rand { fill: #ff8a8a; }
+:root[data-theme="dark"] .dr-schar { stroke: #8ab4ff; }
+:root[data-theme="dark"] .dr-ortskurve, :root[data-theme="dark"] .dr-intervallrand { stroke: #ff8a8a; }
+:root[data-theme="dark"] .dr-blatt { fill: #8ab4ff; stroke: #8ab4ff; }
+:root[data-theme="dark"] .dr-ausschnitt { fill: #ff8a8a; stroke: #ff8a8a; }
+:root[data-theme="dark"] .dr-boden, :root[data-theme="dark"] .dr-flaeche { fill: #6fd68f; stroke: #6fd68f; }
+:root[data-theme="dark"] .dr-falz { stroke: #6fd68f; }
+.dr-tangente2 { stroke: #6d28d9; stroke-width: 2; }
+:root[data-theme="dark"] .dr-tangente2 { stroke: #c4a7ff; }
+.geo-paar { flex-wrap: wrap; gap: 0.6rem; align-items: flex-start; }
+.schritt-liste li.aktiv { font-weight: 700; }
+/* Bänder der Funktionsuntersuchung (Abschnitt 5): Monotonie und Krümmung */
+.dr-intervall.steigt { stroke: #157347; }
+.dr-intervall.faellt { stroke: #b3650a; }
+.dr-intervall.links { stroke: #6d28d9; }
+.dr-intervall.rechts { stroke: #b3650a; stroke-dasharray: 6 3; }
+:root[data-theme="dark"] .dr-intervall.steigt { stroke: #6fd68f; }
+:root[data-theme="dark"] .dr-intervall.faellt, :root[data-theme="dark"] .dr-intervall.rechts { stroke: #ffbf6e; }
+:root[data-theme="dark"] .dr-intervall.links { stroke: #c4a7ff; }
+
+/* ================= Thema 4: Integralrechnung ================= */
+/* Farbcodierung: f blau, Stammfunktion / Integralfunktion grün, orientierte Fläche über der x-Achse
+   grün, unter der x-Achse orange; Untersumme grün, Obersumme orange; Streifen violett; Warnung rot. */
+.dr-flaeche-pos { fill: #157347; fill-opacity: 0.28; stroke: none; }
+.dr-flaeche-neg { fill: #b3650a; fill-opacity: 0.32; stroke: none; }
+.dr-flaeche-a { fill: #1d4ed8; fill-opacity: 0.18; stroke: none; }
+.dr-unter { fill: #157347; fill-opacity: 0.3; stroke: #157347; stroke-width: 0.8; }
+.dr-ober { fill: #b3650a; fill-opacity: 0.08; stroke: #b3650a; stroke-width: 1.2; }
+.dr-streifen-h { fill: #6d28d9; fill-opacity: 0.3; stroke: #6d28d9; stroke-width: 1.2; }
+.dr-schranke-r { fill: none; stroke: #5b6570; stroke-width: 1.2; stroke-dasharray: 4 3; }
+.dr-mittel { fill: #6d28d9; fill-opacity: 0.14; stroke: #6d28d9; stroke-width: 1.6; stroke-dasharray: 6 3; }
+.dr-scheibe { fill: #1d4ed8; fill-opacity: 0.16; stroke: #1d4ed8; stroke-width: 0.9; }
+.dr-stamm { fill: none; stroke: #157347; stroke-width: 2.4; }
+.dr-stamm.schar { stroke-width: 1.2; stroke-opacity: 0.4; }
+.dr-pol { stroke: #b3261e; stroke-width: 1.6; stroke-dasharray: 5 4; }
+:root[data-theme="dark"] .dr-flaeche-pos, :root[data-theme="dark"] .dr-unter { fill: #6fd68f; }
+:root[data-theme="dark"] .dr-unter { stroke: #6fd68f; }
+:root[data-theme="dark"] .dr-flaeche-neg { fill: #ffbf6e; }
+:root[data-theme="dark"] .dr-flaeche-a, :root[data-theme="dark"] .dr-scheibe { fill: #8ab4ff; }
+:root[data-theme="dark"] .dr-scheibe { stroke: #8ab4ff; }
+:root[data-theme="dark"] .dr-ober { fill: #ffbf6e; stroke: #ffbf6e; }
+:root[data-theme="dark"] .dr-streifen-h, :root[data-theme="dark"] .dr-mittel { fill: #c4a7ff; stroke: #c4a7ff; }
+:root[data-theme="dark"] .dr-schranke-r { stroke: #9aa4b1; }
+:root[data-theme="dark"] .dr-stamm { stroke: #6fd68f; }
+:root[data-theme="dark"] .dr-pol { stroke: #ff8a8a; }
+/* Integralzeichen mit Grenzen übereinander: ∫ mit b oben, a unten. */
+.integral { display: inline-flex; align-items: center; white-space: nowrap; }
+.integral .zeichen { font-size: 1.35em; line-height: 1; }
+.grenzen { display: inline-flex; flex-direction: column; font-size: 0.68em; line-height: 1.05; margin: 0 0.15em 0 0.05em; vertical-align: middle; }
+.grenzen .o { order: 0; }
+.grenzen .u { order: 1; }
