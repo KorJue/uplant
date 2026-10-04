@@ -1,10 +1,10 @@
-// Selbstlernpfad „Grenzwerte und Stetigkeit“ (MSS 11, Analysis, Thema 2). Vanilla-JS, kein Build.
+// Selbstlernpfad „Grenzwerte und Stetigkeit“ (MSS 11, Analysis, Thema 1.2). Vanilla-JS, kein Build.
 //
 // Didaktische Reihenfolge — jede Stufe benutzt nur, was davor steht:
-//   1. Grenzwert für x → ∞            (ε-Streifen aus Thema 1, jetzt mit reellem x)
-//   2. Grenzwert an einer Stelle      (Testfolgen: zurückgeführt auf Folgengrenzwerte aus Thema 1;
+//   1. Grenzwert für x → ∞            (ε-Streifen aus Thema 1.1, jetzt mit reellem x)
+//   2. Grenzwert an einer Stelle      (Testfolgen: zurückgeführt auf Folgengrenzwerte aus Thema 1.1;
 //                                       links/rechts getrennt; h-Methode)
-//   3. Grenzwertsätze, gebrochenrationale Funktionen für x → ±∞ (Sätze aus Thema 1 übertragen)
+//   3. Grenzwertsätze, gebrochenrationale Funktionen für x → ±∞ (Sätze aus Thema 1.1 übertragen)
 //   4. Stetigkeit                      (braucht den Grenzwert an einer Stelle aus 2)
 //   5. Definitionslücken               (2 und 4: hebbar = stetig fortsetzbar, sonst Pol)
 //   6. Zwischenwertsatz, Halbierung    (braucht Stetigkeit aus 4; Intervallschachtelung = Folgen)

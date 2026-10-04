@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Erzeugt die Figuren der Formelsammlung „Funktionsuntersuchung“ (MSS 11, Analysis, Thema 4).
+"""Erzeugt die Figuren der Formelsammlung „Funktionsuntersuchung“ (MSS 11, Analysis, Thema 3).
 
 Jeder Graph wird aus der Funktion gerechnet. Das Skript prüft mit: Die markierten Extrem- und
 Wendepunkte sind numerisch bestimmte Nullstellen von f′ bzw. f″ (mit Vorzeichenwechsel), die

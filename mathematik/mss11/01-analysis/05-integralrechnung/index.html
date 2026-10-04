@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Integralrechnung</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="../../../aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">MSS 11</a><span class="sep">/</span>
+  <a href="../index.html">01 Analysis</a><span class="sep">/</span>
+  4 Integralrechnung
+</nav>
+<header class="page-header">
+  <h1>Integralrechnung</h1>
+  <p>Ein Selbstlernpfad: Aus einer Geschwindigkeit den Weg, aus einer Zuflussrate die Wassermenge, aus einem Graphen die Fläche darunter — die Integralrechnung kehrt das Ableiten um. Jeder Abschnitt leitet sein Ergebnis an einer beweglichen Darstellung her, rechnet es nach und endet mit einer Kontrollfrage. Am Schluss stehen zwanzig Übungsaufgaben auf vier Stufen.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Die Differentialrechnung beantwortet die Frage: Wie schnell ändert sich ein Bestand? Die Integralrechnung beantwortet die umgekehrte: Wie viel ist zusammengekommen, wenn man weiß, wie schnell es sich geändert hat? Die Antwort ist ein <span class="term">Flächeninhalt</span> unter dem Graphen der Änderungsrate. Wie man ihn berechnet, ohne Kästchen zu zählen, sagt der <span class="term">Hauptsatz der Differential- und Integralrechnung</span> — er verbindet Fläche und Ableitung. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>einen <span class="term">Bestand</span> aus seiner Änderungsrate rekonstruieren</li>
+      <li>Flächen mit <span class="term">Unter- und Obersummen</span> einschachteln und daraus das <span class="term">bestimmte Integral</span> als Grenzwert verstehen</li>
+      <li>das Integral als <span class="term">orientierten Flächeninhalt</span> deuten und seine Eigenschaften nutzen</li>
+      <li>die <span class="term">Integralfunktion</span> beschreiben und den <span class="term">Hauptsatz</span> begründen</li>
+      <li><span class="term">Stammfunktionen</span> bilden — auch für sin, cos und bei linearer Verkettung</li>
+      <li>Flächen zwischen Graph und x-Achse und <span class="term">zwischen zwei Graphen</span> berechnen</li>
+      <li>den <span class="term">Mittelwert</span> einer Funktion bestimmen und Integrale im Sachzusammenhang deuten</li>
+      <li><span class="term">uneigentliche Integrale</span> berechnen und Volumina von <span class="term">Rotationskörpern</span> bestimmen</li>
+    </ul>
+    <p>Die Seite folgt der Schreibweise von <strong>Elemente der Mathematik</strong> und deckt zugleich die Kapitel zur Integralrechnung in <strong>Fundamente der Mathematik</strong> ab: Rekonstruktion von Beständen, Ober- und Untersummen, bestimmtes Integral, Integralfunktion, Hauptsatz, Stammfunktionen und Integrationsregeln, Flächenberechnung, Mittelwerte, uneigentliche Integrale und Rotationskörper.</p>
+    <p class="hinweis-box">💡 Du brauchst den <a href="../01-folgen-und-reihen/index.html#sec-grenzwert">Grenzwert einer Folge</a> aus Thema 1.1, den <a href="../02-grenzwerte-und-stetigkeit/index.html#sec-unendlich">Grenzwert für x → ∞</a> aus Thema 1.2, die <a href="../03-differentialrechnung/index.html#sec-regeln">Ableitungsregeln</a> und die <a href="../03-differentialrechnung/index.html#sec-sinus">Ableitungen von sin und cos</a> aus Thema 2 sowie <a href="../04-funktionsuntersuchung/index.html#sec-schema">Nullstellen und Schnittpunkte</a> aus Thema 3.</p>
+  </section>
+
+  <!-- 1. Rekonstruktion -->
+  <section class="card" id="sec-rekonstruktion">
+    <h2>1. Rekonstruktion eines Bestands aus seiner Änderungsrate</h2>
+    <p>In ein Becken mit 5 m³ Wasser fließt zwei Stunden lang Wasser mit der Rate 3 <span class="bruch"><span class="z">m³</span><span class="n">h</span></span>, dann wird zwei Stunden lang mit 1 <span class="bruch"><span class="z">m³</span><span class="n">h</span></span> abgepumpt, danach wieder mit 2 <span class="bruch"><span class="z">m³</span><span class="n">h</span></span> zugeführt. In jeder Phase ist die Änderung „Rate mal Zeit“ — im Graphen der Rate ist das der Flächeninhalt eines Rechtecks. Beim Abpumpen ist die Rate negativ, und das Rechteck liegt unter der Achse. Fahre mit t durch und beobachte, wie der Bestand aus den Flächen entsteht.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Vorgang:
+          <select id="re-art" class="eingabe" style="padding:0.4rem">
+            <option value="becken">Becken: Zufluss und Abfluss</option>
+            <option value="auto">Auto: v(t) = 2t</option>
+          </select>
+        </label>
+        <label>t: <input type="range" id="re-t" min="0" max="6" step="0.25" value="3" style="vertical-align:middle;width:12rem"> <span id="re-t-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="re-mount"></div>
+      <div class="th-bilanz" id="re-bilanz"></div>
+      <div id="re-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Rekonstruktion</span>
+      Ist r die momentane Änderungsrate eines Bestands B, so ist die <strong>Änderung des Bestands</strong> zwischen den Zeitpunkten a und b gleich dem <strong>orientierten Flächeninhalt</strong> zwischen dem Graphen von r und der t-Achse über [a; b]. Flächen oberhalb der Achse zählen positiv (Zunahme), Flächen unterhalb negativ (Abnahme):
+      <div class="formula-block">B(b) = B(a) + (orientierter Flächeninhalt unter r zwischen a und b)</div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      Becken nach 6 Stunden: 5 m³ + 3 · 2 m³ − 1 · 2 m³ + 2 · 2 m³ = 13 m³.<br>
+      Auto mit v(t) = 2t (t in s, v in <span class="bruch"><span class="z">m</span><span class="n">s</span></span>): Bis t = 3 s ist die Fläche unter dem Graphen ein Dreieck mit Grundseite 3 und Höhe 6, der Weg also <span class="bruch"><span class="z">1</span><span class="n">2</span></span> · 3 · 6 = 9 m. Allgemein s(t) = t² — und tatsächlich ist s′(t) = 2t = v(t).
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Bestand ist nicht „was insgesamt geflossen ist“</span>
+      Nach 4 Stunden sind 6 m³ hinein- und 2 m³ herausgeflossen. Umgesetzt wurden 8 m³, der Bestand ist aber nur um 6 − 2 = 4 m³ gewachsen. Die Fläche unter der Achse wird <em>abgezogen</em>, nicht addiert — das ist der Unterschied zwischen dem orientierten Flächeninhalt und dem gewöhnlichen.
+    </div>
+    <div class="quiz" id="quiz-rekonstruktion"></div>
+  </section>
+
+  <!-- 2. Unter- und Obersummen -->
+  <section class="card" id="sec-summen">
+    <h2>2. Unter- und Obersummen: die Fläche unter der Normalparabel</h2>
+    <p>Bei krummen Graphen gibt es keine Rechtecke, deren Fläche man einfach ablesen könnte. Die Idee: Man zerlegt [0; b] in n gleich breite Streifen und ersetzt jeden durch ein Rechteck. Nimmt man jeweils den <em>kleinsten</em> Funktionswert im Streifen als Höhe, liegen die Rechtecke ganz unter dem Graphen (<span class="term">Untersumme</span> U<sub>n</sub>), nimmt man den <em>größten</em>, ragen sie darüber (<span class="term">Obersumme</span> O<sub>n</sub>). Die gesuchte Fläche A liegt dazwischen. Erhöhe n und sieh zu, wie die Lücke schrumpft.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>b: <input type="range" id="su-b" min="0.5" max="3" step="0.5" value="2" style="vertical-align:middle;width:8rem"> <span id="su-b-anzeige" class="wert farbe-blau"></span></label>
+        <label>n: <input type="range" id="su-n" min="1" max="50" step="1" value="4" style="vertical-align:middle;width:12rem"> <span id="su-n-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap" id="su-mount"></div>
+      <div class="th-bilanz" id="su-bilanz"></div>
+      <div id="su-text" class="event-result"></div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Herleitung der Fläche unter der Normalparabel</span>
+      Streifenbreite Δx = <span class="bruch"><span class="z">b</span><span class="n">n</span></span>, rechte Ränder <span class="bruch"><span class="z">b</span><span class="n">n</span></span>, <span class="bruch"><span class="z">2b</span><span class="n">n</span></span>, …, <span class="bruch"><span class="z">nb</span><span class="n">n</span></span>. Weil x² auf [0; b] steigt, liegt der größte Wert eines Streifens am rechten Rand:<br>
+      O<sub>n</sub> = <span class="bruch"><span class="z">b</span><span class="n">n</span></span> · ((<span class="bruch"><span class="z">b</span><span class="n">n</span></span>)² + (<span class="bruch"><span class="z">2b</span><span class="n">n</span></span>)² + … + (<span class="bruch"><span class="z">nb</span><span class="n">n</span></span>)²) = <span class="bruch"><span class="z">b³</span><span class="n">n³</span></span> · (1² + 2² + … + n²) = <span class="bruch"><span class="z">b³</span><span class="n">n³</span></span> · <span class="bruch"><span class="z">n(n + 1)(2n + 1)</span><span class="n">6</span></span> = <span class="bruch"><span class="z">b³</span><span class="n">6</span></span> · (1 + <span class="bruch"><span class="z">1</span><span class="n">n</span></span>)(2 + <span class="bruch"><span class="z">1</span><span class="n">n</span></span>)<br>
+      Ebenso U<sub>n</sub> = <span class="bruch"><span class="z">b³</span><span class="n">6</span></span> · (1 − <span class="bruch"><span class="z">1</span><span class="n">n</span></span>)(2 − <span class="bruch"><span class="z">1</span><span class="n">n</span></span>). Für n → ∞ gehen beide gegen <span class="bruch"><span class="z">b³</span><span class="n">6</span></span> · 1 · 2 = <span class="bruch"><span class="z">b³</span><span class="n">3</span></span>.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — „mehr Streifen“ ist noch kein Beweis</span>
+      Für jedes feste n ist U<sub>n</sub> zu klein und O<sub>n</sub> zu groß. Erst der <strong>Grenzwert</strong> liefert die Fläche — und er beweist sie, weil A für jedes n zwischen U<sub>n</sub> und O<sub>n</sub> eingeklemmt ist und der Abstand O<sub>n</sub> − U<sub>n</sub> = <span class="bruch"><span class="z">b · f(b)</span><span class="n">n</span></span> gegen 0 geht.
+    </div>
+    <p class="hinweis-box">💡 Die Summenformel 1² + 2² + … + n² = <span class="bruch"><span class="z">n(n + 1)(2n + 1)</span><span class="n">6</span></span> kannst du für kleine n nachrechnen (n = 3: 1 + 4 + 9 = 14 = <span class="bruch"><span class="z">3 · 4 · 7</span><span class="n">6</span></span>); bewiesen wird sie mit vollständiger Induktion. Für b = 1 liefert die Rechnung <span class="bruch"><span class="z">1</span><span class="n">3</span></span> — das Ergebnis, das Archimedes schon vor über 2200 Jahren mit einer ähnlichen Einschachtelung fand.</p>
+    <div class="quiz" id="quiz-summen"></div>
+  </section>
+
+  <!-- 3. Das bestimmte Integral -->
+  <section class="card" id="sec-integral">
+    <h2>3. Das bestimmte Integral als orientierter Flächeninhalt</h2>
+    <p>Was bei x² funktioniert hat, gilt für jede stetige Funktion: Unter- und Obersummen haben denselben Grenzwert. Er heißt bestimmtes Integral. Liegt der Graph unter der x-Achse, sind die Rechteckhöhen negativ — das Integral zählt diese Flächen also negativ, genau wie beim Abpumpen in Abschnitt 1. Verschiebe die Grenzen und vergleiche die Teilflächen mit dem Wert des Integrals.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="in-art" class="eingabe" style="padding:0.4rem">
+            <option value="kubik">f(x) = 0,5x³ − 1,5x</option>
+            <option value="para">f(x) = x² − 1</option>
+            <option value="sinus">f(x) = sin(x)</option>
+          </select>
+        </label>
+        <label>a: <input type="range" id="in-a" min="-3" max="3" step="0.25" value="-1" style="vertical-align:middle;width:9rem"> <span id="in-a-anzeige" class="wert farbe-rot"></span></label>
+        <label>b: <input type="range" id="in-b" min="-3" max="3" step="0.25" value="2" style="vertical-align:middle;width:9rem"> <span id="in-b-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="geo-wrap" id="in-mount"></div>
+      <div class="th-bilanz" id="in-bilanz"></div>
+      <div id="in-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Bestimmtes Integral</span>
+      Haben für eine Funktion f auf [a; b] die Untersummen und die Obersummen für n → ∞ denselben Grenzwert, so heißt er das <strong>bestimmte Integral</strong> von f über [a; b]:
+      <div class="formula-block"><span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span> f(x) dx</div>
+      a ist die untere, b die obere <strong>Integrationsgrenze</strong>, f der <strong>Integrand</strong>, x die Integrationsvariable. Für jede auf [a; b] <strong>stetige</strong> Funktion existiert das Integral. Es ist der <strong>orientierte Flächeninhalt</strong>: Flächen oberhalb der x-Achse zählen positiv, unterhalb negativ.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Eigenschaften</span>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">a</span><span class="u">a</span></span></span> f(x) dx = 0 &nbsp;·&nbsp; <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">a</span><span class="u">b</span></span></span> f(x) dx = −<span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span> f(x) dx &nbsp;·&nbsp; <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span> f(x) dx + <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">c</span><span class="u">b</span></span></span> f(x) dx = <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">c</span><span class="u">a</span></span></span> f(x) dx (<strong>Intervalladditivität</strong>)<br>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span> (k · f(x) + g(x)) dx = k · <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span> f(x) dx + <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span> g(x) dx (<strong>Linearität</strong>, weil es für jede Summe gilt)
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      Aus Abschnitt 2: <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">2</span><span class="u">0</span></span></span> x² dx = <span class="bruch"><span class="z">8</span><span class="n">3</span></span>.<br>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">1</span><span class="u">−1</span></span></span> x³ dx = 0: Der Graph ist punktsymmetrisch zum Ursprung, die Fläche links unter der Achse hebt die rechts darüber genau auf.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Integral und Flächeninhalt sind verschieden</span>
+      Das Integral <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">1</span><span class="u">−1</span></span></span> x³ dx = 0 heißt nicht, dass zwischen Graph und Achse keine Fläche liegt — es sind zweimal <span class="bruch"><span class="z">1</span><span class="n">4</span></span>, die sich gegenseitig aufheben. Wie man echte Flächeninhalte berechnet, zeigt Abschnitt 7.
+    </div>
+    <div class="quiz" id="quiz-integral"></div>
+  </section>
+
+  <!-- 4. Integralfunktion -->
+  <section class="card" id="sec-integralfunktion">
+    <h2>4. Die Integralfunktion</h2>
+    <p>Hält man die untere Grenze a fest und lässt die obere Grenze wandern, ordnet jedes x dem orientierten Flächeninhalt von a bis x einen Wert zu — das ist eine neue Funktion, die <span class="term">Integralfunktion</span> I<sub>a</sub>. Im Widget ist f(t) = 1,5t² − 1,5. Fahre mit x durch und beobachte zwei Dinge: Wo f positiv ist, wächst I<sub>a</sub>. Und die Steigung der Tangente an I<sub>a</sub> stimmt mit dem Funktionswert f(x) überein.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>untere Grenze a: <input type="range" id="if-a" min="-2" max="1" step="0.5" value="0" style="vertical-align:middle;width:8rem"> <span id="if-a-anzeige" class="wert farbe-rot"></span></label>
+        <label>x: <input type="range" id="if-x" min="-2" max="2" step="0.25" value="1.5" style="vertical-align:middle;width:11rem"> <span id="if-x-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="if-mount"></div>
+      <div class="th-bilanz" id="if-bilanz"></div>
+      <div id="if-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Integralfunktion</span>
+      Ist f auf einem Intervall I stetig und a ∈ I, so heißt die Funktion
+      <div class="formula-block">I<sub>a</sub>(x) = <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">x</span><span class="u">a</span></span></span> f(t) dt</div>
+      die <strong>Integralfunktion</strong> von f zur unteren Grenze a. Die Integrationsvariable heißt jetzt t, weil x als obere Grenze schon vergeben ist. Es gilt immer I<sub>a</sub>(a) = 0.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: die Winkelhalbierende</span>
+      I<sub>0</sub>(x) ist für x &gt; 0 die Fläche eines Dreiecks mit Grundseite x und Höhe x, also I<sub>0</sub>(x) = <span class="bruch"><span class="z">x²</span><span class="n">2</span></span>. Mit der unteren Grenze 1 fehlt das Dreieck von 0 bis 1: I<sub>1</sub>(x) = <span class="bruch"><span class="z">x²</span><span class="n">2</span></span> − <span class="bruch"><span class="z">1</span><span class="n">2</span></span>. Beide haben die Ableitung x = f(x) — sie unterscheiden sich nur um eine Konstante.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Integralfunktion ist nicht Flächeninhalt</span>
+      I<sub>a</sub>(x) kann negativ werden: wenn der Graph zwischen a und x unter der Achse liegt, oder wenn x links von a liegt. Für x &lt; a läuft das Integral „rückwärts“, und eine Fläche über der Achse zählt dann negativ.
+    </div>
+    <div class="quiz" id="quiz-integralfunktion"></div>
+  </section>
+
+  <!-- 5. Hauptsatz -->
+  <section class="card" id="sec-hauptsatz">
+    <h2>5. Der Hauptsatz der Differential- und Integralrechnung</h2>
+    <p>Warum ist die Steigung der Integralfunktion gleich f? Schiebt man die obere Grenze von x nach x + h, wächst I<sub>a</sub> um den schmalen Streifen zwischen x und x + h. Dieser Streifen liegt zwischen zwei Rechtecken mit den Höhen f(x) und f(x + h). Teilt man durch die Breite h, liegt der Differenzenquotient von I<sub>a</sub> also zwischen f(x) und f(x + h) — und für h → 0 bleibt nur f(x) übrig. Verkleinere h.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>x: <input type="range" id="hs-x" min="0" max="2.5" step="0.5" value="1" style="vertical-align:middle;width:9rem"> <span id="hs-x-anzeige" class="wert farbe-blau"></span></label>
+        <label>h: <input type="range" id="hs-h" min="0" max="5" step="1" value="0" style="vertical-align:middle;width:9rem"> <span id="hs-h-anzeige" class="wert farbe-violett"></span></label>
+      </div>
+      <div class="geo-wrap" id="hs-mount"></div>
+      <div class="th-bilanz" id="hs-bilanz"></div>
+      <div id="hs-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Hauptsatz der Differential- und Integralrechnung</span>
+      <strong>Teil 1:</strong> Ist f auf dem Intervall I stetig und a ∈ I, so ist die Integralfunktion I<sub>a</sub> differenzierbar, und es gilt I<sub>a</sub>′(x) = f(x).<br>
+      <strong>Teil 2:</strong> Ist F irgendeine Funktion mit F′ = f auf [a; b] (eine <strong>Stammfunktion</strong>), so gilt
+      <div class="formula-block"><span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span> f(x) dx = F(b) − F(a) = <span class="integral">[F(x)]<span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span></div>
+      <em>Begründung von Teil 2:</em> I<sub>a</sub> und F haben dieselbe Ableitung f, unterscheiden sich also nur um eine Konstante: I<sub>a</sub>(x) = F(x) + C. Wegen I<sub>a</sub>(a) = 0 ist C = −F(a), also <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span> f(x) dx = I<sub>a</sub>(b) = F(b) − F(a).
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: noch einmal die Parabel</span>
+      F(x) = <span class="bruch"><span class="z">x³</span><span class="n">3</span></span> hat die Ableitung x². Also <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">2</span><span class="u">0</span></span></span> x² dx = <span class="integral">[<span class="bruch"><span class="z">x³</span><span class="n">3</span></span>]<span class="grenzen"><span class="o">2</span><span class="u">0</span></span></span> = <span class="bruch"><span class="z">8</span><span class="n">3</span></span> − 0 = <span class="bruch"><span class="z">8</span><span class="n">3</span></span> — dasselbe Ergebnis wie mit den Obersummen, aber in einer Zeile.
+    </div>
+    <div class="reflexion-box">
+      <span class="box-label">Nachgedacht: warum der Hauptsatz so erstaunlich ist</span>
+      <ol>
+        <li><strong>Zwei Fragen, eine Antwort.</strong> Die Steigung einer Tangente und der Inhalt einer krummlinig begrenzten Fläche sehen nach völlig verschiedenen Problemen aus. Der Hauptsatz sagt: Das eine ist die Umkehrung des anderen.</li>
+        <li><strong>Grenzwerte werden zu Einsetzen.</strong> Statt Ober- und Untersummen auszurechnen und n gegen unendlich gehen zu lassen, sucht man eine Funktion F mit F′ = f und setzt zwei Zahlen ein.</li>
+        <li><strong>Die Stetigkeit ist keine Formalie.</strong> Im Beweis wird der Streifen zwischen f(x) und f(x + h) eingeklemmt; ohne Stetigkeit könnte f im Streifen springen. Was passiert, wenn man das übersieht, zeigt die <a href="#sec-stolperstelle">Stolperstelle</a>.</li>
+        <li><strong>Geschichte.</strong> Newton und Leibniz fanden den Zusammenhang um 1670 unabhängig voneinander; er ist der Grund, warum beide als Erfinder der Infinitesimalrechnung gelten. Das Zeichen ∫ ist Leibniz' langgezogenes S für „Summe“.</li>
+      </ol>
+    </div>
+    <div class="quiz" id="quiz-hauptsatz"></div>
+  </section>
+
+  <!-- 6. Stammfunktionen -->
+  <section class="card" id="sec-stammfunktion">
+    <h2>6. Stammfunktionen und Integrationsregeln</h2>
+    <p>Integrieren heißt jetzt: eine Funktion F finden, deren Ableitung f ist. Weil eine Konstante beim Ableiten wegfällt, gibt es zu jedem f unendlich viele Stammfunktionen — ihre Graphen sind in y-Richtung gegeneinander verschoben und haben an jeder Stelle dieselbe Steigung. Verschiebe C.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>C: <input type="range" id="sf-c" min="-2" max="2" step="0.5" value="0" style="vertical-align:middle;width:10rem"> <span id="sf-c-anzeige" class="wert farbe-gruen"></span></label>
+        <label>x₀: <input type="range" id="sf-x" min="-2" max="2" step="0.5" value="1.5" style="vertical-align:middle;width:9rem"> <span id="sf-x-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="sf-mount"></div>
+      <div class="th-bilanz" id="sf-bilanz"></div>
+      <div id="sf-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Stammfunktion</span>
+      Eine Funktion F heißt <strong>Stammfunktion</strong> von f auf einem Intervall I, wenn F′(x) = f(x) für alle x ∈ I gilt. Mit F ist auch F + C eine Stammfunktion, und auf einem Intervall sind das schon alle.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Integrationsregeln</span>
+      <table class="fr-tabelle" style="margin-top:0.3rem">
+        <tr><th>Funktion f</th><th>Stammfunktion F</th><th>Begründung</th></tr>
+        <tr><td>xⁿ (n ≠ −1)</td><td><span class="bruch"><span class="z">1</span><span class="n">n + 1</span></span> xⁿ⁺¹</td><td>Potenzregel rückwärts</td></tr>
+        <tr><td>k · f(x)</td><td>k · F(x)</td><td>Faktorregel</td></tr>
+        <tr><td>f(x) + g(x)</td><td>F(x) + G(x)</td><td>Summenregel</td></tr>
+        <tr><td>sin(x)</td><td>−cos(x)</td><td>(−cos x)′ = sin x</td></tr>
+        <tr><td>cos(x)</td><td>sin(x)</td><td>(sin x)′ = cos x</td></tr>
+        <tr><td>f(ax + b), a ≠ 0</td><td><span class="bruch"><span class="z">1</span><span class="n">a</span></span> F(ax + b)</td><td>Kettenregel rückwärts (<strong>lineare Verkettung</strong>)</td></tr>
+      </table>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">2</span><span class="u">1</span></span></span> (3x² − 2x) dx = <span class="integral">[x³ − x²]<span class="grenzen"><span class="o">2</span><span class="u">1</span></span></span> = (8 − 4) − (1 − 1) = 4.<br>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">π</span><span class="u">0</span></span></span> sin(x) dx = <span class="integral">[−cos(x)]<span class="grenzen"><span class="o">π</span><span class="u">0</span></span></span> = −cos(π) + cos(0) = 1 + 1 = 2.<br>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">1</span><span class="u">0</span></span></span> (2x + 1)³ dx = <span class="integral">[<span class="bruch"><span class="z">1</span><span class="n">2</span></span> · <span class="bruch"><span class="z">(2x + 1)⁴</span><span class="n">4</span></span>]<span class="grenzen"><span class="o">1</span><span class="u">0</span></span></span> = <span class="bruch"><span class="z">81 − 1</span><span class="n">8</span></span> = 10.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — ein Ausnahmefall und die Probe</span>
+      Für f(x) = <span class="bruch"><span class="z">1</span><span class="n">x</span></span> = x⁻¹ versagt die Potenzregel: Man müsste durch n + 1 = 0 teilen. Die Stammfunktion von <span class="bruch"><span class="z">1</span><span class="n">x</span></span> ist der Logarithmus — er kommt später. Bei jeder Stammfunktion hilft die <strong>Probe durch Ableiten</strong>: (<span class="bruch"><span class="z">1</span><span class="n">8</span></span>(2x + 1)⁴)′ = <span class="bruch"><span class="z">1</span><span class="n">8</span></span> · 4(2x + 1)³ · 2 = (2x + 1)³ ✓.
+    </div>
+    <div class="quiz" id="quiz-stammfunktion"></div>
+  </section>
+
+  <!-- 7. Fläche mit der x-Achse -->
+  <section class="card" id="sec-flaeche">
+    <h2>7. Flächen zwischen Graph und x-Achse</h2>
+    <p>Das Integral verrechnet Flächen über und unter der Achse gegeneinander. Wer den echten Flächeninhalt will, muss das Intervall an den <strong>Nullstellen</strong> teilen, jedes Teilintegral einzeln berechnen und die <strong>Beträge</strong> addieren. Im Widget ist f(x) = 0,25x³ − x mit den Nullstellen −2, 0 und 2. Wähle das Intervall.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a: <input type="range" id="fl-a" min="-3" max="2.5" step="0.5" value="0" style="vertical-align:middle;width:9rem"> <span id="fl-a-anzeige" class="wert farbe-rot"></span></label>
+        <label>b: <input type="range" id="fl-b" min="-2.5" max="3" step="0.5" value="3" style="vertical-align:middle;width:9rem"> <span id="fl-b-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="geo-wrap" id="fl-mount"></div>
+      <div class="th-bilanz" id="fl-bilanz"></div>
+      <div id="fl-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Flächeninhalt zwischen Graph und x-Achse</span>
+      <ol style="margin:0.2rem 0 0;padding-left:1.3rem">
+        <li>Nullstellen von f im Intervall [a; b] bestimmen: x₁ &lt; x₂ &lt; …</li>
+        <li>Teilintegrale über [a; x₁], [x₁; x₂], …, [xₖ; b] berechnen.</li>
+        <li>Flächeninhalt A = Summe der <strong>Beträge</strong> der Teilintegrale.</li>
+      </ol>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: eine kubische Funktion</span>
+      f(x) = 0,25x³ − x auf [0; 3]: Stammfunktion F(x) = <span class="bruch"><span class="z">x⁴</span><span class="n">16</span></span> − <span class="bruch"><span class="z">x²</span><span class="n">2</span></span>, Nullstelle im Inneren: 2.<br>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">2</span><span class="u">0</span></span></span> f(x) dx = F(2) − F(0) = 1 − 2 = −1; &nbsp; <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">3</span><span class="u">2</span></span></span> f(x) dx = F(3) − F(2) = (<span class="bruch"><span class="z">81</span><span class="n">16</span></span> − <span class="bruch"><span class="z">9</span><span class="n">2</span></span>) − (−1) = <span class="bruch"><span class="z">9</span><span class="n">16</span></span> + 1 = <span class="bruch"><span class="z">25</span><span class="n">16</span></span>.<br>
+      Integral über [0; 3]: −1 + <span class="bruch"><span class="z">25</span><span class="n">16</span></span> = <span class="bruch"><span class="z">9</span><span class="n">16</span></span>; Flächeninhalt: 1 + <span class="bruch"><span class="z">25</span><span class="n">16</span></span> = <span class="bruch"><span class="z">41</span><span class="n">16</span></span> = 2,5625.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — erst teilen, dann Betrag</span>
+      |<span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">3</span><span class="u">0</span></span></span> f(x) dx| = <span class="bruch"><span class="z">9</span><span class="n">16</span></span> ist <em>nicht</em> der Flächeninhalt: Der Betrag des Gesamtintegrals hat die Teilflächen schon gegeneinander verrechnet. Der Betrag gehört um jedes Teilintegral, nicht um das ganze.
+    </div>
+    <div class="quiz" id="quiz-flaeche"></div>
+  </section>
+
+  <!-- 8. Zwischen zwei Graphen -->
+  <section class="card" id="sec-zwischen">
+    <h2>8. Flächen zwischen zwei Graphen</h2>
+    <p>Liegt der Graph von f über dem von g, ist der Abstand an jeder Stelle f(x) − g(x) — und die Fläche dazwischen das Integral dieser Differenz. Wo sich die Graphen schneiden, wechselt die Reihenfolge; die Schnittstellen sind die natürlichen Grenzen. Im Widget schneidet die Gerade g(x) = m · x die Parabel f(x) = 4 − x². Drehe die Gerade.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>m: <input type="range" id="zg-m" min="-3" max="3" step="0.5" value="0" style="vertical-align:middle;width:12rem"> <span id="zg-m-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap" id="zg-mount"></div>
+      <div class="th-bilanz" id="zg-bilanz"></div>
+      <div id="zg-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Fläche zwischen zwei Graphen</span>
+      Schneiden sich die Graphen von f und g an den Stellen x₁ &lt; x₂ &lt; … &lt; xₖ, so ist der eingeschlossene Flächeninhalt
+      <div class="formula-block">A = |<span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">x₂</span><span class="u">x₁</span></span></span> (f(x) − g(x)) dx| + … + |<span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">xₖ</span><span class="u">xₖ₋₁</span></span></span> (f(x) − g(x)) dx|</div>
+      Man integriert die <strong>Differenzfunktion</strong> d = f − g; ihre Nullstellen sind die Schnittstellen. Wo die Graphen liegen — über oder unter der x-Achse —, spielt keine Rolle.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: die x-Achse als Gerade</span>
+      f(x) − g(x) = 4 − x² = 0 ⟺ x = ±2. A = <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">2</span><span class="u">−2</span></span></span> (4 − x²) dx = <span class="integral">[4x − <span class="bruch"><span class="z">x³</span><span class="n">3</span></span>]<span class="grenzen"><span class="o">2</span><span class="u">−2</span></span></span> = (8 − <span class="bruch"><span class="z">8</span><span class="n">3</span></span>) − (−8 + <span class="bruch"><span class="z">8</span><span class="n">3</span></span>) = <span class="bruch"><span class="z">32</span><span class="n">3</span></span> ≈ 10,667.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Schnittstellen statt Nullstellen</span>
+      Die Grenzen sind die Schnittstellen von f und g, nicht die Nullstellen von f oder von g. Wer die Fläche „Parabel minus Fläche unter der Geraden“ getrennt mit den Nullstellen berechnet, verrechnet Teile doppelt, sobald einer der Graphen unter die x-Achse taucht.
+    </div>
+    <div class="quiz" id="quiz-zwischen"></div>
+  </section>
+
+  <!-- 9. Mittelwert -->
+  <section class="card" id="sec-mittelwert">
+    <h2>9. Mittelwert und Bilanz im Sachzusammenhang</h2>
+    <p>Die Temperatur an einem Frühlingstag folgt zwischen 6 und 12 Uhr ungefähr T(t) = −0,5t² + 3t + 10 (t in Stunden nach 6 Uhr, T in °C). Was ist die Durchschnittstemperatur bis zum Zeitpunkt b? Gesucht ist die konstante Temperatur, die in derselben Zeit dieselbe „Wärmefläche“ liefert — ein Rechteck mit gleichem Flächeninhalt wie die Fläche unter dem Graphen. Verändere b.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>b: <input type="range" id="mw-b" min="1" max="6" step="0.5" value="6" style="vertical-align:middle;width:12rem"> <span id="mw-b-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap" id="mw-mount"></div>
+      <div class="th-bilanz" id="mw-bilanz"></div>
+      <div id="mw-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Mittelwert einer Funktion</span>
+      Der <strong>Mittelwert</strong> einer auf [a; b] stetigen Funktion f ist
+      <div class="formula-block">m = <span class="bruch gross"><span class="z">1</span><span class="n">b − a</span></span> · <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span> f(x) dx</div>
+      Das Rechteck mit Breite b − a und Höhe m hat denselben orientierten Flächeninhalt wie die Fläche unter dem Graphen.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele aus dem Sachzusammenhang</span>
+      Temperatur: <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">6</span><span class="u">0</span></span></span> (−0,5t² + 3t + 10) dt = <span class="integral">[−<span class="bruch"><span class="z">t³</span><span class="n">6</span></span> + 1,5t² + 10t]<span class="grenzen"><span class="o">6</span><span class="u">0</span></span></span> = −36 + 54 + 60 = 78, also m = <span class="bruch"><span class="z">78</span><span class="n">6</span></span> = 13 °C.<br>
+      Bestand: Fließt Wasser mit der Rate r(t) = 6 − 2t (in <span class="bruch"><span class="z">m³</span><span class="n">h</span></span>) in ein Becken mit 10 m³, so enthält es nach 4 Stunden 10 + <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">4</span><span class="u">0</span></span></span> (6 − 2t) dt = 10 + <span class="integral">[6t − t²]<span class="grenzen"><span class="o">4</span><span class="u">0</span></span></span> = 10 + 8 = 18 m³. Am meisten Wasser ist nach 3 Stunden drin, wenn die Rate null wird: 10 + 9 = 19 m³.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Mittelwert der Funktion, nicht der Randwerte</span>
+      <span class="bruch"><span class="z">T(0) + T(6)</span><span class="n">2</span></span> = <span class="bruch"><span class="z">10 + 10</span><span class="n">2</span></span> = 10 °C ist nicht die Durchschnittstemperatur: Dazwischen war es wärmer. Nur bei linearen Funktionen stimmen beide überein.
+    </div>
+    <div class="quiz" id="quiz-mittelwert"></div>
+  </section>
+
+  <!-- 10. Uneigentliche Integrale -->
+  <section class="card" id="sec-uneigentlich">
+    <h2>10. Uneigentliche Integrale: unendlich lange Flächen</h2>
+    <p>Kann eine Fläche, die bis ins Unendliche reicht, einen endlichen Inhalt haben? Man berechnet das Integral bis zu einer Grenze b und lässt dann b gegen unendlich gehen — mit dem Grenzwert aus Thema 1.2. Vergleiche <span class="bruch"><span class="z">1</span><span class="n">x²</span></span> und <span class="bruch"><span class="z">1</span><span class="n">√x</span></span>: Beide gehen gegen 0, aber verschieden schnell.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="ue-art" class="eingabe" style="padding:0.4rem">
+            <option value="quadrat">f(x) = 1/x²</option>
+            <option value="wurzel">f(x) = 1/√x</option>
+          </select>
+        </label>
+        <label>b: <input type="range" id="ue-k" min="0" max="7" step="1" value="2" style="vertical-align:middle;width:11rem"> <span id="ue-k-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap" id="ue-mount"></div>
+      <div class="th-bilanz" id="ue-bilanz"></div>
+      <div id="ue-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Uneigentliches Integral</span>
+      Existiert der Grenzwert, so setzt man
+      <div class="formula-block"><span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">∞</span><span class="u">a</span></span></span> f(x) dx = <span style="white-space:nowrap">lim<sub>b→∞</sub></span> <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span> f(x) dx</div>
+      und nennt das uneigentliche Integral <strong>konvergent</strong>, sonst <strong>divergent</strong>. Ebenso für einen Integranden, der an einer Grenze unbeschränkt ist: <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">1</span><span class="u">0</span></span></span> f(x) dx = lim<sub>ε→0</sub> <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">1</span><span class="u">ε</span></span></span> f(x) dx.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">x²</span></span> dx = <span class="integral">[−<span class="bruch"><span class="z">1</span><span class="n">x</span></span>]<span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> = 1 − <span class="bruch"><span class="z">1</span><span class="n">b</span></span> → 1: Die unendlich lange Fläche hat den Inhalt 1.<br>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">√x</span></span> dx = <span class="integral">[2√x]<span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> = 2√b − 2 → ∞: divergent.<br>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">1</span><span class="u">ε</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">√x</span></span> dx = 2 − 2√ε → 2: Obwohl <span class="bruch"><span class="z">1</span><span class="n">√x</span></span> bei 0 über alle Grenzen wächst, ist die Fläche endlich.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — gegen null gehen reicht nicht</span>
+      Dass der Integrand gegen 0 geht, ist nötig, aber nicht genug: <span class="bruch"><span class="z">1</span><span class="n">√x</span></span> geht gegen 0, die Fläche wächst trotzdem über jede Grenze. Es kommt darauf an, <em>wie schnell</em> f gegen 0 geht — wie bei den unendlichen Reihen in Thema 1.1.
+    </div>
+    <div class="quiz" id="quiz-uneigentlich"></div>
+  </section>
+
+  <!-- 11. Rotationskörper -->
+  <section class="card" id="sec-rotation">
+    <h2>11. Volumen von Rotationskörpern</h2>
+    <p>Dreht man den Graphen von f über [a; b] um die x-Achse, entsteht ein <span class="term">Rotationskörper</span> — ein Kegel, eine Kugel, eine Schüssel. Sein Volumen findet man wie die Fläche: Man zerschneidet ihn in n dünne Scheiben. Jede Scheibe ist fast ein Zylinder mit Radius f(x) und Höhe Δx, also Volumen π · f(x)² · Δx. Erhöhe n.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Körper:
+          <select id="rk-art" class="eingabe" style="padding:0.4rem">
+            <option value="kegel">Kegel: f(x) = 0,5x auf [0; 4]</option>
+            <option value="paraboloid">Paraboloid: f(x) = √x auf [0; 4]</option>
+            <option value="kugel">Kugel: f(x) = √(4 − x²) auf [−2; 2]</option>
+          </select>
+        </label>
+        <label>n: <input type="range" id="rk-n" min="1" max="40" step="1" value="6" style="vertical-align:middle;width:11rem"> <span id="rk-n-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap" id="rk-mount"></div>
+      <div class="th-bilanz" id="rk-bilanz"></div>
+      <div id="rk-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Volumen eines Rotationskörpers</span>
+      Rotiert der Graph der auf [a; b] stetigen Funktion f um die x-Achse, so hat der entstehende Körper das Volumen
+      <div class="formula-block">V = π · <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span> (f(x))² dx</div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: der Kegel und seine Formel</span>
+      Ein Kegel mit Radius r und Höhe h entsteht aus f(x) = <span class="bruch"><span class="z">r</span><span class="n">h</span></span> x auf [0; h]:<br>
+      V = π <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">h</span><span class="u">0</span></span></span> <span class="bruch"><span class="z">r²</span><span class="n">h²</span></span> x² dx = π <span class="bruch"><span class="z">r²</span><span class="n">h²</span></span> · <span class="integral">[<span class="bruch"><span class="z">x³</span><span class="n">3</span></span>]<span class="grenzen"><span class="o">h</span><span class="u">0</span></span></span> = <span class="bruch"><span class="z">1</span><span class="n">3</span></span> π r² h — die Formel aus der Mittelstufe ist bewiesen. Für r = 2, h = 4: V = <span class="bruch"><span class="z">16</span><span class="n">3</span></span>π ≈ 16,755.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — das Quadrat gehört in das Integral</span>
+      π · (<span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span> f(x) dx)² ist etwas anderes als π · <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span> f(x)² dx. Quadriert wird der Radius jeder einzelnen Scheibe, nicht die Fläche.
+    </div>
+    <div class="quiz" id="quiz-rotation"></div>
+  </section>
+
+  <!-- 12. Stolperstelle -->
+  <section class="card" id="sec-stolperstelle">
+    <h2>12. Stolperstelle: Der Hauptsatz braucht Stetigkeit</h2>
+    <p>Lena rechnet: „<span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">1</span><span class="u">−1</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">x²</span></span> dx = <span class="integral">[−<span class="bruch"><span class="z">1</span><span class="n">x</span></span>]<span class="grenzen"><span class="o">1</span><span class="u">−1</span></span></span> = −1 − 1 = −2.“ Tim stutzt: „<span class="bruch"><span class="z">1</span><span class="n">x²</span></span> ist überall positiv — wie kann die Fläche negativ sein?“ Das Widget lässt um die Polstelle 0 einen Streifen der Breite 2ε frei. Mache ε kleiner und beobachte die Fläche, die übrig bleibt.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>ε: <input type="range" id="st-k" min="0" max="5" step="1" value="0" style="vertical-align:middle;width:11rem"> <span id="st-k-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="geo-wrap" id="st-mount"></div>
+      <div class="th-bilanz" id="st-bilanz"></div>
+      <div id="st-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — erst die Voraussetzungen, dann die Formel</span>
+      Der Hauptsatz verlangt, dass f auf dem <em>ganzen</em> Intervall [a; b] stetig ist. <span class="bruch"><span class="z">1</span><span class="n">x²</span></span> hat bei 0 eine Polstelle; Lenas Rechnung ist deshalb sinnlos. Richtig ist, das Integral als uneigentliches zu behandeln: Die Fläche über [ε; 1] ist <span class="bruch"><span class="z">1</span><span class="n">ε</span></span> − 1 und wächst für ε → 0 über jede Grenze. Tim hat recht — das Integral existiert nicht, und schon gar nicht mit dem Wert −2.
+    </div>
+    <p class="hinweis-box">💡 Vor jeder Integration lohnt ein Blick auf die Definitionslücken des Integranden im Intervall (Thema 1.2). Eine Formel für F, die „funktioniert“, garantiert nichts — F(x) = −<span class="bruch"><span class="z">1</span><span class="n">x</span></span> ist bei 0 selbst nicht definiert, und das ist das Warnsignal.</p>
+    <div class="quiz" id="quiz-stolperstelle"></div>
+  </section>
+
+  <!-- Selbsteinschätzung -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
+    <div id="se-liste"></div>
+    <div id="se-auswertung" class="event-result"></div>
+  </section>
+
+  <!-- Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Dem <a href="../01-folgen-und-reihen/index.html#sec-grenzwert">Grenzwert einer Folge</a> (Thema 1.1) — Unter- und Obersummen sind Folgen, das Integral ist ihr gemeinsamer Grenzwert; die Summenformel für Quadratzahlen ist eine endliche Reihe.</li>
+      <li><strong>Baut auf:</strong> Dem <a href="../02-grenzwerte-und-stetigkeit/index.html#sec-unendlich">Grenzwert für x → ∞</a> und der <a href="../02-grenzwerte-und-stetigkeit/index.html#sec-stetigkeit">Stetigkeit</a> (Thema 1.2) — ohne Stetigkeit kein Hauptsatz, ohne Grenzwert kein uneigentliches Integral.</li>
+      <li><strong>Baut auf:</strong> Den <a href="../03-differentialrechnung/index.html#sec-regeln">Ableitungsregeln</a> (Thema 2) — jede Integrationsregel ist eine Ableitungsregel, rückwärts gelesen; die lineare Verkettung ist die <a href="../03-differentialrechnung/index.html#sec-produkt-kette">Kettenregel</a> rückwärts.</li>
+      <li><strong>Baut auf:</strong> Der <a href="../04-funktionsuntersuchung/index.html#sec-fstrich">Deutung des Graphen von f′</a> (Thema 3) — dort wurde aus f′ auf f geschlossen; die Integralfunktion macht das jetzt rechnerisch.</li>
+      <li><strong>Baut auf:</strong> Den Flächen- und Volumenformeln der Mittelstufe — <a href="../../../grundwissen-5-10/02-geometrie/12-pyramiden-kegel-kugeln/index.html">Kegel und Kugel</a> werden jetzt bewiesen.</li>
+      <li><strong>Führt weiter zu:</strong> Den <em>Exponential- und Logarithmusfunktionen</em> — sie schließen die Lücke n = −1: Die Stammfunktion von <span class="bruch"><span class="z">1</span><span class="n">x</span></span> ist der natürliche Logarithmus.</li>
+      <li><strong>Führt weiter zu:</strong> Den stetigen Zufallsgrößen in der Stochastik (MSS 13) — Wahrscheinlichkeiten sind dort Flächen unter einer Dichtefunktion, und die Gesamtfläche ist 1.</li>
+    </ul>
+  </section>
+
+  <!-- Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>Formelsammlung</h2>
+    <p>Rekonstruktion, Unter- und Obersummen, bestimmtes Integral und seine Eigenschaften, Integralfunktion, Hauptsatz, Stammfunktionen mit allen Regeln, Flächen mit der x-Achse und zwischen zwei Graphen, Mittelwert, uneigentliche Integrale und Rotationskörper — mit gerechneten Figuren auf zwei Seiten.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>Übungsaufgaben</h2>
+    <p>Zwanzig Aufgaben auf vier Stufen, je fünf auf jeder. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu. Tipps gibt es auf Knopfdruck, nach dem Prüfen steht die Musterlösung darunter.</p>
+    <p class="progress-note">Zahlen gibst du mit Komma ein, zum Beispiel 1,5; Brüche wie 8/3 sind ebenfalls erlaubt.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 01 Analysis</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>

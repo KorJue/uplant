@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Formelsammlung — Integralrechnung</title>
+<style>
+  @page { size: A4 landscape; margin: 5.5mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    color: #1f2328;
+    font-size: 8.1px;
+    line-height: 1.33;
+  }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  h1 {
+    font-size: 12.4px; margin: 0 0 1.4mm; padding-bottom: 0.8mm;
+    border-bottom: 1.6px solid #1d4ed8; color: #1d4ed8; letter-spacing: 0.01em;
+  }
+  h1 .klein { font-size: 8.4px; font-weight: 400; color: #5b6570; float: right; margin-top: 2px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2.1mm; align-items: start; }
+  .box {
+    border: 0.9px solid #c9d0d8; border-radius: 2mm; padding: 1.5mm 1.8mm;
+    background: #ffffff; break-inside: avoid;
+  }
+  .box.wide { grid-column: span 2; }
+  .box.full { grid-column: span 3; }
+  .box h2 {
+    font-size: 8.6px; margin: 0 0 1.1mm; color: #1d4ed8;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .box.warn { border-color: #e3b341; background: #fffaf0; }
+  .box.warn h2 { color: #8a5b0a; }
+  .box.merk { border-color: #7ec699; background: #f4fbf6; }
+  .box.merk h2 { color: #0f5132; }
+  p { margin: 0 0 0.9mm; }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 0.9mm; padding-left: 3.4mm; }
+  li { margin-bottom: 0.4mm; }
+  .f { font-family: "Cambria Math", Cambria, Georgia, serif; font-size: 9.2px; }
+  .zentral { text-align: center; }
+  .gross { font-size: 10.4px; font-weight: 700; }
+  .al { color: #157347; font-weight: 700; }
+  .be { color: #b3650a; font-weight: 700; }
+  .ga { color: #b3261e; font-weight: 700; }
+  .kr { color: #1d4ed8; font-weight: 700; }
+  .ra { color: #6d28d9; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { border: 0.7px solid #c9d0d8; padding: 0.5mm 0.6mm; text-align: center; }
+  th { background: #eef2f6; font-weight: 700; font-size: 7.4px; }
+  td { font-size: 7.6px; }
+  td.b { font-weight: 700; }
+  td.l { text-align: left; }
+  figure { margin: 0.8mm 0 0; }
+  figure svg { display: block; width: 100%; height: auto; }
+  .m70 { max-width: 70%; margin: 0.8mm auto 0; }
+  .m80 { max-width: 80%; margin: 0.8mm auto 0; }
+  .m88 { max-width: 88%; margin: 0.8mm auto 0; }
+  .m62 { max-width: 62%; margin: 0.8mm auto 0; }
+  .m72 { max-width: 72%; margin: 0.8mm auto 0; }
+  .m55 { max-width: 55%; margin: 0.8mm auto 0; }
+  .bu { font-size: 7.1px; color: #5b6570; text-align: center; margin-top: 0.5mm; }
+  .rechnung { background: #f4f6f8; border-radius: 1.2mm; padding: 1mm 1.2mm; margin: 0.8mm 0 0; }
+  .schritt { display: flex; gap: 1.2mm; margin-bottom: 0.5mm; }
+  .schritt b { flex: 0 0 3.6mm; color: #1d4ed8; }
+  .schritt:last-child { margin-bottom: 0; }
+  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm; align-items: start; }
+  .bruch { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; margin: 0 0.3mm; }
+  .bruch .z { border-bottom: 0.8px solid currentColor; padding: 0 0.6mm; }
+  .binom { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; padding: 0 0.9mm; margin: 0 0.3mm; border-left: 0.9px solid currentColor; border-right: 0.9px solid currentColor; border-radius: 45% / 50%; font-size: 92%; }
+  .tr { color: #157347; font-weight: 700; }
+  .ni { color: #b3650a; font-weight: 700; }
+  .fu { color: #5b6570; font-size: 7.3px; }
+  .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ===================== Seite 1 ===================== -->
+<div class="page">
+  <h1>Integralrechnung<span class="klein">MSS 11 · Analysis, Thema 4 · <span class="fu">grau: andere Schreibweisen</span></span></h1>
+  <div class="grid">
+
+    <div class="box">
+      <h2>Rekonstruktion eines Bestands</h2>
+      <p>Ist r die Änderungsrate eines Bestands B, so ist die <b>Änderung</b> von B auf [a; b] der <b>orientierte Flächeninhalt</b> unter r.</p>
+      <p class="zentral f">B(b) = B(a) + (Fläche über der Achse) − (Fläche unter der Achse)</p>
+      <p>Konstante Rate: Rechteck „Rate · Zeit“. Zufluss positiv, Abfluss negativ. Geschwindigkeit v ⟹ Weg s.</p>
+      <p class="f">5 m³ + 3 · 2 − 1 · 2 + 2 · 2 = 13 m³</p>
+      <h2 style="margin-top:2mm">Unter- und Obersummen</h2>
+      <p>[a; b] in n Streifen der Breite Δx = <span class="bruch"><span class="z">b − a</span><span>n</span></span>; Höhe = kleinster (<span class="al">U<sub>n</sub></span>) bzw. größter (<span class="be">O<sub>n</sub></span>) Funktionswert im Streifen.</p>
+      <figure style="max-width:74%;margin:0.8mm auto 0">[[FIG1]]</figure>
+      <p class="f zentral">x² auf [0; b]: O<sub>n</sub> = <span class="bruch"><span class="z">b³</span><span>6</span></span>(1 + <span class="bruch"><span class="z">1</span><span>n</span></span>)(2 + <span class="bruch"><span class="z">1</span><span>n</span></span>) → <span class="bruch"><span class="z">b³</span><span>3</span></span></p>
+    </div>
+
+    <div class="box merk">
+      <h2>Bestimmtes Integral</h2>
+      <p>Haben U<sub>n</sub> und O<sub>n</sub> für n → ∞ denselben Grenzwert, heißt er</p>
+      <p class="zentral f gross">∫<sub>a</sub><sup>b</sup> f(x) dx</p>
+      <p>a, b: Integrationsgrenzen, f: Integrand, x: Integrationsvariable. Für stetiges f existiert es immer. Es ist der <b>orientierte Flächeninhalt</b>: <span class="al">über</span> der x-Achse positiv, <span class="be">unter</span> ihr negativ.</p>
+      <figure style="max-width:74%;margin:0.8mm auto 0">[[FIG2]]</figure>
+      <p class="bu">∫<sub>−1</sub><sup>2</sup> f(x) dx = 0,75 − 1,125 = −0,375</p>
+      <table style="margin-top:0.8mm">
+        <tr><td class="l f">∫<sub>a</sub><sup>a</sup> f(x) dx = 0</td><td class="l f">∫<sub>b</sub><sup>a</sup> f dx = −∫<sub>a</sub><sup>b</sup> f dx</td></tr>
+        <tr><td class="l f" colspan="2">∫<sub>a</sub><sup>b</sup> f dx + ∫<sub>b</sub><sup>c</sup> f dx = ∫<sub>a</sub><sup>c</sup> f dx &nbsp;<span class="fu">Intervalladditivität</span></td></tr>
+        <tr><td class="l f" colspan="2">∫<sub>a</sub><sup>b</sup> (k · f + g) dx = k · ∫<sub>a</sub><sup>b</sup> f dx + ∫<sub>a</sub><sup>b</sup> g dx &nbsp;<span class="fu">Linearität</span></td></tr>
+      </table>
+    </div>
+
+    <div class="box merk">
+      <h2>Integralfunktion und Hauptsatz</h2>
+      <p class="zentral f">I<sub>a</sub>(x) = ∫<sub>a</sub><sup>x</sup> f(t) dt, &nbsp; I<sub>a</sub>(a) = 0</p>
+      <figure style="max-width:74%;margin:0.8mm auto 0">[[FIG3]]</figure>
+      <p class="bu">f(x) · h ≤ I(x + h) − I(x) ≤ f(x + h) · h; durch h teilen, h → 0</p>
+      <p><b>Teil 1:</b> f stetig ⟹ <span class="f">I<sub>a</sub>′(x) = f(x)</span>.</p>
+      <p><b>Teil 2:</b> Ist F eine Stammfunktion (F′ = f), dann</p>
+      <p class="zentral f gross">∫<sub>a</sub><sup>b</sup> f(x) dx = F(b) − F(a) = [F(x)]<sub>a</sub><sup>b</sup></p>
+      <p class="fu">Voraussetzung: f stetig auf ganz [a; b]. ∫<sub>−1</sub><sup>1</sup> <span class="bruch"><span class="z">1</span><span>x²</span></span> dx ist <b>nicht</b> −2 — Polstelle bei 0.</p>
+    </div>
+
+    <div class="box full">
+      <h2>Stammfunktionen und Integrationsregeln</h2>
+      <div class="zwei">
+        <table>
+          <tr><th>f(x)</th><th>F(x)</th><th>f(x)</th><th>F(x)</th></tr>
+          <tr><td class="f">k</td><td class="f">kx</td><td class="f">sin(x)</td><td class="f">−cos(x)</td></tr>
+          <tr><td class="f">xⁿ (n ≠ −1)</td><td class="f"><span class="bruch"><span class="z">1</span><span>n + 1</span></span> xⁿ⁺¹</td><td class="f">cos(x)</td><td class="f">sin(x)</td></tr>
+          <tr><td class="f"><span class="bruch"><span class="z">1</span><span>x²</span></span> = x⁻²</td><td class="f">−<span class="bruch"><span class="z">1</span><span>x</span></span></td><td class="f">√x = x<sup>½</sup></td><td class="f"><span class="bruch"><span class="z">2</span><span>3</span></span>x√x</td></tr>
+          <tr><td class="f">k · f + g</td><td class="f">k · F + G</td><td class="f">f(mx + c)</td><td class="f"><span class="bruch"><span class="z">1</span><span>m</span></span> F(mx + c)</td></tr>
+        </table>
+        <div>
+          <p>F ist Stammfunktion von f, wenn <b>F′ = f</b>. Mit F ist auch <b>F + C</b> eine; auf einem Intervall sind das alle.</p>
+          <div class="rechnung">
+            <div class="schritt"><b>1.</b><span class="f">∫<sub>1</sub><sup>2</sup> (3x² − 2x) dx = [x³ − x²]<sub>1</sub><sup>2</sup> = (8 − 4) − (1 − 1) = 4</span></div>
+            <div class="schritt"><b>2.</b><span class="f">∫<sub>0</sub><sup>1</sup> (2x + 1)³ dx = [<span class="bruch"><span class="z">1</span><span>2</span></span> · <span class="bruch"><span class="z">(2x + 1)⁴</span><span>4</span></span>]<sub>0</sub><sup>1</sup> = <span class="bruch"><span class="z">81 − 1</span><span>8</span></span> = 10</span></div>
+            <div class="schritt"><b>3.</b><span><b>Probe:</b> Ableiten muss den Integranden ergeben.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik MSS 11 · Analysis · Seite 1 von 2</p>
+</div>
+
+<!-- ===================== Seite 2 ===================== -->
+<div class="page">
+  <h1>Anwendungen<span class="klein">Flächen — Mittelwert — uneigentliche Integrale — Rotationskörper</span></h1>
+  <div class="grid">
+
+    <div class="box merk">
+      <h2>Fläche zwischen Graph und x-Achse</h2>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>Nullstellen von f in [a; b] bestimmen: x₁ &lt; x₂ &lt; …</span></div>
+        <div class="schritt"><b>2.</b><span>Teilintegrale über [a; x₁], [x₁; x₂], …, [x<sub>k</sub>; b]</span></div>
+        <div class="schritt"><b>3.</b><span><b>A = Summe der Beträge</b> der Teilintegrale</span></div>
+      </div>
+      <p class="f" style="margin-top:0.8mm">f(x) = 0,25x³ − x auf [0; 3]: |−1| + <span class="bruch"><span class="z">25</span><span>16</span></span> = <span class="bruch"><span class="z">41</span><span>16</span></span>; das Integral ist nur <span class="bruch"><span class="z">9</span><span>16</span></span>.</p>
+      <h2 style="margin-top:2mm">Fläche zwischen zwei Graphen</h2>
+      <p class="zentral f">A = |∫<sub>x₁</sub><sup>x₂</sup> (f(x) − g(x)) dx| <span class="fu">(+ … je Schnittstellenpaar)</span></p>
+      <p>Grenzen sind die <b>Schnittstellen</b> (Nullstellen von f − g). Ob die Graphen über oder unter der x-Achse liegen, spielt keine Rolle.</p>
+      <figure style="max-width:70%;margin:0.8mm auto 0">[[FIG4]]</figure>
+      <p class="bu">4 − x² = x + 2 ⟺ x = −2 oder x = 1; A = ∫<sub>−2</sub><sup>1</sup> (2 − x − x²) dx = 4,5</p>
+    </div>
+
+    <div class="box">
+      <h2>Mittelwert einer Funktion</h2>
+      <p class="zentral f gross">m = <span class="bruch"><span class="z">1</span><span>b − a</span></span> · ∫<sub>a</sub><sup>b</sup> f(x) dx</p>
+      <p>Das Rechteck mit Breite b − a und Höhe m hat denselben (orientierten) Flächeninhalt wie die Fläche unter f.</p>
+      <figure style="max-width:74%;margin:0.8mm auto 0">[[FIG5]]</figure>
+      <p class="bu">∫<sub>0</sub><sup>6</sup> T(t) dt = 78, m = 78 : 6 = 13 °C; Mittel der Randwerte: 10 °C</p>
+      <h2 style="margin-top:2mm">Bilanz im Sachzusammenhang</h2>
+      <p class="f">B(t) = B(0) + ∫<sub>0</sub><sup>t</sup> r(s) ds</p>
+      <p>Bestand am größten, wo r von + nach − wechselt (r = 0). <span class="f">r(t) = 6 − 2t, B(0) = 10: B(3) = 10 + 9 = 19</span></p>
+    </div>
+
+    <div class="box">
+      <h2>Uneigentliche Integrale</h2>
+      <p class="zentral f">∫<sub>a</sub><sup>∞</sup> f(x) dx = lim<sub>b→∞</sub> ∫<sub>a</sub><sup>b</sup> f(x) dx</p>
+      <p>Existiert der Grenzwert: <b>konvergent</b>, sonst <b>divergent</b>. Ebenso bei einer Polstelle am Rand: ∫<sub>0</sub><sup>1</sup> = lim<sub>ε→0</sub> ∫<sub>ε</sub><sup>1</sup>.</p>
+      <figure style="max-width:74%;margin:0.8mm auto 0">[[FIG6]]</figure>
+      <p class="f">∫<sub>1</sub><sup>b</sup> <span class="bruch"><span class="z">1</span><span>x²</span></span> dx = 1 − <span class="bruch"><span class="z">1</span><span>b</span></span> → 1; &nbsp;∫<sub>1</sub><sup>b</sup> <span class="bruch"><span class="z">1</span><span>√x</span></span> dx = 2√b − 2 → ∞</p>
+      <p>f → 0 reicht nicht — es kommt darauf an, <b>wie schnell</b>.</p>
+      <h2 style="margin-top:2mm">Rotationskörper</h2>
+      <p class="zentral f gross">V = π · ∫<sub>a</sub><sup>b</sup> (f(x))² dx</p>
+      <figure style="max-width:74%;margin:0.8mm auto 0">[[FIG7]]</figure>
+      <p class="bu">Scheiben: Zylinder π · f(x)² · Δx. Kegel r, h: V = π ∫<sub>0</sub><sup>h</sup> <span class="bruch"><span class="z">r²</span><span>h²</span></span> x² dx = ⅓πr²h</p>
+    </div>
+
+    <div class="box warn full">
+      <h2>Typische Fehler</h2>
+      <ul>
+        <li><b>Integral = Flächeninhalt</b> — nur, wenn f im ganzen Intervall nicht unter der x-Achse liegt; sonst an den Nullstellen teilen.</li>
+        <li><b>|Gesamtintegral|</b> als Fläche — die Teilflächen haben sich darin schon aufgehoben. Der Betrag gehört um jedes Teilintegral.</li>
+        <li><b>F(a) − F(b)</b> statt F(b) − F(a); in <b>f</b> statt in F eingesetzt; beim Aufleiten durch den <b>alten</b> statt den neuen Exponenten geteilt.</li>
+        <li>Bei f(mx + c) den Faktor <span class="bruch"><span class="z">1</span><span>m</span></span> vergessen; bei Rotationskörpern das Quadrat außerhalb des Integrals: π(∫ f dx)² ≠ π∫ f² dx.</li>
+        <li>Den Hauptsatz über eine <b>Polstelle</b> hinweg angewendet; Mittelwert mit dem Mittel der Randwerte verwechselt.</li>
+      </ul>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik MSS 11 · Analysis · Seite 2 von 2</p>
+</div>
+
+</body>
+</html>

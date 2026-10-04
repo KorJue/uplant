@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Erzeugt die Figuren der Formelsammlung „Folgen und Reihen“ (MSS 11, Analysis, Thema 1).
+"""Erzeugt die Figuren der Formelsammlung „Folgen und Reihen“ (MSS 11, Analysis, Thema 1.1).
 
 Jeder Punkt, jede Säule und jedes Feld wird aus der Folge gerechnet. Das Skript prüft dabei mit:
 n₀ zum ε-Streifen ist wirklich das erste Glied im Streifen, die gedrehte Treppe füllt genau das

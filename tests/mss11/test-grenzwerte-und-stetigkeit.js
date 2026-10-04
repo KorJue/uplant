@@ -1,4 +1,4 @@
-// Fachliche Prüfung: MSS 11, Analysis, Thema 2 „Grenzwerte und Stetigkeit“.
+// Fachliche Prüfung: MSS 11, Analysis, Thema 1.2 „Grenzwerte und Stetigkeit“.
 //
 // Geprüft wird, was die Seite zeigt, gegen eine unabhängige Rechnung:
 //   * Gerüst, Schreibweisen, Verweise, Menükarte, kein Logarithmus;

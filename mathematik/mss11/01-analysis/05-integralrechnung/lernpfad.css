@@ -625,3 +625,35 @@
 :root[data-theme="dark"] .dr-intervall.steigt { stroke: #6fd68f; }
 :root[data-theme="dark"] .dr-intervall.faellt, :root[data-theme="dark"] .dr-intervall.rechts { stroke: #ffbf6e; }
 :root[data-theme="dark"] .dr-intervall.links { stroke: #c4a7ff; }
+
+/* ================= Thema 4: Integralrechnung ================= */
+/* Farbcodierung: f blau, Stammfunktion / Integralfunktion grün, orientierte Fläche über der x-Achse
+   grün, unter der x-Achse orange; Untersumme grün, Obersumme orange; Streifen violett; Warnung rot. */
+.dr-flaeche-pos { fill: #157347; fill-opacity: 0.28; stroke: none; }
+.dr-flaeche-neg { fill: #b3650a; fill-opacity: 0.32; stroke: none; }
+.dr-flaeche-a { fill: #1d4ed8; fill-opacity: 0.18; stroke: none; }
+.dr-unter { fill: #157347; fill-opacity: 0.3; stroke: #157347; stroke-width: 0.8; }
+.dr-ober { fill: #b3650a; fill-opacity: 0.08; stroke: #b3650a; stroke-width: 1.2; }
+.dr-streifen-h { fill: #6d28d9; fill-opacity: 0.3; stroke: #6d28d9; stroke-width: 1.2; }
+.dr-schranke-r { fill: none; stroke: #5b6570; stroke-width: 1.2; stroke-dasharray: 4 3; }
+.dr-mittel { fill: #6d28d9; fill-opacity: 0.14; stroke: #6d28d9; stroke-width: 1.6; stroke-dasharray: 6 3; }
+.dr-scheibe { fill: #1d4ed8; fill-opacity: 0.16; stroke: #1d4ed8; stroke-width: 0.9; }
+.dr-stamm { fill: none; stroke: #157347; stroke-width: 2.4; }
+.dr-stamm.schar { stroke-width: 1.2; stroke-opacity: 0.4; }
+.dr-pol { stroke: #b3261e; stroke-width: 1.6; stroke-dasharray: 5 4; }
+:root[data-theme="dark"] .dr-flaeche-pos, :root[data-theme="dark"] .dr-unter { fill: #6fd68f; }
+:root[data-theme="dark"] .dr-unter { stroke: #6fd68f; }
+:root[data-theme="dark"] .dr-flaeche-neg { fill: #ffbf6e; }
+:root[data-theme="dark"] .dr-flaeche-a, :root[data-theme="dark"] .dr-scheibe { fill: #8ab4ff; }
+:root[data-theme="dark"] .dr-scheibe { stroke: #8ab4ff; }
+:root[data-theme="dark"] .dr-ober { fill: #ffbf6e; stroke: #ffbf6e; }
+:root[data-theme="dark"] .dr-streifen-h, :root[data-theme="dark"] .dr-mittel { fill: #c4a7ff; stroke: #c4a7ff; }
+:root[data-theme="dark"] .dr-schranke-r { stroke: #9aa4b1; }
+:root[data-theme="dark"] .dr-stamm { stroke: #6fd68f; }
+:root[data-theme="dark"] .dr-pol { stroke: #ff8a8a; }
+/* Integralzeichen mit Grenzen übereinander: ∫ mit b oben, a unten. */
+.integral { display: inline-flex; align-items: center; white-space: nowrap; }
+.integral .zeichen { font-size: 1.35em; line-height: 1; }
+.grenzen { display: inline-flex; flex-direction: column; font-size: 0.68em; line-height: 1.05; margin: 0 0.15em 0 0.05em; vertical-align: middle; }
+.grenzen .o { order: 0; }
+.grenzen .u { order: 1; }

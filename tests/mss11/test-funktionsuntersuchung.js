@@ -1,4 +1,4 @@
-// Fachliche Prüfung: MSS 11, Analysis, Thema 4 „Funktionsuntersuchung“.
+// Fachliche Prüfung: MSS 11, Analysis, Thema 3 „Funktionsuntersuchung“.
 //
 // Geprüft wird, was die Seite zeigt, gegen eine unabhängige Rechnung. Ableitungen, Extrem- und
 // Wendestellen bestimmt die Prüfung NICHT mit den Formeln der Seite, sondern numerisch: zentrale
@@ -6,7 +6,7 @@
 // Berührstellen. Eine falsch hergeleitete Formel auf der Seite fiele so auf.
 //
 //   * Gerüst: Abschnittsfolge und Nummern, Verweise und Sprungmarken, Menükarte, Formelsammlung,
-//     Verweise von Thema 2 und 3 auf diese Seite;
+//     Verweise von Thema 1.2 und 2 auf diese Seite;
 //   * jede Zeichnung wird aus dem SVG zurückgelesen (Maßstab aus den Gitterlinien mit data-wert):
 //     Graphen von f, f′, f″, Tangenten, Krümmungsfärbung, Lenkpfeil, Extrem- und Wendepunkte mit
 //     Typ, Bänder für Monotonie und Krümmung, Randextrema, Ortskurve, Schachtelnetz, Newton-Folge;
