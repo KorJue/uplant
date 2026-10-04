@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Formelsammlung — Funktionsuntersuchung</title>
+<style>
+  @page { size: A4 landscape; margin: 5.5mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    color: #1f2328;
+    font-size: 8.1px;
+    line-height: 1.33;
+  }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  h1 {
+    font-size: 12.4px; margin: 0 0 1.4mm; padding-bottom: 0.8mm;
+    border-bottom: 1.6px solid #1d4ed8; color: #1d4ed8; letter-spacing: 0.01em;
+  }
+  h1 .klein { font-size: 8.4px; font-weight: 400; color: #5b6570; float: right; margin-top: 2px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2.1mm; align-items: start; }
+  .box {
+    border: 0.9px solid #c9d0d8; border-radius: 2mm; padding: 1.5mm 1.8mm;
+    background: #ffffff; break-inside: avoid;
+  }
+  .box.wide { grid-column: span 2; }
+  .box.full { grid-column: span 3; }
+  .box h2 {
+    font-size: 8.6px; margin: 0 0 1.1mm; color: #1d4ed8;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .box.warn { border-color: #e3b341; background: #fffaf0; }
+  .box.warn h2 { color: #8a5b0a; }
+  .box.merk { border-color: #7ec699; background: #f4fbf6; }
+  .box.merk h2 { color: #0f5132; }
+  p { margin: 0 0 0.9mm; }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 0.9mm; padding-left: 3.4mm; }
+  li { margin-bottom: 0.4mm; }
+  .f { font-family: "Cambria Math", Cambria, Georgia, serif; font-size: 9.2px; }
+  .zentral { text-align: center; }
+  .gross { font-size: 10.4px; font-weight: 700; }
+  .al { color: #157347; font-weight: 700; }
+  .be { color: #b3650a; font-weight: 700; }
+  .ga { color: #b3261e; font-weight: 700; }
+  .kr { color: #1d4ed8; font-weight: 700; }
+  .ra { color: #6d28d9; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { border: 0.7px solid #c9d0d8; padding: 0.5mm 0.6mm; text-align: center; }
+  th { background: #eef2f6; font-weight: 700; font-size: 7.4px; }
+  td { font-size: 7.6px; }
+  td.b { font-weight: 700; }
+  td.l { text-align: left; }
+  figure { margin: 0.8mm 0 0; }
+  figure svg { display: block; width: 100%; height: auto; }
+  .m70 { max-width: 70%; margin: 0.8mm auto 0; }
+  .m80 { max-width: 80%; margin: 0.8mm auto 0; }
+  .m88 { max-width: 88%; margin: 0.8mm auto 0; }
+  .m62 { max-width: 62%; margin: 0.8mm auto 0; }
+  .m72 { max-width: 72%; margin: 0.8mm auto 0; }
+  .m55 { max-width: 55%; margin: 0.8mm auto 0; }
+  .bu { font-size: 7.1px; color: #5b6570; text-align: center; margin-top: 0.5mm; }
+  .rechnung { background: #f4f6f8; border-radius: 1.2mm; padding: 1mm 1.2mm; margin: 0.8mm 0 0; }
+  .schritt { display: flex; gap: 1.2mm; margin-bottom: 0.5mm; }
+  .schritt b { flex: 0 0 3.6mm; color: #1d4ed8; }
+  .schritt:last-child { margin-bottom: 0; }
+  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm; align-items: start; }
+  .bruch { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; margin: 0 0.3mm; }
+  .bruch .z { border-bottom: 0.8px solid currentColor; padding: 0 0.6mm; }
+  .binom { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; padding: 0 0.9mm; margin: 0 0.3mm; border-left: 0.9px solid currentColor; border-right: 0.9px solid currentColor; border-radius: 45% / 50%; font-size: 92%; }
+  .tr { color: #157347; font-weight: 700; }
+  .ni { color: #b3650a; font-weight: 700; }
+  .fu { color: #5b6570; font-size: 7.3px; }
+  .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ===================== Seite 1 ===================== -->
+<div class="page">
+  <h1>Funktionsuntersuchung<span class="klein">MSS 11 · Analysis, Thema 4 · <span class="fu">grau: andere Schreibweisen</span></span></h1>
+  <div class="grid">
+
+    <div class="box">
+      <h2>Höhere Ableitungen</h2>
+      <p class="zentral f">f″ = (f′)′, &nbsp; f‴ = (f″)′, &nbsp; f<sup>(n)</sup></p>
+      <p>f″(x₀) ist die <b>Steigung des Graphen von f′</b> — wie schnell sich die Steigung von f ändert.</p>
+      <p class="f">f(x) = 0,5x³ − 1,5x: f′(x) = 1,5x² − 1,5, f″(x) = 3x, f‴(x) = 3, f<sup>(4)</sup>(x) = 0</p>
+      <p>Weg s(t) → Geschwindigkeit v = s′ → Beschleunigung a = s″. Freier Fall: s = 5t², v = 10t, a = 10.</p>
+      <h2 style="margin-top:2mm">Was f′ über f verrät</h2>
+      <table>
+        <tr><th>Graph von f′</th><th>Graph von f</th></tr>
+        <tr><td>f′ &gt; 0 / f′ &lt; 0</td><td>steigt / fällt</td></tr>
+        <tr><td>Nullstelle + → − / − → +</td><td>Hochpunkt / Tiefpunkt</td></tr>
+        <tr><td>Nullstelle ohne Wechsel</td><td>Sattelpunkt</td></tr>
+        <tr><td>f′ steigt / fällt</td><td>Links- / Rechtskurve</td></tr>
+        <tr><td>Extrempunkt von f′</td><td>Wendepunkt</td></tr>
+      </table>
+    </div>
+
+    <div class="box merk">
+      <h2>Krümmung</h2>
+      <p><b>Linkskurve</b> (linksgekrümmt) auf I: f′ steigt streng; <b>Rechtskurve</b>: f′ fällt streng.</p>
+      <p class="zentral f">f″ &gt; 0 auf I ⟹ Linkskurve &nbsp;·&nbsp; f″ &lt; 0 ⟹ Rechtskurve</p>
+      <p>Das ist der Monotoniesatz für f′. Linkskurve: Graph liegt nahe P <b>über</b> der Tangente. <span class="fu">konvex / konkav</span></p>
+      <figure style="max-width:60%;margin:0.8mm auto 0">[[FIG1]]</figure>
+    </div>
+
+    <div class="box merk">
+      <h2>Extrem- und Wendestellen</h2>
+      <table>
+        <tr><th></th><th>notwendig</th><th>hinreichend</th></tr>
+        <tr><td>Hochpunkt</td><td class="f">f′(x<sub>E</sub>) = 0</td><td class="f">f′(x<sub>E</sub>) = 0, f″(x<sub>E</sub>) &lt; 0</td></tr>
+        <tr><td>Tiefpunkt</td><td class="f">f′(x<sub>E</sub>) = 0</td><td class="f">f′(x<sub>E</sub>) = 0, f″(x<sub>E</sub>) &gt; 0</td></tr>
+        <tr><td>Wendepunkt</td><td class="f">f″(x<sub>W</sub>) = 0</td><td class="f">f″(x<sub>W</sub>) = 0, f‴(x<sub>W</sub>) ≠ 0</td></tr>
+      </table>
+      <p style="margin-top:0.8mm">Ist f″(x<sub>E</sub>) = 0 bzw. f‴(x<sub>W</sub>) = 0: <b>Vorzeichenwechsel</b> von f′ bzw. f″ prüfen (x⁴: Tiefpunkt bei 0, keine Wendestelle).</p>
+      <p><b>Sattelpunkt:</b> Wendepunkt mit f′(x<sub>W</sub>) = 0. <b>Wendetangente:</b> t(x) = f′(x<sub>W</sub>)(x − x<sub>W</sub>) + f(x<sub>W</sub>).</p>
+      <p>Wendestelle von f = Extremstelle von f′ (steilste / flachste Stelle).</p>
+    </div>
+
+    <div class="box wide">
+      <h2>Ablauf einer Funktionsuntersuchung — Musterrechnung f(x) = x³ − 6x² + 9x</h2>
+      <div class="zwei">
+        <div class="rechnung">
+          <div class="schritt"><b>1.</b><span>D = ℝ; f(−x) ≠ ±f(x): keine Symmetrie zu y-Achse oder Ursprung</span></div>
+          <div class="schritt"><b>2.</b><span>Grad 3, a₃ = 1 &gt; 0: f → −∞ für x → −∞, f → +∞ für x → +∞</span></div>
+          <div class="schritt"><b>3.</b><span>S<sub>y</sub>(0 | 0)</span></div>
+          <div class="schritt"><b>4.</b><span>f(x) = x(x − 3)²: Nullstellen 0 (einfach), 3 (doppelt, berührt)</span></div>
+          <div class="schritt"><b>5.</b><span>f′(x) = 3(x − 1)(x − 3), f″(x) = 6x − 12: f″(1) = −6 ⟹ <b>H(1 | 4)</b>; f″(3) = 6 ⟹ <b>T(3 | 0)</b></span></div>
+          <div class="schritt"><b>6.</b><span>f″(x) = 0 ⟺ x = 2, f‴ = 6 ≠ 0 ⟹ <b>W(2 | 2)</b> — Mitte von H und T</span></div>
+          <div class="schritt"><b>7.</b><span>steigt für x &lt; 1 und x &gt; 3, fällt dazwischen; Rechtskurve für x &lt; 2, Linkskurve für x &gt; 2</span></div>
+          <div class="schritt"><b>8.</b><span>Graph aus allen Punkten; W = ℝ. Probe: Passt jeder Punkt ins Bild?</span></div>
+        </div>
+        <figure class="m80">[[FIG2]]</figure>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Funktion mit Sinus</h2>
+      <p class="f">f(x) = x + 2 sin(x) auf [0; 2π]</p>
+      <p class="f">f′ = 1 + 2 cos x = 0 ⟺ cos x = −0,5 ⟺ x = <span class="bruch"><span class="z">2π</span><span>3</span></span>, <span class="bruch"><span class="z">4π</span><span>3</span></span></p>
+      <p class="f">f″ = −2 sin x: H(<span class="bruch"><span class="z">2π</span><span>3</span></span> | <span class="bruch"><span class="z">2π</span><span>3</span></span> + √3), T(<span class="bruch"><span class="z">4π</span><span>3</span></span> | <span class="bruch"><span class="z">4π</span><span>3</span></span> − √3), W(π | π)</p>
+      <p>Immer im <b>Bogenmaß</b>, immer mit <b>Intervall</b> — sonst unendlich viele Lösungen.</p>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik MSS 11 · Analysis · Seite 1 von 2</p>
+</div>
+
+<!-- ===================== Seite 2 ===================== -->
+<div class="page">
+  <h1>Anwendungen<span class="klein">globale Extrema — Scharen — Steckbriefe — Extremwertprobleme — Newton-Verfahren</span></h1>
+  <div class="grid">
+
+    <div class="box">
+      <h2>Globale Extrema auf [a; b]</h2>
+      <p>Kandidaten: Stellen mit f′(x) = 0 im Inneren <b>und</b> die Ränder a, b. Alle Funktionswerte vergleichen.</p>
+      <figure style="max-width:66%;margin:0.8mm auto 0">[[FIG3]]</figure>
+      <p class="bu">Auf [−1,5; 2,5] ist f(2,5) = 4,0625 größer als der Hochpunkt f(−1) = 1: Randmaximum.</p>
+    </div>
+
+    <div class="box">
+      <h2>Funktionenschar und Ortskurve</h2>
+      <p>Abgeleitet wird nach x, der Parameter ist eine feste Zahl. <b>Ortskurve:</b> Punkt (x(a) | y(a)) bestimmen, x(a) nach a auflösen, in y(a) einsetzen.</p>
+      <p class="f">fₐ(x) = x³ − 3a²x: Hₐ(−a | 2a³), Tₐ(a | −2a³), W(0 | 0); a = x ⟹ y = −2x³</p>
+      <figure style="max-width:66%;margin:0.8mm auto 0">[[FIG4]]</figure>
+    </div>
+
+    <div class="box merk">
+      <h2>Steckbriefaufgaben</h2>
+      <table>
+        <tr><th>Eigenschaft</th><th>Gleichung</th></tr>
+        <tr><td>P(x₀ | y₀) auf dem Graphen</td><td class="f">f(x₀) = y₀</td></tr>
+        <tr><td>Extremstelle bei x₀</td><td class="f">f′(x₀) = 0</td></tr>
+        <tr><td>Wendestelle bei x₀</td><td class="f">f″(x₀) = 0</td></tr>
+        <tr><td>Steigung m bei x₀</td><td class="f">f′(x₀) = m</td></tr>
+        <tr><td>achsen- / punktsymmetrisch</td><td>nur gerade / ungerade Exponenten</td></tr>
+      </table>
+      <p style="margin-top:0.8mm">Grad n ⟹ n + 1 Bedingungen, LGS lösen. <b>Probe</b> mit f″ bzw. f‴ — die Gleichungen sind nur notwendig!</p>
+      <div class="rechnung">
+        <div class="schritt"><b>Bsp.</b><span>H(0 | 2), W(1 | 0): d = 2, c = 0, 6a + 2b = 0, a + b + 2 = 0 ⟹ f(x) = x³ − 3x² + 2</span></div>
+      </div>
+    </div>
+
+    <div class="box wide">
+      <h2>Extremwertprobleme — die größte Schachtel aus 12 cm × 12 cm</h2>
+      <div class="zwei">
+        <div class="rechnung">
+          <div class="schritt"><b>1.</b><span><b>Hauptbedingung:</b> V = Länge · Breite · Höhe</span></div>
+          <div class="schritt"><b>2.</b><span><b>Nebenbedingung:</b> Länge = Breite = 12 − 2x, Höhe = x</span></div>
+          <div class="schritt"><b>3.</b><span><b>Zielfunktion:</b> V(x) = x(12 − 2x)² = 4x³ − 48x² + 144x, <b>0 &lt; x &lt; 6</b></span></div>
+          <div class="schritt"><b>4.</b><span>V′(x) = 12(x − 2)(x − 6) = 0: nur x = 2 im Definitionsbereich; V″(2) = −48 &lt; 0</span></div>
+          <div class="schritt"><b>5.</b><span>Ränder: V → 0. <b>Antwort:</b> x = 2 cm, V = 128 cm³</span></div>
+        </div>
+        <figure class="m80">[[FIG5]]</figure>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Newton-Verfahren</h2>
+      <p class="zentral f gross">x<sub>n+1</sub> = x<sub>n</sub> − <span class="bruch"><span class="z">f(x<sub>n</sub>)</span><span>f′(x<sub>n</sub>)</span></span></p>
+      <p>Nullstelle der Tangente in (x<sub>n</sub> | f(x<sub>n</sub>)). Nahe der Nullstelle sehr schnell; scheitert, wenn f′(x<sub>n</sub>) ≈ 0.</p>
+      <figure style="max-width:66%;margin:0.8mm auto 0">[[FIG6]]</figure>
+      <p class="bu">x₀ = 3, x₁ ≈ 2,36, x₂ ≈ 2,127 … → 2,0945515</p>
+    </div>
+
+    <div class="box warn wide">
+      <h2>Typische Fehler</h2>
+      <ul>
+        <li><b>f″(x) = 0</b> ⟹ <b>Wendepunkt</b> — nur mit Vorzeichenwechsel von f″ (0,25x⁴: kein Wendepunkt, sondern Tiefpunkt).</li>
+        <li><b>f″(x<sub>E</sub>) = 0</b> ⟹ <b>kein Extrempunkt</b> — falsch: dann den Vorzeichenwechsel von f′ prüfen.</li>
+        <li><b>Hochpunkt = Maximum</b> — nur lokal; auf einem Intervall die Ränder vergleichen.</li>
+        <li><b>Hochpunkt von f′ = Hochpunkt von f</b> — nein, das ist ein Wendepunkt von f.</li>
+        <li><b>Lösungen außerhalb des Definitionsbereichs</b> stehen lassen; die Probe bei Steckbriefaufgaben vergessen.</li>
+      </ul>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik MSS 11 · Analysis · Seite 2 von 2</p>
+</div>
+
+</body>
+</html>

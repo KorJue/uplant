@@ -488,7 +488,7 @@ function renderWende() {
   zeige("wp-mount", K1.svg, K2.svg);
   const bt = yw - mw * xw;
   setzeHtml("wp-bilanz",
-    `f(x) = 0,25x³ − 0,75x² ${b === 0 ? "" : plusMinus(b) + "x "}+ 1, &nbsp;f′(x) = 0,75x² − 1,5x ${b === 0 ? "" : plusMinus(b)}, &nbsp;f″(x) = 1,5x − 1,5, &nbsp;f‴(x) = 1,5<br>` +
+    `f(x) = 0,25x³ − 0,75x² ${b === 0 ? "" : plusMinus(b) + "x "}+ 1, &nbsp;f′(x) = 0,75x² − 1,5x${b === 0 ? "" : " " + plusMinus(b)}, &nbsp;f″(x) = 1,5x − 1,5, &nbsp;f‴(x) = 1,5<br>` +
     `f″(x) = 0 ⟺ x = 1; f‴(1) = 1,5 ≠ 0 ⇒ <span class="wr">${sattel ? "Sattelpunkt S" : "Wendepunkt W"}(1 | ${num(yw)})</span>.<br>` +
     `Wendetangente: m = f′(1) = ${num(mw)}, t(x) = ${geradeText(mw, bt)}${sattel ? " — waagerecht, also ein Sattelpunkt" : ""}.`);
   let text;
