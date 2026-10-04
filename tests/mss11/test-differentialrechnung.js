@@ -5,7 +5,7 @@
 // hier noch einmal aufgeschriebenen Funktionen — eine falsch hergeleitete Formel fiele so auf.
 //
 //   * Gerüst: Abschnittsfolge, Wegweiser mit beiden Büchern, Schreibweisen, Verweise, Menükarte,
-//     kein Logarithmus (der kommt erst in Thema 4), Formelsammlung vorhanden;
+//     kein Logarithmus (der kommt erst später), Formelsammlung vorhanden;
 //   * jede Zeichnung wird aus dem SVG zurückgelesen (Maßstab aus den Gitterlinien mit data-wert):
 //     Sekanten- und Tangentensteigungen, Punkte, Steigungsdreiecke, Flächen der Rechtecke, Kreis,
 //     Bögen, Winkel, Drehungen (starr, Punkt für Punkt nachgerechnet), Nullstellenmarken;
@@ -153,7 +153,7 @@ async function geruest(page) {
     if (anker) pruefe((await antwort.text()).includes(`id="${anker}"`), `Gerüst: Sprungmarke „${anker}“ fehlt in ${ziel}`);
   }
   const haupt = await page.evaluate(() => document.querySelector("main").innerText);
-  pruefe(!/\bln\s*\(|\blog\b|\blg\b|Logarithmus/.test(haupt.replace(/Exponential- und Logarithmusfunktionen/g, "")), "Gerüst: Die Seite benutzt einen Logarithmus, der erst in Thema 4 kommt");
+  pruefe(!/\bln\s*\(|\blog\b|\blg\b|Logarithmus/.test(haupt.replace(/Exponential- und Logarithmusfunktionen/g, "")), "Gerüst: Die Seite benutzt einen Logarithmus, der erst später kommt");
   const menue = fs.readFileSync(path.join(WURZEL, "mathematik/mss11/01-analysis/index.html"), "utf-8");
   pruefe(/data-section="mss11" href="03-differentialrechnung\/index.html" hidden/.test(menue), "Menü: Karte für die Differentialrechnung fehlt oder ist nicht mit data-section/hidden versehen");
 }

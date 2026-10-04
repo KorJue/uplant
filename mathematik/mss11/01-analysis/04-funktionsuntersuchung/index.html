@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Funktionsuntersuchung</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="../../../aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">MSS 11</a><span class="sep">/</span>
+  <a href="../index.html">01 Analysis</a><span class="sep">/</span>
+  4 Funktionsuntersuchung
+</nav>
+<header class="page-header">
+  <h1>Funktionsuntersuchung</h1>
+  <p>Ein Selbstlernpfad: Was verraten f′ und f″ über den Graphen von f — wo er steigt, wo er sich krümmt, wo er am höchsten ist? Aus diesen Antworten entsteht die vollständige Untersuchung einer Funktion, und mit ihr lassen sich Funktionen aus Eigenschaften bestimmen und Optimierungsaufgaben lösen. Jeder Abschnitt leitet sein Ergebnis an einer beweglichen Darstellung her, rechnet es nach und endet mit einer Kontrollfrage. Am Schluss stehen zwanzig Übungsaufgaben auf vier Stufen.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>In <a href="../03-differentialrechnung/index.html">Thema 3</a> hast du gesehen, dass das Vorzeichen von f′ sagt, wo f steigt und fällt, und dass Hoch- und Tiefpunkte an Nullstellen von f′ mit Vorzeichenwechsel liegen. Jetzt wird f′ selbst noch einmal abgeleitet. Die <span class="term">zweite Ableitung</span> f″ beschreibt, wie sich die Steigung ändert — also, wie der Graph gekrümmt ist. Mit f′ und f″ zusammen lässt sich ein Graph vollständig beschreiben, ohne ihn vorher zu zeichnen. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li><span class="term">höhere Ableitungen</span> bilden und f″ als Änderungsrate der Steigung deuten</li>
+      <li>das <span class="term">Krümmungsverhalten</span> (Linkskurve, Rechtskurve) am Vorzeichen von f″ ablesen</li>
+      <li>Extremstellen mit der <span class="term">hinreichenden Bedingung</span> f′(x<sub>E</sub>) = 0 und f″(x<sub>E</sub>) ≠ 0 nachweisen — und wissen, was bei f″(x<sub>E</sub>) = 0 zu tun ist</li>
+      <li><span class="term">Wendepunkte</span>, <span class="term">Sattelpunkte</span> und <span class="term">Wendetangenten</span> bestimmen</li>
+      <li>eine ganzrationale Funktion <span class="term">vollständig untersuchen</span> und ihren Graphen aus den Ergebnissen zeichnen — und dasselbe für eine Funktion mit Sinus</li>
+      <li><span class="term">globale Extrema</span> auf einem Intervall bestimmen, auch am Rand</li>
+      <li>aus dem Graphen von f′ auf Eigenschaften von f schließen</li>
+      <li><span class="term">Funktionenscharen</span> untersuchen und <span class="term">Ortskurven</span> bestimmen</li>
+      <li>ganzrationale Funktionen aus Eigenschaften bestimmen (<span class="term">Steckbriefaufgaben</span>)</li>
+      <li><span class="term">Extremwertprobleme</span> mit Haupt- und Nebenbedingung lösen</li>
+      <li>Nullstellen mit dem <span class="term">Newton-Verfahren</span> näherungsweise berechnen</li>
+    </ul>
+    <p>Die Seite folgt der Schreibweise von <strong>Elemente der Mathematik</strong> und deckt zugleich die Kapitel zur Funktionsuntersuchung in <strong>Fundamente der Mathematik</strong> ab: höhere Ableitungen, Krümmung, Extrem- und Wendepunkte, Kurvendiskussion, Funktionenscharen, Bestimmen ganzrationaler Funktionen, Extremwertprobleme und das Newton-Verfahren.</p>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../03-differentialrechnung/index.html">Thema 3</a> die <a href="../03-differentialrechnung/index.html#sec-regeln">Ableitungsregeln</a>, die <a href="../03-differentialrechnung/index.html#sec-sinus">Ableitungen von sin und cos</a>, <a href="../03-differentialrechnung/index.html#sec-tangente">Tangentengleichungen</a>, <a href="../03-differentialrechnung/index.html#sec-nullstellen">Nullstellen ganzrationaler Funktionen</a> und vor allem den Zusammenhang von <a href="../03-differentialrechnung/index.html#sec-monotonie">f und f′</a>. Für die Steckbriefaufgaben kommen die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/06-lineare-gleichungssysteme/index.html">linearen Gleichungssysteme</a> aus der Mittelstufe dazu.</p>
+  </section>
+
+  <!-- 1. Höhere Ableitungen -->
+  <section class="card" id="sec-hoehere">
+    <h2>1. Höhere Ableitungen: f′, f″ und f‴</h2>
+    <p>Die Ableitungsfunktion f′ ist wieder eine Funktion — also kann man auch sie ableiten. Ihre Ableitung heißt <span class="term">zweite Ableitung</span> f″, deren Ableitung <span class="term">dritte Ableitung</span> f‴. So wie f′(x₀) die Steigung des Graphen von f an der Stelle x₀ ist, ist f″(x₀) die Steigung des Graphen von <em>f′</em> an dieser Stelle: f″ sagt, wie schnell sich die Steigung von f ändert. Fahre mit x₀ durch und vergleiche die beiden Tangenten.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="ho-art" class="eingabe" style="padding:0.4rem">
+            <option value="kubik">f(x) = 0,5x³ − 1,5x</option>
+            <option value="quartik">f(x) = 0,125x⁴ − 0,75x²</option>
+            <option value="fall">freier Fall: s(t) = 5t²</option>
+          </select>
+        </label>
+        <label>x₀: <input type="range" id="ho-x" min="-2" max="2" step="0.25" value="1" style="vertical-align:middle;width:11rem"> <span id="ho-x-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="ho-mount"></div>
+      <div class="th-bilanz" id="ho-bilanz"></div>
+      <div id="ho-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Höhere Ableitungen</span>
+      Ist die Ableitungsfunktion f′ differenzierbar, so heißt ihre Ableitung (f′)′ = f″ die <strong>zweite Ableitung</strong> von f. Entsprechend ist f‴ = (f″)′ die <strong>dritte Ableitung</strong>; allgemein schreibt man f<sup>(n)</sup> für die n-te Ableitung.
+      <div class="formula-block">f″(x₀) = Steigung des Graphen von f′ an der Stelle x₀</div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      f(x) = 0,5x³ − 1,5x: &nbsp;f′(x) = 1,5x² − 1,5, &nbsp;f″(x) = 3x, &nbsp;f‴(x) = 3, &nbsp;f<sup>(4)</sup>(x) = 0.<br>
+      f(x) = 0,125x⁴ − 0,75x²: &nbsp;f′(x) = 0,5x³ − 1,5x — das ist die Funktion aus dem ersten Beispiel —, f″(x) = 1,5x² − 1,5, f‴(x) = 3x.<br>
+      Freier Fall s(t) = 5t² (t in s, s in m): Die Geschwindigkeit ist v(t) = s′(t) = 10t in <span class="bruch"><span class="z">m</span><span class="n">s</span></span>, die <strong>Beschleunigung</strong> a(t) = v′(t) = s″(t) = 10 in <span class="bruch"><span class="z">m</span><span class="n">s²</span></span> — konstant, wie es beim freien Fall sein muss.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — f″ ist nicht „die Steigung zweimal“</span>
+      f″(x₀) ist <em>nicht</em> f′(x₀) · f′(x₀) und auch nicht f′(f′(x₀)). Man leitet die <em>Funktion</em> f′ ab und setzt erst danach x₀ ein. Bei f(x) = x³ ist f′(1) = 3; f′(1) · f′(1) wäre 9 und f′(f′(1)) = f′(3) = 27. Richtig ist f″(x) = 6x, also f″(1) = 6.
+    </div>
+    <p class="hinweis-box">💡 Bei einer ganzrationalen Funktion vom Grad n sinkt der Grad mit jeder Ableitung um 1; die n-te Ableitung ist konstant, alle weiteren sind 0. Ein Polynom „verliert“ also nach n + 1 Ableitungen jede Information — anders als sin, das sich nach vier Ableitungen wiederholt: sin → cos → −sin → −cos → sin.</p>
+    <div class="quiz" id="quiz-hoehere"></div>
+  </section>
+
+  <!-- 2. Krümmung -->
+  <section class="card" id="sec-kruemmung">
+    <h2>2. Krümmung: Linkskurve und Rechtskurve</h2>
+    <p>Stell dir vor, du fährst mit dem Fahrrad auf dem Graphen von links nach rechts. Mal musst du nach links lenken, mal nach rechts. Beim Linkslenken dreht sich die Fahrtrichtung gegen den Uhrzeigersinn — die Tangente wird steiler, ihre Steigung f′ <em>wächst</em>. Beim Rechtslenken nimmt f′ ab. Wie stark sich f′ ändert, sagt die Ableitung von f′, also f″. Fahre mit x₀ über den Graphen und beobachte den Lenkpfeil und das Vorzeichen von f″.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="kr-art" class="eingabe" style="padding:0.4rem">
+            <option value="kubik">f(x) = 0,5x³ − 1,5x</option>
+            <option value="quartik">f(x) = 0,125x⁴ − 0,75x²</option>
+            <option value="sinus">f(x) = sin(x)</option>
+          </select>
+        </label>
+        <label>x₀: <input type="range" id="kr-x" min="-2.5" max="2.5" step="0.25" value="1" style="vertical-align:middle;width:11rem"> <span id="kr-x-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="kr-mount"></div>
+      <div class="th-bilanz" id="kr-bilanz"></div>
+      <div id="kr-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Linkskurve und Rechtskurve</span>
+      Der Graph von f heißt auf einem Intervall I <strong>Linkskurve</strong> (f ist dort <strong>linksgekrümmt</strong>), wenn f′ auf I streng monoton steigt; er heißt <strong>Rechtskurve</strong> (f ist <strong>rechtsgekrümmt</strong>), wenn f′ auf I streng monoton fällt.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Krümmungskriterium</span>
+      Ist f″(x) &gt; 0 für alle x aus I, so ist der Graph von f auf I eine Linkskurve. Ist f″(x) &lt; 0 für alle x aus I, so ist er eine Rechtskurve.<br>
+      <em>Begründung:</em> Das ist der <a href="../03-differentialrechnung/index.html#sec-monotonie">Monotoniesatz</a> aus Thema 3, angewandt auf f′ statt auf f: f″ = (f′)′ &gt; 0 heißt, f′ steigt.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel</span>
+      f(x) = 0,5x³ − 1,5x: f″(x) = 3x. Für x &lt; 0 ist f″(x) &lt; 0 — Rechtskurve; für x &gt; 0 ist f″(x) &gt; 0 — Linkskurve. An der Stelle 0 wechselt das Krümmungsverhalten.<br>
+      f(x) = sin(x): f″(x) = −sin(x). Wo der Sinus positiv ist (zwischen 0 und π), ist f″ negativ — Rechtskurve, der Graph ist dort ein „Berg“. Zwischen π und 2π ist er ein „Tal“, eine Linkskurve.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — „Linkskurve“ heißt nicht „steigt“</span>
+      Krümmung und Monotonie sind zwei verschiedene Fragen. Eine Linkskurve kann fallen (die Normalparabel für x &lt; 0) oder steigen (für x &gt; 0). Entscheidend ist nur, ob die <em>Steigung</em> zunimmt: von −2 auf −1 ist auch eine Zunahme. Und das Kriterium gilt nur in einer Richtung: f(x) = x⁴ ist überall eine Linkskurve, obwohl f″(0) = 0 ist.
+    </div>
+    <p class="hinweis-box">💡 In einer Linkskurve liegt der Graph in der Nähe des Berührpunkts <em>oberhalb</em> jeder Tangente, in einer Rechtskurve <em>unterhalb</em>. Im Widget siehst du das, wenn du x₀ in die Mitte eines farbigen Bogens stellst. Man nennt Linkskurven deshalb auch <em>konvex</em>, Rechtskurven <em>konkav</em>.</p>
+    <div class="quiz" id="quiz-kruemmung"></div>
+  </section>
+
+  <!-- 3. Extremstellen mit f″ -->
+  <section class="card" id="sec-extrem2">
+    <h2>3. Extremstellen mit der zweiten Ableitung</h2>
+    <p>In Thema 3 hast du Extremstellen am Vorzeichenwechsel von f′ erkannt. Mit f″ geht es oft schneller: Ist f′(x<sub>E</sub>) = 0 und der Graph dort eine Rechtskurve, dann fällt f′ durch die Null hindurch — von positiv nach negativ. Das ist genau der Vorzeichenwechsel eines Hochpunkts. Im Widget hat die Funktion f(x) = 0,25x⁴ + 0,5a · x² an der Stelle 0 immer eine waagerechte Tangente. Verändere a und beobachte, was f″(0) = a entscheidet — und was nicht.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a: <input type="range" id="ex-a" min="-2" max="2" step="0.25" value="-1" style="vertical-align:middle;width:12rem"> <span id="ex-a-anzeige" class="wert farbe-violett"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="ex-mount"></div>
+      <div class="th-bilanz" id="ex-bilanz"></div>
+      <div id="ex-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Hinreichende Bedingung für Extremstellen</span>
+      Ist f′(x<sub>E</sub>) = 0 und f″(x<sub>E</sub>) &lt; 0, so hat f an der Stelle x<sub>E</sub> ein lokales <strong>Maximum</strong> (Hochpunkt).<br>
+      Ist f′(x<sub>E</sub>) = 0 und f″(x<sub>E</sub>) &gt; 0, so hat f an der Stelle x<sub>E</sub> ein lokales <strong>Minimum</strong> (Tiefpunkt).<br>
+      Ist f′(x<sub>E</sub>) = 0 und f″(x<sub>E</sub>) = 0, entscheidet f″ <strong>nichts</strong> — dann hilft nur der Vorzeichenwechsel von f′.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: f(x) = x³ − 3x</span>
+      f′(x) = 3x² − 3 = 3(x − 1)(x + 1), notwendige Bedingung f′(x) = 0: x = −1 oder x = 1.<br>
+      f″(x) = 6x. f″(−1) = −6 &lt; 0: Hochpunkt H(−1 | 2). f″(1) = 6 &gt; 0: Tiefpunkt T(1 | −2).
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — f″(x<sub>E</sub>) = 0 heißt nicht „kein Extrempunkt“</span>
+      Bei a = 0 ist f(x) = 0,25x⁴, also f′(0) = 0 und f″(0) = 0. Trotzdem hat f an der Stelle 0 einen Tiefpunkt: f′(x) = x³ wechselt von − nach +. Die Bedingung mit f″ ist <em>hinreichend</em>, aber nicht <em>notwendig</em>. Wer bei f″(x<sub>E</sub>) = 0 einfach „kein Extrempunkt“ schreibt, verliert genau diese Fälle.
+    </div>
+    <div class="reflexion-box">
+      <span class="box-label">Nachgedacht: notwendig, hinreichend — und was dazwischen liegt</span>
+      <ol>
+        <li><strong>Notwendig</strong> heißt: Ohne diese Bedingung geht es nicht. Jeder Hochpunkt (an einer differenzierbaren, inneren Stelle) hat f′(x<sub>E</sub>) = 0 — aber nicht jede Nullstelle von f′ ist ein Hochpunkt (Sattelpunkt).</li>
+        <li><strong>Hinreichend</strong> heißt: Mit dieser Bedingung ist es sicher. f′(x<sub>E</sub>) = 0 und f″(x<sub>E</sub>) &lt; 0 garantiert einen Hochpunkt — aber nicht jeder Hochpunkt erfüllt sie (−x⁴ hat f″(0) = 0).</li>
+        <li>Der <strong>Vorzeichenwechsel</strong> von f′ ist schärfer: Er erkennt jeden Extrempunkt einer differenzierbaren Funktion. Dafür muss man das Vorzeichen auf beiden Seiten kennen, was bei verwickelten Termen mühsam ist. Das f″-Kriterium ist ein bequemer Spezialfall davon.</li>
+      </ol>
+    </div>
+    <div class="quiz" id="quiz-extrem2"></div>
+  </section>
+
+  <!-- 4. Wendepunkte -->
+  <section class="card" id="sec-wendepunkte">
+    <h2>4. Wendepunkte, Sattelpunkte und Wendetangenten</h2>
+    <p>Wo der Graph von einer Rechtskurve in eine Linkskurve übergeht (oder umgekehrt), lenkt der Radfahrer kurz geradeaus. Dort ist die Steigung f′ am kleinsten oder am größten — der Graph ist an dieser Stelle am steilsten oder am flachsten. Im Widget ist f(x) = 0,25x³ − 0,75x² + b · x + 1. Fahre mit x₀ durch: An einer Stelle wechselt die Tangente die Seite des Graphen. Verändere dann b so, dass diese Tangente waagerecht wird.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>b: <input type="range" id="wp-b" min="-1.5" max="2.25" step="0.25" value="0" style="vertical-align:middle;width:10rem"> <span id="wp-b-anzeige" class="wert farbe-orange"></span></label>
+        <label>x₀: <input type="range" id="wp-x" min="-1" max="3" step="0.25" value="0" style="vertical-align:middle;width:10rem"> <span id="wp-x-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="wp-mount"></div>
+      <div class="th-bilanz" id="wp-bilanz"></div>
+      <div id="wp-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Wendepunkt, Sattelpunkt, Wendetangente</span>
+      Eine Stelle x<sub>W</sub>, an der der Graph von einer Links- in eine Rechtskurve übergeht oder umgekehrt, heißt <strong>Wendestelle</strong>, der Punkt W(x<sub>W</sub> | f(x<sub>W</sub>)) <strong>Wendepunkt</strong>. Die Tangente in W heißt <strong>Wendetangente</strong>. Ein Wendepunkt mit waagerechter Tangente (f′(x<sub>W</sub>) = 0) heißt <strong>Sattelpunkt</strong> (auch Terrassenpunkt).
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Bedingungen für Wendestellen</span>
+      <strong>Notwendig:</strong> Ist x<sub>W</sub> Wendestelle, so ist f″(x<sub>W</sub>) = 0.<br>
+      <strong>Hinreichend:</strong> Ist f″(x<sub>W</sub>) = 0 und f‴(x<sub>W</sub>) ≠ 0, so ist x<sub>W</sub> Wendestelle. Ebenso, wenn f″ an der Stelle x<sub>W</sub> das Vorzeichen wechselt.<br>
+      <em>Begründung:</em> Eine Wendestelle von f ist eine Extremstelle von f′ (dort hört f′ auf zu steigen und beginnt zu fallen). Also gelten für f′ die Bedingungen aus Abschnitt 3 — eine Ableitung höher.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: f(x) = 0,25x³ − 0,75x² + 1 (b = 0)</span>
+      f′(x) = 0,75x² − 1,5x, f″(x) = 1,5x − 1,5, f‴(x) = 1,5.<br>
+      f″(x) = 0 ⟺ x = 1; f‴(1) = 1,5 ≠ 0: Wendestelle. f(1) = 0,5, also W(1 | 0,5).<br>
+      Wendetangente: m = f′(1) = −0,75, t(x) = −0,75 · (x − 1) + 0,5 = −0,75x + 1,25.<br>
+      Für b = 0,75 ist f′(1) = 0,75 − 1,5 + 0,75 = 0: Dann ist W ein Sattelpunkt.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — f″(x) = 0 ist nur ein Kandidat</span>
+      Wie bei den Extremstellen ist f″(x<sub>W</sub>) = 0 nur <em>notwendig</em>. Ob wirklich eine Wendestelle vorliegt, entscheidet erst f‴ oder der Vorzeichenwechsel von f″. Wie das schiefgehen kann, zeigt die <a href="#sec-stolperstelle">Stolperstelle</a> am Ende.
+    </div>
+    <p class="hinweis-box">💡 Jede ganzrationale Funktion dritten Grades hat genau einen Wendepunkt, und ihr Graph ist zu ihm <strong>punktsymmetrisch</strong>. Deshalb liegt W immer genau in der Mitte zwischen Hoch- und Tiefpunkt, wenn es beide gibt — eine gute Probe.</p>
+    <div class="quiz" id="quiz-wendepunkte"></div>
+  </section>
+
+  <!-- 5. Vollständige Funktionsuntersuchung -->
+  <section class="card" id="sec-schema">
+    <h2>5. Die vollständige Funktionsuntersuchung</h2>
+    <p>Jetzt wird alles zusammengesetzt. Eine <span class="term">Funktionsuntersuchung</span> (Kurvendiskussion) sammelt Schritt für Schritt die Eigenschaften einer Funktion, bis sich der Graph fast von selbst zeichnen lässt. Wähle eine Funktion und gehe mit dem Regler die Schritte durch: Jeder Schritt fügt der Zeichnung hinzu, was er herausgefunden hat. Erst am Ende wird der Graph durch diese Punkte gelegt.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="sc-art" class="eingabe" style="padding:0.4rem">
+            <option value="kubik">f(x) = x³ − 6x² + 9x</option>
+            <option value="bi">f(x) = 0,25x⁴ − 1,5x²</option>
+            <option value="sattel">f(x) = 0,25x⁴ − x³</option>
+          </select>
+        </label>
+        <label>Schritt: <input type="range" id="sc-s" min="1" max="8" step="1" value="1" style="vertical-align:middle;width:11rem"> <span id="sc-s-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap" id="sc-mount"></div>
+      <ol class="schritt-liste" id="sc-liste"></ol>
+      <div id="sc-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Ablauf einer Funktionsuntersuchung</span>
+      <ol style="margin:0.2rem 0 0;padding-left:1.3rem">
+        <li><strong>Definitionsmenge</strong> und <strong>Symmetrie</strong> (f(−x) = f(x) oder f(−x) = −f(x))</li>
+        <li><strong>Verhalten für x → ±∞</strong> (bei ganzrationalen Funktionen: Grad und Vorzeichen des höchsten Glieds)</li>
+        <li><strong>Schnittpunkt mit der y-Achse</strong> S<sub>y</sub>(0 | f(0))</li>
+        <li><strong>Nullstellen</strong> mit Vielfachheit</li>
+        <li><strong>Extrempunkte:</strong> f′(x) = 0, dann f″ oder Vorzeichenwechsel</li>
+        <li><strong>Wendepunkte:</strong> f″(x) = 0, dann f‴ oder Vorzeichenwechsel</li>
+        <li><strong>Monotonie- und Krümmungsintervalle</strong></li>
+        <li><strong>Graph</strong> mit allen besonderen Punkten; Wertemenge</li>
+      </ol>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Musterrechnung: f(x) = x³ − 6x² + 9x</span>
+      <strong>1.</strong> D = ℝ. f(−x) = −x³ − 6x² − 9x ist weder f(x) noch −f(x): keine Symmetrie zum Ursprung oder zur y-Achse (aber Punktsymmetrie zum Wendepunkt, siehe 6.).<br>
+      <strong>2.</strong> Grad 3, Leitkoeffizient 1 &gt; 0: f(x) → −∞ für x → −∞, f(x) → +∞ für x → +∞.<br>
+      <strong>3.</strong> f(0) = 0: S<sub>y</sub>(0 | 0).<br>
+      <strong>4.</strong> f(x) = x(x² − 6x + 9) = x(x − 3)²: Nullstellen 0 (einfach, Vorzeichenwechsel) und 3 (doppelt, der Graph berührt die x-Achse).<br>
+      <strong>5.</strong> f′(x) = 3x² − 12x + 9 = 3(x − 1)(x − 3); f″(x) = 6x − 12. f″(1) = −6 &lt; 0: H(1 | 4); f″(3) = 6 &gt; 0: T(3 | 0).<br>
+      <strong>6.</strong> f″(x) = 0 ⟺ x = 2; f‴(x) = 6 ≠ 0: W(2 | 2). Probe: 2 ist die Mitte von 1 und 3, und 2 ist die Mitte von 4 und 0.<br>
+      <strong>7.</strong> f steigt für x &lt; 1 und x &gt; 3, fällt für 1 &lt; x &lt; 3. Rechtskurve für x &lt; 2, Linkskurve für x &gt; 2.<br>
+      <strong>8.</strong> Wertemenge W = ℝ.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der Taschenrechner-Graph ist kein Ergebnis</span>
+      Ein Bild auf dem Display zeigt nur einen Ausschnitt. Ob ein Punkt ein Hochpunkt ist, ob ein Graph die x-Achse schneidet oder nur berührt, und ob es weiter draußen noch etwas gibt, entscheidet die Rechnung. Umgekehrt ist der fertige Graph die beste Probe: Passt ein berechneter Punkt nicht in das Bild, steckt ein Rechenfehler in der Untersuchung.
+    </div>
+    <div class="quiz" id="quiz-schema"></div>
+  </section>
+
+  <!-- 6. Funktion mit Sinus -->
+  <section class="card" id="sec-trig">
+    <h2>6. Untersuchung einer Funktion mit Sinus</h2>
+    <p>Der Ablauf funktioniert nicht nur bei ganzrationalen Funktionen. Bei f(x) = x + 2 sin(x) addiert sich zu einer Geraden eine Schwingung. Wo die Schwingung schneller fällt, als die Gerade steigt, fällt auch f — dazwischen steigt f. Fahre mit x₀ über eine volle Periode von 0 bis 2π.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>x₀: <input type="range" id="tr-k" min="0" max="24" step="1" value="8" style="vertical-align:middle;width:14rem"> <span id="tr-k-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="tr-mount"></div>
+      <div class="th-bilanz" id="tr-bilanz"></div>
+      <div id="tr-text" class="event-result"></div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Musterrechnung: f(x) = x + 2 sin(x) auf [0; 2π]</span>
+      f′(x) = 1 + 2 cos(x), f″(x) = −2 sin(x), f‴(x) = −2 cos(x).<br>
+      <strong>Extremstellen:</strong> 1 + 2 cos(x) = 0 ⟺ cos(x) = −0,5 ⟺ x = <span class="bruch"><span class="z">2π</span><span class="n">3</span></span> oder x = <span class="bruch"><span class="z">4π</span><span class="n">3</span></span>.<br>
+      f″(<span class="bruch"><span class="z">2π</span><span class="n">3</span></span>) = −2 · <span class="bruch"><span class="z">√3</span><span class="n">2</span></span> = −√3 &lt; 0: Hochpunkt H(<span class="bruch"><span class="z">2π</span><span class="n">3</span></span> | <span class="bruch"><span class="z">2π</span><span class="n">3</span></span> + √3) ≈ H(2,094 | 3,826).<br>
+      f″(<span class="bruch"><span class="z">4π</span><span class="n">3</span></span>) = √3 &gt; 0: Tiefpunkt T(<span class="bruch"><span class="z">4π</span><span class="n">3</span></span> | <span class="bruch"><span class="z">4π</span><span class="n">3</span></span> − √3) ≈ T(4,189 | 2,457).<br>
+      <strong>Wendestellen:</strong> −2 sin(x) = 0 ⟺ x = 0, π, 2π. Im Inneren: f‴(π) = 2 ≠ 0, also W(π | π) mit Wendetangente t(x) = −x + 2π.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Bogenmaß und Periodizität</span>
+      Die Ableitungen von sin und cos gelten nur im <a href="../03-differentialrechnung/index.html#sec-sinus">Bogenmaß</a>; der Taschenrechner muss auf RAD stehen. Und eine Gleichung wie cos(x) = −0,5 hat auf ganz ℝ unendlich viele Lösungen. Deshalb gehört zur Aufgabe immer das Intervall, auf dem untersucht wird — hier [0; 2π]. Wegen f(x + 2π) = f(x) + 2π wiederholt sich das Bild, um 2π nach rechts und oben verschoben.
+    </div>
+    <div class="quiz" id="quiz-trig"></div>
+  </section>
+
+  <!-- 7. Globale Extrema -->
+  <section class="card" id="sec-global">
+    <h2>7. Globale Extrema und Randextrema</h2>
+    <p>Ein Hochpunkt ist nur der höchste Punkt <em>in seiner Umgebung</em>. In Anwendungen ist meist ein Intervall vorgegeben — eine Produktionsmenge zwischen 0 und 50 Stück, eine Zeit zwischen 6 und 18 Uhr —, und gefragt ist der größte Wert <em>auf dem ganzen Intervall</em>. Der kann auch am Rand liegen, wo f′ gar nicht null sein muss. Verändere das Intervall [a; b] für f(x) = 0,5x³ − 1,5x.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a: <input type="range" id="gl-a" min="-3" max="2.5" step="0.25" value="-1.5" style="vertical-align:middle;width:10rem"> <span id="gl-a-anzeige" class="wert farbe-rot"></span></label>
+        <label>b: <input type="range" id="gl-b" min="-2.5" max="3" step="0.25" value="2.5" style="vertical-align:middle;width:10rem"> <span id="gl-b-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="geo-wrap" id="gl-mount"></div>
+      <div class="th-bilanz" id="gl-bilanz"></div>
+      <div id="gl-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Globale Extrema auf einem abgeschlossenen Intervall</span>
+      Eine auf [a; b] differenzierbare Funktion nimmt dort ihr globales Maximum und ihr globales Minimum an — und zwar an einer der folgenden Stellen:
+      <ul style="margin:0.3rem 0 0;padding-left:1.3rem">
+        <li>an einer Stelle im Inneren mit f′(x) = 0, oder</li>
+        <li>an einem <strong>Rand</strong> a oder b (<strong>Randextremum</strong>).</li>
+      </ul>
+      Man berechnet also f an allen Kandidaten und vergleicht die Werte.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: f(x) = 0,5x³ − 1,5x auf [−1,5; 2,5]</span>
+      Innere Kandidaten: f′(x) = 1,5x² − 1,5 = 0 ⟺ x = ±1; f(−1) = 1, f(1) = −1.<br>
+      Ränder: f(−1,5) = 0,5625 &nbsp;und&nbsp; f(2,5) = 4,0625.<br>
+      Größter Wert 4,0625 bei x = 2,5 — ein <strong>Randmaximum</strong>, obwohl es im Inneren einen Hochpunkt gibt. Kleinster Wert −1 bei x = 1 (Tiefpunkt).
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — lokal ist nicht global</span>
+      „Der Hochpunkt ist das Maximum“ stimmt nur, wenn kein Randwert größer ist. Auf ganz ℝ hat f(x) = 0,5x³ − 1,5x überhaupt kein globales Maximum: Für x → +∞ wächst f über jede Grenze. Ein offenes Intervall wie ]0; 3[ kann sogar gar keinen größten Wert haben, wenn das Maximum genau am fehlenden Rand läge.
+    </div>
+    <div class="quiz" id="quiz-global"></div>
+  </section>
+
+  <!-- 8. Vom Graphen von f′ auf f schließen -->
+  <section class="card" id="sec-fstrich">
+    <h2>8. Vom Graphen von f′ auf f schließen</h2>
+    <p>Oft ist nicht f gegeben, sondern nur der Graph der Ableitung — eine gemessene Geschwindigkeit, eine Zuflussrate, eine Wachstumsrate. Trotzdem lässt sich viel über f sagen: Das <em>Vorzeichen</em> von f′ sagt, ob f steigt, die <em>Steigung</em> von f′ (also f″) sagt, wie f gekrümmt ist. Fahre mit x₀ über den Graphen von f′ und lies ab. Den Graphen von f kannst du zur Kontrolle einblenden.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>f′:
+          <select id="fs-art" class="eingabe" style="padding:0.4rem">
+            <option value="a">f′(x) = 0,25x³ − 0,75x + 0,5</option>
+            <option value="b">f′(x) = −0,5x² + 2</option>
+          </select>
+        </label>
+        <label>x₀: <input type="range" id="fs-x" min="-3" max="3" step="0.25" value="-2.5" style="vertical-align:middle;width:11rem"> <span id="fs-x-anzeige" class="wert farbe-blau"></span></label>
+        <label><input type="checkbox" id="fs-zeige"> Graph von f zeigen</label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="fs-mount"></div>
+      <div class="th-bilanz" id="fs-bilanz"></div>
+      <div id="fs-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Was der Graph von f′ über f verrät</span>
+      <table class="fr-tabelle" style="margin-top:0.3rem">
+        <tr><th>am Graphen von f′</th><th>bedeutet für f</th></tr>
+        <tr><td>oberhalb der x-Achse (f′ &gt; 0)</td><td>f steigt</td></tr>
+        <tr><td>unterhalb der x-Achse (f′ &lt; 0)</td><td>f fällt</td></tr>
+        <tr><td>Nullstelle mit Vorzeichenwechsel + → −</td><td>Hochpunkt</td></tr>
+        <tr><td>Nullstelle mit Vorzeichenwechsel − → +</td><td>Tiefpunkt</td></tr>
+        <tr><td>Nullstelle ohne Vorzeichenwechsel (berührt)</td><td>Sattelpunkt</td></tr>
+        <tr><td>f′ steigt (f″ &gt; 0)</td><td>Linkskurve</td></tr>
+        <tr><td>f′ fällt (f″ &lt; 0)</td><td>Rechtskurve</td></tr>
+        <tr><td>Hoch- oder Tiefpunkt von f′</td><td>Wendepunkt</td></tr>
+      </table>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — den Hochpunkt von f′ nicht mit dem Hochpunkt von f verwechseln</span>
+      Wo f′ am größten ist, steigt f am stärksten — das ist ein <em>Wendepunkt</em> von f, kein Hochpunkt. Den Hochpunkt von f findet man dort, wo f′ die x-Achse von oben nach unten durchstößt. Und die Höhe von f lässt sich am Graphen von f′ nicht ablesen: f und f + 5 haben dieselbe Ableitung.
+    </div>
+    <p class="hinweis-box">💡 Im Sachzusammenhang heißt das zum Beispiel: Ist f′ die Zuflussrate in ein Becken, dann ist der Wasserstand am höchsten, wenn f′ von + nach − wechselt (es fließt mehr ab als zu), und er steigt am schnellsten, wo f′ am größten ist.</p>
+    <div class="quiz" id="quiz-fstrich"></div>
+  </section>
+
+  <!-- 9. Funktionenscharen -->
+  <section class="card" id="sec-scharen">
+    <h2>9. Funktionenscharen und Ortskurven</h2>
+    <p>Steht in einem Funktionsterm neben x noch ein <span class="term">Parameter</span>, beschreibt er nicht eine Funktion, sondern eine ganze Familie — eine <span class="term">Funktionenschar</span>. Bei f<sub>a</sub>(x) = x³ − 3a² · x (a &gt; 0) hängen Hoch- und Tiefpunkt von a ab. Verändere a und beobachte, auf welcher Kurve die Extrempunkte wandern.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a: <input type="range" id="sa-a" min="0.25" max="1.5" step="0.25" value="1" style="vertical-align:middle;width:11rem"> <span id="sa-a-anzeige" class="wert farbe-blau"></span></label>
+        <label><input type="checkbox" id="sa-ort" checked> Ortskurve zeigen</label>
+      </div>
+      <div class="geo-wrap" id="sa-mount"></div>
+      <div class="th-bilanz" id="sa-bilanz"></div>
+      <div id="sa-text" class="event-result"></div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Musterrechnung: f<sub>a</sub>(x) = x³ − 3a²x, a &gt; 0</span>
+      f<sub>a</sub>′(x) = 3x² − 3a² = 3(x − a)(x + a), f<sub>a</sub>″(x) = 6x.<br>
+      f<sub>a</sub>″(−a) = −6a &lt; 0: H<sub>a</sub>(−a | 2a³); f<sub>a</sub>″(a) = 6a &gt; 0: T<sub>a</sub>(a | −2a³). Wendepunkt W(0 | 0) für alle a.<br>
+      <strong>Ortskurve der Tiefpunkte:</strong> x = a und y = −2a³. Aus der ersten Gleichung a = x, eingesetzt: y = −2x³ (für x &gt; 0).<br>
+      <strong>Ortskurve der Hochpunkte:</strong> x = −a, also a = −x, und y = 2a³ = 2(−x)³ = −2x³ (für x &lt; 0). Beide liegen auf derselben Kurve y = −2x³.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Ortskurve bestimmen</span>
+      Die Koordinaten des besonderen Punkts in Abhängigkeit vom Parameter berechnen: x = x(a), y = y(a). Dann die erste Gleichung nach a auflösen und in die zweite einsetzen. Was übrig bleibt, ist eine Gleichung zwischen x und y — die <strong>Ortskurve</strong>. Dazu gehört der Bereich, den x für die zugelassenen a durchläuft.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — beim Ableiten ist a eine Zahl</span>
+      Abgeleitet wird nach x; der Parameter a wird behandelt wie eine feste Zahl. (3a²x)′ = 3a², nicht 6a · x und nicht 0. Und für a = 0 ist f<sub>0</sub>(x) = x³ — eine Funktion ohne Extrempunkte, mit einem Sattelpunkt im Ursprung. Darum steht in der Aufgabe a &gt; 0.
+    </div>
+    <div class="quiz" id="quiz-scharen"></div>
+  </section>
+
+  <!-- 10. Steckbriefaufgaben -->
+  <section class="card" id="sec-steckbrief">
+    <h2>10. Funktionen aus Eigenschaften bestimmen</h2>
+    <p>Bisher war f gegeben und die Eigenschaften gesucht. Jetzt geht es umgekehrt: Man kennt einige Eigenschaften — „der Graph ist punktsymmetrisch und hat einen Hochpunkt in H(u | v)“ — und sucht den Term. Jede Eigenschaft wird zu einer Gleichung für die unbekannten Koeffizienten; das ergibt ein lineares Gleichungssystem. Verschiebe den Hochpunkt und sieh zu, wie sich die Lösung ändert.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>u: <input type="range" id="sb-u" min="0.5" max="2" step="0.5" value="1" style="vertical-align:middle;width:9rem"> <span id="sb-u-anzeige" class="wert farbe-blau"></span></label>
+        <label>v: <input type="range" id="sb-v" min="0.5" max="3" step="0.5" value="2" style="vertical-align:middle;width:9rem"> <span id="sb-v-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap" id="sb-mount"></div>
+      <div class="th-bilanz" id="sb-bilanz"></div>
+      <div id="sb-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Eigenschaften als Gleichungen</span>
+      <table class="fr-tabelle" style="margin-top:0.3rem">
+        <tr><th>Eigenschaft</th><th>Gleichung</th></tr>
+        <tr><td>Punkt P(x₀ | y₀) liegt auf dem Graphen</td><td>f(x₀) = y₀</td></tr>
+        <tr><td>Extremstelle bei x₀ (waagerechte Tangente)</td><td>f′(x₀) = 0</td></tr>
+        <tr><td>Wendestelle bei x₀</td><td>f″(x₀) = 0</td></tr>
+        <tr><td>Steigung m an der Stelle x₀</td><td>f′(x₀) = m</td></tr>
+        <tr><td>Graph achsensymmetrisch zur y-Achse</td><td>nur gerade Exponenten</td></tr>
+        <tr><td>Graph punktsymmetrisch zum Ursprung</td><td>nur ungerade Exponenten</td></tr>
+      </table>
+      Eine ganzrationale Funktion vom Grad n hat n + 1 Koeffizienten — man braucht also n + 1 unabhängige Gleichungen. Symmetrie spart Koeffizienten.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel mit vier Bedingungen</span>
+      Gesucht ist f(x) = ax³ + bx² + cx + d mit Hochpunkt H(0 | 2) und Wendepunkt W(1 | 0).<br>
+      f(0) = 2: d = 2. &nbsp; f′(0) = 0: c = 0. &nbsp; f″(1) = 0: 6a + 2b = 0. &nbsp; f(1) = 0: a + b + 2 = 0.<br>
+      Aus 6a + 2b = 0 folgt b = −3a; eingesetzt: a − 3a + 2 = 0, also a = 1, b = −3.<br>
+      f(x) = x³ − 3x² + 2. <strong>Probe:</strong> f″(x) = 6x − 6, f″(0) = −6 &lt; 0 — H ist wirklich ein Hochpunkt; f‴(1) = 6 ≠ 0 — W ist wirklich ein Wendepunkt.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Gleichungen sind nur notwendig</span>
+      „Hochpunkt bei x₀“ wird zur Gleichung f′(x₀) = 0 — aber die erfüllt auch ein Tiefpunkt oder Sattelpunkt. Deshalb gehört zu jeder Steckbriefaufgabe am Ende eine <strong>Probe</strong> mit f″ oder dem Vorzeichenwechsel. Fällt sie negativ aus, gibt es keine Funktion des verlangten Typs mit diesen Eigenschaften.
+    </div>
+    <div class="quiz" id="quiz-steckbrief"></div>
+  </section>
+
+  <!-- 11. Extremwertprobleme -->
+  <section class="card" id="sec-optimierung">
+    <h2>11. Extremwertprobleme</h2>
+    <p>Aus einem quadratischen Stück Karton mit 12 cm Seitenlänge soll eine oben offene Schachtel werden. Dazu schneidet man an den vier Ecken gleich große Quadrate mit der Seitenlänge x heraus und klappt die Ränder hoch. Schneidet man wenig aus, wird die Schachtel flach; schneidet man viel aus, bleibt kaum Boden. Irgendwo dazwischen ist das Volumen am größten. Verändere x und beobachte den Graphen der Volumenfunktion.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>x: <input type="range" id="op-x" min="0.25" max="5.75" step="0.25" value="1" style="vertical-align:middle;width:13rem"> <span id="op-x-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="geo-wrap geo-paar" id="op-mount"></div>
+      <div class="th-bilanz" id="op-bilanz"></div>
+      <div id="op-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Lösungsweg für Extremwertprobleme</span>
+      <ol style="margin:0.2rem 0 0;padding-left:1.3rem">
+        <li><strong>Hauptbedingung:</strong> die Größe, die extremal werden soll, als Formel mit mehreren Variablen (V = Länge · Breite · Höhe).</li>
+        <li><strong>Nebenbedingung:</strong> der Zusammenhang zwischen den Variablen (Länge = Breite = 12 − 2x, Höhe = x).</li>
+        <li><strong>Zielfunktion:</strong> Nebenbedingung in die Hauptbedingung einsetzen — eine Funktion einer Variablen, mit ihrem <strong>Definitionsbereich</strong>.</li>
+        <li><strong>Extremstellen</strong> der Zielfunktion bestimmen und mit den <strong>Randwerten</strong> vergleichen.</li>
+        <li><strong>Antwort</strong> im Sachzusammenhang, mit Einheiten.</li>
+      </ol>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Musterrechnung: die Schachtel</span>
+      Zielfunktion V(x) = x · (12 − 2x)² = 4x³ − 48x² + 144x, Definitionsbereich 0 &lt; x &lt; 6.<br>
+      V′(x) = 12x² − 96x + 144 = 12(x − 2)(x − 6). Im Definitionsbereich nur x = 2.<br>
+      V″(x) = 24x − 96, V″(2) = −48 &lt; 0: Maximum. V(2) = 2 · 8² = 128.<br>
+      Ränder: Für x → 0 und x → 6 geht V(x) gegen 0. <strong>Antwort:</strong> Bei 2 cm Einschnitt wird das Volumen mit 128 cm³ am größten.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Zweites Beispiel: Rechteck unter einer Parabel</span>
+      Unter dem Graphen von f(x) = 3 − x² liegt ein achsenparalleles Rechteck mit zwei Ecken auf der x-Achse, symmetrisch zur y-Achse. Mit der halben Breite u (0 &lt; u &lt; √3) ist A(u) = 2u · (3 − u²) = 6u − 2u³.<br>
+      A′(u) = 6 − 6u² = 0 ⟺ u = 1; A″(1) = −12 &lt; 0. Größter Flächeninhalt A(1) = 4 bei einem Rechteck der Breite 2 und Höhe 2.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Definitionsbereich und Ränder nicht vergessen</span>
+      Die Gleichung V′(x) = 0 hat auch die Lösung x = 6. Dort bleibt vom Karton kein Boden übrig: V(6) = 0. Lösungen außerhalb des Definitionsbereichs fallen weg, und an den Rändern kann der gesuchte Extremwert liegen (<a href="#sec-global">Abschnitt 7</a>).
+    </div>
+    <div class="quiz" id="quiz-optimierung"></div>
+  </section>
+
+  <!-- 12. Newton-Verfahren -->
+  <section class="card" id="sec-newton">
+    <h2>12. Nullstellen näherungsweise: das Newton-Verfahren</h2>
+    <p>Die Gleichung x³ − 2x − 5 = 0 lässt sich nicht durch Ausklammern oder Substitution lösen. In <a href="../02-grenzwerte-und-stetigkeit/index.html#sec-zwischenwert">Thema 2</a> wurde ihre Nullstelle durch Intervallhalbierung eingeschachtelt — sicher, aber langsam. Isaac Newton hatte eine schnellere Idee: Man ersetzt den Graphen in der Nähe eines Startwerts durch seine Tangente und nimmt deren Nullstelle als neuen, besseren Wert. Verändere den Startwert und die Anzahl der Schritte.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Startwert x₀: <input type="range" id="nw-x" min="-2" max="4" step="0.25" value="3" style="vertical-align:middle;width:10rem"> <span id="nw-x-anzeige" class="wert farbe-blau"></span></label>
+        <label>Schritte: <input type="range" id="nw-n" min="0" max="5" step="1" value="1" style="vertical-align:middle;width:7rem"> <span id="nw-n-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap" id="nw-mount"></div>
+      <div class="fr-tabelle-wrap" id="nw-tabelle"></div>
+      <div class="th-bilanz" id="nw-bilanz"></div>
+      <div id="nw-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Newton-Verfahren</span>
+      Die Tangente im Punkt (x<sub>n</sub> | f(x<sub>n</sub>)) ist t(x) = f′(x<sub>n</sub>) · (x − x<sub>n</sub>) + f(x<sub>n</sub>). Ihre Nullstelle ist der nächste Wert:
+      <div class="formula-block">x<sub>n+1</sub> = x<sub>n</sub> − <span class="bruch gross"><span class="z">f(x<sub>n</sub>)</span><span class="n">f′(x<sub>n</sub>)</span></span> &nbsp;&nbsp; (f′(x<sub>n</sub>) ≠ 0)</div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: f(x) = x³ − 2x − 5, Startwert x₀ = 2</span>
+      f′(x) = 3x² − 2. &nbsp; x₁ = 2 − <span class="bruch"><span class="z">8 − 4 − 5</span><span class="n">12 − 2</span></span> = 2 − <span class="bruch"><span class="z">−1</span><span class="n">10</span></span> = 2,1.<br>
+      x₂ = 2,1 − <span class="bruch"><span class="z">0,061</span><span class="n">11,23</span></span> ≈ 2,094568, &nbsp; x₃ ≈ 2,0945515 — schon auf sieben Stellen genau. Die Intervallhalbierung bräuchte dafür über zwanzig Schritte.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Newton kann scheitern</span>
+      Liegt der Startwert nahe einer Stelle mit f′(x) = 0, ist die Tangente fast waagerecht und ihre Nullstelle liegt weit weg. Bei x₀ = 0,75 springt das Verfahren hier auf x₁ = −18,7, irrt danach links der y-Achse umher und findet die Nullstelle erst nach 33 Schritten; bei f′(x<sub>n</sub>) = 0 bricht es ganz ab. Anders als die Intervallhalbierung garantiert Newton keine Einschachtelung — dafür ist es nahe an der Nullstelle sehr schnell.
+    </div>
+    <div class="quiz" id="quiz-newton"></div>
+  </section>
+
+  <!-- 13. Stolperstelle -->
+  <section class="card" id="sec-stolperstelle">
+    <h2>13. Stolperstelle: f″(x) = 0 ist noch kein Wendepunkt</h2>
+    <p>Mia rechnet: „f(x) = 0,25x⁴, f″(x) = 3x², f″(0) = 0 — also hat f bei 0 einen Wendepunkt.“ Noah widerspricht: „Der Graph sieht aus wie eine Parabel, da wendet nichts.“ Das Widget zeigt die Schar f<sub>k</sub>(x) = 0,25x⁴ + <span class="bruch"><span class="z">k</span><span class="n">3</span></span>x³. Für k ≠ 0 gibt es zwei Wendestellen. Schiebe k gegen 0 und sieh zu, was mit ihnen passiert.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>k: <input type="range" id="st-k" min="-2" max="2" step="0.25" value="1.5" style="vertical-align:middle;width:12rem"> <span id="st-k-anzeige" class="wert farbe-violett"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="st-mount"></div>
+      <div class="th-bilanz" id="st-bilanz"></div>
+      <div id="st-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — notwendig ist nicht hinreichend</span>
+      f<sub>k</sub>″(x) = 3x² + 2kx = x(3x + 2k) hat die Nullstellen 0 und −<span class="bruch"><span class="z">2k</span><span class="n">3</span></span>. Für k ≠ 0 sind beide einfach — f″ wechselt dort das Vorzeichen, beides sind Wendestellen (bei 0 sogar ein Sattelpunkt, weil auch f<sub>k</sub>′(0) = 0 ist). Für k = 0 fallen sie zu einer <strong>doppelten</strong> Nullstelle zusammen: f″(x) = 3x² ist auf beiden Seiten positiv, der Graph bleibt eine Linkskurve. Noah hat recht — bei 0,25x⁴ liegt in 0 ein Tiefpunkt, kein Wendepunkt.
+    </div>
+    <p class="hinweis-box">💡 Die Probe mit der dritten Ableitung zeigt dasselbe: f<sub>k</sub>‴(0) = 2k ist für k ≠ 0 von null verschieden, für k = 0 aber 0 — dann entscheidet f‴ nichts, und man muss das Vorzeichen von f″ links und rechts prüfen. Ganz allgemein gilt: Eine doppelte Nullstelle von f″ ist keine Wendestelle, eine einfache (oder dreifache) schon.</p>
+    <div class="quiz" id="quiz-stolperstelle"></div>
+  </section>
+
+  <!-- Selbsteinschätzung -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
+    <div id="se-liste"></div>
+    <div id="se-auswertung" class="event-result"></div>
+  </section>
+
+  <!-- Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Dem Zusammenhang von <a href="../03-differentialrechnung/index.html#sec-monotonie">f und f′</a> aus Thema 3 — Monotoniesatz und Vorzeichenwechsel tragen alles; das Krümmungskriterium ist derselbe Satz, eine Ableitung höher.</li>
+      <li><strong>Baut auf:</strong> Den <a href="../03-differentialrechnung/index.html#sec-nullstellen">Nullstellen ganzrationaler Funktionen</a> mit Vielfachheit und der <a href="../03-differentialrechnung/index.html#sec-ganzrational">Symmetrie</a> — eine doppelte Nullstelle von f′ ist ein Sattelpunkt, eine doppelte Nullstelle von f″ keine Wendestelle.</li>
+      <li><strong>Baut auf:</strong> Den <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/06-lineare-gleichungssysteme/index.html">linearen Gleichungssystemen</a> — jede Steckbriefaufgabe endet in einem.</li>
+      <li><strong>Baut auf:</strong> Der <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/08-quadratische-funktionen/index.html">Scheitelpunktform</a> — bei Parabeln fand man das Extremum schon ohne Ableitung; die Ableitung liefert dasselbe für jede differenzierbare Funktion.</li>
+      <li><strong>Gleiche Struktur:</strong> Die <a href="../02-grenzwerte-und-stetigkeit/index.html#sec-zwischenwert">Intervallhalbierung</a> aus Thema 2 und das Newton-Verfahren erzeugen beide eine Folge, die gegen die Nullstelle konvergiert (<a href="../01-folgen-und-reihen/index.html#sec-grenzwert">Grenzwert einer Folge</a>) — die eine sicher und langsam, die andere schnell, aber ohne Garantie.</li>
+      <li><strong>Führt weiter zu:</strong> Den <em>Exponential- und Logarithmusfunktionen</em> — dieselbe Untersuchung mit neuen Ableitungsregeln, etwa beim Wendepunkt des logistischen Wachstums (der Zeitpunkt des stärksten Wachstums).</li>
+      <li><strong>Führt weiter zu:</strong> Der <em>Integralrechnung</em> — sie geht den Weg von <a href="#sec-fstrich">Abschnitt 8</a> zu Ende: Aus f′ wird f zurückgewonnen, bis auf eine Konstante.</li>
+      <li><strong>Führt weiter zu:</strong> Der Normalverteilung in der Stochastik (MSS 13) — ihre Glockenkurve hat Wendestellen genau bei μ − σ und μ + σ.</li>
+    </ul>
+  </section>
+
+  <!-- Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>Formelsammlung</h2>
+    <p>Höhere Ableitungen, Krümmungskriterium, notwendige und hinreichende Bedingungen für Extrem- und Wendestellen, Sattelpunkt und Wendetangente, der Ablauf einer Funktionsuntersuchung mit Musterrechnung, globale Extrema, Funktionenscharen mit Ortskurve, Steckbriefaufgaben, Extremwertprobleme und das Newton-Verfahren — mit gerechneten Figuren auf zwei Seiten.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>Übungsaufgaben</h2>
+    <p>Zwanzig Aufgaben auf vier Stufen, je fünf auf jeder. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu. Tipps gibt es auf Knopfdruck, nach dem Prüfen steht die Musterlösung darunter.</p>
+    <p class="progress-note">Zahlen gibst du mit Komma ein, zum Beispiel 1,5; Brüche wie 3/2 sind ebenfalls erlaubt.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 01 Analysis</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
