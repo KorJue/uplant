@@ -454,7 +454,7 @@
 :root[data-theme="dark"] .fr-tabelle td.aktiv { background: #17321f; color: #6fd68f; }
 :root[data-theme="dark"] .fr-tabelle td.draussen { color: #ff8a8a; }
 
-/* ================= Thema 3: Differentialrechnung ================= */
+/* ================= Thema 2: Differentialrechnung ================= */
 /* Farbcodierung: Graph f blau, Sekante orange, Tangente und f′ grün, Steigungsdreieck und
    Normale violett, Warnung (Knick, keine Ableitung) rot, Hilfslinien grau. */
 
@@ -572,7 +572,7 @@
    oder eine Achse; ein Rand in der Hintergrundfarbe hält sie lesbar. */
 .dr-halo { paint-order: stroke; stroke: var(--card-bg); stroke-width: 4px; stroke-linejoin: round; }
 
-/* ================= Thema 4: Funktionsuntersuchung ================= */
+/* ================= Thema 3: Funktionsuntersuchung ================= */
 /* Farbcodierung: f blau, f′ grün, f″ violett; Linkskurve violett, Rechtskurve orange (wie f″ > 0 und
    f″ < 0); Extrempunkte blau, Wendepunkte violett, Randpunkte und Warnungen rot, Hilfslinien grau. */
 .fr-linie.links { stroke: #6d28d9; stroke-width: 2.8; }

@@ -19,10 +19,10 @@ benennt. Vorhanden sind:
 | `w3` | Baumdiagramme umdrehen (MSS 13, Wahrscheinlichkeitsrechnung, Thema 3) | `mathematik/mss13/01-wahrscheinlichkeitsrechnung/03-baumdiagramme-umdrehen/formelsammlung.pdf` |
 | `w4` | Stochastische Unabhängigkeit (MSS 13, Wahrscheinlichkeitsrechnung, Thema 4) | `mathematik/mss13/01-wahrscheinlichkeitsrechnung/04-stochastische-unabhaengigkeit/formelsammlung.pdf` |
 | `bk` | Bernoulli-Ketten und Binomialverteilung (MSS 13, Wahrscheinlichkeitsrechnung, Thema 5) | `mathematik/mss13/01-wahrscheinlichkeitsrechnung/05-bernoulli-ketten-binomialverteilung/formelsammlung.pdf` |
-| `f1` | Folgen und Reihen (MSS 11, Analysis, Thema 1) | `mathematik/mss11/01-analysis/01-folgen-und-reihen/formelsammlung.pdf` |
-| `f2` | Grenzwerte und Stetigkeit (MSS 11, Analysis, Thema 2) | `mathematik/mss11/01-analysis/02-grenzwerte-und-stetigkeit/formelsammlung.pdf` |
-| `f3` | Differentialrechnung (MSS 11, Analysis, Thema 3) | `mathematik/mss11/01-analysis/03-differentialrechnung/formelsammlung.pdf` |
-| `f4` | Funktionsuntersuchung (MSS 11, Analysis, Thema 4) | `mathematik/mss11/01-analysis/04-funktionsuntersuchung/formelsammlung.pdf` |
+| `f1` | Folgen und Reihen (MSS 11, Analysis, Thema 1.1) | `mathematik/mss11/01-analysis/01-folgen-und-reihen/formelsammlung.pdf` |
+| `f2` | Grenzwerte und Stetigkeit (MSS 11, Analysis, Thema 1.2) | `mathematik/mss11/01-analysis/02-grenzwerte-und-stetigkeit/formelsammlung.pdf` |
+| `f3` | Differentialrechnung (MSS 11, Analysis, Thema 2) | `mathematik/mss11/01-analysis/03-differentialrechnung/formelsammlung.pdf` |
+| `f4` | Funktionsuntersuchung (MSS 11, Analysis, Thema 3) | `mathematik/mss11/01-analysis/04-funktionsuntersuchung/formelsammlung.pdf` |
 
 ## Der Weg von der Quelle zum PDF
 

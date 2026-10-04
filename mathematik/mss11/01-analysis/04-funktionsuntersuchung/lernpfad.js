@@ -1,22 +1,22 @@
-// Selbstlernpfad „Funktionsuntersuchung“ (MSS 11, Analysis, Thema 4). Vanilla-JS, kein Build.
+// Selbstlernpfad „Funktionsuntersuchung“ (MSS 11, Analysis, Thema 3). Vanilla-JS, kein Build.
 //
-// Didaktische Reihenfolge — jede Stufe benutzt nur, was davor steht (Thema 3 liefert Ableitungsregeln,
+// Didaktische Reihenfolge — jede Stufe benutzt nur, was davor steht (Thema 2 liefert Ableitungsregeln,
 // Monotoniesatz, notwendige Bedingung und Vorzeichenwechsel-Kriterium für Extremstellen):
 //    1. Höhere Ableitungen              (f″ = (f′)′; Deutung als Steigung des Graphen von f′)
 //    2. Krümmung                        (Linkskurve ⟺ f′ steigt; Kriterium = Monotoniesatz für f′)
 //    3. Extremstellen mit f″            (f″ < 0 heißt: f′ fällt durch die Null — VZW + → −; braucht 2)
 //    4. Wendepunkte, Sattelpunkte       (Wendestelle = Extremstelle von f′; Kriterien aus 3, eine
 //                                         Ableitung höher)
-//    5. Vollständige Untersuchung       (fasst 1–4 mit Symmetrie, Nullstellen aus Thema 3 zusammen)
-//    6. Funktion mit Sinus              (Ablauf aus 5, Ableitungen von sin/cos aus Thema 3)
+//    5. Vollständige Untersuchung       (fasst 1–4 mit Symmetrie, Nullstellen aus Thema 2 zusammen)
+//    6. Funktion mit Sinus              (Ablauf aus 5, Ableitungen von sin/cos aus Thema 2)
 //    7. Globale Extrema, Randextrema    (Kandidaten aus 3 und die Ränder)
 //    8. Vom Graphen von f′ auf f        (Umkehrung von 1–4: Lesen statt Rechnen)
 //    9. Funktionenscharen, Ortskurven   (Ablauf aus 3–4 mit Parameter)
 //   10. Steckbriefaufgaben              (Bedingungen aus 3–4 als Gleichungen, LGS aus der Mittelstufe)
 //   11. Extremwertprobleme              (Zielfunktion; Extrema aus 3, Ränder aus 7)
-//   12. Newton-Verfahren                (Tangente aus Thema 3; Vergleich mit der Intervallhalbierung
-//                                         aus Thema 2)
-//   13. Stolperstelle f″ = 0            (Bedingungen aus 4; doppelte Nullstelle aus Thema 3)
+//   12. Newton-Verfahren                (Tangente aus Thema 2; Vergleich mit der Intervallhalbierung
+//                                         aus Thema 1.2)
+//   13. Stolperstelle f″ = 0            (Bedingungen aus 4; doppelte Nullstelle aus Thema 2)
 //
 // Gerechnet wird mit Reglerwerten, nie mit Bildschirmkoordinaten. Die besonderen Punkte stehen als
 // exakte Formeln im Code (−a, 2a³, 2π/3 …), nicht als Ergebnis einer Suche — die Prüfung sucht sie
@@ -274,7 +274,7 @@ function panelTitel(K, text) {
   K.svg.appendChild(svgText(K.links + 6, K.oben + 14, text, { class: "panel-titel", "text-anchor": "start" }));
 }
 
-// ---------- Zusätzliche Helfer für Thema 4 ----------
+// ---------- Zusätzliche Helfer für Thema 3 ----------
 
 // Krümmung als Klasse für die Graphteile: f″ ≥ 0 links, sonst rechts. An einer einzelnen Stelle mit
 // f″ = 0 entscheidet das nichts Sichtbares; die Prüfung liest die Teile nur abseits der Nullstellen.

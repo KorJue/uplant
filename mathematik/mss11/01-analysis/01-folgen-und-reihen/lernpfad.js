@@ -1,4 +1,4 @@
-// Selbstlernpfad „Folgen und Reihen“ (MSS 11, Analysis, Thema 1). Vanilla-JS, kein Build-Schritt.
+// Selbstlernpfad „Folgen und Reihen“ (MSS 11, Analysis, Thema 1.1). Vanilla-JS, kein Build-Schritt.
 //
 // Didaktische Reihenfolge — jede Stufe benutzt nur, was davor steht:
 //   1. Folge, explizit und rekursiv          (braucht nur Terme und Funktionen)

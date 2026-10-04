@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Erzeugt die Figuren der Formelsammlung „Grenzwerte und Stetigkeit“ (MSS 11, Analysis, Thema 2).
+"""Erzeugt die Figuren der Formelsammlung „Grenzwerte und Stetigkeit“ (MSS 11, Analysis, Thema 1.2).
 
 Jeder Graph wird aus der Funktion gerechnet und an Polstellen und Lücken aufgetrennt. Das Skript
 prüft mit: x₀ zum ε-Streifen ist scharf, das Loch liegt auf dem Grenzwert, und jedes Intervall der

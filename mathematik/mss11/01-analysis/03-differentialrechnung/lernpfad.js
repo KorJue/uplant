@@ -1,21 +1,21 @@
-// Selbstlernpfad „Differentialrechnung“ (MSS 11, Analysis, Thema 3). Vanilla-JS, kein Build.
+// Selbstlernpfad „Differentialrechnung“ (MSS 11, Analysis, Thema 2). Vanilla-JS, kein Build.
 //
 // Didaktische Reihenfolge — jede Stufe benutzt nur, was davor steht:
 //    1. Mittlere Änderungsrate          (Steigung einer Geraden, Steigungsdreieck: Mittelstufe)
-//    2. Lokale Änderungsrate            (Sekante PQ mit x → x₀: Grenzwert aus Thema 2; Wert nur vermutet)
+//    2. Lokale Änderungsrate            (Sekante PQ mit x → x₀: Grenzwert aus Thema 1.2; Wert nur vermutet)
 //    3. Ableitung an einer Stelle       (Differentialquotient lim (f(x) − f(x₀))/(x − x₀), lokale Linearität)
 //
 // Schreibweise wie in Elemente der Mathematik: zuerst die x₀-Methode, weil sie das Steigungsdreieck
 // zwischen P und Q sichtbar hält; die h-Methode (x = x₀ + h) steht jeweils in einem Reiter daneben.
 //    4. Grafisches Differenzieren        (Tangentensteigung aus 3 an jeder Stelle → Funktion f′)
 //    5. Ableitungsfunktion, Potenzregel (erst f′(3), dann f′(x₀), dann f′; Faktor x − x₀ abspalten)
-//    6. Faktor- und Summenregel         (Grenzwertsätze aus Thema 1/2; braucht 5 für g′)
+//    6. Faktor- und Summenregel         (Grenzwertsätze aus Thema 1.1/1.2; braucht 5 für g′)
 //    7. Sinus und Kosinus               (Einheitskreis, Bogenmaß; 4 hat die Vermutung geliefert)
 //    8. Produkt- und Kettenregel        (dieselbe Flächenidee wie 5; Verstärkungsfaktor)
 //    9. Tangente, Normale, Winkel       (f′ aus 3–7; tan⁻¹ aus der Trigonometrie; m · m_n = −1 wird
 //                                         hier erst durch Drehen gezeigt)
-//   10. Differenzierbarkeit             (einseitige Grenzwerte aus Thema 2, Knick aus 3)
-//   11. Ganzrationale Funktionen        (Verhalten für x → ±∞ mit Grenzwerten aus Thema 2; Symmetrie)
+//   10. Differenzierbarkeit             (einseitige Grenzwerte aus Thema 1.2, Knick aus 3)
+//   11. Ganzrationale Funktionen        (Verhalten für x → ±∞ mit Grenzwerten aus Thema 1.2; Symmetrie)
 //   12. Nullstellen, Vielfachheit       (Faktorisieren, pq-Formel; Ableitungskasten braucht 8)
 //   13. f und f′: Monotonie, Extrema    (braucht 4–6 für f′ und 12 für die Nullstellen von f′)
 //   14. Stolperstelle Tangente          (Tangente aus 9, doppelte Nullstelle aus 12)
@@ -1078,7 +1078,7 @@ function renderStolperstelle() {
   zeige("sp-mount", K.svg);
   if (x0 === 0) {
     setzeHtml("sp-bilanz", `t(x) = −1,5x. f(x) − t(x) = 0,5x³: <span class="wg">dreifache Nullstelle 0</span> — die Tangente durchsetzt den Graphen in P selbst.`);
-    setzeText("sp-text", "Hier ist P der einzige gemeinsame Punkt — und trotzdem „berührt“ die Tangente nicht im Sinne von Ben: Sie geht durch den Graphen hindurch. Links liegt der Graph über ihr, rechts darunter. Einen solchen Punkt nennt man Wendepunkt (Thema 4).");
+    setzeText("sp-text", "Hier ist P der einzige gemeinsame Punkt — und trotzdem „berührt“ die Tangente nicht im Sinne von Ben: Sie geht durch den Graphen hindurch. Links liegt der Graph über ihr, rechts darunter. Einen solchen Punkt nennt man Wendepunkt (Thema 3).");
     return;
   }
   setzeHtml("sp-bilanz",

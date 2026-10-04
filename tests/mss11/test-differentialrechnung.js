@@ -1,4 +1,4 @@
-// Fachliche Prüfung: MSS 11, Analysis, Thema 3 „Differentialrechnung“.
+// Fachliche Prüfung: MSS 11, Analysis, Thema 2 „Differentialrechnung“.
 //
 // Geprüft wird, was die Seite zeigt, gegen eine unabhängige Rechnung. Die Ableitungen rechnet die
 // Prüfung NICHT mit den Formeln der Seite, sondern numerisch als zentralen Differenzenquotienten der

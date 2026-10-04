@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Erzeugt die Figuren der Formelsammlung „Differentialrechnung“ (MSS 11, Analysis, Thema 3).
+"""Erzeugt die Figuren der Formelsammlung „Differentialrechnung“ (MSS 11, Analysis, Thema 2).
 
 Jeder Graph wird aus der Funktion gerechnet. Das Skript prüft mit: Die Sekantensteigungen sind die
 Differenzenquotienten, die Tangente hat die Steigung der numerisch bestimmten Ableitung, Tangente und

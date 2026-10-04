@@ -15,7 +15,7 @@
   <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
   <a href="../../index.html">MSS 11</a><span class="sep">/</span>
   <a href="../index.html">01 Analysis</a><span class="sep">/</span>
-  3 Differentialrechnung
+  2 Differentialrechnung
 </nav>
 <header class="page-header">
   <h1>Differentialrechnung</h1>
@@ -26,7 +26,7 @@
 
   <section class="card">
     <h2>Worum geht es hier?</h2>
-    <p>Ein Stein fällt, ein Kurs steigt, ein Wasserstand sinkt: Überall ändert sich eine Größe mit der Zeit oder mit einer anderen Größe. Wie stark sie sich <em>im Mittel</em> ändert, sagt ein Quotient aus zwei Differenzen. Wie stark sie sich <em>in einem Augenblick</em> ändert, sagt die <span class="term">Ableitung</span> — der Grenzwert dieser Quotienten. Sie ist der Grundbegriff der Differentialrechnung, und mit ihr werden in <a href="../04-funktionsuntersuchung/index.html">Thema 4</a> Funktionen untersucht. Am Ende kannst du:</p>
+    <p>Ein Stein fällt, ein Kurs steigt, ein Wasserstand sinkt: Überall ändert sich eine Größe mit der Zeit oder mit einer anderen Größe. Wie stark sie sich <em>im Mittel</em> ändert, sagt ein Quotient aus zwei Differenzen. Wie stark sie sich <em>in einem Augenblick</em> ändert, sagt die <span class="term">Ableitung</span> — der Grenzwert dieser Quotienten. Sie ist der Grundbegriff der Differentialrechnung, und mit ihr werden in <a href="../04-funktionsuntersuchung/index.html">Thema 3</a> Funktionen untersucht. Am Ende kannst du:</p>
     <ul class="lern-intro-list">
       <li>die <span class="term">mittlere Änderungsrate</span> als Sekantensteigung und die <span class="term">lokale Änderungsrate</span> als Tangentensteigung deuten und berechnen</li>
       <li>die Ableitung f′(x₀) als Grenzwert des Differenzenquotienten — den <span class="term">Differentialquotienten</span> — erklären und mit der <span class="term">x₀-Methode</span> (oder der h-Methode) bestimmen</li>
@@ -39,7 +39,7 @@
       <li>am Graphen von f′ ablesen, wo f steigt, fällt und <span class="term">Hoch- und Tiefpunkte</span> hat</li>
     </ul>
     <p>Die Seite folgt der Schreibweise von <strong>Elemente der Mathematik</strong>: Differenzenquotient <span class="bruch"><span class="z">f(x) − f(x₀)</span><span class="n">x − x₀</span></span>, Ableitung f′(x₀) als Grenzwert für x → x₀. Die h-Methode steht überall als Alternative in einem eigenen Reiter daneben.</p>
-    <p class="hinweis-box">💡 Du brauchst aus <a href="../02-grenzwerte-und-stetigkeit/index.html">Thema 2</a> den <a href="../02-grenzwerte-und-stetigkeit/index.html#sec-stelle">Grenzwert an einer Stelle</a>, aus der Mittelstufe die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/05-lineare-funktionen/index.html#sec-steigung">Steigung einer Geraden</a>, die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/04-terme/index.html#sec-binomisch">binomischen Formeln</a>, die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/08-quadratische-funktionen/index.html#sec-pq">pq-Formel</a> und das <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/12-trigonometrische-funktionen/index.html#sec-bogenmass">Bogenmaß</a>.</p>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../02-grenzwerte-und-stetigkeit/index.html">Thema 1.2</a> den <a href="../02-grenzwerte-und-stetigkeit/index.html#sec-stelle">Grenzwert an einer Stelle</a>, aus der Mittelstufe die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/05-lineare-funktionen/index.html#sec-steigung">Steigung einer Geraden</a>, die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/04-terme/index.html#sec-binomisch">binomischen Formeln</a>, die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/08-quadratische-funktionen/index.html#sec-pq">pq-Formel</a> und das <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/12-trigonometrische-funktionen/index.html#sec-bogenmass">Bogenmaß</a>.</p>
   </section>
 
   <!-- 1. Mittlere Änderungsrate -->
@@ -121,7 +121,7 @@
     </div>
     <div class="achtung-box">
       <span class="box-label">Achtung — x = x₀ einsetzen geht nicht</span>
-      Mit x = x₀ fielen P und Q zusammen, und der Differenzenquotient wäre <span class="bruch"><span class="z">0</span><span class="n">0</span></span> — durch nur einen Punkt ist keine Sekante bestimmt. Deshalb braucht man den <em>Grenzwert</em> aus Thema 2: erst umformen (den Faktor x − x₀ kürzen), dann x gegen x₀ gehen lassen.
+      Mit x = x₀ fielen P und Q zusammen, und der Differenzenquotient wäre <span class="bruch"><span class="z">0</span><span class="n">0</span></span> — durch nur einen Punkt ist keine Sekante bestimmt. Deshalb braucht man den <em>Grenzwert</em> aus Thema 1.2: erst umformen (den Faktor x − x₀ kürzen), dann x gegen x₀ gehen lassen.
     </div>
     <div class="quiz" id="quiz-lokal"></div>
   </section>
@@ -173,7 +173,7 @@
         <li><strong>Der Differenzenquotient ist ein echter Quotient.</strong> Zähler und Nenner sind Differenzen, Δy = f(x) − f(x₀) und Δx = x − x₀ — die beiden Seiten eines Steigungsdreiecks. Er hat eine geometrische Bedeutung (Sekantensteigung) und eine inhaltliche (mittlere Änderungsrate, mit Einheit).</li>
         <li><strong>Der Differentialquotient ist kein Quotient mehr, sondern ein Grenzwert.</strong> Zähler und Nenner gehen beide gegen 0; „0 : 0“ ist keine Zahl. Gerechnet wird deshalb nie mit x = x₀, sondern mit x ≠ x₀: erst den Bruch so umformen, dass der Faktor x − x₀ wegfällt, dann den Grenzwert bilden.</li>
         <li><strong>Warum der Faktor x − x₀ immer herausfällt:</strong> Für x = x₀ wird der Zähler f(x) − f(x₀) zu 0. Bei ganzrationalen Funktionen ist x₀ also eine Nullstelle des Zählers, und der Linearfaktor (x − x₀) lässt sich abspalten — derselbe Gedanke wie in Abschnitt 12.</li>
-        <li><strong>Zwei Blickrichtungen auf den Grenzwert:</strong> dynamisch — Q wandert auf P zu, die Sekante dreht sich, die Tabelle zeigt Zahlen, die sich nähern; statisch — f′(x₀) ist die eine Zahl, der die Quotienten beliebig nahe kommen (der ε-Gedanke aus Thema 1 und 2). Die Tabelle legt eine Vermutung nahe, beweisen kann sie erst die Umformung.</li>
+        <li><strong>Zwei Blickrichtungen auf den Grenzwert:</strong> dynamisch — Q wandert auf P zu, die Sekante dreht sich, die Tabelle zeigt Zahlen, die sich nähern; statisch — f′(x₀) ist die eine Zahl, der die Quotienten beliebig nahe kommen (der ε-Gedanke aus Thema 1.1 und 1.2). Die Tabelle legt eine Vermutung nahe, beweisen kann sie erst die Umformung.</li>
         <li><strong>x₀-Methode oder h-Methode?</strong> Beide sind dieselbe Rechnung, h = x − x₀. Die x₀-Methode hält beide Punkte P und Q mit ihren Koordinaten im Blick — das Steigungsdreieck bleibt sichtbar. Die h-Methode beschreibt Q über den Abstand von P; sie ist bequemer, wenn man ausmultipliziert.</li>
         <li><strong>Leibniz’ Schreibweise <span class="bruch"><span class="z">dy</span><span class="n">dx</span></span></strong> erinnert an den Quotienten <span class="bruch"><span class="z">Δy</span><span class="n">Δx</span></span>, aus dem der Grenzwert entsteht. Sie ist ein Symbol für den Grenzwert, keine Division zweier Zahlen dy und dx.</li>
       </ol>
@@ -253,7 +253,7 @@
     <div class="reiter" data-reiter="pq-weitere">
       <div class="reiter-leiste" role="tablist"><button type="button" role="tab" aria-selected="true" data-wahl="x">x₀-Methode: x → x₀</button><button type="button" role="tab" aria-selected="false" data-wahl="h">Alternative: h-Methode</button></div>
       <div class="reiter-feld" data-feld="x" role="tabpanel"><strong>x³:</strong> x³ − x₀³ = (x − x₀)(x² + x · x₀ + x₀²) (ausmultiplizieren zur Probe), also <span class="bruch"><span class="z">x³ − x₀³</span><span class="n">x − x₀</span></span> = x² + x · x₀ + x₀² → 3x₀².<br><strong><span class="bruch"><span class="z">1</span><span class="n">x</span></span> (x₀ ≠ 0):</strong> <span class="bruch"><span class="z">1</span><span class="n">x − x₀</span></span> · (<span class="bruch"><span class="z">1</span><span class="n">x</span></span> − <span class="bruch"><span class="z">1</span><span class="n">x₀</span></span>) = <span class="bruch"><span class="z">1</span><span class="n">x − x₀</span></span> · <span class="bruch"><span class="z">x₀ − x</span><span class="n">x · x₀</span></span> = <span class="bruch"><span class="z">−1</span><span class="n">x · x₀</span></span> → <span class="bruch"><span class="z">−1</span><span class="n">x₀²</span></span> = −1 · x₀⁻².<br><strong>√x (x₀ &gt; 0):</strong> Der Nenner zerfällt mit der 3. binomischen Formel, x − x₀ = (√x − √x₀)(√x + √x₀): <span class="bruch"><span class="z">√x − √x₀</span><span class="n">x − x₀</span></span> = <span class="bruch"><span class="z">1</span><span class="n">√x + √x₀</span></span> → <span class="bruch"><span class="z">1</span><span class="n">2√x₀</span></span> = <span class="bruch"><span class="z">1</span><span class="n">2</span></span> · x₀<sup>−½</sup>.</div>
-      <div class="reiter-feld" data-feld="h" role="tabpanel" hidden><strong>x³:</strong> (x₀ + h)³ = x₀³ + 3x₀²h + 3x₀h² + h³, also <span class="bruch"><span class="z">(x₀ + h)³ − x₀³</span><span class="n">h</span></span> = 3x₀² + 3x₀h + h² → 3x₀².<br><strong><span class="bruch"><span class="z">1</span><span class="n">x</span></span>:</strong> <span class="bruch"><span class="z">1</span><span class="n">h</span></span> · (<span class="bruch"><span class="z">1</span><span class="n">x₀ + h</span></span> − <span class="bruch"><span class="z">1</span><span class="n">x₀</span></span>) = <span class="bruch"><span class="z">−1</span><span class="n">x₀(x₀ + h)</span></span> → <span class="bruch"><span class="z">−1</span><span class="n">x₀²</span></span>.<br><strong>√x:</strong> Erweitern mit √(x₀ + h) + √x₀ wie bei den Wurzeltermen in Thema 2: <span class="bruch"><span class="z">√(x₀ + h) − √x₀</span><span class="n">h</span></span> = <span class="bruch"><span class="z">1</span><span class="n">√(x₀ + h) + √x₀</span></span> → <span class="bruch"><span class="z">1</span><span class="n">2√x₀</span></span>.</div>
+      <div class="reiter-feld" data-feld="h" role="tabpanel" hidden><strong>x³:</strong> (x₀ + h)³ = x₀³ + 3x₀²h + 3x₀h² + h³, also <span class="bruch"><span class="z">(x₀ + h)³ − x₀³</span><span class="n">h</span></span> = 3x₀² + 3x₀h + h² → 3x₀².<br><strong><span class="bruch"><span class="z">1</span><span class="n">x</span></span>:</strong> <span class="bruch"><span class="z">1</span><span class="n">h</span></span> · (<span class="bruch"><span class="z">1</span><span class="n">x₀ + h</span></span> − <span class="bruch"><span class="z">1</span><span class="n">x₀</span></span>) = <span class="bruch"><span class="z">−1</span><span class="n">x₀(x₀ + h)</span></span> → <span class="bruch"><span class="z">−1</span><span class="n">x₀²</span></span>.<br><strong>√x:</strong> Erweitern mit √(x₀ + h) + √x₀ wie bei den Wurzeltermen in Thema 1.2: <span class="bruch"><span class="z">√(x₀ + h) − √x₀</span><span class="n">h</span></span> = <span class="bruch"><span class="z">1</span><span class="n">√(x₀ + h) + √x₀</span></span> → <span class="bruch"><span class="z">1</span><span class="n">2√x₀</span></span>.</div>
     </div>
     </div>
     <div class="wissen-box">
@@ -292,7 +292,7 @@
     <div class="wissen-box">
       <span class="box-label">Faktorregel und Summenregel</span>
       <div class="formula-block">f(x) = k · g(x) &nbsp; ⟹ &nbsp; f′(x) = k · g′(x) &nbsp;&nbsp;&nbsp;&nbsp; f(x) = g(x) + h(x) &nbsp; ⟹ &nbsp; f′(x) = g′(x) + h′(x)</div>
-      <strong>Begründung:</strong> Der Differenzenquotient von k · g ist k-mal der Differenzenquotient von g, und der Differenzenquotient von g + h ist die Summe der beiden Differenzenquotienten. Nach den Grenzwertsätzen aus Thema 1 und 2 darf man Faktor und Summe mit dem Grenzwert vertauschen.<br>
+      <strong>Begründung:</strong> Der Differenzenquotient von k · g ist k-mal der Differenzenquotient von g, und der Differenzenquotient von g + h ist die Summe der beiden Differenzenquotienten. Nach den Grenzwertsätzen aus Thema 1.1 und 1.2 darf man Faktor und Summe mit dem Grenzwert vertauschen.<br>
       <strong>Folgerung:</strong> Jede ganzrationale Funktion wird Summand für Summand abgeleitet. Ihr Grad sinkt dabei um 1.
     </div>
     <div class="beispiel-box">
@@ -458,7 +458,7 @@
   <!-- 11. Ganzrationale Funktionen -->
   <section class="card" id="sec-ganzrational">
     <h2>11. Ganzrationale Funktionen: Grad, Verhalten für x → ±∞, Symmetrie</h2>
-    <p>Die Funktionen, die man mit Potenz-, Faktor- und Summenregel ableiten kann, heißen <span class="term">ganzrationale Funktionen</span>. Sie sind die wichtigsten Gegenstände der Funktionsuntersuchung in <a href="../04-funktionsuntersuchung/index.html">Thema 4</a>. Zwei Eigenschaften liest man direkt am Term ab: wie der Graph ganz außen verläuft und ob er symmetrisch ist. Zoome heraus — oder klappe den Graphen an der y-Achse um und dreh ihn um den Ursprung.</p>
+    <p>Die Funktionen, die man mit Potenz-, Faktor- und Summenregel ableiten kann, heißen <span class="term">ganzrationale Funktionen</span>. Sie sind die wichtigsten Gegenstände der Funktionsuntersuchung in <a href="../04-funktionsuntersuchung/index.html">Thema 3</a>. Zwei Eigenschaften liest man direkt am Term ab: wie der Graph ganz außen verläuft und ob er symmetrisch ist. Zoome heraus — oder klappe den Graphen an der y-Achse um und dreh ihn um den Ursprung.</p>
     <div class="widget">
       <div class="btn-row">
         <label>Untersuchung:
@@ -490,7 +490,7 @@
     </div>
     <div class="wissen-box">
       <span class="box-label">Verhalten für x → ±∞ und Symmetrie</span>
-      <strong>Für x → ±∞</strong> verhält sich f wie der Summand mit der höchsten Potenz, aₙxⁿ. Begründung mit Thema 2: f(x) = aₙxⁿ · (1 + <span class="bruch"><span class="z">aₙ₋₁</span><span class="n">aₙx</span></span> + … + <span class="bruch"><span class="z">a₀</span><span class="n">aₙxⁿ</span></span>), und die Klammer strebt gegen 1.<br>
+      <strong>Für x → ±∞</strong> verhält sich f wie der Summand mit der höchsten Potenz, aₙxⁿ. Begründung mit Thema 1.2: f(x) = aₙxⁿ · (1 + <span class="bruch"><span class="z">aₙ₋₁</span><span class="n">aₙx</span></span> + … + <span class="bruch"><span class="z">a₀</span><span class="n">aₙxⁿ</span></span>), und die Klammer strebt gegen 1.<br>
       <strong>Achsensymmetrie</strong> zur y-Achse: f(−x) = f(x) für alle x. Bei ganzrationalen Funktionen gilt sie genau dann, wenn der Term <strong>nur gerade</strong> Exponenten hat — a₀ = a₀x⁰ zählt als gerade.<br>
       <strong>Punktsymmetrie</strong> zum Ursprung: f(−x) = −f(x) für alle x. Sie gilt genau dann, wenn der Term <strong>nur ungerade</strong> Exponenten hat.
     </div>
@@ -588,7 +588,7 @@
       <span class="box-label">Achtung — f′(x) = 0 heißt noch nicht Extrempunkt</span>
       Bei f(x) = 0,25x⁴ − x³ ist f′(x) = x³ − 3x² = x²(x − 3). An der Stelle 0 ist f′ gleich 0, wechselt aber das Vorzeichen nicht (x² ist auf beiden Seiten positiv, x − 3 negativ): Sattelpunkt, kein Extrempunkt. Erst an der Stelle 3 wechselt f′ von − nach +: Tiefpunkt. Ebenso ist f(x) = x³ streng monoton steigend, obwohl f′(0) = 0 ist — der Monotoniesatz gilt nur in einer Richtung.
     </div>
-    <p class="hinweis-box">💡 Warum gilt der Monotoniesatz? Anschaulich: Wenn jede Tangente steigt, kann der Graph nirgends fallen. Ein Beweis braucht den Mittelwertsatz der Differentialrechnung, den man meist erst im Studium kennenlernt. Wie man Extrempunkte rechnerisch sicher bestimmt — auch mit der <a href="../04-funktionsuntersuchung/index.html#sec-extrem2">zweiten Ableitung</a> — zeigt Thema 4.</p>
+    <p class="hinweis-box">💡 Warum gilt der Monotoniesatz? Anschaulich: Wenn jede Tangente steigt, kann der Graph nirgends fallen. Ein Beweis braucht den Mittelwertsatz der Differentialrechnung, den man meist erst im Studium kennenlernt. Wie man Extrempunkte rechnerisch sicher bestimmt — auch mit der <a href="../04-funktionsuntersuchung/index.html#sec-extrem2">zweiten Ableitung</a> — zeigt Thema 3.</p>
     <div class="quiz" id="quiz-monotonie"></div>
   </section>
 
@@ -629,7 +629,7 @@
       <li><strong>Baut auf:</strong> Den <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/09-potenzen/index.html#sec-potenzfunktionen">Potenzfunktionen</a> und den <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/04-terme/index.html#sec-binomisch">binomischen Formeln</a> — sie tragen die Potenzregel; die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/08-quadratische-funktionen/index.html#sec-pq">pq-Formel</a> löst die Gleichungen nach der Substitution.</li>
       <li><strong>Baut auf:</strong> Dem <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/12-trigonometrische-funktionen/index.html#sec-bogenmass">Bogenmaß</a> — nur darin ist (sin x)′ = cos x.</li>
       <li><strong>Gleiche Struktur:</strong> Wie die <a href="../01-folgen-und-reihen/index.html#sec-unendlich">unendliche Reihe</a> der Grenzwert ihrer Partialsummen ist, ist die Ableitung der Grenzwert ihrer Differenzenquotienten: Erst etwas Endliches berechnen, dann einen Grenzübergang machen.</li>
-      <li><strong>Führt weiter zu:</strong> Der <a href="../04-funktionsuntersuchung/index.html">Funktionsuntersuchung</a> (Thema 4) — mit der <a href="../04-funktionsuntersuchung/index.html#sec-hoehere">zweiten Ableitung</a> kommen Krümmung, Wende- und Sattelpunkte dazu, dann Funktionenscharen, Steckbriefaufgaben und Extremwertprobleme. Abschnitt 13 ist der Anfang davon.</li>
+      <li><strong>Führt weiter zu:</strong> Der <a href="../04-funktionsuntersuchung/index.html">Funktionsuntersuchung</a> (Thema 3) — mit der <a href="../04-funktionsuntersuchung/index.html#sec-hoehere">zweiten Ableitung</a> kommen Krümmung, Wende- und Sattelpunkte dazu, dann Funktionenscharen, Steckbriefaufgaben und Extremwertprobleme. Abschnitt 13 ist der Anfang davon.</li>
       <li><strong>Führt weiter zu:</strong> Den <em>Exponential- und Logarithmusfunktionen</em> — dort gibt es eine Funktion, die mit ihrer eigenen Ableitung übereinstimmt.</li>
       <li><strong>Führt weiter zu:</strong> Der <em>Integralrechnung</em> — sie kehrt das Ableiten um: Zu f′ wird f gesucht.</li>
     </ul>
@@ -659,6 +659,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=3"></script>
+<script type="module" src="lernpfad.js?v=4"></script>
 </body>
 </html>

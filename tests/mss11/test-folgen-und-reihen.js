@@ -1,4 +1,4 @@
-// Fachliche Prüfung: MSS 11, Analysis, Thema 1 „Folgen und Reihen“.
+// Fachliche Prüfung: MSS 11, Analysis, Thema 1.1 „Folgen und Reihen“.
 //
 // Geprüft wird, was die Seite zeigt, gegen eine unabhängige Rechnung:
 //   * Gerüst: Reihenfolge der Abschnitte, Schreibweisen-Kasten, Verweise, Formelsammlung;
