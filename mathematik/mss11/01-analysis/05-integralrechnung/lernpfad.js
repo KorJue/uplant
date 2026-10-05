@@ -24,7 +24,7 @@
 // darunter orange; Untersumme grün, Obersumme orange; Streifen violett; Warnung rot.
 
 import { mountUebungsaufgaben } from "../../../aufgaben.js?v=2";
-import { AUFGABEN, parseZahl } from "./aufgaben-integralrechnung.js?v=1";
+import { AUFGABEN, parseZahl } from "./aufgaben-integralrechnung.js?v=2";
 
 
 // ---------- Helfer ----------
@@ -360,9 +360,15 @@ function renderRekonstruktion() {
     bilanz = `s(${num(t)}) = ${bruch("1", "2")} · ${num(t)} · ${num(2 * t)} = <span class="wa">${num(d.bestand(t))} m</span> — die Fläche des Dreiecks unter v`;
   }
   setzeHtml("re-bilanz", bilanz);
+  setzeHtml("re-vorgang", art === "becken"
+    ? "<strong>Becken:</strong> Zu Beginn sind 5 m³ Wasser darin. Von 0 bis 2 h fließen 3 m³ pro Stunde zu, von 2 bis 4 h werden 1 m³ pro Stunde abgepumpt (Rate −1), von 4 bis 6 h fließen 2 m³ pro Stunde zu. Oben die Rate r(t), unten der Bestand B(t)."
+    : "<strong>Auto:</strong> Es fährt aus dem Stand an, seine Geschwindigkeit wächst gleichmäßig um 2 m/s in jeder Sekunde: v(t) = 2t. Oben die Geschwindigkeit, unten der zurückgelegte Weg s(t). Die Rate ist hier nicht stückweise konstant — die Fläche unter v ist ein Dreieck statt einiger Rechtecke.");
   setzeText("re-text", art === "becken"
-    ? (t <= 2 ? "Zuflussphase: Jede Stunde kommen 3 m³ dazu — der Bestand steigt geradlinig." : t <= 4 ? "Abpumpphase: Die Rate ist negativ, das Rechteck liegt unter der Achse und wird abgezogen — der Bestand sinkt." : "Wieder Zufluss mit 2 m³ pro Stunde: Der Bestand steigt, aber flacher als am Anfang.")
-    : "Die Fläche unter der Geschwindigkeit wächst quadratisch mit t — so entsteht die Parabel s(t) = t².");
+    ? (t === 0 ? "Noch ist keine Zeit vergangen: keine Fläche, der Bestand ist der Anfangsbestand 5 m³." : t <= 2 ? "Zuflussphase: Jede Stunde kommen 3 m³ dazu — der Bestand steigt geradlinig." : t <= 4 ? "Abpumpphase: Die Rate ist negativ, das Rechteck liegt unter der Achse und wird abgezogen — der Bestand sinkt." : "Wieder Zufluss mit 2 m³ pro Stunde: Der Bestand steigt, aber flacher als am Anfang.")
+    : t === 0
+      ? "Noch ist keine Zeit vergangen: Das Auto steht, der Weg ist 0."
+      : `Bis t = ${num(t)} s ist die Fläche unter v ein Dreieck mit der Grundseite ${num(t)} s und der Höhe v(${num(t)}) = ${num(2 * t)} m/s, also s(${num(t)}) = ½ · ${num(t)} · ${num(2 * t)} = ${num(t * t)} m. ` +
+        "Doppelt so lange fahren heißt viermal so weit — der Weg wächst quadratisch, so entsteht die Parabel s(t) = t². Die Steigung von s ist an jeder Stelle die Geschwindigkeit.");
 }
 
 // ================= 2. Unter- und Obersummen =================
@@ -581,26 +587,67 @@ function renderFlaeche() {
 
 // ================= 8. Fläche zwischen zwei Graphen =================
 
+// Zwei Fälle: Parabel und Gerade (quadratische Differenz, pq-Formel) und kubische Funktion und
+// Gerade (Differenz ohne absolutes Glied, x ausklammern). Die Bilanz zeigt jeden Rechenschritt.
+const ZG = {
+  parabel: { f: (x) => 4 - x * x, y: [-9, 5], text: "4 − x²" },
+  kubik: { f: (x) => x ** 3 - 3 * x, y: [-8, 8], text: "x³ − 3x" },
+};
 function renderZwischen() {
+  const art = wahl("zg-art"), d = ZG[art];
   const m = reglerRaster("zg-m");
   setzeAnzeige("zg-m-anzeige", num(m));
-  const f = (x) => 4 - x * x, g = (x) => m * x;
-  // Schnittstellen: 4 − x² = mx ⟺ x² + mx − 4 = 0.
-  const w = Math.sqrt(m * m + 16), x1 = (-m - w) / 2, x2 = (-m + w) / 2;
-  const D = (x) => 4 * x - (m * x * x) / 2 - x ** 3 / 3;
-  const A = D(x2) - D(x1);
-  const K = koordinatenXY({ hoehe: 320, xmin: -4.5, xmax: 4.5, ymin: -9, ymax: 5 });
-  flaechen(K, f, g, x1, x2);
+  const f = d.f, g = (x) => m * x, diff = (x) => f(x) - g(x);
+  const gt = m === 0 ? "0" : geradeText(m, 0);
+  const K = koordinatenXY({ hoehe: 320, xmin: -4.5, xmax: 4.5, ymin: d.y[0], ymax: d.y[1] });
+  let stellen, schritte, A;
+  if (art === "parabel") {
+    // 4 − x² = mx ⟺ x² + mx − 4 = 0: pq-Formel mit p = m, q = −4.
+    const w = Math.sqrt((m * m) / 4 + 4);
+    stellen = [-m / 2 - w, -m / 2 + w];
+    const D = (x) => 4 * x - (m * x * x) / 2 - x ** 3 / 3;
+    A = D(stellen[1]) - D(stellen[0]);
+    schritte = [
+      `① Gleichsetzen: 4 − x² = ${gt}`,
+      `② Nullform: x²${m === 0 ? "" : " " + plusMinus(m) + "x"} − 4 = 0 &nbsp;(p ${gleich(m)}, q = −4)`,
+      `③ pq-Formel: x = ${m === 0 ? "" : `${num(-m / 2)} `}± √(${numK(m / 2)}² + 4) = ${m === 0 ? "" : `${num(-m / 2)} `}± √${num((m * m) / 4 + 4)} ⟹ x₁ ${gleich(stellen[0])}, x₂ ${gleich(stellen[1])}`,
+      `④ Probe: f(x₁) ${gleich(f(stellen[0]))} und g(x₁) ${gleich(g(stellen[0]))} ✓`,
+      `⑤ A = ${intZ("x₁", "x₂")} (4 − x²${m === 0 ? "" : " " + plusMinus(-m) + "x"}) dx = ${klammer(`4x${m === 0 ? "" : " " + plusMinus(-m / 2) + "x²"} − ${bruch("x³", "3")}`, "x₁", "x₂")} — <span class="wa">Flächeninhalt ${gleich(A)}</span>`,
+    ];
+  } else {
+    // x³ − 3x = mx ⟺ x · (x² − (3 + m)) = 0: x ausklammern, dann x² = 3 + m.
+    const c = 3 + m;
+    stellen = c > 1e-12 ? [-Math.sqrt(c), 0, Math.sqrt(c)] : [0];
+    // d ist ungerade: Beide Teilflächen sind gleich groß, je c²/4.
+    const D = (x) => x ** 4 / 4 - (c * x * x) / 2;
+    const teile = stellen.slice(1).map((x2, i) => D(x2) - D(stellen[i]));
+    A = teile.reduce((sm, t) => sm + Math.abs(t), 0);
+    schritte = [
+      `① Gleichsetzen: x³ − 3x = ${gt}`,
+      // Bei m = −3 ist c = 0: Dann steht nur x³ da, kein „+ 0x“.
+      `② Nullform: x³${c === 0 ? "" : ` ${plusMinus(-c)}x`} = 0`,
+      (c === 0 ? "③ x³ = 0 ⟹ x = 0" : `③ x ausklammern: x · (x² ${plusMinus(-c)}) = 0 ⟹ x = 0 oder x² = ${num(c)}`) + (c > 1e-12
+        ? ` ⟹ x₁ ${gleich(stellen[0])}, x₂ = 0, x₃ ${gleich(stellen[2])}`
+        : " — nur die (dreifache) Schnittstelle 0"),
+      c > 1e-12 ? `④ Probe: f(x₃) ${gleich(f(stellen[2]))} und g(x₃) ${gleich(g(stellen[2]))} ✓` : "④ Mit nur einer Schnittstelle schließen die Graphen keine Fläche ein.",
+      c > 1e-12
+        ? `⑤ ${intZ("x₁", "0")} d(x) dx ${gleich(teile[0])}, ${intZ("0", "x₃")} d(x) dx ${gleich(teile[1])} mit d(x) = x³ ${plusMinus(-c)}x — <span class="wa">Flächeninhalt ${gleich(A)}</span>`
+        : `⑤ <span class="wa">Flächeninhalt = 0</span>`,
+    ];
+  }
+  if (stellen.length > 1) flaechen(K, f, g, stellen[0], stellen[stellen.length - 1]);
   graph(K, f, -4.5, 4.5, { schritte: 400, rolle: "graph-f" });
   gerade(K, m, 0, 0, "dr-sekante", { "data-rolle": "graph-g" });
-  for (const x of [x1, x2]) punkt(K, x, f(x), "dr-schnitt", { "data-rolle": "schnitt", r: 5 });
+  for (const x of stellen) punkt(K, x, f(x), "dr-schnitt", { "data-rolle": "schnitt", r: 5 });
   zeige("zg-mount", K.svg);
-  setzeHtml("zg-bilanz",
-    `Schnittstellen: x² ${m === 0 ? "" : plusMinus(m) + "x "}− 4 = 0 ⟹ x₁ ${gleich(x1)}, x₂ ${gleich(x2)}<br>` +
-    `A = ${intZ("x₁", "x₂")} (f(x) − g(x)) dx = ${intZ("x₁", "x₂")} (4 − x²${m === 0 ? "" : " " + plusMinus(-m) + "x"}) dx = ${bruch("(x₂ − x₁)³", "6")} — <span class="wa">Flächeninhalt ${gleich(A)}</span>`);
-  setzeText("zg-text", m === 0
-    ? "Die Gerade ist die x-Achse: Die Schnittstellen sind die Nullstellen der Parabel, A = 32/3."
-    : "Die Fläche liegt teils unter der x-Achse — trotzdem zählt sie positiv, denn integriert wird die Differenz f − g, die zwischen den Schnittstellen positiv ist.");
+  setzeHtml("zg-bilanz", schritte.join("<br>"));
+  setzeText("zg-text", art === "parabel"
+    ? (m === 0
+      ? "Die Gerade ist die x-Achse: Die Schnittstellen sind die Nullstellen der Parabel, A = 32/3."
+      : "Die Fläche liegt teils unter der x-Achse — trotzdem zählt sie positiv, denn integriert wird die Differenz f − g, die zwischen den Schnittstellen positiv ist.")
+    : (stellen.length === 1
+      ? "Die Gerade schneidet den Graphen nur im Ursprung — es gibt keine eingeschlossene Fläche."
+      : "Drei Schnittstellen, zwei Teilflächen: Links liegt f über g (grün), rechts darunter (orange). Über [x₁; x₃] auf einmal integriert gäbe 0 — die Teilflächen müssen einzeln betragen werden."));
 }
 
 // ================= 9. Mittelwert =================
@@ -627,26 +674,53 @@ function renderMittelwert() {
 // ================= 10. Uneigentliche Integrale =================
 
 const UE_B = [1.5, 2, 3, 5, 10, 20, 100, 1000];
+const UE_E = [0.5, 0.25, 0.1, 0.05, 0.02, 0.01, 0.001, 0.0001];
+// „pol“: Die Problemstelle ist die Polstelle 0 am linken Rand; der Regler stellt ε statt b ein.
 const UE = {
-  quadrat: { f: (x) => 1 / (x * x), F: (x) => -1 / x, grenz: 1, Ftext: "−1/x", term: "1/x²" },
-  wurzel: { f: (x) => 1 / Math.sqrt(x), F: (x) => 2 * Math.sqrt(x), grenz: Infinity, Ftext: "2√x", term: "1/√x" },
+  quadrat: { f: (x) => 1 / (x * x), F: (x) => -1 / x, pol: false, grenz: 1, Ftext: "−1/x", term: "1/x²" },
+  wurzel: { f: (x) => 1 / Math.sqrt(x), F: (x) => 2 * Math.sqrt(x), pol: false, grenz: Infinity, Ftext: "2√x", term: "1/√x" },
+  polwurzel: { f: (x) => 1 / Math.sqrt(x), F: (x) => 2 * Math.sqrt(x), pol: true, grenz: 2, Ftext: "2√x", term: "1/√x" },
+  polquadrat: { f: (x) => 1 / (x * x), F: (x) => -1 / x, pol: true, grenz: Infinity, Ftext: "−1/x", term: "1/x²" },
 };
 function renderUneigentlich() {
-  const d = UE[wahl("ue-art")], b = UE_B[reglerRaster("ue-k")];
-  setzeAnzeige("ue-k-anzeige", num(b));
-  const K = koordinatenXY({ hoehe: 300, xmin: 0, xmax: 10.5, ymin: 0, ymax: 1.6 });
-  flaechen(K, d.f, () => 0, 1, Math.min(b, 10.5), { pos: "dr-flaeche-pos" });
-  graph(K, d.f, 0.3, 10.5, { schritte: 400 });
-  strecke(K, 1, 0, 1, 1.6, "dr-intervallrand", { "data-rolle": "grenze-a" });
-  if (b <= 10.5) strecke(K, b, 0, b, 1.6, "dr-intervallrand", { "data-rolle": "grenze-b" });
+  const d = UE[wahl("ue-art")], k = reglerRaster("ue-k");
+  setzeText("ue-k-name", d.pol ? "ε" : "b");
+  if (!d.pol) {
+    const b = UE_B[k];
+    setzeAnzeige("ue-k-anzeige", num(b));
+    const K = koordinatenXY({ hoehe: 300, xmin: 0, xmax: 10.5, ymin: 0, ymax: 1.6 });
+    flaechen(K, d.f, () => 0, 1, Math.min(b, 10.5), { pos: "dr-flaeche-pos" });
+    graph(K, d.f, 0.3, 10.5, { schritte: 400 });
+    strecke(K, 1, 0, 1, 1.6, "dr-intervallrand", { "data-rolle": "grenze-a" });
+    if (b <= 10.5) strecke(K, b, 0, b, 1.6, "dr-intervallrand", { "data-rolle": "grenze-b" });
+    zeige("ue-mount", K.svg);
+    const I = d.F(b) - d.F(1);
+    setzeHtml("ue-bilanz",
+      `${intZ("1", num(b))} ${d.term} dx = ${klammer(d.Ftext, "1", num(b))} = ${d.grenz === 1 ? `1 − ${bruch("1", num(b))}` : `2 · √${num(b)} − 2`} ${gleich(I)}<br>` +
+      (d.grenz === 1 ? `Für b → ∞ geht ${bruch("1", "b")} → 0, das Integral also gegen <span class="wa">1</span>: konvergent.` : `Für b → ∞ wächst 2√b − 2 über jede Grenze: <span class="wo">divergent</span>.`));
+    setzeText("ue-text", (b > 10.5 ? `b = ${num(b)} liegt weit rechts außerhalb des Bildes. ` : "") + (d.grenz === 1
+      ? "Jeder weitere Abschnitt bringt immer weniger dazu — die Summe bleibt unter 1."
+      : "1/√x fällt zu langsam: Die Fläche wächst ohne Grenze, nur immer langsamer."));
+    return;
+  }
+  const e = UE_E[k];
+  setzeAnzeige("ue-k-anzeige", num(e));
+  const K = koordinatenXY({ hoehe: 300, xmin: 0, xmax: 1.25, ymin: 0, ymax: 6 });
+  // Nahe der Polstelle ist der Graph so steil, dass ein grober Sehnenzug die Fläche merklich zu groß
+  // zeichnet (bei ε = 0,0001 um 7 %); 2000 Stützstellen bringen das unter ein Prozent.
+  flaechen(K, d.f, () => 0, e, 1, { pos: "dr-flaeche-pos", n: 2000 });
+  graph(K, d.f, 0.02, 1.25, { schritte: 400 });
+  strecke(K, e, 0, e, 6, "dr-intervallrand", { "data-rolle": "grenze-a" });
+  strecke(K, 1, 0, 1, 6, "dr-intervallrand", { "data-rolle": "grenze-b" });
+  strecke(K, 0, 0, 0, 6, "dr-pol", { "data-rolle": "pol" });
   zeige("ue-mount", K.svg);
-  const I = d.F(b) - d.F(1);
+  const I = d.F(1) - d.F(e);
   setzeHtml("ue-bilanz",
-    `${intZ("1", num(b))} ${d.term} dx = ${klammer(d.Ftext, "1", num(b))} = ${d.grenz === 1 ? `1 − ${bruch("1", num(b))}` : `2 · √${num(b)} − 2`} ${gleich(I)}<br>` +
-    (d.grenz === 1 ? `Für b → ∞ geht ${bruch("1", "b")} → 0, das Integral also gegen <span class="wa">1</span>: konvergent.` : `Für b → ∞ wächst 2√b − 2 über jede Grenze: <span class="wo">divergent</span>.`));
-  setzeText("ue-text", (b > 10.5 ? `b = ${num(b)} liegt weit rechts außerhalb des Bildes. ` : "") + (d.grenz === 1
-    ? "Jeder weitere Abschnitt bringt immer weniger dazu — die Summe bleibt unter 1."
-    : "1/√x fällt zu langsam: Die Fläche wächst ohne Grenze, nur immer langsamer."));
+    `${intZ(num(e), "1")} ${d.term} dx = ${klammer(d.Ftext, num(e), "1")} = ${d.grenz === 2 ? `2 − 2 · √${num(e)}` : `${bruch("1", num(e))} − 1`} ${gleich(I)}<br>` +
+    (d.grenz === 2 ? `Für ε → 0 geht √ε → 0, das Integral also gegen <span class="wa">2</span>: konvergent.` : `Für ε → 0 wächst ${bruch("1", "ε")} − 1 über jede Grenze: <span class="wo">divergent</span>.`));
+  setzeText("ue-text", (e < 0.02 ? `ε = ${num(e)} liegt so nah an 0, dass der Streifen im Bild nicht mehr zu sehen ist. ` : "") + (d.grenz === 2
+    ? "1/√x wächst bei 0 langsam genug: Die Fläche zwischen 0 und 1 ist endlich, obwohl der Graph über alle Grenzen steigt."
+    : "1/x² wächst bei 0 zu schnell: Rückt ε an 0 heran, kommt immer mehr Fläche dazu — ohne Grenze."));
 }
 
 // ================= 11. Rotationskörper =================
@@ -862,7 +936,7 @@ const REGLER = [
   [["hs-x", "hs-h"], renderHauptsatz],
   [["sf-c", "sf-x"], renderStamm],
   [["fl-a", "fl-b"], renderFlaeche],
-  [["zg-m"], renderZwischen],
+  [["zg-art", "zg-m"], renderZwischen],
   [["mw-b"], renderMittelwert],
   [["ue-art", "ue-k"], renderUneigentlich],
   [["rk-art", "rk-n"], renderRotation],

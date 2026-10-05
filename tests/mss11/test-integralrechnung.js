@@ -255,6 +255,10 @@ async function rekonstruktion(page) {
       const p = kreis(D2, "p");
       pruefe(p && nahe(p.x, t, 0.01) && nahe(p.y, B(t), 0.03), `${wo}: Punkt auf der Bestandskurve falsch`);
       pruefe(nahe(await spanWert(page, "#re-bilanz .wa"), B(t), 1e-4), `${wo}: Bilanz ${await spanWert(page, "#re-bilanz .wa")} statt ${B(t)}`);
+      // Zu jedem Vorgang gehört seine eigene Beschreibung und ein Text, der zur Reglerstellung passt.
+      const vorgang = await spanText(page, "#re-vorgang"), erkl = await spanText(page, "#re-text");
+      pruefe(vorgang.startsWith(art === "becken" ? "Becken:" : "Auto:"), `${wo}: Beschreibung passt nicht zum Vorgang — „${vorgang}“`);
+      if (art === "auto" && t > 0) pruefe(zahlen(erkl).some((z) => nahe(z, t * t, 1e-9)) && /Dreieck/.test(erkl), `${wo}: Der Text nennt den Weg s(t) = ${t * t} nicht — „${erkl}“`);
     }
   }
 }
@@ -438,26 +442,37 @@ async function flaeche(page) {
 
 // ---------- 8. Fläche zwischen zwei Graphen ----------
 async function zwischen(page) {
-  const f = (x) => 4 - x * x;
-  for (let mw = -3; mw <= 3; mw += 0.5) {
-    const m = await setzeRegler(page, "zg-m", mw);
-    const wo = `Zwischen m = ${m}`;
-    const g = (x) => m * x, d = (x) => f(x) - g(x);
-    const s = vzw(d, -10, 10);
-    pruefe(s.length === 2, `${wo}: ${s.length} Schnittstellen`);
-    const A = integral(d, s[0], s[1]);
-    const D = await lies(page, "#zg-mount svg");
-    const gs = kreise(D, "schnitt").map((k) => k.x).sort((p, q) => p - q);
-    pruefe(gs.length === 2 && nahe(gs[0], s[0], 0.01) && nahe(gs[1], s[1], 0.01), `${wo}: Schnittpunkte falsch`);
-    const st = vielecke(D, "flaeche");
-    stueckeZwischen(D, "flaeche", f, g, wo);
-    pruefe(st.every((v) => v.vz === "+"), `${wo}: Zwischen den Schnittstellen liegt f über g — alle Stücke positiv`);
-    pruefe(nahe(orientiert(st), A, tolFlaeche(A, D)), `${wo}: gezeichnete Fläche ${orientiert(st).toFixed(4)} statt ${A.toFixed(4)}`);
-    const gl = linie(D, "graph-g");
-    pruefe(gl && nahe(steigung(gl), m, 1e-3) && nahe(aufGerade(gl, 0), 0, 0.02), `${wo}: Gerade falsch`);
-    pfadAuf(D, "graph-f", f, wo);
-    pruefe(nahe(await letzteZahl(page, "#zg-bilanz .wa"), A, 1e-3), `${wo}: Flächeninhalt in der Bilanz falsch`);
+  const FN = { parabel: (x) => 4 - x * x, kubik: (x) => x ** 3 - 3 * x };
+  for (const [art, f] of Object.entries(FN)) {
+    await waehle(page, "zg-art", art);
+    for (let mw = -3; mw <= 3; mw += 0.5) {
+      const m = await setzeRegler(page, "zg-m", mw);
+      const wo = `Zwischen ${art}, m = ${m}`;
+      const g = (x) => m * x, d = (x) => f(x) - g(x);
+      const s = vzw(d, -10, 10).sort((p, q) => p - q);
+      pruefe(s.length === (art === "parabel" ? 2 : m === -3 ? 1 : 3), `${wo}: ${s.length} Schnittstellen`);
+      let A = 0;
+      for (let i = 0; i + 1 < s.length; i++) A += Math.abs(integral(d, s[i], s[i + 1]));
+      const D = await lies(page, "#zg-mount svg");
+      const gs = kreise(D, "schnitt").map((k) => k.x).sort((p, q) => p - q);
+      pruefe(gs.length === s.length && gs.every((x, i) => nahe(x, s[i], 0.01)), `${wo}: Schnittpunkte ${gs.map((x) => x.toFixed(3))} statt ${s.map((x) => x.toFixed(3))}`);
+      const st = vielecke(D, "flaeche");
+      stueckeZwischen(D, "flaeche", f, g, wo);
+      pruefe(nahe(st.reduce((sm, v) => sm + gauss(v.punkte), 0), A, tolFlaeche(A, D)), `${wo}: gezeichnete Fläche falsch (soll ${A.toFixed(4)})`);
+      const gl = linie(D, "graph-g");
+      pruefe(gl && nahe(steigung(gl), m, 1e-3) && nahe(aufGerade(gl, 0), 0, 0.02), `${wo}: Gerade falsch`);
+      pfadAuf(D, "graph-f", f, wo);
+      pruefe(nahe(await letzteZahl(page, "#zg-bilanz .wa"), A, 1e-3), `${wo}: Flächeninhalt in der Bilanz falsch`);
+      // Der Rechenweg: fünf Schritte, und die genannten Schnittstellen stimmen.
+      const weg = [];
+      for (let i = 0; i < 5; i++) weg.push(await bilanzZeile(page, "#zg-bilanz", i));
+      pruefe(weg.every((z, i) => z.startsWith("①②③④⑤"[i])), `${wo}: Der Rechenweg hat nicht die fünf Schritte`);
+      pruefe(/Gleichsetzen/.test(weg[0]) && /Nullform/.test(weg[1]) && /(pq-Formel|ausklammern|x³ = 0)/.test(weg[2]), `${wo}: Schritte falsch benannt`);
+      const genannt = zahlen(weg[2].split("⟹").slice(-1)[0]);
+      pruefe(s.every((x) => genannt.some((z) => nahe(z, x, 1e-4))) || s.length === 1, `${wo}: Schritt ③ nennt die Schnittstellen ${s.map((x) => x.toFixed(4))} nicht — „${weg[2]}“`);
+    }
   }
+  await waehle(page, "zg-art", "parabel");
 }
 
 // ---------- 9. Mittelwert ----------
@@ -483,27 +498,44 @@ async function mittelwert(page) {
 
 // ---------- 10. Uneigentliche Integrale ----------
 async function uneigentlich(page) {
-  const FN = { quadrat: (x) => 1 / (x * x), wurzel: (x) => 1 / Math.sqrt(x) };
-  for (const [art, f] of Object.entries(FN)) {
+  const FN = {
+    quadrat: { f: (x) => 1 / (x * x), pol: false, konvergent: 1 },
+    wurzel: { f: (x) => 1 / Math.sqrt(x), pol: false, konvergent: null },
+    polwurzel: { f: (x) => 1 / Math.sqrt(x), pol: true, konvergent: 2 },
+    polquadrat: { f: (x) => 1 / (x * x), pol: true, konvergent: null },
+  };
+  for (const [art, d] of Object.entries(FN)) {
     await waehle(page, "ue-art", art);
+    const f = d.f;
+    // Auf logarithmischer Skala integriert (x = eᵘ), damit auch b = 1000 und ε = 0,0001 genau werden.
+    const I = (lo, hi) => integral((u) => f(Math.exp(u)) * Math.exp(u), Math.log(lo), Math.log(hi), 4000);
+    pruefe((await spanText(page, "#ue-k-name")) === (d.pol ? "ε" : "b"), `Uneigentlich ${art}: Der Regler heißt nicht ${d.pol ? "ε" : "b"}`);
     for (let k = 0; k <= 7; k++) {
       await setzeRegler(page, "ue-k", k);
-      const b = zahl((await spanText(page, "#ue-k-anzeige")).replace(/\./g, ""));
-      const wo = `Uneigentlich ${art}, b = ${b}`;
-      // Auf logarithmischer Skala integriert (x = eᵘ), damit auch b = 1000 genau wird.
-      const I = integral((u) => f(Math.exp(u)) * Math.exp(u), 0, Math.log(b), 4000);
-      const zeile = await bilanzZeile(page, "#ue-bilanz", 0);
-      const z = zahlen(zeile);
-      pruefe(nahe(z[z.length - 1], I, 1e-4 * (1 + I)), `${wo}: Bilanz ${z[z.length - 1]} statt ${I}`);
+      const w = zahl((await spanText(page, "#ue-k-anzeige")).replace(/\.(?=\d{3})/g, ""));
+      const wo = `Uneigentlich ${art}, ${d.pol ? "ε" : "b"} = ${w}`;
+      const soll = d.pol ? I(w, 1) : I(1, w);
+      const z = zahlen(await bilanzZeile(page, "#ue-bilanz", 0));
+      pruefe(nahe(z[z.length - 1], soll, 1e-4 * (1 + soll)), `${wo}: Bilanz ${z[z.length - 1]} statt ${soll}`);
       const D = await lies(page, "#ue-mount svg");
-      const sichtbar = Math.min(b, 10.5);
-      const J = integral((u) => f(Math.exp(u)) * Math.exp(u), 0, Math.log(sichtbar), 4000);
-      pruefe(nahe(orientiert(vielecke(D, "flaeche")), J, tolFlaeche(J, D)), `${wo}: gezeichnete Fläche falsch`);
+      stueckeZwischen(D, "flaeche", f, () => 0, wo);
+      if (!d.pol) {
+        const J = I(1, Math.min(w, 10.5));
+        pruefe(nahe(orientiert(vielecke(D, "flaeche")), J, tolFlaeche(J, D)), `${wo}: gezeichnete Fläche falsch`);
+      } else if (art === "polwurzel" || w >= 0.05) {
+        // Nahe der Polstelle ist der Sehnenzug eine grobe Näherung — dort genügt ein Prozent.
+        const J = I(w, 1);
+        pruefe(nahe(orientiert(vielecke(D, "flaeche")), J, 0.01 * J + tolFlaeche(J, D)), `${wo}: gezeichnete Fläche ${orientiert(vielecke(D, "flaeche")).toFixed(4)} statt ${J.toFixed(4)}`);
+      }
+      if (d.pol) pruefe(nahe(linie(D, "pol").x1, 0, 0.01) && nahe(linie(D, "grenze-a").x1, w, 0.01), `${wo}: Polstelle oder ε falsch gezeichnet`);
     }
-    // Grenzwert: konvergent nur bei 1/x².
     const zeile2 = await bilanzZeile(page, "#ue-bilanz", 1);
-    pruefe(art === "quadrat" ? /konvergent/.test(zeile2) && nahe(await spanWert(page, "#ue-bilanz .wa"), 1, 1e-9) : /divergent/.test(zeile2), `Uneigentlich ${art}: Konvergenz falsch beurteilt`);
+    pruefe(d.konvergent !== null ? /konvergent/.test(zeile2) && nahe(await spanWert(page, "#ue-bilanz .wa"), d.konvergent, 1e-9) : /divergent/.test(zeile2), `Uneigentlich ${art}: Konvergenz falsch beurteilt`);
+    // Der Grenzwert stimmt: Der Wert für das kleinste ε bzw. größte b liegt nahe daran (oder wächst weiter).
+    const fern = d.pol ? I(1e-8, 1) : I(1, 1e8);
+    pruefe(d.konvergent !== null ? nahe(fern, d.konvergent, 1e-3) : fern > 1000, `Uneigentlich ${art}: Grenzwert ${d.konvergent} passt nicht zur Rechnung (${fern})`);
   }
+  await waehle(page, "ue-art", "quadrat");
 }
 
 // ---------- 11. Rotationskörper ----------
@@ -603,7 +635,7 @@ function liesPi(s) {
 }
 // Schranken gemessen mit werkzeug-streuung.js (25 Züge, 10⁻⁴-Quantil von 0,8 · n):
 //   UPLANT_ZUEGE=25 node tests/werkzeug-streuung.js /mathematik/mss11/01-analysis/05-integralrechnung/index.html
-const SCHRANKE = {1: 14, 2: 22, 3: 22, 4: 17, 5: 14, 6: 14, 7: 21, 8: 21, 9: 14, 10: 15, 11: 23, 12: 12, 13: 10, 14: 11, 15: 16, 16: 15, 17: 15, 18: 12, 19: 8, 20: 8};
+const SCHRANKE = {1: 13, 2: 22, 3: 21, 4: 17, 5: 14, 6: 20, 7: 8, 8: 14, 9: 22, 10: 22, 11: 14, 12: 15, 13: 16, 14: 10, 15: 22, 16: 12, 17: 10, 18: 11, 19: 16, 20: 22, 21: 10, 22: 15, 23: 16, 24: 12, 25: 8, 26: 8, 27: 15, 28: 11};
 
 async function aufgaben(page) {
   const r = 25;
@@ -642,12 +674,12 @@ async function aufgaben(page) {
     const I = integral(f, a, b), Ab = flaecheBetrag(f, a, b);
     return { richtig: I, toleranz: T, falsch: [[Math.abs(I) < 1e-9 ? NaN : -I, "Vorzeichen"], [nahe(Ab, Math.abs(I), 1e-6) ? NaN : Ab, "Flächeninhalt zwischen Graph und x-Achse"], [c === 1 ? NaN : I / c, "Der Faktor"]] };
   });
-  await A(6, "A6 Fläche mit Vorzeichenwechsel", (q) => {
+  await A(8, "A8 Fläche mit Vorzeichenwechsel", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = (.+?)\\. Berechne den Inhalt der Fläche zwischen dem Graphen von f und der x-Achse über dem Intervall \\[0; ${Z}\\]\\.`));
     if (!m) return null;
     const f = polyFn(liesPoly(m[1])), b = zahl(m[2]);
     const s = vzw(f, 0.01, b - 1e-9);
-    pruefe(s.length === 1, `A6: ${s.length} Nullstellen im Inneren — erwartet genau eine`);
+    pruefe(s.length === 1, `A8: ${s.length} Nullstellen im Inneren — erwartet genau eine`);
     if (s.length !== 1) return null;
     const I = integral(f, 0, b), I2 = integral(f, s[0], b);
     return { richtig: flaecheBetrag(f, 0, b), toleranz: T, falsch: [[I, "Das ist das Integral über"], [I >= 0 ? NaN : -I, "Der Betrag des Gesamtintegrals"], [Math.abs(I2), "nur die Teilfläche"]] };
@@ -662,12 +694,12 @@ async function aufgaben(page) {
     const D = integral(d, s[0], s[1]);
     return { f, g, s, D, A: Math.abs(D), k: (kf[2] || 0) - (kg[2] || 0) };
   };
-  await A(7, "A7 Parabel und Gerade", (q) => {
+  await A(9, "A9 Parabel und Gerade", (q) => {
     const w = zweiGraphen(q);
     if (!w) return null;
     return { richtig: w.A, toleranz: T, falsch: [[nahe(w.D, w.A, 1e-9) ? NaN : w.D, "Das Integral von f − g ist negativ"], [integral(w.f, w.s[0], w.s[1]), "nur das Integral über f"], [integral(w.g, w.s[0], w.s[1]), "nur das Integral über g"]] };
   });
-  await A(8, "A8 Stammfunktion durch einen Punkt", (q) => {
+  await A(10, "A10 Stammfunktion durch einen Punkt", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = (.+?)\\. Bestimme die Stammfunktion F\\(x\\) = … \\+ C von f, deren Graph durch P\\(${Z} \\| ${Z}\\) geht\\. Gib C und F\\(${Z}\\) an\\.`));
     if (!m) return null;
     const f = polyFn(liesPoly(m[1])), [x0, y0, x1] = [m[2], m[3], m[4]].map(zahl);
@@ -677,7 +709,7 @@ async function aufgaben(page) {
       [0, Math.abs(g0) < 1e-9 ? NaN : y0 + g0, "Vorzeichen"], [0, Math.abs(g0) < 1e-9 ? NaN : y0, "C ist nicht einfach"], [0, y0 - f(x0), "Eingesetzt wurde in f"],
       [1, Math.abs(C) < 1e-9 ? NaN : G(x1), "Die Konstante C fehlt"]] };
   });
-  await A(9, "A9 Lineare Verkettung", (q) => {
+  await A(11, "A11 Lineare Verkettung", (q) => {
     const m = q.match(/Berechne ∫ (\S+) (\S+) \((.+?)\)([²³]) dx\./);
     if (!m) return null;
     const b = zahl(m[1]), a = zahl(m[2]), k = HOCH[m[4]], innen = liesPoly(m[3]), mm = innen[1];
@@ -685,34 +717,34 @@ async function aufgaben(page) {
     const eins = Math.abs(Math.abs(mm) - 1) < 1e-9;
     return { richtig: I, toleranz: T, falsch: [[eins ? NaN : I * mm, "innere Ableitung"], [eins ? NaN : I * mm * mm, "multipliziert statt geteilt"], [I * (k + 1), "Der Exponent steigt"]] };
   });
-  await A(10, "A10 Obere Grenze", (q) => {
+  await A(12, "A12 Obere Grenze", (q) => {
     const m = q.match(new RegExp(`dass ∫ b 0 (.+?) dx = ${Z} gilt\\.`));
     if (!m) return null;
     const kp = liesPoly(m[1]), n = grad(kp), c = kp[n], Aw = zahl(m[2]);
     const b = loese((s) => integral(polyFn(kp), 0, s, 200), Aw, 0, 50);
     return { richtig: b, toleranz: T, falsch: [[(Aw / c) ** (1 / (n + 1)), "Die Stammfunktion hat den Faktor"], [b ** (n + 1), "Zum Schluss fehlt noch"], [n === 1 ? NaN : b ** ((n + 1) / n), "Gezogen wurde die"]] };
   });
-  await A(11, "A11 Zwei Parabeln", (q) => {
+  await A(15, "A15 Zwei Parabeln", (q) => {
     const w = zweiGraphen(q);
     if (!w) return null;
     const d = w.s[1] - w.s[0];
     return { richtig: w.A, toleranz: T, falsch: [[nahe(w.D, w.A, 1e-9) ? NaN : w.D, "Das Integral von f − g ist negativ"], [integral(w.f, w.s[0], w.s[1]), "Integral über f allein"], [Math.abs(Math.abs(w.k) - 1) < 1e-9 ? NaN : d ** 3 / 6, "der Vorfaktor"]] };
   });
-  await A(12, "A12 Parameter aus der Fläche", (q) => {
+  await A(16, "A16 Parameter aus der Fläche", (q) => {
     const m = q.match(new RegExp(`fk\\(x\\) = (?:${Z} · \\()?k² − x²\\)?\\. .*Inhalt ${Z} ein\\.`));
     if (!m) return null;
     const c = m[1] ? zahl(m[1]) : 1, Aw = zahl(m[2]);
     const k = loese((s) => integral((x) => c * (s * s - x * x), -s, s, 200), Aw, 0, 50);
     return { richtig: k, toleranz: T, falsch: [[k * Math.cbrt(2), "nur von 0 bis k"], [k ** 3, "Das ist k³"], [Math.sqrt(k ** 3), "Quadratwurzel"]] };
   });
-  await A(13, "A13 Rotationsvolumen", (q) => {
+  await A(17, "A17 Rotationsvolumen", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = √\\(${Z}?x\\) rotiert über dem Intervall \\[0; ${Z}\\]`));
     if (!m) return null;
     const c = m[1] ? zahl(m[1]) : 1, b = zahl(m[2]);
     const V = integral((x) => Math.sqrt(c * x) ** 2, 0, b);
     return { richtig: V, toleranz: T, falsch: [[V * Math.PI, "als Dezimalzahl"], [c * b * b, "der Faktor ½ fehlt"], [(c * c * b ** 3) / 3, "Quadriert wurde zweimal"]] };
   });
-  await A(14, "A14 Uneigentliches Integral", (q) => {
+  await A(18, "A18 Uneigentliches Integral", (q) => {
     const m = q.match(new RegExp(`Berechne ∫ ∞ ${Z} ${Z} x([²³⁴]) dx\\.`));
     if (!m) return null;
     const a = zahl(m[1]), c = zahl(m[2]), n = HOCH[m[3]];
@@ -720,7 +752,7 @@ async function aufgaben(page) {
     const I = integral((u) => c * u ** (n - 2), 0, 1 / a);
     return { richtig: I, toleranz: T, falsch: [[c / ((n + 1) * a ** (n + 1)), "falschen Exponenten"], [a === 1 ? NaN : c / (n - 1), "untere Grenze 1"], [-I, "Vorzeichen"]] };
   });
-  await A(15, "A15 Größter Bestand", (q) => {
+  await A(19, "A19 Größter Bestand", (q) => {
     const m = q.match(new RegExp(`r\\(t\\) = ${Z} − ${Z}t .*Zu Beginn sind ${Z} m³ im Speicher\\.`));
     if (!m) return null;
     const [r0, mm, B0] = m.slice(1).map(zahl);
@@ -729,41 +761,41 @@ async function aufgaben(page) {
     const B = B0 + integral(rate, 0, ts);
     return { felder: [ts, B], toleranz: T, falschFelder: [[0, (2 * r0) / mm, "wieder so groß wie zu Beginn"], [1, B - B0, "nur die zugeflossene Menge"], [1, B0 + r0 * ts, "Gerechnet wurde mit r₀"]] };
   });
-  await A(16, "A16 Tangente an eine kubische Funktion", (q) => {
+  await A(22, "A22 Tangente an eine kubische Funktion", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = (.+?)\\. Die Tangente t an den Graphen im Punkt P\\(${Z} \\| ${Z}\\)`));
     if (!m) return null;
     const kf = liesPoly(m[1]), f = polyFn(kf), x0 = zahl(m[2]);
-    pruefe(nahe(f(x0), zahl(m[3]), 1e-9), `A16: P liegt nicht auf dem Graphen — „${q}“`);
+    pruefe(nahe(f(x0), zahl(m[3]), 1e-9), `A22: P liegt nicht auf dem Graphen — „${q}“`);
     const mt = polyFn(polyAbl(kf))(x0), t = (x) => f(x0) + mt * (x - x0), d = (x) => f(x) - t(x);
     // x₀ ist doppelte Nullstelle von f − t (kein Vorzeichenwechsel); die einfache ist Q.
     const xs = vzw(d, -20, 20).filter((z) => Math.abs(z - x0) > 1e-3);
-    if (xs.length !== 1) { pruefe(false, `A16: ${xs.length} zweite Schnittstellen — „${q}“`); return null; }
+    if (xs.length !== 1) { pruefe(false, `A22: ${xs.length} zweite Schnittstellen — „${q}“`); return null; }
     const xq = xs[0], lo = Math.min(xq, x0), hi = Math.max(xq, x0);
     const D = integral(d, lo, hi), Af = Math.abs(D), a = kf[3];
     return { felder: [xq, Af], toleranz: T, falschFelder: [[0, -xq, "Vorzeichen"], [0, x0, "Berührpunkt P selbst"],
       [1, nahe(D, Af, 1e-9) ? NaN : D, "Das Integral von f − t ist hier negativ"], [1, integral(f, lo, hi), "Integral über f allein"], [1, Math.abs(Math.abs(a) - 1) < 1e-9 ? NaN : Af / Math.abs(a), "Der Faktor"]] };
   });
-  await A(17, "A17 Maximum einer Integralfunktion", (q) => {
+  await A(23, "A23 Maximum einer Integralfunktion", (q) => {
     const m = q.match(/f\(t\) = (.+?)\. Die Integralfunktion/);
     if (!m) return null;
     const f = polyFn(liesPoly(m[1], "t"));
     const s = vzw(f, -20, 20);
-    if (s.length !== 2) { pruefe(false, `A17: ${s.length} Nullstellen von f — „${q}“`); return null; }
+    if (s.length !== 2) { pruefe(false, `A23: ${s.length} Nullstellen von f — „${q}“`); return null; }
     const I = (x) => integral(f, 0, x);
     // Maximum von I: f wechselt von + nach −.
     const xm = s.find((z) => f(z - 0.01) > 0 && f(z + 0.01) < 0), xn = s.find((z) => z !== xm);
     return { felder: [xm, I(xm)], toleranz: T, falschFelder: [[0, xn, "lokales Minimum"], [0, (s[0] + s[1]) / 2, "Extremstelle von f"],
       [1, I(xn), "lokales Minimum"], [1, Math.abs(I(xm)) < 1e-9 ? NaN : -I(xm), "Vorzeichen"]] };
   });
-  await A(18, "A18 Kugelschicht", (q) => {
+  await A(24, "A24 Kugelschicht", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = √\\(${Z} − x²\\) ist ein Halbkreis mit dem Radius ${Z}\\. .*zwischen x = ${Z} und x = ${Z}\\.`));
     if (!m) return null;
     const [r2, rr, a, b] = m.slice(1).map(zahl);
-    pruefe(nahe(rr * rr, r2, 1e-9), `A18: Radius ${rr} passt nicht zu ${r2} − x²`);
+    pruefe(nahe(rr * rr, r2, 1e-9), `A24: Radius ${rr} passt nicht zu ${r2} − x²`);
     const V = integral((x) => r2 - x * x, a, b);
     return { richtig: V, toleranz: T, falsch: [[r2 * (b - a) + (b ** 3 - a ** 3) / 3, "Vorzeichen"], [a === -rr && b === rr ? NaN : (4 * rr ** 3) / 3, "ganze Kugel"], [r2 * (b - a), "Zylinder"]] };
   });
-  await A(19, "A19 Ursprungsgerade halbiert eine Fläche", (q) => {
+  await A(25, "A25 Ursprungsgerade halbiert eine Fläche", (q) => {
     const m = q.match(/f\(x\) = (.+?) schließt mit der x-Achse/);
     if (!m) return null;
     const kf = liesPoly(m[1]), f = polyFn(kf), k = -kf[2];
@@ -774,7 +806,7 @@ async function aufgaben(page) {
     const mstern = loese((mm) => -ab(mm), -ganz / 2, 0, k * c);
     return { richtig: mstern, toleranz: T, falsch: [[(k * c) / 2, "Die halbe Steigung"], [k * c * (1 - Math.SQRT1_2), "Quadratwurzel"], [c * Math.cbrt(0.5), "Das ist die Schnittstelle"]] };
   });
-  await A(20, "A20 Unbegrenzte Fläche zwischen zwei Graphen", (q) => {
+  await A(26, "A26 Unbegrenzte Fläche zwischen zwei Graphen", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = ${Z} x² und g\\(x\\) = ${Z} x³`));
     if (!m) return null;
     const a = zahl(m[1]), b = zahl(m[2]);
@@ -783,6 +815,75 @@ async function aufgaben(page) {
     const Af = integral((u) => a - b * u, 0, 1 / s);
     return { felder: [s, Af], toleranz: T, falschFelder: [[0, nahe(a, b) ? NaN : 1 / s, "Umgedreht"],
       [1, a / s, "nur die Fläche unter f"], [1, a / s + b / (2 * s * s), "Vorzeichen: Die Stammfunktion"], [1, -Af, "Rechts von S liegt f über g"]] };
+  });
+
+  // ---------- Schnittstellen und uneigentliche Integrale ----------
+  const schnitt = (f, g) => vzw((x) => f(x) - g(x), -20, 20).sort((p, q) => p - q);
+  await A(6, "A6 Schnittstellen von Parabel und Gerade", (q) => {
+    const m = q.match(/f\(x\) = (.+?) und g\(x\) = (.+?)\. Bestimme die Schnittstellen x₁ < x₂ der beiden Graphen\./);
+    if (!m) return null;
+    const f = polyFn(liesPoly(m[1])), g = polyFn(liesPoly(m[2]));
+    const s = schnitt(f, g), nf = vzw(f, -20, 20).sort((p, r) => p - r);
+    if (s.length !== 2) { pruefe(false, `A6: ${s.length} Schnittstellen — „${q}“`); return null; }
+    pruefe(s.every((x) => nahe(f(x), g(x), 1e-9)), "A6: Probe f(x) = g(x) schlägt fehl");
+    return { felder: s, toleranz: T, falschFelder: [[0, -s[1], "Vorzeichen in der pq-Formel"], [1, -s[0], "Vorzeichen in der pq-Formel"],
+      [0, nf.length === 2 ? nf[0] : NaN, "Nullstelle von f allein"], [1, nf.length === 2 ? nf[1] : NaN, "Nullstelle von f allein"]] };
+  });
+  await A(7, "A7 Uneigentliches Integral in zwei Schritten", (q) => {
+    const m = q.match(new RegExp(`Berechne ∫ b 1 ${Z} x² dx für b = ${Z} und den Grenzwert`));
+    if (!m) return null;
+    const c = zahl(m[1]), b = zahl(m[2]), f = (x) => c / (x * x);
+    const I = integral(f, 1, b);
+    // Mit u = 1/x wird ∫₁^∞ c/x² dx zu ∫₀¹ c du.
+    const lim = integral(() => c, 0, 1);
+    return { felder: [I, lim], toleranz: T, falschFelder: [[0, -c / b, "nur F(b)"], [0, -I, "Vorzeichen"], [1, I, "Das ist der Wert für b"], [1, 0, "Der Integrand geht gegen 0"]] };
+  });
+  // Drei Schnittstellen: Teilflächen einzeln betragen.
+  const dreiGraphen = (q) => {
+    const m = q.match(/f\(x\) = (.+?) und g\(x\) = (.+?)\. Die Graphen schneiden sich in drei Punkten/);
+    if (!m) return null;
+    const f = polyFn(liesPoly(m[1])), g = polyFn(liesPoly(m[2])), d = (x) => f(x) - g(x);
+    const s = schnitt(f, g);
+    if (s.length !== 3) { pruefe(false, `drei Graphen: ${s.length} Schnittstellen — „${q}“`); return null; }
+    const I1 = integral(d, s[0], s[1]), I2 = integral(d, s[1], s[2]);
+    return { richtig: Math.abs(I1) + Math.abs(I2), toleranz: T, falsch: [[Math.abs(I1 + I2), "auf einmal integriert"], [Math.abs(I1), "nur die Teilfläche über"], [nahe(Math.abs(I1), Math.abs(I2), 1e-9) ? NaN : Math.abs(I2), "nur die Teilfläche über"]] };
+  };
+  await A(13, "A13 Drei Schnittstellen", dreiGraphen);
+  await A(14, "A14 Polstelle am Rand", (q) => {
+    const m = q.match(new RegExp(`Integral ∫ ${Z} 0 ${Z} √x dx\\.`));
+    if (!m) return null;
+    const a = zahl(m[1]), c = zahl(m[2]);
+    // Mit x = u² wird ∫₀ᵃ c/√x dx zu ∫₀^√a 2c du — ohne Polstelle.
+    const I = integral(() => 2 * c, 0, Math.sqrt(a));
+    return { richtig: I, toleranz: T, falsch: [[c * Math.sqrt(a), "Der Faktor 2 fehlt"], [-c / (2 * a * Math.sqrt(a)), "Ableitung des Integranden"], [a === 1 ? NaN : 2 * c * (Math.sqrt(a) - 1), "untere Grenze ist 0"]] };
+  });
+  await A(20, "A20 Schnittstellen und Fläche zweier Parabeln", (q) => {
+    const m = q.match(/f\(x\) = (.+?) und g\(x\) = (.+?)\. Bestimme die Schnittstellen x₁ < x₂ und den Inhalt A/);
+    if (!m) return null;
+    const kf = liesPoly(m[1]), kg = liesPoly(m[2]), f = polyFn(kf), g = polyFn(kg);
+    const s = schnitt(f, g);
+    if (s.length !== 2) { pruefe(false, `A20: ${s.length} Schnittstellen — „${q}“`); return null; }
+    const D = integral((x) => f(x) - g(x), s[0], s[1]), Af = Math.abs(D), k = (kf[2] || 0) - (kg[2] || 0);
+    return { felder: [s[0], s[1], Af], toleranz: T, falschFelder: [[0, -s[1], "Vorzeichen in der pq-Formel"], [1, -s[0], "Vorzeichen in der pq-Formel"],
+      [2, nahe(D, Af, 1e-9) ? NaN : D, "Das Integral von f − g ist negativ"], [2, Af / Math.abs(k), "Das Teilen durch"]] };
+  });
+  await A(21, "A21 Unendlich langer Rotationskörper", (q) => {
+    const m = q.match(new RegExp(`f\\(x\\) = ${Z} x rotiert über \\[${Z}; ∞\\)`));
+    if (!m) return null;
+    const c = zahl(m[1]), a = zahl(m[2]);
+    // u = 1/x: ∫ₐ^∞ c²/x² dx = ∫₀^(1/a) c² du.
+    const V = integral(() => c * c, 0, 1 / a);
+    return { richtig: V, toleranz: T, falsch: [[c / a, "Quadriert wurde nicht"], [(c * c) / (a * a), "Die Stammfunktion von"], [V * Math.PI, "Dezimalzahl"]] };
+  });
+  await A(27, "A27 Kubische Funktion und Parabel", dreiGraphen);
+  await A(28, "A28 Grenze aus einer unbegrenzten Fläche", (q) => {
+    const m = q.match(new RegExp(`f\\(x\\) = ${Z} x³ , der x-Achse .*Ihr Inhalt ist ${Z}\\.`));
+    if (!m) return null;
+    const c = zahl(m[1]), Aw = zahl(m[2]);
+    // Fläche rechts von a über u = 1/x: ∫₀^(1/a) c · u du; sie fällt mit wachsendem a.
+    const flaecheAb = (a) => integral((u) => c * u, 0, 1 / a, 200);
+    const a = loese((x) => -flaecheAb(x), -Aw, 0.01, 100);
+    return { richtig: a, toleranz: T, falsch: [[nahe(a, 1, 1e-9) ? NaN : a * a, "Das ist a²"], [Math.sqrt(c / Aw), "Der Faktor ½ fehlt"], [Math.pow(c / (4 * Aw), 0.25), "falschen Exponenten"]] };
   });
 }
 

@@ -147,56 +147,90 @@
 
 <!-- ===================== Seite 2 ===================== -->
 <div class="page">
-  <h1>Anwendungen<span class="klein">Flächen — Mittelwert — uneigentliche Integrale — Rotationskörper</span></h1>
+  <h1>Anwendungen<span class="klein">Flächen — Schnittstellen — uneigentliche Integrale — Mittelwert — Rotationskörper</span></h1>
   <div class="grid">
 
     <div class="box merk">
       <h2>Fläche zwischen Graph und x-Achse</h2>
       <div class="rechnung">
-        <div class="schritt"><b>1.</b><span>Nullstellen von f in [a; b] bestimmen: x₁ &lt; x₂ &lt; …</span></div>
+        <div class="schritt"><b>1.</b><span>Nullstellen von f in [a; b]: x₁ &lt; x₂ &lt; …</span></div>
         <div class="schritt"><b>2.</b><span>Teilintegrale über [a; x₁], [x₁; x₂], …, [x<sub>k</sub>; b]</span></div>
         <div class="schritt"><b>3.</b><span><b>A = Summe der Beträge</b> der Teilintegrale</span></div>
       </div>
-      <p class="f" style="margin-top:0.8mm">f(x) = 0,25x³ − x auf [0; 3]: |−1| + <span class="bruch"><span class="z">25</span><span>16</span></span> = <span class="bruch"><span class="z">41</span><span>16</span></span>; das Integral ist nur <span class="bruch"><span class="z">9</span><span>16</span></span>.</p>
+      <p class="f" style="margin-top:0.8mm">0,25x³ − x auf [0; 3]: |−1| + <span class="bruch"><span class="z">25</span><span>16</span></span> = <span class="bruch"><span class="z">41</span><span>16</span></span>; das Integral ist nur <span class="bruch"><span class="z">9</span><span>16</span></span>.</p>
       <h2 style="margin-top:2mm">Fläche zwischen zwei Graphen</h2>
-      <p class="zentral f">A = |∫<sub>x₁</sub><sup>x₂</sup> (f(x) − g(x)) dx| <span class="fu">(+ … je Schnittstellenpaar)</span></p>
-      <p>Grenzen sind die <b>Schnittstellen</b> (Nullstellen von f − g). Ob die Graphen über oder unter der x-Achse liegen, spielt keine Rolle.</p>
+      <p class="zentral f">A = |∫<sub>x₁</sub><sup>x₂</sup> (f(x) − g(x)) dx| + |∫<sub>x₂</sub><sup>x₃</sup> …| + …</p>
+      <p>Grenzen sind die <b>Schnittstellen</b>; ob die Graphen über oder unter der x-Achse liegen, spielt keine Rolle.</p>
       <figure style="max-width:70%;margin:0.8mm auto 0">[[FIG4]]</figure>
       <p class="bu">4 − x² = x + 2 ⟺ x = −2 oder x = 1; A = ∫<sub>−2</sub><sup>1</sup> (2 − x − x²) dx = 4,5</p>
+    </div>
+
+    <div class="box merk">
+      <h2>Schnittstellen berechnen</h2>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span><b>Gleichsetzen:</b> f(x) = g(x)</span></div>
+        <div class="schritt"><b>2.</b><span><b>Nullform:</b> d(x) = f(x) − g(x) = 0 — Schnittstellen = Nullstellen von d</span></div>
+        <div class="schritt"><b>3.</b><span><b>Lösen</b> je nach d (Tabelle)</span></div>
+        <div class="schritt"><b>4.</b><span><b>Ordnen</b> und <b>Probe</b> f(x<sub>i</sub>) = g(x<sub>i</sub>)</span></div>
+        <div class="schritt"><b>5.</b><span>Zwischen benachbarten Schnittstellen integrieren, Beträge addieren</span></div>
+      </div>
+      <table style="margin-top:0.8mm">
+        <tr><th>d(x)</th><th>Verfahren</th></tr>
+        <tr><td class="l f">ax² + bx + c</td><td class="l">durch a teilen, pq-Formel: x = −<span class="bruch"><span class="z">p</span><span>2</span></span> ± √((<span class="bruch"><span class="z">p</span><span>2</span></span>)² − q)</td></tr>
+        <tr><td class="l f">ax² + bx, ax³ + bx² + cx</td><td class="l">x ausklammern, Rest mit der pq-Formel</td></tr>
+        <tr><td class="l f">ax⁴ + bx² + c</td><td class="l">substituieren z = x²</td></tr>
+        <tr><td class="l f">ax³ + bx² + cx + e</td><td class="l">Nullstelle raten (Teiler von e), Polynomdivision durch (x − x<sub>N</sub>)</td></tr>
+      </table>
+      <div class="rechnung">
+        <div class="schritt"><b>Bsp.</b><span class="f">x² − 2x − 1 = x + 3 ⟺ x² − 3x − 4 = 0 ⟹ x = <span class="bruch"><span class="z">3</span><span>2</span></span> ± √(<span class="bruch"><span class="z">9</span><span>4</span></span> + 4) = <span class="bruch"><span class="z">3</span><span>2</span></span> ± <span class="bruch"><span class="z">5</span><span>2</span></span> ⟹ x = −1; 4</span></div>
+        <div class="schritt"><b>Bsp.</b><span class="f">x³ − 2x² − x + 2 = 0: d(1) = 0; (x³ − 2x² − x + 2) : (x − 1) = x² − x − 2 = (x − 2)(x + 1) ⟹ x = −1; 1; 2</span></div>
+      </div>
+      <p class="fu" style="margin-top:0.6mm">Doppelte Nullstelle von d = Berührpunkt: kein Vorzeichenwechsel, trennt keine Teilflächen.</p>
+    </div>
+
+    <div class="box">
+      <h2>Uneigentliche Integrale</h2>
+      <p class="zentral f">∫<sub>a</sub><sup>∞</sup> f dx = lim<sub>b→∞</sub> ∫<sub>a</sub><sup>b</sup> f dx &nbsp;·&nbsp; ∫<sub>0</sub><sup>1</sup> f dx = lim<sub>ε→0</sub> ∫<sub>ε</sub><sup>1</sup> f dx</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>Problemstelle (∞ oder Polstelle) durch b bzw. ε ersetzen</span></div>
+        <div class="schritt"><b>2.</b><span>gewöhnlich integrieren → Term in b bzw. ε</span></div>
+        <div class="schritt"><b>3.</b><span>Grenzwert: existiert er → <b>konvergent</b>, sonst <b>divergent</b></span></div>
+      </div>
+      <figure style="max-width:74%;margin:0.8mm auto 0">[[FIG6]]</figure>
+      <table style="margin-top:0.6mm">
+        <tr><th><span class="bruch"><span class="z">1</span><span>xʳ</span></span></th><th>r &lt; 1</th><th>r = 1</th><th>r &gt; 1</th></tr>
+        <tr><td class="f">∫<sub>1</sub><sup>∞</sup></td><td>divergent</td><td>divergent</td><td class="f">konv., <span class="bruch"><span class="z">1</span><span>r − 1</span></span></td></tr>
+        <tr><td class="f">∫<sub>0</sub><sup>1</sup></td><td class="f">konv., <span class="bruch"><span class="z">1</span><span>1 − r</span></span></td><td>divergent</td><td>divergent</td></tr>
+      </table>
+      <p class="f" style="margin-top:0.6mm">∫<sub>1</sub><sup>b</sup> <span class="bruch"><span class="z">1</span><span>x²</span></span> dx = 1 − <span class="bruch"><span class="z">1</span><span>b</span></span> → 1; &nbsp;∫<sub>ε</sub><sup>1</sup> <span class="bruch"><span class="z">1</span><span>√x</span></span> dx = 2 − 2√ε → 2</p>
+      <p>f → 0 reicht nicht — es kommt darauf an, <b>wie schnell</b>.</p>
     </div>
 
     <div class="box">
       <h2>Mittelwert einer Funktion</h2>
       <p class="zentral f gross">m = <span class="bruch"><span class="z">1</span><span>b − a</span></span> · ∫<sub>a</sub><sup>b</sup> f(x) dx</p>
-      <p>Das Rechteck mit Breite b − a und Höhe m hat denselben (orientierten) Flächeninhalt wie die Fläche unter f.</p>
-      <figure style="max-width:74%;margin:0.8mm auto 0">[[FIG5]]</figure>
-      <p class="bu">∫<sub>0</sub><sup>6</sup> T(t) dt = 78, m = 78 : 6 = 13 °C; Mittel der Randwerte: 10 °C</p>
-      <h2 style="margin-top:2mm">Bilanz im Sachzusammenhang</h2>
-      <p class="f">B(t) = B(0) + ∫<sub>0</sub><sup>t</sup> r(s) ds</p>
-      <p>Bestand am größten, wo r von + nach − wechselt (r = 0). <span class="f">r(t) = 6 − 2t, B(0) = 10: B(3) = 10 + 9 = 19</span></p>
+      <figure style="max-width:70%;margin:0.8mm auto 0">[[FIG5]]</figure>
+      <p class="bu">∫<sub>0</sub><sup>6</sup> T(t) dt = 78, m = 13 °C; Mittel der Randwerte: 10 °C</p>
+      <p><b>Bilanz:</b> <span class="f">B(t) = B(0) + ∫<sub>0</sub><sup>t</sup> r(s) ds</span>; Maximum, wo r von + nach − wechselt.</p>
     </div>
 
     <div class="box">
-      <h2>Uneigentliche Integrale</h2>
-      <p class="zentral f">∫<sub>a</sub><sup>∞</sup> f(x) dx = lim<sub>b→∞</sub> ∫<sub>a</sub><sup>b</sup> f(x) dx</p>
-      <p>Existiert der Grenzwert: <b>konvergent</b>, sonst <b>divergent</b>. Ebenso bei einer Polstelle am Rand: ∫<sub>0</sub><sup>1</sup> = lim<sub>ε→0</sub> ∫<sub>ε</sub><sup>1</sup>.</p>
-      <figure style="max-width:74%;margin:0.8mm auto 0">[[FIG6]]</figure>
-      <p class="f">∫<sub>1</sub><sup>b</sup> <span class="bruch"><span class="z">1</span><span>x²</span></span> dx = 1 − <span class="bruch"><span class="z">1</span><span>b</span></span> → 1; &nbsp;∫<sub>1</sub><sup>b</sup> <span class="bruch"><span class="z">1</span><span>√x</span></span> dx = 2√b − 2 → ∞</p>
-      <p>f → 0 reicht nicht — es kommt darauf an, <b>wie schnell</b>.</p>
-      <h2 style="margin-top:2mm">Rotationskörper</h2>
+      <h2>Rotationskörper</h2>
       <p class="zentral f gross">V = π · ∫<sub>a</sub><sup>b</sup> (f(x))² dx</p>
-      <figure style="max-width:74%;margin:0.8mm auto 0">[[FIG7]]</figure>
-      <p class="bu">Scheiben: Zylinder π · f(x)² · Δx. Kegel r, h: V = π ∫<sub>0</sub><sup>h</sup> <span class="bruch"><span class="z">r²</span><span>h²</span></span> x² dx = ⅓πr²h</p>
+      <figure style="max-width:70%;margin:0.8mm auto 0">[[FIG7]]</figure>
+      <p class="bu">Scheiben π · f(x)² · Δx; Kegel: π ∫<sub>0</sub><sup>h</sup> <span class="bruch"><span class="z">r²</span><span>h²</span></span> x² dx = ⅓πr²h</p>
+      <p><b>Unendlich lang:</b> f(x) = <span class="bruch"><span class="z">1</span><span>x</span></span> auf [1; ∞): V = π ∫<sub>1</sub><sup>∞</sup> <span class="bruch"><span class="z">1</span><span>x²</span></span> dx = π, die Fläche unter f ist unendlich.</p>
     </div>
 
-    <div class="box warn full">
+    <div class="box warn">
       <h2>Typische Fehler</h2>
       <ul>
-        <li><b>Integral = Flächeninhalt</b> — nur, wenn f im ganzen Intervall nicht unter der x-Achse liegt; sonst an den Nullstellen teilen.</li>
-        <li><b>|Gesamtintegral|</b> als Fläche — die Teilflächen haben sich darin schon aufgehoben. Der Betrag gehört um jedes Teilintegral.</li>
-        <li><b>F(a) − F(b)</b> statt F(b) − F(a); in <b>f</b> statt in F eingesetzt; beim Aufleiten durch den <b>alten</b> statt den neuen Exponenten geteilt.</li>
-        <li>Bei f(mx + c) den Faktor <span class="bruch"><span class="z">1</span><span>m</span></span> vergessen; bei Rotationskörpern das Quadrat außerhalb des Integrals: π(∫ f dx)² ≠ π∫ f² dx.</li>
-        <li>Den Hauptsatz über eine <b>Polstelle</b> hinweg angewendet; Mittelwert mit dem Mittel der Randwerte verwechselt.</li>
+        <li><b>Integral = Fläche</b> — nur ohne Vorzeichenwechsel; sonst an den Nullstellen teilen.</li>
+        <li><b>|Gesamtintegral|</b> als Fläche — die Teile haben sich schon aufgehoben.</li>
+        <li><b>Nullstellen von f</b> statt Schnittstellen von f und g als Grenzen.</li>
+        <li>pq-Formel ohne vorher durch a zu teilen; Vorzeichen von −<span class="bruch"><span class="z">p</span><span>2</span></span>.</li>
+        <li><b>F(a) − F(b)</b> statt F(b) − F(a); durch den <b>alten</b> Exponenten geteilt; bei f(mx + c) <span class="bruch"><span class="z">1</span><span>m</span></span> vergessen.</li>
+        <li>π(∫ f dx)² statt π∫ f² dx; Hauptsatz über eine <b>Polstelle</b> hinweg.</li>
       </ul>
     </div>
 

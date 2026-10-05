@@ -19,7 +19,7 @@
 </nav>
 <header class="page-header">
   <h1>Integralrechnung</h1>
-  <p>Ein Selbstlernpfad: Aus einer Geschwindigkeit den Weg, aus einer Zuflussrate die Wassermenge, aus einem Graphen die Fläche darunter — die Integralrechnung kehrt das Ableiten um. Jeder Abschnitt leitet sein Ergebnis an einer beweglichen Darstellung her, rechnet es nach und endet mit einer Kontrollfrage. Am Schluss stehen zwanzig Übungsaufgaben auf vier Stufen.</p>
+  <p>Ein Selbstlernpfad: Aus einer Geschwindigkeit den Weg, aus einer Zuflussrate die Wassermenge, aus einem Graphen die Fläche darunter — die Integralrechnung kehrt das Ableiten um. Jeder Abschnitt leitet sein Ergebnis an einer beweglichen Darstellung her, rechnet es nach und endet mit einer Kontrollfrage. Am Schluss stehen achtundzwanzig Übungsaufgaben auf vier Stufen.</p>
 </header>
 
 <main class="menu-main">
@@ -44,7 +44,7 @@
   <!-- 1. Rekonstruktion -->
   <section class="card" id="sec-rekonstruktion">
     <h2>1. Rekonstruktion eines Bestands aus seiner Änderungsrate</h2>
-    <p>In ein Becken mit 5 m³ Wasser fließt zwei Stunden lang Wasser mit der Rate 3 <span class="bruch"><span class="z">m³</span><span class="n">h</span></span>, dann wird zwei Stunden lang mit 1 <span class="bruch"><span class="z">m³</span><span class="n">h</span></span> abgepumpt, danach wieder mit 2 <span class="bruch"><span class="z">m³</span><span class="n">h</span></span> zugeführt. In jeder Phase ist die Änderung „Rate mal Zeit“ — im Graphen der Rate ist das der Flächeninhalt eines Rechtecks. Beim Abpumpen ist die Rate negativ, und das Rechteck liegt unter der Achse. Fahre mit t durch und beobachte, wie der Bestand aus den Flächen entsteht.</p>
+    <p>Oft kennt man nicht einen Bestand selbst, sondern nur, wie schnell er sich ändert: die Zuflussrate eines Beckens, die Geschwindigkeit eines Autos. Ist die Rate eine Zeit lang konstant, ist die Änderung „Rate mal Zeit“ — im Graphen der Rate der Flächeninhalt eines Rechtecks. Zwei Vorgänge stehen zur Wahl: ein Becken mit Zu- und Abfluss und ein anfahrendes Auto. Fahre jeweils mit t durch und beobachte, wie der Bestand aus den Flächen entsteht.</p>
     <div class="widget">
       <div class="btn-row">
         <label>Vorgang:
@@ -55,6 +55,7 @@
         </label>
         <label>t: <input type="range" id="re-t" min="0" max="6" step="0.25" value="3" style="vertical-align:middle;width:12rem"> <span id="re-t-anzeige" class="wert farbe-blau"></span></label>
       </div>
+      <p id="re-vorgang" class="vorgang"></p>
       <div class="geo-wrap geo-stapel" id="re-mount"></div>
       <div class="th-bilanz" id="re-bilanz"></div>
       <div id="re-text" class="event-result"></div>
@@ -291,9 +292,15 @@
   <!-- 8. Zwischen zwei Graphen -->
   <section class="card" id="sec-zwischen">
     <h2>8. Flächen zwischen zwei Graphen</h2>
-    <p>Liegt der Graph von f über dem von g, ist der Abstand an jeder Stelle f(x) − g(x) — und die Fläche dazwischen das Integral dieser Differenz. Wo sich die Graphen schneiden, wechselt die Reihenfolge; die Schnittstellen sind die natürlichen Grenzen. Im Widget schneidet die Gerade g(x) = m · x die Parabel f(x) = 4 − x². Drehe die Gerade.</p>
+    <p>Liegt der Graph von f über dem von g, ist der Abstand an jeder Stelle f(x) − g(x) — und die Fläche dazwischen das Integral dieser Differenz. Wo sich die Graphen schneiden, wechselt die Reihenfolge; die Schnittstellen sind die natürlichen Grenzen — und sie zu berechnen ist meist die eigentliche Arbeit. Im Widget dreht sich die Ursprungsgerade g(x) = m · x; sie schneidet entweder die Parabel f(x) = 4 − x² (zwei Schnittstellen, pq-Formel) oder die kubische Funktion f(x) = x³ − 3x (bis zu drei Schnittstellen, Ausklammern). Die Bilanz rechnet jeden Schritt vor.</p>
     <div class="widget">
       <div class="btn-row">
+        <label>Graph von f:
+          <select id="zg-art" class="eingabe" style="padding:0.4rem">
+            <option value="parabel">Parabel f(x) = 4 − x²</option>
+            <option value="kubik">kubisch f(x) = x³ − 3x</option>
+          </select>
+        </label>
         <label>m: <input type="range" id="zg-m" min="-3" max="3" step="0.5" value="0" style="vertical-align:middle;width:12rem"> <span id="zg-m-anzeige" class="wert farbe-orange"></span></label>
       </div>
       <div class="geo-wrap" id="zg-mount"></div>
@@ -306,8 +313,39 @@
       <div class="formula-block">A = |<span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">x₂</span><span class="u">x₁</span></span></span> (f(x) − g(x)) dx| + … + |<span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">xₖ</span><span class="u">xₖ₋₁</span></span></span> (f(x) − g(x)) dx|</div>
       Man integriert die <strong>Differenzfunktion</strong> d = f − g; ihre Nullstellen sind die Schnittstellen. Wo die Graphen liegen — über oder unter der x-Achse —, spielt keine Rolle.
     </div>
+    <div class="wissen-box">
+      <span class="box-label">Schnittstellen berechnen — Schritt für Schritt</span>
+      <ol>
+        <li><strong>Gleichsetzen:</strong> f(x) = g(x).</li>
+        <li><strong>Alles auf eine Seite:</strong> d(x) = f(x) − g(x) = 0. Die Schnittstellen von f und g sind die <strong>Nullstellen der Differenzfunktion</strong> d.</li>
+        <li><strong>Lösen</strong> — das Verfahren richtet sich nach d:
+          <ul>
+            <li>linear: nach x auflösen;</li>
+            <li>quadratisch: <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/08-quadratische-funktionen/index.html#sec-pq">pq-Formel</a> (vorher durch den Faktor vor x² teilen) — fehlt das absolute Glied, einfacher x ausklammern;</li>
+            <li>kubisch ohne absolutes Glied: x ausklammern, den Rest mit der pq-Formel lösen;</li>
+            <li>nur gerade Exponenten (x⁴, x², Zahl): substituieren z = x²;</li>
+            <li>sonst: eine Nullstelle x<sub>N</sub> raten — bei ganzzahligen Koeffizienten oft ein Teiler des absoluten Glieds — und den <a href="../03-differentialrechnung/index.html#sec-nullstellen">Linearfaktor</a> (x − x<sub>N</sub>) durch Polynomdivision abspalten.</li>
+          </ul></li>
+        <li><strong>Ordnen</strong> x₁ &lt; x₂ &lt; … und die <strong>Probe</strong> machen: f(x<sub>i</sub>) = g(x<sub>i</sub>).</li>
+        <li><strong>Integrieren</strong> zwischen je zwei benachbarten Schnittstellen und die Beträge addieren.</li>
+      </ol>
+      Eine doppelte Nullstelle von d (Berührpunkt, kein Vorzeichenwechsel) trennt keine Teilflächen — d behält dort sein Vorzeichen.
+    </div>
     <div class="beispiel-box">
-      <span class="box-label">Beispiel: die x-Achse als Gerade</span>
+      <span class="box-label">Beispiel 1: Parabel und Gerade — pq-Formel</span>
+      f(x) = x² − 2x − 1, g(x) = x + 3.<br>
+      1. x² − 2x − 1 = x + 3. &nbsp; 2. d(x) = x² − 3x − 4 = 0. &nbsp; 3. p = −3, q = −4: x = <span class="bruch"><span class="z">3</span><span class="n">2</span></span> ± √(<span class="bruch"><span class="z">9</span><span class="n">4</span></span> + 4) = <span class="bruch"><span class="z">3</span><span class="n">2</span></span> ± <span class="bruch"><span class="z">5</span><span class="n">2</span></span>, also x₁ = −1, x₂ = 4.<br>
+      4. Probe: f(−1) = 2 = g(−1), f(4) = 7 = g(4). &nbsp; 5. <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">4</span><span class="u">−1</span></span></span> (x² − 3x − 4) dx = <span class="integral">[<span class="bruch"><span class="z">x³</span><span class="n">3</span></span> − <span class="bruch"><span class="z">3x²</span><span class="n">2</span></span> − 4x]<span class="grenzen"><span class="o">4</span><span class="u">−1</span></span></span> = −<span class="bruch"><span class="z">56</span><span class="n">3</span></span> − <span class="bruch"><span class="z">13</span><span class="n">6</span></span> = −<span class="bruch"><span class="z">125</span><span class="n">6</span></span>, also A = <span class="bruch"><span class="z">125</span><span class="n">6</span></span> ≈ 20,83. Das Minus zeigt nur, dass g hier über f liegt.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel 2: drei Schnittstellen — raten und Polynomdivision</span>
+      f(x) = x³ − x² − x + 3, g(x) = x² + 1. &nbsp; d(x) = x³ − 2x² − x + 2 = 0.<br>
+      Teiler von 2 probieren: d(1) = 1 − 2 − 1 + 2 = 0, also ist x = 1 eine Schnittstelle. Polynomdivision: (x³ − 2x² − x + 2) : (x − 1) = x² − x − 2 = (x − 2)(x + 1).<br>
+      Schnittstellen −1, 1 und 2. Mit D(x) = <span class="bruch"><span class="z">x⁴</span><span class="n">4</span></span> − <span class="bruch"><span class="z">2x³</span><span class="n">3</span></span> − <span class="bruch"><span class="z">x²</span><span class="n">2</span></span> + 2x: <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">1</span><span class="u">−1</span></span></span> d(x) dx = <span class="bruch"><span class="z">8</span><span class="n">3</span></span>, <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">2</span><span class="u">1</span></span></span> d(x) dx = −<span class="bruch"><span class="z">5</span><span class="n">12</span></span>.<br>
+      A = <span class="bruch"><span class="z">8</span><span class="n">3</span></span> + <span class="bruch"><span class="z">5</span><span class="n">12</span></span> = <span class="bruch"><span class="z">37</span><span class="n">12</span></span> ≈ 3,08. Über [−1; 2] auf einmal integriert ergäbe sich nur <span class="bruch"><span class="z">8</span><span class="n">3</span></span> − <span class="bruch"><span class="z">5</span><span class="n">12</span></span> = <span class="bruch"><span class="z">9</span><span class="n">4</span></span>.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel 3: die x-Achse als Gerade</span>
       f(x) − g(x) = 4 − x² = 0 ⟺ x = ±2. A = <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">2</span><span class="u">−2</span></span></span> (4 − x²) dx = <span class="integral">[4x − <span class="bruch"><span class="z">x³</span><span class="n">3</span></span>]<span class="grenzen"><span class="o">2</span><span class="u">−2</span></span></span> = (8 − <span class="bruch"><span class="z">8</span><span class="n">3</span></span>) − (−8 + <span class="bruch"><span class="z">8</span><span class="n">3</span></span>) = <span class="bruch"><span class="z">32</span><span class="n">3</span></span> ≈ 10,667.
     </div>
     <div class="achtung-box">
@@ -350,16 +388,18 @@
   <!-- 10. Uneigentliche Integrale -->
   <section class="card" id="sec-uneigentlich">
     <h2>10. Uneigentliche Integrale: unendlich lange Flächen</h2>
-    <p>Kann eine Fläche, die bis ins Unendliche reicht, einen endlichen Inhalt haben? Man berechnet das Integral bis zu einer Grenze b und lässt dann b gegen unendlich gehen — mit dem Grenzwert aus Thema 1.2. Vergleiche <span class="bruch"><span class="z">1</span><span class="n">x²</span></span> und <span class="bruch"><span class="z">1</span><span class="n">√x</span></span>: Beide gehen gegen 0, aber verschieden schnell.</p>
+    <p>Kann eine Fläche, die bis ins Unendliche reicht, einen endlichen Inhalt haben? Man berechnet das Integral bis zu einer Grenze b und lässt dann b gegen unendlich gehen — mit dem Grenzwert aus Thema 1.2. Vergleiche <span class="bruch"><span class="z">1</span><span class="n">x²</span></span> und <span class="bruch"><span class="z">1</span><span class="n">√x</span></span>: Beide gehen für x → ∞ gegen 0, aber verschieden schnell. Dasselbe Problem andersherum: Beide wachsen bei x → 0 über alle Grenzen — ist die Fläche zwischen 0 und 1 trotzdem endlich? Dann ersetzt man die Problemstelle 0 durch ε und lässt ε gegen 0 gehen.</p>
     <div class="widget">
       <div class="btn-row">
         <label>Funktion:
           <select id="ue-art" class="eingabe" style="padding:0.4rem">
-            <option value="quadrat">f(x) = 1/x²</option>
-            <option value="wurzel">f(x) = 1/√x</option>
+            <option value="quadrat">f(x) = 1/x² auf [1; ∞)</option>
+            <option value="wurzel">f(x) = 1/√x auf [1; ∞)</option>
+            <option value="polwurzel">f(x) = 1/√x auf (0; 1]</option>
+            <option value="polquadrat">f(x) = 1/x² auf (0; 1]</option>
           </select>
         </label>
-        <label>b: <input type="range" id="ue-k" min="0" max="7" step="1" value="2" style="vertical-align:middle;width:11rem"> <span id="ue-k-anzeige" class="wert farbe-blau"></span></label>
+        <label><span id="ue-k-name">b</span>: <input type="range" id="ue-k" min="0" max="7" step="1" value="2" style="vertical-align:middle;width:11rem"> <span id="ue-k-anzeige" class="wert farbe-blau"></span></label>
       </div>
       <div class="geo-wrap" id="ue-mount"></div>
       <div class="th-bilanz" id="ue-bilanz"></div>
@@ -376,6 +416,32 @@
       <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">x²</span></span> dx = <span class="integral">[−<span class="bruch"><span class="z">1</span><span class="n">x</span></span>]<span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> = 1 − <span class="bruch"><span class="z">1</span><span class="n">b</span></span> → 1: Die unendlich lange Fläche hat den Inhalt 1.<br>
       <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">√x</span></span> dx = <span class="integral">[2√x]<span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> = 2√b − 2 → ∞: divergent.<br>
       <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">1</span><span class="u">ε</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">√x</span></span> dx = 2 − 2√ε → 2: Obwohl <span class="bruch"><span class="z">1</span><span class="n">√x</span></span> bei 0 über alle Grenzen wächst, ist die Fläche endlich.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Uneigentliche Integrale berechnen — drei Schritte</span>
+      <ol>
+        <li><strong>Problemstelle ersetzen:</strong> die Grenze ∞ durch eine Zahl b, eine Polstelle am Rand durch ε (knapp daneben).</li>
+        <li><strong>Gewöhnlich integrieren</strong> mit dem Hauptsatz — das Ergebnis ist ein Term in b bzw. ε.</li>
+        <li><strong>Grenzwert bestimmen</strong> für b → ∞ bzw. ε → 0: Gibt es ihn, ist das Integral konvergent und hat diesen Wert; sonst ist es divergent.</li>
+      </ol>
+      Liegt die Problemstelle im Inneren — etwa eine Polstelle bei 0 in [−1; 1] —, wird dort geteilt und jeder Teil für sich untersucht (siehe <a href="#sec-stolperstelle">Abschnitt 12</a>).
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: Potenzfunktionen — wann ist die Fläche endlich?</span>
+      Für r ≠ 1: <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">xʳ</span></span> dx = <span class="integral">[<span class="bruch"><span class="z">x¹⁻ʳ</span><span class="n">1 − r</span></span>]<span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> = <span class="bruch"><span class="z">b¹⁻ʳ − 1</span><span class="n">1 − r</span></span>.<br>
+      Für r &gt; 1 ist der Exponent 1 − r negativ, b¹⁻ʳ → 0: Der Grenzwert ist <span class="bruch"><span class="z">1</span><span class="n">r − 1</span></span>. Für r &lt; 1 wächst b¹⁻ʳ über jede Grenze.<br>
+      Bei der Polstelle ist es genau umgekehrt: <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">1</span><span class="u">ε</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">xʳ</span></span> dx = <span class="bruch"><span class="z">1 − ε¹⁻ʳ</span><span class="n">1 − r</span></span> → <span class="bruch"><span class="z">1</span><span class="n">1 − r</span></span> nur für r &lt; 1.
+      <table class="fr-tabelle" style="margin-top:0.5rem">
+        <tr><th></th><th>r &lt; 1, z. B. <span class="bruch"><span class="z">1</span><span class="n">√x</span></span></th><th>r = 1: <span class="bruch"><span class="z">1</span><span class="n">x</span></span></th><th>r &gt; 1, z. B. <span class="bruch"><span class="z">1</span><span class="n">x²</span></span></th></tr>
+        <tr><td><span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">∞</span><span class="u">1</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">xʳ</span></span> dx</td><td>divergent</td><td>divergent</td><td>konvergent: <span class="bruch"><span class="z">1</span><span class="n">r − 1</span></span></td></tr>
+        <tr><td><span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">1</span><span class="u">0</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">xʳ</span></span> dx</td><td>konvergent: <span class="bruch"><span class="z">1</span><span class="n">1 − r</span></span></td><td>divergent</td><td>divergent</td></tr>
+      </table>
+    </div>
+    <p class="hinweis-box">💡 Der Grenzfall <span class="bruch"><span class="z">1</span><span class="n">x</span></span> passt in keine Potenzregel — seine Stammfunktion, der Logarithmus, kommt erst später. Dass die Fläche trotzdem über jede Grenze wächst, zeigen die Untersummen aus <a href="#sec-summen">Abschnitt 2</a>: Über [k; k + 1] liegt das Rechteck der Höhe <span class="bruch"><span class="z">1</span><span class="n">k + 1</span></span> unter dem Graphen, also ist <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">n + 1</span><span class="u">1</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">x</span></span> dx ≥ <span class="bruch"><span class="z">1</span><span class="n">2</span></span> + <span class="bruch"><span class="z">1</span><span class="n">3</span></span> + … + <span class="bruch"><span class="z">1</span><span class="n">n + 1</span></span> — und die <a href="../01-folgen-und-reihen/index.html#sec-stolperstelle">harmonische Reihe</a> divergiert.</p>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: eine unbegrenzte Fläche zwischen zwei Graphen</span>
+      f(x) = <span class="bruch"><span class="z">1</span><span class="n">x²</span></span> und g(x) = <span class="bruch"><span class="z">1</span><span class="n">x³</span></span> schneiden sich bei x = 1; rechts davon liegt f oben.<br>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> (<span class="bruch"><span class="z">1</span><span class="n">x²</span></span> − <span class="bruch"><span class="z">1</span><span class="n">x³</span></span>) dx = <span class="integral">[−<span class="bruch"><span class="z">1</span><span class="n">x</span></span> + <span class="bruch"><span class="z">1</span><span class="n">2x²</span></span>]<span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> = −<span class="bruch"><span class="z">1</span><span class="n">b</span></span> + <span class="bruch"><span class="z">1</span><span class="n">2b²</span></span> + <span class="bruch"><span class="z">1</span><span class="n">2</span></span> → <span class="bruch"><span class="z">1</span><span class="n">2</span></span>. Die nach rechts offene Fläche hat den Inhalt <span class="bruch"><span class="z">1</span><span class="n">2</span></span>.
     </div>
     <div class="achtung-box">
       <span class="box-label">Achtung — gegen null gehen reicht nicht</span>
@@ -417,6 +483,7 @@
       <span class="box-label">Achtung — das Quadrat gehört in das Integral</span>
       π · (<span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span> f(x) dx)² ist etwas anderes als π · <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span> f(x)² dx. Quadriert wird der Radius jeder einzelnen Scheibe, nicht die Fläche.
     </div>
+    <p class="hinweis-box">💡 Rotationskörper und uneigentliches Integral zusammen ergeben eine Merkwürdigkeit: Der Graph von f(x) = <span class="bruch"><span class="z">1</span><span class="n">x</span></span> über [1; ∞) rotiert zu einem unendlich langen Trichter, „Gabriels Horn“. Sein Volumen ist endlich: π · <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">x²</span></span> dx = π · (1 − <span class="bruch"><span class="z">1</span><span class="n">b</span></span>) → π. Die Fläche unter dem Graphen ist dagegen unendlich groß (<a href="#sec-uneigentlich">Abschnitt 10</a>, der Grenzfall r = 1). Man könnte den Trichter also mit Farbe füllen — aber nicht die Fläche anstreichen, die ihn erzeugt.</p>
     <div class="quiz" id="quiz-rotation"></div>
   </section>
 
@@ -474,7 +541,7 @@
   <!-- Übungsaufgaben -->
   <section class="card" id="sec-uebungen">
     <h2>Übungsaufgaben</h2>
-    <p>Zwanzig Aufgaben auf vier Stufen, je fünf auf jeder. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu. Tipps gibt es auf Knopfdruck, nach dem Prüfen steht die Musterlösung darunter.</p>
+    <p>Achtundzwanzig Aufgaben auf vier Stufen, je sieben auf jeder. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu. Tipps gibt es auf Knopfdruck, nach dem Prüfen steht die Musterlösung darunter.</p>
     <p class="progress-note">Zahlen gibst du mit Komma ein, zum Beispiel 1,5; Brüche wie 8/3 sind ebenfalls erlaubt.</p>
     <div id="exercises-mount"></div>
   </section>
@@ -486,6 +553,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=1"></script>
+<script type="module" src="lernpfad.js?v=2"></script>
 </body>
 </html>

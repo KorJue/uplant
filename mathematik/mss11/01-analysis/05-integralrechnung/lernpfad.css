@@ -78,6 +78,9 @@
 
 /* ---------- Ergebnisanzeige ---------- */
 
+/* Beschreibung des gewählten Vorgangs über der Zeichnung (Abschnitt 1). */
+.vorgang { margin: 0.4rem 0 0.6rem; }
+
 .event-result {
   background: var(--card-bg);
   border: 1px solid var(--border);
