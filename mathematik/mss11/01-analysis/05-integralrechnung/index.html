@@ -219,6 +219,15 @@
     <p>Integrieren heißt jetzt: eine Funktion F finden, deren Ableitung f ist. Weil eine Konstante beim Ableiten wegfällt, gibt es zu jedem f unendlich viele Stammfunktionen — ihre Graphen sind in y-Richtung gegeneinander verschoben und haben an jeder Stelle dieselbe Steigung. Verschiebe C.</p>
     <div class="widget">
       <div class="btn-row">
+        <label>Funktion:
+          <select id="sf-art" class="eingabe" style="padding:0.4rem">
+            <option value="para">f(x) = x² − 1</option>
+            <option value="linear">f(x) = 2x + 1</option>
+            <option value="kubik">f(x) = x³ − 3x</option>
+            <option value="sinus">f(x) = sin(x)</option>
+            <option value="kette">f(x) = cos(2x)</option>
+          </select>
+        </label>
         <label>C: <input type="range" id="sf-c" min="-2" max="2" step="0.5" value="0" style="vertical-align:middle;width:10rem"> <span id="sf-c-anzeige" class="wert farbe-gruen"></span></label>
         <label>x₀: <input type="range" id="sf-x" min="-2" max="2" step="0.5" value="1.5" style="vertical-align:middle;width:9rem"> <span id="sf-x-anzeige" class="wert farbe-blau"></span></label>
       </div>
@@ -251,6 +260,33 @@
     <div class="achtung-box">
       <span class="box-label">Achtung — ein Ausnahmefall und die Probe</span>
       Für f(x) = <span class="bruch"><span class="z">1</span><span class="n">x</span></span> = x⁻¹ versagt die Potenzregel: Man müsste durch n + 1 = 0 teilen. Die Stammfunktion von <span class="bruch"><span class="z">1</span><span class="n">x</span></span> ist der Logarithmus — er kommt später. Bei jeder Stammfunktion hilft die <strong>Probe durch Ableiten</strong>: (<span class="bruch"><span class="z">1</span><span class="n">8</span></span>(2x + 1)⁴)′ = <span class="bruch"><span class="z">1</span><span class="n">8</span></span> · 4(2x + 1)³ · 2 = (2x + 1)³ ✓.
+    </div>
+    <h3 class="unterabschnitt">Selbsttest: Ist das eine Stammfunktion?</h3>
+    <p>Hier kannst du die Regeln ausprobieren, bevor die Übungsaufgaben kommen. Wähle eine Funktion f — oder gib eine eigene ein — und tippe eine Stammfunktion F ein. Die Seite macht die Probe: Sie leitet dein F an mehreren Stellen ab und vergleicht mit f. Bei einem Fehler sagt sie, welcher es vermutlich ist.</p>
+    <div class="widget" id="pr-widget">
+      <div class="btn-row">
+        <label>Funktion f:
+          <select id="pr-aufgabe" class="eingabe" style="padding:0.4rem">
+            <option value="0">f(x) = 6x² − 4x + 1</option>
+            <option value="1">f(x) = x³</option>
+            <option value="2">f(x) = 1/x² (für x &gt; 0)</option>
+            <option value="3">f(x) = √x</option>
+            <option value="4">f(x) = sin(x) + 2</option>
+            <option value="5">f(x) = (3x + 1)²</option>
+            <option value="6">f(x) = cos(2x)</option>
+            <option value="eigen">eigene Funktion eingeben …</option>
+          </select>
+        </label>
+      </div>
+      <div class="btn-row" id="pr-eigen-zeile" hidden>
+        <label>f(x) = <input type="text" id="pr-f" class="eingabe pr-eingabe" autocomplete="off" spellcheck="false" placeholder="z. B. 3x^2 − 2x"></label>
+      </div>
+      <div class="btn-row">
+        <label>F(x) = <input type="text" id="pr-F" class="eingabe pr-eingabe" autocomplete="off" spellcheck="false" placeholder="z. B. x^3 − x^2"></label>
+        <button type="button" id="pr-pruefen" class="btn-primary">Prüfen</button>
+      </div>
+      <p class="progress-note">Schreibweise: x^3 oder x³, 2x, 1/x, √x oder sqrt(x), sin(x), cos(x), π; Malpunkt * oder ·; Komma als Dezimalzeichen.</p>
+      <div id="pr-ergebnis" class="event-result" aria-live="polite"></div>
     </div>
     <div class="quiz" id="quiz-stammfunktion"></div>
   </section>
@@ -553,6 +589,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=2"></script>
+<script type="module" src="lernpfad.js?v=3"></script>
 </body>
 </html>
