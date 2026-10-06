@@ -378,41 +378,100 @@ async function hauptsatz(page) {
 
 // ---------- 6. Stammfunktionen ----------
 async function stammfunktion(page) {
-  const f = (x) => x * x - 1;
-  for (const cw of [-2, -0.5, 0, 1.5, 2]) {
-    const C = await setzeRegler(page, "sf-c", cw);
-    for (const xw of [-2, -0.5, 0, 1.5, 2]) {
-      const x0 = await setzeRegler(page, "sf-x", xw);
-      const wo = `Stammfunktion C = ${C}, x₀ = ${x0}`;
-      const D1 = await lies(page, '#sf-mount svg[data-panel="F"]');
-      const D2 = await lies(page, '#sf-mount svg[data-panel="f"]');
-      // Die gezeichnete Stammfunktion: Ihre Steigung (aus den Bildpunkten) muss f sein, ihr Wert bei 0 ist C.
-      const F = D1.pfade.filter((p) => p.rolle === "stamm").flatMap((p) => p.punkte);
-      let schlecht = 0;
-      for (let i = 0; i + 1 < F.length; i++) {
-        const [x1, y1] = F[i], [x2, y2] = F[i + 1];
-        if (x2 - x1 < 1e-6) continue;
-        if (!nahe((y2 - y1) / (x2 - x1), f((x1 + x2) / 2), 0.05)) schlecht++;
+  // f je Beispiel und der Wert der gezeichneten Stammfunktion bei 0 für C = 0 (−cos 0 = −1).
+  const ARTEN = {
+    para: { f: (x) => x * x - 1, F0: 0 },
+    linear: { f: (x) => 2 * x + 1, F0: 0 },
+    kubik: { f: (x) => x ** 3 - 3 * x, F0: 0 },
+    sinus: { f: Math.sin, F0: -1 },
+    kette: { f: (x) => Math.cos(2 * x), F0: 0 },
+  };
+  for (const [art, { f, F0 }] of Object.entries(ARTEN)) {
+    await waehle(page, "sf-art", art);
+    for (const cw of [-2, -0.5, 0, 1.5]) {
+      const C = await setzeRegler(page, "sf-c", cw);
+      for (const xw of [-2, -0.5, 0, 1.5, 2]) {
+        const x0 = await setzeRegler(page, "sf-x", xw);
+        const wo = `Stammfunktion ${art}, C = ${C}, x₀ = ${x0}`;
+        const D1 = await lies(page, '#sf-mount svg[data-panel="F"]');
+        const D2 = await lies(page, '#sf-mount svg[data-panel="f"]');
+        // Die gezeichnete Stammfunktion: Ihre Steigung (aus den Bildpunkten) muss f sein.
+        const F = D1.pfade.filter((p) => p.rolle === "stamm").flatMap((p) => p.punkte);
+        let schlecht = 0;
+        for (let i = 0; i + 1 < F.length; i++) {
+          const [x1, y1] = F[i], [x2, y2] = F[i + 1];
+          if (x2 - x1 < 1e-6) continue;
+          // Rundung der Bildpunkte auf 0,01: Bei steilem Bildmaßstab streut die Sekantensteigung etwas mehr.
+          if (!nahe((y2 - y1) / (x2 - x1), f((x1 + x2) / 2), 0.05 + 0.02 / (D1.proY * (x2 - x1)))) schlecht++;
+        }
+        pruefe(F.length > 100 && schlecht === 0, `${wo}: Die gezeichnete Stammfunktion hat an ${schlecht} Stellen nicht die Steigung f`);
+        const beiNull = F.reduce((b, p) => (Math.abs(p[0]) < Math.abs(b[0]) ? p : b), [Infinity, 0]);
+        pruefe(nahe(beiNull[1], F0 + C, 0.02), `${wo}: F(0) = ${beiNull[1].toFixed(3)} statt ${F0 + C}`);
+        pruefe(nahe(zahlen(await bilanzZeile(page, "#sf-bilanz", 1)).slice(-1)[0], F0 + C, 1e-4), `${wo}: Die Bilanz nennt F(0) falsch`);
+        // Die Schar: jede Kurve ist die gezeichnete Stammfunktion, um eine Konstante verschoben.
+        const Ff = (x) => integral(f, 0, x, 200) + F0 + C;
+        pfadAuf(D1, "stamm", Ff, wo);
+        const schar = D1.pfade.filter((p) => p.rolle === "schar");
+        pruefe(schar.length >= 4, `${wo}: nur ${schar.length} weitere Stammfunktionen`);
+        for (const sc of schar) {
+          const d = sc.punkte.map(([x, y]) => y - Ff(x));
+          pruefe(Math.max(...d) - Math.min(...d) < 3 / D1.proY, `${wo}: Eine Scharkurve ist keine Verschiebung in y-Richtung`);
+        }
+        const t = linie(D1, "tangente");
+        pruefe(t && nahe(steigung(t), f(x0), 1e-3) && nahe(aufGerade(t, x0), Ff(x0), 0.02), `${wo}: Tangente falsch`);
+        for (const ts of D1.linien.filter((l) => l.rolle === "tangente-schar")) pruefe(nahe(steigung(ts), f(x0), 0.01), `${wo}: Tangentenstück der Schar nicht parallel`);
+        pfadAuf(D2, "graph", f, `${wo}, f`);
+        pruefe(nahe(await spanWert(page, "#sf-bilanz .wr"), f(x0), 1e-4), `${wo}: Bilanz F′(x₀) falsch`);
       }
-      pruefe(F.length > 100 && schlecht === 0, `${wo}: Die gezeichnete Stammfunktion hat an ${schlecht} Stellen nicht die Steigung f`);
-      const beiNull = F.reduce((b, p) => (Math.abs(p[0]) < Math.abs(b[0]) ? p : b), [Infinity, 0]);
-      pruefe(nahe(beiNull[1], C, 0.02), `${wo}: F(0) = ${beiNull[1].toFixed(3)} statt C = ${C}`);
-      // Die Schar: jede Kurve ist die gezeichnete Stammfunktion, um eine Konstante verschoben.
-      const Ff = (x) => integral(f, 0, x, 200) + C;
-      pfadAuf(D1, "stamm", Ff, wo);
-      const schar = D1.pfade.filter((p) => p.rolle === "schar");
-      pruefe(schar.length >= 4, `${wo}: nur ${schar.length} weitere Stammfunktionen`);
-      for (const s of schar) {
-        const d = s.punkte.map(([x, y]) => y - Ff(x));
-        pruefe(Math.max(...d) - Math.min(...d) < 3 / D1.proY, `${wo}: Eine Scharkurve ist keine Verschiebung in y-Richtung`);
-      }
-      const t = linie(D1, "tangente");
-      pruefe(t && nahe(steigung(t), f(x0), 1e-3) && nahe(aufGerade(t, x0), Ff(x0), 0.02), `${wo}: Tangente falsch`);
-      for (const ts of D1.linien.filter((l) => l.rolle === "tangente-schar")) pruefe(nahe(steigung(ts), f(x0), 0.01), `${wo}: Tangentenstück der Schar nicht parallel`);
-      pfadAuf(D2, "graph", f, `${wo}, f`);
-      pruefe(nahe(await spanWert(page, "#sf-bilanz .wr"), f(x0), 1e-4), `${wo}: Bilanz F′(x₀) falsch`);
     }
   }
+  await waehle(page, "sf-art", "para");
+}
+
+// ---------- 6b. Selbsttest Stammfunktion ----------
+// Je Aufgabe eine richtige Stammfunktion (von der Prüfung selbst aufgeleitet) und typische Fehler.
+// Die Seite muss die richtige — auch mit + C — anerkennen und jeden Fehler mit seinem Hinweis zurückweisen.
+async function selbsttest(page) {
+  const urteil = async (aufgabe, F, f) => {
+    await page.selectOption("#pr-aufgabe", aufgabe);
+    if (f !== undefined) await page.fill("#pr-f", f);
+    await page.fill("#pr-F", F);
+    await page.click("#pr-pruefen");
+    return (await page.locator("#pr-ergebnis").innerText()).replace(/\s+/g, " ");
+  };
+  const FAELLE = [
+    // [Aufgabe, richtige Stammfunktion, Ableitung von f, f selbst, Faktor-Fehler, Vorzeichen-Fehler]
+    ["0", "2x^3 − 2x^2 + x", "12x − 4", "6x^2 − 4x + 1", "6x^3 − 6x^2 + 3x", "−2x³ + 2x² − x"],
+    ["1", "x^4/4", "3x^2", "x^3", "x^4", "−x^4/4"],
+    ["2", "−1/x", "−2/x^3", "1/x^2", "−2/x", "1/x"],
+    ["3", "2/3 · x^(3/2)", "1/(2√x)", "√x", "x^1,5", "−2/3 x√x"],
+    ["4", "−cos(x) + 2x", "cos(x)", "sin(x) + 2", "−2cos(x) + 4x", "cos(x) − 2x"],
+    ["5", "(3x + 1)^3 / 9", "6(3x + 1)", "(3x+1)^2", "(3x + 1)^3 / 3", "−(3x + 1)³/9"],
+    ["6", "sin(2x)/2", "−2 sin(2x)", "cos(2x)", "sin(2x)", "−0,5 sin(2x)"],
+  ];
+  for (const [a, richtig, abl, selbst, faktor, minus] of FAELLE) {
+    const wo = `Selbsttest Aufgabe ${a}`;
+    for (const F of [richtig, `${richtig} + 7`, `${richtig} − 2,5`]) {
+      const r = await urteil(a, F);
+      pruefe(r.includes("✓ Richtig"), `${wo}: „${F}“ wird nicht anerkannt — „${r.slice(0, 160)}“`);
+    }
+    for (const [F, muster] of [[abl, "Ableitung"], [selbst, "Das ist f selbst"], [faktor, "Bis auf einen Faktor"], [minus, "Vorzeichenfehler"]]) {
+      const r = await urteil(a, F);
+      pruefe(r.includes("✗ Noch nicht") && r.includes(muster), `${wo}: „${F}“ — erwartet „${muster}“, erhalten „${r.slice(0, 160)}“`);
+      pruefe(r.includes("Tipp"), `${wo}: kein Tipp bei „${F}“`);
+    }
+  }
+  // Eigene Funktion, unlesbare Eingaben, Malpunkt-Varianten.
+  pruefe((await urteil("eigen", "x³ − 2x + 4", "3x^2 − 2")).includes("✓ Richtig"), "Selbsttest: eigene Funktion 3x² − 2 nicht geprüft");
+  pruefe((await urteil("eigen", "x^2", "3x^2 − 2")).includes("✗ Noch nicht"), "Selbsttest: falsche Stammfunktion zur eigenen Funktion anerkannt");
+  pruefe((await urteil("eigen", "x^2", "3y")).includes("f(x) nicht lesbar"), "Selbsttest: unlesbares f nicht gemeldet");
+  for (const F of ["x^^2", "2x)", "(x + 1", "y + 1", ""]) {
+    const r = await urteil("0", F);
+    pruefe(F === "" ? r.includes("Tippe") : r.includes("nicht lesbar"), `Selbsttest: „${F}“ nicht als unlesbar gemeldet — „${r.slice(0, 120)}“`);
+  }
+  for (const F of ["2·x^3 − 2·x^2 + x", "2*x³-2*x²+x", "2 x^3 - 2 x^2 + 1x"]) pruefe((await urteil("0", F)).includes("✓ Richtig"), `Selbsttest: Schreibweise „${F}“ nicht verstanden`);
+  await page.selectOption("#pr-aufgabe", "0");
+  await page.fill("#pr-F", "");
 }
 
 // ---------- 7. Fläche mit der x-Achse ----------
@@ -901,6 +960,7 @@ async function aufgaben(page) {
       await integralfunktion(page);
       await hauptsatz(page);
       await stammfunktion(page);
+      await selbsttest(page);
       await flaeche(page);
       await zwischen(page);
       await mittelwert(page);

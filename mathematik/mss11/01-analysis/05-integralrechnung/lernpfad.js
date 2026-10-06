@@ -531,32 +531,204 @@ function renderHauptsatz() {
 
 // ================= 6. Stammfunktionen =================
 
-const SF = { f: (x) => x * x - 1, F: (x) => x ** 3 / 3 - x };
+// Fünf Beispiele. F ist jeweils die Stammfunktion zu C = 0; abl zeigt die Probe durch Ableiten.
+const SF = {
+  para: { f: (x) => x * x - 1, F: (x) => x ** 3 / 3 - x, ft: "x² − 1", Ft: `${bruch("x³", "3")} − x`, titel: "x³/3 − x", abl: "x² − 1", yF: [-3.5, 3.5], yf: [-1.5, 6] },
+  linear: { f: (x) => 2 * x + 1, F: (x) => x * x + x, ft: "2x + 1", Ft: "x² + x", titel: "x² + x", abl: "2x + 1", yF: [-3, 11], yf: [-4.5, 7] },
+  kubik: { f: (x) => x ** 3 - 3 * x, F: (x) => x ** 4 / 4 - 1.5 * x * x, ft: "x³ − 3x", Ft: `${bruch("x⁴", "4")} − ${bruch("3", "2")}x²`, titel: "x⁴/4 − 1,5x²", abl: "x³ − 3x", yF: [-4.5, 4.5], yf: [-9, 9] },
+  sinus: { f: Math.sin, F: (x) => -Math.cos(x), ft: "sin(x)", Ft: "−cos(x)", titel: "−cos(x)", abl: "−(−sin(x)) = sin(x)", yF: [-3.5, 3.5], yf: [-1.6, 2.2] },
+  kette: { f: (x) => Math.cos(2 * x), F: (x) => Math.sin(2 * x) / 2, ft: "cos(2x)", Ft: `${bruch("1", "2")} sin(2x)`, titel: "½ sin(2x)", abl: `${bruch("1", "2")} · cos(2x) · 2 = cos(2x) (Kettenregel)`, yF: [-3, 3], yf: [-1.6, 2.2] },
+};
 function renderStamm() {
+  const d = SF[wahl("sf-art")];
   const C = reglerRaster("sf-c"), x0 = reglerRaster("sf-x");
   setzeAnzeige("sf-c-anzeige", num(C));
   setzeAnzeige("sf-x-anzeige", num(x0));
-  const K1 = koordinatenXY({ hoehe: 260, xmin: -2.5, xmax: 2.5, ymin: -3.5, ymax: 3.5, panel: "F" });
-  panelTitel(K1, "Stammfunktionen F(x) = x³/3 − x + C");
+  const K1 = koordinatenXY({ hoehe: 260, xmin: -2.5, xmax: 2.5, ymin: d.yF[0], ymax: d.yF[1], panel: "F" });
+  panelTitel(K1, `Stammfunktionen F(x) = ${d.titel} + C`);
   for (const c of [-2, -1, 0, 1, 2]) {
     if (c === C) continue;
-    graph(K1, (x) => SF.F(x) + c, -2.5, 2.5, { schritte: 300, basis: "dr-stamm schar", rolle: "schar" });
+    graph(K1, (x) => d.F(x) + c, -2.5, 2.5, { schritte: 300, basis: "dr-stamm schar", rolle: "schar" });
     // An der Stelle x₀ dieselbe Steigung für jedes C: kurze Tangentenstücke.
-    strecke(K1, x0 - 0.35, SF.F(x0) + c - 0.35 * SF.f(x0), x0 + 0.35, SF.F(x0) + c + 0.35 * SF.f(x0), "dr-tangente2", { "data-rolle": "tangente-schar" });
+    strecke(K1, x0 - 0.35, d.F(x0) + c - 0.35 * d.f(x0), x0 + 0.35, d.F(x0) + c + 0.35 * d.f(x0), "dr-tangente2", { "data-rolle": "tangente-schar" });
   }
-  graph(K1, (x) => SF.F(x) + C, -2.5, 2.5, { schritte: 400, basis: "dr-stamm", rolle: "stamm" });
-  gerade(K1, SF.f(x0), x0, SF.F(x0) + C, "dr-tangente2", { "data-rolle": "tangente" });
-  punkt(K1, x0, SF.F(x0) + C, "dr-punkt-t", { "data-rolle": "p-F" });
-  // ymax 6: Bei 4 liefe die Parabel links oben durch den Titel.
-  const K2 = koordinatenXY({ hoehe: 190, xmin: -2.5, xmax: 2.5, ymin: -1.5, ymax: 6, panel: "f" });
-  panelTitel(K2, "f(x) = x² − 1");
-  graph(K2, SF.f, -2.5, 2.5, { schritte: 300 });
-  punkt(K2, x0, SF.f(x0), "fr-punkt", { "data-rolle": "p-f" });
+  graph(K1, (x) => d.F(x) + C, -2.5, 2.5, { schritte: 400, basis: "dr-stamm", rolle: "stamm" });
+  gerade(K1, d.f(x0), x0, d.F(x0) + C, "dr-tangente2", { "data-rolle": "tangente" });
+  punkt(K1, x0, d.F(x0) + C, "dr-punkt-t", { "data-rolle": "p-F" });
+  // Der Bildbereich von f lässt oben Luft: Sonst läuft der Graph links oben durch den Titel.
+  const K2 = koordinatenXY({ hoehe: 190, xmin: -2.5, xmax: 2.5, ymin: d.yf[0], ymax: d.yf[1], panel: "f" });
+  panelTitel(K2, `f(x) = ${d.ft}`);
+  graph(K2, d.f, -2.5, 2.5, { schritte: 300 });
+  punkt(K2, x0, d.f(x0), "fr-punkt", { "data-rolle": "p-f" });
   zeige("sf-mount", K1.svg, K2.svg);
   setzeHtml("sf-bilanz",
-    `F(x) = ${bruch("x³", "3")} − x${C === 0 ? "" : " " + plusMinus(C)}, &nbsp;F′(x) = x² − 1 = f(x) — für jedes C.<br>` +
-    `An der Stelle ${num(x0)}: F′(${num(x0)}) = <span class="wr">${num(SF.f(x0))}</span> = f(${num(x0)}); alle Tangenten dort sind parallel. F(0) = ${num(C)} legt C fest.`);
+    `F(x) = ${d.Ft}${C === 0 ? "" : " " + plusMinus(C)}, &nbsp;F′(x) = ${d.abl} = f(x) — für jedes C.<br>` +
+    `An der Stelle ${num(x0)}: F′(${num(x0)}) = <span class="wr">${num(d.f(x0))}</span> = f(${num(x0)}); alle Tangenten dort sind parallel. F(0) = ${num(d.F(0) + C)}.`);
   setzeText("sf-text", "Alle Graphen der Schar entstehen durch Verschieben in y-Richtung. Für ein bestimmtes Integral ist es egal, welche man nimmt: In F(b) − F(a) hebt sich C weg.");
+}
+
+// ================= 6b. Selbsttest: Ist das eine Stammfunktion? =================
+//
+// Der Term wird von einem kleinen Zerleger gelesen (kein eval): Zahlen mit Komma, x, π, + − · * / ^,
+// Klammern, sin, cos, tan, sqrt/√, Hochzahlen ²³⁴⁵ und Malzeichen, die man weglassen darf (2x, 3(x + 1)).
+// Geprüft wird numerisch: F′ über die zentrale Differenz an acht Stellen in (0; 2,5], verglichen mit f.
+
+function leseTerm(text) {
+  const quelle = String(text).toLowerCase()
+    .replace(/[−–]/g, "-").replace(/[·×]/g, "*").replace(/:/g, "/").replace(/,/g, ".")
+    .replace(/²/g, "^2").replace(/³/g, "^3").replace(/⁴/g, "^4").replace(/⁵/g, "^5")
+    .replace(/√/g, "sqrt").replace(/π/g, "pi").replace(/\s+/g, "");
+  if (!quelle) throw new Error("Die Eingabe ist leer.");
+  const NAMEN = ["sqrt", "wurzel", "sin", "cos", "tan", "pi", "x"];
+  const marken = [];
+  for (let i = 0; i < quelle.length;) {
+    const rest = quelle.slice(i);
+    const zahl = rest.match(/^(\d+\.?\d*|\.\d+)/);
+    if (zahl) { marken.push({ art: "zahl", wert: parseFloat(zahl[1]) }); i += zahl[1].length; continue; }
+    if ("+-*/^()".includes(rest[0])) { marken.push({ art: rest[0] }); i++; continue; }
+    const name = NAMEN.find((n) => rest.startsWith(n));
+    if (name) { marken.push({ art: "name", wert: name === "wurzel" ? "sqrt" : name }); i += name.length; continue; }
+    throw new Error(`Unbekanntes Zeichen „${rest[0]}“.`);
+  }
+  let k = 0;
+  const sieh = () => marken[k], nimm = () => marken[k++];
+  const beginntFaktor = (m) => m && (m.art === "zahl" || m.art === "name" || m.art === "(");
+  function summe() {
+    let a = produkt();
+    while (sieh() && (sieh().art === "+" || sieh().art === "-")) {
+      const op = nimm().art, b = produkt(), l = a;
+      a = op === "+" ? { f: (x) => l.f(x) + b.f(x), t: `${l.t} + ${b.t}` } : { f: (x) => l.f(x) - b.f(x), t: `${l.t} − ${b.t}` };
+    }
+    return a;
+  }
+  function produkt() {
+    let a = vorzeichen();
+    for (;;) {
+      const m = sieh();
+      if (m && (m.art === "*" || m.art === "/")) {
+        nimm();
+        const b = vorzeichen(), l = a;
+        a = m.art === "*" ? { f: (x) => l.f(x) * b.f(x), t: `${l.t} · ${b.t}` } : { f: (x) => l.f(x) / b.f(x), t: `${l.t} / ${b.t}` };
+      } else if (beginntFaktor(m)) {
+        // Weggelassener Malpunkt: 2x, 3(x + 1), x sin(x).
+        const b = potenz(), l = a;
+        a = { f: (x) => l.f(x) * b.f(x), t: `${l.t} · ${b.t}` };
+      } else return a;
+    }
+  }
+  function vorzeichen() {
+    const m = sieh();
+    if (m && (m.art === "-" || m.art === "+")) {
+      nimm();
+      const a = vorzeichen();
+      return m.art === "-" ? { f: (x) => -a.f(x), t: `−${a.t}` } : a;
+    }
+    return potenz();
+  }
+  function potenz() {
+    const a = grund();
+    if (sieh() && sieh().art === "^") {
+      nimm();
+      const b = vorzeichen();
+      return { f: (x) => Math.pow(a.f(x), b.f(x)), t: `${a.t}^${b.t}` };
+    }
+    return a;
+  }
+  function grund() {
+    const m = nimm();
+    if (!m) throw new Error("Der Term endet zu früh.");
+    if (m.art === "zahl") return { f: () => m.wert, t: num(m.wert, 6) };
+    if (m.art === "(") {
+      const a = summe();
+      if (!sieh() || nimm().art !== ")") throw new Error("Eine Klammer wird nicht geschlossen.");
+      return { f: a.f, t: `(${a.t})` };
+    }
+    if (m.art === "name") {
+      if (m.wert === "x") return { f: (x) => x, t: "x" };
+      if (m.wert === "pi") return { f: () => Math.PI, t: "π" };
+      const arg = potenzArgument(), fn = { sqrt: Math.sqrt, sin: Math.sin, cos: Math.cos, tan: Math.tan }[m.wert];
+      return { f: (x) => fn(arg.f(x)), t: `${m.wert === "sqrt" ? "√" : m.wert}(${arg.t.replace(/^\((.*)\)$/, "$1")})` };
+    }
+    throw new Error(`„${m.art}“ steht an einer Stelle, an der eine Zahl, x oder eine Klammer erwartet wird.`);
+  }
+  // sin x und sin(x) sind beide erlaubt; ohne Klammer gilt nur das nächste Grundelement (sin 2x = sin(2) · x).
+  function potenzArgument() {
+    return grund();
+  }
+  const ergebnis = summe();
+  if (k < marken.length) throw new Error(`Nach „${ergebnis.t}“ bleibt „${marken[k].art === "name" ? marken[k].wert : marken[k].art === "zahl" ? num(marken[k].wert, 6) : marken[k].art}“ übrig.`);
+  return ergebnis;
+}
+
+const PR_AUFGABEN = [
+  { f: (x) => 6 * x * x - 4 * x + 1, t: "6x² − 4x + 1", tipp: "Jeden Summanden einzeln aufleiten: xⁿ wird zu xⁿ⁺¹ / (n + 1)." },
+  { f: (x) => x ** 3, t: "x³", tipp: "Potenzregel rückwärts: Exponent um 1 erhöhen und durch den neuen Exponenten teilen." },
+  { f: (x) => 1 / (x * x), t: "1/x²", tipp: "Schreibe 1/x² = x^(−2); der neue Exponent ist −1." },
+  { f: (x) => Math.sqrt(x), t: "√x", tipp: "Schreibe √x = x^(1/2); der neue Exponent ist 3/2, durch 3/2 teilen heißt mal 2/3." },
+  { f: (x) => Math.sin(x) + 2, t: "sin(x) + 2", tipp: "Eine Stammfunktion von sin(x) ist −cos(x); die Konstante 2 wird zu 2x." },
+  { f: (x) => (3 * x + 1) ** 2, t: "(3x + 1)²", tipp: "Lineare Verkettung: (3x + 1)³ / 3, und zusätzlich durch die innere Ableitung 3 teilen." },
+  { f: (x) => Math.cos(2 * x), t: "cos(2x)", tipp: "sin(2x) abgeleitet gibt 2 · cos(2x) — es fehlt also noch der Faktor ½." },
+];
+const PR_STELLEN = [0.3, 0.55, 0.8, 1.05, 1.3, 1.7, 2.1, 2.45];
+const PR_H = 1e-5;
+const prAbl = (g, x) => (g(x + PR_H) - g(x - PR_H)) / (2 * PR_H);
+// Gleich bis auf Rundungsrauschen der numerischen Ableitung.
+const prGleich = (a, b) => Math.abs(a - b) <= 1e-4 * (1 + Math.abs(b));
+
+function stammfunktionPruefen() {
+  const wahl = document.getElementById("pr-aufgabe").value;
+  const eigen = wahl === "eigen";
+  document.getElementById("pr-eigen-zeile").hidden = !eigen;
+  const aus = document.getElementById("pr-ergebnis");
+  const eingabeF = document.getElementById("pr-F").value;
+  if (!eingabeF.trim()) { aus.innerHTML = "Tippe eine Stammfunktion F(x) ein und drücke „Prüfen“."; return; }
+  let f, ft, tipp = "";
+  try {
+    if (eigen) {
+      const t = leseTerm(document.getElementById("pr-f").value);
+      f = t.f; ft = t.t;
+    } else {
+      ({ f, t: ft, tipp } = PR_AUFGABEN[Number(wahl)]);
+    }
+  } catch (e) {
+    aus.innerHTML = `<span class="pr-urteil err">f(x) nicht lesbar:</span> ${e.message}`;
+    return;
+  }
+  let F;
+  try { F = leseTerm(eingabeF); } catch (e) {
+    aus.innerHTML = `<span class="pr-urteil err">F(x) nicht lesbar:</span> ${e.message}`;
+    return;
+  }
+  // Nur Stellen, an denen f, F und F′ endlich sind — √x und 1/x² sind links von 0 nicht erklärt.
+  const proben = PR_STELLEN.map((x) => ({ x, f: f(x), F: F.f(x), d: prAbl(F.f, x) }))
+    .filter((p) => [p.f, p.F, p.d].every(Number.isFinite));
+  if (proben.length < 4) {
+    aus.innerHTML = `<span class="pr-urteil err">Nicht auswertbar:</span> f oder F ist an zu vielen Prüfstellen zwischen 0,3 und 2,45 nicht definiert.`;
+    return;
+  }
+  const alle = (bed) => proben.every(bed);
+  const tabelle = `<table class="pr-proben"><tr><th>x</th>${proben.slice(0, 4).map((p) => `<td>${num(p.x)}</td>`).join("")}</tr>` +
+    `<tr><th>F′(x)</th>${proben.slice(0, 4).map((p) => `<td>${num(p.d, 4)}</td>`).join("")}</tr>` +
+    `<tr><th>f(x)</th>${proben.slice(0, 4).map((p) => `<td>${num(p.f, 4)}</td>`).join("")}</tr></table>`;
+  const gelesen = `Gelesen: F(x) = ${F.t}${eigen ? `, f(x) = ${ft}` : ""}.`;
+  let urteil;
+  if (alle((p) => prGleich(p.d, p.f))) {
+    urteil = `<span class="pr-urteil ok">✓ Richtig — F ist eine Stammfunktion von f(x) = ${ft}.</span> Die Probe F′(x) = f(x) stimmt an allen ${proben.length} Prüfstellen. Auch F(x) + C wäre für jede Konstante C richtig.`;
+  } else {
+    let grund;
+    const verhaeltnis = proben[0].f !== 0 ? proben[0].d / proben[0].f : NaN;
+    if (alle((p) => prGleich(p.F, prAbl(f, p.x)))) grund = "Das ist die <strong>Ableitung</strong> von f, nicht eine Stammfunktion. Gesucht ist ein F mit F′ = f — die Ableitungsregeln rückwärts.";
+    else if (alle((p) => prGleich(p.F, p.f))) grund = "Das ist f selbst. Gesucht ist eine Funktion, deren Ableitung f ergibt.";
+    else if (alle((p) => prGleich(p.d, -p.f))) grund = "<strong>Vorzeichenfehler:</strong> Dein F′ ist genau −f — irgendwo ist ein Minus verloren gegangen. Häufig bei sin/cos ((−cos x)′ = sin x) oder bei negativen Exponenten ((x⁻¹)′ = −x⁻²).";
+    else if (Number.isFinite(verhaeltnis) && Math.abs(verhaeltnis) > 1e-6 && alle((p) => prGleich(p.d, verhaeltnis * p.f)))
+      grund = `<strong>Bis auf einen Faktor richtig:</strong> F′(x) = ${num(verhaeltnis, 4)} · f(x). Teile dein F durch ${num(verhaeltnis, 4)} — oft fehlt das Teilen durch den neuen Exponenten oder durch die innere Ableitung.`;
+    else {
+      const p = proben.find((q) => !prGleich(q.d, q.f));
+      grund = `Bei x = ${num(p.x)} ist F′(x) ≈ ${num(p.d, 4)}, aber f(x) = ${num(p.f, 4)}.`;
+    }
+    urteil = `<span class="pr-urteil err">✗ Noch nicht — F′ ist nicht f.</span> ${grund}${tipp ? `<br>💡 Tipp: ${tipp}` : ""}`;
+  }
+  aus.innerHTML = `${urteil}<br><span class="progress-note">${gelesen}</span>${tabelle}`;
 }
 
 // ================= 7. Fläche mit der x-Achse =================
@@ -934,7 +1106,7 @@ const REGLER = [
   [["in-art", "in-a", "in-b"], renderIntegral],
   [["if-a", "if-x"], renderIntegralfunktion],
   [["hs-x", "hs-h"], renderHauptsatz],
-  [["sf-c", "sf-x"], renderStamm],
+  [["sf-art", "sf-c", "sf-x"], renderStamm],
   [["fl-a", "fl-b"], renderFlaeche],
   [["zg-art", "zg-m"], renderZwischen],
   [["mw-b"], renderMittelwert],
@@ -950,6 +1122,14 @@ for (const [ids, render] of REGLER) {
   });
   render();   // nicht vergessen — sonst bleibt die Zeichnung leer, bis jemand einen Regler anfasst
 }
+// Selbsttest Stammfunktion: Prüfen per Knopf oder Eingabetaste; ein Wechsel der Funktion setzt das Urteil zurück.
+document.getElementById("pr-pruefen").addEventListener("click", stammfunktionPruefen);
+for (const id of ["pr-F", "pr-f"]) document.getElementById(id).addEventListener("keydown", (e) => { if (e.key === "Enter") stammfunktionPruefen(); });
+document.getElementById("pr-aufgabe").addEventListener("change", () => {
+  document.getElementById("pr-eigen-zeile").hidden = document.getElementById("pr-aufgabe").value !== "eigen";
+  document.getElementById("pr-ergebnis").innerHTML = "Tippe eine Stammfunktion F(x) ein und drücke „Prüfen“.";
+});
+document.getElementById("pr-ergebnis").innerHTML = "Tippe eine Stammfunktion F(x) ein und drücke „Prüfen“.";
 for (const [id, def] of Object.entries(QUIZZE)) mountQuiz(document.getElementById(id), def);
 renderSelbsteinschaetzung();
 mountUebungsaufgaben(document.getElementById("exercises-mount"), AUFGABEN, { parse: parseZahl });
