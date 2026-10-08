@@ -79,6 +79,9 @@
       f″(x₀) ist <em>nicht</em> f′(x₀) · f′(x₀) und auch nicht f′(f′(x₀)). Man leitet die <em>Funktion</em> f′ ab und setzt erst danach x₀ ein. Bei f(x) = x³ ist f′(1) = 3; f′(1) · f′(1) wäre 9 und f′(f′(1)) = f′(3) = 27. Richtig ist f″(x) = 6x, also f″(1) = 6.
     </div>
     <p class="hinweis-box">💡 Bei einer ganzrationalen Funktion vom Grad n sinkt der Grad mit jeder Ableitung um 1; die n-te Ableitung ist konstant, alle weiteren sind 0. Ein Polynom „verliert“ also nach n + 1 Ableitungen jede Information — anders als sin, das sich nach vier Ableitungen wiederholt: sin → cos → −sin → −cos → sin.</p>
+    <h3 class="unterabschnitt">Selbsttest: erste und zweite Ableitung</h3>
+    <p>Bestimme zu einer Funktion f′ und f″ — oder nur eines davon, dann bleibt das andere Feld leer. Die Seite prüft jedes Feld für sich an acht Stellen und erkennt typische Fehler, etwa wenn einmal zu oft oder zu wenig abgeleitet wurde.</p>
+    <div class="widget" id="pa-hoehere"></div>
     <div class="quiz" id="quiz-hoehere"></div>
   </section>
 
@@ -273,6 +276,9 @@
       <span class="box-label">Achtung — Bogenmaß und Periodizität</span>
       Die Ableitungen von sin und cos gelten nur im <a href="../03-differentialrechnung/index.html#sec-sinus">Bogenmaß</a>; der Taschenrechner muss auf RAD stehen. Und eine Gleichung wie cos(x) = −0,5 hat auf ganz ℝ unendlich viele Lösungen. Deshalb gehört zur Aufgabe immer das Intervall, auf dem untersucht wird — hier [0; 2π]. Wegen f(x + 2π) = f(x) + 2π wiederholt sich das Bild, um 2π nach rechts und oben verschoben.
     </div>
+    <h3 class="unterabschnitt">Selbsttest: Ableitungen mit Sinus und Kosinus</h3>
+    <p>Hier brauchst du (sin x)′ = cos x, (cos x)′ = −sin x und aus Thema 2 die <a href="../03-differentialrechnung/index.html#sec-produkt-kette">Produkt- und Kettenregel</a>. Für die Krümmung ist f″ gefragt; rechnet wird im Bogenmaß.</p>
+    <div class="widget" id="pa-trig"></div>
     <div class="quiz" id="quiz-trig"></div>
   </section>
 
@@ -380,6 +386,9 @@
       <span class="box-label">Achtung — beim Ableiten ist a eine Zahl</span>
       Abgeleitet wird nach x; der Parameter a wird behandelt wie eine feste Zahl. (3a²x)′ = 3a², nicht 6a · x und nicht 0. Und für a = 0 ist f<sub>0</sub>(x) = x³ — eine Funktion ohne Extrempunkte, mit einem Sattelpunkt im Ursprung. Darum steht in der Aufgabe a &gt; 0.
     </div>
+    <h3 class="unterabschnitt">Selbsttest: Ableiten mit Parameter</h3>
+    <p>Abgeleitet wird nach x, der Parameter a ist eine feste Zahl. Die Seite prüft deine Eingabe für mehrere Werte von a — und merkt, wenn versehentlich nach a abgeleitet wurde.</p>
+    <div class="widget" id="pa-schar"></div>
     <div class="quiz" id="quiz-scharen"></div>
   </section>
 
@@ -562,6 +571,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=2"></script>
+<script type="module" src="lernpfad.js?v=3"></script>
 </body>
 </html>

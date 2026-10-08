@@ -19,6 +19,7 @@ const { neuerBericht } = require("../lib/pruefen");
 const { starteBrowser, neueSeite, oeffne, setzeRegler, text } = require("../lib/seite");
 const { pruefeNotation } = require("../lib/notation");
 const { pruefeKontrast } = require("../lib/kontrast");
+const { pruefeSelbsttest } = require("../lib/selbsttest");
 const { pruefeAufgabe, zahl } = require("../lib/aufgaben");
 const fs = require("fs");
 const path = require("path");
@@ -851,6 +852,55 @@ async function aufgaben(page) {
   });
 }
 
+// ---------- Selbsttests zum Ableiten (Abschnitte 1, 6 und 9) ----------
+// Die richtigen Ableitungen sind hier von Hand nachgerechnet; die Seite prüft numerisch.
+async function selbsttests(page) {
+  const R = ["✓ Richtig"], X = (m) => ["✗ Noch nicht", m, "Tipp"];
+  await pruefeSelbsttest(page, bericht, "pa-hoehere", [
+    { aufgabe: "0", eingaben: ["4x³ − 6x² + 1", "12x² − 12x"], erwartet: [R, R] },
+    { aufgabe: "0", eingaben: ["4x³ − 6x² + 1", "24x − 12"], erwartet: [R, X("einmal zu oft")] },
+    { aufgabe: "0", eingaben: ["", "4x³ − 6x² + 1"], erwartet: [[], X("einmal zu wenig")] },
+    { aufgabe: "1", eingaben: ["1,5x² − 1,5", "3x"], erwartet: [R, R] },
+    { aufgabe: "1", eingaben: ["1,5x²", "3x"], erwartet: [X("Bis auf eine Konstante"), R] },
+    { aufgabe: "2", eingaben: ["x³ − 2x", "3x² − 2"], erwartet: [R, R] },
+    { aufgabe: "3", eingaben: ["4x³ − 4x", "12x² − 4"], erwartet: [R, R] },
+    { aufgabe: "3", eingaben: ["4x(x² − 1)", ""], erwartet: [R, []] },
+    { aufgabe: "3", eingaben: ["2(x² − 1)", ""], erwartet: [X("Bei x ="), []] },
+    { aufgabe: "4", eingaben: ["−1/x²", "2/x³"], erwartet: [R, R] },
+    { aufgabe: "4", eingaben: ["1/x²", "−2/x³"], erwartet: [X("Vorzeichenfehler"), X("Vorzeichenfehler")] },
+    { aufgabe: "5", eingaben: ["3x² − 12x + 9", "6x − 12"], erwartet: [R, R] },
+    { aufgabe: "5", eingaben: ["x² − 4x + 3", "2x − 4"], erwartet: [X("Bis auf einen Faktor"), X("Bis auf einen Faktor")] },
+    { aufgabe: "eigen", f: "x^4", eingaben: ["4x^3", "12x^2"], erwartet: [R, R] },
+  ]);
+  await pruefeSelbsttest(page, bericht, "pa-trig", [
+    { aufgabe: "0", eingaben: ["1 + 2cos(x)", "−2sin(x)"], erwartet: [R, R] },
+    { aufgabe: "0", eingaben: ["1 − 2cos(x)", "2sin(x)"], erwartet: [X("Bei x ="), X("Vorzeichenfehler")] },
+    { aufgabe: "1", eingaben: ["2cos(2x)", "−4sin(2x)"], erwartet: [R, R] },
+    { aufgabe: "1", eingaben: ["cos(2x)", "−2sin(2x)"], erwartet: [X("Bis auf einen Faktor"), X("Bis auf einen Faktor")] },
+    { aufgabe: "2", eingaben: ["−1,5sin(0,5x)", "−0,75cos(0,5x)"], erwartet: [R, R] },
+    { aufgabe: "2", eingaben: ["−3sin(0,5x)", ""], erwartet: [X("Bis auf einen Faktor"), []] },
+    { aufgabe: "3", eingaben: ["cos(x) − sin(x)", "−sin(x) − cos(x)"], erwartet: [R, R] },
+    { aufgabe: "3", eingaben: ["", "sin(x) + cos(x)"], erwartet: [[], X("Vorzeichenfehler")] },
+    { aufgabe: "4", eingaben: ["sin(x) + x cos(x)", "2cos(x) − x sin(x)"], erwartet: [R, R] },
+    { aufgabe: "4", eingaben: ["x cos(x)", ""], erwartet: [X("Bei x ="), []] },
+    { aufgabe: "5", eingaben: ["2sin(x)cos(x)", "2cos(x)^2 − 2sin(x)^2"], erwartet: [R, R] },
+    { aufgabe: "5", eingaben: ["sin(2x)", "2cos(2x)"], erwartet: [R, R] },
+  ]);
+  await pruefeSelbsttest(page, bericht, "pa-schar", [
+    { aufgabe: "0", eingaben: ["3x² − 3a²", "6x"], erwartet: [R, R] },
+    { aufgabe: "0", eingaben: ["−6ax", "6x"], erwartet: [X("nach a"), R] },
+    { aufgabe: "0", eingaben: ["3x² − 6ax", ""], erwartet: [X("Bei x ="), []] },
+    { aufgabe: "1", eingaben: ["2ax − 4", "2a"], erwartet: [R, R] },
+    { aufgabe: "1", eingaben: ["x²", "2a"], erwartet: [X("nach a"), R] },
+    { aufgabe: "2", eingaben: ["4x³ − 4ax", "12x² − 4a"], erwartet: [R, R] },
+    { aufgabe: "3", eingaben: ["2(x − a)", "2"], erwartet: [R, R] },
+    { aufgabe: "4", eingaben: ["a cos(x) + 1", "−a sin(x)"], erwartet: [R, R] },
+    { aufgabe: "4", eingaben: ["a cos(x)", ""], erwartet: [X("Bis auf eine Konstante"), []] },
+    { aufgabe: "5", eingaben: ["3x²/a + a", "6x/a"], erwartet: [R, R] },
+    { aufgabe: "eigen", f: "a x^3", eingaben: ["3ax^2", "6ax"], erwartet: [R, R] },
+  ]);
+}
+
 (async () => {
   const browser = await starteBrowser();
   for (const dunkel of [false, true]) {
@@ -873,6 +923,7 @@ async function aufgaben(page) {
       await newton(page);
       await stolperstelle(page);
       await quizze(page);
+      await selbsttests(page);
       await aufgaben(page);
     } else {
       await pruefeKontrast(page, bericht, "dunkel");

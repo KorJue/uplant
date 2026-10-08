@@ -661,13 +661,3 @@
 .grenzen .o { order: 0; }
 .grenzen .u { order: 1; }
 
-/* ---------- Selbsttest Stammfunktion (Abschnitt 6) ---------- */
-.unterabschnitt { font-size: 1.08rem; margin: 1.5rem 0 0.4rem; }
-.pr-eingabe { width: 17rem; max-width: 100%; padding: 0.4rem 0.5rem; font-size: 1rem; }
-.pr-urteil { font-weight: 700; }
-.pr-urteil.ok { color: #157347; }
-.pr-urteil.err { color: #b3261e; }
-:root[data-theme="dark"] .pr-urteil.ok { color: #6fd68f; }
-:root[data-theme="dark"] .pr-urteil.err { color: #ff8a8a; }
-.pr-proben { border-collapse: collapse; margin-top: 0.4rem; font-variant-numeric: tabular-nums; }
-.pr-proben th, .pr-proben td { border: 1px solid var(--border); padding: 0.15rem 0.5rem; text-align: right; }

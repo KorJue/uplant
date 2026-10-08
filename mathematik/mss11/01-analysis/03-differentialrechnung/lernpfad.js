@@ -28,6 +28,7 @@
 
 import { mountUebungsaufgaben } from "../../../aufgaben.js?v=2";
 import { AUFGABEN, parseZahl } from "./aufgaben-differentialrechnung.js?v=2";
+import { mountSelbsttest } from "../../../selbsttest.js?v=1";
 
 // ---------- Helfer ----------
 
@@ -1317,6 +1318,22 @@ for (const [ids, render] of REGLER) {
   });
   render();   // nicht vergessen — sonst bleibt die Zeichnung leer, bis jemand einen Regler anfasst
 }
+// Selbsttest am Ende von Abschnitt 6: nur, was bis dahin bekannt ist — Potenz-, Faktor- und
+// Summenregel. (x + 1)² wird deshalb ausmultipliziert, nicht mit der Kettenregel abgeleitet.
+mountSelbsttest(document.getElementById("pa-regeln"), {
+  praefix: "pa-regeln", art: "ableitung",
+  felder: [{ id: "d1", name: "f′(x)", ordnung: 1 }], platzhalter: ["z. B. 6x − 5"],
+  aufgaben: [
+    { t: "3x² − 5x + 2", f: (x) => 3 * x * x - 5 * x + 2, tipp: "Summand für Summand: (3x²)′ = 3 · 2x, (−5x)′ = −5, die Konstante 2 fällt weg." },
+    { t: "0,5x⁴ − 2x³ + x", f: (x) => 0.5 * x ** 4 - 2 * x ** 3 + x, tipp: "Exponent als Faktor nach vorn, Exponent um 1 verringern; der Faktor davor bleibt stehen." },
+    { t: "−2x⁵ + 3x² − 7", f: (x) => -2 * x ** 5 + 3 * x * x - 7, tipp: "(−2x⁵)′ = −2 · 5x⁴; das Vorzeichen gehört zum Faktor." },
+    { t: "4/x", label: "f(x) = 4/x (für x > 0)", f: (x) => 4 / x, tipp: "Schreibe 4/x = 4x⁻¹; der Exponent −1 wird zu −2." },
+    { t: "1/x²", label: "f(x) = 1/x² (für x > 0)", f: (x) => 1 / (x * x), tipp: "1/x² = x⁻²: Exponent nach vorn, dann von −2 auf −3." },
+    { t: "2√x", f: (x) => 2 * Math.sqrt(x), tipp: "√x = x^(1/2), also (√x)′ = ½ · x^(−1/2) = 1/(2√x)." },
+    { t: "x³ − 1/x", label: "f(x) = x³ − 1/x (für x > 0)", f: (x) => x ** 3 - 1 / x, tipp: "−1/x = −x⁻¹ hat die Ableitung +x⁻²." },
+    { t: "(x + 1)²", f: (x) => (x + 1) ** 2, tipp: "Erst mit der binomischen Formel ausmultiplizieren: x² + 2x + 1." },
+  ],
+});
 for (const [id, def] of Object.entries(QUIZZE)) mountQuiz(document.getElementById(id), def);
 renderSelbsteinschaetzung();
 mountUebungsaufgaben(document.getElementById("exercises-mount"), AUFGABEN, { parse: parseZahl });
