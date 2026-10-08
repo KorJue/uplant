@@ -19,6 +19,7 @@ const { neuerBericht } = require("../lib/pruefen");
 const { starteBrowser, neueSeite, oeffne, setzeRegler, text } = require("../lib/seite");
 const { pruefeNotation } = require("../lib/notation");
 const { pruefeKontrast } = require("../lib/kontrast");
+const { pruefeSelbsttest } = require("../lib/selbsttest");
 const { pruefeAufgabe, zahl } = require("../lib/aufgaben");
 const fs = require("fs");
 const path = require("path");
@@ -954,6 +955,48 @@ async function aufgaben(page) {
   });
 }
 
+// ---------- Selbsttest „Ableitungsfunktionen bestimmen“ (Ende von Abschnitt 6) ----------
+// Die richtigen Ableitungen sind hier von Hand nachgerechnet; die Seite prüft numerisch.
+async function selbsttests(page) {
+  const R = ["✓ Richtig"], X = (m) => ["✗ Noch nicht", m, "Tipp"];
+  await pruefeSelbsttest(page, bericht, "pa-regeln", [
+    { aufgabe: "0", eingaben: ["6x − 5"], erwartet: [R] },
+    { aufgabe: "0", eingaben: ["6x − 5 + 2"], erwartet: [X("Bis auf eine Konstante")] },
+    { aufgabe: "0", eingaben: ["3x² − 5x + 2"], erwartet: [X("Das ist f selbst")] },
+    { aufgabe: "0", eingaben: ["x^3 − 2,5x^2 + 2x"], erwartet: [X("falsche Richtung")] },
+    { aufgabe: "0", eingaben: ["6"], erwartet: [X("einmal zu oft")] },
+    { aufgabe: "0", eingaben: ["−6x + 5"], erwartet: [X("Vorzeichenfehler")] },
+    { aufgabe: "1", eingaben: ["2x³ − 6x² + 1"], erwartet: [R] },
+    { aufgabe: "1", eingaben: ["x³ − 3x² + 0,5"], erwartet: [X("Bis auf einen Faktor")] },
+    { aufgabe: "2", eingaben: ["−10x⁴ + 6x"], erwartet: [R] },
+    { aufgabe: "2", eingaben: ["10x^4 − 6x"], erwartet: [X("Vorzeichenfehler")] },
+    { aufgabe: "2", eingaben: ["−10x⁴ + 6x − 7"], erwartet: [X("Bis auf eine Konstante")] },
+    { aufgabe: "3", eingaben: ["−4/x²"], erwartet: [R] },
+    { aufgabe: "3", eingaben: ["−4x^(−2)"], erwartet: [R] },
+    { aufgabe: "3", eingaben: ["4/x^2"], erwartet: [X("Vorzeichenfehler")] },
+    { aufgabe: "4", eingaben: ["−2/x³"], erwartet: [R] },
+    { aufgabe: "4", eingaben: ["−2x^−3"], erwartet: [R] },
+    { aufgabe: "4", eingaben: ["−2/x"], erwartet: [X("Bei x =")] },
+    { aufgabe: "5", eingaben: ["1/√x"], erwartet: [R] },
+    { aufgabe: "5", eingaben: ["x^(−0,5)"], erwartet: [R] },
+    { aufgabe: "5", eingaben: ["x^(−1/2)/2"], erwartet: [X("Bis auf einen Faktor")] },
+    { aufgabe: "6", eingaben: ["3x² + 1/x²"], erwartet: [R] },
+    { aufgabe: "6", eingaben: ["3x² − 1/x²"], erwartet: [X("Bei x =")] },
+    { aufgabe: "7", eingaben: ["2x + 2"], erwartet: [R] },
+    { aufgabe: "7", eingaben: ["2(x + 1)"], erwartet: [R] },
+    { aufgabe: "7", eingaben: ["2x + 1"], erwartet: [X("Bis auf eine Konstante")] },
+    { aufgabe: "eigen", f: "x^5 − 3x", eingaben: ["5x^4 − 3"], erwartet: [R] },
+    // Zu einer eigenen Funktion gibt es keinen vorbereiteten Tipp — nur die Diagnose.
+    { aufgabe: "eigen", f: "x^5 − 3x", eingaben: ["5x^4"], erwartet: [["✗ Noch nicht", "Bis auf eine Konstante"]] },
+    { aufgabe: "eigen", f: "y + 1", eingaben: ["1"], erwartet: [["f(x) nicht lesbar"]] },
+    { aufgabe: "0", eingaben: ["2x)"], erwartet: [["nicht lesbar"]] },
+    { aufgabe: "0", eingaben: ["(x + 1"], erwartet: [["nicht lesbar"]] },
+    { aufgabe: "0", eingaben: [""], erwartet: [[]] },
+  ]);
+  await page.selectOption("#pa-regeln-aufgabe", "0");
+  await page.fill("#pa-regeln-d1", "");
+}
+
 (async () => {
   const browser = await starteBrowser();
   for (const dunkel of [false, true]) {
@@ -977,6 +1020,7 @@ async function aufgaben(page) {
       await monotonie(page);
       await stolperstelle(page);
       await quizze(page);
+      await selbsttests(page);
       await aufgaben(page);
     } else {
       await pruefeKontrast(page, bericht, "dunkel");

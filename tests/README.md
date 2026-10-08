@@ -39,6 +39,9 @@ das vorinstallierte Chromium unter `/opt/pw-browsers/chromium`
 * `kontrast.js` — Leuchtdichteabstand von Text zu seinem wirklichen Untergrund
 * `themen.js` — findet alle Themen im Dateisystem, damit kein neues Thema
   stillschweigend ungeprüft bleibt
+* `selbsttest.js` — `pruefeSelbsttest()`: bedient einen Selbsttest „Ableiten /
+  Aufleiten“ (`mathematik/selbsttest.js`) und verlangt je Feld bestimmte
+  Textstücke im Urteil — „✓ Richtig“ oder den Hinweis zum typischen Fehler
 
 ## Eine fachliche Prüfung schreiben
 

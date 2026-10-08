@@ -257,6 +257,14 @@ Die kleinen Helfer (`pick`, `trifft`, `glatt`, `ohneKollision`, `num`) stehen
 `parseFlexibleNumber()` aus `mathematik/aufgaben.js`. Wer sie sucht, findet sie
 also in der Nachbarseite — und wer eine davon verbessert, sollte wissen, dass
 die anderen davon nichts mitbekommen.
+
+Ebenfalls geteilt ist `mathematik/selbsttest.js`: der Selbsttest „Ableiten /
+Aufleiten“ (Funktion wählen oder eingeben, Ableitung bzw. Stammfunktion
+eintippen, numerische Probe mit Fehlerdiagnose) samt seinem Term-Leser
+`leseTerm()` — ohne `eval`. Er steht in der Differentialrechnung, der
+Funktionsuntersuchung und der Integralrechnung; eine Änderung dort wirkt auf
+alle drei Seiten, also gehören alle drei Prüfungen danach in den Lauf. Die
+Aufgaben selbst (Funktion, Text, Tipps) stehen in der jeweiligen Seite.
 * **Hinweise erklären den Fehler**, sie stellen ihn nicht bloß fest. „Das
   Halbieren fehlt: … ist das umschließende Rechteck, nicht das Dreieck" statt
   „Falsch".

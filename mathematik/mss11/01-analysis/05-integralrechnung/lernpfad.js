@@ -25,6 +25,7 @@
 
 import { mountUebungsaufgaben } from "../../../aufgaben.js?v=2";
 import { AUFGABEN, parseZahl } from "./aufgaben-integralrechnung.js?v=2";
+import { mountSelbsttest } from "../../../selbsttest.js?v=1";
 
 
 // ---------- Helfer ----------
@@ -568,168 +569,17 @@ function renderStamm() {
 }
 
 // ================= 6b. Selbsttest: Ist das eine Stammfunktion? =================
-//
-// Der Term wird von einem kleinen Zerleger gelesen (kein eval): Zahlen mit Komma, x, π, + − · * / ^,
-// Klammern, sin, cos, tan, sqrt/√, Hochzahlen ²³⁴⁵ und Malzeichen, die man weglassen darf (2x, 3(x + 1)).
-// Geprüft wird numerisch: F′ über die zentrale Differenz an acht Stellen in (0; 2,5], verglichen mit f.
-
-function leseTerm(text) {
-  const quelle = String(text).toLowerCase()
-    .replace(/[−–]/g, "-").replace(/[·×]/g, "*").replace(/:/g, "/").replace(/,/g, ".")
-    .replace(/²/g, "^2").replace(/³/g, "^3").replace(/⁴/g, "^4").replace(/⁵/g, "^5")
-    .replace(/√/g, "sqrt").replace(/π/g, "pi").replace(/\s+/g, "");
-  if (!quelle) throw new Error("Die Eingabe ist leer.");
-  const NAMEN = ["sqrt", "wurzel", "sin", "cos", "tan", "pi", "x"];
-  const marken = [];
-  for (let i = 0; i < quelle.length;) {
-    const rest = quelle.slice(i);
-    const zahl = rest.match(/^(\d+\.?\d*|\.\d+)/);
-    if (zahl) { marken.push({ art: "zahl", wert: parseFloat(zahl[1]) }); i += zahl[1].length; continue; }
-    if ("+-*/^()".includes(rest[0])) { marken.push({ art: rest[0] }); i++; continue; }
-    const name = NAMEN.find((n) => rest.startsWith(n));
-    if (name) { marken.push({ art: "name", wert: name === "wurzel" ? "sqrt" : name }); i += name.length; continue; }
-    throw new Error(`Unbekanntes Zeichen „${rest[0]}“.`);
-  }
-  let k = 0;
-  const sieh = () => marken[k], nimm = () => marken[k++];
-  const beginntFaktor = (m) => m && (m.art === "zahl" || m.art === "name" || m.art === "(");
-  function summe() {
-    let a = produkt();
-    while (sieh() && (sieh().art === "+" || sieh().art === "-")) {
-      const op = nimm().art, b = produkt(), l = a;
-      a = op === "+" ? { f: (x) => l.f(x) + b.f(x), t: `${l.t} + ${b.t}` } : { f: (x) => l.f(x) - b.f(x), t: `${l.t} − ${b.t}` };
-    }
-    return a;
-  }
-  function produkt() {
-    let a = vorzeichen();
-    for (;;) {
-      const m = sieh();
-      if (m && (m.art === "*" || m.art === "/")) {
-        nimm();
-        const b = vorzeichen(), l = a;
-        a = m.art === "*" ? { f: (x) => l.f(x) * b.f(x), t: `${l.t} · ${b.t}` } : { f: (x) => l.f(x) / b.f(x), t: `${l.t} / ${b.t}` };
-      } else if (beginntFaktor(m)) {
-        // Weggelassener Malpunkt: 2x, 3(x + 1), x sin(x).
-        const b = potenz(), l = a;
-        a = { f: (x) => l.f(x) * b.f(x), t: `${l.t} · ${b.t}` };
-      } else return a;
-    }
-  }
-  function vorzeichen() {
-    const m = sieh();
-    if (m && (m.art === "-" || m.art === "+")) {
-      nimm();
-      const a = vorzeichen();
-      return m.art === "-" ? { f: (x) => -a.f(x), t: `−${a.t}` } : a;
-    }
-    return potenz();
-  }
-  function potenz() {
-    const a = grund();
-    if (sieh() && sieh().art === "^") {
-      nimm();
-      const b = vorzeichen();
-      return { f: (x) => Math.pow(a.f(x), b.f(x)), t: `${a.t}^${b.t}` };
-    }
-    return a;
-  }
-  function grund() {
-    const m = nimm();
-    if (!m) throw new Error("Der Term endet zu früh.");
-    if (m.art === "zahl") return { f: () => m.wert, t: num(m.wert, 6) };
-    if (m.art === "(") {
-      const a = summe();
-      if (!sieh() || nimm().art !== ")") throw new Error("Eine Klammer wird nicht geschlossen.");
-      return { f: a.f, t: `(${a.t})` };
-    }
-    if (m.art === "name") {
-      if (m.wert === "x") return { f: (x) => x, t: "x" };
-      if (m.wert === "pi") return { f: () => Math.PI, t: "π" };
-      const arg = potenzArgument(), fn = { sqrt: Math.sqrt, sin: Math.sin, cos: Math.cos, tan: Math.tan }[m.wert];
-      return { f: (x) => fn(arg.f(x)), t: `${m.wert === "sqrt" ? "√" : m.wert}(${arg.t.replace(/^\((.*)\)$/, "$1")})` };
-    }
-    throw new Error(`„${m.art}“ steht an einer Stelle, an der eine Zahl, x oder eine Klammer erwartet wird.`);
-  }
-  // sin x und sin(x) sind beide erlaubt; ohne Klammer gilt nur das nächste Grundelement (sin 2x = sin(2) · x).
-  function potenzArgument() {
-    return grund();
-  }
-  const ergebnis = summe();
-  if (k < marken.length) throw new Error(`Nach „${ergebnis.t}“ bleibt „${marken[k].art === "name" ? marken[k].wert : marken[k].art === "zahl" ? num(marken[k].wert, 6) : marken[k].art}“ übrig.`);
-  return ergebnis;
-}
+// Lesen und Prüfen übernimmt das gemeinsame Modul mathematik/selbsttest.js; hier stehen nur die Aufgaben.
 
 const PR_AUFGABEN = [
   { f: (x) => 6 * x * x - 4 * x + 1, t: "6x² − 4x + 1", tipp: "Jeden Summanden einzeln aufleiten: xⁿ wird zu xⁿ⁺¹ / (n + 1)." },
   { f: (x) => x ** 3, t: "x³", tipp: "Potenzregel rückwärts: Exponent um 1 erhöhen und durch den neuen Exponenten teilen." },
-  { f: (x) => 1 / (x * x), t: "1/x²", tipp: "Schreibe 1/x² = x^(−2); der neue Exponent ist −1." },
+  { f: (x) => 1 / (x * x), t: "1/x²", label: "f(x) = 1/x² (für x > 0)", tipp: "Schreibe 1/x² = x^(−2); der neue Exponent ist −1." },
   { f: (x) => Math.sqrt(x), t: "√x", tipp: "Schreibe √x = x^(1/2); der neue Exponent ist 3/2, durch 3/2 teilen heißt mal 2/3." },
   { f: (x) => Math.sin(x) + 2, t: "sin(x) + 2", tipp: "Eine Stammfunktion von sin(x) ist −cos(x); die Konstante 2 wird zu 2x." },
   { f: (x) => (3 * x + 1) ** 2, t: "(3x + 1)²", tipp: "Lineare Verkettung: (3x + 1)³ / 3, und zusätzlich durch die innere Ableitung 3 teilen." },
   { f: (x) => Math.cos(2 * x), t: "cos(2x)", tipp: "sin(2x) abgeleitet gibt 2 · cos(2x) — es fehlt also noch der Faktor ½." },
 ];
-const PR_STELLEN = [0.3, 0.55, 0.8, 1.05, 1.3, 1.7, 2.1, 2.45];
-const PR_H = 1e-5;
-const prAbl = (g, x) => (g(x + PR_H) - g(x - PR_H)) / (2 * PR_H);
-// Gleich bis auf Rundungsrauschen der numerischen Ableitung.
-const prGleich = (a, b) => Math.abs(a - b) <= 1e-4 * (1 + Math.abs(b));
-
-function stammfunktionPruefen() {
-  const wahl = document.getElementById("pr-aufgabe").value;
-  const eigen = wahl === "eigen";
-  document.getElementById("pr-eigen-zeile").hidden = !eigen;
-  const aus = document.getElementById("pr-ergebnis");
-  const eingabeF = document.getElementById("pr-F").value;
-  if (!eingabeF.trim()) { aus.innerHTML = "Tippe eine Stammfunktion F(x) ein und drücke „Prüfen“."; return; }
-  let f, ft, tipp = "";
-  try {
-    if (eigen) {
-      const t = leseTerm(document.getElementById("pr-f").value);
-      f = t.f; ft = t.t;
-    } else {
-      ({ f, t: ft, tipp } = PR_AUFGABEN[Number(wahl)]);
-    }
-  } catch (e) {
-    aus.innerHTML = `<span class="pr-urteil err">f(x) nicht lesbar:</span> ${e.message}`;
-    return;
-  }
-  let F;
-  try { F = leseTerm(eingabeF); } catch (e) {
-    aus.innerHTML = `<span class="pr-urteil err">F(x) nicht lesbar:</span> ${e.message}`;
-    return;
-  }
-  // Nur Stellen, an denen f, F und F′ endlich sind — √x und 1/x² sind links von 0 nicht erklärt.
-  const proben = PR_STELLEN.map((x) => ({ x, f: f(x), F: F.f(x), d: prAbl(F.f, x) }))
-    .filter((p) => [p.f, p.F, p.d].every(Number.isFinite));
-  if (proben.length < 4) {
-    aus.innerHTML = `<span class="pr-urteil err">Nicht auswertbar:</span> f oder F ist an zu vielen Prüfstellen zwischen 0,3 und 2,45 nicht definiert.`;
-    return;
-  }
-  const alle = (bed) => proben.every(bed);
-  const tabelle = `<table class="pr-proben"><tr><th>x</th>${proben.slice(0, 4).map((p) => `<td>${num(p.x)}</td>`).join("")}</tr>` +
-    `<tr><th>F′(x)</th>${proben.slice(0, 4).map((p) => `<td>${num(p.d, 4)}</td>`).join("")}</tr>` +
-    `<tr><th>f(x)</th>${proben.slice(0, 4).map((p) => `<td>${num(p.f, 4)}</td>`).join("")}</tr></table>`;
-  const gelesen = `Gelesen: F(x) = ${F.t}${eigen ? `, f(x) = ${ft}` : ""}.`;
-  let urteil;
-  if (alle((p) => prGleich(p.d, p.f))) {
-    urteil = `<span class="pr-urteil ok">✓ Richtig — F ist eine Stammfunktion von f(x) = ${ft}.</span> Die Probe F′(x) = f(x) stimmt an allen ${proben.length} Prüfstellen. Auch F(x) + C wäre für jede Konstante C richtig.`;
-  } else {
-    let grund;
-    const verhaeltnis = proben[0].f !== 0 ? proben[0].d / proben[0].f : NaN;
-    if (alle((p) => prGleich(p.F, prAbl(f, p.x)))) grund = "Das ist die <strong>Ableitung</strong> von f, nicht eine Stammfunktion. Gesucht ist ein F mit F′ = f — die Ableitungsregeln rückwärts.";
-    else if (alle((p) => prGleich(p.F, p.f))) grund = "Das ist f selbst. Gesucht ist eine Funktion, deren Ableitung f ergibt.";
-    else if (alle((p) => prGleich(p.d, -p.f))) grund = "<strong>Vorzeichenfehler:</strong> Dein F′ ist genau −f — irgendwo ist ein Minus verloren gegangen. Häufig bei sin/cos ((−cos x)′ = sin x) oder bei negativen Exponenten ((x⁻¹)′ = −x⁻²).";
-    else if (Number.isFinite(verhaeltnis) && Math.abs(verhaeltnis) > 1e-6 && alle((p) => prGleich(p.d, verhaeltnis * p.f)))
-      grund = `<strong>Bis auf einen Faktor richtig:</strong> F′(x) = ${num(verhaeltnis, 4)} · f(x). Teile dein F durch ${num(verhaeltnis, 4)} — oft fehlt das Teilen durch den neuen Exponenten oder durch die innere Ableitung.`;
-    else {
-      const p = proben.find((q) => !prGleich(q.d, q.f));
-      grund = `Bei x = ${num(p.x)} ist F′(x) ≈ ${num(p.d, 4)}, aber f(x) = ${num(p.f, 4)}.`;
-    }
-    urteil = `<span class="pr-urteil err">✗ Noch nicht — F′ ist nicht f.</span> ${grund}${tipp ? `<br>💡 Tipp: ${tipp}` : ""}`;
-  }
-  aus.innerHTML = `${urteil}<br><span class="progress-note">${gelesen}</span>${tabelle}`;
-}
 
 // ================= 7. Fläche mit der x-Achse =================
 
@@ -1122,14 +972,10 @@ for (const [ids, render] of REGLER) {
   });
   render();   // nicht vergessen — sonst bleibt die Zeichnung leer, bis jemand einen Regler anfasst
 }
-// Selbsttest Stammfunktion: Prüfen per Knopf oder Eingabetaste; ein Wechsel der Funktion setzt das Urteil zurück.
-document.getElementById("pr-pruefen").addEventListener("click", stammfunktionPruefen);
-for (const id of ["pr-F", "pr-f"]) document.getElementById(id).addEventListener("keydown", (e) => { if (e.key === "Enter") stammfunktionPruefen(); });
-document.getElementById("pr-aufgabe").addEventListener("change", () => {
-  document.getElementById("pr-eigen-zeile").hidden = document.getElementById("pr-aufgabe").value !== "eigen";
-  document.getElementById("pr-ergebnis").innerHTML = "Tippe eine Stammfunktion F(x) ein und drücke „Prüfen“.";
+mountSelbsttest(document.getElementById("pr-widget"), {
+  praefix: "pr", art: "stamm", aufgaben: PR_AUFGABEN,
+  felder: [{ id: "F", name: "F(x)", ordnung: -1 }], platzhalter: ["z. B. x^3 − x^2"],
 });
-document.getElementById("pr-ergebnis").innerHTML = "Tippe eine Stammfunktion F(x) ein und drücke „Prüfen“.";
 for (const [id, def] of Object.entries(QUIZZE)) mountQuiz(document.getElementById(id), def);
 renderSelbsteinschaetzung();
 mountUebungsaufgaben(document.getElementById("exercises-mount"), AUFGABEN, { parse: parseZahl });
