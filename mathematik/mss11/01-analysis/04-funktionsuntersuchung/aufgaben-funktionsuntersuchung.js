@@ -10,7 +10,8 @@
 //               Wendetangente, Gewinn bei begrenzter Kapazität, zwei Newton-Schritte, Ortskurve.
 //
 // Die sechste Aufgabe jeder Stufe verlangt f′ und f″ einer jedes Mal neu gewürfelten Funktion
-// (mathematik/terme.js): ganzrational, Potenzen und Wurzeln, Sinus und Kosinus, Funktionenschar.
+// (mathematik/terme.js): ganzrational, Potenzen und Wurzeln, Sinus und Kosinus, Funktionenschar
+// oder Verkettung mit nichtlinearer innerer Funktion ((x² − 1)², sin²(x)).
 //
 // Gewürfelt wird konstruktiv: Die Kandidatenlisten werden vorher gesiebt, ohneKollision() wählt aus
 // dem Rest. Jeder Fehlerwert ist von der Lösung und von den anderen Fehlerwerten verschieden — wo ein
@@ -18,7 +19,7 @@
 
 "use strict";
 
-import { pot, trig, prod, q, ableitungsAufgabe, pick as zufall, mische } from "../../../terme.js?v=1";
+import { pot, trig, prod, verkettung, trigPotenz, q, ableitungsAufgabe, pick as zufall, mische } from "../../../terme.js?v=2";
 
 const ZAHLFORMATE = new Map();
 function zahlformat(stellen) {
@@ -778,13 +779,26 @@ function generateS6() {
   ]);
   return ableitungsAufgabe(mische([welle, pot(zufall(KOEFF), zufall([2, 3]))]), { zweite: true });
 }
-// komplex: Funktionenschar — der Parameter a ist beim Ableiten eine feste Zahl.
+// komplex: Funktionenschar — der Parameter a ist beim Ableiten eine feste Zahl, auch in (x − a)² —
+// oder eine Verkettung mit nichtlinearer innerer Funktion: (x² − 1)², √(x² + 1), sin²(x), sin(x) · cos(x).
 function generateK6() {
-  const familie = [
-    pot(zufall([1, -1, 2]), 3), pot(zufall(KLEIN), 2, 1), pot(zufall(KLEIN), 1, 2),
-    pot(zufall([1, 2, -1]), 0, 3), trig(zufall([1, -1, 2]), zufall(["sin", "cos"]), 1, 0, 1), pot(zufall([1, -1]), 4, 1),
-  ];
-  return ableitungsAufgabe(mische(familie).slice(0, 3), { zweite: true, name: "fₐ", parameter: ["a"], zusatz: " (a &gt; 0)" });
+  if (zufall([true, false])) {
+    const schar = { zweite: true, name: "fₐ", parameter: ["a"], zusatz: " (a &gt; 0)" };
+    const rest = [pot(zufall(KLEIN), 1, 2), pot(zufall([1, 2, -1]), 0, 3), trig(zufall([1, -1, 2]), zufall(["sin", "cos"]), 1, 0, 1), pot(zufall([1, -1]), 4, 1)];
+    if (zufall([true, false])) return ableitungsAufgabe(mische([pot(zufall([1, -1, 2]), 3), pot(zufall(KLEIN), 2, 1), ...rest]).slice(0, 3), schar);
+    // (x − a)³ enthält x³ und ax² — neben −x³ und 3ax² bliebe davon nur 3a²x − a³ übrig, mit f″ = 0.
+    // Deshalb steht eine verkettete Schar nur neben Gliedern, die sie nicht aufheben können.
+    const kette = zufall([verkettung(1, 1, 1, zufall([-1, 1, -2]), zufall([2, 3]), { t: 1 }), verkettung(zufall([1, -1]), 1, 2, zufall([-1, 1]), 2, { t: 1 })]);
+    return ableitungsAufgabe(mische([kette, ...mische(rest).slice(0, 2)]), schar);
+  }
+  const g = zufall([
+    verkettung(zufall([1, 2, -1]), 1, 2, zufall([1, -1, 2, -2, 3]), zufall([2, 3])),
+    verkettung(zufall([1, 2, 4]), 1, 2, zufall([1, 2, 4]), q(1, 2)),
+    trigPotenz(zufall(KLEIN), 2, 0, zufall([1, 2])),
+    trigPotenz(zufall(KLEIN), 0, 2, zufall([1, 2])),
+    trigPotenz(zufall([1, 2, -1]), 1, 1, 1),
+  ]);
+  return ableitungsAufgabe(zufall([true, false]) ? mische([g, pot(zufall(KOEFF), zufall([1, 2, 3]))]) : [g], { zweite: true });
 }
 
 export const AUFGABEN = [
@@ -811,5 +825,5 @@ export const AUFGABEN = [
   { schwierigkeit: "komplex", titel: "Gewinnmaximum bei begrenzter Kapazität", generate: generateK3 },
   { schwierigkeit: "komplex", titel: "Zwei Newton-Schritte", generate: generateK4 },
   { schwierigkeit: "komplex", titel: "Ortskurve der Wendepunkte", generate: generateK5 },
-  { schwierigkeit: "komplex", titel: "f′ und f″ einer Funktionenschar", generate: generateK6, wuerfelText: "🎲 Neue Funktion" },
+  { schwierigkeit: "komplex", titel: "f′ und f″: Funktionenschar und Verkettung", generate: generateK6, wuerfelText: "🎲 Neue Funktion" },
 ];

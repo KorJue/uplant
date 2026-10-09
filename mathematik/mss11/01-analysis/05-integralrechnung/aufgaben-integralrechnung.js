@@ -13,7 +13,8 @@
 //               Funktion und Parabel (raten, Polynomdivision), Grenze aus einer unbegrenzten Fläche.
 //
 // Die achte Aufgabe jeder Stufe ist ein Integrationstraining mit beliebig vielen Funktionen
-// (mathematik/terme.js): ganzrational, Potenzen und Wurzeln, Sinus und Kosinus, lineare Verkettung.
+// (mathematik/terme.js): ganzrational, Potenzen und Wurzeln, Sinus und Kosinus, lineare Verkettung —
+// in der komplexen Stufe auch (x² − 1)² (ausmultiplizieren) und sin²(x) (mit angegebener Umformung).
 // Die eingegebene Stammfunktion wird durch numerisches Ableiten geprüft — jede Konstante ist richtig.
 //
 // Gewürfelt wird konstruktiv: Die Kandidatenlisten werden vorher gesiebt, ohneKollision() wählt aus
@@ -22,7 +23,7 @@
 
 "use strict";
 
-import { pot, trig, kette, q, stammAufgabe, pick as zufall, mische } from "../../../terme.js?v=1";
+import { pot, trig, kette, verkettung, trigPotenz, q, stammAufgabe, pick as zufall, mische } from "../../../terme.js?v=2";
 
 const ZAHLFORMATE = new Map();
 function zahlformat(stellen) {
@@ -1233,13 +1234,27 @@ function generateS8() {
   if (zufall([true, false])) gl.push(trig(zufall(KLEIN), zufall(["sin", "cos"]), 1));
   return stammAufgabe(mische(gl));
 }
-// komplex: lineare Verkettung — Potenzen, Wurzeln und Winkelfunktionen von mx + n.
+// komplex: Verkettung — lineare Verkettung (Potenzen, Wurzeln und Winkelfunktionen von mx + n), oder
+// erst umformen: (x² − 1)² ausmultiplizieren (die Regel für mx + n gilt dort nicht), sin²(x) und
+// sin(x) · cos(x) über den doppelten Winkel — die Umformung steht in der Aufgabe, denn die Seite
+// leitet sie nicht her.
 function generateK8() {
-  const gl = [
-    kette(zufall([1, 2, 3, 4, -2]), zufall([2, 3, 4]), zufall([1, 2, 3]), zufall([2, 3, 4, -2, -3, q(1, 2), q(-1, 2)])),
-    trig(zufall(KLEIN), zufall(["sin", "cos"]), zufall([2, 3]), 1),
-  ];
-  if (zufall([true, false])) gl.push(pot(zufall(KOEFF), zufall([1, 2])));
+  const art = zufall(["linear", "linear", "ausmultiplizieren", "umformen"]);
+  const gl = [];
+  if (art === "linear") {
+    gl.push(kette(zufall([1, 2, 3, 4, -2]), zufall([2, 3, 4]), zufall([1, 2, 3]), zufall([2, 3, 4, -2, -3, q(1, 2), q(-1, 2)])));
+    gl.push(trig(zufall(KLEIN), zufall(["sin", "cos"]), zufall([2, 3]), 1));
+    if (zufall([true, false])) gl.push(pot(zufall(KOEFF), zufall([1, 2])));
+  } else if (art === "ausmultiplizieren") {
+    gl.push(zufall([true, true, false])
+      ? verkettung(zufall([1, 2, 3, -1]), zufall([1, 2]), zufall([2, 3]), zufall([1, 2, 3, -1, -2, -3]), 2, { p: zufall([0, 0, 1]) })
+      : verkettung(zufall([1, 2, -1]), 1, 2, zufall([1, -1, 2, -2]), 3));
+    if (zufall([true, false])) gl.push(pot(zufall(KOEFF), 1));
+  } else {
+    const [s, c] = zufall([[2, 0], [0, 2], [1, 1]]);
+    gl.push(trigPotenz(zufall([1, 2, 4, -2, 3]), s, c, zufall([1, 2])));
+    gl.push(pot(zufall(KOEFF), zufall([0, 1, 2])));
+  }
   return stammAufgabe(mische(gl));
 }
 
@@ -1275,5 +1290,5 @@ export const AUFGABEN = [
   { schwierigkeit: "komplex", titel: "Unbegrenzte Fläche zwischen zwei Graphen", generate: generateK5 },
   { schwierigkeit: "komplex", titel: "Kubische Funktion und Parabel", generate: generateK6 },
   { schwierigkeit: "komplex", titel: "Grenze aus einer unbegrenzten Fläche", generate: generateK7 },
-  { schwierigkeit: "komplex", titel: "Stammfunktion: lineare Verkettung", generate: generateK8, wuerfelText: "🎲 Neue Funktion" },
+  { schwierigkeit: "komplex", titel: "Stammfunktion: Verkettung und Umformen", generate: generateK8, wuerfelText: "🎲 Neue Funktion" },
 ];

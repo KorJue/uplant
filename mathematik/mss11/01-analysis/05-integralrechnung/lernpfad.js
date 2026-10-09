@@ -24,7 +24,7 @@
 // darunter orange; Untersumme grün, Obersumme orange; Streifen violett; Warnung rot.
 
 import { mountUebungsaufgaben } from "../../../aufgaben.js?v=3";
-import { AUFGABEN, parseZahl } from "./aufgaben-integralrechnung.js?v=3";
+import { AUFGABEN, parseZahl } from "./aufgaben-integralrechnung.js?v=4";
 
 
 // ---------- Helfer ----------

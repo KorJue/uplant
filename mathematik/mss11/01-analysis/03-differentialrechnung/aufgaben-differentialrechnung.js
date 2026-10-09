@@ -12,7 +12,8 @@
 // Die sechste Aufgabe jeder Stufe ist ein Ableitungstraining mit beliebig vielen Funktionen: Die
 // Funktion wird aus Gliedern zusammengesetzt (mathematik/terme.js), die ihre Ableitung exakt kennen;
 // die Eingabe wird als Term gelesen und an vielen Stellen numerisch nachgeprüft. Stufen: ganzrational,
-// Potenzen und Wurzeln, Kettenregel (lineare Verkettung, Sinus/Kosinus), Produktregel.
+// Potenzen und Wurzeln, Kettenregel (lineare Verkettung, Sinus/Kosinus), Produkt- und Kettenregel
+// auch mit nichtlinearer innerer Funktion ((x² − 1)², √(x² + 1), sin²(x), sin(x) · cos(x)).
 //
 // Gewürfelt wird konstruktiv: Die Kandidatenlisten werden vorher gesiebt, ohneKollision() wählt aus
 // dem Rest. Jeder Fehlerwert ist von der Lösung und von den anderen Fehlerwerten verschieden — wo ein
@@ -20,7 +21,7 @@
 
 "use strict";
 
-import { pot, trig, kette, prod, q, ableitungsAufgabe, pick as zufall, mische } from "../../../terme.js?v=1";
+import { pot, trig, kette, prod, verkettung, trigPotenz, q, ableitungsAufgabe, pick as zufall, mische } from "../../../terme.js?v=2";
 
 const ZAHLFORMATE = new Map();
 function zahlformat(stellen) {
@@ -813,12 +814,30 @@ function generateS6() {
   ];
   return ableitungsAufgabe([...mische(verkettet).slice(0, zufall([1, 2])), pot(zufall(KOEFF), zufall([1, 2, 3]))]);
 }
-// komplex: Produktregel, innen auch mit Kettenregel.
+// komplex: Produkt- und Kettenregel — mit linearer und mit nichtlinearer innerer Funktion:
+// x² · sin(3x), (x² − 1)², √(x² + 1), 1/(x² + 2), sin²(x), sin(x) · cos(x), x(x² + 3)².
 function generateK6() {
-  const v = zufall([trig(1, zufall(["sin", "cos"]), zufall([1, 2, 3])), kette(1, zufall([2, 3]), zufall([1, 2]), zufall([2, 3]))]);
-  const gl = [prod(zufall([1, 2, 3, -1, -2]), zufall([1, 2, 3]), v)];
-  if (zufall([true, false])) gl.push(zufall([pot(zufall(KOEFF), zufall([2, 3])), trig(zufall(KLEIN), zufall(["sin", "cos"]), zufall([1, 2]))]));
-  return ableitungsAufgabe(gl);
+  const art = zufall(["produkt", "innenPoly", "trigPotenz", "xMalKette", "sinCos"]);
+  if (art === "produkt") {
+    const v = zufall([trig(1, zufall(["sin", "cos"]), zufall([1, 2, 3])), kette(1, zufall([2, 3]), zufall([1, 2]), zufall([2, 3]))]);
+    const gl = [prod(zufall([1, 2, 3, -1, -2]), zufall([1, 2, 3]), v)];
+    if (zufall([true, false])) gl.push(zufall([pot(zufall(KOEFF), zufall([2, 3])), trig(zufall(KLEIN), zufall(["sin", "cos"]), zufall([1, 2]))]));
+    return ableitungsAufgabe(gl);
+  }
+  let g;
+  if (art === "innenPoly") {
+    // Wurzel und negative Hochzahl nur mit positiver innerer Funktion — geprüft wird für x > 0.
+    const e = zufall([2, 3, 4, q(1, 2), q(-1, 2), -1, -2]), ganz = typeof e === "number" && e > 0;
+    g = verkettung(zufall([1, 2, 3, -1, -2]), zufall([1, 2]), zufall([2, 3]), zufall(ganz ? [1, 2, 3, -1, -2, -3] : [1, 2, 3]), e);
+  } else if (art === "trigPotenz") {
+    const s = zufall([2, 3]);
+    g = zufall([true, false]) ? trigPotenz(zufall(KLEIN), s, 0, zufall([1, 2])) : trigPotenz(zufall(KLEIN), 0, s, zufall([1, 2]));
+  } else if (art === "xMalKette") {
+    g = verkettung(zufall([1, 2, -1]), 1, 2, zufall([1, 2, 3]), zufall([2, 3, q(1, 2)]), { p: 1 });
+  } else {
+    g = trigPotenz(zufall([1, 2, 3, -1, -2]), 1, 1, zufall([1, 2]));
+  }
+  return ableitungsAufgabe(zufall([true, false]) ? mische([g, pot(zufall(KOEFF), zufall([1, 2, 3]))]) : [g]);
 }
 
 export const AUFGABEN = [
@@ -845,5 +864,5 @@ export const AUFGABEN = [
   { schwierigkeit: "komplex", titel: "Biquadratische Funktion", generate: generateK3 },
   { schwierigkeit: "komplex", titel: "Die Tangente schneidet wieder", generate: generateK4 },
   { schwierigkeit: "komplex", titel: "Kettenregel und Tangente", generate: generateK5 },
-  { schwierigkeit: "komplex", titel: "Ableitungsfunktion: Produktregel", generate: generateK6, wuerfelText: "🎲 Neue Funktion" },
+  { schwierigkeit: "komplex", titel: "Ableitungsfunktion: Produkt- und Kettenregel", generate: generateK6, wuerfelText: "🎲 Neue Funktion" },
 ];

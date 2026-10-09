@@ -23,8 +23,8 @@
 // Er arbeitet über Zeichenketten und eine Tokenliste und übersetzt in einen JavaScript-Ausdruck — ein
 // anderer Weg als der rekursive Abstieg der Seite, damit ein gemeinsamer Denkfehler nicht in beiden
 // steckt. Er versteht genau das, was die Seite anzeigt und als Eingabeform vorschlägt:
-// Ziffern mit Komma, x und a, + − * / ^, Hochzahlen ⁰…⁹, √x und √(…), sqrt/sin/cos/tan, Klammern,
-// den Malpunkt und das Weglassen des Malpunkts.
+// Ziffern mit Komma, x und a, + − * / ^, Hochzahlen ⁰…⁹, √x und √(…), sqrt/sin/cos/tan, sin²(x),
+// Klammern, den Malpunkt und das Weglassen des Malpunkts.
 
 const HOCH = { "⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9", "⁻": "-" };
 const FUNKTIONEN = ["sqrt", "sin", "cos", "tan", "pw"];
@@ -48,7 +48,7 @@ function zerlege(s) {
     const rest = s.slice(i);
     const zahl = rest.match(/^\d+(?:\.\d+)?/);
     if (zahl) { t.push({ art: "zahl", w: zahl[0] }); i += zahl[0].length; continue; }
-    const fn = FUNKTIONEN.find((f) => rest.startsWith(f + "("));
+    const fn = FUNKTIONEN.find((f) => rest.startsWith(f + "(") || rest.startsWith(f + "^"));
     if (fn) { t.push({ art: "fn", w: fn }); i += fn.length; continue; }
     if (rest[0] === "x" || rest[0] === "a") { t.push({ art: "var", w: rest[0] }); i++; continue; }
     if ("+-*/^()".includes(rest[0])) { t.push({ art: rest[0] === "(" || rest[0] === ")" ? rest[0] : "op", w: rest[0] }); i++; continue; }
@@ -56,12 +56,27 @@ function zerlege(s) {
   }
   // Fehlender Malpunkt: nach Zahl, Variable oder „)“ und vor Zahl, Variable, Funktion oder „(“.
   const mit = [];
-  for (const tok of t) {
+  for (const tok of funktionsHochzahlen(t)) {
     const vor = mit[mit.length - 1];
     if (vor && ["zahl", "var", ")"].includes(vor.art) && ["zahl", "var", "fn", "("].includes(tok.art)) mit.push({ art: "op", w: "*" });
     mit.push(tok);
   }
   return mit;
+}
+
+// sin^(2)(x) — so kommt sin²(x) aus normiere() — wird zu pw(sin(x), 2): Die Hochzahl gehört zum
+// Funktionswert. Muss vor dem Einfügen der Malpunkte geschehen, sonst stünde „(2) · (x)“ da.
+function funktionsHochzahlen(t) {
+  for (let i = 0; i < t.length; i++) {
+    if (t[i].art !== "fn" || !t[i + 1] || t[i + 1].w !== "^") continue;
+    const e0 = i + 2, e1 = t[e0].art === "(" ? gegenklammer(t, e0, 1) : e0;
+    const a0 = e1 + 1;
+    if (!t[a0] || t[a0].art !== "(") throw new Error(`Nach ${t[i].w}^… fehlt die Klammer mit dem Argument`);
+    const a1 = gegenklammer(t, a0, 1);
+    t = [...t.slice(0, i), { art: "fn", w: "pw" }, { art: "(", w: "(" }, t[i], ...t.slice(a0, a1 + 1), { art: "op", w: "," },
+      ...t.slice(e0, e1 + 1), { art: ")", w: ")" }, ...t.slice(a1 + 1)];
+  }
+  return t;
 }
 
 // Index der zu t[i] (eine Klammer) passenden Gegenklammer.
@@ -228,12 +243,23 @@ const LESBAR = [
   ["−x²", -(X0 ** 2)],
   ["a · sin(x) + a²x", A0 * Math.sin(X0) + A0 ** 2 * X0, ["a"]],
   ["tan(x) − 2a", Math.tan(X0) - 2 * A0, ["a"]],
+  ["sin²(x) + cos²(2x)", Math.sin(X0) ** 2 + Math.cos(2 * X0) ** 2],
+  ["sin^2(x) − 3cos^3(x)", Math.sin(X0) ** 2 - 3 * Math.cos(X0) ** 3],
+  ["sin(x)^2", Math.sin(X0) ** 2],
+  ["(sin x)^2", Math.sin(X0) ** 2],
+  ["2sin(x)cos(x)", 2 * Math.sin(X0) * Math.cos(X0)],
+  ["(x² − 1)²", (X0 ** 2 - 1) ** 2],
+  ["x/sqrt(x^2+1)", X0 / Math.sqrt(X0 ** 2 + 1)],
+  ["2x√(x² + 1)", 2 * X0 * Math.sqrt(X0 ** 2 + 1)],
+  ["−2x/(x^2+2)^2", -2 * X0 / (X0 ** 2 + 2) ** 2],
+  ["(x − a)³", (X0 - A0) ** 3, ["a"]],
 ];
-const UNLESBAR = ["2x)", "(x + 1", "", "y + 1", "x +", "3x $ 2"];
+// sin⁻¹(x) ist mehrdeutig (Kehrwert oder Umkehrfunktion) und wird abgelehnt.
+const UNLESBAR = ["2x)", "(x + 1", "", "y + 1", "x +", "3x $ 2", "sin⁻¹(x)"];
 
 async function pruefeTermleser(page, bericht) {
   const ergebnis = await page.evaluate(async ({ lesbar, unlesbar, x, a }) => {
-    const { leseTerm } = await import("/mathematik/terme.js?v=1");
+    const { leseTerm } = await import("/mathematik/terme.js?v=2");
     const werte = lesbar.map(([t, , parameter]) => {
       try { return leseTerm(t, { parameter: parameter || [] }).f(x, { a }); } catch (e) { return "Fehler: " + e.message; }
     });
@@ -250,11 +276,11 @@ async function pruefeTermleser(page, bericht) {
   // 0,33 statt 1/3 ist 1 % daneben und muss als Rundung erkannt werden, und „+ 3“ an einer großen
   // Ableitung ((4x + 3)⁴ reicht bis über 10⁵) ist eine vergessene Konstante, keine Rundung.
   const fall = await page.evaluate(async (faelle) => {
-    const m = await import("/mathematik/terme.js?v=1");
+    const m = await import("/mathematik/terme.js?v=2");
     const glied = ([typ, ...args]) => m[typ](...args.map((v) => (Array.isArray(v) ? m.q(v[0], v[1]) : v)));
-    return faelle.map(({ art, glieder, eingabe }) => {
+    return faelle.map(({ art, glieder, eingabe, optionen }) => {
       const gl = glieder.map(glied);
-      const a = art === "stamm" ? m.stammAufgabe(gl) : m.ableitungsAufgabe(gl);
+      const a = art === "stamm" ? m.stammAufgabe(gl) : m.ableitungsAufgabe(gl, optionen);
       return { ok: a.check(eingabe), hinweis: a.hinweis(eingabe, NaN).replace(/<[^>]+>/g, "") };
     });
   }, DIAGNOSEN);
@@ -263,7 +289,54 @@ async function pruefeTermleser(page, bericht) {
     const passt = muster === "✓" ? ok : !ok && hinweis.includes(muster);
     bericht.pruefe(passt, `Diagnose (${art} von ${JSON.stringify(glieder)}): „${eingabe}“ → ${ok ? "richtig" : `„${hinweis}“`}, erwartet „${muster}“`);
   });
+
+  // Jede Form einmal fest: Die Aufgabenprüfung würfelt, und eine seltene Form — sin² mit b = 2 in
+  // der Stufe, in der sie nur jedes zwölfte Mal vorkommt — bliebe sonst manchen Lauf lang ungeprüft.
+  // Angabe und Musterlösung werden aus dem HTML der Aufgabe gelesen und unabhängig nachgerechnet.
+  const muster = await page.evaluate(async ({ faelle, alsText }) => {
+    const m = await import("/mathematik/terme.js?v=2");
+    const glied = ([typ, ...args]) => m[typ](...args.map((v) => (Array.isArray(v) ? m.q(v[0], v[1]) : v)));
+    const lies = new Function(`return ${alsText}`)();
+    return faelle.map(({ art, glieder, optionen }) => {
+      const a = art === "stamm" ? m.stammAufgabe(glieder.map(glied)) : m.ableitungsAufgabe(glieder.map(glied), optionen);
+      const div = document.createElement("div");
+      div.innerHTML = a.promptHtml + "<hr>" + a.musterloesungHtml;
+      return { angabe: lies([...div.querySelectorAll(".term")])[0], formen: [...div.querySelectorAll(".eingabeform")].map((e) => e.textContent) };
+    });
+  }, { faelle: MUSTERFAELLE, alsText: ALS_TEXT.toString() });
+  MUSTERFAELLE.forEach(({ art, glieder, optionen }, i) => {
+    const { angabe, formen } = muster[i], mitA = !!(optionen && optionen.parameter);
+    const name = `Musterlösung (${art} von ${JSON.stringify(glieder)})`;
+    let f, L;
+    try { f = alsFunktion(angabe); L = formen.map(alsFunktion); } catch (e) { bericht.pruefe(false, `${name}: nicht lesbar (${e.message}) — „${angabe}“ / ${formen.join(" | ")}`); return; }
+    const abw = art === "stamm" ? vergleiche(ableitungNum(L[0]), f, 2e-6, mitA)
+      : vergleiche(L[0], ableitungNum(f), 2e-6, mitA) || (L[1] ? vergleiche(L[1], ableitungNum(L[0]), 2e-6, mitA) : "");
+    bericht.pruefe(!abw, `${name}: „${formen.join(" | ")}“ passt nicht zu „${angabe}“ ${abw}`);
+  });
 }
+
+const SCHAR = { name: "fₐ", parameter: ["a"] };
+const MUSTERFAELLE = [
+  { art: "ableitung", glieder: [["verkettung", 1, 1, 2, -1, 2]] },
+  { art: "ableitung", glieder: [["verkettung", -2, 2, 3, 1, 4]], optionen: { zweite: true } },
+  { art: "ableitung", glieder: [["verkettung", 3, 1, 2, 1, [1, 2]]], optionen: { zweite: true } },
+  { art: "ableitung", glieder: [["verkettung", 1, 1, 2, 2, -1]], optionen: { zweite: true } },
+  { art: "ableitung", glieder: [["verkettung", 2, 1, 2, 4, [-1, 2]]] },
+  { art: "ableitung", glieder: [["verkettung", -1, 1, 2, 1, 2, { p: 1 }]], optionen: { zweite: true } },
+  { art: "ableitung", glieder: [["verkettung", 2, 1, 2, 3, [1, 2], { p: 1 }]] },
+  { art: "ableitung", glieder: [["trigPotenz", 3, 2, 0, 2]], optionen: { zweite: true } },
+  { art: "ableitung", glieder: [["trigPotenz", -2, 0, 3]], optionen: { zweite: true } },
+  { art: "ableitung", glieder: [["trigPotenz", 2, 1, 1, 2], ["pot", 3, 2]], optionen: { zweite: true } },
+  { art: "ableitung", glieder: [["verkettung", 1, 1, 1, -1, 2, { t: 1 }], ["pot", 2, 1, 2]], optionen: { ...SCHAR, zweite: true } },
+  { art: "ableitung", glieder: [["verkettung", -1, 1, 2, 1, 2, { t: 1 }], ["pot", 1, 4, 1]], optionen: { ...SCHAR, zweite: true } },
+  { art: "ableitung", glieder: [["verkettung", 1, 1, 1, -2, 3, { t: 1 }], ["pot", 1, 0, 3]], optionen: { ...SCHAR, zweite: true } },
+  { art: "stamm", glieder: [["verkettung", 1, 1, 2, -1, 2]] },
+  { art: "stamm", glieder: [["verkettung", 3, 2, 3, -3, 2, { p: 1 }], ["pot", 5, 1]] },
+  { art: "stamm", glieder: [["verkettung", -1, 1, 2, 2, 3]] },
+  { art: "stamm", glieder: [["trigPotenz", 4, 2, 0, 2], ["pot", 3, 0]] },
+  { art: "stamm", glieder: [["trigPotenz", -2, 0, 2, 1], ["pot", 1, 2]] },
+  { art: "stamm", glieder: [["trigPotenz", 3, 1, 1, 2]] },
+];
 
 const F1 = [["pot", 3, 2], ["pot", -5, 1], ["pot", 2, 0]];   // 3x² − 5x + 2
 const DIAGNOSEN = [
@@ -277,6 +350,8 @@ const DIAGNOSEN = [
   { art: "ableitung", glieder: F1, eingabe: "6x² − 5", muster: "Bei x =" },
   { art: "ableitung", glieder: F1, eingabe: "2x)", muster: "nicht lesbar" },
   { art: "ableitung", glieder: [["pot", [1, 6], 2], ["pot", 3, 1]], eingabe: "0,33x + 3", muster: "Fast richtig" },
+  // f′ = 6 ist konstant: 12 ist dann zugleich „f′ + 6“ und „2 · f′“ — genannt wird der Faktor.
+  { art: "ableitung", glieder: [["pot", 6, 1], ["pot", 1, 0]], eingabe: "12", muster: "Bis auf einen Faktor" },
   { art: "ableitung", glieder: [["kette", -1, 4, 3, 5], ["pot", 4, 2]], eingabe: "−20(4x + 3)^4 + 8x + 3", muster: "Bis auf eine Konstante" },
   { art: "ableitung", glieder: [["pot", 4, -2]], eingabe: "−8x^(−3)", muster: "✓" },
   { art: "stamm", glieder: [["pot", 1, 2]], eingabe: "x^3/3 + 5", muster: "✓" },
@@ -287,6 +362,21 @@ const DIAGNOSEN = [
   { art: "stamm", glieder: [["trig", 1, "cos", 2]], eingabe: "−sin(2x)/2", muster: "Vorzeichenfehler" },
   { art: "stamm", glieder: [["trig", 1, "cos", 2]], eingabe: "sin(2x)", muster: "Bis auf einen Faktor" },
   { art: "stamm", glieder: [["trig", 1, "cos", 2]], eingabe: "sin(2x) + x", muster: "Die Probe stimmt nicht" },
+  // Verkettung mit nichtlinearer innerer Funktion: die vergessene innere Ableitung erkennen …
+  { art: "ableitung", glieder: [["verkettung", 1, 1, 2, -1, 2]], eingabe: "4x(x² − 1)", muster: "✓" },
+  { art: "ableitung", glieder: [["verkettung", 1, 1, 2, -1, 2]], eingabe: "2(x² − 1)", muster: "innere Ableitung fehlt" },
+  { art: "ableitung", glieder: [["trigPotenz", 3, 2, 0]], eingabe: "6sin(x)", muster: "innere Ableitung fehlt" },
+  { art: "ableitung", glieder: [["trigPotenz", 3, 2, 0]], eingabe: "6 sin x cos x", muster: "✓" },
+  { art: "ableitung", glieder: [["verkettung", 1, 1, 2, 1, [1, 2]]], eingabe: "x/√(x² + 1)", muster: "✓" },
+  // … und beim Aufleiten die Regel für mx + n, falsch auf x² − 1 angewandt.
+  { art: "stamm", glieder: [["verkettung", 1, 1, 2, -1, 2]], eingabe: "(x² − 1)³/3", muster: "nur, wenn innen mx + n steht" },
+  { art: "stamm", glieder: [["verkettung", 1, 1, 2, -1, 2]], eingabe: "x^5/5 − 2x^3/3 + x", muster: "✓" },
+  { art: "stamm", glieder: [["trigPotenz", 1, 1, 1]], eingabe: "sin²(x)/2", muster: "✓" },
+  { art: "stamm", glieder: [["trigPotenz", 1, 2, 0]], eingabe: "x/2 − sin(2x)/4", muster: "✓" },
+  // Schar: a ist beim Ableiten eine feste Zahl, auch in der Klammer.
+  { art: "ableitung", glieder: [["verkettung", 1, 1, 1, -1, 2, { t: 1 }]], optionen: SCHAR, eingabe: "2(x − a)", muster: "✓" },
+  { art: "ableitung", glieder: [["verkettung", 1, 1, 1, -1, 2, { t: 1 }]], optionen: SCHAR, eingabe: "(x − a)²", muster: "noch nicht abgeleitet" },
+  { art: "ableitung", glieder: [["verkettung", 1, 1, 1, -1, 2, { t: 1 }]], optionen: SCHAR, eingabe: "−2(x − a)", muster: "Ableitung nach a" },
 ];
 
 module.exports = { alsFunktion, liesTermAufgabe, termDeuter, pruefeTermleser };

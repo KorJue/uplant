@@ -261,8 +261,12 @@ die anderen davon nichts mitbekommen.
 Ebenfalls geteilt ist `mathematik/terme.js`: die **Termaufgaben** (Ableitung,
 f′ und f″, Stammfunktion als Term eintippen) mit beliebig vielen Funktionen.
 Eine Funktion wird aus Gliedern zusammengesetzt (`pot`, `trig`, `kette`,
-`prod`), die ihre Ableitung und Stammfunktion **exakt** kennen; daraus
-entstehen Angabe, Rechenweg und Eingabeform der Musterlösung. Die Eingabe liest
+`prod`, dazu `verkettung` und `trigPotenz` für nichtlineare innere Funktionen
+wie (x² − 1)², √(x² + 1), sin²(x)), die ihre Ableitung und Stammfunktion
+**exakt** kennen; daraus entstehen Angabe, Rechenweg und Eingabeform der
+Musterlösung. Stammfunktionen gibt es dabei nur auf Wegen, die die
+Integralrechnung-Seite lehrt: (x² − 1)² wird ausmultipliziert, und für sin²(x)
+nennt die Aufgabe die Umformung über den doppelten Winkel (§ 1, kein Vorgriff). Die Eingabe liest
 `leseTerm()` — ohne `eval` — und `pruefeTerm()` vergleicht sie an vielen
 Stellen numerisch und benennt den wahrscheinlichen Fehler (Faktor, Vorzeichen,
 Konstante, Richtung, einmal zu oft …). Die Aufgabenbauer

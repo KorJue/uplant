@@ -27,7 +27,7 @@
 // Normale violett, Warnung (Knick, keine Ableitung) rot, Hilfslinien grau.
 
 import { mountUebungsaufgaben } from "../../../aufgaben.js?v=3";
-import { AUFGABEN, parseZahl } from "./aufgaben-differentialrechnung.js?v=3";
+import { AUFGABEN, parseZahl } from "./aufgaben-differentialrechnung.js?v=4";
 
 // ---------- Helfer ----------
 
