@@ -856,7 +856,7 @@ async function aufgaben(page) {
   // Je Stufe eine Termaufgabe mit beliebig vielen Funktionen. Die Angabe wird mit einem eigenen
   // Termleser gelesen und numerisch abgeleitet (tests/lib/terme.js) — die exakten Ableitungen der Seite
   // werden dafür nicht benutzt.
-  for (const [nr, stufe] of [[6, "ganzrational"], [12, "Potenzen und Wurzeln"], [18, "Sinus und Kosinus"], [24, "Funktionenschar"]]) {
+  for (const [nr, stufe] of [[6, "ganzrational"], [12, "Potenzen und Wurzeln"], [18, "Sinus und Kosinus"], [24, "Funktionenschar und Verkettung"]]) {
     const name = `A${nr} f′ und f″: ${stufe}`;
     await pruefeAufgabe(page, bericht, { nr, name, runden: RT, mindestensVerschieden: SCHRANKE[nr] ?? 5,
       liesRoh: liesTermAufgabe, deute: termDeuter(bericht, name, "zweite") });

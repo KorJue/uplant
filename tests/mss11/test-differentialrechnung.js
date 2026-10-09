@@ -788,7 +788,7 @@ const TW = 0.006;
 // Termaufgaben: weniger Runden, denn jede Runde prüft sechs bis acht Eingaben. Ihre Schranken
 // (6, 12, 18, 24) sind deshalb für 12 Züge gemessen: UPLANT_ZUEGE=12 node tests/werkzeug-streuung.js …
 const RT = 12;
-const SCHRANKE = {1: 18, 2: 22, 3: 14, 4: 19, 5: 18, 6: 9, 7: 21, 8: 19, 9: 18, 10: 14, 11: 13, 12: 9, 13: 14, 14: 17, 15: 18, 16: 20, 17: 15, 18: 9, 19: 21, 20: 17, 21: 14, 22: 16, 23: 16, 24: 10};
+const SCHRANKE = {1: 18, 2: 22, 3: 14, 4: 19, 5: 18, 6: 9, 7: 21, 8: 19, 9: 18, 10: 14, 11: 13, 12: 9, 13: 14, 14: 17, 15: 18, 16: 20, 17: 15, 18: 9, 19: 21, 20: 17, 21: 14, 22: 16, 23: 16, 24: 9};
 const ZAHL = "(−?[\\d,]+)";
 
 async function aufgaben(page) {
@@ -959,7 +959,7 @@ async function aufgaben(page) {
   // Je Stufe eine Termaufgabe mit beliebig vielen Funktionen. Die Angabe wird mit einem eigenen
   // Termleser gelesen und numerisch abgeleitet (tests/lib/terme.js) — die exakten Ableitungen der Seite
   // werden dafür nicht benutzt.
-  for (const [nr, stufe] of [[6, "ganzrational"], [12, "Potenzen und Wurzeln"], [18, "Kettenregel"], [24, "Produktregel"]]) {
+  for (const [nr, stufe] of [[6, "ganzrational"], [12, "Potenzen und Wurzeln"], [18, "Kettenregel"], [24, "Produkt- und Kettenregel"]]) {
     const name = `A${nr} Ableitungsfunktion: ${stufe}`;
     await pruefeAufgabe(page, bericht, { nr, name, runden: RT, mindestensVerschieden: SCHRANKE[nr] ?? 5,
       liesRoh: liesTermAufgabe, deute: termDeuter(bericht, name, "ableitung") });

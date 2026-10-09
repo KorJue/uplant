@@ -47,7 +47,9 @@ das vorinstallierte Chromium unter `/opt/pw-browsers/chromium`
   Eingabeform und gesetzte Lösung dazu passen, und gibt typische Fehler
   (Faktor 2, Vorzeichen, Konstante, f selbst, f″ statt f′) als Fehlerwerte vor.
   `pruefeTermleser()` füttert den Leser der Seite mit Schreibweisen, die in
-  keiner Musterlösung vorkommen, und prüft feste Fälle der Fehlerdiagnose.
+  keiner Musterlösung vorkommen, prüft feste Fälle der Fehlerdiagnose und
+  rechnet für jede Gliedform einmal fest die Musterlösung nach — die
+  gewürfelten Aufgaben treffen seltene Formen nicht in jedem Lauf.
 
 ## Eine fachliche Prüfung schreiben
 

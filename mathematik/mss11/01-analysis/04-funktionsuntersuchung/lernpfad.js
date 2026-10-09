@@ -26,7 +26,7 @@
 // blau, Wendepunkte violett, Randpunkte und Warnungen rot, Hilfslinien grau.
 
 import { mountUebungsaufgaben } from "../../../aufgaben.js?v=3";
-import { AUFGABEN, parseZahl } from "./aufgaben-funktionsuntersuchung.js?v=2";
+import { AUFGABEN, parseZahl } from "./aufgaben-funktionsuntersuchung.js?v=3";
 
 
 // ---------- Helfer ----------
