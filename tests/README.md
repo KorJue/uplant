@@ -39,9 +39,15 @@ das vorinstallierte Chromium unter `/opt/pw-browsers/chromium`
 * `kontrast.js` — Leuchtdichteabstand von Text zu seinem wirklichen Untergrund
 * `themen.js` — findet alle Themen im Dateisystem, damit kein neues Thema
   stillschweigend ungeprüft bleibt
-* `selbsttest.js` — `pruefeSelbsttest()`: bedient einen Selbsttest „Ableiten /
-  Aufleiten“ (`mathematik/selbsttest.js`) und verlangt je Feld bestimmte
-  Textstücke im Urteil — „✓ Richtig“ oder den Hinweis zum typischen Fehler
+* `terme.js` — für die Termaufgaben aus `mathematik/terme.js`: ein **eigener**
+  Termleser (`alsFunktion()`, über Tokenliste statt rekursivem Abstieg, damit
+  ein Denkfehler nicht in beiden Lesern steckt), `liesTermAufgabe()` als
+  `liesRoh` (Angabe und Musterlösung aus der Seite) und `termDeuter()` als
+  `deute`: Er leitet die angezeigte Funktion numerisch ab, verlangt, dass
+  Eingabeform und gesetzte Lösung dazu passen, und gibt typische Fehler
+  (Faktor 2, Vorzeichen, Konstante, f selbst, f″ statt f′) als Fehlerwerte vor.
+  `pruefeTermleser()` füttert den Leser der Seite mit Schreibweisen, die in
+  keiner Musterlösung vorkommen, und prüft feste Fälle der Fehlerdiagnose.
 
 ## Eine fachliche Prüfung schreiben
 

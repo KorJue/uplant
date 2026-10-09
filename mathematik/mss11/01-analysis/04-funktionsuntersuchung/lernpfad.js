@@ -25,9 +25,8 @@
 // Farbcodierung: f blau, f′ grün, f″ violett; Linkskurve violett, Rechtskurve orange; Extrempunkte
 // blau, Wendepunkte violett, Randpunkte und Warnungen rot, Hilfslinien grau.
 
-import { mountUebungsaufgaben } from "../../../aufgaben.js?v=2";
-import { AUFGABEN, parseZahl } from "./aufgaben-funktionsuntersuchung.js?v=1";
-import { mountSelbsttest } from "../../../selbsttest.js?v=1";
+import { mountUebungsaufgaben } from "../../../aufgaben.js?v=3";
+import { AUFGABEN, parseZahl } from "./aufgaben-funktionsuntersuchung.js?v=2";
 
 
 // ---------- Helfer ----------
@@ -1139,41 +1138,6 @@ for (const [ids, render] of REGLER) {
   });
   render();   // nicht vergessen — sonst bleibt die Zeichnung leer, bis jemand einen Regler anfasst
 }
-// Selbsttests zum Ableiten: höhere Ableitungen (Abschnitt 1), Sinus und Kosinus (6), Scharen (9).
-const ZWEI = (s) => [{ id: "d1", name: `${s}′(x)`, ordnung: 1 }, { id: "d2", name: `${s}″(x)`, ordnung: 2 }];
-mountSelbsttest(document.getElementById("pa-hoehere"), {
-  praefix: "pa-hoehere", art: "ableitung", felder: ZWEI("f"), platzhalter: ["z. B. 4x³ − 6x² + 1", "z. B. 12x² − 12x"],
-  aufgaben: [
-    { t: "x⁴ − 2x³ + x", f: (x) => x ** 4 - 2 * x ** 3 + x, tipp: ["Summand für Summand nach der Potenzregel.", "Leite f′ noch einmal ab — nicht f."] },
-    { t: "0,5x³ − 1,5x", f: (x) => 0.5 * x ** 3 - 1.5 * x, tipp: ["(0,5x³)′ = 1,5x², (−1,5x)′ = −1,5.", "f″ ist die Ableitung von f′(x) = 1,5x² − 1,5."] },
-    { t: "0,25x⁴ − x² + 3", f: (x) => 0.25 * x ** 4 - x * x + 3, tipp: ["Die Konstante 3 fällt weg.", "Leite f′(x) = x³ − 2x ab."] },
-    { t: "(x² − 1)²", f: (x) => (x * x - 1) ** 2, tipp: ["Ausmultiplizieren (x⁴ − 2x² + 1) oder Kettenregel: 2(x² − 1) · 2x.", "Am einfachsten aus f′(x) = 4x³ − 4x."] },
-    { t: "1/x", label: "f(x) = 1/x (für x > 0)", f: (x) => 1 / x, tipp: ["1/x = x⁻¹, also f′(x) = −x⁻².", "−x⁻² abgeleitet: −(−2)x⁻³ = 2x⁻³."] },
-    { t: "x³ − 6x² + 9x", f: (x) => x ** 3 - 6 * x * x + 9 * x, tipp: ["Summand für Summand.", "Leite f′(x) = 3x² − 12x + 9 ab."] },
-  ],
-});
-mountSelbsttest(document.getElementById("pa-trig"), {
-  praefix: "pa-trig", art: "ableitung", felder: ZWEI("f"), platzhalter: ["z. B. 1 + 2cos(x)", "z. B. −2sin(x)"],
-  aufgaben: [
-    { t: "x + 2 sin(x)", f: (x) => x + 2 * Math.sin(x), tipp: ["(sin x)′ = cos x; der Faktor 2 bleibt.", "(cos x)′ = −sin x."] },
-    { t: "sin(2x)", f: (x) => Math.sin(2 * x), tipp: ["Kettenregel: äußere Ableitung cos(2x) mal innere Ableitung 2.", "Noch einmal Kettenregel: (2cos(2x))′ = 2 · (−sin(2x)) · 2."] },
-    { t: "3 cos(0,5x)", f: (x) => 3 * Math.cos(0.5 * x), tipp: ["(cos u)′ = −sin u · u′ mit u = 0,5x.", "Die innere Ableitung 0,5 kommt noch einmal als Faktor dazu."] },
-    { t: "sin(x) + cos(x)", f: (x) => Math.sin(x) + Math.cos(x), tipp: ["Summand für Summand: cos(x) − sin(x).", "(cos x − sin x)′ = −sin x − cos x."] },
-    { t: "x · sin(x)", f: (x) => x * Math.sin(x), tipp: ["Produktregel: u′v + uv′ mit u = x, v = sin(x).", "Leite sin(x) + x cos(x) ab — der zweite Summand braucht wieder die Produktregel."] },
-    { t: "sin(x)²", label: "f(x) = (sin x)²", f: (x) => Math.sin(x) ** 2, tipp: ["Kettenregel: 2 sin(x) · cos(x).", "Produktregel für 2 sin(x) cos(x): 2cos²(x) − 2sin²(x)."] },
-  ],
-});
-mountSelbsttest(document.getElementById("pa-schar"), {
-  praefix: "pa-schar", art: "ableitung", fName: "fₐ", parameter: ["a"], felder: ZWEI("fₐ"), platzhalter: ["z. B. 3x² − 3a²", "z. B. 6x"],
-  aufgaben: [
-    { t: "x³ − 3a²x", f: (x, p) => x ** 3 - 3 * p.a * p.a * x, tipp: ["(3a²x)′ = 3a² — a² ist ein konstanter Faktor.", "Leite 3x² − 3a² nach x ab; −3a² ist eine Konstante."] },
-    { t: "ax² − 4x", f: (x, p) => p.a * x * x - 4 * x, tipp: ["Der Faktor a bleibt stehen: (ax²)′ = 2ax.", "(2ax − 4)′ = 2a."] },
-    { t: "x⁴ − 2ax²", f: (x, p) => x ** 4 - 2 * p.a * x * x, tipp: ["(2ax²)′ = 4ax.", "Leite 4x³ − 4ax ab."] },
-    { t: "(x − a)²", f: (x, p) => (x - p.a) ** 2, tipp: ["Kettenregel oder ausmultiplizieren: x² − 2ax + a².", "(2x − 2a)′ = 2."] },
-    { t: "a · sin(x) + x", f: (x, p) => p.a * Math.sin(x) + x, tipp: ["(a sin x)′ = a cos x; (x)′ = 1.", "(a cos x)′ = −a sin x."] },
-    { t: "x³/a + ax", f: (x, p) => x ** 3 / p.a + p.a * x, tipp: ["x³/a = (1/a) · x³, also 3x²/a; (ax)′ = a.", "(3x²/a)′ = 6x/a; die Konstante a fällt weg."] },
-  ],
-});
 for (const [id, def] of Object.entries(QUIZZE)) mountQuiz(document.getElementById(id), def);
 renderSelbsteinschaetzung();
 mountUebungsaufgaben(document.getElementById("exercises-mount"), AUFGABEN, { parse: parseZahl });

@@ -23,9 +23,8 @@
 // Farbcodierung: f blau, Stamm- und Integralfunktion grün; orientierte Fläche über der Achse grün,
 // darunter orange; Untersumme grün, Obersumme orange; Streifen violett; Warnung rot.
 
-import { mountUebungsaufgaben } from "../../../aufgaben.js?v=2";
-import { AUFGABEN, parseZahl } from "./aufgaben-integralrechnung.js?v=2";
-import { mountSelbsttest } from "../../../selbsttest.js?v=1";
+import { mountUebungsaufgaben } from "../../../aufgaben.js?v=3";
+import { AUFGABEN, parseZahl } from "./aufgaben-integralrechnung.js?v=3";
 
 
 // ---------- Helfer ----------
@@ -568,19 +567,6 @@ function renderStamm() {
   setzeText("sf-text", "Alle Graphen der Schar entstehen durch Verschieben in y-Richtung. Für ein bestimmtes Integral ist es egal, welche man nimmt: In F(b) − F(a) hebt sich C weg.");
 }
 
-// ================= 6b. Selbsttest: Ist das eine Stammfunktion? =================
-// Lesen und Prüfen übernimmt das gemeinsame Modul mathematik/selbsttest.js; hier stehen nur die Aufgaben.
-
-const PR_AUFGABEN = [
-  { f: (x) => 6 * x * x - 4 * x + 1, t: "6x² − 4x + 1", tipp: "Jeden Summanden einzeln aufleiten: xⁿ wird zu xⁿ⁺¹ / (n + 1)." },
-  { f: (x) => x ** 3, t: "x³", tipp: "Potenzregel rückwärts: Exponent um 1 erhöhen und durch den neuen Exponenten teilen." },
-  { f: (x) => 1 / (x * x), t: "1/x²", label: "f(x) = 1/x² (für x > 0)", tipp: "Schreibe 1/x² = x^(−2); der neue Exponent ist −1." },
-  { f: (x) => Math.sqrt(x), t: "√x", tipp: "Schreibe √x = x^(1/2); der neue Exponent ist 3/2, durch 3/2 teilen heißt mal 2/3." },
-  { f: (x) => Math.sin(x) + 2, t: "sin(x) + 2", tipp: "Eine Stammfunktion von sin(x) ist −cos(x); die Konstante 2 wird zu 2x." },
-  { f: (x) => (3 * x + 1) ** 2, t: "(3x + 1)²", tipp: "Lineare Verkettung: (3x + 1)³ / 3, und zusätzlich durch die innere Ableitung 3 teilen." },
-  { f: (x) => Math.cos(2 * x), t: "cos(2x)", tipp: "sin(2x) abgeleitet gibt 2 · cos(2x) — es fehlt also noch der Faktor ½." },
-];
-
 // ================= 7. Fläche mit der x-Achse =================
 
 const FL = { f: (x) => 0.25 * x ** 3 - x, F: (x) => x ** 4 / 16 - x * x / 2, nullstellen: [-2, 0, 2] };
@@ -972,10 +958,6 @@ for (const [ids, render] of REGLER) {
   });
   render();   // nicht vergessen — sonst bleibt die Zeichnung leer, bis jemand einen Regler anfasst
 }
-mountSelbsttest(document.getElementById("pr-widget"), {
-  praefix: "pr", art: "stamm", aufgaben: PR_AUFGABEN,
-  felder: [{ id: "F", name: "F(x)", ordnung: -1 }], platzhalter: ["z. B. x^3 − x^2"],
-});
 for (const [id, def] of Object.entries(QUIZZE)) mountQuiz(document.getElementById(id), def);
 renderSelbsteinschaetzung();
 mountUebungsaufgaben(document.getElementById("exercises-mount"), AUFGABEN, { parse: parseZahl });

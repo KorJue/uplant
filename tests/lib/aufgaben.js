@@ -81,6 +81,13 @@ async function pruefeAufgabe(page, bericht, { nr, name, runden = 40, mindestensV
   const soll = STUFEN[Math.floor((nr - 1) / proReiter)];
   const stufe = (await page.locator(`${box} .schwierigkeit-badge`).innerText()).trim().toLowerCase();
   bericht.pruefe(stufe === soll, `${name}: Stufe „${stufe}“ statt „${soll}“`);
+  // Gleich nach dem Öffnen des Reiters, vor jedem Würfeln: Eine Aufgabe mit mehreren Feldern zeigt
+  // kein zusätzliches einzelnes Antwortfeld. (Die Werkbank ließ es beim ersten Aufbau stehen, weil
+  // die Aufgabe da noch nicht im Dokument hing — nach dem ersten Würfeln war es weg.)
+  const felderAnfang = await page.locator(`${box} .aufgabe-feld input`).count();
+  const einzelnAnfang = await page.locator(`${box} .exercise-input-row input`).count();
+  bericht.pruefe(felderAnfang ? einzelnAnfang === 0 : einzelnAnfang === 1,
+    `${name}: beim ersten Anzeigen ${felderAnfang} Felder und ${einzelnAnfang} einzelne Antwortfelder`);
 
   const gesehen = new Set();
   for (let i = 0; i < runden; i++) {

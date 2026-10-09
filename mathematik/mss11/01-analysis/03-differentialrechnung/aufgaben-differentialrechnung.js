@@ -1,4 +1,4 @@
-// Die zwanzig Übungsaufgaben zu „Differentialrechnung“ — fünf je Stufe.
+// Die vierundzwanzig Übungsaufgaben zu „Differentialrechnung“ — sechs je Stufe.
 //
 //   einfach   — mittlere Änderungsrate, Ableitung an einer Stelle, Potenzregel mit negativen
 //               Exponenten und √x, Steigungswinkel, waagerechte Tangente.
@@ -9,11 +9,18 @@
 //   komplex   — Parabel aus Bedingungen, Durchschnitts- und Momentangeschwindigkeit,
 //               biquadratische Funktion, zweiter Schnittpunkt der Tangente, Kettenregel und Tangente.
 //
+// Die sechste Aufgabe jeder Stufe ist ein Ableitungstraining mit beliebig vielen Funktionen: Die
+// Funktion wird aus Gliedern zusammengesetzt (mathematik/terme.js), die ihre Ableitung exakt kennen;
+// die Eingabe wird als Term gelesen und an vielen Stellen numerisch nachgeprüft. Stufen: ganzrational,
+// Potenzen und Wurzeln, Kettenregel (lineare Verkettung, Sinus/Kosinus), Produktregel.
+//
 // Gewürfelt wird konstruktiv: Die Kandidatenlisten werden vorher gesiebt, ohneKollision() wählt aus
 // dem Rest. Jeder Fehlerwert ist von der Lösung und von den anderen Fehlerwerten verschieden — wo ein
 // Fehler mit der Lösung zusammenfiele, steht NaN.
 
 "use strict";
+
+import { pot, trig, kette, prod, q, ableitungsAufgabe, pick as zufall, mische } from "../../../terme.js?v=1";
 
 const ZAHLFORMATE = new Map();
 function zahlformat(stellen) {
@@ -769,25 +776,74 @@ function generateK5() {
   };
 }
 
+// ================= Ableitungsfunktionen bestimmen (Termeingabe, je Stufe eine) =================
+// Die Funktionen setzen sich aus Gliedern zusammen, die ihre Ableitung exakt kennen
+// (mathematik/terme.js) — so gibt es beliebig viele, und die Musterlösung entsteht aus denselben
+// Gliedern wie die Angabe. Geprüft wird die getippte Ableitung numerisch, mit Fehlerdiagnose.
+
+// Ganzzahlige Bereiche und Koeffizienten zum Würfeln. Gewürfelt wird konstruktiv: jede Wahl kommt
+// aus einer festen Liste, es gibt nichts zu verwerfen.
+const bereich = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
+const KOEFF = [-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6];
+const KLEIN = [-3, -2, -1, 1, 2, 3];
+// Ein Polynom mit höchstem Exponenten aus [gMin; gMax] und insgesamt `anzahl` Summanden.
+function zufallsPolynom(gMin, gMax, anzahl, leit = KOEFF) {
+  const grad = zufall(bereich(gMin, gMax));
+  const rest = mische(bereich(0, grad - 1)).slice(0, anzahl - 1).sort((a, b) => b - a);
+  return [pot(zufall(leit), grad), ...rest.map((e) => pot(zufall(KOEFF), e))];
+}
+
+// einfach: ganzrational, Grad 2 bis 4.
+function generateE6() {
+  return ableitungsAufgabe(zufallsPolynom(2, 4, zufall([2, 3]), [...KOEFF, q(1, 2), q(-1, 2), q(3, 2)]));
+}
+// mittel: Potenz, negative Hochzahl und Wurzel.
+function generateM6() {
+  return ableitungsAufgabe(mische([
+    pot(zufall(KOEFF), zufall([2, 3, 4])),
+    pot(zufall(KOEFF), zufall([-1, -2, -3])),
+    pot(zufall(KLEIN), zufall([q(1, 2), q(-1, 2), q(3, 2)])),
+  ]));
+}
+// schwierig: Kettenregel — lineare Verkettung und/oder Sinus bzw. Kosinus mit innerer Funktion.
+function generateS6() {
+  const verkettet = [
+    kette(zufall([1, 2, 3, -1, -2]), zufall([2, 3, 4]), zufall([1, 2, 3]), zufall([2, 3, 4, 5, -1, -2, q(1, 2)])),
+    trig(zufall(KLEIN), zufall(["sin", "cos"]), zufall([2, 3, 4, q(1, 2)]), zufall([0, 0, 1])),
+  ];
+  return ableitungsAufgabe([...mische(verkettet).slice(0, zufall([1, 2])), pot(zufall(KOEFF), zufall([1, 2, 3]))]);
+}
+// komplex: Produktregel, innen auch mit Kettenregel.
+function generateK6() {
+  const v = zufall([trig(1, zufall(["sin", "cos"]), zufall([1, 2, 3])), kette(1, zufall([2, 3]), zufall([1, 2]), zufall([2, 3]))]);
+  const gl = [prod(zufall([1, 2, 3, -1, -2]), zufall([1, 2, 3]), v)];
+  if (zufall([true, false])) gl.push(zufall([pot(zufall(KOEFF), zufall([2, 3])), trig(zufall(KLEIN), zufall(["sin", "cos"]), zufall([1, 2]))]));
+  return ableitungsAufgabe(gl);
+}
+
 export const AUFGABEN = [
   { schwierigkeit: "einfach", titel: "Mittlere Änderungsrate", generate: generateE1 },
   { schwierigkeit: "einfach", titel: "Ableitung an einer Stelle", generate: generateE2 },
   { schwierigkeit: "einfach", titel: "Negative Exponenten und Wurzeln", generate: generateE3 },
   { schwierigkeit: "einfach", titel: "Steigungswinkel", generate: generateE4 },
   { schwierigkeit: "einfach", titel: "Waagerechte Tangente", generate: generateE5 },
+  { schwierigkeit: "einfach", titel: "Ableitungsfunktion: ganzrational", generate: generateE6, wuerfelText: "🎲 Neue Funktion" },
   { schwierigkeit: "mittel", titel: "Differenzenquotient für festes x", generate: generateM1 },
   { schwierigkeit: "mittel", titel: "Tangentengleichung", generate: generateM2 },
   { schwierigkeit: "mittel", titel: "Normalengleichung", generate: generateM3 },
   { schwierigkeit: "mittel", titel: "Nullstellen durch Substitution", generate: generateM4 },
   { schwierigkeit: "mittel", titel: "Hoch- oder Tiefpunkt", generate: generateM5 },
+  { schwierigkeit: "mittel", titel: "Ableitungsfunktion: Potenzen und Wurzeln", generate: generateM6, wuerfelText: "🎲 Neue Funktion" },
   { schwierigkeit: "schwierig", titel: "Schnittwinkel", generate: generateS1 },
   { schwierigkeit: "schwierig", titel: "Differenzierbar zusammensetzen", generate: generateS2 },
   { schwierigkeit: "schwierig", titel: "Kettenregel", generate: generateS3 },
   { schwierigkeit: "schwierig", titel: "Produktregel", generate: generateS4 },
   { schwierigkeit: "schwierig", titel: "Tangenten von außen", generate: generateS5 },
+  { schwierigkeit: "schwierig", titel: "Ableitungsfunktion: Kettenregel", generate: generateS6, wuerfelText: "🎲 Neue Funktion" },
   { schwierigkeit: "komplex", titel: "Parabel aus Bedingungen", generate: generateK1 },
   { schwierigkeit: "komplex", titel: "Durchschnitt und Augenblick", generate: generateK2 },
   { schwierigkeit: "komplex", titel: "Biquadratische Funktion", generate: generateK3 },
   { schwierigkeit: "komplex", titel: "Die Tangente schneidet wieder", generate: generateK4 },
   { schwierigkeit: "komplex", titel: "Kettenregel und Tangente", generate: generateK5 },
+  { schwierigkeit: "komplex", titel: "Ableitungsfunktion: Produktregel", generate: generateK6, wuerfelText: "🎲 Neue Funktion" },
 ];

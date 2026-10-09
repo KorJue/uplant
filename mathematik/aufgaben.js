@@ -99,10 +99,12 @@ function mountAufgabe(container, def, parse) {
     baueFelder();
     // Bei mehreren Feldern hat das einzelne Eingabefeld nichts zu suchen — es wird aus der Seite
     // genommen und nicht nur versteckt: Ein verstecktes Feld zählt sonst überall mit, wo „die
-    // Eingabefelder dieser Aufgabe“ gesucht werden.
+    // Eingabefelder dieser Aufgabe“ gesucht werden. Gefragt wird nach der Zeile, nicht nach
+    // isConnected: Beim ersten Würfeln hängt die Aufgabe noch nicht im Dokument, und das Feld blieb
+    // dann bis zum nächsten Würfeln neben den Feldern stehen.
     const einzeln = !current.felder;
-    if (einzeln && !input.isConnected) row.insertBefore(input, btnPruefen);
-    if (!einzeln && input.isConnected) input.remove();
+    if (einzeln && input.parentNode !== row) row.insertBefore(input, btnPruefen);
+    if (!einzeln && input.parentNode === row) input.remove();
     input.value = "";
     input.placeholder = current.placeholder || "Antwort";
     gezeigteTipps = 0;
