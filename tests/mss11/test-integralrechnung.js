@@ -20,6 +20,7 @@ const { starteBrowser, neueSeite, oeffne, setzeRegler, text } = require("../lib/
 const { pruefeNotation } = require("../lib/notation");
 const { pruefeKontrast } = require("../lib/kontrast");
 const { pruefeAufgabe, zahl, zahlen } = require("../lib/aufgaben");
+const { liesTermAufgabe, termDeuter, pruefeTermleser } = require("../lib/terme");
 const fs = require("fs");
 const path = require("path");
 
@@ -428,52 +429,6 @@ async function stammfunktion(page) {
   await waehle(page, "sf-art", "para");
 }
 
-// ---------- 6b. Selbsttest Stammfunktion ----------
-// Je Aufgabe eine richtige Stammfunktion (von der Prüfung selbst aufgeleitet) und typische Fehler.
-// Die Seite muss die richtige — auch mit + C — anerkennen und jeden Fehler mit seinem Hinweis zurückweisen.
-async function selbsttest(page) {
-  const urteil = async (aufgabe, F, f) => {
-    await page.selectOption("#pr-aufgabe", aufgabe);
-    if (f !== undefined) await page.fill("#pr-f", f);
-    await page.fill("#pr-F", F);
-    await page.click("#pr-pruefen");
-    return (await page.locator("#pr-ergebnis").innerText()).replace(/\s+/g, " ");
-  };
-  const FAELLE = [
-    // [Aufgabe, richtige Stammfunktion, Ableitung von f, f selbst, Faktor-Fehler, Vorzeichen-Fehler]
-    ["0", "2x^3 − 2x^2 + x", "12x − 4", "6x^2 − 4x + 1", "6x^3 − 6x^2 + 3x", "−2x³ + 2x² − x"],
-    ["1", "x^4/4", "3x^2", "x^3", "x^4", "−x^4/4"],
-    ["2", "−1/x", "−2/x^3", "1/x^2", "−2/x", "1/x"],
-    ["3", "2/3 · x^(3/2)", "1/(2√x)", "√x", "x^1,5", "−2/3 x√x"],
-    ["4", "−cos(x) + 2x", "cos(x)", "sin(x) + 2", "−2cos(x) + 4x", "cos(x) − 2x"],
-    ["5", "(3x + 1)^3 / 9", "6(3x + 1)", "(3x+1)^2", "(3x + 1)^3 / 3", "−(3x + 1)³/9"],
-    ["6", "sin(2x)/2", "−2 sin(2x)", "cos(2x)", "sin(2x)", "−0,5 sin(2x)"],
-  ];
-  for (const [a, richtig, abl, selbst, faktor, minus] of FAELLE) {
-    const wo = `Selbsttest Aufgabe ${a}`;
-    for (const F of [richtig, `${richtig} + 7`, `${richtig} − 2,5`]) {
-      const r = await urteil(a, F);
-      pruefe(r.includes("✓ Richtig"), `${wo}: „${F}“ wird nicht anerkannt — „${r.slice(0, 160)}“`);
-    }
-    for (const [F, muster] of [[abl, "Ableitung"], [selbst, "Das ist f selbst"], [faktor, "Bis auf einen Faktor"], [minus, "Vorzeichenfehler"]]) {
-      const r = await urteil(a, F);
-      pruefe(r.includes("✗ Noch nicht") && r.includes(muster), `${wo}: „${F}“ — erwartet „${muster}“, erhalten „${r.slice(0, 160)}“`);
-      pruefe(r.includes("Tipp"), `${wo}: kein Tipp bei „${F}“`);
-    }
-  }
-  // Eigene Funktion, unlesbare Eingaben, Malpunkt-Varianten.
-  pruefe((await urteil("eigen", "x³ − 2x + 4", "3x^2 − 2")).includes("✓ Richtig"), "Selbsttest: eigene Funktion 3x² − 2 nicht geprüft");
-  pruefe((await urteil("eigen", "x^2", "3x^2 − 2")).includes("✗ Noch nicht"), "Selbsttest: falsche Stammfunktion zur eigenen Funktion anerkannt");
-  pruefe((await urteil("eigen", "x^2", "3y")).includes("f(x) nicht lesbar"), "Selbsttest: unlesbares f nicht gemeldet");
-  for (const F of ["x^^2", "2x)", "(x + 1", "y + 1", ""]) {
-    const r = await urteil("0", F);
-    pruefe(F === "" ? r.includes("Tippe") : r.includes("nicht lesbar"), `Selbsttest: „${F}“ nicht als unlesbar gemeldet — „${r.slice(0, 120)}“`);
-  }
-  for (const F of ["2·x^3 − 2·x^2 + x", "2*x³-2*x²+x", "2 x^3 - 2 x^2 + 1x"]) pruefe((await urteil("0", F)).includes("✓ Richtig"), `Selbsttest: Schreibweise „${F}“ nicht verstanden`);
-  await page.selectOption("#pr-aufgabe", "0");
-  await page.fill("#pr-F", "");
-}
-
 // ---------- 7. Fläche mit der x-Achse ----------
 async function flaeche(page) {
   const f = (x) => 0.25 * x ** 3 - x;
@@ -694,7 +649,10 @@ function liesPi(s) {
 }
 // Schranken gemessen mit werkzeug-streuung.js (25 Züge, 10⁻⁴-Quantil von 0,8 · n):
 //   UPLANT_ZUEGE=25 node tests/werkzeug-streuung.js /mathematik/mss11/01-analysis/05-integralrechnung/index.html
-const SCHRANKE = {1: 13, 2: 22, 3: 21, 4: 17, 5: 14, 6: 20, 7: 8, 8: 14, 9: 22, 10: 22, 11: 14, 12: 15, 13: 16, 14: 10, 15: 22, 16: 12, 17: 10, 18: 11, 19: 16, 20: 22, 21: 10, 22: 15, 23: 16, 24: 12, 25: 8, 26: 8, 27: 15, 28: 11};
+// Termaufgaben: weniger Runden, denn jede Runde prüft sechs bis acht Eingaben. Ihre Schranken
+// (8, 16, 24, 32) sind deshalb für 12 Züge gemessen: UPLANT_ZUEGE=12 node tests/werkzeug-streuung.js …
+const RT = 12;
+const SCHRANKE = {1: 13, 2: 22, 3: 21, 4: 17, 5: 14, 6: 20, 7: 8, 8: 10, 9: 14, 10: 22, 11: 22, 12: 14, 13: 15, 14: 16, 15: 10, 16: 9, 17: 22, 18: 12, 19: 10, 20: 11, 21: 16, 22: 22, 23: 10, 24: 9, 25: 15, 26: 16, 27: 12, 28: 8, 29: 8, 30: 15, 31: 11, 32: 9};
 
 async function aufgaben(page) {
   const r = 25;
@@ -733,12 +691,12 @@ async function aufgaben(page) {
     const I = integral(f, a, b), Ab = flaecheBetrag(f, a, b);
     return { richtig: I, toleranz: T, falsch: [[Math.abs(I) < 1e-9 ? NaN : -I, "Vorzeichen"], [nahe(Ab, Math.abs(I), 1e-6) ? NaN : Ab, "Flächeninhalt zwischen Graph und x-Achse"], [c === 1 ? NaN : I / c, "Der Faktor"]] };
   });
-  await A(8, "A8 Fläche mit Vorzeichenwechsel", (q) => {
+  await A(9, "A9 Fläche mit Vorzeichenwechsel", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = (.+?)\\. Berechne den Inhalt der Fläche zwischen dem Graphen von f und der x-Achse über dem Intervall \\[0; ${Z}\\]\\.`));
     if (!m) return null;
     const f = polyFn(liesPoly(m[1])), b = zahl(m[2]);
     const s = vzw(f, 0.01, b - 1e-9);
-    pruefe(s.length === 1, `A8: ${s.length} Nullstellen im Inneren — erwartet genau eine`);
+    pruefe(s.length === 1, `A9: ${s.length} Nullstellen im Inneren — erwartet genau eine`);
     if (s.length !== 1) return null;
     const I = integral(f, 0, b), I2 = integral(f, s[0], b);
     return { richtig: flaecheBetrag(f, 0, b), toleranz: T, falsch: [[I, "Das ist das Integral über"], [I >= 0 ? NaN : -I, "Der Betrag des Gesamtintegrals"], [Math.abs(I2), "nur die Teilfläche"]] };
@@ -753,12 +711,12 @@ async function aufgaben(page) {
     const D = integral(d, s[0], s[1]);
     return { f, g, s, D, A: Math.abs(D), k: (kf[2] || 0) - (kg[2] || 0) };
   };
-  await A(9, "A9 Parabel und Gerade", (q) => {
+  await A(10, "A10 Parabel und Gerade", (q) => {
     const w = zweiGraphen(q);
     if (!w) return null;
     return { richtig: w.A, toleranz: T, falsch: [[nahe(w.D, w.A, 1e-9) ? NaN : w.D, "Das Integral von f − g ist negativ"], [integral(w.f, w.s[0], w.s[1]), "nur das Integral über f"], [integral(w.g, w.s[0], w.s[1]), "nur das Integral über g"]] };
   });
-  await A(10, "A10 Stammfunktion durch einen Punkt", (q) => {
+  await A(11, "A11 Stammfunktion durch einen Punkt", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = (.+?)\\. Bestimme die Stammfunktion F\\(x\\) = … \\+ C von f, deren Graph durch P\\(${Z} \\| ${Z}\\) geht\\. Gib C und F\\(${Z}\\) an\\.`));
     if (!m) return null;
     const f = polyFn(liesPoly(m[1])), [x0, y0, x1] = [m[2], m[3], m[4]].map(zahl);
@@ -768,7 +726,7 @@ async function aufgaben(page) {
       [0, Math.abs(g0) < 1e-9 ? NaN : y0 + g0, "Vorzeichen"], [0, Math.abs(g0) < 1e-9 ? NaN : y0, "C ist nicht einfach"], [0, y0 - f(x0), "Eingesetzt wurde in f"],
       [1, Math.abs(C) < 1e-9 ? NaN : G(x1), "Die Konstante C fehlt"]] };
   });
-  await A(11, "A11 Lineare Verkettung", (q) => {
+  await A(12, "A12 Lineare Verkettung", (q) => {
     const m = q.match(/Berechne ∫ (\S+) (\S+) \((.+?)\)([²³]) dx\./);
     if (!m) return null;
     const b = zahl(m[1]), a = zahl(m[2]), k = HOCH[m[4]], innen = liesPoly(m[3]), mm = innen[1];
@@ -776,34 +734,34 @@ async function aufgaben(page) {
     const eins = Math.abs(Math.abs(mm) - 1) < 1e-9;
     return { richtig: I, toleranz: T, falsch: [[eins ? NaN : I * mm, "innere Ableitung"], [eins ? NaN : I * mm * mm, "multipliziert statt geteilt"], [I * (k + 1), "Der Exponent steigt"]] };
   });
-  await A(12, "A12 Obere Grenze", (q) => {
+  await A(13, "A13 Obere Grenze", (q) => {
     const m = q.match(new RegExp(`dass ∫ b 0 (.+?) dx = ${Z} gilt\\.`));
     if (!m) return null;
     const kp = liesPoly(m[1]), n = grad(kp), c = kp[n], Aw = zahl(m[2]);
     const b = loese((s) => integral(polyFn(kp), 0, s, 200), Aw, 0, 50);
     return { richtig: b, toleranz: T, falsch: [[(Aw / c) ** (1 / (n + 1)), "Die Stammfunktion hat den Faktor"], [b ** (n + 1), "Zum Schluss fehlt noch"], [n === 1 ? NaN : b ** ((n + 1) / n), "Gezogen wurde die"]] };
   });
-  await A(15, "A15 Zwei Parabeln", (q) => {
+  await A(17, "A17 Zwei Parabeln", (q) => {
     const w = zweiGraphen(q);
     if (!w) return null;
     const d = w.s[1] - w.s[0];
     return { richtig: w.A, toleranz: T, falsch: [[nahe(w.D, w.A, 1e-9) ? NaN : w.D, "Das Integral von f − g ist negativ"], [integral(w.f, w.s[0], w.s[1]), "Integral über f allein"], [Math.abs(Math.abs(w.k) - 1) < 1e-9 ? NaN : d ** 3 / 6, "der Vorfaktor"]] };
   });
-  await A(16, "A16 Parameter aus der Fläche", (q) => {
+  await A(18, "A18 Parameter aus der Fläche", (q) => {
     const m = q.match(new RegExp(`fk\\(x\\) = (?:${Z} · \\()?k² − x²\\)?\\. .*Inhalt ${Z} ein\\.`));
     if (!m) return null;
     const c = m[1] ? zahl(m[1]) : 1, Aw = zahl(m[2]);
     const k = loese((s) => integral((x) => c * (s * s - x * x), -s, s, 200), Aw, 0, 50);
     return { richtig: k, toleranz: T, falsch: [[k * Math.cbrt(2), "nur von 0 bis k"], [k ** 3, "Das ist k³"], [Math.sqrt(k ** 3), "Quadratwurzel"]] };
   });
-  await A(17, "A17 Rotationsvolumen", (q) => {
+  await A(19, "A19 Rotationsvolumen", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = √\\(${Z}?x\\) rotiert über dem Intervall \\[0; ${Z}\\]`));
     if (!m) return null;
     const c = m[1] ? zahl(m[1]) : 1, b = zahl(m[2]);
     const V = integral((x) => Math.sqrt(c * x) ** 2, 0, b);
     return { richtig: V, toleranz: T, falsch: [[V * Math.PI, "als Dezimalzahl"], [c * b * b, "der Faktor ½ fehlt"], [(c * c * b ** 3) / 3, "Quadriert wurde zweimal"]] };
   });
-  await A(18, "A18 Uneigentliches Integral", (q) => {
+  await A(20, "A20 Uneigentliches Integral", (q) => {
     const m = q.match(new RegExp(`Berechne ∫ ∞ ${Z} ${Z} x([²³⁴]) dx\\.`));
     if (!m) return null;
     const a = zahl(m[1]), c = zahl(m[2]), n = HOCH[m[3]];
@@ -811,7 +769,7 @@ async function aufgaben(page) {
     const I = integral((u) => c * u ** (n - 2), 0, 1 / a);
     return { richtig: I, toleranz: T, falsch: [[c / ((n + 1) * a ** (n + 1)), "falschen Exponenten"], [a === 1 ? NaN : c / (n - 1), "untere Grenze 1"], [-I, "Vorzeichen"]] };
   });
-  await A(19, "A19 Größter Bestand", (q) => {
+  await A(21, "A21 Größter Bestand", (q) => {
     const m = q.match(new RegExp(`r\\(t\\) = ${Z} − ${Z}t .*Zu Beginn sind ${Z} m³ im Speicher\\.`));
     if (!m) return null;
     const [r0, mm, B0] = m.slice(1).map(zahl);
@@ -820,41 +778,41 @@ async function aufgaben(page) {
     const B = B0 + integral(rate, 0, ts);
     return { felder: [ts, B], toleranz: T, falschFelder: [[0, (2 * r0) / mm, "wieder so groß wie zu Beginn"], [1, B - B0, "nur die zugeflossene Menge"], [1, B0 + r0 * ts, "Gerechnet wurde mit r₀"]] };
   });
-  await A(22, "A22 Tangente an eine kubische Funktion", (q) => {
+  await A(25, "A25 Tangente an eine kubische Funktion", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = (.+?)\\. Die Tangente t an den Graphen im Punkt P\\(${Z} \\| ${Z}\\)`));
     if (!m) return null;
     const kf = liesPoly(m[1]), f = polyFn(kf), x0 = zahl(m[2]);
-    pruefe(nahe(f(x0), zahl(m[3]), 1e-9), `A22: P liegt nicht auf dem Graphen — „${q}“`);
+    pruefe(nahe(f(x0), zahl(m[3]), 1e-9), `A25: P liegt nicht auf dem Graphen — „${q}“`);
     const mt = polyFn(polyAbl(kf))(x0), t = (x) => f(x0) + mt * (x - x0), d = (x) => f(x) - t(x);
     // x₀ ist doppelte Nullstelle von f − t (kein Vorzeichenwechsel); die einfache ist Q.
     const xs = vzw(d, -20, 20).filter((z) => Math.abs(z - x0) > 1e-3);
-    if (xs.length !== 1) { pruefe(false, `A22: ${xs.length} zweite Schnittstellen — „${q}“`); return null; }
+    if (xs.length !== 1) { pruefe(false, `A25: ${xs.length} zweite Schnittstellen — „${q}“`); return null; }
     const xq = xs[0], lo = Math.min(xq, x0), hi = Math.max(xq, x0);
     const D = integral(d, lo, hi), Af = Math.abs(D), a = kf[3];
     return { felder: [xq, Af], toleranz: T, falschFelder: [[0, -xq, "Vorzeichen"], [0, x0, "Berührpunkt P selbst"],
       [1, nahe(D, Af, 1e-9) ? NaN : D, "Das Integral von f − t ist hier negativ"], [1, integral(f, lo, hi), "Integral über f allein"], [1, Math.abs(Math.abs(a) - 1) < 1e-9 ? NaN : Af / Math.abs(a), "Der Faktor"]] };
   });
-  await A(23, "A23 Maximum einer Integralfunktion", (q) => {
+  await A(26, "A26 Maximum einer Integralfunktion", (q) => {
     const m = q.match(/f\(t\) = (.+?)\. Die Integralfunktion/);
     if (!m) return null;
     const f = polyFn(liesPoly(m[1], "t"));
     const s = vzw(f, -20, 20);
-    if (s.length !== 2) { pruefe(false, `A23: ${s.length} Nullstellen von f — „${q}“`); return null; }
+    if (s.length !== 2) { pruefe(false, `A26: ${s.length} Nullstellen von f — „${q}“`); return null; }
     const I = (x) => integral(f, 0, x);
     // Maximum von I: f wechselt von + nach −.
     const xm = s.find((z) => f(z - 0.01) > 0 && f(z + 0.01) < 0), xn = s.find((z) => z !== xm);
     return { felder: [xm, I(xm)], toleranz: T, falschFelder: [[0, xn, "lokales Minimum"], [0, (s[0] + s[1]) / 2, "Extremstelle von f"],
       [1, I(xn), "lokales Minimum"], [1, Math.abs(I(xm)) < 1e-9 ? NaN : -I(xm), "Vorzeichen"]] };
   });
-  await A(24, "A24 Kugelschicht", (q) => {
+  await A(27, "A27 Kugelschicht", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = √\\(${Z} − x²\\) ist ein Halbkreis mit dem Radius ${Z}\\. .*zwischen x = ${Z} und x = ${Z}\\.`));
     if (!m) return null;
     const [r2, rr, a, b] = m.slice(1).map(zahl);
-    pruefe(nahe(rr * rr, r2, 1e-9), `A24: Radius ${rr} passt nicht zu ${r2} − x²`);
+    pruefe(nahe(rr * rr, r2, 1e-9), `A27: Radius ${rr} passt nicht zu ${r2} − x²`);
     const V = integral((x) => r2 - x * x, a, b);
     return { richtig: V, toleranz: T, falsch: [[r2 * (b - a) + (b ** 3 - a ** 3) / 3, "Vorzeichen"], [a === -rr && b === rr ? NaN : (4 * rr ** 3) / 3, "ganze Kugel"], [r2 * (b - a), "Zylinder"]] };
   });
-  await A(25, "A25 Ursprungsgerade halbiert eine Fläche", (q) => {
+  await A(28, "A28 Ursprungsgerade halbiert eine Fläche", (q) => {
     const m = q.match(/f\(x\) = (.+?) schließt mit der x-Achse/);
     if (!m) return null;
     const kf = liesPoly(m[1]), f = polyFn(kf), k = -kf[2];
@@ -865,7 +823,7 @@ async function aufgaben(page) {
     const mstern = loese((mm) => -ab(mm), -ganz / 2, 0, k * c);
     return { richtig: mstern, toleranz: T, falsch: [[(k * c) / 2, "Die halbe Steigung"], [k * c * (1 - Math.SQRT1_2), "Quadratwurzel"], [c * Math.cbrt(0.5), "Das ist die Schnittstelle"]] };
   });
-  await A(26, "A26 Unbegrenzte Fläche zwischen zwei Graphen", (q) => {
+  await A(29, "A29 Unbegrenzte Fläche zwischen zwei Graphen", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = ${Z} x² und g\\(x\\) = ${Z} x³`));
     if (!m) return null;
     const a = zahl(m[1]), b = zahl(m[2]);
@@ -907,8 +865,8 @@ async function aufgaben(page) {
     const I1 = integral(d, s[0], s[1]), I2 = integral(d, s[1], s[2]);
     return { richtig: Math.abs(I1) + Math.abs(I2), toleranz: T, falsch: [[Math.abs(I1 + I2), "auf einmal integriert"], [Math.abs(I1), "nur die Teilfläche über"], [nahe(Math.abs(I1), Math.abs(I2), 1e-9) ? NaN : Math.abs(I2), "nur die Teilfläche über"]] };
   };
-  await A(13, "A13 Drei Schnittstellen", dreiGraphen);
-  await A(14, "A14 Polstelle am Rand", (q) => {
+  await A(14, "A14 Drei Schnittstellen", dreiGraphen);
+  await A(15, "A15 Polstelle am Rand", (q) => {
     const m = q.match(new RegExp(`Integral ∫ ${Z} 0 ${Z} √x dx\\.`));
     if (!m) return null;
     const a = zahl(m[1]), c = zahl(m[2]);
@@ -916,17 +874,17 @@ async function aufgaben(page) {
     const I = integral(() => 2 * c, 0, Math.sqrt(a));
     return { richtig: I, toleranz: T, falsch: [[c * Math.sqrt(a), "Der Faktor 2 fehlt"], [-c / (2 * a * Math.sqrt(a)), "Ableitung des Integranden"], [a === 1 ? NaN : 2 * c * (Math.sqrt(a) - 1), "untere Grenze ist 0"]] };
   });
-  await A(20, "A20 Schnittstellen und Fläche zweier Parabeln", (q) => {
+  await A(22, "A22 Schnittstellen und Fläche zweier Parabeln", (q) => {
     const m = q.match(/f\(x\) = (.+?) und g\(x\) = (.+?)\. Bestimme die Schnittstellen x₁ < x₂ und den Inhalt A/);
     if (!m) return null;
     const kf = liesPoly(m[1]), kg = liesPoly(m[2]), f = polyFn(kf), g = polyFn(kg);
     const s = schnitt(f, g);
-    if (s.length !== 2) { pruefe(false, `A20: ${s.length} Schnittstellen — „${q}“`); return null; }
+    if (s.length !== 2) { pruefe(false, `A22: ${s.length} Schnittstellen — „${q}“`); return null; }
     const D = integral((x) => f(x) - g(x), s[0], s[1]), Af = Math.abs(D), k = (kf[2] || 0) - (kg[2] || 0);
     return { felder: [s[0], s[1], Af], toleranz: T, falschFelder: [[0, -s[1], "Vorzeichen in der pq-Formel"], [1, -s[0], "Vorzeichen in der pq-Formel"],
       [2, nahe(D, Af, 1e-9) ? NaN : D, "Das Integral von f − g ist negativ"], [2, Af / Math.abs(k), "Das Teilen durch"]] };
   });
-  await A(21, "A21 Unendlich langer Rotationskörper", (q) => {
+  await A(23, "A23 Unendlich langer Rotationskörper", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = ${Z} x rotiert über \\[${Z}; ∞\\)`));
     if (!m) return null;
     const c = zahl(m[1]), a = zahl(m[2]);
@@ -934,8 +892,8 @@ async function aufgaben(page) {
     const V = integral(() => c * c, 0, 1 / a);
     return { richtig: V, toleranz: T, falsch: [[c / a, "Quadriert wurde nicht"], [(c * c) / (a * a), "Die Stammfunktion von"], [V * Math.PI, "Dezimalzahl"]] };
   });
-  await A(27, "A27 Kubische Funktion und Parabel", dreiGraphen);
-  await A(28, "A28 Grenze aus einer unbegrenzten Fläche", (q) => {
+  await A(30, "A30 Kubische Funktion und Parabel", dreiGraphen);
+  await A(31, "A31 Grenze aus einer unbegrenzten Fläche", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = ${Z} x³ , der x-Achse .*Ihr Inhalt ist ${Z}\\.`));
     if (!m) return null;
     const c = zahl(m[1]), Aw = zahl(m[2]);
@@ -944,6 +902,14 @@ async function aufgaben(page) {
     const a = loese((x) => -flaecheAb(x), -Aw, 0.01, 100);
     return { richtig: a, toleranz: T, falsch: [[nahe(a, 1, 1e-9) ? NaN : a * a, "Das ist a²"], [Math.sqrt(c / Aw), "Der Faktor ½ fehlt"], [Math.pow(c / (4 * Aw), 0.25), "falschen Exponenten"]] };
   });
+  // Je Stufe eine Termaufgabe mit beliebig vielen Funktionen. Die Angabe wird mit einem eigenen
+  // Termleser gelesen und numerisch abgeleitet (tests/lib/terme.js) — die exakten Ableitungen der Seite
+  // werden dafür nicht benutzt.
+  for (const [nr, stufe] of [[8, "ganzrational"], [16, "Potenzen und Wurzeln"], [24, "Sinus und Kosinus"], [32, "lineare Verkettung"]]) {
+    const name = `A${nr} Stammfunktion: ${stufe}`;
+    await pruefeAufgabe(page, bericht, { nr, name, runden: RT, mindestensVerschieden: SCHRANKE[nr] ?? 5,
+      liesRoh: liesTermAufgabe, deute: termDeuter(bericht, name, "stamm") });
+  }
 }
 
 (async () => {
@@ -960,7 +926,6 @@ async function aufgaben(page) {
       await integralfunktion(page);
       await hauptsatz(page);
       await stammfunktion(page);
-      await selbsttest(page);
       await flaeche(page);
       await zwischen(page);
       await mittelwert(page);
@@ -968,6 +933,7 @@ async function aufgaben(page) {
       await rotation(page);
       await stolperstelle(page);
       await quizze(page);
+      await pruefeTermleser(page, bericht);
       await aufgaben(page);
     } else {
       await pruefeKontrast(page, bericht, "dunkel");

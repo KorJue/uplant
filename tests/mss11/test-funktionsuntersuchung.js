@@ -19,8 +19,8 @@ const { neuerBericht } = require("../lib/pruefen");
 const { starteBrowser, neueSeite, oeffne, setzeRegler, text } = require("../lib/seite");
 const { pruefeNotation } = require("../lib/notation");
 const { pruefeKontrast } = require("../lib/kontrast");
-const { pruefeSelbsttest } = require("../lib/selbsttest");
 const { pruefeAufgabe, zahl } = require("../lib/aufgaben");
+const { liesTermAufgabe, termDeuter, pruefeTermleser } = require("../lib/terme");
 const fs = require("fs");
 const path = require("path");
 
@@ -665,7 +665,10 @@ function gauss(z) {
 }
 // Gemessen mit UPLANT_ZUEGE=25 tests/werkzeug-streuung.js (200 Würfe je Aufgabe, 10⁻⁴-Quantil für 0,8 · n):
 //   UPLANT_ZUEGE=25 node tests/werkzeug-streuung.js /mathematik/mss11/01-analysis/04-funktionsuntersuchung/index.html
-const SCHRANKE = {1: 21, 2: 20, 3: 20, 4: 14, 5: 15, 6: 19, 7: 20, 8: 19, 9: 14, 10: 9, 11: 10, 12: 10, 13: 9, 14: 7, 15: 8, 16: 15, 17: 9, 18: 17, 19: 15, 20: 10};
+// Termaufgaben: weniger Runden, denn jede Runde prüft sechs bis acht Eingaben. Ihre Schranken
+// (6, 12, 18, 24) sind deshalb für 12 Züge gemessen: UPLANT_ZUEGE=12 node tests/werkzeug-streuung.js …
+const RT = 12;
+const SCHRANKE = {1: 21, 2: 20, 3: 20, 4: 14, 5: 15, 6: 9, 7: 19, 8: 20, 9: 19, 10: 14, 11: 9, 12: 9, 13: 10, 14: 10, 15: 9, 16: 7, 17: 8, 18: 10, 19: 15, 20: 9, 21: 17, 22: 15, 23: 10, 24: 9};
 
 async function aufgaben(page) {
   const r = 25;
@@ -711,7 +714,7 @@ async function aufgaben(page) {
     const randKlein = Math.min(f(l), f(rr));
     return { richtig: max, toleranz: T, falsch: [[hoch, "Hochpunkt"], [min, "globale Minimum"], [nahe(randKlein, min, 1e-6) ? NaN : randKlein, "Randwert, aber nicht der größte"]] };
   });
-  await A(6, "A6 Wendepunkt", (q) => {
+  await A(7, "A7 Wendepunkt", (q) => {
     const m = q.match(/f\(x\) = (.+?)\. Bestimme den Wendepunkt W\(xW \| yW\)\./);
     if (!m) return null;
     const f = polyFn(liesPoly(m[1]));
@@ -719,7 +722,7 @@ async function aufgaben(page) {
     const null0 = Math.abs(xw) < 1e-9;
     return { felder: [xw, f(xw)], toleranz: T, falschFelder: [[0, null0 ? NaN : -xw, "Vorzeichen"], [1, abl(f, xw), "Steigung der Wendetangente"], [1, null0 ? NaN : f(-xw), "Eingesetzt wurde"]] };
   });
-  await A(7, "A7 Hoch- und Tiefpunkt", (q) => {
+  await A(8, "A8 Hoch- und Tiefpunkt", (q) => {
     const m = q.match(/f\(x\) = (.+?)\. Bestimme den Hochpunkt/);
     if (!m) return null;
     const f = polyFn(liesPoly(m[1]));
@@ -727,7 +730,7 @@ async function aufgaben(page) {
     if (!H || !Tt) return null;
     return { felder: [H.x, f(H.x), Tt.x, f(Tt.x)], toleranz: T, falschFelder: [[0, Tt.x, "vertauscht"], [1, f(Tt.x), "vertauscht"], [2, H.x, "vertauscht"], [3, f(H.x), "vertauscht"]] };
   });
-  await A(8, "A8 Wendetangente", (q) => {
+  await A(9, "A9 Wendetangente", (q) => {
     const m = q.match(/f\(x\) = (.+?)\. Bestimme die Gleichung der Wendetangente/);
     if (!m) return null;
     const f = polyFn(liesPoly(m[1]));
@@ -735,7 +738,7 @@ async function aufgaben(page) {
     const ohne = Math.abs(xw) < 1e-9 || Math.abs(mm) < 1e-9;
     return { felder: [mm, b], toleranz: T, falschFelder: [[0, yw, "Höhe des Wendepunkts"], [1, yw, "nicht der Achsenabschnitt"], [1, ohne ? NaN : yw + mm * xw, "Vorzeichen"]] };
   });
-  await A(9, "A9 Sattelpunkt", (q) => {
+  await A(10, "A10 Sattelpunkt", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = (.+?) \\+ k · x(?: ([+−]) ([\\d,]+))?\\. Für welchen Wert von k`));
     if (!m) return null;
     const g = polyFn(liesPoly(m[1]));
@@ -743,7 +746,7 @@ async function aufgaben(page) {
     const xs = wendestellen(g, -10, 10)[0].x, k = -abl(g, xs);
     return { felder: [k, xs], toleranz: T, falschFelder: [[0, -k, "Vorzeichen"], [0, Math.abs(xs) < 1e-9 ? NaN : 0, "Faktor 2 fehlt"], [1, Math.abs(xs) < 1e-9 ? NaN : -xs, "Vorzeichen"]] };
   });
-  await A(10, "A10 Sinus und Kosinus", (q) => {
+  await A(11, "A11 Sinus und Kosinus", (q) => {
     const m = q.match(/f\(x\) = (−?[\d,]*)x ([+−]) ([\d,]+ )?(sin|cos)\(x\) auf dem Intervall \[0; 2π\]/);
     if (!m) return null;
     const s = m[1] === "" ? 1 : m[1] === "−" ? -1 : zahl(m[1]);
@@ -755,7 +758,7 @@ async function aufgaben(page) {
     const h = H.x / Math.PI, t = Tt.x / Math.PI;
     return { felder: [h, t], toleranz: T, falschFelder: [[0, t, "vertauscht"], [0, h * 180, "Winkel in Grad"], [1, h, "vertauscht"], [1, t * 180, "Winkel in Grad"]] };
   });
-  await A(11, "A11 Scharparameter", (q) => {
+  await A(13, "A13 Scharparameter", (q) => {
     const m = q.match(new RegExp(`fa\\(x\\) = (.+?) − ([\\d,]+)a² · x mit a > 0\\. Für welchen Wert von a hat der Tiefpunkt von fa die y-Koordinate ${Z}\\?`));
     if (!m) return null;
     const k = liesPoly(m[1])[3], K3 = zahl(m[2]), y = zahl(m[3]);
@@ -767,15 +770,15 @@ async function aufgaben(page) {
     const eins = Math.abs(a - 1) < 1e-6;
     return { richtig: a, toleranz: T, falsch: [[eins ? NaN : a ** 3, "dritte Wurzel"], [eins ? NaN : Math.sqrt(a ** 3), "Quadratwurzel"]] };
   });
-  await A(12, "A12 punktsymmetrischer Steckbrief", (q) => {
+  await A(14, "A14 punktsymmetrischer Steckbrief", (q) => {
     const m = q.match(new RegExp(`im Punkt P\\(${Z} \\| ${Z}\\) einen (Hochpunkt|Tiefpunkt)\\. Bestimme f\\(x\\) = ax³ \\+ cx\\.`));
     if (!m) return null;
     const u = zahl(m[1]), v = zahl(m[2]);
     const [a, c] = gauss([[u ** 3, u, v], [3 * u * u, 1, 0]]);
-    pruefe((6 * a * u < 0) === (m[3] === "Hochpunkt"), `A12: Die Lösung hat bei P keinen ${m[3]}`);
+    pruefe((6 * a * u < 0) === (m[3] === "Hochpunkt"), `A14: Die Lösung hat bei P keinen ${m[3]}`);
     return { felder: [a, c], toleranz: T, falschFelder: [[0, -a, "Vorzeichen"], [1, -c, "Vorzeichen"], [1, v / u, "nur f(u) = v"]] };
   });
-  await A(13, "A13 Schachtel", (q) => {
+  await A(15, "A15 Schachtel", (q) => {
     const m = q.match(new RegExp(`Karton mit ${Z} cm × ${Z} cm`));
     if (!m) return null;
     const a = zahl(m[1]), b = zahl(m[2]);
@@ -784,7 +787,7 @@ async function aufgaben(page) {
     const x2 = vzw((t) => abl(V, t), Math.min(a, b) / 2, Math.max(a, b))[0];
     return { felder: [x, V(x)], toleranz: T, falschFelder: [[0, x2, "zweite Nullstelle"], [1, x * (a - x) * (b - x), "an beiden Enden"]] };
   });
-  await A(14, "A14 Rechteck unter der Parabel", (q) => {
+  await A(16, "A16 Rechteck unter der Parabel", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = ${Z} − ([\\d,]*)x² liegt`));
     if (!m) return null;
     const h = zahl(m[1]), qq = m[2] ? zahl(m[2]) : 1;
@@ -792,7 +795,7 @@ async function aufgaben(page) {
     const u = maxStelle(A_, 1e-6, Math.sqrt(h / qq));
     return { felder: [u, A_(u)], toleranz: T, falschFelder: [[0, Math.sqrt(h / qq), "Nullstelle der Parabel"], [1, A_(u) / 2, "halbe Fläche"]] };
   });
-  await A(15, "A15 stärkstes Wachstum", (q) => {
+  await A(17, "A17 stärkstes Wachstum", (q) => {
     const m = q.match(new RegExp(`für 0 ≤ t ≤ ${Z} durch h\\(t\\) = (.+?) beschrieben`));
     if (!m) return null;
     const k = liesPoly(m[2], "t"), ende = zahl(m[1]);
@@ -800,25 +803,25 @@ async function aufgaben(page) {
     // Am schnellsten wächst h, wo h″ das Vorzeichen wechselt. Abgeleitet wird über die
     // Koeffizienten: Bei Höhen um 250 cm wäre die numerische zweite Ableitung zu verrauscht.
     const tw = vzw(h2, 0, ende)[0];
-    pruefe(h1(tw) >= h1(tw - 0.1) && h1(tw) >= h1(tw + 0.1), "A15: An der Wendestelle ist h′ nicht am größten");
+    pruefe(h1(tw) >= h1(tw - 0.1) && h1(tw) >= h1(tw + 0.1), "A17: An der Wendestelle ist h′ nicht am größten");
     return { felder: [tw, h1(tw)], toleranz: T, falschFelder: [[0, ende, "am höchsten"], [1, h(tw), "Höhe h(t)"]] };
   });
-  await A(16, "A16 Steckbrief mit vier Bedingungen", (q) => {
+  await A(19, "A19 Steckbrief mit vier Bedingungen", (q) => {
     const m = q.match(new RegExp(`hat den (Hochpunkt|Tiefpunkt) E\\(0 \\| ${Z}\\) und den Wendepunkt W\\(${Z} \\| ${Z}\\)\\.`));
     if (!m) return null;
     const h = zahl(m[2]), w = zahl(m[3]), yw = zahl(m[4]);
     const [a, b, c, d] = gauss([[0, 0, 0, 1, h], [0, 0, 1, 0, 0], [6 * w, 2, 0, 0, 0], [w ** 3, w * w, w, 1, yw]]);
-    pruefe((2 * b < 0) === (m[1] === "Hochpunkt"), `A16: Die Lösung hat bei E keinen ${m[1]}`);
+    pruefe((2 * b < 0) === (m[1] === "Hochpunkt"), `A19: Die Lösung hat bei E keinen ${m[1]}`);
     return { felder: [a, b, c, d], toleranz: T, falschFelder: [[0, -a, "Vorzeichen"], [1, -b, "Vorzeichen"]] };
   });
-  await A(17, "A17 biquadratisch", (q) => {
+  await A(20, "A20 biquadratisch", (q) => {
     const m = q.match(/f\(x\) = (.+?)\. Bestimme den Wendepunkt mit positiver x-Koordinate/);
     if (!m) return null;
     const f = polyFn(liesPoly(m[1]));
     const xw = wendestellen(f, 1e-3, 20)[0].x, mm = abl(f, xw);
     return { felder: [xw, f(xw), mm], toleranz: T, falschFelder: [[0, Math.abs(xw - 1) < 1e-9 ? NaN : xw * xw, "Wurzel"], [1, -f(xw), "Vorzeichen"], [2, -mm, "Vorzeichen"]] };
   });
-  await A(18, "A18 Gewinn bei begrenzter Kapazität", (q) => {
+  await A(21, "A21 Gewinn bei begrenzter Kapazität", (q) => {
     const m = q.match(new RegExp(`höchstens ${Z} Tonnen.*G\\(x\\) = (.+?) \\(in Tausend Euro\\)`));
     if (!m) return null;
     const K = zahl(m[1]), G = polyFn(liesPoly(m[2]));
@@ -830,14 +833,14 @@ async function aufgaben(page) {
       ? [[0, H.x, "lokale Maximum"], fix, [1, G(H.x), "außerhalb der Kapazität"]]
       : [[0, K, "Am Rand"], fix, [1, G(K), "Gewinn am Rand"]] };
   });
-  await A(19, "A19 zwei Newton-Schritte", (q) => {
+  await A(22, "A22 zwei Newton-Schritte", (q) => {
     const m = q.match(new RegExp(`von f\\(x\\) = (.+?)\\. Berechne mit dem Newton-Verfahren x₁ und x₂ zum Startwert x₀ = ${Z}\\.`));
     if (!m) return null;
     const f = polyFn(liesPoly(m[1])), x0 = zahl(m[2]);
     const x1 = x0 - f(x0) / abl(f, x0), x2 = x1 - f(x1) / abl(f, x1);
     return { felder: [x1, x2], toleranz: T, falschFelder: [[0, x0 + f(x0) / abl(f, x0), "Vorzeichen"], [1, x1 + f(x1) / abl(f, x1), "Vorzeichen"], [1, x1, "es fehlt noch ein Schritt"]] };
   });
-  await A(20, "A20 Ortskurve der Wendepunkte", (q) => {
+  await A(23, "A23 Ortskurve der Wendepunkte", (q) => {
     const m = q.match(new RegExp(`fa\\(x\\) = (.+?) − 3a · x² \\(a ≠ 0\\)\\. Bestimme für a = ${Z} den Wendepunkt`));
     if (!m) return null;
     const k = liesPoly(m[1])[3], a = zahl(m[2]);
@@ -846,59 +849,18 @@ async function aufgaben(page) {
     // Die Ortskurve aus zwei weiteren Scharmitgliedern: y/x³ muss für alle gleich sein.
     const [x1, y1] = W(1), [x2, y2] = W(2);
     const c = y1 / x1 ** 3;
-    pruefe(nahe(y2 / x2 ** 3, c, 1e-6) && nahe(yw / xw ** 3, c, 1e-6), "A20: Die Wendepunkte liegen nicht auf einer Kurve y = c · x³");
+    pruefe(nahe(y2 / x2 ** 3, c, 1e-6) && nahe(yw / xw ** 3, c, 1e-6), "A23: Die Wendepunkte liegen nicht auf einer Kurve y = c · x³");
     const eins = Math.abs(Math.abs(k) - 1) < 1e-9;
     return { felder: [xw, yw, c], toleranz: T, falschFelder: [[0, eins ? NaN : a * k, "nicht a"], [1, -yw, "Vorzeichen"], [2, eins ? NaN : -2, "Der Faktor k"], [2, -c, "Vorzeichen"]] };
   });
-}
-
-// ---------- Selbsttests zum Ableiten (Abschnitte 1, 6 und 9) ----------
-// Die richtigen Ableitungen sind hier von Hand nachgerechnet; die Seite prüft numerisch.
-async function selbsttests(page) {
-  const R = ["✓ Richtig"], X = (m) => ["✗ Noch nicht", m, "Tipp"];
-  await pruefeSelbsttest(page, bericht, "pa-hoehere", [
-    { aufgabe: "0", eingaben: ["4x³ − 6x² + 1", "12x² − 12x"], erwartet: [R, R] },
-    { aufgabe: "0", eingaben: ["4x³ − 6x² + 1", "24x − 12"], erwartet: [R, X("einmal zu oft")] },
-    { aufgabe: "0", eingaben: ["", "4x³ − 6x² + 1"], erwartet: [[], X("einmal zu wenig")] },
-    { aufgabe: "1", eingaben: ["1,5x² − 1,5", "3x"], erwartet: [R, R] },
-    { aufgabe: "1", eingaben: ["1,5x²", "3x"], erwartet: [X("Bis auf eine Konstante"), R] },
-    { aufgabe: "2", eingaben: ["x³ − 2x", "3x² − 2"], erwartet: [R, R] },
-    { aufgabe: "3", eingaben: ["4x³ − 4x", "12x² − 4"], erwartet: [R, R] },
-    { aufgabe: "3", eingaben: ["4x(x² − 1)", ""], erwartet: [R, []] },
-    { aufgabe: "3", eingaben: ["2(x² − 1)", ""], erwartet: [X("Bei x ="), []] },
-    { aufgabe: "4", eingaben: ["−1/x²", "2/x³"], erwartet: [R, R] },
-    { aufgabe: "4", eingaben: ["1/x²", "−2/x³"], erwartet: [X("Vorzeichenfehler"), X("Vorzeichenfehler")] },
-    { aufgabe: "5", eingaben: ["3x² − 12x + 9", "6x − 12"], erwartet: [R, R] },
-    { aufgabe: "5", eingaben: ["x² − 4x + 3", "2x − 4"], erwartet: [X("Bis auf einen Faktor"), X("Bis auf einen Faktor")] },
-    { aufgabe: "eigen", f: "x^4", eingaben: ["4x^3", "12x^2"], erwartet: [R, R] },
-  ]);
-  await pruefeSelbsttest(page, bericht, "pa-trig", [
-    { aufgabe: "0", eingaben: ["1 + 2cos(x)", "−2sin(x)"], erwartet: [R, R] },
-    { aufgabe: "0", eingaben: ["1 − 2cos(x)", "2sin(x)"], erwartet: [X("Bei x ="), X("Vorzeichenfehler")] },
-    { aufgabe: "1", eingaben: ["2cos(2x)", "−4sin(2x)"], erwartet: [R, R] },
-    { aufgabe: "1", eingaben: ["cos(2x)", "−2sin(2x)"], erwartet: [X("Bis auf einen Faktor"), X("Bis auf einen Faktor")] },
-    { aufgabe: "2", eingaben: ["−1,5sin(0,5x)", "−0,75cos(0,5x)"], erwartet: [R, R] },
-    { aufgabe: "2", eingaben: ["−3sin(0,5x)", ""], erwartet: [X("Bis auf einen Faktor"), []] },
-    { aufgabe: "3", eingaben: ["cos(x) − sin(x)", "−sin(x) − cos(x)"], erwartet: [R, R] },
-    { aufgabe: "3", eingaben: ["", "sin(x) + cos(x)"], erwartet: [[], X("Vorzeichenfehler")] },
-    { aufgabe: "4", eingaben: ["sin(x) + x cos(x)", "2cos(x) − x sin(x)"], erwartet: [R, R] },
-    { aufgabe: "4", eingaben: ["x cos(x)", ""], erwartet: [X("Bei x ="), []] },
-    { aufgabe: "5", eingaben: ["2sin(x)cos(x)", "2cos(x)^2 − 2sin(x)^2"], erwartet: [R, R] },
-    { aufgabe: "5", eingaben: ["sin(2x)", "2cos(2x)"], erwartet: [R, R] },
-  ]);
-  await pruefeSelbsttest(page, bericht, "pa-schar", [
-    { aufgabe: "0", eingaben: ["3x² − 3a²", "6x"], erwartet: [R, R] },
-    { aufgabe: "0", eingaben: ["−6ax", "6x"], erwartet: [X("nach a"), R] },
-    { aufgabe: "0", eingaben: ["3x² − 6ax", ""], erwartet: [X("Bei x ="), []] },
-    { aufgabe: "1", eingaben: ["2ax − 4", "2a"], erwartet: [R, R] },
-    { aufgabe: "1", eingaben: ["x²", "2a"], erwartet: [X("nach a"), R] },
-    { aufgabe: "2", eingaben: ["4x³ − 4ax", "12x² − 4a"], erwartet: [R, R] },
-    { aufgabe: "3", eingaben: ["2(x − a)", "2"], erwartet: [R, R] },
-    { aufgabe: "4", eingaben: ["a cos(x) + 1", "−a sin(x)"], erwartet: [R, R] },
-    { aufgabe: "4", eingaben: ["a cos(x)", ""], erwartet: [X("Bis auf eine Konstante"), []] },
-    { aufgabe: "5", eingaben: ["3x²/a + a", "6x/a"], erwartet: [R, R] },
-    { aufgabe: "eigen", f: "a x^3", eingaben: ["3ax^2", "6ax"], erwartet: [R, R] },
-  ]);
+  // Je Stufe eine Termaufgabe mit beliebig vielen Funktionen. Die Angabe wird mit einem eigenen
+  // Termleser gelesen und numerisch abgeleitet (tests/lib/terme.js) — die exakten Ableitungen der Seite
+  // werden dafür nicht benutzt.
+  for (const [nr, stufe] of [[6, "ganzrational"], [12, "Potenzen und Wurzeln"], [18, "Sinus und Kosinus"], [24, "Funktionenschar"]]) {
+    const name = `A${nr} f′ und f″: ${stufe}`;
+    await pruefeAufgabe(page, bericht, { nr, name, runden: RT, mindestensVerschieden: SCHRANKE[nr] ?? 5,
+      liesRoh: liesTermAufgabe, deute: termDeuter(bericht, name, "zweite") });
+  }
 }
 
 (async () => {
@@ -923,7 +885,7 @@ async function selbsttests(page) {
       await newton(page);
       await stolperstelle(page);
       await quizze(page);
-      await selbsttests(page);
+      await pruefeTermleser(page, bericht);
       await aufgaben(page);
     } else {
       await pruefeKontrast(page, bericht, "dunkel");

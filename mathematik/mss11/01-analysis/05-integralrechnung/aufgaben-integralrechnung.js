@@ -1,4 +1,4 @@
-// Die achtundzwanzig Übungsaufgaben zu „Integralrechnung“ — sieben je Stufe.
+// Die zweiunddreißig Übungsaufgaben zu „Integralrechnung“ — acht je Stufe.
 //
 //   einfach   — Potenzregel, Polynomintegral, Rekonstruktion aus einer Rate, Mittelwert, Sinus und
 //               Kosinus über Vielfache von π/2, Schnittstellen Parabel/Gerade, ∫₁^b c/x² und Grenzwert.
@@ -12,11 +12,17 @@
 //               Ursprungsgerade halbiert eine Fläche, uneigentliche Fläche zwischen zwei Graphen, kubische
 //               Funktion und Parabel (raten, Polynomdivision), Grenze aus einer unbegrenzten Fläche.
 //
+// Die achte Aufgabe jeder Stufe ist ein Integrationstraining mit beliebig vielen Funktionen
+// (mathematik/terme.js): ganzrational, Potenzen und Wurzeln, Sinus und Kosinus, lineare Verkettung.
+// Die eingegebene Stammfunktion wird durch numerisches Ableiten geprüft — jede Konstante ist richtig.
+//
 // Gewürfelt wird konstruktiv: Die Kandidatenlisten werden vorher gesiebt, ohneKollision() wählt aus
 // dem Rest. Jeder Fehlerwert ist von der Lösung und von den anderen Fehlerwerten verschieden — wo ein
 // Fehler mit der Lösung zusammenfiele, steht NaN.
 
 "use strict";
+
+import { pot, trig, kette, q, stammAufgabe, pick as zufall, mische } from "../../../terme.js?v=1";
 
 const ZAHLFORMATE = new Map();
 function zahlformat(stellen) {
@@ -1192,6 +1198,51 @@ function generateK7() {
   };
 }
 
+// ================= Stammfunktionen bestimmen (Termeingabe, je Stufe eine) =================
+// Die Funktionen setzen sich aus Gliedern zusammen, die ihre Stammfunktion exakt kennen
+// (mathematik/terme.js) — so gibt es beliebig viele, und die Musterlösung entsteht aus denselben
+// Gliedern wie die Angabe. Geprüft wird die getippte Stammfunktion durch Ableiten (F + C zählt).
+
+// Ganzzahlige Bereiche und Koeffizienten zum Würfeln. Gewürfelt wird konstruktiv: jede Wahl kommt
+// aus einer festen Liste, es gibt nichts zu verwerfen.
+const bereich = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
+const KOEFF = [-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6];
+const KLEIN = [-3, -2, -1, 1, 2, 3];
+// Ein Polynom mit höchstem Exponenten aus [gMin; gMax] und insgesamt `anzahl` Summanden.
+function zufallsPolynom(gMin, gMax, anzahl, leit = KOEFF) {
+  const grad = zufall(bereich(gMin, gMax));
+  const rest = mische(bereich(0, grad - 1)).slice(0, anzahl - 1).sort((a, b) => b - a);
+  return [pot(zufall(leit), grad), ...rest.map((e) => pot(zufall(KOEFF), e))];
+}
+
+// einfach: ganzrational, Grad 2 oder 3.
+function generateE8() {
+  return stammAufgabe(zufallsPolynom(2, 3, zufall([2, 3])));
+}
+// mittel: negative Hochzahlen und Wurzeln (x⁻¹ kommt nicht vor — dafür fehlt noch der Logarithmus).
+function generateM8() {
+  return stammAufgabe(mische([
+    pot(zufall(KOEFF), zufall([-2, -3])),
+    pot(zufall(KLEIN), zufall([q(1, 2), q(-1, 2), q(3, 2)])),
+    pot(zufall(KOEFF), zufall([1, 2, 3])),
+  ]));
+}
+// schwierig: Sinus und Kosinus mit innerer Ableitung.
+function generateS8() {
+  const gl = [trig(zufall(KOEFF), zufall(["sin", "cos"]), zufall([2, 3, 4, q(1, 2)])), pot(zufall(KOEFF), zufall([1, 2, 3]))];
+  if (zufall([true, false])) gl.push(trig(zufall(KLEIN), zufall(["sin", "cos"]), 1));
+  return stammAufgabe(mische(gl));
+}
+// komplex: lineare Verkettung — Potenzen, Wurzeln und Winkelfunktionen von mx + n.
+function generateK8() {
+  const gl = [
+    kette(zufall([1, 2, 3, 4, -2]), zufall([2, 3, 4]), zufall([1, 2, 3]), zufall([2, 3, 4, -2, -3, q(1, 2), q(-1, 2)])),
+    trig(zufall(KLEIN), zufall(["sin", "cos"]), zufall([2, 3]), 1),
+  ];
+  if (zufall([true, false])) gl.push(pot(zufall(KOEFF), zufall([1, 2])));
+  return stammAufgabe(mische(gl));
+}
+
 export const AUFGABEN = [
   { schwierigkeit: "einfach", titel: "Potenzregel", generate: generateE1 },
   { schwierigkeit: "einfach", titel: "Integral eines Polynoms", generate: generateE2 },
@@ -1200,6 +1251,7 @@ export const AUFGABEN = [
   { schwierigkeit: "einfach", titel: "Sinus und Kosinus", generate: generateE5 },
   { schwierigkeit: "einfach", titel: "Schnittstellen von Parabel und Gerade", generate: generateE6 },
   { schwierigkeit: "einfach", titel: "Uneigentliches Integral in zwei Schritten", generate: generateE7 },
+  { schwierigkeit: "einfach", titel: "Stammfunktion: ganzrational", generate: generateE8, wuerfelText: "🎲 Neue Funktion" },
   { schwierigkeit: "mittel", titel: "Fläche mit Vorzeichenwechsel", generate: generateM1 },
   { schwierigkeit: "mittel", titel: "Fläche zwischen Parabel und Gerade", generate: generateM2 },
   { schwierigkeit: "mittel", titel: "Stammfunktion durch einen Punkt", generate: generateM3 },
@@ -1207,6 +1259,7 @@ export const AUFGABEN = [
   { schwierigkeit: "mittel", titel: "Obere Grenze gesucht", generate: generateM5 },
   { schwierigkeit: "mittel", titel: "Drei Schnittstellen", generate: generateM6 },
   { schwierigkeit: "mittel", titel: "Polstelle am Rand", generate: generateM7 },
+  { schwierigkeit: "mittel", titel: "Stammfunktion: Potenzen und Wurzeln", generate: generateM8, wuerfelText: "🎲 Neue Funktion" },
   { schwierigkeit: "schwierig", titel: "Fläche zwischen zwei Parabeln", generate: generateS1 },
   { schwierigkeit: "schwierig", titel: "Parameter aus dem Flächeninhalt", generate: generateS2 },
   { schwierigkeit: "schwierig", titel: "Rotationsvolumen", generate: generateS3 },
@@ -1214,6 +1267,7 @@ export const AUFGABEN = [
   { schwierigkeit: "schwierig", titel: "Größter Bestand", generate: generateS5 },
   { schwierigkeit: "schwierig", titel: "Schnittstellen und Fläche zweier Parabeln", generate: generateS6 },
   { schwierigkeit: "schwierig", titel: "Unendlich langer Rotationskörper", generate: generateS7 },
+  { schwierigkeit: "schwierig", titel: "Stammfunktion: Sinus und Kosinus", generate: generateS8, wuerfelText: "🎲 Neue Funktion" },
   { schwierigkeit: "komplex", titel: "Tangente an eine kubische Funktion", generate: generateK1 },
   { schwierigkeit: "komplex", titel: "Maximum einer Integralfunktion", generate: generateK2 },
   { schwierigkeit: "komplex", titel: "Kugelschicht", generate: generateK3 },
@@ -1221,4 +1275,5 @@ export const AUFGABEN = [
   { schwierigkeit: "komplex", titel: "Unbegrenzte Fläche zwischen zwei Graphen", generate: generateK5 },
   { schwierigkeit: "komplex", titel: "Kubische Funktion und Parabel", generate: generateK6 },
   { schwierigkeit: "komplex", titel: "Grenze aus einer unbegrenzten Fläche", generate: generateK7 },
+  { schwierigkeit: "komplex", titel: "Stammfunktion: lineare Verkettung", generate: generateK8, wuerfelText: "🎲 Neue Funktion" },
 ];

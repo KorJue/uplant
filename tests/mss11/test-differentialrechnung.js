@@ -19,8 +19,8 @@ const { neuerBericht } = require("../lib/pruefen");
 const { starteBrowser, neueSeite, oeffne, setzeRegler, text } = require("../lib/seite");
 const { pruefeNotation } = require("../lib/notation");
 const { pruefeKontrast } = require("../lib/kontrast");
-const { pruefeSelbsttest } = require("../lib/selbsttest");
 const { pruefeAufgabe, zahl } = require("../lib/aufgaben");
+const { liesTermAufgabe, termDeuter, pruefeTermleser } = require("../lib/terme");
 const fs = require("fs");
 const path = require("path");
 
@@ -785,7 +785,10 @@ const T = 0.0001;
 const TW = 0.006;
 // Gemessen mit UPLANT_ZUEGE=25 tests/werkzeug-streuung.js (200 Würfe je Aufgabe, 10⁻⁴-Quantil für 0,8 · n):
 //   UPLANT_ZUEGE=25 node tests/werkzeug-streuung.js /mathematik/mss11/01-analysis/03-differentialrechnung/index.html
-const SCHRANKE = {1: 18, 2: 22, 3: 14, 4: 19, 5: 18, 6: 21, 7: 19, 8: 18, 9: 14, 10: 13, 11: 14, 12: 17, 13: 18, 14: 20, 15: 15, 16: 21, 17: 17, 18: 14, 19: 16, 20: 16};
+// Termaufgaben: weniger Runden, denn jede Runde prüft sechs bis acht Eingaben. Ihre Schranken
+// (6, 12, 18, 24) sind deshalb für 12 Züge gemessen: UPLANT_ZUEGE=12 node tests/werkzeug-streuung.js …
+const RT = 12;
+const SCHRANKE = {1: 18, 2: 22, 3: 14, 4: 19, 5: 18, 6: 9, 7: 21, 8: 19, 9: 18, 10: 14, 11: 13, 12: 9, 13: 14, 14: 17, 15: 18, 16: 20, 17: 15, 18: 9, 19: 21, 20: 17, 21: 14, 22: 16, 23: 16, 24: 10};
 const ZAHL = "(−?[\\d,]+)";
 
 async function aufgaben(page) {
@@ -834,26 +837,26 @@ async function aufgaben(page) {
     const k = liesPoly(m[1]), xs = -k[1] / (2 * k[2]);
     return { richtig: xs, toleranz: T, pruefe: () => pruefe(Math.abs(ableitung(polyFn(k), xs, 1e-6)) < 1e-6, "A5: An der Lösungsstelle ist f′ nicht 0"), falsch: [[-xs, "Vorzeichen"], [-k[1] / k[2], "der Faktor 2 fehlt"]] };
   });
-  await A(6, "A6 Differenzenquotient", (q) => {
+  await A(7, "A7 Differenzenquotient", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = (.+?)\\. Berechne den Differenzenquotienten .* für x₀ = ${ZAHL} und x = ${ZAHL}\\.`));
     if (!m) return null;
     const f = polyFn(liesPoly(m[1])), x0 = zahl(m[2]), h = zahl(m[3]) - x0;
     const soll = (f(x0 + h) - f(x0)) / h;
     return { richtig: soll, toleranz: T, falsch: [[ableitung(f, x0, 1e-5), "schon der Grenzwert"], [Math.abs(h - 1) < 1e-9 ? NaN : soll * h, "Noch durch x − x₀"], [ableitung(f, x0 + h, 1e-5), "Steigung an der Stelle x ="]] };
   });
-  await A(7, "A7 Tangentengleichung", (q) => {
+  await A(8, "A8 Tangentengleichung", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = (.+?)\\. Bestimme die Gleichung der Tangente an den Graphen im Punkt mit x₀ = ${ZAHL}`));
     if (!m) return null;
     const f = polyFn(liesPoly(m[1])), x0 = zahl(m[2]), s = ableitung(f, x0, 1e-5), b = f(x0) - s * x0;
     return { felder: [s, b], toleranz: T, falschFelder: [[0, f(x0), "die Höhe des Punktes"], [1, f(x0), "nicht der Achsenabschnitt"], [1, f(x0) + s * x0, "Vorzeichen"]] };
   });
-  await A(8, "A8 Normalengleichung", (q) => {
+  await A(9, "A9 Normalengleichung", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = (.+?)\\. Bestimme die Gleichung der Normalen im Punkt mit x₀ = ${ZAHL}`));
     if (!m) return null;
     const f = polyFn(liesPoly(m[1])), x0 = zahl(m[2]), s = ableitung(f, x0, 1e-5), mn = -1 / s, bn = f(x0) - mn * x0;
     return { felder: [mn, bn], toleranz: T, falschFelder: [[0, Math.abs(Math.abs(s) - 1) < 1e-6 ? NaN : -s, "Nur das Vorzeichen gewechselt"], [0, 1 / s, "Der Kehrwert allein reicht nicht"], [1, f(x0) - s * x0, "Achsenabschnitt der Tangente"]] };
   });
-  await A(9, "A9 Substitution", (q) => {
+  await A(10, "A10 Substitution", (q) => {
     const m = q.match(/f\(x\) = (.+?)\. Bestimme alle Nullstellen/);
     if (!m) return null;
     const k = liesPoly(m[1]), a = k[4], p = (k[2] || 0) / a, qq = (k[0] || 0) / a;
@@ -862,10 +865,10 @@ async function aufgaben(page) {
     for (const u of us) { if (u > 1e-12) { xs.add(Math.sqrt(u)); xs.add(-Math.sqrt(u)); } else if (Math.abs(u) <= 1e-12) xs.add(0); }
     const gross = Math.max(...xs), anzahl = xs.size;
     const f = polyFn(k);
-    return { felder: [gross, anzahl], toleranz: T, pruefe: () => pruefe([...xs].every((x) => Math.abs(f(x)) < 1e-6), "A9: Eine nachgerechnete Nullstelle ist keine"),
+    return { felder: [gross, anzahl], toleranz: T, pruefe: () => pruefe([...xs].every((x) => Math.abs(f(x)) < 1e-6), "A10: Eine nachgerechnete Nullstelle ist keine"),
       falschFelder: [[0, Math.max(...us), "Rücksubstitution"], [1, anzahl === 4 ? NaN : 4, us.some((u) => u < -1e-12) ? "Ein negatives u liefert keine Nullstelle" : "u = 0 liefert nur die eine Nullstelle"]] };
   });
-  await A(10, "A10 Hoch- oder Tiefpunkt", (q) => {
+  await A(11, "A11 Hoch- oder Tiefpunkt", (q) => {
     const m = q.match(/f\(x\) = (.+?) hat einen Hochpunkt und einen Tiefpunkt\. Bestimme die Koordinaten des (Tiefpunkt|Hochpunkt)s/);
     if (!m) return null;
     const k = liesPoly(m[1]), f = polyFn(k), z = Math.sqrt(-k[1] / (3 * k[3]));
@@ -873,69 +876,69 @@ async function aufgaben(page) {
     const x = typ(z) === m[2] ? z : -z, anders = -x;
     return { felder: [x, f(x)], toleranz: T, falschFelder: [[0, anders, "Dort liegt der"], [1, f(anders), "Das ist die Höhe des"], [1, f(0), "Das ist f(0)"]] };
   });
-  await A(11, "A11 Schnittwinkel", (q) => {
+  await A(13, "A13 Schnittwinkel", (q) => {
     const m = q.match(new RegExp(`g\\(x\\) = (.+?) und die Normalparabel f\\(x\\) = x² schneiden sich im Punkt P\\(${ZAHL} \\| ${ZAHL}\\)`));
     if (!m) return null;
     const g = liesPoly(m[1]), x0 = zahl(m[2]), y0 = zahl(m[3]), mg = g[1] || 0;
     const al = Math.atan(ableitung((x) => x * x, x0, 1e-6)) * GRAD, be = Math.atan(mg) * GRAD, diff = Math.abs(al - be), ga = diff <= 90 ? diff : 180 - diff;
-    return { richtig: ga, toleranz: TW, pruefe: () => pruefe(nahe(polyFn(g)(x0), y0, 1e-9) && nahe(x0 * x0, y0, 1e-9), "A11: P liegt nicht auf beiden Graphen"),
+    return { richtig: ga, toleranz: TW, pruefe: () => pruefe(nahe(polyFn(g)(x0), y0, 1e-9) && nahe(x0 * x0, y0, 1e-9), "A13: P liegt nicht auf beiden Graphen"),
       falsch: [[diff > 90 ? diff : NaN, "Der Schnittwinkel ist der kleinere"], [mg === 0 ? NaN : Math.abs(al), "nur der Steigungswinkel der Parabel"], [Math.abs(Math.atan(2 * x0 - mg) * GRAD), "Differenz der Steigungen"]] };
   });
-  await A(12, "A12 differenzierbar zusammensetzen", (q) => {
+  await A(14, "A14 differenzierbar zusammensetzen", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = a · x² \\+ b für x ≤ ${ZAHL} und f\\(x\\) = (.+?) für x > `));
     if (!m) return null;
     const x0 = zahl(m[1]), g = liesPoly(m[2]), mm = g[1] || 0, n = g[0] || 0;
     const a = mm / (2 * x0), b = mm * x0 + n - a * x0 * x0;
     return { felder: [a, b], toleranz: T, falschFelder: [[0, mm / x0, "der Faktor 2 fehlt"], [1, mm * x0 + n, "noch a · x₀² abziehen"]] };
   });
-  await A(13, "A13 Kettenregel", (q) => {
+  await A(15, "A15 Kettenregel", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = \\((.+?)\\)([²³⁴⁵])\\. Berechne f′\\(${ZAHL}\\)`));
     if (!m) return null;
     const g = liesPoly(m[1]), n = HOCH[m[2]], x0 = zahl(m[3]), a = g[1] || 0, u = polyFn(g)(x0);
     const f = (x) => polyFn(g)(x) ** n;
     return { richtig: ableitung(f, x0, 1e-6), toleranz: Math.max(T, 1e-6 * Math.abs(ableitung(f, x0, 1e-6))), falsch: [[n * u ** (n - 1), "Die innere Ableitung fehlt"], [u ** n, "Funktionswert"], [n * a * u ** n, "der Exponent wird um 1 kleiner"]] };
   });
-  await A(14, "A14 Produktregel", (q) => {
+  await A(16, "A16 Produktregel", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = \\((.+?)\\) · \\((.+?)\\)\\. Berechne f′\\(${ZAHL}\\)`));
     if (!m) return null;
     const U = polyFn(liesPoly(m[1])), V = polyFn(liesPoly(m[2])), x0 = zahl(m[3]);
     const du = ableitung(U, x0, 1e-5), dv = ableitung(V, x0, 1e-5);
     return { richtig: ableitung((x) => U(x) * V(x), x0, 1e-5), toleranz: T, falsch: [[du * dv, "ist nicht u′ · v′"], [du * V(x0), "nur der erste Summand"], [U(x0) * V(x0), "Funktionswert"]] };
   });
-  await A(15, "A15 Tangenten von außen", (q) => {
+  await A(17, "A17 Tangenten von außen", (q) => {
     const m = q.match(new RegExp(`Q\\(${ZAHL} \\| ${ZAHL}\\) aus werden die beiden Tangenten an den Graphen von f\\(x\\) = (.+?) gelegt`));
     if (!m) return null;
     const u = zahl(m[1]), v = zahl(m[2]), a = liesPoly(m[3])[2];
     // Tangente in x₀ durch Q: v = f(x₀) + f′(x₀)(u − x₀) ⟺ a·x₀² − 2a·u·x₀ + v = 0.
     const D = u * u - v / a, x1 = u - Math.sqrt(D), x2 = u + Math.sqrt(D);
     const geht = (x0) => nahe(a * x0 * x0 + 2 * a * x0 * (u - x0), v, 1e-9);
-    return { felder: [x1, x2], toleranz: T, pruefe: () => pruefe(geht(x1) && geht(x2), "A15: Die Tangenten gehen nicht durch Q"), falschFelder: [[0, u, "Q liegt nicht auf der Parabel"], [1, u, "Q liegt nicht auf der Parabel"]] };
+    return { felder: [x1, x2], toleranz: T, pruefe: () => pruefe(geht(x1) && geht(x2), "A17: Die Tangenten gehen nicht durch Q"), falschFelder: [[0, u, "Q liegt nicht auf der Parabel"], [1, u, "Q liegt nicht auf der Parabel"]] };
   });
-  await A(16, "A16 Parabel aus Bedingungen", (q) => {
+  await A(19, "A19 Parabel aus Bedingungen", (q) => {
     const m = q.match(new RegExp(`durch P\\(0 \\| ${ZAHL}\\), hat an der Stelle ${ZAHL} die Steigung ${ZAHL} und an der Stelle ${ZAHL} eine waagerechte Tangente`));
     if (!m) return null;
     const c = zahl(m[1]), x1 = zahl(m[2]), m1 = zahl(m[3]), x2 = zahl(m[4]);
     const a = m1 / (2 * (x1 - x2)), b = -2 * a * x2;
     return { felder: [a, b, c], toleranz: T, falschFelder: [[0, 2 * a, "der Faktor 2 gehört zu a"], [1, b === 0 ? NaN : -b, "Vorzeichen"]] };
   });
-  await A(17, "A17 Durchschnitt und Augenblick", (q) => {
+  await A(20, "A20 Durchschnitt und Augenblick", (q) => {
     const m = q.match(new RegExp(`s\\(t\\) = (.+?) Meter zurückgelegt\\. a\\) .*zwischen t = ${ZAHL} s und t = ${ZAHL} s`));
     if (!m) return null;
     const k = liesPoly(m[1], "t"), s = polyFn(k), t1 = zahl(m[2]), t2 = zahl(m[3]);
     const vq = (s(t2) - s(t1)) / (t2 - t1), a = k[2], v0 = k[1] || 0, ts = (vq - v0) / (2 * a);
-    return { felder: [vq, ts], toleranz: T, pruefe: () => pruefe(nahe(ableitung(s, ts, 1e-5), vq, 1e-6), "A17: Zur nachgerechneten Zeit ist die Geschwindigkeit nicht v̄"),
+    return { felder: [vq, ts], toleranz: T, pruefe: () => pruefe(nahe(ableitung(s, ts, 1e-5), vq, 1e-6), "A20: Zur nachgerechneten Zeit ist die Geschwindigkeit nicht v̄"),
       falschFelder: [[0, s(t2) - s(t1), "zurückgelegte Weg"], [0, t1 === 0 ? NaN : s(t2) / t2, "Durchschnitt ab t = 0"], [1, v0 === 0 ? NaN : vq / (2 * a), "gehört dazu"]] };
   });
-  await A(18, "A18 biquadratisch", (q) => {
+  await A(21, "A21 biquadratisch", (q) => {
     const m = q.match(/f\(x\) = (.+?)\. Der Graph ist achsensymmetrisch zur y-Achse und hat zwei (Tiefpunkt|Hochpunkt)e\. Bestimme den rechten/);
     if (!m) return null;
     const k = liesPoly(m[1]), f = polyFn(k), xr = Math.sqrt(-k[2] / (2 * k[4]));
     const typ = ableitung(f, xr - 0.01) < 0 && ableitung(f, xr + 0.01) > 0 ? "Tiefpunkt" : "Hochpunkt";
     const c = k[0] || 0;
-    return { felder: [xr, f(xr)], toleranz: T, pruefe: () => pruefe(typ === m[2], `A18: Am rechten Extrempunkt liegt ein ${typ}, die Aufgabe sagt ${m[2]}`),
+    return { felder: [xr, f(xr)], toleranz: T, pruefe: () => pruefe(typ === m[2], `A21: Am rechten Extrempunkt liegt ein ${typ}, die Aufgabe sagt ${m[2]}`),
       falschFelder: [[0, xr === 1 ? NaN : xr * xr, "Das ist x², nicht x"], [1, c, "Das ist f(0)"], [1, c === 0 ? NaN : f(xr) - c, "Das Absolutglied"]] };
   });
-  await A(19, "A19 Tangente schneidet wieder", (q) => {
+  await A(22, "A22 Tangente schneidet wieder", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = (.+?) im Punkt mit x₀ = ${ZAHL} schneidet den Graphen`));
     if (!m) return null;
     const k = liesPoly(m[1]), f = polyFn(k), x0 = zahl(m[2]);
@@ -943,58 +946,24 @@ async function aufgaben(page) {
     // Unabhängig: f − t hat bei x₀ eine doppelte Nullstelle; die dritte liefert der Satz von Vieta
     // (Summe der Nullstellen = −Koeffizient von x² : Leitkoeffizient).
     const xs = -(k[2] || 0) / k[3] - 2 * x0;
-    return { felder: [xs, f(xs)], toleranz: T, pruefe: () => pruefe(nahe(f(xs), t(xs), 1e-5) && Math.abs(xs - x0) > 1e-6, "A19: Der nachgerechnete Punkt liegt nicht auf der Tangente"),
+    return { felder: [xs, f(xs)], toleranz: T, pruefe: () => pruefe(nahe(f(xs), t(xs), 1e-5) && Math.abs(xs - x0) > 1e-6, "A22: Der nachgerechnete Punkt liegt nicht auf der Tangente"),
       falschFelder: [[0, x0, "Das ist der Berührpunkt selbst"], [0, 2 * x0, "prüfe die verbleibende Nullstelle"], [0, -x0, "prüfe die verbleibende Nullstelle"], [1, f(x0), "Höhe des Berührpunkts"]] };
   });
-  await A(20, "A20 Kettenregel und Tangente", (q) => {
+  await A(23, "A23 Kettenregel und Tangente", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = √\\((.+?)\\)\\. Bestimme die Tangente an den Graphen im Punkt mit x₀ = ${ZAHL}`));
     if (!m) return null;
     const g = liesPoly(m[1]), x0 = zahl(m[2]), a = g[1] || 0;
     const f = (x) => Math.sqrt(polyFn(g)(x)), s = ableitung(f, x0, 1e-6), b = f(x0) - s * x0;
     return { felder: [s, b], toleranz: T, falschFelder: [[0, a === 1 ? NaN : 1 / (2 * f(x0)), "Die innere Ableitung fehlt"], [1, f(x0), "nicht der Achsenabschnitt"]] };
   });
-}
-
-// ---------- Selbsttest „Ableitungsfunktionen bestimmen“ (Ende von Abschnitt 6) ----------
-// Die richtigen Ableitungen sind hier von Hand nachgerechnet; die Seite prüft numerisch.
-async function selbsttests(page) {
-  const R = ["✓ Richtig"], X = (m) => ["✗ Noch nicht", m, "Tipp"];
-  await pruefeSelbsttest(page, bericht, "pa-regeln", [
-    { aufgabe: "0", eingaben: ["6x − 5"], erwartet: [R] },
-    { aufgabe: "0", eingaben: ["6x − 5 + 2"], erwartet: [X("Bis auf eine Konstante")] },
-    { aufgabe: "0", eingaben: ["3x² − 5x + 2"], erwartet: [X("Das ist f selbst")] },
-    { aufgabe: "0", eingaben: ["x^3 − 2,5x^2 + 2x"], erwartet: [X("falsche Richtung")] },
-    { aufgabe: "0", eingaben: ["6"], erwartet: [X("einmal zu oft")] },
-    { aufgabe: "0", eingaben: ["−6x + 5"], erwartet: [X("Vorzeichenfehler")] },
-    { aufgabe: "1", eingaben: ["2x³ − 6x² + 1"], erwartet: [R] },
-    { aufgabe: "1", eingaben: ["x³ − 3x² + 0,5"], erwartet: [X("Bis auf einen Faktor")] },
-    { aufgabe: "2", eingaben: ["−10x⁴ + 6x"], erwartet: [R] },
-    { aufgabe: "2", eingaben: ["10x^4 − 6x"], erwartet: [X("Vorzeichenfehler")] },
-    { aufgabe: "2", eingaben: ["−10x⁴ + 6x − 7"], erwartet: [X("Bis auf eine Konstante")] },
-    { aufgabe: "3", eingaben: ["−4/x²"], erwartet: [R] },
-    { aufgabe: "3", eingaben: ["−4x^(−2)"], erwartet: [R] },
-    { aufgabe: "3", eingaben: ["4/x^2"], erwartet: [X("Vorzeichenfehler")] },
-    { aufgabe: "4", eingaben: ["−2/x³"], erwartet: [R] },
-    { aufgabe: "4", eingaben: ["−2x^−3"], erwartet: [R] },
-    { aufgabe: "4", eingaben: ["−2/x"], erwartet: [X("Bei x =")] },
-    { aufgabe: "5", eingaben: ["1/√x"], erwartet: [R] },
-    { aufgabe: "5", eingaben: ["x^(−0,5)"], erwartet: [R] },
-    { aufgabe: "5", eingaben: ["x^(−1/2)/2"], erwartet: [X("Bis auf einen Faktor")] },
-    { aufgabe: "6", eingaben: ["3x² + 1/x²"], erwartet: [R] },
-    { aufgabe: "6", eingaben: ["3x² − 1/x²"], erwartet: [X("Bei x =")] },
-    { aufgabe: "7", eingaben: ["2x + 2"], erwartet: [R] },
-    { aufgabe: "7", eingaben: ["2(x + 1)"], erwartet: [R] },
-    { aufgabe: "7", eingaben: ["2x + 1"], erwartet: [X("Bis auf eine Konstante")] },
-    { aufgabe: "eigen", f: "x^5 − 3x", eingaben: ["5x^4 − 3"], erwartet: [R] },
-    // Zu einer eigenen Funktion gibt es keinen vorbereiteten Tipp — nur die Diagnose.
-    { aufgabe: "eigen", f: "x^5 − 3x", eingaben: ["5x^4"], erwartet: [["✗ Noch nicht", "Bis auf eine Konstante"]] },
-    { aufgabe: "eigen", f: "y + 1", eingaben: ["1"], erwartet: [["f(x) nicht lesbar"]] },
-    { aufgabe: "0", eingaben: ["2x)"], erwartet: [["nicht lesbar"]] },
-    { aufgabe: "0", eingaben: ["(x + 1"], erwartet: [["nicht lesbar"]] },
-    { aufgabe: "0", eingaben: [""], erwartet: [[]] },
-  ]);
-  await page.selectOption("#pa-regeln-aufgabe", "0");
-  await page.fill("#pa-regeln-d1", "");
+  // Je Stufe eine Termaufgabe mit beliebig vielen Funktionen. Die Angabe wird mit einem eigenen
+  // Termleser gelesen und numerisch abgeleitet (tests/lib/terme.js) — die exakten Ableitungen der Seite
+  // werden dafür nicht benutzt.
+  for (const [nr, stufe] of [[6, "ganzrational"], [12, "Potenzen und Wurzeln"], [18, "Kettenregel"], [24, "Produktregel"]]) {
+    const name = `A${nr} Ableitungsfunktion: ${stufe}`;
+    await pruefeAufgabe(page, bericht, { nr, name, runden: RT, mindestensVerschieden: SCHRANKE[nr] ?? 5,
+      liesRoh: liesTermAufgabe, deute: termDeuter(bericht, name, "ableitung") });
+  }
 }
 
 (async () => {
@@ -1020,7 +989,7 @@ async function selbsttests(page) {
       await monotonie(page);
       await stolperstelle(page);
       await quizze(page);
-      await selbsttests(page);
+      await pruefeTermleser(page, bericht);
       await aufgaben(page);
     } else {
       await pruefeKontrast(page, bericht, "dunkel");

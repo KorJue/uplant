@@ -92,14 +92,7 @@
   background: #3a1f1f;
 }
 
-/* ---------- Selbsttest Ableiten / Aufleiten (mathematik/selbsttest.js) ---------- */
-.unterabschnitt { font-size: 1.08rem; margin: 1.5rem 0 0.4rem; }
-.selbsttest-eingabe { width: 17rem; max-width: 100%; padding: 0.4rem 0.5rem; font-size: 1rem; }
-.selbsttest-urteil { font-weight: 700; }
-.selbsttest-urteil.ok { color: #157347; }
-.selbsttest-urteil.err { color: #b3261e; }
-:root[data-theme="dark"] .selbsttest-urteil.ok { color: #6fd68f; }
-:root[data-theme="dark"] .selbsttest-urteil.err { color: #ff8a8a; }
-.selbsttest-proben { border-collapse: collapse; margin-top: 0.4rem; font-variant-numeric: tabular-nums; }
-.selbsttest-proben th, .selbsttest-proben td { border: 1px solid var(--border); padding: 0.15rem 0.5rem; text-align: right; }
-.selbsttest-trenner { border: none; border-top: 1px solid var(--border); margin: 0.6rem 0; }
+/* ---------- Termaufgaben (mathematik/terme.js) ---------- */
+/* Die Eingabeform steht in Schreibmaschinenschrift: So sieht man, dass „x^2“ und „sqrt(x)“ wörtlich
+   getippt werden, nicht als Formel gemeint sind. */
+.eingabeform { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.95em; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 0 0.3rem; }

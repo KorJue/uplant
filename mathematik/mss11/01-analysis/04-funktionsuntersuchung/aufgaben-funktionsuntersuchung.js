@@ -1,4 +1,4 @@
-// Die zwanzig Übungsaufgaben zu „Funktionsuntersuchung“ — fünf je Stufe.
+// Die vierundzwanzig Übungsaufgaben zu „Funktionsuntersuchung“ — sechs je Stufe.
 //
 //   einfach   — f″ an einer Stelle, Wendestelle, Hochstelle mit f″, ein Newton-Schritt, globales
 //               Maximum auf einem Intervall.
@@ -9,11 +9,16 @@
 //   komplex   — kubische Funktion aus Extrem- und Wendepunkt, biquadratische Funktion mit
 //               Wendetangente, Gewinn bei begrenzter Kapazität, zwei Newton-Schritte, Ortskurve.
 //
+// Die sechste Aufgabe jeder Stufe verlangt f′ und f″ einer jedes Mal neu gewürfelten Funktion
+// (mathematik/terme.js): ganzrational, Potenzen und Wurzeln, Sinus und Kosinus, Funktionenschar.
+//
 // Gewürfelt wird konstruktiv: Die Kandidatenlisten werden vorher gesiebt, ohneKollision() wählt aus
 // dem Rest. Jeder Fehlerwert ist von der Lösung und von den anderen Fehlerwerten verschieden — wo ein
 // Fehler mit der Lösung zusammenfiele, steht NaN.
 
 "use strict";
+
+import { pot, trig, prod, q, ableitungsAufgabe, pick as zufall, mische } from "../../../terme.js?v=1";
 
 const ZAHLFORMATE = new Map();
 function zahlformat(stellen) {
@@ -736,25 +741,75 @@ function generateK5() {
   };
 }
 
+// ================= f′ und f″ bestimmen (Termeingabe, je Stufe eine) =================
+// Die Funktionen setzen sich aus Gliedern zusammen, die ihre Ableitungen exakt kennen
+// (mathematik/terme.js) — so gibt es beliebig viele, und die Musterlösung entsteht aus denselben
+// Gliedern wie die Angabe. Geprüft werden beide Felder numerisch, mit Fehlerdiagnose.
+
+// Ganzzahlige Bereiche und Koeffizienten zum Würfeln. Gewürfelt wird konstruktiv: jede Wahl kommt
+// aus einer festen Liste, es gibt nichts zu verwerfen.
+const bereich = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
+const KOEFF = [-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6];
+const KLEIN = [-3, -2, -1, 1, 2, 3];
+// Ein Polynom mit höchstem Exponenten aus [gMin; gMax] und insgesamt `anzahl` Summanden.
+function zufallsPolynom(gMin, gMax, anzahl, leit = KOEFF) {
+  const grad = zufall(bereich(gMin, gMax));
+  const rest = mische(bereich(0, grad - 1)).slice(0, anzahl - 1).sort((a, b) => b - a);
+  return [pot(zufall(leit), grad), ...rest.map((e) => pot(zufall(KOEFF), e))];
+}
+
+// einfach: ganzrational, Grad 3 oder 4.
+function generateE6() {
+  return ableitungsAufgabe(zufallsPolynom(3, 4, zufall([2, 3]), [...KOEFF, q(1, 2), q(-1, 2)]), { zweite: true });
+}
+// mittel: Potenz, negative Hochzahl, Wurzel.
+function generateM6() {
+  return ableitungsAufgabe(mische([
+    pot(zufall(KOEFF), zufall([2, 3, 4])),
+    pot(zufall(KLEIN), zufall([-1, -2])),
+    pot(zufall(KLEIN), zufall([q(1, 2), q(3, 2)])),
+  ]), { zweite: true });
+}
+// schwierig: Sinus und Kosinus mit innerer Funktion oder ein Produkt x · sin(x).
+function generateS6() {
+  const welle = zufall([
+    trig(zufall(KLEIN), zufall(["sin", "cos"]), zufall([1, 2, 3, q(1, 2)])),
+    prod(zufall([1, -1, 2]), 1, trig(1, zufall(["sin", "cos"]), 1)),
+  ]);
+  return ableitungsAufgabe(mische([welle, pot(zufall(KOEFF), zufall([2, 3]))]), { zweite: true });
+}
+// komplex: Funktionenschar — der Parameter a ist beim Ableiten eine feste Zahl.
+function generateK6() {
+  const familie = [
+    pot(zufall([1, -1, 2]), 3), pot(zufall(KLEIN), 2, 1), pot(zufall(KLEIN), 1, 2),
+    pot(zufall([1, 2, -1]), 0, 3), trig(zufall([1, -1, 2]), zufall(["sin", "cos"]), 1, 0, 1), pot(zufall([1, -1]), 4, 1),
+  ];
+  return ableitungsAufgabe(mische(familie).slice(0, 3), { zweite: true, name: "fₐ", parameter: ["a"], zusatz: " (a &gt; 0)" });
+}
+
 export const AUFGABEN = [
   { schwierigkeit: "einfach", titel: "Zweite Ableitung an einer Stelle", generate: generateE1 },
   { schwierigkeit: "einfach", titel: "Wendestelle", generate: generateE2 },
   { schwierigkeit: "einfach", titel: "Hochstelle mit f″", generate: generateE3 },
   { schwierigkeit: "einfach", titel: "Ein Newton-Schritt", generate: generateE4 },
   { schwierigkeit: "einfach", titel: "Globales Maximum", generate: generateE5 },
+  { schwierigkeit: "einfach", titel: "f′ und f″: ganzrational", generate: generateE6, wuerfelText: "🎲 Neue Funktion" },
   { schwierigkeit: "mittel", titel: "Wendepunkt", generate: generateM1 },
   { schwierigkeit: "mittel", titel: "Hoch- und Tiefpunkt", generate: generateM2 },
   { schwierigkeit: "mittel", titel: "Wendetangente", generate: generateM3 },
   { schwierigkeit: "mittel", titel: "Sattelpunkt durch einen Parameter", generate: generateM4 },
   { schwierigkeit: "mittel", titel: "Extrempunkte mit Sinus und Kosinus", generate: generateM5 },
+  { schwierigkeit: "mittel", titel: "f′ und f″: Potenzen und Wurzeln", generate: generateM6, wuerfelText: "🎲 Neue Funktion" },
   { schwierigkeit: "schwierig", titel: "Scharparameter bestimmen", generate: generateS1 },
   { schwierigkeit: "schwierig", titel: "Punktsymmetrische Funktion aus einem Extrempunkt", generate: generateS2 },
   { schwierigkeit: "schwierig", titel: "Die größte Schachtel", generate: generateS3 },
   { schwierigkeit: "schwierig", titel: "Rechteck unter einer Parabel", generate: generateS4 },
   { schwierigkeit: "schwierig", titel: "Stärkstes Wachstum", generate: generateS5 },
+  { schwierigkeit: "schwierig", titel: "f′ und f″: Sinus und Kosinus", generate: generateS6, wuerfelText: "🎲 Neue Funktion" },
   { schwierigkeit: "komplex", titel: "Kubische Funktion aus Extrem- und Wendepunkt", generate: generateK1 },
   { schwierigkeit: "komplex", titel: "Biquadratische Funktion und Wendetangente", generate: generateK2 },
   { schwierigkeit: "komplex", titel: "Gewinnmaximum bei begrenzter Kapazität", generate: generateK3 },
   { schwierigkeit: "komplex", titel: "Zwei Newton-Schritte", generate: generateK4 },
   { schwierigkeit: "komplex", titel: "Ortskurve der Wendepunkte", generate: generateK5 },
+  { schwierigkeit: "komplex", titel: "f′ und f″ einer Funktionenschar", generate: generateK6, wuerfelText: "🎲 Neue Funktion" },
 ];
