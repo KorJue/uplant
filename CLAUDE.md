@@ -275,7 +275,7 @@ Konstante, Richtung, einmal zu oft …). Die Aufgabenbauer
 `ableitungsAufgabe()` und `stammAufgabe()` liefern fertige Aufgaben für
 `mountUebungsaufgaben()`; welche Glieder gewürfelt werden, steht in der
 jeweiligen Seite. Benutzt wird das in der Differentialrechnung (2.1 und 2.2), der
-Funktionsuntersuchung und der Integralrechnung — eine Änderung wirkt auf alle,
+Funktionsuntersuchung (3.1 und 3.2) und der Integralrechnung — eine Änderung wirkt auf alle,
 also gehören alle diese Prüfungen danach in den Lauf. Bei linearem Exponenten
 nennt die Musterlösung (e^(kx))′ = k · e^(kx), nicht die Kettenregel — die hat
 der Grundkurs nicht.
@@ -285,7 +285,11 @@ der Leistungskurs braucht, x.2 nur Leistungskurs (rheinland-pfälzischer Lehrpla
 Kettenregel, sin/cos, Quotientenregel, ln-Funktion). Abschnitte tragen
 `<span class="kurs-marke gk|lk">`; ein Grundkurs-Abschnitt stützt sich nie auf
 einen LK-Abschnitt, und LK-Funktionen in seiner Auswahl tragen „(LK)“ — beides
-prüft `test-weitere-funktionen-ableiten.js`.
+prüfen `test-weitere-funktionen-ableiten.js` und `test-weitere-funktionen-untersuchen.js`.
+Die x.2-Seiten stellen jeden Abschnitt ausdrücklich neben die ganzrationalen
+Funktionen (Kasten `.unterschied-box`) und sagen in `.rechenweg-box`, welcher
+Rechenweg wo erklärt ist; ein Rechenweg mit LK-Mitteln in einem GK-Abschnitt trägt
+die Klasse `lk`. LK-Aufgaben tragen „(LK)“ im Titel.
 * **Hinweise erklären den Fehler**, sie stellen ihn nicht bloß fest. „Das
   Halbieren fehlt: … ist das umschließende Rechteck, nicht das Dreieck" statt
   „Falsch".

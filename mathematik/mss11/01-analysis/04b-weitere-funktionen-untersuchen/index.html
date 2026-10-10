@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Untersuchung weiterer Funktionen</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="../../../aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">MSS 11</a><span class="sep">/</span>
+  <a href="../index.html">01 Analysis</a><span class="sep">/</span>
+  3.2 Untersuchung weiterer Funktionen
+</nav>
+<header class="page-header">
+  <h1>Funktionsuntersuchung: e-, ln- und Winkelfunktionen</h1>
+  <p>Ein Selbstlernpfad: Der Ablauf einer Funktionsuntersuchung bleibt derselbe — aber die Antworten werden andere. Funktionen mit e haben Asymptoten und nur so viele Nullstellen, wie ihr Polynomfaktor hergibt; Winkelfunktionen haben unendlich viele Extrempunkte; ln-Funktionen gibt es nur für positive Zahlen. Jeder Abschnitt leitet sein Ergebnis an einer beweglichen Darstellung her, rechnet es nach, stellt es ausdrücklich neben die ganzrationalen Funktionen und endet mit einer Kontrollfrage. Am Schluss stehen vierundzwanzig Übungsaufgaben auf vier Stufen.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>In <a href="../04-funktionsuntersuchung/index.html">Thema 3.1</a> hast du ganzrationale Funktionen vollständig untersucht: Symmetrie, Verhalten im Unendlichen, Nullstellen, Extrem- und Wendepunkte, Monotonie und Krümmung. In <a href="../03b-weitere-funktionen-ableiten/index.html">Thema 2.2</a> hast du gelernt, e-, ln- und Winkelfunktionen abzuleiten. Hier kommt beides zusammen. Die Bedingungen f′(x) = 0, f″(x) ≠ 0 und der Vorzeichenwechsel gelten unverändert — neu ist, <em>wie</em> man die Gleichungen löst, welche Schritte auf einmal wichtig werden und worauf man sich nicht mehr verlassen kann. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>die <span class="term">Unterschiede</span> zwischen der Untersuchung ganzrationaler und weiterer Funktionen Schritt für Schritt benennen</li>
+      <li>die <span class="term">zweite Ableitung</span> von f(x) = p(x) · e<sup>kx</sup> bilden und ihr Vorzeichen am Polynomfaktor ablesen</li>
+      <li>eine Funktion mit e <span class="term">vollständig untersuchen</span>, einschließlich <span class="term">waagerechter Asymptoten</span></li>
+      <li><span class="term">Funktionenscharen</span> mit e untersuchen und Ortskurven bestimmen</li>
+      <li>bei <span class="term">Wachstumsmodellen</span> entscheiden, wann der Bestand am schnellsten wächst</li>
+      <li><span class="term">Extremwertprobleme</span> mit e- und Winkelfunktionen lösen — auch wenn sich A′(u) = 0 nicht nach u auflösen lässt</li>
+      <li>Funktionen mit Sinus und Kosinus, <span class="term">gedämpfte Schwingungen</span>, Funktionen mit ln und die <span class="term">Gaußsche Glockenkurve</span> untersuchen (Leistungskurs)</li>
+      <li>erkennen, wann das Bild auf dem Rechner etwas Wesentliches verschweigt</li>
+    </ul>
+    <p>Die Seite folgt der Schreibweise von <strong>Elemente der Mathematik</strong> und deckt zugleich die entsprechenden Kapitel in <strong>Fundamente der Mathematik</strong> ab: Untersuchung von Exponentialfunktionen und ihrer Verknüpfungen mit ganzrationalen Funktionen, Funktionenscharen, Wachstumsmodelle und Extremwertprobleme, im Leistungsfach zusätzlich Logarithmus- und trigonometrische Funktionen.</p>
+    <p class="kurs-hinweis"><span class="kurs-marke lk">Leistungskurs</span> Nach dem rheinland-pfälzischen Lehrplan gehören Sinus und Kosinus, die Kettenregel, die Quotientenregel und die Funktion ln zum Leistungsfach. Funktionen der Form p(x) · e<sup>kx</sup> zu untersuchen gehört dagegen auch zum Grundfach — diese Abschnitte tragen die Marke <span class="kurs-marke gk">GK + LK</span> und kommen ohne die Leistungskurs-Abschnitte aus; die übrigen tragen <span class="kurs-marke lk">LK</span>. Wo ein Grundkurs-Abschnitt ein Leistungskurs-Beispiel zur Auswahl anbietet, steht „(LK)“ daneben.</p>
+    <p class="hinweis-box">💡 Du brauchst den <a href="../04-funktionsuntersuchung/index.html#sec-schema">Ablauf einer Funktionsuntersuchung</a> und die <a href="../04-funktionsuntersuchung/index.html#sec-extrem2">Bedingungen für Extrem-</a> und <a href="../04-funktionsuntersuchung/index.html#sec-wendepunkte">Wendepunkte</a> aus Thema 3.1, aus Thema 2.2 die Ableitung von <a href="../03b-weitere-funktionen-ableiten/index.html#sec-ex">e<sup>kx</sup></a>, die <a href="../03b-weitere-funktionen-ableiten/index.html#sec-produkt-e">Produktregel mit Ausklammern</a>, das <a href="../03b-weitere-funktionen-ableiten/index.html#sec-ln">Lösen von e<sup>kx</sup> = c</a> und das <a href="../03b-weitere-funktionen-ableiten/index.html#sec-verhalten">Verhalten für x → ±∞</a> sowie die <a href="../02-grenzwerte-und-stetigkeit/index.html#sec-unendlich">waagerechte Asymptote</a> aus Thema 1.2. Welcher Rechenweg wo erklärt ist, steht ausführlich in Abschnitt 1.</p>
+  </section>
+
+  <!-- 1. Vergleich -->
+  <section class="card" id="sec-vergleich">
+    <h2>1. Derselbe Ablauf, andere Antworten <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span></h2>
+    <p>Die Schritte einer Funktionsuntersuchung aus <a href="../04-funktionsuntersuchung/index.html#sec-schema">Thema 3.1</a> funktionieren für jede Funktion, die man zweimal ableiten kann. Was sich ändert, sind die Antworten — und manche Schritte, die bei Polynomen kaum auffielen, werden plötzlich entscheidend. Gehe mit dem Regler die Schritte durch: Alle vier Funktionen werden gleichzeitig untersucht, und die Tabelle darunter stellt die Antworten nebeneinander.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Schritt: <input type="range" id="vg-s" min="1" max="7" step="1" value="1" style="vertical-align:middle;width:12rem"> <span id="vg-s-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap geo-paar" id="vg-mount"></div>
+      <div class="th-bilanz" id="vg-bilanz"></div>
+      <div id="vg-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Was bleibt — und was sich ändert</span>
+      <strong>Es bleibt:</strong> der Ablauf (Definitionsmenge, Symmetrie, Verhalten am Rand, Nullstellen, Extrem- und Wendepunkte, Monotonie und Krümmung, Graph) und jede Bedingung: f′(x<sub>E</sub>) = 0 mit f″(x<sub>E</sub>) ≠ 0 oder Vorzeichenwechsel von f′; f″(x<sub>W</sub>) = 0 mit Vorzeichenwechsel von f″.<br>
+      <strong>Es ändert sich:</strong>
+      <ol style="margin:0.2rem 0 0;padding-left:1.3rem">
+        <li><strong>Definitionsmenge:</strong> nicht mehr immer ℝ — bei ln nur x &gt; 0.</li>
+        <li><strong>Symmetrie:</strong> Die Regel „nur gerade / nur ungerade Exponenten“ gibt es nicht mehr; man setzt −x ein und vergleicht. Neu ist die <strong>Periodizität</strong>.</li>
+        <li><strong>Nullstellen:</strong> Ihre Zahl ist nicht mehr durch einen Grad begrenzt. Bei p(x) · e<sup>kx</sup> kommen sie nur aus p(x), weil e<sup>kx</sup> &gt; 0 ist.</li>
+        <li><strong>Verhalten am Rand:</strong> Statt „immer ±∞“ gibt es <strong>Asymptoten</strong>, Ränder des Definitionsbereichs und Funktionen ohne Grenzwert.</li>
+        <li><strong>Gleichungen:</strong> f′(x) = 0 ist oft kein Polynom mehr — gelöst wird über den Satz vom Nullprodukt, über ln oder über die Umkehrfunktionen von sin, cos und tan; manchmal nur näherungsweise.</li>
+        <li><strong>Ableitungen:</strong> Der Grad sinkt nicht mehr; f″ ist so lang wie f. Dafür bleibt die Form erhalten: „Polynom mal e<sup>kx</sup>“ bleibt „Polynom mal e<sup>kx</sup>“.</li>
+      </ol>
+    </div>
+    <div class="rechenweg-box">
+      <span class="box-label">Welche Rechenwege du brauchst — und wo sie erklärt sind</span>
+      <table class="rechenweg-tabelle">
+        <tr><th>Rechenweg</th><th>erklärt in</th></tr>
+        <tr><td>(e<sup>kx</sup>)′ = k · e<sup>kx</sup>, Produktregel mit Ausklammern</td><td><a href="../03b-weitere-funktionen-ableiten/index.html#sec-ex">Thema 2.2, Abschnitt 2</a> und <a href="../03b-weitere-funktionen-ableiten/index.html#sec-produkt-e">4</a></td></tr>
+        <tr><td>e<sup>kx</sup> = c mit ln lösen</td><td><a href="../03b-weitere-funktionen-ableiten/index.html#sec-ln">Thema 2.2, Abschnitt 3</a></td></tr>
+        <tr><td>Satz vom Nullprodukt, e<sup>kx</sup> wird nie 0</td><td><a href="../03b-weitere-funktionen-ableiten/index.html#sec-nullstellen">Thema 2.2, Abschnitt 11</a></td></tr>
+        <tr><td>e<sup>x</sup> setzt sich gegen jede Potenz durch</td><td><a href="../03b-weitere-funktionen-ableiten/index.html#sec-verhalten">Thema 2.2, Abschnitt 9</a></td></tr>
+        <tr><td>waagerechte Asymptote, Grenzwert für x → ±∞</td><td><a href="../02-grenzwerte-und-stetigkeit/index.html#sec-unendlich">Thema 1.2, Abschnitt 1</a></td></tr>
+        <tr><td><strong>zweite Ableitung von p(x) · e<sup>kx</sup></strong></td><td><strong>neu:</strong> <a href="#sec-zweite">Abschnitt 2</a></td></tr>
+        <tr><td><strong>Gleichungen ohne Lösungsformel</strong> (u · tan u = 1)</td><td><strong>neu hier:</strong> <a href="#sec-optimierung">Abschnitt 6</a> mit dem <a href="../04-funktionsuntersuchung/index.html#sec-newton">Newton-Verfahren</a> aus Thema 3.1</td></tr>
+        <tr><td>(LK) sin, cos, Kettenregel, Quotientenregel, ln</td><td><a href="../03b-weitere-funktionen-ableiten/index.html#sec-sinus">Thema 2.2, Abschnitte 5 bis 8</a></td></tr>
+        <tr><td>(LK) sin x = c: zwei Lösungen je Periode</td><td><a href="../03b-weitere-funktionen-ableiten/index.html#sec-nullstellen">Thema 2.2, Abschnitt 11</a></td></tr>
+        <tr><td>(LK) <strong>cos x = c im Intervall vollständig lösen</strong></td><td><strong>neu:</strong> <a href="#sec-trig">Abschnitt 7</a></td></tr>
+        <tr><td>(LK) <strong>tan x = c lösen</strong></td><td><strong>neu:</strong> <a href="#sec-schwingung">Abschnitt 8</a></td></tr>
+        <tr><td>(LK) <strong>Grenzwert von x · ln x für x → 0⁺</strong></td><td><strong>neu:</strong> <a href="#sec-ln">Abschnitt 9</a></td></tr>
+        <tr><td>(LK) <strong>Wendestellen mit der Kettenregel</strong></td><td><strong>neu:</strong> <a href="#sec-wachstum">Abschnitt 5</a> und <a href="#sec-glocke">10</a></td></tr>
+      </table>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Gewohnheiten aus Thema 3.1, die hier nicht mehr gelten</span>
+      „Eine Funktion dritten Grades hat höchstens zwei Extrempunkte“ — für e- und Winkelfunktionen gibt es keine solche Obergrenze. „Am Rand geht der Graph nach ±∞“ — eine e-Funktion kann sich einer Asymptote nähern. „Bei x = 0 ist alles harmlos“ — x · ln x ist dort nicht einmal definiert. Wer den Ablauf mechanisch abarbeitet, findet trotzdem alles; wer aus Gewohnheit Schritte weglässt, nicht.
+    </div>
+    <div class="quiz" id="quiz-vergleich"></div>
+  </section>
+
+  <!-- 2. Zweite Ableitung -->
+  <section class="card" id="sec-zweite">
+    <h2>2. Die zweite Ableitung von p(x) · e<sup>kx</sup> <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span></h2>
+    <p>In <a href="../03b-weitere-funktionen-ableiten/index.html#sec-produkt-e">Thema 2.2</a> wurde f′ mit der Produktregel gebildet und e<sup>kx</sup> ausgeklammert. Für die Krümmung braucht man f″ — und dafür macht man <em>dasselbe noch einmal</em>, denn f′ ist wieder ein Produkt aus Polynom und e<sup>kx</sup>. Weil e<sup>kx</sup> immer positiv ist, entscheidet über das Vorzeichen von f″ allein der Polynomfaktor in der Klammer. Wähle eine Funktion und fahre mit x₀ über den Graphen: Unten siehst du f″ (violett) und gestrichelt nur seine Klammer — beide haben dieselben Nullstellen und dasselbe Vorzeichen.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="zw-art" class="eingabe" style="padding:0.4rem">
+            <option value="a">f(x) = x · e^(−x)</option>
+            <option value="b">f(x) = x² · e^(−x)</option>
+            <option value="c">f(x) = (1 − x) · e^x</option>
+          </select>
+        </label>
+        <label>x₀: <input type="range" id="zw-x" min="-1" max="5" step="0.25" value="1" style="vertical-align:middle;width:11rem"> <span id="zw-x-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="zw-mount"></div>
+      <div class="th-bilanz" id="zw-bilanz"></div>
+      <div id="zw-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Ableitungen von f(x) = p(x) · e<sup>kx</sup></span>
+      <div class="formula-block">f′(x) = (p′(x) + k · p(x)) · e<sup>kx</sup></div>
+      <div class="formula-block">f″(x) = (p″(x) + 2k · p′(x) + k² · p(x)) · e<sup>kx</sup></div>
+      Jede Ableitung ist wieder „Polynom mal e<sup>kx</sup>“, der Grad des Polynoms bleibt gleich. Weil e<sup>kx</sup> &gt; 0 ist, gilt: <strong>f″(x) = 0 genau dann, wenn die Klammer null ist</strong>, und f″ hat überall das Vorzeichen der Klammer.
+    </div>
+    <div class="rechenweg-box">
+      <span class="box-label">Rechenweg — zweimal Produktregel, zweimal ausklammern: f(x) = x² · e<sup>−x</sup></span>
+      <ol style="margin:0.2rem 0 0;padding-left:1.3rem">
+        <li>u(x) = x², v(x) = e<sup>−x</sup>; u′(x) = 2x, v′(x) = −e<sup>−x</sup> (denn (e<sup>kx</sup>)′ = k · e<sup>kx</sup> mit k = −1).</li>
+        <li>f′(x) = u′ · v + u · v′ = 2x · e<sup>−x</sup> + x² · (−e<sup>−x</sup>) = <strong>(2x − x²) · e<sup>−x</sup></strong> — e<sup>−x</sup> ausgeklammert.</li>
+        <li>f′ ist wieder ein Produkt: u(x) = 2x − x², v(x) = e<sup>−x</sup>; u′(x) = 2 − 2x.</li>
+        <li>f″(x) = (2 − 2x) · e<sup>−x</sup> + (2x − x²) · (−e<sup>−x</sup>) = (2 − 2x − 2x + x²) · e<sup>−x</sup> = <strong>(x² − 4x + 2) · e<sup>−x</sup></strong>.</li>
+        <li>f″(x) = 0 ⟺ x² − 4x + 2 = 0 (e<sup>−x</sup> ≠ 0) ⟺ x = 2 ± √2 — mit der p-q-Formel, wie bei einer quadratischen Gleichung.</li>
+        <li><strong>Probe</strong> mit der Regel oben: p = x², k = −1: p″ + 2k · p′ + k² · p = 2 − 4x + x² ✓</li>
+      </ol>
+    </div>
+    <div class="unterschied-box">
+      <span class="box-label">Anders als bei ganzrationalen Funktionen</span>
+      Bei f(x) = x³ − 6x² + 9x wird jede Ableitung kürzer: f″(x) = 6x − 12 ist einfacher als f. Bei p(x) · e<sup>kx</sup> wird nichts kürzer — die Klammer behält ihren Grad, und der Faktor e<sup>kx</sup> verschwindet nie. Dafür muss man nie mehr als eine Polynomgleichung lösen: Die e-Funktion fällt beim Nullsetzen weg, und beim Vorzeichen zählt sie nicht.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — das Minus vor der Klammer</span>
+      Bei k &lt; 0 steht im zweiten Summanden ein Minus: (2 − 2x) · e<sup>−x</sup> <strong>−</strong> (2x − x²) · e<sup>−x</sup>. Wer nur das erste Glied umdreht, bekommt (2 − 4x − x²) statt (2 − 4x + x²) — und Wendestellen, die es nicht gibt. Die Probe mit der Formel p″ + 2k · p′ + k² · p deckt das sofort auf.
+    </div>
+    <div class="quiz" id="quiz-zweite"></div>
+  </section>
+
+  <!-- 3. Vollständige Untersuchung -->
+  <section class="card" id="sec-schema">
+    <h2>3. Vollständige Untersuchung einer Funktion mit e <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span></h2>
+    <p>Jetzt der ganze Ablauf an einer Funktion der Form p(x) · e<sup>kx</sup>. Gehe mit dem Regler die acht Schritte durch: Jeder Schritt fügt der Zeichnung hinzu, was er herausgefunden hat, und die Liste darunter hält die Rechnung fest. Achte auf den zweiten Schritt — dort taucht etwas auf, das es bei ganzrationalen Funktionen nie gab: eine <span class="term">waagerechte Asymptote</span>.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="sc-art" class="eingabe" style="padding:0.4rem">
+            <option value="a">f(x) = x · e^(−x)</option>
+            <option value="b">f(x) = x² · e^(−x)</option>
+            <option value="c">f(x) = (1 − x) · e^x</option>
+          </select>
+        </label>
+        <label>Schritt: <input type="range" id="sc-s" min="1" max="8" step="1" value="1" style="vertical-align:middle;width:11rem"> <span id="sc-s-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap" id="sc-mount"></div>
+      <ol class="schritt-liste" id="sc-liste"></ol>
+      <div id="sc-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Ablauf für f(x) = p(x) · e<sup>kx</sup> — was in jedem Schritt anders ist</span>
+      <ol style="margin:0.2rem 0 0;padding-left:1.3rem">
+        <li><strong>Definitionsmenge und Symmetrie:</strong> D = ℝ. Symmetrie nur durch Einsetzen von −x prüfen — meist gibt es keine, weil e<sup>−x</sup> ≠ ±e<sup>x</sup>.</li>
+        <li><strong>Verhalten für x → ±∞:</strong> Auf der Seite, auf der kx → −∞ geht, gilt f(x) → 0: <strong>Asymptote y = 0</strong>. Auf der anderen Seite entscheidet das Vorzeichen des höchsten Glieds von p, ob f → +∞ oder −∞.</li>
+        <li><strong>Schnittpunkt mit der y-Achse:</strong> f(0) = p(0), weil e<sup>0</sup> = 1.</li>
+        <li><strong>Nullstellen:</strong> nur die Nullstellen von p (Satz vom Nullprodukt).</li>
+        <li><strong>Extrempunkte:</strong> f′ = (…) · e<sup>kx</sup>, Klammer null setzen; Art mit f″ oder Vorzeichenwechsel der Klammer.</li>
+        <li><strong>Wendepunkte:</strong> f″ = (…) · e<sup>kx</sup>, Klammer null setzen; Vorzeichenwechsel der Klammer prüfen.</li>
+        <li><strong>Monotonie und Krümmung:</strong> aus den Vorzeichen der beiden Klammern.</li>
+        <li><strong>Graph und Wertemenge:</strong> Die Asymptote gehört mit ins Bild; die Wertemenge endet oft an einem Extremwert oder an der Asymptote.</li>
+      </ol>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Musterrechnung: f(x) = x · e<sup>−x</sup></span>
+      <strong>1.</strong> D = ℝ; f(−x) = −x · e<sup>x</sup> ≠ ±f(x): keine Symmetrie.<br>
+      <strong>2.</strong> x → +∞: e<sup>−x</sup> → 0 setzt sich gegen x durch, f(x) → 0 — Asymptote y = 0. x → −∞: x → −∞ und e<sup>−x</sup> → +∞, also f(x) → −∞.<br>
+      <strong>3.</strong> f(0) = 0: S<sub>y</sub>(0 | 0).<br>
+      <strong>4.</strong> x · e<sup>−x</sup> = 0 ⟺ x = 0.<br>
+      <strong>5.</strong> f′(x) = (1 − x) · e<sup>−x</sup> = 0 ⟺ x = 1; f″(x) = (x − 2) · e<sup>−x</sup>, f″(1) = −e<sup>−1</sup> &lt; 0: <strong>H(1 | e<sup>−1</sup>) ≈ H(1 | 0,3679)</strong>.<br>
+      <strong>6.</strong> f″(x) = 0 ⟺ x = 2, und x − 2 wechselt dort das Vorzeichen: <strong>W(2 | 2e<sup>−2</sup>) ≈ W(2 | 0,2707)</strong>.<br>
+      <strong>7.</strong> steigt für x &lt; 1, fällt für x &gt; 1; Rechtskurve für x &lt; 2, Linkskurve für x &gt; 2.<br>
+      <strong>8.</strong> W = ]−∞; e<sup>−1</sup>]. Der Hochpunkt ist zugleich das globale Maximum.
+    </div>
+    <div class="unterschied-box">
+      <span class="box-label">Anders als bei ganzrationalen Funktionen</span>
+      Bei x³ − 6x² + 9x entschied im zweiten Schritt allein das Glied x³ — beide Seiten laufen ins Unendliche. Bei x · e<sup>−x</sup> sind die beiden Seiten verschieden: Links wirken x und e<sup>−x</sup> in dieselbe Richtung, rechts gegeneinander, und e<sup>−x</sup> gewinnt. Darum hat der Graph rechts eine Asymptote, links nicht. Neu ist auch, dass nach dem letzten Wendepunkt kein „Weglaufen“ mehr kommt: Der Graph schmiegt sich als Linkskurve an die Asymptote an.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Asymptote heißt nicht „berührt nie“</span>
+      y = 0 ist hier zugleich die x-Achse. Der Graph von x · e<sup>−x</sup> schneidet sie bei 0 und nähert sich ihr dann von oben; der Graph von x² · e<sup>−x</sup> berührt sie bei 0 und nähert sich ihr ebenfalls. Eine Asymptote beschreibt nur das Verhalten <em>weit draußen</em> — schon in <a href="../02-grenzwerte-und-stetigkeit/index.html#sec-unendlich">Thema 1.2</a> durfte ein Graph seine Asymptote schneiden.
+    </div>
+    <div class="quiz" id="quiz-schema"></div>
+  </section>
+
+  <!-- 4. Funktionenscharen -->
+  <section class="card" id="sec-scharen">
+    <h2>4. Funktionenscharen mit e: Ortskurven <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span></h2>
+    <p>Steht der Parameter im Exponenten, ändert er die Form des Graphen auf eine neue Weise. Für f<sub>k</sub>(x) = x · e<sup>−kx</sup> mit k &gt; 0 wandern Hoch- und Wendepunkt mit k — aber nicht beliebig: Sie bleiben auf zwei Ursprungsgeraden. Verändere k und blende die Ortskurven ein.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>k: <input type="range" id="sa-k" min="0.25" max="2" step="0.25" value="0.5" style="vertical-align:middle;width:11rem"> <span id="sa-k-anzeige" class="wert farbe-blau"></span></label>
+        <label><input type="checkbox" id="sa-ort"> Ortskurven zeigen</label>
+      </div>
+      <div class="geo-wrap" id="sa-mount"></div>
+      <div class="th-bilanz" id="sa-bilanz"></div>
+      <div id="sa-text" class="event-result"></div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Musterrechnung: f<sub>k</sub>(x) = x · e<sup>−kx</sup>, k &gt; 0</span>
+      f<sub>k</sub>′(x) = 1 · e<sup>−kx</sup> + x · (−k) · e<sup>−kx</sup> = (1 − kx) · e<sup>−kx</sup> = 0 ⟺ x = <span class="bruch"><span class="z">1</span><span class="n">k</span></span>.<br>
+      f<sub>k</sub>″(x) = −k · e<sup>−kx</sup> + (1 − kx) · (−k) · e<sup>−kx</sup> = k(kx − 2) · e<sup>−kx</sup>; f<sub>k</sub>″(<span class="bruch"><span class="z">1</span><span class="n">k</span></span>) = −k · e<sup>−1</sup> &lt; 0: <strong>H<sub>k</sub>(<span class="bruch"><span class="z">1</span><span class="n">k</span></span> | <span class="bruch"><span class="z">1</span><span class="n">k · e</span></span>)</strong>.<br>
+      f<sub>k</sub>″(x) = 0 ⟺ x = <span class="bruch"><span class="z">2</span><span class="n">k</span></span> (Vorzeichenwechsel): <strong>W<sub>k</sub>(<span class="bruch"><span class="z">2</span><span class="n">k</span></span> | <span class="bruch"><span class="z">2</span><span class="n">k · e²</span></span>)</strong>.<br>
+      <strong>Ortskurve der Hochpunkte:</strong> x = <span class="bruch"><span class="z">1</span><span class="n">k</span></span> ⟺ k = <span class="bruch"><span class="z">1</span><span class="n">x</span></span>; einsetzen in y = <span class="bruch"><span class="z">1</span><span class="n">k</span></span> · e<sup>−1</sup> ergibt <strong>y = <span class="bruch"><span class="z">x</span><span class="n">e</span></span></strong> (für x &gt; 0). Ebenso liegen alle Wendepunkte auf <strong>y = <span class="bruch"><span class="z">x</span><span class="n">e²</span></span></strong>.
+    </div>
+    <div class="unterschied-box">
+      <span class="box-label">Anders als bei ganzrationalen Funktionen</span>
+      Das Verfahren ist dasselbe wie in <a href="../04-funktionsuntersuchung/index.html#sec-scharen">Thema 3.1</a>: Punkt in Abhängigkeit vom Parameter bestimmen, x nach dem Parameter auflösen, in y einsetzen. Neu ist, dass der Parameter im Exponenten steht. Beim Ableiten ist er trotzdem eine feste Zahl — (e<sup>−kx</sup>)′ = −k · e<sup>−kx</sup> —, und beim Nullsetzen hilft wieder, dass e<sup>−kx</sup> nie null wird.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — k ist beim Ableiten eine Zahl</span>
+      Abgeleitet wird nach x. (e<sup>−kx</sup>)′ ist −k · e<sup>−kx</sup>, nicht −x · e<sup>−kx</sup> und nicht −kx · e<sup>−kx−1</sup>. Und eine Ortskurve darf den Parameter nicht mehr enthalten: „y = <span class="bruch"><span class="z">1</span><span class="n">k · e</span></span>“ ist noch keine.
+    </div>
+    <div class="quiz" id="quiz-scharen"></div>
+  </section>
+
+  <!-- 5. Wachstum -->
+  <section class="card" id="sec-wachstum">
+    <h2>5. Wachstumsmodelle: Wann wächst es am schnellsten? <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span></h2>
+    <p>Bei einem Wachstumsprozess ist f(t) der Bestand und f′(t) die <span class="term">Wachstumsrate</span>. „Wann wächst der Bestand am schnellsten?“ fragt nach dem Maximum von f′ — also nach einer Wendestelle von f. Ob es sie gibt, hängt vom Modell ab. Wähle ein Modell und fahre mit t₀ durch die Zeit.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Modell:
+          <select id="wa-art" class="eingabe" style="padding:0.4rem">
+            <option value="exp">exponentiell: f(t) = 5 · e^(0,15t)</option>
+            <option value="beschr">beschränkt: f(t) = 100 − 90 · e^(−0,2t)</option>
+            <option value="log">logistisch (LK): f(t) = 100 / (1 + 9 · e^(−0,4t))</option>
+          </select>
+        </label>
+        <label>t₀: <input type="range" id="wa-t" min="0" max="20" step="0.5" value="4" style="vertical-align:middle;width:11rem"> <span id="wa-t-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="wa-mount"></div>
+      <div class="th-bilanz" id="wa-bilanz"></div>
+      <div id="wa-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Drei Wachstumsmodelle</span>
+      <strong>Exponentiell:</strong> f(t) = a · e<sup>kt</sup> (k &gt; 0). Die Rate f′(t) = k · f(t) wächst mit dem Bestand.<br>
+      <strong>Beschränkt:</strong> f(t) = S − c · e<sup>−kt</sup> (c, k &gt; 0). Die Rate f′(t) = k · (S − f(t)) ist proportional zum Abstand von der <span class="term">Sättigungsgrenze</span> S; y = S ist waagerechte Asymptote.<br>
+      <strong>Logistisch (LK):</strong> f(t) = <span class="bruch"><span class="z">S</span><span class="n">1 + a · e<sup>−kt</sup></span></span>. Erst fast exponentiell, dann fast beschränkt; am Wendepunkt ist f = <span class="bruch"><span class="z">S</span><span class="n">2</span></span> und die Rate am größten.
+    </div>
+    <div class="rechenweg-box">
+      <span class="box-label">Rechenweg — exponentiell und beschränkt (GK + LK)</span>
+      f(t) = 5 · e<sup>0,15t</sup>: f′(t) = 0,75 · e<sup>0,15t</sup>, f″(t) = 0,1125 · e<sup>0,15t</sup> &gt; 0 — überall Linkskurve, kein Wendepunkt, die Rate wächst unbegrenzt.<br>
+      f(t) = 100 − 90 · e<sup>−0,2t</sup>: f′(t) = −90 · (−0,2) · e<sup>−0,2t</sup> = 18 · e<sup>−0,2t</sup>, f″(t) = −3,6 · e<sup>−0,2t</sup> &lt; 0 — überall Rechtskurve: Die Rate ist <strong>am Anfang</strong> am größten (18) und nimmt dann ab. Für t → ∞ geht e<sup>−0,2t</sup> → 0, also f(t) → 100.
+    </div>
+    <div class="rechenweg-box lk">
+      <span class="box-label">Rechenweg — logistisches Wachstum (LK: Ketten- und Quotientenregel)</span>
+      Mit u(t) = 9 · e<sup>−0,4t</sup> ist f = <span class="bruch"><span class="z">100</span><span class="n">1 + u</span></span> und u′ = −0,4 · u.<br>
+      f′ = <span class="bruch"><span class="z">−100 · u′</span><span class="n">(1 + u)²</span></span> = <span class="bruch"><span class="z">40u</span><span class="n">(1 + u)²</span></span> (Kettenregel auf (1 + u)<sup>−1</sup>).<br>
+      f″ = 40 · <span class="bruch"><span class="z">u′ · (1 + u)² − u · 2(1 + u) · u′</span><span class="n">(1 + u)⁴</span></span> = 40 · <span class="bruch"><span class="z">u′ · (1 − u)</span><span class="n">(1 + u)³</span></span> = <span class="bruch"><span class="z">16u · (u − 1)</span><span class="n">(1 + u)³</span></span> (Quotientenregel, (1 + u) gekürzt).<br>
+      f″ = 0 ⟺ u = 1 ⟺ 9 · e<sup>−0,4t</sup> = 1 ⟺ t = <span class="bruch"><span class="z">ln 9</span><span class="n">0,4</span></span> ≈ 5,4931. Dort ist f = <span class="bruch"><span class="z">100</span><span class="n">2</span></span> = 50 und f′ = <span class="bruch"><span class="z">40</span><span class="n">4</span></span> = 10. Für u &gt; 1 (früh) ist f″ &gt; 0, für u &lt; 1 (spät) ist f″ &lt; 0 — ein Vorzeichenwechsel.
+    </div>
+    <div class="unterschied-box">
+      <span class="box-label">Anders als bei ganzrationalen Funktionen</span>
+      In <a href="../04-funktionsuntersuchung/index.html#sec-wendepunkte">Thema 3.1</a> war die Wendestelle einer kubischen Funktion immer die Stelle der stärksten oder schwächsten Steigung. Das gilt hier genauso — aber es muss sie nicht geben. Exponentielles und beschränktes Wachstum haben <em>keinen</em> Wendepunkt; „am schnellsten“ heißt dann „am Rand des betrachteten Zeitraums“, wie bei den <a href="../04-funktionsuntersuchung/index.html#sec-global">globalen Extrema</a>.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Bestand und Rate nicht verwechseln</span>
+      „Wann wächst der Bestand am stärksten?“ fragt nach dem Maximum von f′, nicht nach dem von f. Beim beschränkten Wachstum hat f gar kein Maximum (es nähert sich nur S), f′ aber eines am Anfang.
+    </div>
+    <div class="quiz" id="quiz-wachstum"></div>
+  </section>
+
+  <!-- 6. Extremwertprobleme -->
+  <section class="card" id="sec-optimierung">
+    <h2>6. Extremwertprobleme — und Gleichungen ohne Lösungsformel <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span></h2>
+    <p>Ein Rechteck liegt unter einem Graphen, eine Ecke auf der Kurve. Wie in <a href="../04-funktionsuntersuchung/index.html#sec-optimierung">Thema 3.1</a> stellt man eine Zielfunktion A(u) auf und sucht ihr Maximum. Bei der e-Funktion klappt das wie gewohnt; beim Kosinus (Leistungskurs) führt A′(u) = 0 auf eine Gleichung, die sich nicht nach u auflösen lässt. Verändere u und beobachte A(u).</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Kurve:
+          <select id="op-art" class="eingabe" style="padding:0.4rem">
+            <option value="exp">f(x) = 2 · e^(−0,5x), Rechteck ab x = 0</option>
+            <option value="cos">f(x) = cos(x), Rechteck symmetrisch (LK)</option>
+          </select>
+        </label>
+        <label>u: <input type="range" id="op-u" min="0.25" max="6" step="0.25" value="1" style="vertical-align:middle;width:11rem"> <span id="op-u-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="op-mount"></div>
+      <div class="th-bilanz" id="op-bilanz"></div>
+      <div id="op-text" class="event-result"></div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Musterrechnung: Rechteck unter f(x) = 2 · e<sup>−0,5x</sup></span>
+      Ecken (0 | 0), (u | 0), (u | f(u)), (0 | f(u)) mit u &gt; 0. Zielfunktion: A(u) = u · 2e<sup>−0,5u</sup>.<br>
+      A′(u) = 2e<sup>−0,5u</sup> + 2u · (−0,5) · e<sup>−0,5u</sup> = (2 − u) · e<sup>−0,5u</sup> = 0 ⟺ u = 2.<br>
+      A″(u) = (0,5u − 2) · e<sup>−0,5u</sup>, A″(2) = −e<sup>−1</sup> &lt; 0: Maximum. A(2) = 4e<sup>−1</sup> ≈ 1,4715.<br>
+      <strong>Ränder:</strong> A(u) → 0 für u → 0 und für u → ∞ (e<sup>−0,5u</sup> setzt sich durch) — das lokale Maximum ist das globale.
+    </div>
+    <div class="rechenweg-box lk">
+      <span class="box-label">Rechenweg — Rechteck unter cos(x) (LK): wenn A′(u) = 0 keine Lösungsformel hat</span>
+      Ecken (±u | 0) und (±u | cos u) mit 0 &lt; u &lt; <span class="bruch"><span class="z">π</span><span class="n">2</span></span>: A(u) = 2u · cos u.<br>
+      A′(u) = 2 cos u − 2u · sin u = 0 ⟺ cos u = u · sin u. Diese Gleichung enthält u einmal „frei“ und einmal im Kosinus — es gibt keine Umformung, die u allein auf eine Seite bringt.<br>
+      <strong>Näherungsweise mit dem Newton-Verfahren</strong> aus <a href="../04-funktionsuntersuchung/index.html#sec-newton">Thema 3.1</a> für g(u) = cos u − u · sin u, g′(u) = −2 sin u − u · cos u:<br>
+      u₀ = 1 → u₁ ≈ 0,8645 → u₂ ≈ 0,8603 → u₃ ≈ 0,8603. Also u ≈ 0,8603 und A ≈ 2 · 0,8603 · cos(0,8603) ≈ 1,1222.<br>
+      Ein Graphikrechner liefert dasselbe mit „Nullstelle von A′“ oder „Maximum von A“ — erklären muss man trotzdem, <em>warum</em> diese Stelle die gesuchte ist.
+    </div>
+    <div class="unterschied-box">
+      <span class="box-label">Anders als bei ganzrationalen Funktionen</span>
+      Die Zielfunktionen in Thema 3.1 waren Polynome; A′(u) = 0 war eine quadratische Gleichung mit Lösungsformel. Mit e<sup>kx</sup> bleibt das so, solange die e-Funktion nur als Faktor auftritt — sie fällt beim Nullsetzen weg. Stehen u und eine e-Funktion <em>nebeneinander</em> (e<sup>u</sup> = u + 2; im Leistungskurs auch cos u = u · sin u), hilft nur ein Näherungsverfahren. Das ist kein Zeichen eines Rechenfehlers, sondern die Regel.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Ränder des Definitionsbereichs</span>
+      Auch hier muss man prüfen, ob das Maximum am Rand liegt. Bei 2 · e<sup>−0,5x</sup> gibt es keinen rechten Rand — dafür muss man zeigen, dass A(u) für u → ∞ gegen 0 geht. Beim Kosinus endet das Rechteck bei u = <span class="bruch"><span class="z">π</span><span class="n">2</span></span>, wo es die Höhe 0 hat.
+    </div>
+    <div class="quiz" id="quiz-optimierung"></div>
+  </section>
+
+  <!-- 7. Sinus und Kosinus -->
+  <section class="card" id="sec-trig">
+    <h2>7. Funktionen mit Sinus und Kosinus: unendlich viele Extrempunkte <span class="kurs-marke lk" title="Leistungskurs">LK</span></h2>
+    <p>Bei f(x) = x + 2 sin(x) addiert sich zu einer Geraden eine Schwingung. Wo die Schwingung schneller fällt, als die Gerade steigt, fällt auch f — dazwischen steigt f. Fahre mit x₀ über eine Periode und schalte dann auf drei Perioden um: Die besonderen Punkte wiederholen sich ohne Ende, aber in fester Ordnung.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Ausschnitt:
+          <select id="tr-fenster" class="eingabe" style="padding:0.4rem">
+            <option value="eins">eine Periode: [0; 2π]</option>
+            <option value="drei">drei Perioden: [−2π; 4π]</option>
+          </select>
+        </label>
+        <label>x₀: <input type="range" id="tr-k" min="0" max="24" step="1" value="8" style="vertical-align:middle;width:12rem"> <span id="tr-k-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="tr-mount"></div>
+      <div class="th-bilanz" id="tr-bilanz"></div>
+      <div id="tr-text" class="event-result"></div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Musterrechnung: f(x) = x + 2 sin(x) auf [0; 2π]</span>
+      f′(x) = 1 + 2 cos(x), f″(x) = −2 sin(x), f‴(x) = −2 cos(x).<br>
+      <strong>Extremstellen:</strong> 1 + 2 cos(x) = 0 ⟺ cos(x) = −0,5 ⟺ x = <span class="bruch"><span class="z">2π</span><span class="n">3</span></span> oder x = <span class="bruch"><span class="z">4π</span><span class="n">3</span></span>.<br>
+      f″(<span class="bruch"><span class="z">2π</span><span class="n">3</span></span>) = −2 · <span class="bruch"><span class="z">√3</span><span class="n">2</span></span> = −√3 &lt; 0: Hochpunkt H(<span class="bruch"><span class="z">2π</span><span class="n">3</span></span> | <span class="bruch"><span class="z">2π</span><span class="n">3</span></span> + √3) ≈ H(2,094 | 3,826).<br>
+      f″(<span class="bruch"><span class="z">4π</span><span class="n">3</span></span>) = √3 &gt; 0: Tiefpunkt T(<span class="bruch"><span class="z">4π</span><span class="n">3</span></span> | <span class="bruch"><span class="z">4π</span><span class="n">3</span></span> − √3) ≈ T(4,189 | 2,457).<br>
+      <strong>Wendestellen:</strong> −2 sin(x) = 0 ⟺ x = 0, π, 2π. Im Inneren: f‴(π) = 2 ≠ 0, also W(π | π) mit Wendetangente t(x) = −x + 2π.<br>
+      <strong>Auf ganz ℝ:</strong> Hochpunkte bei <span class="bruch"><span class="z">2π</span><span class="n">3</span></span> + 2jπ auf der Geraden y = x + √3, Tiefpunkte bei <span class="bruch"><span class="z">4π</span><span class="n">3</span></span> + 2jπ auf y = x − √3, Wendepunkte bei jπ auf y = x (j ∈ ℤ).
+    </div>
+    <div class="rechenweg-box">
+      <span class="box-label">Rechenweg — cos(x) = −0,5 im Intervall [0; 2π] vollständig lösen</span>
+      <ol style="margin:0.2rem 0 0;padding-left:1.3rem">
+        <li>Der Taschenrechner (auf <strong>RAD</strong>!) liefert mit cos⁻¹(−0,5) <em>eine</em> Lösung: x₁ = <span class="bruch"><span class="z">2π</span><span class="n">3</span></span> ≈ 2,0944. Er gibt immer eine Zahl zwischen 0 und π aus.</li>
+        <li>Der Kosinus ist auf [0; 2π] symmetrisch zu x = π: cos(2π − x) = cos(x). Deshalb gibt es eine <strong>zweite Lösung</strong> x₂ = 2π − x₁ = <span class="bruch"><span class="z">4π</span><span class="n">3</span></span>.</li>
+        <li>Wegen der Periode 2π sind alle Lösungen auf ℝ: x = ±<span class="bruch"><span class="z">2π</span><span class="n">3</span></span> + 2jπ.</li>
+        <li>Für sin(x) = c gilt entsprechend x₂ = π − x₁, weil der Sinus symmetrisch zu x = <span class="bruch"><span class="z">π</span><span class="n">2</span></span> ist (vergleiche <a href="../03b-weitere-funktionen-ableiten/index.html#sec-nullstellen">Thema 2.2, Abschnitt 11</a>).</li>
+      </ol>
+    </div>
+    <div class="unterschied-box">
+      <span class="box-label">Anders als bei ganzrationalen Funktionen</span>
+      Eine ganzrationale Funktion hat endlich viele besondere Punkte, und außerhalb von ihnen läuft der Graph ins Unendliche. Hier gibt es <strong>unendlich viele</strong> — die Liste der Extrempunkte endet nie. Gerettet wird die Untersuchung durch die Struktur: f(x + 2π) = f(x) + 2π. Es genügt, eine Periode zu untersuchen und das Ergebnis zu verschieben. Darum gehört zu jeder Aufgabe mit Winkelfunktionen ein Intervall.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Bogenmaß und die zweite Lösung</span>
+      Die Ableitungen von sin und cos gelten nur im <a href="../03b-weitere-funktionen-ableiten/index.html#sec-sinus">Bogenmaß</a>; der Taschenrechner muss auf RAD stehen. Und er liefert nur <em>eine</em> Lösung von cos(x) = −0,5 — wer die zweite vergisst, verliert den Tiefpunkt.
+    </div>
+    <div class="quiz" id="quiz-trig"></div>
+  </section>
+
+  <!-- 8. Gedämpfte Schwingung -->
+  <section class="card" id="sec-schwingung">
+    <h2>8. Gedämpfte Schwingungen: Hochpunkte liegen nicht auf der Hüllkurve <span class="kurs-marke lk" title="Leistungskurs">LK</span></h2>
+    <p>Bei f(x) = e<sup>−dx</sup> · sin(x) wird eine Schwingung mit jeder Periode kleiner. Der Graph pendelt zwischen den beiden <span class="term">Hüllkurven</span> y = ±e<sup>−dx</sup> und berührt sie dort, wo sin(x) = ±1 ist. Man würde erwarten, dass dort auch die Hochpunkte liegen — verändere die Dämpfung d und sieh nach.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Dämpfung d: <input type="range" id="sw-d" min="0" max="0.5" step="0.05" value="0.2" style="vertical-align:middle;width:11rem"> <span id="sw-d-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap" id="sw-mount"></div>
+      <div class="th-bilanz" id="sw-bilanz"></div>
+      <div id="sw-text" class="event-result"></div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Musterrechnung: f(x) = e<sup>−0,2x</sup> · sin(x)</span>
+      Produktregel: f′(x) = −0,2 · e<sup>−0,2x</sup> · sin(x) + e<sup>−0,2x</sup> · cos(x) = e<sup>−0,2x</sup> · (cos(x) − 0,2 sin(x)).<br>
+      f′(x) = 0 ⟺ cos(x) = 0,2 sin(x) ⟺ tan(x) = <span class="bruch"><span class="z">1</span><span class="n">0,2</span></span> = 5 ⟺ x = tan⁻¹(5) + jπ ≈ 1,3734 + jπ.<br>
+      Erster Hochpunkt bei x₁ ≈ 1,3734 mit f(x₁) ≈ 0,7451, erster Tiefpunkt bei x₁ + π ≈ 4,5150. Die Hüllkurve berührt der Graph dagegen bei <span class="bruch"><span class="z">π</span><span class="n">2</span></span> ≈ 1,5708 — der Hochpunkt liegt <strong>links davon</strong>.<br>
+      Zwei aufeinanderfolgende Hochpunkte liegen 2π auseinander; ihre Höhen stehen im festen Verhältnis e<sup>−0,2 · 2π</sup> ≈ 0,2846.
+    </div>
+    <div class="rechenweg-box">
+      <span class="box-label">Rechenweg — tan(x) = c lösen</span>
+      <ol style="margin:0.2rem 0 0;padding-left:1.3rem">
+        <li>Aus cos(x) = d · sin(x) wird durch Teilen durch d · cos(x) die Gleichung tan(x) = <span class="bruch"><span class="z">1</span><span class="n">d</span></span>, denn tan(x) = <span class="bruch"><span class="z">sin(x)</span><span class="n">cos(x)</span></span> (Mittelstufe). Das Teilen ist erlaubt: Wäre cos(x) = 0, müsste nach der Gleichung auch sin(x) = 0 sein — beide zugleich gibt es nicht.</li>
+        <li>Der Taschenrechner liefert mit tan⁻¹ die Lösung zwischen −<span class="bruch"><span class="z">π</span><span class="n">2</span></span> und <span class="bruch"><span class="z">π</span><span class="n">2</span></span>.</li>
+        <li>Der Tangens hat die Periode <strong>π</strong> (nicht 2π): Alle Lösungen sind x = tan⁻¹(c) + jπ. Darum liegen benachbarte Extremstellen genau π auseinander — abwechselnd Hoch- und Tiefpunkt.</li>
+      </ol>
+    </div>
+    <div class="unterschied-box">
+      <span class="box-label">Anders als bei ganzrationalen Funktionen — und als bei reinem Sinus</span>
+      Die Funktion ist nicht periodisch, die Extremstellen trotzdem gleichmäßig verteilt. Die Höhen der Hochpunkte bilden eine <a href="../01-folgen-und-reihen/index.html#sec-arith-geo">geometrische Folge</a> mit dem Faktor e<sup>−2πd</sup>; für x → ∞ geht f(x) → 0, und der Graph schneidet seine Asymptote y = 0 unendlich oft. Bei d = 0 fallen Hochpunkte und Berührpunkte zusammen; je stärker die Dämpfung, desto weiter wandern die Hochpunkte nach links.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — „größte Auslenkung“ ist nicht „sin(x) = 1“</span>
+      Wer die Hochstelle über sin(x) = 1 bestimmt, rechnet mit der ungedämpften Schwingung. Gefragt ist das Maximum des <em>Produkts</em> — dafür braucht man f′ und die Gleichung tan(x) = <span class="bruch"><span class="z">1</span><span class="n">d</span></span>.
+    </div>
+    <div class="quiz" id="quiz-schwingung"></div>
+  </section>
+
+  <!-- 9. Logarithmusfunktionen -->
+  <section class="card" id="sec-ln">
+    <h2>9. Funktionen mit ln: Definitionsmenge und Verhalten am Rand <span class="kurs-marke lk" title="Leistungskurs">LK</span></h2>
+    <p>Die Funktion ln gibt es nur für positive Zahlen. Darum beginnt jede Untersuchung mit der Definitionsmenge — und an ihrem Rand passiert oft das Interessanteste: Ein Graph kann dort auf einen Punkt zulaufen, den er nie erreicht, oder an einer senkrechten Asymptote ins Unendliche fallen. Wähle eine Funktion und fahre mit x₀ bis an den Rand.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="ln-art" class="eingabe" style="padding:0.4rem">
+            <option value="xlnx">f(x) = x · ln(x)</option>
+            <option value="lnxx">f(x) = ln(x) / x</option>
+            <option value="lnq">f(x) = ln(x² + 1)</option>
+          </select>
+        </label>
+        <label>x₀: <input type="range" id="ln-x" min="0.1" max="3" step="0.1" value="1" style="vertical-align:middle;width:11rem"> <span id="ln-x-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap" id="ln-mount"></div>
+      <div class="th-bilanz" id="ln-bilanz"></div>
+      <div id="ln-text" class="event-result"></div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Musterrechnung: f(x) = ln(x) / x</span>
+      D = ]0; ∞[. Nullstelle: ln(x) = 0 ⟺ x = 1.<br>
+      Quotientenregel: f′(x) = <span class="bruch"><span class="z"><span class="bruch"><span class="z">1</span><span class="n">x</span></span> · x − ln(x) · 1</span><span class="n">x²</span></span> = <span class="bruch"><span class="z">1 − ln(x)</span><span class="n">x²</span></span> = 0 ⟺ ln(x) = 1 ⟺ x = e.<br>
+      f″(x) = <span class="bruch"><span class="z">2 ln(x) − 3</span><span class="n">x³</span></span>; f″(e) = −<span class="bruch"><span class="z">1</span><span class="n">e³</span></span> &lt; 0: <strong>H(e | e<sup>−1</sup>) ≈ H(2,7183 | 0,3679)</strong>.<br>
+      f″(x) = 0 ⟺ ln(x) = 1,5 ⟺ x = e<sup>1,5</sup>: <strong>W(e<sup>1,5</sup> | 1,5 · e<sup>−1,5</sup>) ≈ W(4,4817 | 0,3347)</strong>.<br>
+      Rand: x → 0⁺: ln(x) → −∞ und <span class="bruch"><span class="z">1</span><span class="n">x</span></span> → +∞, also f(x) → −∞ — <strong>senkrechte Asymptote x = 0</strong>. x → ∞: f(x) → 0 (siehe Rechenweg) — <strong>waagerechte Asymptote y = 0</strong>.
+    </div>
+    <div class="rechenweg-box">
+      <span class="box-label">Rechenweg — der Grenzwert von x · ln(x) für x → 0⁺</span>
+      Hier ziehen zwei Faktoren gegeneinander: x → 0, aber ln(x) → −∞. Welcher gewinnt? Der Trick: <strong>x = e<sup>−t</sup> setzen.</strong> Dann bedeutet x → 0⁺ dasselbe wie t → +∞, und
+      <div class="formula-block">x · ln(x) = e<sup>−t</sup> · ln(e<sup>−t</sup>) = −t · e<sup>−t</sup> → 0 für t → ∞,</div>
+      weil sich e<sup>−t</sup> gegen jede Potenz von t durchsetzt (<a href="../03b-weitere-funktionen-ableiten/index.html#sec-verhalten">Thema 2.2, Abschnitt 9</a>). Also gilt x · ln(x) → 0: Der Graph läuft auf den Punkt (0 | 0) zu, der selbst nicht dazugehört. Genauso folgt mit x = e<sup>t</sup>: <span class="bruch"><span class="z">ln(x)</span><span class="n">x</span></span> = <span class="bruch"><span class="z">t</span><span class="n">e<sup>t</sup></span></span> → 0 für x → ∞ — <strong>ln(x) wächst langsamer als jede Potenz von x</strong>.
+    </div>
+    <div class="unterschied-box">
+      <span class="box-label">Anders als bei ganzrationalen Funktionen</span>
+      Bei x · ln(x) ist f″(x) = <span class="bruch"><span class="z">1</span><span class="n">x</span></span> &gt; 0 auf ganz D — der Graph ist überall eine Linkskurve, hat aber trotzdem keinen Grad und keine Symmetrie. Bei ln(x² + 1) ist die Symmetrie zurück, weil x nur als x² vorkommt: f(−x) = f(x). Und ln(x² + 1) wächst für x → ∞ zwar über jede Grenze, aber langsamer als jede Potenz — kein Polynom verhält sich so.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Definitionsmenge zuerst</span>
+      Bei x · ln(x) ist x = 0 <em>keine</em> Nullstelle, obwohl der Faktor x dort null wird: 0 liegt nicht in D. Und beim Ableiten von ln(x² + 1) braucht man die Kettenregel: (ln(x² + 1))′ = <span class="bruch"><span class="z">2x</span><span class="n">x² + 1</span></span>, nicht <span class="bruch"><span class="z">1</span><span class="n">x² + 1</span></span>.
+    </div>
+    <div class="quiz" id="quiz-ln"></div>
+  </section>
+
+  <!-- 10. Glockenkurve -->
+  <section class="card" id="sec-glocke">
+    <h2>10. Die Gaußsche Glockenkurve <span class="kurs-marke lk" title="Leistungskurs">LK</span></h2>
+    <p>Die Funktion f(x) = e<sup>−x²/(2σ²)</sup> mit σ &gt; 0 beschreibt die Form der Normalverteilung, die dir in der Stochastik begegnet. Der Parameter σ bestimmt die Breite. Verändere σ und achte auf die Wendepunkte: Sie wandern nach außen — ihre Höhe ändert sich aber nicht.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>σ: <input type="range" id="gk-s" min="0.5" max="2" step="0.25" value="1" style="vertical-align:middle;width:11rem"> <span id="gk-s-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap" id="gk-mount"></div>
+      <div class="th-bilanz" id="gk-bilanz"></div>
+      <div id="gk-text" class="event-result"></div>
+    </div>
+    <div class="rechenweg-box">
+      <span class="box-label">Rechenweg — Kettenregel und dann Produktregel</span>
+      Innere Funktion g(x) = −<span class="bruch"><span class="z">x²</span><span class="n">2σ²</span></span> mit g′(x) = −<span class="bruch"><span class="z">x</span><span class="n">σ²</span></span>. Kettenregel: f′(x) = g′(x) · e<sup>g(x)</sup> = −<span class="bruch"><span class="z">x</span><span class="n">σ²</span></span> · f(x).<br>
+      Produktregel auf −<span class="bruch"><span class="z">x</span><span class="n">σ²</span></span> · f(x): f″(x) = −<span class="bruch"><span class="z">1</span><span class="n">σ²</span></span> · f(x) + (−<span class="bruch"><span class="z">x</span><span class="n">σ²</span></span>) · (−<span class="bruch"><span class="z">x</span><span class="n">σ²</span></span>) · f(x) = <span class="bruch"><span class="z">x² − σ²</span><span class="n">σ⁴</span></span> · f(x).<br>
+      f′(x) = 0 ⟺ x = 0; f″(0) = −<span class="bruch"><span class="z">1</span><span class="n">σ²</span></span> &lt; 0: <strong>H(0 | 1)</strong>. f″(x) = 0 ⟺ x² = σ² ⟺ <strong>x = ±σ</strong> (Vorzeichenwechsel von x² − σ²): <strong>W(±σ | e<sup>−0,5</sup>) ≈ W(±σ | 0,6065)</strong>.<br>
+      Wendetangente bei σ: Steigung f′(σ) = −<span class="bruch"><span class="z">1</span><span class="n">σ</span></span> · e<sup>−0,5</sup>; sie schneidet die x-Achse bei x = 2σ.
+    </div>
+    <div class="unterschied-box">
+      <span class="box-label">Anders als bei ganzrationalen Funktionen</span>
+      Die Symmetrie erkennt man wie bei Polynomen: x kommt nur als x² vor, also f(−x) = f(x). Aber der Graph hat <strong>keine Nullstelle</strong>, beidseitig die <strong>Asymptote y = 0</strong>, und er ist in der Mitte eine Rechtskurve und außen eine Linkskurve — eine Parabel mit nach unten geöffnetem Scheitel wäre überall eine Rechtskurve. Die Wendestellen ±σ messen die Breite: In der Stochastik heißt σ <span class="term">Standardabweichung</span>.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — σ² oder 2σ²?</span>
+      In e<sup>−x²/8</sup> steht 8 = 2σ², also σ = 2 und Wendestellen ±2 — nicht ±8 und nicht ±√8. Wer den Exponenten nicht auf die Form <span class="bruch"><span class="z">x²</span><span class="n">2σ²</span></span> bringt, verliert den Faktor 2.
+    </div>
+    <div class="quiz" id="quiz-glocke"></div>
+  </section>
+
+  <!-- 11. Stolperstelle -->
+  <section class="card" id="sec-stolperstelle">
+    <h2>11. Stolperstelle: Das Fenster verschweigt den Hochpunkt <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span></h2>
+    <p>Die Funktion f(x) = x³ · e<sup>−0,2x</sup> sieht im üblichen Rechnerfenster aus wie eine Funktion dritten Grades: Sie steigt und steigt. Schiebe den rechten Rand des Fensters weiter hinaus und vergleiche mit dem, was die Rechnung findet.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>rechter Rand: <input type="range" id="st-r" min="5" max="40" step="1" value="8" style="vertical-align:middle;width:12rem"> <span id="st-r-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap" id="st-mount"></div>
+      <div class="th-bilanz" id="st-bilanz"></div>
+      <div id="st-text" class="event-result"></div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Was die Rechnung findet: f(x) = x³ · e<sup>−0,2x</sup></span>
+      f′(x) = (3x² − 0,2x³) · e<sup>−0,2x</sup> = x² · (3 − 0,2x) · e<sup>−0,2x</sup>: Nullstellen 0 (doppelt, kein Vorzeichenwechsel) und 15.<br>
+      f″(x) = (0,04x³ − 1,2x² + 6x) · e<sup>−0,2x</sup> = 0,04x · (x² − 30x + 150) · e<sup>−0,2x</sup>: Nullstellen 0 und 15 ± 5√3.<br>
+      <strong>Sattelpunkt S(0 | 0)</strong>, <strong>W₁(15 − 5√3 | …) ≈ W₁(6,3397 | 71,7055)</strong>, <strong>H(15 | 3375 · e<sup>−3</sup>) ≈ H(15 | 168,0314)</strong>, <strong>W₂(15 + 5√3 | …) ≈ W₂(23,6603 | 116,6688)</strong>, und für x → ∞ die Asymptote y = 0.
+    </div>
+    <div class="unterschied-box">
+      <span class="box-label">Anders als bei ganzrationalen Funktionen</span>
+      Bei einem Polynom entscheidet am Rand das höchste Glied, und alle besonderen Punkte liegen in einem überschaubaren Bereich zwischen den Nullstellen von f′. Bei p(x) · e<sup>kx</sup> setzt sich die e-Funktion zwar immer durch — aber erst <em>irgendwann</em>, und dieses Irgendwann kann weit draußen liegen: hier bei x = 15. Für x &lt; 15 sieht man nur den Polynomfaktor x³.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — rechnen, dann zeichnen</span>
+      Ein Bild zeigt einen Ausschnitt, die Rechnung die ganze Funktion. Wer aus dem Fenster [−2; 8] schließt „f wächst über alle Grenzen“, liegt doppelt falsch: f hat einen Hochpunkt, und f(x) → 0. Erst die Nullstellen von f′ und f″ sagen, wie groß das Fenster sein muss.
+    </div>
+    <div class="quiz" id="quiz-stolperstelle"></div>
+  </section>
+
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
+    <div id="se-liste"></div>
+    <div id="se-auswertung" class="event-result"></div>
+  </section>
+
+  <!-- Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Der <a href="../04-funktionsuntersuchung/index.html">Untersuchung ganzrationaler Funktionen</a> (Thema 3.1) — Ablauf, notwendige und hinreichende Bedingungen, Ortskurven, Extremwertprobleme und das Newton-Verfahren werden hier unverändert übernommen.</li>
+      <li><strong>Baut auf:</strong> Der <a href="../03b-weitere-funktionen-ableiten/index.html">Ableitung weiterer Funktionen</a> (Thema 2.2) — e<sup>kx</sup>, Produktregel mit Ausklammern, Satz vom Nullprodukt und das Verhalten für x → ±∞; im Leistungskurs Kettenregel, Quotientenregel, sin, cos und ln.</li>
+      <li><strong>Baut auf:</strong> Dem <a href="../02-grenzwerte-und-stetigkeit/index.html#sec-unendlich">Grenzwert für x → ±∞</a> (Thema 1.2) — jede Asymptote dieser Seite ist ein solcher Grenzwert.</li>
+      <li><strong>Gleiche Struktur:</strong> Die Höhen der Hochpunkte einer gedämpften Schwingung bilden eine <a href="../01-folgen-und-reihen/index.html#sec-arith-geo">geometrische Folge</a> (Thema 1.1), ebenso die Bestände beim exponentiellen Wachstum in gleichen Zeitabständen.</li>
+      <li><strong>Gleiche Struktur:</strong> Das <a href="../04-funktionsuntersuchung/index.html#sec-newton">Newton-Verfahren</a> löst die Gleichung cos u = u · sin u ebenso wie eine Polynomgleichung fünften Grades — immer dann, wenn keine Formel weiterhilft.</li>
+      <li><strong>Führt weiter zu:</strong> Der <a href="../05-integralrechnung/index.html">Integralrechnung</a> (Thema 4) — Flächen unter e-Funktionen, die bis ins Unendliche reichen und trotzdem endlich sind (<a href="../05-integralrechnung/index.html#sec-uneigentlich">uneigentliche Integrale</a>).</li>
+      <li><strong>Führt weiter zu:</strong> Der Normalverteilung in der Stochastik (MSS 13) — ihre Dichte ist die Glockenkurve aus Abschnitt 10, mit Wendestellen bei μ ± σ.</li>
+    </ul>
+  </section>
+
+  <!-- Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>Formelsammlung</h2>
+    <p>Der Vergleich mit ganzrationalen Funktionen Schritt für Schritt, die zweite Ableitung von p(x) · e<sup>kx</sup>, die Musterrechnung x · e<sup>−x</sup> mit Asymptote, Funktionenscharen und Ortskurven, Wachstumsmodelle, Extremwertprobleme mit Newton-Verfahren und — für den Leistungskurs — Sinus und Kosinus, gedämpfte Schwingung, ln-Funktionen und Glockenkurve, mit gerechneten Figuren auf zwei Seiten.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>Übungsaufgaben</h2>
+    <p>Vierundzwanzig Aufgaben auf vier Stufen, je sechs auf jeder. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu. Tipps gibt es auf Knopfdruck, nach dem Prüfen steht die Musterlösung darunter. Aufgaben, die nur der Leistungskurs braucht, tragen „(LK)“ im Titel.</p>
+    <p>Die letzte Aufgabe jeder Stufe ist ein <strong>Ableitungstraining</strong>: Mit „🎲 Neue Funktion“ bekommst du beliebig viele Funktionen, zu denen du f′ und f″ bestimmst — mit e-Funktionen, als Produkt mit e, mit Sinus und Kosinus und zuletzt gemischt mit Kettenregel. Du tippst beide Ableitungen als Term ein; die Seite prüft sie an vielen Stellen nach und sagt dir, welcher Fehler vermutlich passiert ist.</p>
+    <p class="progress-note">Zahlen gibst du mit Komma ein, zum Beispiel 1,5; Brüche wie 3/2 sind ebenfalls erlaubt.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 01 Analysis</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>

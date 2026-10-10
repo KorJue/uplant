@@ -23,7 +23,8 @@ benennt. Vorhanden sind:
 | `f2` | Grenzwerte und Stetigkeit (MSS 11, Analysis, Thema 1.2) | `mathematik/mss11/01-analysis/02-grenzwerte-und-stetigkeit/formelsammlung.pdf` |
 | `f3` | Differentialrechnung (MSS 11, Analysis, Thema 2.1) | `mathematik/mss11/01-analysis/03-differentialrechnung/formelsammlung.pdf` |
 | `f22` | Ableitung weiterer Funktionen (MSS 11, Analysis, Thema 2.2, Leistungskurs) | `mathematik/mss11/01-analysis/03b-weitere-funktionen-ableiten/formelsammlung.pdf` |
-| `f4` | Funktionsuntersuchung (MSS 11, Analysis, Thema 3) | `mathematik/mss11/01-analysis/04-funktionsuntersuchung/formelsammlung.pdf` |
+| `f4` | Untersuchung ganzrationaler Funktionen (MSS 11, Analysis, Thema 3.1) | `mathematik/mss11/01-analysis/04-funktionsuntersuchung/formelsammlung.pdf` |
+| `f32` | Untersuchung weiterer Funktionen (MSS 11, Analysis, Thema 3.2, Leistungskurs) | `mathematik/mss11/01-analysis/04b-weitere-funktionen-untersuchen/formelsammlung.pdf` |
 | `f5` | Integralrechnung (MSS 11, Analysis, Thema 4) | `mathematik/mss11/01-analysis/05-integralrechnung/formelsammlung.pdf` |
 
 ## Der Weg von der Quelle zum PDF

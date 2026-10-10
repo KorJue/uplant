@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Funktionsuntersuchung</title>
+<title>Untersuchung ganzrationaler Funktionen</title>
 <script src="../../../../assets/theme.js"></script>
 <link rel="stylesheet" href="../../../../assets/site.css">
 <link rel="stylesheet" href="../../../aufgaben.css">
@@ -15,10 +15,10 @@
   <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
   <a href="../../index.html">MSS 11</a><span class="sep">/</span>
   <a href="../index.html">01 Analysis</a><span class="sep">/</span>
-  3 Funktionsuntersuchung
+  3.1 Untersuchung ganzrationaler Funktionen
 </nav>
 <header class="page-header">
-  <h1>Funktionsuntersuchung</h1>
+  <h1>Funktionsuntersuchung: ganzrationale Funktionen</h1>
   <p>Ein Selbstlernpfad: Was verraten f′ und f″ über den Graphen von f — wo er steigt, wo er sich krümmt, wo er am höchsten ist? Aus diesen Antworten entsteht die vollständige Untersuchung einer Funktion, und mit ihr lassen sich Funktionen aus Eigenschaften bestimmen und Optimierungsaufgaben lösen. Jeder Abschnitt leitet sein Ergebnis an einer beweglichen Darstellung her, rechnet es nach und endet mit einer Kontrollfrage. Am Schluss stehen vierundzwanzig Übungsaufgaben auf vier Stufen.</p>
 </header>
 
@@ -32,7 +32,7 @@
       <li>das <span class="term">Krümmungsverhalten</span> (Linkskurve, Rechtskurve) am Vorzeichen von f″ ablesen</li>
       <li>Extremstellen mit der <span class="term">hinreichenden Bedingung</span> f′(x<sub>E</sub>) = 0 und f″(x<sub>E</sub>) ≠ 0 nachweisen — und wissen, was bei f″(x<sub>E</sub>) = 0 zu tun ist</li>
       <li><span class="term">Wendepunkte</span>, <span class="term">Sattelpunkte</span> und <span class="term">Wendetangenten</span> bestimmen</li>
-      <li>eine ganzrationale Funktion <span class="term">vollständig untersuchen</span> und ihren Graphen aus den Ergebnissen zeichnen — und dasselbe für eine Funktion mit Sinus</li>
+      <li>eine ganzrationale Funktion <span class="term">vollständig untersuchen</span> und ihren Graphen aus den Ergebnissen zeichnen</li>
       <li><span class="term">globale Extrema</span> auf einem Intervall bestimmen, auch am Rand</li>
       <li>aus dem Graphen von f′ auf Eigenschaften von f schließen</li>
       <li><span class="term">Funktionenscharen</span> untersuchen und <span class="term">Ortskurven</span> bestimmen</li>
@@ -41,7 +41,8 @@
       <li>Nullstellen mit dem <span class="term">Newton-Verfahren</span> näherungsweise berechnen</li>
     </ul>
     <p>Die Seite folgt der Schreibweise von <strong>Elemente der Mathematik</strong> und deckt zugleich die Kapitel zur Funktionsuntersuchung in <strong>Fundamente der Mathematik</strong> ab: höhere Ableitungen, Krümmung, Extrem- und Wendepunkte, Kurvendiskussion, Funktionenscharen, Bestimmen ganzrationaler Funktionen, Extremwertprobleme und das Newton-Verfahren.</p>
-    <p class="hinweis-box">💡 Du brauchst aus <a href="../03-differentialrechnung/index.html">Thema 2.1</a> die <a href="../03-differentialrechnung/index.html#sec-regeln">Ableitungsregeln</a>, im Leistungskurs aus <a href="../03b-weitere-funktionen-ableiten/index.html">Thema 2.2</a> die <a href="../03b-weitere-funktionen-ableiten/index.html#sec-sinus">Ableitungen von sin und cos</a>, <a href="../03-differentialrechnung/index.html#sec-tangente">Tangentengleichungen</a>, <a href="../03-differentialrechnung/index.html#sec-nullstellen">Nullstellen ganzrationaler Funktionen</a> und vor allem den Zusammenhang von <a href="../03-differentialrechnung/index.html#sec-monotonie">f und f′</a>. Für die Steckbriefaufgaben kommen die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/06-lineare-gleichungssysteme/index.html">linearen Gleichungssysteme</a> aus der Mittelstufe dazu.</p>
+    <p class="kurs-hinweis"><span class="kurs-marke gk">Grund- und Leistungskurs</span> Diese Seite untersucht ganzrationale Funktionen — das brauchen beide Kurse. Funktionen mit e, ln, sin und cos untersucht <a href="../04b-weitere-funktionen-untersuchen/index.html">Thema 3.2</a> — dort steht auch, was sich bei ihnen gegenüber Polynomen ändert. Die Abschnitte zu Funktionen der Form p(x) · e<sup>kx</sup> gehören dort auch zum Grundkurs, alles Übrige zum Leistungskurs.</p>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../03-differentialrechnung/index.html">Thema 2.1</a> die <a href="../03-differentialrechnung/index.html#sec-regeln">Ableitungsregeln</a>, <a href="../03-differentialrechnung/index.html#sec-tangente">Tangentengleichungen</a>, <a href="../03-differentialrechnung/index.html#sec-nullstellen">Nullstellen ganzrationaler Funktionen</a> und vor allem den Zusammenhang von <a href="../03-differentialrechnung/index.html#sec-monotonie">f und f′</a>. Für die Steckbriefaufgaben kommen die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/06-lineare-gleichungssysteme/index.html">linearen Gleichungssysteme</a> aus der Mittelstufe dazu.</p>
   </section>
 
   <!-- 1. Höhere Ableitungen -->
@@ -78,7 +79,7 @@
       <span class="box-label">Achtung — f″ ist nicht „die Steigung zweimal“</span>
       f″(x₀) ist <em>nicht</em> f′(x₀) · f′(x₀) und auch nicht f′(f′(x₀)). Man leitet die <em>Funktion</em> f′ ab und setzt erst danach x₀ ein. Bei f(x) = x³ ist f′(1) = 3; f′(1) · f′(1) wäre 9 und f′(f′(1)) = f′(3) = 27. Richtig ist f″(x) = 6x, also f″(1) = 6.
     </div>
-    <p class="hinweis-box">💡 Bei einer ganzrationalen Funktion vom Grad n sinkt der Grad mit jeder Ableitung um 1; die n-te Ableitung ist konstant, alle weiteren sind 0. Ein Polynom „verliert“ also nach n + 1 Ableitungen jede Information — anders als sin, das sich nach vier Ableitungen wiederholt: sin → cos → −sin → −cos → sin.</p>
+    <p class="hinweis-box">💡 Bei einer ganzrationalen Funktion vom Grad n sinkt der Grad mit jeder Ableitung um 1; die n-te Ableitung ist konstant, alle weiteren sind 0. Ein Polynom „verliert“ also nach n + 1 Ableitungen jede Information — anders als die e-Funktion, deren Ableitung wieder eine e-Funktion ist und die sich deshalb nie „aufbraucht“ (<a href="../03b-weitere-funktionen-ableiten/index.html#sec-ex">Thema 2.2</a>).</p>
     <div class="quiz" id="quiz-hoehere"></div>
   </section>
 
@@ -92,7 +93,6 @@
           <select id="kr-art" class="eingabe" style="padding:0.4rem">
             <option value="kubik">f(x) = 0,5x³ − 1,5x</option>
             <option value="quartik">f(x) = 0,125x⁴ − 0,75x²</option>
-            <option value="sinus">f(x) = sin(x)</option>
           </select>
         </label>
         <label>x₀: <input type="range" id="kr-x" min="-2.5" max="2.5" step="0.25" value="1" style="vertical-align:middle;width:11rem"> <span id="kr-x-anzeige" class="wert farbe-blau"></span></label>
@@ -113,7 +113,7 @@
     <div class="beispiel-box">
       <span class="box-label">Beispiel</span>
       f(x) = 0,5x³ − 1,5x: f″(x) = 3x. Für x &lt; 0 ist f″(x) &lt; 0 — Rechtskurve; für x &gt; 0 ist f″(x) &gt; 0 — Linkskurve. An der Stelle 0 wechselt das Krümmungsverhalten.<br>
-      f(x) = sin(x): f″(x) = −sin(x). Wo der Sinus positiv ist (zwischen 0 und π), ist f″ negativ — Rechtskurve, der Graph ist dort ein „Berg“. Zwischen π und 2π ist er ein „Tal“, eine Linkskurve.
+      f(x) = 0,125x⁴ − 0,75x²: f″(x) = 1,5x² − 1,5 = 1,5(x − 1)(x + 1). Zwischen −1 und 1 ist f″ negativ — Rechtskurve, der Graph ist dort ein „Berg“; außerhalb ist er eine Linkskurve, ein „Tal“.
     </div>
     <div class="achtung-box">
       <span class="box-label">Achtung — „Linkskurve“ heißt nicht „steigt“</span>
@@ -249,36 +249,10 @@
     <div class="quiz" id="quiz-schema"></div>
   </section>
 
-  <!-- 6. Funktion mit Sinus -->
-  <section class="card" id="sec-trig">
-    <h2>6. Untersuchung einer Funktion mit Sinus</h2>
-    <p>Der Ablauf funktioniert nicht nur bei ganzrationalen Funktionen. Bei f(x) = x + 2 sin(x) addiert sich zu einer Geraden eine Schwingung. Wo die Schwingung schneller fällt, als die Gerade steigt, fällt auch f — dazwischen steigt f. Fahre mit x₀ über eine volle Periode von 0 bis 2π.</p>
-    <div class="widget">
-      <div class="btn-row">
-        <label>x₀: <input type="range" id="tr-k" min="0" max="24" step="1" value="8" style="vertical-align:middle;width:14rem"> <span id="tr-k-anzeige" class="wert farbe-blau"></span></label>
-      </div>
-      <div class="geo-wrap geo-stapel" id="tr-mount"></div>
-      <div class="th-bilanz" id="tr-bilanz"></div>
-      <div id="tr-text" class="event-result"></div>
-    </div>
-    <div class="beispiel-box">
-      <span class="box-label">Musterrechnung: f(x) = x + 2 sin(x) auf [0; 2π]</span>
-      f′(x) = 1 + 2 cos(x), f″(x) = −2 sin(x), f‴(x) = −2 cos(x).<br>
-      <strong>Extremstellen:</strong> 1 + 2 cos(x) = 0 ⟺ cos(x) = −0,5 ⟺ x = <span class="bruch"><span class="z">2π</span><span class="n">3</span></span> oder x = <span class="bruch"><span class="z">4π</span><span class="n">3</span></span>.<br>
-      f″(<span class="bruch"><span class="z">2π</span><span class="n">3</span></span>) = −2 · <span class="bruch"><span class="z">√3</span><span class="n">2</span></span> = −√3 &lt; 0: Hochpunkt H(<span class="bruch"><span class="z">2π</span><span class="n">3</span></span> | <span class="bruch"><span class="z">2π</span><span class="n">3</span></span> + √3) ≈ H(2,094 | 3,826).<br>
-      f″(<span class="bruch"><span class="z">4π</span><span class="n">3</span></span>) = √3 &gt; 0: Tiefpunkt T(<span class="bruch"><span class="z">4π</span><span class="n">3</span></span> | <span class="bruch"><span class="z">4π</span><span class="n">3</span></span> − √3) ≈ T(4,189 | 2,457).<br>
-      <strong>Wendestellen:</strong> −2 sin(x) = 0 ⟺ x = 0, π, 2π. Im Inneren: f‴(π) = 2 ≠ 0, also W(π | π) mit Wendetangente t(x) = −x + 2π.
-    </div>
-    <div class="achtung-box">
-      <span class="box-label">Achtung — Bogenmaß und Periodizität</span>
-      Die Ableitungen von sin und cos gelten nur im <a href="../03b-weitere-funktionen-ableiten/index.html#sec-sinus">Bogenmaß</a>; der Taschenrechner muss auf RAD stehen. Und eine Gleichung wie cos(x) = −0,5 hat auf ganz ℝ unendlich viele Lösungen. Deshalb gehört zur Aufgabe immer das Intervall, auf dem untersucht wird — hier [0; 2π]. Wegen f(x + 2π) = f(x) + 2π wiederholt sich das Bild, um 2π nach rechts und oben verschoben.
-    </div>
-    <div class="quiz" id="quiz-trig"></div>
-  </section>
 
-  <!-- 7. Globale Extrema -->
+  <!-- 6. Globale Extrema -->
   <section class="card" id="sec-global">
-    <h2>7. Globale Extrema und Randextrema</h2>
+    <h2>6. Globale Extrema und Randextrema</h2>
     <p>Ein Hochpunkt ist nur der höchste Punkt <em>in seiner Umgebung</em>. In Anwendungen ist meist ein Intervall vorgegeben — eine Produktionsmenge zwischen 0 und 50 Stück, eine Zeit zwischen 6 und 18 Uhr —, und gefragt ist der größte Wert <em>auf dem ganzen Intervall</em>. Der kann auch am Rand liegen, wo f′ gar nicht null sein muss. Verändere das Intervall [a; b] für f(x) = 0,5x³ − 1,5x.</p>
     <div class="widget">
       <div class="btn-row">
@@ -311,9 +285,9 @@
     <div class="quiz" id="quiz-global"></div>
   </section>
 
-  <!-- 8. Vom Graphen von f′ auf f schließen -->
+  <!-- 7. Vom Graphen von f′ auf f schließen -->
   <section class="card" id="sec-fstrich">
-    <h2>8. Vom Graphen von f′ auf f schließen</h2>
+    <h2>7. Vom Graphen von f′ auf f schließen</h2>
     <p>Oft ist nicht f gegeben, sondern nur der Graph der Ableitung — eine gemessene Geschwindigkeit, eine Zuflussrate, eine Wachstumsrate. Trotzdem lässt sich viel über f sagen: Das <em>Vorzeichen</em> von f′ sagt, ob f steigt, die <em>Steigung</em> von f′ (also f″) sagt, wie f gekrümmt ist. Fahre mit x₀ über den Graphen von f′ und lies ab. Den Graphen von f kannst du zur Kontrolle einblenden.</p>
     <div class="widget">
       <div class="btn-row">
@@ -352,9 +326,9 @@
     <div class="quiz" id="quiz-fstrich"></div>
   </section>
 
-  <!-- 9. Funktionenscharen -->
+  <!-- 8. Funktionenscharen -->
   <section class="card" id="sec-scharen">
-    <h2>9. Funktionenscharen und Ortskurven</h2>
+    <h2>8. Funktionenscharen und Ortskurven</h2>
     <p>Steht in einem Funktionsterm neben x noch ein <span class="term">Parameter</span>, beschreibt er nicht eine Funktion, sondern eine ganze Familie — eine <span class="term">Funktionenschar</span>. Bei f<sub>a</sub>(x) = x³ − 3a² · x (a &gt; 0) hängen Hoch- und Tiefpunkt von a ab. Verändere a und beobachte, auf welcher Kurve die Extrempunkte wandern.</p>
     <div class="widget">
       <div class="btn-row">
@@ -383,9 +357,9 @@
     <div class="quiz" id="quiz-scharen"></div>
   </section>
 
-  <!-- 10. Steckbriefaufgaben -->
+  <!-- 9. Steckbriefaufgaben -->
   <section class="card" id="sec-steckbrief">
-    <h2>10. Funktionen aus Eigenschaften bestimmen</h2>
+    <h2>9. Funktionen aus Eigenschaften bestimmen</h2>
     <p>Bisher war f gegeben und die Eigenschaften gesucht. Jetzt geht es umgekehrt: Man kennt einige Eigenschaften — „der Graph ist punktsymmetrisch und hat einen Hochpunkt in H(u | v)“ — und sucht den Term. Jede Eigenschaft wird zu einer Gleichung für die unbekannten Koeffizienten; das ergibt ein lineares Gleichungssystem. Verschiebe den Hochpunkt und sieh zu, wie sich die Lösung ändert.</p>
     <div class="widget">
       <div class="btn-row">
@@ -423,9 +397,9 @@
     <div class="quiz" id="quiz-steckbrief"></div>
   </section>
 
-  <!-- 11. Extremwertprobleme -->
+  <!-- 10. Extremwertprobleme -->
   <section class="card" id="sec-optimierung">
-    <h2>11. Extremwertprobleme</h2>
+    <h2>10. Extremwertprobleme</h2>
     <p>Aus einem quadratischen Stück Karton mit 12 cm Seitenlänge soll eine oben offene Schachtel werden. Dazu schneidet man an den vier Ecken gleich große Quadrate mit der Seitenlänge x heraus und klappt die Ränder hoch. Schneidet man wenig aus, wird die Schachtel flach; schneidet man viel aus, bleibt kaum Boden. Irgendwo dazwischen ist das Volumen am größten. Verändere x und beobachte den Graphen der Volumenfunktion.</p>
     <div class="widget">
       <div class="btn-row">
@@ -459,14 +433,14 @@
     </div>
     <div class="achtung-box">
       <span class="box-label">Achtung — Definitionsbereich und Ränder nicht vergessen</span>
-      Die Gleichung V′(x) = 0 hat auch die Lösung x = 6. Dort bleibt vom Karton kein Boden übrig: V(6) = 0. Lösungen außerhalb des Definitionsbereichs fallen weg, und an den Rändern kann der gesuchte Extremwert liegen (<a href="#sec-global">Abschnitt 7</a>).
+      Die Gleichung V′(x) = 0 hat auch die Lösung x = 6. Dort bleibt vom Karton kein Boden übrig: V(6) = 0. Lösungen außerhalb des Definitionsbereichs fallen weg, und an den Rändern kann der gesuchte Extremwert liegen (<a href="#sec-global">Abschnitt 6</a>).
     </div>
     <div class="quiz" id="quiz-optimierung"></div>
   </section>
 
-  <!-- 12. Newton-Verfahren -->
+  <!-- 11. Newton-Verfahren -->
   <section class="card" id="sec-newton">
-    <h2>12. Nullstellen näherungsweise: das Newton-Verfahren</h2>
+    <h2>11. Nullstellen näherungsweise: das Newton-Verfahren</h2>
     <p>Die Gleichung x³ − 2x − 5 = 0 lässt sich nicht durch Ausklammern oder Substitution lösen. In <a href="../02-grenzwerte-und-stetigkeit/index.html#sec-zwischenwert">Thema 1.2</a> wurde ihre Nullstelle durch Intervallhalbierung eingeschachtelt — sicher, aber langsam. Isaac Newton hatte eine schnellere Idee: Man ersetzt den Graphen in der Nähe eines Startwerts durch seine Tangente und nimmt deren Nullstelle als neuen, besseren Wert. Verändere den Startwert und die Anzahl der Schritte.</p>
     <div class="widget">
       <div class="btn-row">
@@ -495,9 +469,9 @@
     <div class="quiz" id="quiz-newton"></div>
   </section>
 
-  <!-- 13. Stolperstelle -->
+  <!-- 12. Stolperstelle -->
   <section class="card" id="sec-stolperstelle">
-    <h2>13. Stolperstelle: f″(x) = 0 ist noch kein Wendepunkt</h2>
+    <h2>12. Stolperstelle: f″(x) = 0 ist noch kein Wendepunkt</h2>
     <p>Mia rechnet: „f(x) = 0,25x⁴, f″(x) = 3x², f″(0) = 0 — also hat f bei 0 einen Wendepunkt.“ Noah widerspricht: „Der Graph sieht aus wie eine Parabel, da wendet nichts.“ Das Widget zeigt die Schar f<sub>k</sub>(x) = 0,25x⁴ + <span class="bruch"><span class="z">k</span><span class="n">3</span></span>x³. Für k ≠ 0 gibt es zwei Wendestellen. Schiebe k gegen 0 und sieh zu, was mit ihnen passiert.</p>
     <div class="widget">
       <div class="btn-row">
@@ -532,8 +506,8 @@
       <li><strong>Baut auf:</strong> Den <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/06-lineare-gleichungssysteme/index.html">linearen Gleichungssystemen</a> — jede Steckbriefaufgabe endet in einem.</li>
       <li><strong>Baut auf:</strong> Der <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/08-quadratische-funktionen/index.html">Scheitelpunktform</a> — bei Parabeln fand man das Extremum schon ohne Ableitung; die Ableitung liefert dasselbe für jede differenzierbare Funktion.</li>
       <li><strong>Gleiche Struktur:</strong> Die <a href="../02-grenzwerte-und-stetigkeit/index.html#sec-zwischenwert">Intervallhalbierung</a> aus Thema 1.2 und das Newton-Verfahren erzeugen beide eine Folge, die gegen die Nullstelle konvergiert (<a href="../01-folgen-und-reihen/index.html#sec-grenzwert">Grenzwert einer Folge</a>) — die eine sicher und langsam, die andere schnell, aber ohne Garantie.</li>
-      <li><strong>Führt weiter zu:</strong> Den <em>Exponential- und Logarithmusfunktionen</em> — dieselbe Untersuchung mit neuen Ableitungsregeln, etwa beim Wendepunkt des logistischen Wachstums (der Zeitpunkt des stärksten Wachstums).</li>
-      <li><strong>Führt weiter zu:</strong> Der <a href="../05-integralrechnung/index.html">Integralrechnung</a> — sie geht den Weg von <a href="#sec-fstrich">Abschnitt 8</a> zu Ende: Aus f′ wird f zurückgewonnen, bis auf eine Konstante.</li>
+      <li><strong>Führt weiter zu:</strong> Die <a href="../04b-weitere-funktionen-untersuchen/index.html">Untersuchung weiterer Funktionen</a> (Thema 3.2; mit e-Funktionen auch Grundkurs, sonst Leistungskurs) — derselbe Ablauf für e-, Logarithmus- und Winkelfunktionen, mit neuen Fragen: Asymptoten, unendlich viele Extrempunkte, Wachstumsmodelle bis zum Wendepunkt des logistischen Wachstums.</li>
+      <li><strong>Führt weiter zu:</strong> Der <a href="../05-integralrechnung/index.html">Integralrechnung</a> — sie geht den Weg von <a href="#sec-fstrich">Abschnitt 7</a> zu Ende: Aus f′ wird f zurückgewonnen, bis auf eine Konstante.</li>
       <li><strong>Führt weiter zu:</strong> Der Normalverteilung in der Stochastik (MSS 13) — ihre Glockenkurve hat Wendestellen genau bei μ − σ und μ + σ.</li>
     </ul>
   </section>
@@ -551,7 +525,7 @@
   <section class="card" id="sec-uebungen">
     <h2>Übungsaufgaben</h2>
     <p>Vierundzwanzig Aufgaben auf vier Stufen, je sechs auf jeder. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu. Tipps gibt es auf Knopfdruck, nach dem Prüfen steht die Musterlösung darunter.</p>
-    <p>Die letzte Aufgabe jeder Stufe ist ein <strong>Ableitungstraining</strong>: Mit „🎲 Neue Funktion“ bekommst du beliebig viele Funktionen, zu denen du f′ und f″ bestimmst — ganzrational, mit Potenzen und Wurzeln, mit Sinus und Kosinus und zuletzt als Funktionenschar oder als Verkettung wie (x² − 1)² und sin²(x). Du tippst beide Ableitungen als Term ein; die Seite prüft sie an vielen Stellen nach und sagt dir, welcher Fehler vermutlich passiert ist.</p>
+    <p>Die letzte Aufgabe jeder Stufe ist ein <strong>Ableitungstraining</strong>: Mit „🎲 Neue Funktion“ bekommst du beliebig viele Funktionen, zu denen du f′ und f″ bestimmst — ganzrational, mit Potenzen und Wurzeln, als Produkt zweier Polynome und zuletzt als Funktionenschar. Training mit e-, Logarithmus- und Winkelfunktionen gibt es in Thema 3.2. Du tippst beide Ableitungen als Term ein; die Seite prüft sie an vielen Stellen nach und sagt dir, welcher Fehler vermutlich passiert ist.</p>
     <p class="progress-note">Zahlen gibst du mit Komma ein, zum Beispiel 1,5; Brüche wie 3/2 sind ebenfalls erlaubt.</p>
     <div id="exercises-mount"></div>
   </section>
@@ -563,6 +537,6 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
-<script type="module" src="lernpfad.js?v=6"></script>
+<script type="module" src="lernpfad.js?v=7"></script>
 </body>
 </html>

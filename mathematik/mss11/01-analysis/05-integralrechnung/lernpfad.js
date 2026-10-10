@@ -9,7 +9,7 @@
 //    5. Hauptsatz                 (Streifen eingeklemmt zwischen f(x)·h und f(x + h)·h; Stetigkeit
 //                                  aus Thema 1.2)
 //    6. Stammfunktionen, Regeln   (Ableitungsregeln aus Thema 2.1 und 2.2 rückwärts)
-//    7. Fläche mit der x-Achse    (Nullstellen aus Thema 3, Beträge der Teilintegrale)
+//    7. Fläche mit der x-Achse    (Nullstellen aus Thema 3.1, Beträge der Teilintegrale)
 //    8. Fläche zwischen Graphen   (Differenzfunktion, Schnittstellen)
 //    9. Mittelwert, Bilanz        (Rechteck gleicher Fläche; Rekonstruktion aus 1 mit Stammfunktion)
 //   10. Uneigentliche Integrale   (Grenzwert für x → ∞ aus Thema 1.2)
