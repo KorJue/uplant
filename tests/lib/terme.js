@@ -23,11 +23,11 @@
 // Er arbeitet über Zeichenketten und eine Tokenliste und übersetzt in einen JavaScript-Ausdruck — ein
 // anderer Weg als der rekursive Abstieg der Seite, damit ein gemeinsamer Denkfehler nicht in beiden
 // steckt. Er versteht genau das, was die Seite anzeigt und als Eingabeform vorschlägt:
-// Ziffern mit Komma, x und a, + − * / ^, Hochzahlen ⁰…⁹, √x und √(…), sqrt/sin/cos/tan, sin²(x),
+// Ziffern mit Komma, x, a und e, + − * / ^, Hochzahlen ⁰…⁹, √x und √(…), sqrt/sin/cos/tan/exp/ln, sin²(x),
 // Klammern, den Malpunkt und das Weglassen des Malpunkts.
 
 const HOCH = { "⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9", "⁻": "-" };
-const FUNKTIONEN = ["sqrt", "sin", "cos", "tan", "pw"];
+const FUNKTIONEN = ["sqrt", "sin", "cos", "tan", "exp", "ln", "pw"];
 
 function normiere(text) {
   let s = String(text)
@@ -50,7 +50,8 @@ function zerlege(s) {
     if (zahl) { t.push({ art: "zahl", w: zahl[0] }); i += zahl[0].length; continue; }
     const fn = FUNKTIONEN.find((f) => rest.startsWith(f + "(") || rest.startsWith(f + "^"));
     if (fn) { t.push({ art: "fn", w: fn }); i += fn.length; continue; }
-    if (rest[0] === "x" || rest[0] === "a") { t.push({ art: "var", w: rest[0] }); i++; continue; }
+    // e ist die Eulersche Zahl; „exp(“ ist oben schon als Funktion erkannt.
+    if (rest[0] === "x" || rest[0] === "a" || rest[0] === "e") { t.push({ art: "var", w: rest[0] }); i++; continue; }
     if ("+-*/^()".includes(rest[0])) { t.push({ art: rest[0] === "(" || rest[0] === ")" ? rest[0] : "op", w: rest[0] }); i++; continue; }
     throw new Error(`Unbekanntes Zeichen „${rest[0]}“ in ${s}`);
   }
@@ -110,12 +111,12 @@ function potenzen(t) {
   }
 }
 
-const JS = { sqrt: "Math.sqrt", sin: "Math.sin", cos: "Math.cos", tan: "Math.tan", pw: "Math.pow" };
+const JS = { sqrt: "Math.sqrt", sin: "Math.sin", cos: "Math.cos", tan: "Math.tan", exp: "Math.exp", ln: "Math.log", pw: "Math.pow", e: "Math.E" };
 
 // Text → (x, a) => Zahl. Wirft bei unlesbarem Text.
 function alsFunktion(text) {
   const t = potenzen(zerlege(normiere(text)));
-  const js = t.map((tok) => (tok.art === "fn" ? JS[tok.w] : tok.w)).join(" ");
+  const js = t.map((tok) => (tok.art === "fn" || tok.w === "e" ? JS[tok.w] : tok.w)).join(" ");
   // eslint-disable-next-line no-new-func
   const f = new Function("x", "a", `"use strict"; return (${js});`);
   return (x, a = 1) => f(x, a);
@@ -140,9 +141,11 @@ function vergleiche(g, h, tol, mitA) {
 
 // ---------- Lesen aus der Seite ----------
 
-// Der Text einer gesetzten Formel: Brüche (Zähler über Nenner) werden zu ((Zähler)/(Nenner)).
+// Der Text einer gesetzten Formel: Brüche (Zähler über Nenner) werden zu ((Zähler)/(Nenner)),
+// hochgestellte Exponenten (e<sup>−x²</sup>) zu ^(…).
 const ALS_TEXT = (els) => els.map((el) => {
   const c = el.cloneNode(true);
+  c.querySelectorAll("sup").forEach((h) => h.replaceWith(`^(${h.textContent})`));
   c.querySelectorAll(".bruch").forEach((b) => b.replaceWith(`((${b.querySelector(".z").textContent})/(${b.querySelector(".n").textContent}))`));
   return c.textContent;
 });
@@ -259,7 +262,7 @@ const UNLESBAR = ["2x)", "(x + 1", "", "y + 1", "x +", "3x $ 2", "sin⁻¹(x)"];
 
 async function pruefeTermleser(page, bericht) {
   const ergebnis = await page.evaluate(async ({ lesbar, unlesbar, x, a }) => {
-    const { leseTerm } = await import("/mathematik/terme.js?v=2");
+    const { leseTerm } = await import("/mathematik/terme.js?v=3");
     const werte = lesbar.map(([t, , parameter]) => {
       try { return leseTerm(t, { parameter: parameter || [] }).f(x, { a }); } catch (e) { return "Fehler: " + e.message; }
     });
@@ -276,7 +279,7 @@ async function pruefeTermleser(page, bericht) {
   // 0,33 statt 1/3 ist 1 % daneben und muss als Rundung erkannt werden, und „+ 3“ an einer großen
   // Ableitung ((4x + 3)⁴ reicht bis über 10⁵) ist eine vergessene Konstante, keine Rundung.
   const fall = await page.evaluate(async (faelle) => {
-    const m = await import("/mathematik/terme.js?v=2");
+    const m = await import("/mathematik/terme.js?v=3");
     const glied = ([typ, ...args]) => m[typ](...args.map((v) => (Array.isArray(v) ? m.q(v[0], v[1]) : v)));
     return faelle.map(({ art, glieder, eingabe, optionen }) => {
       const gl = glieder.map(glied);
@@ -294,7 +297,7 @@ async function pruefeTermleser(page, bericht) {
   // der Stufe, in der sie nur jedes zwölfte Mal vorkommt — bliebe sonst manchen Lauf lang ungeprüft.
   // Angabe und Musterlösung werden aus dem HTML der Aufgabe gelesen und unabhängig nachgerechnet.
   const muster = await page.evaluate(async ({ faelle, alsText }) => {
-    const m = await import("/mathematik/terme.js?v=2");
+    const m = await import("/mathematik/terme.js?v=3");
     const glied = ([typ, ...args]) => m[typ](...args.map((v) => (Array.isArray(v) ? m.q(v[0], v[1]) : v)));
     const lies = new Function(`return ${alsText}`)();
     return faelle.map(({ art, glieder, optionen }) => {

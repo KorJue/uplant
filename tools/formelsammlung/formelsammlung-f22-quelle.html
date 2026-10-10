@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Formelsammlung — Ableitung weiterer Funktionen</title>
+<style>
+  @page { size: A4 landscape; margin: 5.5mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    color: #1f2328;
+    font-size: 8.1px;
+    line-height: 1.33;
+  }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  h1 {
+    font-size: 12.4px; margin: 0 0 1.4mm; padding-bottom: 0.8mm;
+    border-bottom: 1.6px solid #1d4ed8; color: #1d4ed8; letter-spacing: 0.01em;
+  }
+  h1 .klein { font-size: 8.4px; font-weight: 400; color: #5b6570; float: right; margin-top: 2px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2.1mm; align-items: start; }
+  .box {
+    border: 0.9px solid #c9d0d8; border-radius: 2mm; padding: 1.5mm 1.8mm;
+    background: #ffffff; break-inside: avoid;
+  }
+  .box.wide { grid-column: span 2; }
+  .box.full { grid-column: span 3; }
+  .box h2 {
+    font-size: 8.6px; margin: 0 0 1.1mm; color: #1d4ed8;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .box.warn { border-color: #e3b341; background: #fffaf0; }
+  .box.warn h2 { color: #8a5b0a; }
+  .box.merk { border-color: #7ec699; background: #f4fbf6; }
+  .box.merk h2 { color: #0f5132; }
+  p { margin: 0 0 0.9mm; }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 0.9mm; padding-left: 3.4mm; }
+  li { margin-bottom: 0.4mm; }
+  .f { font-family: "Cambria Math", Cambria, Georgia, serif; font-size: 9.2px; }
+  .zentral { text-align: center; }
+  .gross { font-size: 10.4px; font-weight: 700; }
+  .al { color: #157347; font-weight: 700; }
+  .be { color: #b3650a; font-weight: 700; }
+  .ga { color: #b3261e; font-weight: 700; }
+  .kr { color: #1d4ed8; font-weight: 700; }
+  .ra { color: #6d28d9; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { border: 0.7px solid #c9d0d8; padding: 0.5mm 0.6mm; text-align: center; }
+  th { background: #eef2f6; font-weight: 700; font-size: 7.4px; }
+  td { font-size: 7.6px; }
+  td.b { font-weight: 700; }
+  td.l { text-align: left; }
+  figure { margin: 0.8mm 0 0; }
+  figure svg { display: block; width: 100%; height: auto; }
+  .m70 { max-width: 70%; margin: 0.8mm auto 0; }
+  .m80 { max-width: 80%; margin: 0.8mm auto 0; }
+  .m88 { max-width: 88%; margin: 0.8mm auto 0; }
+  .m62 { max-width: 62%; margin: 0.8mm auto 0; }
+  .m72 { max-width: 72%; margin: 0.8mm auto 0; }
+  .m55 { max-width: 55%; margin: 0.8mm auto 0; }
+  .bu { font-size: 7.1px; color: #5b6570; text-align: center; margin-top: 0.5mm; }
+  .rechnung { background: #f4f6f8; border-radius: 1.2mm; padding: 1mm 1.2mm; margin: 0.8mm 0 0; }
+  .schritt { display: flex; gap: 1.2mm; margin-bottom: 0.5mm; }
+  .schritt b { flex: 0 0 3.6mm; color: #1d4ed8; }
+  .schritt:last-child { margin-bottom: 0; }
+  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm; align-items: start; }
+  .bruch { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; margin: 0 0.3mm; }
+  .bruch .z { border-bottom: 0.8px solid currentColor; padding: 0 0.6mm; }
+  .binom { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; padding: 0 0.9mm; margin: 0 0.3mm; border-left: 0.9px solid currentColor; border-right: 0.9px solid currentColor; border-radius: 45% / 50%; font-size: 92%; }
+  .tr { color: #157347; font-weight: 700; }
+  .ni { color: #b3650a; font-weight: 700; }
+  .fu { color: #5b6570; font-size: 7.3px; }
+  .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
+  .marke { display: inline-block; font-size: 6.2px; font-weight: 700; letter-spacing: 0.03em; padding: 0 1mm; border-radius: 1mm; margin-left: 1mm; vertical-align: 1px; text-transform: none; }
+  .marke.gk { background: #dcfce7; color: #14532d; }
+  .marke.lk { background: #ede9fe; color: #4c1d95; }
+</style>
+</head>
+<body>
+
+<!-- ===================== Seite 1 ===================== -->
+<div class="page">
+  <h1>Ableitung weiterer Funktionen<span class="klein">MSS 11 · Analysis, Thema 2.2 · Leistungskurs — <span class="marke gk">GK + LK</span> gilt auch im Grundkurs · <span class="fu">grau: andere Schreibweisen</span></span></h1>
+  <div class="grid">
+
+    <div class="box wide merk">
+      <h2>Ableitungen auf einen Blick</h2>
+      <table>
+        <tr><th>Funktion</th><th>Ableitung</th><th>Beispiel</th><th></th></tr>
+        <tr><td class="f">eˣ</td><td class="f">eˣ</td><td class="f">(3eˣ + x²)′ = 3eˣ + 2x</td><td><span class="marke gk">GK + LK</span></td></tr>
+        <tr><td class="f">a · e<sup>kx</sup></td><td class="f">a · k · e<sup>kx</sup> = k · f(x)</td><td class="f">(5e<sup>−0,2x</sup>)′ = −e<sup>−0,2x</sup></td><td><span class="marke gk">GK + LK</span></td></tr>
+        <tr><td class="f">bˣ = e<sup>x · ln b</sup></td><td class="f">ln b · bˣ</td><td class="f">(2ˣ)′ = ln 2 · 2ˣ ≈ 0,6931 · 2ˣ</td><td><span class="marke gk">GK + LK</span></td></tr>
+        <tr><td class="f">p(x) · e<sup>kx</sup></td><td class="f">(p′(x) + k · p(x)) · e<sup>kx</sup></td><td class="f">(x · e<sup>−x</sup>)′ = (1 − x) · e<sup>−x</sup></td><td><span class="marke gk">GK + LK</span></td></tr>
+        <tr><td class="f">sin x, cos x</td><td class="f">cos x, −sin x</td><td>x im <b>Bogenmaß</b>; sin → cos → −sin → −cos → sin</td><td><span class="marke lk">LK</span></td></tr>
+        <tr><td class="f">g(u(x))</td><td class="f">g′(u(x)) · u′(x)</td><td class="f">(e<sup>−x²</sup>)′ = −2x · e<sup>−x²</sup> · ((x² + 1)³)′ = 6x(x² + 1)²</td><td><span class="marke lk">LK</span></td></tr>
+        <tr><td class="f"><span class="bruch"><span class="z">u(x)</span><span>v(x)</span></span></td><td class="f"><span class="bruch"><span class="z">u′ · v − u · v′</span><span>v²</span></span></td><td class="f">(tan x)′ = <span class="bruch"><span class="z">1</span><span>cos² x</span></span> = 1 + tan² x</td><td><span class="marke lk">LK</span></td></tr>
+        <tr><td class="f">ln x, ln(u(x))</td><td class="f"><span class="bruch"><span class="z">1</span><span>x</span></span>, <span class="bruch"><span class="z">u′(x)</span><span>u(x)</span></span></td><td class="f">(ln(x² + 1))′ = <span class="bruch"><span class="z">2x</span><span>x² + 1</span></span> · (x · ln x)′ = ln x + 1</td><td><span class="marke lk">LK</span></td></tr>
+      </table>
+    </div>
+
+    <div class="box">
+      <h2>Die Funktion ln <span class="marke lk">LK</span></h2>
+      <p>ln x (x &gt; 0) ist die Umkehrfunktion von eˣ: Graph an y = x gespiegelt, Steigungen werden Kehrwerte. Aus e<sup>ln x</sup> = x mit der Kettenregel: (ln x)′ = <span class="bruch"><span class="z">1</span><span>x</span></span>.</p>
+      <figure class="m55">[[FIG4]]</figure>
+    </div>
+
+    <div class="box">
+      <h2>Die Zahl e <span class="marke gk">GK + LK</span></h2>
+      <p class="f">(bˣ)′ = c<sub>b</sub> · bˣ, &nbsp; c<sub>b</sub> = lim<sub>h→0</sub> <span class="bruch"><span class="z">bʰ − 1</span><span>h</span></span> = f′(0)</p>
+      <p>e ist die Basis mit c<sub>e</sub> = 1: <b>e = 2,71828…</b> = lim (1 + <span class="bruch"><span class="z">1</span><span>n</span></span>)ⁿ. eˣ &gt; 0, steigt streng, lim<sub>x→−∞</sub> eˣ = 0.</p>
+      <figure class="m72">[[FIG1]]</figure>
+    </div>
+
+    <div class="box merk">
+      <h2>Produkte mit e <span class="marke gk">GK + LK</span></h2>
+      <p>Produktregel, dann den e-Faktor <b>ausklammern</b>: Die Klammer entscheidet über Nullstellen und Vorzeichen von f′, denn e<sup>kx</sup> &gt; 0.</p>
+      <p class="f">(x² · e<sup>−x</sup>)′ = 2x · e<sup>−x</sup> − x² · e<sup>−x</sup> = x(2 − x) · e<sup>−x</sup></p>
+      <figure class="m80">[[FIG2]]</figure>
+    </div>
+
+    <div class="box">
+      <h2>Sinus und Kosinus <span class="marke lk">LK</span></h2>
+      <p>Am Einheitskreis: Der Bogen h ist fast eine Strecke senkrecht zum Radius — sie steigt um ≈ h · cos x. Nur im <b>Bogenmaß</b> (RAD)!</p>
+      <figure class="m88">[[FIG3]]</figure>
+      <p class="f" style="margin-top:0.6mm">(sin(bx + c))′ = b · cos(bx + c) · Periode von sin(bx): <span class="bruch"><span class="z">2π</span><span>b</span></span></p>
+    </div>
+
+    <div class="box">
+      <h2>Natürlicher Logarithmus <span class="marke gk">GK + LK</span></h2>
+      <p class="zentral f gross">eˣ = c ⟺ x = ln c &nbsp;(c &gt; 0)</p>
+      <p class="f">ln(ab) = ln a + ln b · ln <span class="bruch"><span class="z">a</span><span>b</span></span> = ln a − ln b · ln(aʳ) = r ln a · ln 1 = 0 · ln e = 1</p>
+      <div class="rechnung">
+        <div class="schritt"><b>Bsp.</b><span>3e<sup>2x</sup> − 12 = 0 ⟹ e<sup>2x</sup> = 4 ⟹ x = <span class="bruch"><span class="z">ln 4</span><span>2</span></span> = ln 2 ≈ 0,6931</span></div>
+        <div class="schritt"><b></b><span>Verdopplungszeit von e<sup>0,3t</sup>: t = <span class="bruch"><span class="z">ln 2</span><span>0,3</span></span> ≈ 2,31</span></div>
+      </div>
+      <p class="fu">ln ist der Logarithmus zur Basis e; „log“ auf dem Taschenrechner meint meist die Basis 10.</p>
+    </div>
+
+    <div class="box wide">
+      <h2>Kettenregel und Quotientenregel <span class="marke lk">LK</span></h2>
+      <p><b>Kettenregel:</b> äußere mal innere Ableitung — die Ableitungen sind <b>Verstärkungsfaktoren</b>: <span class="bruch"><span class="z">Δf</span><span>Δx</span></span> = <span class="bruch"><span class="z">Δf</span><span>Δu</span></span> · <span class="bruch"><span class="z">Δu</span><span>Δx</span></span>.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>Bsp.</b><span>f(x) = √(x² + 1): außen √u → <span class="bruch"><span class="z">1</span><span>2√u</span></span>, innen 2x ⟹ f′(x) = <span class="bruch"><span class="z">x</span><span>√(x² + 1)</span></span></span></div>
+        <div class="schritt"><b>Bsp.</b><span>f(x) = <span class="bruch"><span class="z">x</span><span>x² + 1</span></span> ⟹ f′(x) = <span class="bruch"><span class="z">(x² + 1) − x · 2x</span><span>(x² + 1)²</span></span> = <span class="bruch"><span class="z">1 − x²</span><span>(x² + 1)²</span></span></span></div>
+      </div>
+      <p class="fu">Quotientenregel = Produktregel mit v⁻¹ und Kettenregel. Reihenfolge im Zähler beachten!</p>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik MSS 11 · Analysis · Seite 1 von 2</p>
+</div>
+
+<!-- ===================== Seite 2 ===================== -->
+<div class="page">
+  <h1>Untersuchen — und was anders ist als bei ganzrationalen Funktionen<span class="klein">Grenzwerte — Symmetrie und Periode — Nullstellen — Extrempunkte — Wachstum und Schwingung</span></h1>
+  <div class="grid">
+
+    <div class="box full merk">
+      <h2>Vergleich</h2>
+      <table>
+        <tr><th></th><th>ganzrational, Grad n (Thema 2.1)</th><th>p(x) · e<sup>kx</sup> <span class="marke gk">GK + LK</span></th><th>sin, cos und Mischfunktionen <span class="marke lk">LK</span></th></tr>
+        <tr><td class="l b">Definitionsbereich</td><td>ℝ</td><td>ℝ (ln x nur für x &gt; 0)</td><td>ℝ; tan x ohne <span class="bruch"><span class="z">π</span><span>2</span></span> + kπ</td></tr>
+        <tr><td class="l b">x → ±∞</td><td>wie aₙxⁿ: höchste Potenz entscheidet</td><td>e-Faktor entscheidet: → 0 auf einer Seite (Asymptote y = 0), sonst ±∞ mit dem Vorzeichen von p</td><td>kein Grenzwert, schwingt zwischen −1 und 1</td></tr>
+        <tr><td class="l b">Symmetrie</td><td>an den Exponenten ablesbar</td><td colspan="2">nur über f(−x) = f(x) bzw. f(−x) = −f(x) nachweisen; gerade · ungerade = ungerade; dazu <b>Periode</b> f(x + p) = f(x)</td></tr>
+        <tr><td class="l b">Nullstellen</td><td>höchstens n</td><td>genau die von p (Satz vom Nullprodukt)</td><td>unendlich viele, je Periode zwei Lösungen von sin x = c</td></tr>
+        <tr><td class="l b">Extrempunkte</td><td>höchstens n − 1</td><td>Nullstellen der Klammer p′ + k · p</td><td>unendlich viele, wiederholen sich periodisch</td></tr>
+        <tr><td class="l b">Ableiten</td><td>Grad sinkt, nach n + 1 Schritten 0</td><td>Grad bleibt, e-Faktor bleibt</td><td>sin, cos wiederholen sich nach 4 Ableitungen</td></tr>
+      </table>
+    </div>
+
+    <div class="box">
+      <h2>Grenzwerte <span class="marke gk">GK + LK</span></h2>
+      <p class="f">lim<sub>x→∞</sub> xⁿ · e<sup>−x</sup> = 0 · lim<sub>x→−∞</sub> xⁿ · eˣ = 0 · lim<sub>x→∞</sub> <span class="bruch"><span class="z">eˣ</span><span>xⁿ</span></span> = ∞ · lim<sub>x→∞</sub> <span class="bruch"><span class="z">ln x</span><span>x</span></span> = 0</p>
+      <p>„Exponentiell schlägt jede Potenz, jede Potenz schlägt den Logarithmus.“</p>
+      <figure>[[FIG5]]</figure>
+    </div>
+
+    <div class="box">
+      <h2>Symmetrie und Periode <span class="marke lk">LK</span></h2>
+      <p>cos x, e<sup>−x²</sup>, x · sin x: achsensymmetrisch. sin x, x · e<sup>−x²</sup>: punktsymmetrisch. eˣ: keins von beiden (f(−1) ≈ 0,37 ≠ ±f(1)).</p>
+      <figure class="m88">[[FIG6]]</figure>
+      <p class="bu">Ein Stück der Länge 2π bestimmt den ganzen Graphen.</p>
+    </div>
+
+    <div class="box">
+      <h2>Nullstellen <span class="marke gk">GK + LK</span></h2>
+      <p><b>Nullprodukt:</b> (x² − 2x) · e<sup>0,5x</sup> = 0 ⟺ x = 0 oder x = 2. <b>e-Gleichung:</b> 2eˣ − 6 = 0 ⟺ x = ln 3.</p>
+      <p><b>sin x = c</b> <span class="marke lk">LK</span>: x₁ = sin⁻¹(c) (bei c &lt; 0 plus 2π), x₂ = π − sin⁻¹(c), dann + k · 2π.</p>
+      <figure>[[FIG7]]</figure>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung — Extrempunkte <span class="marke gk">GK + LK</span></h2>
+      <p><b>Gegeben:</b> f(x) = (x² − 3) · eˣ</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>f′(x) = 2x · eˣ + (x² − 3) · eˣ = (x + 3)(x − 1) · eˣ</span></div>
+        <div class="schritt"><b>2.</b><span>eˣ &gt; 0 ⟹ f′(x) = 0 ⟺ x = −3 oder x = 1</span></div>
+        <div class="schritt"><b>3.</b><span>Klammer: + | − | + ⟹ H(−3 | 6e<sup>−3</sup>), T(1 | −2e)</span></div>
+        <div class="schritt"><b>4.</b><span>x → −∞: f → 0; T ist globales Minimum</span></div>
+      </div>
+      <figure class="m80">[[FIG8]]</figure>
+    </div>
+
+    <div class="box">
+      <h2>Wachstum und Schwingung</h2>
+      <p><b>Wachstum/Zerfall</b> <span class="marke gk">GK + LK</span>: N(t) = N₀ · e<sup>kt</sup>, N′ = k · N; Verdopplungs- bzw. Halbwertszeit <span class="bruch"><span class="z">ln 2</span><span>|k|</span></span>.</p>
+      <p><b>Abkühlen</b> <span class="marke gk">GK + LK</span>: T(t) = U + (T₀ − U) · e<sup>−kt</sup>, T′ = −k · (T − U).</p>
+      <p><b>Schwingung</b> <span class="marke lk">LK</span>: s(t) = A · sin(ωt), v(t) = s′(t) = Aω · cos(ωt) — am größten in der Ruhelage.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>Bsp.</b><span>N = 500 · e<sup>0,3t</sup>: N′(2) ≈ 273,32 Bakterien pro Stunde = 0,3 · N(2)</span></div>
+      </div>
+      <p class="fu">Rate ist nicht Zuwachs: N(3) − N(2) ≈ 319, weil die Rate weiter wächst.</p>
+    </div>
+
+    <div class="box warn">
+      <h2>Typische Fehler</h2>
+      <ul>
+        <li><b>(eˣ)′ = x · eˣ⁻¹</b> — die Potenzregel gilt für xⁿ, nicht für bˣ.</li>
+        <li><b>(e<sup>3x</sup>)′ = e<sup>3x</sup></b> — der Faktor k = 3 fehlt; die innere Ableitung gehört dazu.</li>
+        <li><b>ln(a + b) = ln a + ln b</b> — falsch; eˣ = −2 hat keine Lösung.</li>
+        <li><b>(cos x)′ = sin x</b> — das Minus fehlt; Taschenrechner auf DEG.</li>
+        <li><b>x · eˣ = 2x durch x teilen</b> — x = 0 geht verloren.</li>
+        <li>sin x = c: nur <b>eine</b> Lösung angegeben.</li>
+      </ul>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik MSS 11 · Analysis · Seite 2 von 2</p>
+</div>
+
+</body>
+</html>

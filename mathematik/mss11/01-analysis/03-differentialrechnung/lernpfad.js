@@ -1,4 +1,6 @@
-// Selbstlernpfad „Differentialrechnung“ (MSS 11, Analysis, Thema 2). Vanilla-JS, kein Build.
+// Selbstlernpfad „Differentialrechnung“ (MSS 11, Analysis, Thema 2.1 — Grund- und Leistungskurs).
+// Vanilla-JS, kein Build. Sinus und Kosinus, Ketten- und Quotientenregel, e-Funktion und Logarithmus
+// gehören nach dem rheinland-pfälzischen Lehrplan zum Leistungsfach und stehen in Thema 2.2.
 //
 // Didaktische Reihenfolge — jede Stufe benutzt nur, was davor steht:
 //    1. Mittlere Änderungsrate          (Steigung einer Geraden, Steigungsdreieck: Mittelstufe)
@@ -10,15 +12,14 @@
 //    4. Grafisches Differenzieren        (Tangentensteigung aus 3 an jeder Stelle → Funktion f′)
 //    5. Ableitungsfunktion, Potenzregel (erst f′(3), dann f′(x₀), dann f′; Faktor x − x₀ abspalten)
 //    6. Faktor- und Summenregel         (Grenzwertsätze aus Thema 1.1/1.2; braucht 5 für g′)
-//    7. Sinus und Kosinus               (Einheitskreis, Bogenmaß; 4 hat die Vermutung geliefert)
-//    8. Produkt- und Kettenregel        (dieselbe Flächenidee wie 5; Verstärkungsfaktor)
-//    9. Tangente, Normale, Winkel       (f′ aus 3–7; tan⁻¹ aus der Trigonometrie; m · m_n = −1 wird
+//    7. Produktregel                    (dieselbe Flächenidee wie 5: zwei Streifen und eine Ecke)
+//    8. Tangente, Normale, Winkel       (f′ aus 3–7; tan⁻¹ aus der Trigonometrie; m · m_n = −1 wird
 //                                         hier erst durch Drehen gezeigt)
-//   10. Differenzierbarkeit             (einseitige Grenzwerte aus Thema 1.2, Knick aus 3)
-//   11. Ganzrationale Funktionen        (Verhalten für x → ±∞ mit Grenzwerten aus Thema 1.2; Symmetrie)
-//   12. Nullstellen, Vielfachheit       (Faktorisieren, pq-Formel; Ableitungskasten braucht 8)
-//   13. f und f′: Monotonie, Extrema    (braucht 4–6 für f′ und 12 für die Nullstellen von f′)
-//   14. Stolperstelle Tangente          (Tangente aus 9, doppelte Nullstelle aus 12)
+//    9. Differenzierbarkeit             (einseitige Grenzwerte aus Thema 1.2, Knick aus 3)
+//   10. Ganzrationale Funktionen        (Verhalten für x → ±∞ mit Grenzwerten aus Thema 1.2; Symmetrie)
+//   11. Nullstellen, Vielfachheit       (Faktorisieren, pq-Formel; Ableitungskasten braucht 7)
+//   12. f und f′: Monotonie, Extrema    (braucht 4–6 für f′ und 11 für die Nullstellen von f′)
+//   13. Stolperstelle Tangente          (Tangente aus 8, doppelte Nullstelle aus 11)
 //
 // Gerechnet wird mit Reglerwerten, nie mit Bildschirmkoordinaten. Die Prüfung liest die
 // Zeichnungen aus dem SVG zurück (Maßstab aus den Gitterlinien mit data-wert) und rechnet nach.
@@ -27,7 +28,7 @@
 // Normale violett, Warnung (Knick, keine Ableitung) rot, Hilfslinien grau.
 
 import { mountUebungsaufgaben } from "../../../aufgaben.js?v=3";
-import { AUFGABEN, parseZahl } from "./aufgaben-differentialrechnung.js?v=4";
+import { AUFGABEN, parseZahl } from "./aufgaben-differentialrechnung.js?v=5";
 
 // ---------- Helfer ----------
 
@@ -539,7 +540,7 @@ function renderGrafisch() {
     `x₀ = ${num(x0, 1)}: Auf eine Einheit nach rechts ${wie} — also f′(${num(x0, 1)}) ${z} <span class="wa">${num(m, 2)}</span>. Unten entsteht der Punkt (${num(x0, 1)} | ${num(m, 2)}).`);
   const lage = Math.abs(m) < 0.005 ? "Hier ist die Tangente waagerecht: f′ hat eine Nullstelle." :
     m > 0 ? "f steigt hier, also liegt der Punkt von f′ oberhalb der x-Achse." : "f fällt hier, also liegt der Punkt von f′ unterhalb der x-Achse.";
-  setzeText("gd-text", lage + (art === "sinus" ? " Fällt dir auf, wem der untere Graph gleicht? Abschnitt 7 klärt das." : " Fahre weiter: Die grüne Spur unten ist der Graph der Ableitungsfunktion."));
+  setzeText("gd-text", lage + (art === "sinus" ? " Fällt dir auf, wem der untere Graph gleicht? Im Leistungskurs klärt das Thema 2.2." : " Fahre weiter: Die grüne Spur unten ist der Graph der Ableitungsfunktion."));
 }
 
 // ================= 5. Das wachsende Quadrat =================
@@ -630,130 +631,38 @@ function renderRegeln() {
   setzeText("rg-text", "Gestrichelt: g (blau) und h (orange). Weil f an jeder Stelle die Summe der beiden ist, wächst f auf eine Einheit nach rechts um das, was g wächst, plus das, was h wächst.");
 }
 
-// ================= 7. Sinus und Kosinus am Einheitskreis =================
+// ================= 7. Produktregel =================
 
-function renderSinus() {
-  const x = reglerRaster("si-x");
-  const h = reglerRaster("si-h");
-  setzeAnzeige("si-x-anzeige", `${num(x, 1)} (≈ ${num((x * 180) / Math.PI, 1)}°)`);
-  setzeAnzeige("si-h-anzeige", num(h, 2));
-  const px = Math.cos(x), py = Math.sin(x), qx = Math.cos(x + h), qy = Math.sin(x + h);
-  const hub = qy - py;
-  // Kreis: 300 × 286 Bildpunkte, −1,3 … 1,3 in beiden Richtungen — unverzerrt, sonst wäre der
-  // Kreis eine Ellipse und der Bogen nicht h lang.
-  const K1 = koordinatenXY({ breite: 300, hoehe: 286, xmin: -1.3, xmax: 1.3, ymin: -1.3, ymax: 1.3, panel: "kreis" });
-  K1.ebene.appendChild(svgEl("circle", { cx: K1.X(0).toFixed(2), cy: K1.Y(0).toFixed(2), r: (K1.X(1) - K1.X(0)).toFixed(2), class: "dr-kreis", "data-rolle": "einheitskreis" }));
-  strecke(K1, 0, 0, px, py, "dr-radius", { "data-rolle": "radius" });
-  let bogen = "";
-  for (let i = 0; i <= 40; i++) {
-    const t = x + (h * i) / 40;
-    bogen += `${i ? " L" : "M"} ${K1.X(Math.cos(t)).toFixed(2)} ${K1.Y(Math.sin(t)).toFixed(2)}`;
-  }
-  K1.ebene.appendChild(svgEl("path", { d: bogen, class: "dr-bogen", "data-rolle": "bogen" }));
-  strecke(K1, px, py, qx, py, "dr-dreieck dx", { "data-rolle": "lauf", "data-wert": String(qx - px) });
-  strecke(K1, qx, py, qx, qy, "dr-hub", { "data-rolle": "hub", "data-wert": String(hub) });
-  punkt(K1, px, py, "fr-punkt", { "data-rolle": "p" });
-  punkt(K1, qx, qy, "fr-punkt dr-punkt-q", { "data-rolle": "q" });
-  let winkel = "";
-  for (let i = 0; i <= 30; i++) {
-    const t = (x * i) / 30;
-    winkel += `${i ? " L" : "M"} ${K1.X(0.22 * Math.cos(t)).toFixed(2)} ${K1.Y(0.22 * Math.sin(t)).toFixed(2)}`;
-  }
-  K1.ebene.appendChild(svgEl("path", { d: winkel, class: "dr-winkel", "data-rolle": "winkel-x" }));
-  beschrift(K1, 0.32 * Math.cos(x / 2), 0.32 * Math.sin(x / 2), "x", "dr-text-v", { dy: 4 });
-  beschrift(K1, px, py, "P", "dr-text-b", { dx: 12 * Math.cos(x), dy: -12 * Math.sin(x) + 4 });
-  // Bei kleinem h lägen P und Q übereinander — dann bekommt Q keine eigene Beschriftung.
-  if (h >= 0.3) beschrift(K1, qx, qy, "Q", "dr-text-o", { dx: 13 * Math.cos(x + h), dy: -13 * Math.sin(x + h) + 4 });
-
-  const K2 = koordinatenXY({ breite: 380, hoehe: 286, xmin: 0, xmax: 7.6, ymin: -1.4, ymax: 1.4, panel: "graph" });
-  graph(K2, Math.sin, 0, 7.6, { schritte: 400 });
-  gerade(K2, Math.cos(x), x, py, "dr-tangente grenze", { "data-rolle": "tangente" });
-  gerade(K2, hub / h, x, py, "dr-sekante", { "data-rolle": "sekante" });
-  strecke(K2, x + h, py, x + h, qy, "dr-hub", { "data-rolle": "hub-graph", "data-wert": String(hub) });
-  punkt(K2, x, py, "fr-punkt", { "data-rolle": "p" });
-  punkt(K2, x + h, qy, "fr-punkt dr-punkt-q", { "data-rolle": "q" });
-  zeige("si-mount", K1.svg, K2.svg);
-
-  const q = hub / h, c = Math.cos(x);
-  setzeHtml("si-bilanz",
-    `Hub Δ = sin(${num(x + h, 2)}) − sin(${num(x, 1)}) ${zeichen(hub)} <span class="wr">${num(hub)}</span>; &nbsp; ${bruch("Δ", "h")} ${zeichen(q)} <span class="wo">${num(q)}</span><br>` +
-    `cos(${num(x, 1)}) ${zeichen(c)} <span class="wa">${num(c)}</span> — Unterschied ${zeichen(Math.abs(q - c))} ${num(Math.abs(q - c))}.`);
-  setzeText("si-text", h > 0.3
-    ? "Der Bogen ist noch deutlich gekrümmt, Δ : h weicht von cos x ab. Mach h kleiner."
-    : `Für kleines h ist der Bogen fast eine Strecke senkrecht zum Radius, und ihr Anstieg ist ungefähr h · cos x. Deshalb nähert sich Δ : h dem Wert cos x — die Steigung des Sinus an der Stelle x ist cos x.${Math.cos(x) < 0 ? " Hier ist cos x negativ: P läuft auf dem Kreis abwärts, der Sinus fällt." : ""}`);
-}
-
-// ================= 8. Produktregel und Kettenregel =================
-
-function renderProduktKette() {
-  const art = wahl("pk-art");
+function renderProdukt() {
   const x = reglerRaster("pk-x");
   const h = reglerRaster("pk-h");
   setzeAnzeige("pk-x-anzeige", num(x, 2));
   setzeAnzeige("pk-h-anzeige", num(h, 2));
-  if (art === "produkt") {
-    const v = (t) => 0.25 * t * t + 1;
-    const u0 = x, v0 = v(x), du = h, dv = v(x + h) - v(x);
-    // 420 × 406 Bildpunkte bei 0 … 2,8 in beiden Richtungen: unverzerrt.
-    const K = koordinatenXY({ breite: 420, hoehe: 406, xmin: 0, xmax: 2.8, ymin: 0, ymax: 2.8, xName: "", yName: "", zahlen: false });
-    rechteck(K, 0, 0, u0, v0, "dr-quadrat", { "data-rolle": "rechteck" });
-    rechteck(K, u0, 0, u0 + du, v0, "dr-streifen", { "data-rolle": "streifen-rechts" });
-    rechteck(K, 0, v0, u0, v0 + dv, "dr-streifen oben", { "data-rolle": "streifen-oben" });
-    rechteck(K, u0, v0, u0 + du, v0 + dv, "dr-ecke", { "data-rolle": "ecke" });
-    beschrift(K, u0 / 2, v0 / 2, "u · v", "dr-text-b", { dy: 5 });
-    beschrift(K, u0 / 2, 0, `u = ${num(u0, 2)}`, "dr-text-b", { dy: -8 });
-    beschrift(K, 0, v0, `v = ${num(v0, 4)}`, "dr-text-b", { dx: 6, dy: 16, anker: "start" });
-    beschrift(K, u0 + du, v0 / 2, "v · Δu", "dr-text-o", { dx: 6, dy: 4, anker: "start" });
-    beschrift(K, u0 / 2, v0 + dv, "u · Δv", "dr-text-v", { dy: -7 });
-    beschrift(K, u0 + du, v0 + dv, "Δu · Δv", "dr-text-r", { dx: 6, dy: -6, anker: "start" });
-    zeige("pk-mount", K.svg);
-    const zuwachs = v0 * du + u0 * dv + du * dv;
-    const grenz = 1 * v0 + u0 * 0.5 * x;
-    setzeHtml("pk-bilanz",
-      `u(x) = x, v(x) = 0,25x² + 1. Δu = h = ${num(du, 2)}, Δv = v(${num(x + h, 2)}) − v(${num(x, 2)}) = ${num(dv, 6)}<br>` +
-      `Δ(u · v) = v · Δu + u · Δv + Δu · Δv = ${num(v0 * du, 6)} + ${num(u0 * dv, 6)} + ${num(du * dv, 6)} = ${num(zuwachs, 6)}; geteilt durch h: <span class="wo">${num(zuwachs / h, 4)}</span><br>` +
-      `Für h → 0: u′ · v + u · v′ = 1 · ${num(v0, 4)} + ${num(u0, 2)} · ${num(0.5 * x, 4)} = <span class="wa">${num(grenz, 4)}</span>`);
-    setzeText("pk-text", `Die rote Ecke Δu · Δv macht ${zeichen((100 * du * dv) / zuwachs, 1)} ${num((100 * du * dv) / zuwachs, 1)} % des Zuwachses aus. Nach dem Teilen durch h ist sie Δu : h · Δv = 1 · Δv — und Δv geht mit h gegen 0. Übrig bleiben die beiden Streifen: v · u′ und u · v′.`);
-    return;
-  }
-  // Kettenregel: drei Zahlengeraden mit demselben Maßstab, damit man die Streckung sieht.
-  const B = 560, H = 300, lo = -1.2, hi = 6.6;
-  const P = (w) => 40 + ((w - lo) / (hi - lo)) * (B - 60);
-  const svg = flaeche(B, H);
-  const zeilen = [
-    { y: 60, achse: "x", name: "x", von: x, bis: x + h, klasse: "x" },
-    { y: 150, achse: "u", name: "u = x²", von: x * x, bis: (x + h) * (x + h), klasse: "u" },
-    { y: 240, achse: "f", name: "f = sin u", von: Math.sin(x * x), bis: Math.sin((x + h) * (x + h)), klasse: "f" },
-  ];
-  for (const z of zeilen) {
-    svg.appendChild(svgEl("line", { x1: P(lo), x2: P(hi), y1: z.y, y2: z.y, class: "dr-zahlenstrahl", "data-rolle": "strahl-" + z.achse }));
-    for (let w = -1; w <= 6; w++) {
-      svg.appendChild(svgEl("line", { x1: P(w).toFixed(2), x2: P(w).toFixed(2), y1: z.y - 5, y2: z.y + 5, class: "fr-gitter", "data-achse": z.achse, "data-wert": String(w) }));
-      svg.appendChild(svgText(P(w), z.y + 19, num(w), { class: "fr-text" }));
-    }
-    svg.appendChild(svgText(P(lo), z.y - 12, z.name, { class: "panel-titel", "text-anchor": "start" }));
-    svg.appendChild(svgEl("line", { x1: P(Math.min(z.von, z.bis)).toFixed(2), x2: P(Math.max(z.von, z.bis)).toFixed(2), y1: z.y, y2: z.y, class: "dr-intervall " + z.klasse, "data-rolle": "intervall-" + z.achse, "data-von": String(z.von), "data-bis": String(z.bis) }));
-  }
-  for (let i = 0; i < 2; i++) {
-    const a = zeilen[i], b = zeilen[i + 1];
-    svg.appendChild(svgEl("line", { x1: P(a.von).toFixed(2), y1: a.y + 4, x2: P(b.von).toFixed(2), y2: b.y - 4, class: "dr-verbinder" }));
-    svg.appendChild(svgEl("line", { x1: P(a.bis).toFixed(2), y1: a.y + 4, x2: P(b.bis).toFixed(2), y2: b.y - 4, class: "dr-verbinder" }));
-  }
-  const du = zeilen[1].bis - zeilen[1].von, df = zeilen[2].bis - zeilen[2].von;
-  svg.appendChild(svgText(B - 8, 108, `Δu : Δx ≈ ${num(du / h, 2)}`, { class: "dr-text-v", "text-anchor": "end" }));
-  svg.appendChild(svgText(B - 8, 198, `Δf : Δu ≈ ${num(df / du, 2)}`, { class: "dr-text-g", "text-anchor": "end" }));
-  zeige("pk-mount", svg);
-  const u = x * x, grenz = Math.cos(u) * 2 * x;
+  const v = (t) => 0.25 * t * t + 1;
+  const u0 = x, v0 = v(x), du = h, dv = v(x + h) - v(x);
+  // 420 × 406 Bildpunkte bei 0 … 2,8 in beiden Richtungen: unverzerrt.
+  const K = koordinatenXY({ breite: 420, hoehe: 406, xmin: 0, xmax: 2.8, ymin: 0, ymax: 2.8, xName: "", yName: "", zahlen: false });
+  rechteck(K, 0, 0, u0, v0, "dr-quadrat", { "data-rolle": "rechteck" });
+  rechteck(K, u0, 0, u0 + du, v0, "dr-streifen", { "data-rolle": "streifen-rechts" });
+  rechteck(K, 0, v0, u0, v0 + dv, "dr-streifen oben", { "data-rolle": "streifen-oben" });
+  rechteck(K, u0, v0, u0 + du, v0 + dv, "dr-ecke", { "data-rolle": "ecke" });
+  beschrift(K, u0 / 2, v0 / 2, "u · v", "dr-text-b", { dy: 5 });
+  beschrift(K, u0 / 2, 0, `u = ${num(u0, 2)}`, "dr-text-b", { dy: -8 });
+  beschrift(K, 0, v0, `v = ${num(v0, 4)}`, "dr-text-b", { dx: 6, dy: 16, anker: "start" });
+  beschrift(K, u0 + du, v0 / 2, "v · Δu", "dr-text-o", { dx: 6, dy: 4, anker: "start" });
+  beschrift(K, u0 / 2, v0 + dv, "u · Δv", "dr-text-v", { dy: -7 });
+  beschrift(K, u0 + du, v0 + dv, "Δu · Δv", "dr-text-r", { dx: 6, dy: -6, anker: "start" });
+  zeige("pk-mount", K.svg);
+  const zuwachs = v0 * du + u0 * dv + du * dv;
+  const grenz = 1 * v0 + u0 * 0.5 * x;
   setzeHtml("pk-bilanz",
-    `Δx = h = ${num(h, 2)}; Δu = (x + h)² − x² = ${num(du, 4)}; Δf = sin(${num(zeilen[1].bis, 4)}) − sin(${num(u, 4)}) ${zeichen(df)} ${num(df, 4)}<br>` +
-    `${bruch("Δf", "Δx")} = ${bruch("Δf", "Δu")} · ${bruch("Δu", "Δx")} ${zeichen(df / h)} ${num(df / du, 4)} · ${numK(du / h, 4)} ${zeichen(df / h)} <span class="wo">${num(df / h, 4)}</span><br>` +
-    `Für h → 0: äußere Ableitung cos(u) = cos(${num(u, 4)}) ${zeichen(Math.cos(u))} ${num(Math.cos(u))} mal innere Ableitung 2x = ${num(2 * x, 2)}: f′(${num(x, 2)}) ${zeichen(grenz)} <span class="wa">${num(grenz, 4)}</span>`);
-  setzeText("pk-text", Math.cos(u) < 0
-    ? "Der äußere Verstärkungsfaktor cos u ist hier negativ: Das f-Intervall liegt umgekehrt — wenn x wächst, fällt f. Die Längen multiplizieren sich trotzdem, nur mit Vorzeichen."
-    : "Das kleine x-Intervall wird von u = x² etwa um den Faktor 2x gestreckt, das u-Intervall von sin u etwa um den Faktor cos u. Zusammen: cos(x²) · 2x — äußere Ableitung mal innere Ableitung.");
+    `u(x) = x, v(x) = 0,25x² + 1. Δu = h = ${num(du, 2)}, Δv = v(${num(x + h, 2)}) − v(${num(x, 2)}) = ${num(dv, 6)}<br>` +
+    `Δ(u · v) = v · Δu + u · Δv + Δu · Δv = ${num(v0 * du, 6)} + ${num(u0 * dv, 6)} + ${num(du * dv, 6)} = ${num(zuwachs, 6)}; geteilt durch h: <span class="wo">${num(zuwachs / h, 4)}</span><br>` +
+    `Für h → 0: u′ · v + u · v′ = 1 · ${num(v0, 4)} + ${num(u0, 2)} · ${num(0.5 * x, 4)} = <span class="wa">${num(grenz, 4)}</span>`);
+  setzeText("pk-text", `Die rote Ecke Δu · Δv macht ${zeichen((100 * du * dv) / zuwachs, 1)} ${num((100 * du * dv) / zuwachs, 1)} % des Zuwachses aus. Nach dem Teilen durch h ist sie Δu : h · Δv = 1 · Δv — und Δv geht mit h gegen 0. Übrig bleiben die beiden Streifen: v · u′ und u · v′.`);
 }
 
-// ================= 9. Tangente, Normale, Winkel =================
+// ================= 8. Tangente, Normale, Winkel =================
 
 const GRAD = 180 / Math.PI;
 // −1/m als Bruch, wenn m ganzzahlig ist — sonst als Dezimalzahl.
@@ -851,7 +760,7 @@ function renderTangente() {
       : "Der Schnittwinkel zweier Graphen ist der Winkel zwischen ihren Tangenten im gemeinsamen Punkt — hier zwischen der grünen Tangente an f und der Geraden g selbst.");
 }
 
-// ================= 10. Differenzierbarkeit =================
+// ================= 9. Differenzierbarkeit =================
 
 const DF = {
   naht: { x0: 2, bild: [-0.5, 4.5, -0.5, 8] },
@@ -908,7 +817,7 @@ function renderDifferenzierbar() {
   setzeText("df-text", "Die Sekanten werden immer steiler und nähern sich der senkrechten Geraden x = 0. Eine senkrechte Tangente hat keine Steigung — ∛x ist bei 0 stetig, aber nicht differenzierbar.");
 }
 
-// ================= 11. Ganzrationale Funktionen =================
+// ================= 10. Ganzrationale Funktionen =================
 
 const GR = {
   f: { f: (x) => 0.5 * x ** 4 - x * x + 0.5, leit: (x) => 0.5 * x ** 4, leitText: "0,5x⁴", name: "f",
@@ -978,7 +887,7 @@ function renderGanzrational() {
     : sym ? "Die Kopie liegt genau auf dem Original — der Graph geht bei dieser Bewegung in sich selbst über." : "Die Kopie liegt neben dem Original: Diese Symmetrie hat der Graph nicht.");
 }
 
-// ================= 12. Nullstellen und Vielfachheit =================
+// ================= 11. Nullstellen und Vielfachheit =================
 
 function renderNullstellen() {
   const r1 = reglerRaster("ns-r1"), r2 = reglerRaster("ns-r2");
@@ -1009,7 +918,7 @@ function renderNullstellen() {
     : "An einer Nullstelle mit ungerader Vielfachheit wechselt das Vorzeichen, an einer mit gerader nicht. Je höher die Vielfachheit, desto flacher schmiegt sich der Graph an die x-Achse.");
 }
 
-// ================= 13. f und f′: Monotonie und Extrempunkte =================
+// ================= 12. f und f′: Monotonie und Extrempunkte =================
 
 const MO = {
   quartik: { fn: FN.quartik, xs: [-1.8, 1.8], oben: [-0.5, 2.8], unten: [-8.5, 8.5], start: -1.5,
@@ -1063,7 +972,7 @@ function renderMonotonie() {
     : "Grün: f steigt, f′ ist positiv. Orange: f fällt, f′ ist negativ. Fahre zu einer Nullstelle von f′.");
 }
 
-// ================= 14. Stolperstelle: Tangente schneidet =================
+// ================= 13. Stolperstelle: Tangente schneidet =================
 
 function renderStolperstelle() {
   const x0 = reglerRaster("sp-x");
@@ -1170,17 +1079,11 @@ const QUIZZE = {
     correct: 1,
     explain: "Summand für Summand: (4x³)′ = 4 · 3x² = 12x² nach der Faktorregel, (−2x)′ = −2 und (7)′ = 0. Der Faktor 4 bleibt stehen, der konstante Summand 7 verschwindet — er verschiebt den Graphen nur, er neigt ihn nicht.",
   },
-  "quiz-sinus": {
-    q: "Welche Steigung hat der Graph von f(x) = sin x an der Stelle x = π?",
-    options: ["0, denn sin π = 0", "1", "−1", "π"],
-    correct: 2,
-    explain: "f′(π) = cos π = −1. Dass sin π = 0 ist, sagt etwas über die Höhe, nicht über die Steigung: Der Graph geht bei π mit der Steigung −1 abwärts durch die x-Achse, so wie er bei 0 mit der Steigung 1 aufwärts geht.",
-  },
-  "quiz-produkt-kette": {
-    q: "Welche Ableitung hat f(x) = (3x − 1)⁴?",
-    options: ["f′(x) = 12(3x − 1)³", "f′(x) = 4(3x − 1)³", "f′(x) = 4 · 3x³", "f′(x) = 12x³"],
-    correct: 0,
-    explain: "Kettenregel: außen u⁴ mit der Ableitung 4u³, innen 3x − 1 mit der Ableitung 3. Zusammen 4(3x − 1)³ · 3 = 12(3x − 1)³. Ohne den Faktor 3 fehlt die innere Ableitung — der Verstärkungsfaktor der inneren Funktion.",
+  "quiz-produkt": {
+    q: "Welche Ableitung hat f(x) = (2x + 1)(x² − 3)?",
+    options: ["f′(x) = 2 · 2x = 4x", "f′(x) = 2(x² − 3) + (2x + 1) · 2x = 6x² + 2x − 6", "f′(x) = 2(x² − 3) · 2x", "f′(x) = (2x + 1) · 2x"],
+    correct: 1,
+    explain: "Produktregel: u = 2x + 1, v = x² − 3, u′ = 2, v′ = 2x, also u′ · v + u · v′ = 2(x² − 3) + (2x + 1) · 2x = 6x² + 2x − 6. Probe durch Ausmultiplizieren: f(x) = 2x³ + x² − 6x − 3, abgeleitet 6x² + 2x − 6 ✓. 4x wäre u′ · v′ — faktorweise abgeleitet; die letzte Antwort enthält nur einen der beiden Streifen.",
   },
   "quiz-tangente": {
     q: "f(x) = x², x₀ = −1. Welche Gleichung hat die Normale im Punkt P(−1 | 1)?",
@@ -1245,8 +1148,7 @@ const SE_PUNKTE = [
   ["sec-grafisch", "Ich kann zu einem Graphen den Graphen der Ableitungsfunktion skizzieren."],
   ["sec-potenz", "Ich kann die Ableitungsfunktion erst an einer Stelle, dann allgemein herleiten und die Potenzregel anwenden — auch bei negativen Exponenten und bei √x."],
   ["sec-regeln", "Ich kann ganzrationale Funktionen mit Faktor- und Summenregel ableiten."],
-  ["sec-sinus", "Ich kenne die Ableitungen von sin und cos und weiß, warum sie nur im Bogenmaß gelten."],
-  ["sec-produkt-kette", "Ich kann Produkte und Verkettungen ableiten."],
+  ["sec-produkt", "Ich kann Produkte mit der Produktregel ableiten und weiß, warum (u · v)′ nicht u′ · v′ ist."],
   ["sec-tangente", "Ich kann Tangente und Normale aufstellen und Steigungs- und Schnittwinkel berechnen."],
   ["sec-differenzierbar", "Ich kann prüfen, ob eine Funktion an einer Stelle differenzierbar ist."],
   ["sec-ganzrational", "Ich kann am Term den Verlauf für x → ±∞ und die Symmetrie einer ganzrationalen Funktion ablesen."],
@@ -1295,8 +1197,7 @@ const REGLER = [
   [["gd-art", "gd-x", "gd-ganz"], renderGrafisch],
   [["pq-x", "pq-h"], renderQuadrat],
   [["rg-art", "rg-x", "rg-k"], renderRegeln],
-  [["si-x", "si-h"], renderSinus],
-  [["pk-art", "pk-x", "pk-h"], renderProduktKette],
+  [["pk-x", "pk-h"], renderProdukt],
   [["tn-art", "tn-x", "tn-d", "tn-m"], renderTangente],
   [["df-art", "df-m", "df-h"], renderDifferenzierbar],
   [["gr-modus", "gr-f", "gr-z", "gr-t"], renderGanzrational],

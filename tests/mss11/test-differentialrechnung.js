@@ -1,17 +1,18 @@
-// Fachliche Prüfung: MSS 11, Analysis, Thema 2 „Differentialrechnung“.
+// Fachliche Prüfung: MSS 11, Analysis, Thema 2.1 „Differentialrechnung“ (Grund- und Leistungskurs).
 //
 // Geprüft wird, was die Seite zeigt, gegen eine unabhängige Rechnung. Die Ableitungen rechnet die
 // Prüfung NICHT mit den Formeln der Seite, sondern numerisch als zentralen Differenzenquotienten der
 // hier noch einmal aufgeschriebenen Funktionen — eine falsch hergeleitete Formel fiele so auf.
 //
-//   * Gerüst: Abschnittsfolge, Wegweiser mit beiden Büchern, Schreibweisen, Verweise, Menükarte,
-//     kein Logarithmus (der kommt erst später), Formelsammlung vorhanden;
+//   * Gerüst: Abschnittsfolge, Schreibweise nach Elemente, Verweise, Menükarte mit Kursmarke,
+//     kein Stoff des Leistungskurses (Logarithmus, Kosinus, Kettenregel als Werkzeug) — der steht in
+//     Thema 2.2 —, Formelsammlung vorhanden;
 //   * jede Zeichnung wird aus dem SVG zurückgelesen (Maßstab aus den Gitterlinien mit data-wert):
-//     Sekanten- und Tangentensteigungen, Punkte, Steigungsdreiecke, Flächen der Rechtecke, Kreis,
-//     Bögen, Winkel, Drehungen (starr, Punkt für Punkt nachgerechnet), Nullstellenmarken;
+//     Sekanten- und Tangentensteigungen, Punkte, Steigungsdreiecke, Flächen der Rechtecke, Winkel,
+//     Drehungen (starr, Punkt für Punkt nachgerechnet), Nullstellenmarken;
 //   * jede Bilanz wird gegen die unabhängige Rechnung gelesen, ebenso die Urteile
 //     (differenzierbar, symmetrisch, Hoch-/Tief-/Sattelpunkt, Monotonie-Intervalle);
-//   * Kontrollfragen, Selbsteinschätzung und alle zwanzig Aufgaben — jede von beiden Seiten.
+//   * Kontrollfragen, Selbsteinschätzung und alle vierundzwanzig Aufgaben — jede von beiden Seiten.
 
 "use strict";
 
@@ -115,7 +116,7 @@ function liesPoly(s, v = "x") {
 const polyFn = (k) => (x) => Object.entries(k).reduce((s, [e, c]) => s + c * x ** Number(e), 0);
 
 // ---------- Gerüst ----------
-const ABSCHNITTE = ["sec-mittlere", "sec-lokal", "sec-ableitung", "sec-grafisch", "sec-potenz", "sec-regeln", "sec-sinus", "sec-produkt-kette",
+const ABSCHNITTE = ["sec-mittlere", "sec-lokal", "sec-ableitung", "sec-grafisch", "sec-potenz", "sec-regeln", "sec-produkt",
   "sec-tangente", "sec-differenzierbar", "sec-ganzrational", "sec-nullstellen", "sec-monotonie", "sec-stolperstelle"];
 async function geruest(page) {
   const folge = await page.evaluate(() => [...document.querySelectorAll("main section[id]")].map((s) => s.id));
@@ -153,10 +154,21 @@ async function geruest(page) {
     const anker = href.split("#")[1];
     if (anker) pruefe((await antwort.text()).includes(`id="${anker}"`), `Gerüst: Sprungmarke „${anker}“ fehlt in ${ziel}`);
   }
-  const haupt = await page.evaluate(() => document.querySelector("main").innerText);
-  pruefe(!/\bln\s*\(|\blog\b|\blg\b|Logarithmus/.test(haupt.replace(/Exponential- und Logarithmusfunktionen/g, "")), "Gerüst: Die Seite benutzt einen Logarithmus, der erst später kommt");
+  // Grundkurs-Seite: Logarithmus, Kosinus und Kettenregel gehören nach dem Lehrplan zum Leistungsfach
+  // und stehen in Thema 2.2. Genannt werden dürfen sie nur im Wegweiser dorthin — im Kurshinweis, in
+  // Verweisen auf 2.2 und in der Vernetzung —, benutzt nirgends.
+  const haupt = await page.evaluate(() => {
+    const m = document.querySelector("main").cloneNode(true);
+    m.querySelectorAll(".kurs-hinweis, #sec-vernetzung, #sec-uebungen, a[href*='03b-']").forEach((e) => e.remove());
+    return m.innerText;
+  });
+  pruefe(!/\bln\s*\(|\blog\b|\blg\b|Logarithmus/.test(haupt), "Gerüst: Die Seite benutzt einen Logarithmus — der gehört nach Thema 2.2");
+  pruefe(!/\bcos\b|Kosinus/.test(haupt), "Gerüst: Die Seite leitet Kosinus oder Sinus ab — das gehört nach Thema 2.2");
+  pruefe(await page.evaluate(() => !!document.querySelector(".kurs-hinweis .kurs-marke.gk") && !!document.querySelector(".kurs-hinweis a[href='../03b-weitere-funktionen-ableiten/index.html']")),
+    "Gerüst: Kurshinweis mit Marke „Grund- und Leistungskurs“ und Verweis auf Thema 2.2 fehlt");
   const menue = fs.readFileSync(path.join(WURZEL, "mathematik/mss11/01-analysis/index.html"), "utf-8");
   pruefe(/data-section="mss11" href="03-differentialrechnung\/index.html" hidden/.test(menue), "Menü: Karte für die Differentialrechnung fehlt oder ist nicht mit data-section/hidden versehen");
+  pruefe(/<h2>2\.1 Differentialrechnung <span class="kurs-marke gk">/.test(menue), "Menü: Die Karte heißt nicht „2.1 Differentialrechnung“ mit der Marke GK + LK");
 }
 
 // ---------- 1. Mittlere Änderungsrate ----------
@@ -398,35 +410,8 @@ async function regeln(page) {
   }
 }
 
-// ---------- 7. Sinus am Einheitskreis ----------
-async function sinus(page) {
-  for (const x of [0, 0.8, 2.5, 4, 6.2]) for (const h of [1.2, 0.3, 0.05]) {
-    const X0 = await setzeRegler(page, "si-x", x), H = await setzeRegler(page, "si-h", h);
-    const wo = `Sinus x = ${X0}, h = ${H}`;
-    const k = await lies(page, "#si-mount svg[data-panel=kreis]");
-    pruefe(nahe(k.proX, k.proY, 1e-3 * k.proX), `${wo}: Kreisbild verzerrt`);
-    const ek = kreis(k, "einheitskreis");
-    pruefe(ek && nahe(ek.r, 1, 3e-3) && nahe(ek.x, 0, 3e-3) && nahe(ek.y, 0, 3e-3), `${wo}: Einheitskreis hat nicht den Radius 1`);
-    const p = kreis(k, "p"), q = kreis(k, "q");
-    pruefe(p && nahe(p.x, Math.cos(X0), 3e-3) && nahe(p.y, Math.sin(X0), 3e-3), `${wo}: P liegt nicht bei (cos x | sin x)`);
-    pruefe(q && nahe(q.x, Math.cos(X0 + H), 3e-3) && nahe(q.y, Math.sin(X0 + H), 3e-3), `${wo}: Q liegt falsch`);
-    const bogen = k.pfade.find((b) => b.rolle === "bogen");
-    pruefe(!!bogen && bogen.punkte.every(([a, b]) => nahe(Math.hypot(a, b), 1, 4e-3)), `${wo}: Der Bogen liegt nicht auf dem Einheitskreis`);
-    const hub = linie(k, "hub");
-    pruefe(hub && nahe(hub.x1, Math.cos(X0 + H), 3e-3) && nahe(hub.y1, Math.sin(X0), 3e-3) && nahe(hub.y2, Math.sin(X0 + H), 3e-3), `${wo}: Der Hub ist nicht sin(x + h) − sin x`);
-    const g = await lies(page, "#si-mount svg[data-panel=graph]");
-    const s = linie(g, "sekante"), t = linie(g, "tangente"), q0 = (Math.sin(X0 + H) - Math.sin(X0)) / H;
-    pruefe(s && nahe(steigung(s), q0, 3e-3), `${wo}: Sekantensteigung ${s && steigung(s)} statt ${q0}`);
-    pruefe(t && nahe(steigung(t), ableitung(Math.sin, X0), 3e-3), `${wo}: Tangentensteigung ${t && steigung(t)}`);
-    pruefe(nahe(await spanWert(page, "#si-bilanz .wr"), Math.sin(X0 + H) - Math.sin(X0), 6e-5), `${wo}: Bilanz-Hub falsch`);
-    pruefe(nahe(await spanWert(page, "#si-bilanz .wo"), q0, 6e-5), `${wo}: Bilanz Δ : h falsch`);
-    pruefe(nahe(await spanWert(page, "#si-bilanz .wa"), ableitung(Math.sin, X0), 6e-5), `${wo}: Bilanz cos x falsch`);
-  }
-}
-
-// ---------- 8. Produkt- und Kettenregel ----------
-async function produktKette(page) {
-  await waehle(page, "pk-art", "produkt");
+// ---------- 7. Produktregel ----------
+async function produkt(page) {
   const v = (t) => 0.25 * t * t + 1;
   for (const x of [0.5, 1, 2]) for (const h of [0.05, 0.25, 0.5]) {
     const X0 = await setzeRegler(page, "pk-x", x), H = await setzeRegler(page, "pk-h", h);
@@ -443,35 +428,9 @@ async function produktKette(page) {
     pruefe(nahe(await spanWert(page, "#pk-bilanz .wo"), ges / H, 6e-5), `${wo}: Bilanz Δ(u · v) : h falsch`);
     pruefe(nahe(await spanWert(page, "#pk-bilanz .wa"), ableitung((t) => t * v(t), X0), 6e-5), `${wo}: Grenzwert der Produktregel falsch`);
   }
-  await waehle(page, "pk-art", "kette");
-  for (const x of [0.5, 1, 1.5, 2]) for (const h of [0.05, 0.5]) {
-    const X0 = await setzeRegler(page, "pk-x", x), H = await setzeRegler(page, "pk-h", h);
-    const wo = `Kettenregel x = ${X0}, h = ${H}`;
-    // Jede Zahlengerade hat ihre eigenen Striche mit data-wert — daraus der Maßstab je Gerade.
-    const iv = await page.evaluate(() => {
-      const svg = document.querySelector("#pk-mount svg");
-      const aus = {};
-      for (const a of ["x", "u", "f"]) {
-        const st = [...svg.querySelectorAll(`line[data-achse="${a}"]`)].map((l) => ({ w: Number(l.dataset.wert), p: Number(l.getAttribute("x1")) }));
-        const A = st[0], B = st[st.length - 1], s = (B.p - A.p) / (B.w - A.w);
-        const l = svg.querySelector(`line[data-rolle="intervall-${a}"]`);
-        const w = (p) => A.w + (p - A.p) / s;
-        aus[a] = [w(Number(l.getAttribute("x1"))), w(Number(l.getAttribute("x2")))];
-        aus[a + "pro"] = s;
-      }
-      return aus;
-    });
-    pruefe(nahe(iv.xpro, iv.upro, 1e-6) && nahe(iv.upro, iv.fpro, 1e-6), `${wo}: Die drei Zahlengeraden haben verschiedene Maßstäbe`);
-    const sortiert = (a, b) => [Math.min(a, b), Math.max(a, b)];
-    const soll = { x: [X0, X0 + H], u: sortiert(X0 * X0, (X0 + H) ** 2), f: sortiert(Math.sin(X0 * X0), Math.sin((X0 + H) ** 2)) };
-    for (const a of ["x", "u", "f"]) pruefe(nahe(iv[a][0], soll[a][0], 3e-3) && nahe(iv[a][1], soll[a][1], 3e-3), `${wo}: ${a}-Intervall [${iv[a]}] statt [${soll[a]}]`);
-    const ff = (t) => Math.sin(t * t);
-    pruefe(nahe(await spanWert(page, "#pk-bilanz .wo"), (ff(X0 + H) - ff(X0)) / H, 6e-5), `${wo}: Bilanz Δf : Δx falsch`);
-    pruefe(nahe(await spanWert(page, "#pk-bilanz .wa"), ableitung(ff, X0), 6e-5), `${wo}: Grenzwert der Kettenregel falsch`);
-  }
 }
 
-// ---------- 9. Tangente, Normale, Winkel ----------
+// ---------- 8. Tangente, Normale, Winkel ----------
 async function tangente(page) {
   await waehle(page, "tn-art", "normale");
   const f = (x) => x * x;
@@ -526,7 +485,7 @@ async function tangente(page) {
   }
 }
 
-// ---------- 10. Differenzierbarkeit ----------
+// ---------- 9. Differenzierbarkeit ----------
 const H_DF = [1, 0.5, 0.1, 0.01, 0.001];
 async function differenzierbar(page) {
   const naht = (m) => (x) => (x < 2 ? x * x - 2 * x + 3 : 3 + m * (x - 2));
@@ -558,7 +517,7 @@ async function differenzierbar(page) {
   }
 }
 
-// ---------- 11. Ganzrationale Funktionen ----------
+// ---------- 10. Ganzrationale Funktionen ----------
 const GR = {
   f: { f: (x) => 0.5 * x ** 4 - x * x + 0.5, leit: (x) => 0.5 * x ** 4 },
   g: { f: (x) => -0.5 * x ** 5 + 1.5 * x ** 3 + 2 * x, leit: (x) => -0.5 * x ** 5 },
@@ -620,7 +579,7 @@ async function ganzrational(page) {
   }
 }
 
-// ---------- 12. Nullstellen und Vielfachheit ----------
+// ---------- 11. Nullstellen und Vielfachheit ----------
 async function nullstellen(page) {
   const faelle = [[-1.5, 2, 1.5, 1, false], [-1, 1, 2, 3, false], [0, 2, 0, 1, false], [1, 2, 1, 2, true], [-2, 3, 2, 2, true], [2.5, 1, -3, 1, true]];
   for (const [a, k1, b, k2, q] of faelle) {
@@ -649,7 +608,7 @@ async function nullstellen(page) {
   }
 }
 
-// ---------- 13. f und f′ ----------
+// ---------- 12. f und f′ ----------
 const MO = {
   quartik: { f: (x) => 0.5 * x ** 4 - x * x + 0.5, xs: [-1.8, 1.8] },
   kubik: { f: (x) => 0.5 * x ** 3 - 1.5 * x, xs: [-2.4, 2.4] },
@@ -731,7 +690,7 @@ async function monotonie(page) {
   }
 }
 
-// ---------- 14. Stolperstelle ----------
+// ---------- 13. Stolperstelle ----------
 async function stolperstelle(page) {
   const f = (x) => 0.5 * x ** 3 - 1.5 * x;
   for (let x = -1.25; x <= 1.25 + 1e-9; x += 0.25) {
@@ -756,7 +715,7 @@ async function stolperstelle(page) {
 // ---------- Kontrollfragen und Selbsteinschätzung ----------
 async function quizze(page) {
   const ids = await page.evaluate(() => [...document.querySelectorAll(".quiz")].map((q) => q.id));
-  pruefe(ids.length === 14, `Kontrollfragen: ${ids.length} statt 14`);
+  pruefe(ids.length === 13, `Kontrollfragen: ${ids.length} statt 13`);
   const abschnitte = await page.evaluate(() => [...document.querySelectorAll(".quiz")].map((q) => q.closest("section").id));
   pruefe(JSON.stringify(abschnitte) === JSON.stringify(ABSCHNITTE), "Kontrollfragen: Nicht jeder Erarbeitungsabschnitt hat seine eigene");
   const stellen = [];
@@ -788,7 +747,9 @@ const TW = 0.006;
 // Termaufgaben: weniger Runden, denn jede Runde prüft sechs bis acht Eingaben. Ihre Schranken
 // (6, 12, 18, 24) sind deshalb für 12 Züge gemessen: UPLANT_ZUEGE=12 node tests/werkzeug-streuung.js …
 const RT = 12;
-const SCHRANKE = {1: 18, 2: 22, 3: 14, 4: 19, 5: 18, 6: 9, 7: 21, 8: 19, 9: 18, 10: 14, 11: 13, 12: 9, 13: 14, 14: 17, 15: 18, 16: 20, 17: 15, 18: 9, 19: 21, 20: 17, 21: 14, 22: 16, 23: 16, 24: 9};
+// Nachgemessen, nachdem A15 (Tangente parallel), A18 (Produktregel), A23 (Tangente von der y-Achse)
+// und A24 (Produktregel mit Wurzeln) dazukamen: n ≈ 306, groß, 65 und 3250.
+const SCHRANKE = {1: 18, 2: 22, 3: 14, 4: 19, 5: 18, 6: 9, 7: 21, 8: 19, 9: 18, 10: 14, 11: 13, 12: 9, 13: 14, 14: 17, 15: 19, 16: 20, 17: 15, 18: 9, 19: 21, 20: 17, 21: 14, 22: 16, 23: 14, 24: 10};
 const ZAHL = "(−?[\\d,]+)";
 
 async function aufgaben(page) {
@@ -891,12 +852,17 @@ async function aufgaben(page) {
     const a = mm / (2 * x0), b = mm * x0 + n - a * x0 * x0;
     return { felder: [a, b], toleranz: T, falschFelder: [[0, mm / x0, "der Faktor 2 fehlt"], [1, mm * x0 + n, "noch a · x₀² abziehen"]] };
   });
-  await A(15, "A15 Kettenregel", (q) => {
-    const m = q.match(new RegExp(`f\\(x\\) = \\((.+?)\\)([²³⁴⁵])\\. Berechne f′\\(${ZAHL}\\)`));
+  await A(15, "A15 Tangente parallel zu einer Geraden", (q) => {
+    const m = q.match(/Gegeben sind f\(x\) = (.+?) und die Gerade g\(x\) = (.+?)\. An welchen Stellen/);
     if (!m) return null;
-    const g = liesPoly(m[1]), n = HOCH[m[2]], x0 = zahl(m[3]), a = g[1] || 0, u = polyFn(g)(x0);
-    const f = (x) => polyFn(g)(x) ** n;
-    return { richtig: ableitung(f, x0, 1e-6), toleranz: Math.max(T, 1e-6 * Math.abs(ableitung(f, x0, 1e-6))), falsch: [[n * u ** (n - 1), "Die innere Ableitung fehlt"], [u ** n, "Funktionswert"], [n * a * u ** n, "der Exponent wird um 1 kleiner"]] };
+    const k = liesPoly(m[1]), f = polyFn(k), mg = liesPoly(m[2])[1] || 0;
+    // Unabhängig: f′(x) = 3x² + 2b·x + c = m mit der Lösungsformel; die Stellen mit waagerechter
+    // Tangente (f′ = 0) sind der typische Fehler — die Seite nennt ihn nur, wo sie glatt sind.
+    const b = k[2] || 0, c = k[1] || 0;
+    const wurzeln = (rest) => { const D = 4 * b * b - 12 * rest; return D < 0 ? [NaN, NaN] : [(-2 * b - Math.sqrt(D)) / 6, (-2 * b + Math.sqrt(D)) / 6]; };
+    const [x1, x2] = wurzeln(c - mg), [w1, w2] = wurzeln(c).map((w) => (Math.abs(Math.round(w * 1e4) - w * 1e4) < 1e-6 ? w : NaN));
+    return { felder: [x1, x2], toleranz: T, pruefe: () => pruefe([x1, x2].every((x) => nahe(ableitung(f, x, 1e-6), mg, 1e-5)), "A15: An den nachgerechneten Stellen ist die Steigung nicht die von g"),
+      falschFelder: [[0, w1, "f′(x) = 0"], [0, x2, "die andere der beiden Stellen"], [1, w2, "f′(x) = 0"], [1, x1, "die andere der beiden Stellen"]] };
   });
   await A(16, "A16 Produktregel", (q) => {
     const m = q.match(new RegExp(`f\\(x\\) = \\((.+?)\\) · \\((.+?)\\)\\. Berechne f′\\(${ZAHL}\\)`));
@@ -949,17 +915,23 @@ async function aufgaben(page) {
     return { felder: [xs, f(xs)], toleranz: T, pruefe: () => pruefe(nahe(f(xs), t(xs), 1e-5) && Math.abs(xs - x0) > 1e-6, "A22: Der nachgerechnete Punkt liegt nicht auf der Tangente"),
       falschFelder: [[0, x0, "Das ist der Berührpunkt selbst"], [0, 2 * x0, "prüfe die verbleibende Nullstelle"], [0, -x0, "prüfe die verbleibende Nullstelle"], [1, f(x0), "Höhe des Berührpunkts"]] };
   });
-  await A(23, "A23 Kettenregel und Tangente", (q) => {
-    const m = q.match(new RegExp(`f\\(x\\) = √\\((.+?)\\)\\. Bestimme die Tangente an den Graphen im Punkt mit x₀ = ${ZAHL}`));
+  await A(23, "A23 Tangente von einem Punkt der y-Achse", (q) => {
+    const m = q.match(new RegExp(`f\\(x\\) = ([\\d,]*)√x(?: ([+−]) ([\\d,]+))?\\. Von (?:dem Ursprung O\\(0 \\| 0\\)|dem Punkt P\\(0 \\| ${ZAHL}\\)) aus`));
     if (!m) return null;
-    const g = liesPoly(m[1]), x0 = zahl(m[2]), a = g[1] || 0;
-    const f = (x) => Math.sqrt(polyFn(g)(x)), s = ableitung(f, x0, 1e-6), b = f(x0) - s * x0;
-    return { felder: [s, b], toleranz: T, falschFelder: [[0, a === 1 ? NaN : 1 / (2 * f(x0)), "Die innere Ableitung fehlt"], [1, f(x0), "nicht der Achsenabschnitt"]] };
+    const a = m[1] ? zahl(m[1]) : 1, c = m[2] ? (m[2] === "−" ? -1 : 1) * zahl(m[3]) : 0, p = m[4] ? zahl(m[4]) : 0;
+    const f = (x) => a * Math.sqrt(x) + c;
+    // Unabhängig: Die Tangente in x₀ schneidet die y-Achse bei f(x₀) − f′(x₀) · x₀. Dieser Wert
+    // steigt in x₀ streng (seine Ableitung ist −f″(x₀) · x₀ > 0), also findet ihn die Intervallhalbierung.
+    const achse = (x0) => f(x0) - ableitung(f, x0, 1e-6) * x0;
+    let lo = 1e-6, hi = 1e4;
+    for (let i = 0; i < 200; i++) { const mid = (lo + hi) / 2; if (achse(mid) < p) lo = mid; else hi = mid; }
+    const x0 = (lo + hi) / 2, s = ableitung(f, x0, 1e-6);
+    return { felder: [x0, s], toleranz: T, falschFelder: [[0, Math.sqrt(x0), "quadriere noch"], [1, 2 * s, "der Faktor ½ fehlt"]] };
   });
   // Je Stufe eine Termaufgabe mit beliebig vielen Funktionen. Die Angabe wird mit einem eigenen
   // Termleser gelesen und numerisch abgeleitet (tests/lib/terme.js) — die exakten Ableitungen der Seite
   // werden dafür nicht benutzt.
-  for (const [nr, stufe] of [[6, "ganzrational"], [12, "Potenzen und Wurzeln"], [18, "Kettenregel"], [24, "Produkt- und Kettenregel"]]) {
+  for (const [nr, stufe] of [[6, "ganzrational"], [12, "Potenzen und Wurzeln"], [18, "Produktregel"], [24, "Produktregel mit Wurzeln"]]) {
     const name = `A${nr} Ableitungsfunktion: ${stufe}`;
     await pruefeAufgabe(page, bericht, { nr, name, runden: RT, mindestensVerschieden: SCHRANKE[nr] ?? 5,
       liesRoh: liesTermAufgabe, deute: termDeuter(bericht, name, "ableitung") });
@@ -980,8 +952,7 @@ async function aufgaben(page) {
       await grafisch(page);
       await quadrat(page);
       await regeln(page);
-      await sinus(page);
-      await produktKette(page);
+      await produkt(page);
       await tangente(page);
       await differenzierbar(page);
       await ganzrational(page);

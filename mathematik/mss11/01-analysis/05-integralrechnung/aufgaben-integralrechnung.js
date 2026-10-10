@@ -23,7 +23,7 @@
 
 "use strict";
 
-import { pot, trig, kette, verkettung, trigPotenz, q, stammAufgabe, pick as zufall, mische } from "../../../terme.js?v=2";
+import { pot, trig, kette, verkettung, trigPotenz, q, stammAufgabe, pick as zufall, mische } from "../../../terme.js?v=3";
 
 const ZAHLFORMATE = new Map();
 function zahlformat(stellen) {

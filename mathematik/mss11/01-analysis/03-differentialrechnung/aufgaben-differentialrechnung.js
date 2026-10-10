@@ -1,19 +1,20 @@
-// Die vierundzwanzig Übungsaufgaben zu „Differentialrechnung“ — sechs je Stufe.
+// Die vierundzwanzig Übungsaufgaben zu „Differentialrechnung“ (Thema 2.1) — sechs je Stufe.
 //
 //   einfach   — mittlere Änderungsrate, Ableitung an einer Stelle, Potenzregel mit negativen
 //               Exponenten und √x, Steigungswinkel, waagerechte Tangente.
 //   mittel    — Differenzenquotient für ein festes x, Tangente, Normale, Nullstellen durch
 //               Substitution, Hoch- oder Tiefpunkt einer kubischen Funktion.
-//   schwierig — Schnittwinkel, differenzierbar zusammensetzen, Kettenregel, Produktregel,
-//               Tangenten von einem Punkt außerhalb.
+//   schwierig — Schnittwinkel, differenzierbar zusammensetzen, Tangente parallel zu einer Geraden,
+//               Produktregel, Tangenten von einem Punkt außerhalb.
 //   komplex   — Parabel aus Bedingungen, Durchschnitts- und Momentangeschwindigkeit,
-//               biquadratische Funktion, zweiter Schnittpunkt der Tangente, Kettenregel und Tangente.
+//               biquadratische Funktion, zweiter Schnittpunkt der Tangente, Tangente von einem Punkt der
+//               y-Achse an eine Wurzelfunktion.
 //
 // Die sechste Aufgabe jeder Stufe ist ein Ableitungstraining mit beliebig vielen Funktionen: Die
 // Funktion wird aus Gliedern zusammengesetzt (mathematik/terme.js), die ihre Ableitung exakt kennen;
 // die Eingabe wird als Term gelesen und an vielen Stellen numerisch nachgeprüft. Stufen: ganzrational,
-// Potenzen und Wurzeln, Kettenregel (lineare Verkettung, Sinus/Kosinus), Produkt- und Kettenregel
-// auch mit nichtlinearer innerer Funktion ((x² − 1)², √(x² + 1), sin²(x), sin(x) · cos(x)).
+// Potenzen und Wurzeln, Produkte zweier Polynome, Produkte mit Wurzeln und negativen Hochzahlen.
+// Kettenregel, sin und cos gehören zum Leistungsfach und werden in Thema 2.2 geübt.
 //
 // Gewürfelt wird konstruktiv: Die Kandidatenlisten werden vorher gesiebt, ohneKollision() wählt aus
 // dem Rest. Jeder Fehlerwert ist von der Lösung und von den anderen Fehlerwerten verschieden — wo ein
@@ -21,7 +22,7 @@
 
 "use strict";
 
-import { pot, trig, kette, prod, verkettung, trigPotenz, q, ableitungsAufgabe, pick as zufall, mische } from "../../../terme.js?v=2";
+import { pot, q, produkt, ableitungsAufgabe, pick as zufall, mische } from "../../../terme.js?v=3";
 
 const ZAHLFORMATE = new Map();
 function zahlformat(stellen) {
@@ -556,32 +557,48 @@ function generateS2() {
   };
 }
 
-// ---------- S3: Kettenregel ----------
+// ---------- S3: Tangente parallel zu einer Geraden ----------
+// f(x) = x³ + b · x² + c · x. Gewürfelt werden die beiden Stellen x₁ < x₂ mit f′(x) = m; daraus folgen
+// b und c, denn f′(x) − m = 3(x − x₁)(x − x₂). Der typische Fehler — f′(x) = 0 statt f′(x) = m gelöst —
+// liefert die Stellen mit waagerechter Tangente; wo die nicht glatt sind, steht NaN.
 const S3_KANDIDATEN = spaeter(() => {
   const out = [];
-  for (const a of [2, 3, -1, -2, 0.5]) for (const b of [-3, -1, 1, 2, 3]) for (const n of [2, 3, 4, 5]) for (const x0 of [-1, 0, 1, 2]) {
-    const u = a * x0 + b, soll = n * a * u ** (n - 1);
-    if (Math.abs(soll) <= 2000 && glatt(soll, 4)) out.push({ a, b, n, x0, u, soll });
+  for (const x1 of [-3, -2, -1, 0, 1]) for (const x2 of [-1, 0, 1, 2, 3]) {
+    if (x2 <= x1) continue;
+    for (const m of [-4, -2, -1, 1, 2, 3]) for (const n of [-2, 1, 3]) {
+      const b = -1.5 * (x1 + x2), c = m + 3 * x1 * x2;
+      const f = (x) => x ** 3 + b * x * x + c * x;
+      // Liegt g selbst auf einer der Tangenten, wäre „parallel“ in Wahrheit „gleich“.
+      if ([x1, x2].some((x) => Math.abs(f(x) - m * x - n) < 1e-9)) continue;
+      const D = 4 * b * b - 12 * c;
+      const e1 = D >= 0 ? (-2 * b - Math.sqrt(D)) / 6 : NaN, e2 = D >= 0 ? (-2 * b + Math.sqrt(D)) / 6 : NaN;
+      out.push({ x1, x2, m, n, b, c, w1: glatt(e1, 4) ? e1 : NaN, w2: glatt(e2, 4) ? e2 : NaN });
+    }
   }
   return out;
 });
 function generateS3() {
-  const k = ohneKollision(S3_KANDIDATEN(), (v) => [v.soll, v.n * v.u ** (v.n - 1), v.u ** v.n, v.n * v.a * v.u ** v.n], EPS);
-  const { a, b, n, x0, u, soll } = k;
-  const innen = poly([[a, "x"], [b, ""]]);
+  const k = ohneFeldKollision(S3_KANDIDATEN(), (v) => [[v.x1, v.w1, v.x2], [v.x2, v.w2, v.x1]], EPS);
+  const { x1, x2, m, n, b, c, w1, w2 } = k;
+  const f = (x) => x ** 3 + b * x * x + c * x;
+  const fT = poly([[1, "x³"], [b, "x²"], [c, "x"]]), gT = poly([[m, "x"], [n, ""]]), sT = poly([[3, "x²"], [2 * b, "x"], [c, ""]]);
+  const mitte = (x1 + x2) / 2, radikand = mitte * mitte - x1 * x2;
+  const hinweis = (falschW, andere) => (roh, v) => {
+    if (nahe(v, falschW, TOL)) return `Dort ist f′(x) = 0 — die Tangente ist waagerecht. Parallel zu g heißt aber f′(x) = ${num(m)}, die Steigung von g.`;
+    if (nahe(v, andere, TOL)) return "Das ist die andere der beiden Stellen — x₁ ist die kleinere, x₂ die größere.";
+    return `Parallele Geraden haben dieselbe Steigung: Löse f′(x) = ${num(m)}.`;
+  };
   return {
-    promptHtml: `Gegeben ist f(x) = (${innen})${hochZahl(n)}.<br><strong>Berechne f′(${num(x0)}).</strong>` + ZAHL,
-    correct: soll,
-    tolerance: TOL,
-    placeholder: "f′(x₀)",
-    hinweis: (roh, v) => {
-      if (nahe(v, n * u ** (n - 1), TOL)) return `Die innere Ableitung fehlt: (${innen})′ = ${num(a)}. Äußere Ableitung mal innere Ableitung.`;
-      if (nahe(v, u ** n, TOL)) return `Das ist der Funktionswert f(${num(x0)}). Erst ableiten, dann einsetzen.`;
-      if (nahe(v, n * a * u ** n, TOL)) return `Die äußere Ableitung von u${hochZahl(n)} ist ${n}u${hochZahl(n - 1)} — der Exponent wird um 1 kleiner.`;
-      return `f′(x) = ${n}(${innen})${hochZahl(n - 1)} · ${numK(a)}`;
-    },
-    tipps: [`Außen u${hochZahl(n)}, innen u = ${innen}.`, `f′(x) = ${n} · (${innen})${hochZahl(n - 1)} · ${numK(a)}`],
-    musterloesungHtml: `f′(x) = ${n} · (${innen})${hochZahl(n - 1)} · ${numK(a)}<br>u = ${num(a)} · ${numK(x0)} ${plusMinus(b)} = ${num(u)}; &nbsp; f′(${num(x0)}) = ${n} · ${numK(u)}${hochZahl(n - 1)} · ${numK(a)} = <strong>${num(soll)}</strong>`,
+    promptHtml: `Gegeben sind f(x) = ${fT} und die Gerade g(x) = ${gT}.<br><strong>An welchen Stellen x₁ &lt; x₂ ist die Tangente an den Graphen von f parallel zu g?</strong>` + ZAHL,
+    felder: [
+      { name: "x₁ =", soll: x1, toleranz: TOL, hinweis: hinweis(w1, x2) },
+      { name: "x₂ =", soll: x2, toleranz: TOL, hinweis: hinweis(w2, x1) },
+    ],
+    tipps: ["Parallele Geraden haben dieselbe Steigung. Die Steigung der Tangente an der Stelle x ist f′(x), die von g ist " + num(m) + ".", `f′(x) = ${sT} = ${num(m)}`],
+    musterloesungHtml: `f′(x) = ${sT}. Parallel zu g: f′(x) = ${num(m)}<br>` +
+      `${poly([[3, "x²"], [2 * b, "x"], [c - m, ""]])} = 0 &nbsp;| : 3 &nbsp;⟹&nbsp; ${poly([[1, "x²"], [-(x1 + x2), "x"], [x1 * x2, ""]])} = 0<br>` +
+      `pq-Formel: x = ${num(mitte)} ± √${numK(radikand)} = ${num(mitte)} ± ${num((x2 - x1) / 2)} &nbsp;⟹&nbsp; <strong>x₁ = ${num(x1)}, x₂ = ${num(x2)}</strong><br>` +
+      `Die Berührpunkte sind P₁(${num(x1)} | ${num(f(x1))}) und P₂(${num(x2)} | ${num(f(x2))}). <strong>Probe:</strong> f′(${num(x1)}) = ${num(3 * x1 * x1 + 2 * b * x1 + c)} = f′(${num(x2)}) = ${num(3 * x2 * x2 + 2 * b * x2 + c)} = ${num(m)} ✓`,
   };
 }
 
@@ -751,29 +768,35 @@ function generateK4() {
   };
 }
 
-// ---------- K5: Kettenregel und Tangente ----------
+// ---------- K5: Tangente von einem Punkt der y-Achse an eine Wurzelfunktion ----------
+// f(x) = a√x + c. Die Tangente in x₀ geht durch P(0 | p), wenn f(x₀) − f′(x₀) · x₀ = p, also
+// a√x₀ + c − a√x₀ : 2 = p ⟹ √x₀ = 2(p − c) : a. Fehlerbilder: √x₀ statt x₀ angegeben (Quadrieren
+// vergessen) und (√x)′ = 1 : √x (der Faktor ½ fehlt) — das verdoppelt die Steigung.
 const K5_KANDIDATEN = spaeter(() => {
   const out = [];
-  for (const a of [1, 2, 3, 4, 6, 8, -2]) for (const k of [1, 2, 3, 4]) for (const x0 of [-2, -1, 0, 1, 2, 3, 4]) {
-    const b = k * k - a * x0, m = a / (2 * k), n = k - m * x0;
-    if (glatt(m, 4) && glatt(n, 4) && Math.abs(b) <= 20) out.push({ a, b, k, x0, m, n });
+  for (const a of [0.5, 1, 1.5, 2, 3, 4]) for (const c of [-3, -2, -1, 0, 1, 2]) for (const p of [-2, -1, 0, 1, 2, 3, 4]) {
+    if (p <= c) continue;
+    const w = (2 * (p - c)) / a, x0 = w * w, m = a / (2 * w), y0 = a * w + c;
+    if (w !== 1 && glatt(x0, 4) && glatt(m, 4) && glatt(y0, 4) && x0 <= 100) out.push({ a, c, p, w, x0, m, y0 });
   }
   return out;
 });
 function generateK5() {
-  const k = ohneFeldKollision(K5_KANDIDATEN(), (v) => [[v.m, v.a === 1 ? NaN : 1 / (2 * v.k)], [v.n, v.k]], EPS);
-  const { a, b, k: w, x0, m, n } = k;
-  const innen = poly([[a, "x"], [b, ""]]);
+  const v = ohneFeldKollision(K5_KANDIDATEN(), (z) => [[z.x0, z.w], [z.m, 2 * z.m]], EPS);
+  const { a, c, p, w, x0, m, y0 } = v;
+  const aT = a === 1 ? "" : num(a), fT = `${aT}√x${c === 0 ? "" : " " + plusMinus(c)}`;
+  const punkt = p === 0 ? "dem Ursprung O(0 | 0)" : `dem Punkt P(0 | ${num(p)})`;
   return {
-    promptHtml: `Gegeben ist f(x) = √(${innen}).<br><strong>Bestimme die Tangente an den Graphen im Punkt mit x₀ = ${num(x0)}</strong> in der Form t(x) = m · x + b.` + ZAHL,
+    promptHtml: `Gegeben ist f(x) = ${fT}. Von ${punkt} aus wird eine Tangente an den Graphen von f gelegt.<br><strong>Bestimme die Berührstelle x₀ und die Steigung m dieser Tangente.</strong>` + ZAHL,
     felder: [
-      { name: "m =", soll: m, toleranz: TOL, hinweis: (roh, v) => (nahe(v, 1 / (2 * w), TOL) ? `Die innere Ableitung fehlt: (${innen})′ = ${num(a)}.` : "f′(x) = 1 : (2√(…)) · innere Ableitung.") },
-      { name: "b =", soll: n, toleranz: TOL, hinweis: (roh, v) => (nahe(v, w, TOL) ? `f(${num(x0)}) = ${num(w)} ist die y-Koordinate von P, nicht der Achsenabschnitt.` : "b = f(x₀) − m · x₀.") },
+      { name: "x₀ =", soll: x0, toleranz: TOL, hinweis: (roh, z) => (nahe(z, w, TOL) ? `Das ist √x₀ = ${num(w)}. Gesucht ist x₀ selbst — quadriere noch.` : `Die Tangente in x₀ hat den y-Achsenabschnitt f(x₀) − f′(x₀) · x₀ — der muss ${num(p)} sein.`) },
+      { name: "m =", soll: m, toleranz: TOL, hinweis: (roh, z) => (nahe(z, 2 * m, TOL) ? "Die Ableitung von √x ist 1 : (2√x) — der Faktor ½ fehlt." : "m = f′(x₀).") },
     ],
-    tipps: [`f(${num(x0)}) = √${num(w * w)} = ${num(w)}`, `f′(x) = ${bruch(num(a), `2√(${innen})`)}`],
-    musterloesungHtml: `f′(x) = ${bruch("1", `2√(${innen})`)} · ${numK(a)} = ${bruch(num(a), `2√(${innen})`)}<br>` +
-      `f(${num(x0)}) = ${num(w)}, f′(${num(x0)}) = ${bruch(num(a), num(2 * w))} = ${num(m)}<br>` +
-      `t(x) = ${num(m)} · (x ${plusMinus(-x0)}) + ${num(w)} = <strong>${poly([[m, "x"], [n, ""]])}</strong>. <strong>Probe:</strong> t(${num(x0)}) = ${num(m * x0 + n)} = f(${num(x0)}) ✓`,
+    tipps: [`Die Tangente in x₀ ist t(x) = f′(x₀) · (x − x₀) + f(x₀). Bei x = 0 hat sie den Wert f(x₀) − f′(x₀) · x₀ — und der soll ${num(p)} sein.`, `f′(x) = ${bruch(num(a), "2√x")}, also f′(x₀) · x₀ = ${bruch(`${aT}√x₀`, "2")}.`],
+    musterloesungHtml: `f′(x) = ${bruch(num(a), "2√x")}. Tangente in x₀: t(x) = f′(x₀) · (x − x₀) + f(x₀), also t(0) = f(x₀) − f′(x₀) · x₀.<br>` +
+      `t(0) = ${num(p)}: &nbsp; ${aT}√x₀ ${c === 0 ? "" : plusMinus(c) + " "}− ${bruch(`${aT}√x₀`, "2")} = ${num(p)} &nbsp;⟹&nbsp; ${bruch(`${aT}√x₀`, "2")} = ${num(p - c)} &nbsp;⟹&nbsp; √x₀ = ${num(w)} &nbsp;⟹&nbsp; <strong>x₀ = ${num(x0)}</strong><br>` +
+      `<strong>m</strong> = f′(${num(x0)}) = ${bruch(num(a), `2 · ${num(w)}`)} = <strong>${num(m)}</strong>, also t(x) = ${poly([[m, "x"], [p, ""]])}.<br>` +
+      `<strong>Probe:</strong> t(${num(x0)}) = ${num(m * x0 + p)} und f(${num(x0)}) = ${num(y0)} ✓`,
   };
 }
 
@@ -806,38 +829,23 @@ function generateM6() {
     pot(zufall(KLEIN), zufall([q(1, 2), q(-1, 2), q(3, 2)])),
   ]));
 }
-// schwierig: Kettenregel — lineare Verkettung und/oder Sinus bzw. Kosinus mit innerer Funktion.
+// schwierig: Produkt zweier Polynome — Produktregel, Musterlösung mit Probe durch Ausmultiplizieren.
 function generateS6() {
-  const verkettet = [
-    kette(zufall([1, 2, 3, -1, -2]), zufall([2, 3, 4]), zufall([1, 2, 3]), zufall([2, 3, 4, 5, -1, -2, q(1, 2)])),
-    trig(zufall(KLEIN), zufall(["sin", "cos"]), zufall([2, 3, 4, q(1, 2)]), zufall([0, 0, 1])),
-  ];
-  return ableitungsAufgabe([...mische(verkettet).slice(0, zufall([1, 2])), pot(zufall(KOEFF), zufall([1, 2, 3]))]);
+  const faktor = () => { const g = zufall([1, 2, 3]); return [pot(zufall(KLEIN), g), pot(zufall(KOEFF), zufall(bereich(0, g - 1)))]; };
+  const gl = [produkt(faktor(), faktor())];
+  return ableitungsAufgabe(zufall([true, false]) ? [...gl, pot(zufall(KOEFF), zufall([1, 2]))] : gl);
 }
-// komplex: Produkt- und Kettenregel — mit linearer und mit nichtlinearer innerer Funktion:
-// x² · sin(3x), (x² − 1)², √(x² + 1), 1/(x² + 2), sin²(x), sin(x) · cos(x), x(x² + 3)².
+// komplex: Produkte mit Wurzeln und negativen Hochzahlen — dort hilft kein schnelles Ausmultiplizieren
+// im Kopf, die Produktregel ist der direkte Weg.
 function generateK6() {
-  const art = zufall(["produkt", "innenPoly", "trigPotenz", "xMalKette", "sinCos"]);
-  if (art === "produkt") {
-    const v = zufall([trig(1, zufall(["sin", "cos"]), zufall([1, 2, 3])), kette(1, zufall([2, 3]), zufall([1, 2]), zufall([2, 3]))]);
-    const gl = [prod(zufall([1, 2, 3, -1, -2]), zufall([1, 2, 3]), v)];
-    if (zufall([true, false])) gl.push(zufall([pot(zufall(KOEFF), zufall([2, 3])), trig(zufall(KLEIN), zufall(["sin", "cos"]), zufall([1, 2]))]));
-    return ableitungsAufgabe(gl);
-  }
-  let g;
-  if (art === "innenPoly") {
-    // Wurzel und negative Hochzahl nur mit positiver innerer Funktion — geprüft wird für x > 0.
-    const e = zufall([2, 3, 4, q(1, 2), q(-1, 2), -1, -2]), ganz = typeof e === "number" && e > 0;
-    g = verkettung(zufall([1, 2, 3, -1, -2]), zufall([1, 2]), zufall([2, 3]), zufall(ganz ? [1, 2, 3, -1, -2, -3] : [1, 2, 3]), e);
-  } else if (art === "trigPotenz") {
-    const s = zufall([2, 3]);
-    g = zufall([true, false]) ? trigPotenz(zufall(KLEIN), s, 0, zufall([1, 2])) : trigPotenz(zufall(KLEIN), 0, s, zufall([1, 2]));
-  } else if (art === "xMalKette") {
-    g = verkettung(zufall([1, 2, -1]), 1, 2, zufall([1, 2, 3]), zufall([2, 3, q(1, 2)]), { p: 1 });
-  } else {
-    g = trigPotenz(zufall([1, 2, 3, -1, -2]), 1, 1, zufall([1, 2]));
-  }
-  return ableitungsAufgabe(zufall([true, false]) ? mische([g, pot(zufall(KOEFF), zufall([1, 2, 3]))]) : [g]);
+  const U = [pot(zufall(KLEIN), zufall([1, 2])), pot(zufall(KOEFF), 0)];
+  const V = zufall([
+    [pot(zufall([1, 2, 3, -1, -2]), q(1, 2))],
+    [pot(1, q(1, 2)), pot(zufall(KLEIN), 0)],
+    [pot(zufall(KLEIN), -1), pot(zufall(KLEIN), 0)],
+    [pot(1, q(3, 2)), pot(zufall(KLEIN), 1)],
+  ]);
+  return ableitungsAufgabe([produkt(U, V)]);
 }
 
 export const AUFGABEN = [
@@ -855,14 +863,14 @@ export const AUFGABEN = [
   { schwierigkeit: "mittel", titel: "Ableitungsfunktion: Potenzen und Wurzeln", generate: generateM6, wuerfelText: "🎲 Neue Funktion" },
   { schwierigkeit: "schwierig", titel: "Schnittwinkel", generate: generateS1 },
   { schwierigkeit: "schwierig", titel: "Differenzierbar zusammensetzen", generate: generateS2 },
-  { schwierigkeit: "schwierig", titel: "Kettenregel", generate: generateS3 },
+  { schwierigkeit: "schwierig", titel: "Tangente parallel zu einer Geraden", generate: generateS3 },
   { schwierigkeit: "schwierig", titel: "Produktregel", generate: generateS4 },
   { schwierigkeit: "schwierig", titel: "Tangenten von außen", generate: generateS5 },
-  { schwierigkeit: "schwierig", titel: "Ableitungsfunktion: Kettenregel", generate: generateS6, wuerfelText: "🎲 Neue Funktion" },
+  { schwierigkeit: "schwierig", titel: "Ableitungsfunktion: Produktregel", generate: generateS6, wuerfelText: "🎲 Neue Funktion" },
   { schwierigkeit: "komplex", titel: "Parabel aus Bedingungen", generate: generateK1 },
   { schwierigkeit: "komplex", titel: "Durchschnitt und Augenblick", generate: generateK2 },
   { schwierigkeit: "komplex", titel: "Biquadratische Funktion", generate: generateK3 },
   { schwierigkeit: "komplex", titel: "Die Tangente schneidet wieder", generate: generateK4 },
-  { schwierigkeit: "komplex", titel: "Kettenregel und Tangente", generate: generateK5 },
-  { schwierigkeit: "komplex", titel: "Ableitungsfunktion: Produkt- und Kettenregel", generate: generateK6, wuerfelText: "🎲 Neue Funktion" },
+  { schwierigkeit: "komplex", titel: "Tangente von einem Punkt der y-Achse", generate: generateK5 },
+  { schwierigkeit: "komplex", titel: "Ableitungsfunktion: Produktregel mit Wurzeln", generate: generateK6, wuerfelText: "🎲 Neue Funktion" },
 ];
