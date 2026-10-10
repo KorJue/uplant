@@ -1,6 +1,8 @@
-// Selbstlernpfad „Funktionsuntersuchung“ (MSS 11, Analysis, Thema 3). Vanilla-JS, kein Build.
+// Selbstlernpfad „Untersuchung ganzrationaler Funktionen“ (MSS 11, Analysis, Thema 3.1 — Grund- und
+// Leistungskurs). Vanilla-JS, kein Build. Funktionen mit e, ln, sin und cos untersucht Thema 3.2
+// (Leistungskurs); der Abschnitt „Funktion mit Sinus“ steht seitdem dort.
 //
-// Didaktische Reihenfolge — jede Stufe benutzt nur, was davor steht (Thema 2.1 und 2.2 liefern Ableitungsregeln,
+// Didaktische Reihenfolge — jede Stufe benutzt nur, was davor steht (Thema 2.1 liefert Ableitungsregeln,
 // Monotoniesatz, notwendige Bedingung und Vorzeichenwechsel-Kriterium für Extremstellen):
 //    1. Höhere Ableitungen              (f″ = (f′)′; Deutung als Steigung des Graphen von f′)
 //    2. Krümmung                        (Linkskurve ⟺ f′ steigt; Kriterium = Monotoniesatz für f′)
@@ -8,15 +10,14 @@
 //    4. Wendepunkte, Sattelpunkte       (Wendestelle = Extremstelle von f′; Kriterien aus 3, eine
 //                                         Ableitung höher)
 //    5. Vollständige Untersuchung       (fasst 1–4 mit Symmetrie, Nullstellen aus Thema 2.1 zusammen)
-//    6. Funktion mit Sinus              (Ablauf aus 5, Ableitungen von sin/cos aus Thema 2.2)
-//    7. Globale Extrema, Randextrema    (Kandidaten aus 3 und die Ränder)
-//    8. Vom Graphen von f′ auf f        (Umkehrung von 1–4: Lesen statt Rechnen)
-//    9. Funktionenscharen, Ortskurven   (Ablauf aus 3–4 mit Parameter)
-//   10. Steckbriefaufgaben              (Bedingungen aus 3–4 als Gleichungen, LGS aus der Mittelstufe)
-//   11. Extremwertprobleme              (Zielfunktion; Extrema aus 3, Ränder aus 7)
-//   12. Newton-Verfahren                (Tangente aus Thema 2.1; Vergleich mit der Intervallhalbierung
+//    6. Globale Extrema, Randextrema    (Kandidaten aus 3 und die Ränder)
+//    7. Vom Graphen von f′ auf f        (Umkehrung von 1–4: Lesen statt Rechnen)
+//    8. Funktionenscharen, Ortskurven   (Ablauf aus 3–4 mit Parameter)
+//    9. Steckbriefaufgaben              (Bedingungen aus 3–4 als Gleichungen, LGS aus der Mittelstufe)
+//   10. Extremwertprobleme              (Zielfunktion; Extrema aus 3, Ränder aus 6)
+//   11. Newton-Verfahren                (Tangente aus Thema 2.1; Vergleich mit der Intervallhalbierung
 //                                         aus Thema 1.2)
-//   13. Stolperstelle f″ = 0            (Bedingungen aus 4; doppelte Nullstelle aus Thema 2.1)
+//   12. Stolperstelle f″ = 0            (Bedingungen aus 4; doppelte Nullstelle aus Thema 2.1)
 //
 // Gerechnet wird mit Reglerwerten, nie mit Bildschirmkoordinaten. Die besonderen Punkte stehen als
 // exakte Formeln im Code (−a, 2a³, 2π/3 …), nicht als Ergebnis einer Suche — die Prüfung sucht sie
@@ -26,7 +27,7 @@
 // blau, Wendepunkte violett, Randpunkte und Warnungen rot, Hilfslinien grau.
 
 import { mountUebungsaufgaben } from "../../../aufgaben.js?v=3";
-import { AUFGABEN, parseZahl } from "./aufgaben-funktionsuntersuchung.js?v=4";
+import { AUFGABEN, parseZahl } from "./aufgaben-funktionsuntersuchung.js?v=5";
 
 
 // ---------- Helfer ----------
@@ -274,12 +275,11 @@ function panelTitel(K, text) {
   K.svg.appendChild(svgText(K.links + 6, K.oben + 14, text, { class: "panel-titel", "text-anchor": "start" }));
 }
 
-// ---------- Zusätzliche Helfer für Thema 3 ----------
+// ---------- Zusätzliche Helfer für Thema 3.1 ----------
 
 // Krümmung als Klasse für die Graphteile: f″ ≥ 0 links, sonst rechts. An einer einzelnen Stelle mit
 // f″ = 0 entscheidet das nichts Sichtbares; die Prüfung liest die Teile nur abseits der Nullstellen.
 const kruemmung = (d2) => (x) => (d2(x) >= 0 ? "links" : "rechts");
-const art2 = (w) => (w > 1e-12 ? "Linkskurve" : w < -1e-12 ? "Rechtskurve" : "keine Krümmung");
 // Eine Zahl mit „=“ oder „≈“ davor — für Stellen wie √3, die die Anzeige nicht genau trifft.
 const gleich = (x, stellen = 4) => `${zeichen(x, stellen)} ${num(x, stellen)}`;
 // Ein Punkt als Text: (x | y), beide Koordinaten auf die Stellenzahl gerundet.
@@ -318,7 +318,6 @@ const FN = {
   kubik: { f: (x) => 0.5 * x ** 3 - 1.5 * x, d: (x) => 1.5 * x * x - 1.5, d2: (x) => 3 * x, d3: () => 3 },
   quartik: { f: (x) => 0.125 * x ** 4 - 0.75 * x * x, d: (x) => 0.5 * x ** 3 - 1.5 * x, d2: (x) => 1.5 * x * x - 1.5, d3: (x) => 3 * x },
   fall: { f: (t) => 5 * t * t, d: (t) => 10 * t, d2: () => 10, d3: () => 0 },
-  sinus: { f: Math.sin, d: Math.cos, d2: (x) => -Math.sin(x), d3: (x) => -Math.cos(x) },
 };
 
 // ================= 1. Höhere Ableitungen =================
@@ -379,7 +378,6 @@ function renderHoehere() {
 const KR = {
   kubik: { fn: FN.kubik, xs: [-2.5, 2.5], y: [-3.5, 3.5], a: [-2, 8], terme: ["f′(x) = 1,5x² − 1,5", "f″(x) = 3x"], wende: [0] },
   quartik: { fn: FN.quartik, xs: [-2.5, 2.5], y: [-1.5, 1.5], a: [-4.5, 4.5], terme: ["f′(x) = 0,5x³ − 1,5x", "f″(x) = 1,5x² − 1,5"], wende: [-1, 1] },
-  sinus: { fn: FN.sinus, xs: [-3, 6.25], y: [-1.6, 1.6], a: [-1.4, 1.4], terme: ["f′(x) = cos(x)", "f″(x) = −sin(x)"], wende: [0, Math.PI, 2 * Math.PI] },
 };
 function krBereich() {
   const d = KR[wahl("kr-art")];
@@ -615,51 +613,7 @@ function renderSchema() {
   setzeText("sc-text", hinweise[s - 1]);
 }
 
-// ================= 6. Funktion mit Sinus =================
-
-const TR = { f: (x) => x + 2 * Math.sin(x), d: (x) => 1 + 2 * Math.cos(x), d2: (x) => -2 * Math.sin(x) };
-// k · π/12 als gekürzter Bruch: „2π/3“, „π“, „0“.
-function piText(k) {
-  if (k === 0) return "0";
-  const g = (a, b) => (b ? g(b, a % b) : a);
-  const t = g(k, 12), z = k / t, n = 12 / t;
-  const zt = z === 1 ? "π" : `${z}π`;
-  return n === 1 ? zt : `${zt}/${n}`;
-}
-function renderTrig() {
-  const k = reglerRaster("tr-k");
-  const x0 = (k * Math.PI) / 12;
-  setzeAnzeige("tr-k-anzeige", k === 0 ? "0" : `${piText(k)} ≈ ${num(x0, 3)}`);
-  const xmin = -0.2, xmax = 2 * Math.PI + 0.2;
-  const K1 = koordinatenXY({ hoehe: 280, xmin, xmax, ymin: -0.5, ymax: 7, panel: "f" });
-  panelTitel(K1, "f(x) = x + 2 sin(x): violett Linkskurve, orange Rechtskurve");
-  graph(K1, TR.f, xmin, xmax, { schritte: 600, klasseVon: kruemmung(TR.d2) });
-  const xh = (2 * Math.PI) / 3, xt = (4 * Math.PI) / 3;
-  punkt(K1, xh, TR.f(xh), "dr-extrem", { "data-rolle": "extrem", "data-typ": "H", r: 6 });
-  beschrift(K1, xh, TR.f(xh), "H", "dr-text-b", { dy: -10 });
-  punkt(K1, xt, TR.f(xt), "dr-extrem", { "data-rolle": "extrem", "data-typ": "T", r: 6 });
-  beschrift(K1, xt, TR.f(xt), "T", "dr-text-b", { dy: 20 });
-  punkt(K1, Math.PI, Math.PI, "dr-wende", { "data-rolle": "wende", "data-typ": "W", r: 6 });
-  beschrift(K1, Math.PI, Math.PI, "W", "dr-text-v", { dx: 12, dy: -8 });
-  gerade(K1, TR.d(x0), x0, TR.f(x0), "dr-tangente", { "data-rolle": "tangente" });
-  punkt(K1, x0, TR.f(x0), "fr-punkt", { "data-rolle": "p" });
-  const K2 = koordinatenXY({ hoehe: 190, xmin, xmax, ymin: -1.5, ymax: 3.5, panel: "a" });
-  panelTitel(K2, "f′(x) = 1 + 2 cos(x)");
-  graph(K2, TR.d, xmin, xmax, { schritte: 500, basis: "fr-linie", rolle: "ableitung", klasseVon: (x, y) => (y > 0 ? "positiv" : "negativ") });
-  for (const xn of [xh, xt]) punkt(K2, xn, 0, "dr-schneidet", { "data-rolle": "nullstelle-ableitung", r: 4 });
-  punkt(K2, x0, TR.d(x0), "dr-punkt-t", { "data-rolle": "p-a" });
-  zeige("tr-mount", K1.svg, K2.svg);
-  const m = TR.d(x0), w = TR.d2(x0);
-  setzeHtml("tr-bilanz",
-    `x₀ = ${piText(k)}${k ? ` ≈ ${num(x0, 4)}` : ""}: f(x₀) ${gleich(TR.f(x0))}, f′(x₀) = 1 + 2 cos(x₀) ${gleich(m)}, f″(x₀) = −2 sin(x₀) ${gleich(w)}<br>` +
-    `${Math.abs(m) < 1e-9 ? "waagerechte Tangente" : m > 0 ? "f steigt" : "f fällt"}; ${Math.abs(w) < 1e-9 ? "f″(x₀) = 0" : art2(w)}.`);
-  const besondere = { 0: "Linker Rand: f″(0) = 0, aber das Intervall beginnt hier — kein Wendepunkt im Inneren.", 8: "x₀ = 2π/3: f′ = 0 und f″ = −√3 < 0 — der Hochpunkt.", 12: "x₀ = π: f″ = 0 und f‴(π) = 2 ≠ 0 — der Wendepunkt mit der Wendetangente t(x) = −x + 2π. Hier fällt f am stärksten.", 16: "x₀ = 4π/3: f′ = 0 und f″ = √3 > 0 — der Tiefpunkt.", 24: "Rechter Rand x₀ = 2π: f(2π) = 2π. Ab hier wiederholt sich das Bild, um 2π nach rechts und oben verschoben." };
-  setzeText("tr-text", besondere[k] || (m > 0
-    ? "Hier steigt die Gerade x schneller, als die Schwingung 2 sin(x) fällt: f steigt."
-    : "Hier fällt 2 sin(x) schneller, als x steigt: f fällt — zwischen Hoch- und Tiefpunkt."));
-}
-
-// ================= 7. Globale Extrema =================
+// ================= 6. Globale Extrema =================
 
 function renderGlobal() {
   const f = FN.kubik.f;
@@ -699,7 +653,7 @@ function renderGlobal() {
       : "Hier sind die lokalen Extrema auch global — die Ränder liegen dazwischen.");
 }
 
-// ================= 8. Vom Graphen von f′ auf f =================
+// ================= 7. Vom Graphen von f′ auf f =================
 
 const FS = {
   a: {
@@ -757,7 +711,7 @@ function renderFstrich() {
   setzeText("fs-text", text);
 }
 
-// ================= 9. Funktionenscharen =================
+// ================= 8. Funktionenscharen =================
 
 const SA_WERTE = [0.25, 0.5, 0.75, 1, 1.25, 1.5];
 function renderScharen() {
@@ -789,7 +743,7 @@ function renderScharen() {
     : "Hoch- und Tiefpunkt wandern auf derselben Kurve y = −2x³ nach außen. Der Wendepunkt bleibt für alle a im Ursprung — er ist ein gemeinsamer Punkt der ganzen Schar.");
 }
 
-// ================= 10. Steckbriefaufgaben =================
+// ================= 9. Steckbriefaufgaben =================
 
 function renderSteckbrief() {
   const u = reglerRaster("sb-u"), v = reglerRaster("sb-v");
@@ -828,7 +782,7 @@ function geradeTextKubisch(a, c) {
   return `${glied(a, "x³", true)} ${glied(c, "x", false)}`;
 }
 
-// ================= 11. Extremwertprobleme =================
+// ================= 10. Extremwertprobleme =================
 
 function renderOptimierung() {
   const x = reglerRaster("op-x");
@@ -858,7 +812,7 @@ function renderOptimierung() {
       : "Zu viel ausgeschnitten: Die Schachtel ist hoch, aber der Boden schrumpft quadratisch — das Volumen sinkt.");
 }
 
-// ================= 12. Newton-Verfahren =================
+// ================= 11. Newton-Verfahren =================
 
 const NW = { f: (x) => x ** 3 - 2 * x - 5, d: (x) => 3 * x * x - 2 };
 const TIEF = ["₀", "₁", "₂", "₃", "₄", "₅", "₆"];
@@ -911,7 +865,7 @@ function renderNewton() {
   setzeText("nw-text", text);
 }
 
-// ================= 13. Stolperstelle =================
+// ================= 12. Stolperstelle =================
 
 function renderStolperstelle() {
   const k = reglerRaster("st-k");
@@ -1011,12 +965,6 @@ const QUIZZE = {
     correct: 3,
     explain: "Bei Grad 4 hat f″ den Grad 2 und damit höchstens zwei Nullstellen — also höchstens zwei Wendestellen. Ebenso hat f′ vom Grad 3 höchstens drei Nullstellen, also höchstens drei Extremstellen.",
   },
-  "quiz-trig": {
-    q: "Warum hat f(x) = x + 2 sin(x) an der Stelle π einen Wendepunkt?",
-    options: ["Weil f′(π) = 0 ist.", "Weil f″(π) = −2 sin(π) = 0 und f‴(π) = −2 cos(π) = 2 ≠ 0 ist.", "Weil sin(π) = 0 ist und f deshalb bei π eine Nullstelle hat.", "Weil π die Mitte des Intervalls [0; 2π] ist."],
-    correct: 1,
-    explain: "Notwendige und hinreichende Bedingung zusammen: f″(π) = 0 und f‴(π) ≠ 0. Dagegen ist f′(π) = 1 + 2 cos(π) = −1, nicht 0, und f(π) = π ist keine Nullstelle. Die Lage in der Intervallmitte ist Zufall.",
-  },
   "quiz-global": {
     q: "f(x) = x² auf dem Intervall [−1; 3]. Wo nimmt f sein globales Maximum an?",
     options: ["bei x = 0", "bei x = −1", "bei x = 3", "nirgends, weil f′ nur bei 0 null ist"],
@@ -1070,7 +1018,6 @@ const SE_PUNKTE = [
   ["sec-extrem2", "Ich kann Extremstellen mit f″ nachweisen und weiß, was bei f″(x<sub>E</sub>) = 0 zu tun ist."],
   ["sec-wendepunkte", "Ich kann Wendepunkte, Sattelpunkte und die Wendetangente bestimmen."],
   ["sec-schema", "Ich kann eine ganzrationale Funktion vollständig untersuchen und den Graphen zeichnen."],
-  ["sec-trig", "Ich kann eine Funktion mit Sinus auf einem Intervall untersuchen."],
   ["sec-global", "Ich kann globale Extrema auf einem Intervall bestimmen, auch am Rand."],
   ["sec-fstrich", "Ich kann aus dem Graphen von f′ auf Monotonie, Extrem- und Wendepunkte von f schließen."],
   ["sec-scharen", "Ich kann eine Funktionenschar untersuchen und eine Ortskurve bestimmen."],
@@ -1119,7 +1066,6 @@ const REGLER = [
   [["ex-a"], renderExtrem2],
   [["wp-b", "wp-x"], renderWende],
   [["sc-art", "sc-s"], renderSchema],
-  [["tr-k"], renderTrig],
   [["gl-a", "gl-b"], renderGlobal],
   [["fs-art", "fs-x", "fs-zeige"], renderFstrich],
   [["sa-a", "sa-ort"], renderScharen],

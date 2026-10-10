@@ -1,17 +1,17 @@
-// Die vierundzwanzig Übungsaufgaben zu „Funktionsuntersuchung“ — sechs je Stufe.
+// Die vierundzwanzig Übungsaufgaben zu „Untersuchung ganzrationaler Funktionen“ (Thema 3.1) — sechs je Stufe.
 //
 //   einfach   — f″ an einer Stelle, Wendestelle, Hochstelle mit f″, ein Newton-Schritt, globales
 //               Maximum auf einem Intervall.
 //   mittel    — Wendepunkt, Hoch- und Tiefpunkt, Wendetangente, Sattelpunkt durch einen Parameter,
-//               Extrempunkte mit Sinus und Kosinus.
+//               Krümmungsintervall einer Funktion vierten Grades.
 //   schwierig — Scharparameter, punktsymmetrische Steckbriefaufgabe, Schachtel, Rechteck unter einer
 //               Parabel, stärkstes Wachstum.
 //   komplex   — kubische Funktion aus Extrem- und Wendepunkt, biquadratische Funktion mit
 //               Wendetangente, Gewinn bei begrenzter Kapazität, zwei Newton-Schritte, Ortskurve.
 //
 // Die sechste Aufgabe jeder Stufe verlangt f′ und f″ einer jedes Mal neu gewürfelten Funktion
-// (mathematik/terme.js): ganzrational, Potenzen und Wurzeln, Sinus und Kosinus, Funktionenschar
-// oder Verkettung mit nichtlinearer innerer Funktion ((x² − 1)², sin²(x)).
+// (mathematik/terme.js): ganzrational, Potenzen und Wurzeln, Produkte zweier Polynome, Funktionenschar.
+// Sinus, Kosinus und Verkettungen gehören zum Leistungsfach und werden in Thema 3.2 geübt.
 //
 // Gewürfelt wird konstruktiv: Die Kandidatenlisten werden vorher gesiebt, ohneKollision() wählt aus
 // dem Rest. Jeder Fehlerwert ist von der Lösung und von den anderen Fehlerwerten verschieden — wo ein
@@ -19,7 +19,7 @@
 
 "use strict";
 
-import { pot, trig, prod, verkettung, trigPotenz, q, ableitungsAufgabe, pick as zufall, mische } from "../../../terme.js?v=3";
+import { pot, produkt, q, ableitungsAufgabe, pick as zufall, mische } from "../../../terme.js?v=3";
 
 const ZAHLFORMATE = new Map();
 function zahlformat(stellen) {
@@ -121,7 +121,6 @@ const EPS = 0.001;
 
 
 const RUND4 = `<br><span class="progress-note">Runde auf vier Nachkommastellen.</span>`;
-const PI = `<br><span class="progress-note">Gib x als Vielfaches von π an: Für x = 2π/3 tippst du 2/3.</span>`;
 
 // Kubische Funktion mit f′(x) = k(x − p)(x − q): f(x) = k(x³/3 − (p + q)/2 · x² + pq · x) + d.
 // k ist ein Vielfaches von 1,5, damit alle Koeffizienten abbrechen.
@@ -411,41 +410,43 @@ function generateM4() {
   };
 }
 
-// ---------- M5: Extrempunkte einer Funktion mit Sinus oder Kosinus ----------
-// Vier Grundformen x ± 2 sin x, x ± 2 cos x, jeweils mit Faktor s; Stellen als Vielfache von π.
-const M5_FORMEN = [
-  { fn: "sin", z: 1, h: 2 / 3, t: 4 / 3, hT: "2/3", tT: "4/3", f1: "1 + 2 cos(x)", gl: "cos(x) = −0,5" },
-  { fn: "sin", z: -1, h: 5 / 3, t: 1 / 3, hT: "5/3", tT: "1/3", f1: "1 − 2 cos(x)", gl: "cos(x) = 0,5" },
-  { fn: "cos", z: 1, h: 1 / 6, t: 5 / 6, hT: "1/6", tT: "5/6", f1: "1 − 2 sin(x)", gl: "sin(x) = 0,5" },
-  { fn: "cos", z: -1, h: 7 / 6, t: 11 / 6, hT: "7/6", tT: "11/6", f1: "1 + 2 sin(x)", gl: "sin(x) = −0,5" },
-];
+// ---------- M5: Krümmungsintervall einer Funktion vierten Grades ----------
+// f″(x) = 12a · (x − w₁)(x − w₂): Gewürfelt werden die Wendestellen w₁ < w₂ und a, daraus b und c.
+// Zwischen den Wendestellen hat f″ das Vorzeichen von −a — gefragt wird nach genau diesem Intervall.
+// Fehlerbild: f″ aus den Koeffizienten ohne die Faktoren 12, 6 und 2 (also ax² + bx + c = 0); wo das
+// keine glatten Stellen liefert, steht NaN.
 const M5_KANDIDATEN = spaeter(() => {
   const out = [];
-  M5_FORMEN.forEach((form, i) => { for (const s of [1, 2, 0.5, -1, -2, 3]) out.push({ i, s }); });
+  for (const a of [0.25, 0.5, 1, -0.25, -0.5, -1]) for (const w1 of [-3, -2, -1, 0, 1]) for (const w2 of [-1, 0, 1, 2, 3]) for (const d of [0, 1, -2]) {
+    if (w2 <= w1) continue;
+    const b = -2 * a * (w1 + w2), c = 6 * a * w1 * w2;
+    if (!glatt(b, 4) || !glatt(c, 4)) continue;
+    const D = b * b - 4 * a * c;
+    const r = D >= 0 ? [(-b - Math.sqrt(D)) / (2 * a), (-b + Math.sqrt(D)) / (2 * a)].sort((p, q) => p - q) : [NaN, NaN];
+    const [f1, f2] = r.map((z) => (glatt(z, 4) ? z : NaN));
+    out.push({ a, w1, w2, b, c, d, f1, f2 });
+  }
   return out;
 });
-function m5Werte(v) {
-  const form = M5_FORMEN[v.i];
-  // Ein negativer Faktor spiegelt den Graphen: Hoch- und Tiefstelle tauschen die Rollen.
-  return v.s > 0 ? { form, h: form.h, t: form.t, hT: form.hT, tT: form.tT } : { form, h: form.t, t: form.h, hT: form.tT, tT: form.hT };
-}
 function generateM5() {
-  const k = ohneFeldKollision(M5_KANDIDATEN(), (v) => { const w = m5Werte(v); return [[w.h, w.t, w.h * 180], [w.t, w.h, w.t * 180]]; }, EPS);
-  const w = m5Werte(k);
-  const c = 2 * k.s * w.form.z;
-  const trig = `${Math.abs(c) === 1 ? "" : num(Math.abs(c)) + " "}${w.form.fn}(x)`;
-  const term = `${Math.abs(k.s) === 1 ? (k.s < 0 ? "−" : "") : num(k.s)}x ${c < 0 ? "−" : "+"} ${trig}`;
-  const tausch = "Hoch- und Tiefstelle sind vertauscht — prüfe das Vorzeichen von f″ an beiden Stellen.";
-  const grad = "Das ist der Winkel in Grad. Gesucht ist das Vielfache von π (Bogenmaß).";
+  const k = ohneFeldKollision(M5_KANDIDATEN(), (v) => [[v.w1, v.w2, v.f1], [v.w2, v.w1, v.f2]], EPS);
+  const { a, w1, w2, b, c, d, f1, f2 } = k;
+  const art = a > 0 ? "Rechtskurve" : "Linkskurve";
+  const fT = poly([[a, "x⁴"], [b, "x³"], [c, "x²"], [d, ""]]);
+  const d2 = poly([[12 * a, "x²"], [6 * b, "x"], [2 * c, ""]]);
+  const hin = (andere, ohne) => (roh, z) => (nahe(z, andere, TOL) ? "Die Grenzen sind vertauscht — x₁ ist die kleinere." :
+    nahe(z, ohne, TOL) ? `Beim zweimaligen Ableiten entstehen die Faktoren 12, 6 und 2: f″(x) = ${d2}, nicht ${poly([[a, "x²"], [b, "x"], [c, ""]])}.` :
+    `Die Grenzen des Intervalls sind die Nullstellen von f″(x) = ${d2}.`);
   return {
-    promptHtml: `Gegeben ist f(x) = ${term} auf dem Intervall [0; 2π].<br><strong>Bestimme die Stelle des Hochpunkts und die Stelle des Tiefpunkts.</strong>` + PI,
+    promptHtml: `Gegeben ist f(x) = ${fT}.<br><strong>Auf welchem Intervall ]x₁; x₂[ ist der Graph von f eine ${art}?</strong>` + ZAHL,
     felder: [
-      { name: "x<sub>H</sub> = π ·", soll: w.h, toleranz: TOL, hinweis: (roh, v) => (nahe(v, w.t, TOL) ? tausch : nahe(v, w.h * 180, 0.01) ? grad : "Löse f′(x) = 0 im Intervall [0; 2π] und prüfe mit f″.") },
-      { name: "x<sub>T</sub> = π ·", soll: w.t, toleranz: TOL, hinweis: (roh, v) => (nahe(v, w.h, TOL) ? tausch : nahe(v, w.t * 180, 0.01) ? grad : "Löse f′(x) = 0 im Intervall [0; 2π] und prüfe mit f″.") },
+      { name: "x₁ =", soll: w1, toleranz: TOL, hinweis: hin(w2, f1) },
+      { name: "x₂ =", soll: w2, toleranz: TOL, hinweis: hin(w1, f2) },
     ],
-    tipps: [`f′(x) = ${num(k.s)} · (${w.form.f1})`, `f′(x) = 0 ⟺ ${w.form.gl}`],
-    musterloesungHtml: `f′(x) = ${num(k.s)} · (${w.form.f1}) = 0 ⟺ ${w.form.gl} ⟺ x = ${w.form.hT}π oder x = ${w.form.tT}π (in [0; 2π])<br>` +
-      `Vorzeichen von f″ an beiden Stellen: <strong>Hochstelle ${w.hT}π</strong>, <strong>Tiefstelle ${w.tT}π</strong>`,
+    tipps: [`f′(x) = ${poly([[4 * a, "x³"], [3 * b, "x²"], [2 * c, "x"]])}, f″(x) = ${d2}`, `${art}: f″(x) ${a > 0 ? "&lt;" : "&gt;"} 0. Eine nach ${a > 0 ? "oben" : "unten"} geöffnete Parabel ist zwischen ihren Nullstellen ${a > 0 ? "negativ" : "positiv"}.`],
+    musterloesungHtml: `f″(x) = ${d2} = ${num(12 * a)} · ${w1 === 0 ? "x" : `(x ${plusMinus(-w1)})`} · ${w2 === 0 ? "x" : `(x ${plusMinus(-w2)})`}<br>` +
+      `Nullstellen ${num(w1)} und ${num(w2)}; der Graph von f″ ist eine nach ${a > 0 ? "oben" : "unten"} geöffnete Parabel, also ist f″ dazwischen ${a > 0 ? "negativ" : "positiv"}.<br>` +
+      `<strong>${art} auf ]${num(w1)}; ${num(w2)}[</strong>. <strong>Probe:</strong> f″(${num((w1 + w2) / 2)}) = ${num(12 * a * ((w1 + w2) / 2 - w1) * ((w1 + w2) / 2 - w2))} ${a > 0 ? "&lt;" : "&gt;"} 0 ✓`,
   };
 }
 
@@ -771,34 +772,17 @@ function generateM6() {
     pot(zufall(KLEIN), zufall([q(1, 2), q(3, 2)])),
   ]), { zweite: true });
 }
-// schwierig: Sinus und Kosinus mit innerer Funktion oder ein Produkt x · sin(x).
+// schwierig: Produkt zweier Polynome — f′ mit der Produktregel, f″ am einfachsten nach dem Ausmultiplizieren.
 function generateS6() {
-  const welle = zufall([
-    trig(zufall(KLEIN), zufall(["sin", "cos"]), zufall([1, 2, 3, q(1, 2)])),
-    prod(zufall([1, -1, 2]), 1, trig(1, zufall(["sin", "cos"]), 1)),
-  ]);
-  return ableitungsAufgabe(mische([welle, pot(zufall(KOEFF), zufall([2, 3]))]), { zweite: true });
+  const faktor = () => { const g = zufall([1, 2]); return [pot(zufall(KLEIN), g), pot(zufall(KOEFF), zufall(bereich(0, g - 1)))]; };
+  return ableitungsAufgabe([produkt(faktor(), faktor())], { zweite: true });
 }
-// komplex: Funktionenschar — der Parameter a ist beim Ableiten eine feste Zahl, auch in (x − a)² —
-// oder eine Verkettung mit nichtlinearer innerer Funktion: (x² − 1)², √(x² + 1), sin²(x), sin(x) · cos(x).
+// komplex: Funktionenschar — der Parameter a ist beim Ableiten eine feste Zahl, als Faktor vor x², x
+// und x⁴ ebenso wie im Absolutglied a³. Unter drei von fünf Gliedern ist immer eines mit x² oder
+// höher, f″ ist also nie 0.
 function generateK6() {
-  if (zufall([true, false])) {
-    const schar = { zweite: true, name: "fₐ", parameter: ["a"], zusatz: " (a &gt; 0)" };
-    const rest = [pot(zufall(KLEIN), 1, 2), pot(zufall([1, 2, -1]), 0, 3), trig(zufall([1, -1, 2]), zufall(["sin", "cos"]), 1, 0, 1), pot(zufall([1, -1]), 4, 1)];
-    if (zufall([true, false])) return ableitungsAufgabe(mische([pot(zufall([1, -1, 2]), 3), pot(zufall(KLEIN), 2, 1), ...rest]).slice(0, 3), schar);
-    // (x − a)³ enthält x³ und ax² — neben −x³ und 3ax² bliebe davon nur 3a²x − a³ übrig, mit f″ = 0.
-    // Deshalb steht eine verkettete Schar nur neben Gliedern, die sie nicht aufheben können.
-    const kette = zufall([verkettung(1, 1, 1, zufall([-1, 1, -2]), zufall([2, 3]), { t: 1 }), verkettung(zufall([1, -1]), 1, 2, zufall([-1, 1]), 2, { t: 1 })]);
-    return ableitungsAufgabe(mische([kette, ...mische(rest).slice(0, 2)]), schar);
-  }
-  const g = zufall([
-    verkettung(zufall([1, 2, -1]), 1, 2, zufall([1, -1, 2, -2, 3]), zufall([2, 3])),
-    verkettung(zufall([1, 2, 4]), 1, 2, zufall([1, 2, 4]), q(1, 2)),
-    trigPotenz(zufall(KLEIN), 2, 0, zufall([1, 2])),
-    trigPotenz(zufall(KLEIN), 0, 2, zufall([1, 2])),
-    trigPotenz(zufall([1, 2, -1]), 1, 1, 1),
-  ]);
-  return ableitungsAufgabe(zufall([true, false]) ? mische([g, pot(zufall(KOEFF), zufall([1, 2, 3]))]) : [g], { zweite: true });
+  const schar = { zweite: true, name: "fₐ", parameter: ["a"], zusatz: " (a &gt; 0)" };
+  return ableitungsAufgabe(mische([pot(zufall([1, -1, 2]), 3), pot(zufall(KLEIN), 2, 1), pot(zufall(KLEIN), 1, 2), pot(zufall([1, 2, -1]), 0, 3), pot(zufall([1, -1]), 4, 1)]).slice(0, 3), schar);
 }
 
 export const AUFGABEN = [
@@ -812,18 +796,18 @@ export const AUFGABEN = [
   { schwierigkeit: "mittel", titel: "Hoch- und Tiefpunkt", generate: generateM2 },
   { schwierigkeit: "mittel", titel: "Wendetangente", generate: generateM3 },
   { schwierigkeit: "mittel", titel: "Sattelpunkt durch einen Parameter", generate: generateM4 },
-  { schwierigkeit: "mittel", titel: "Extrempunkte mit Sinus und Kosinus", generate: generateM5 },
+  { schwierigkeit: "mittel", titel: "Krümmungsintervall", generate: generateM5 },
   { schwierigkeit: "mittel", titel: "f′ und f″: Potenzen und Wurzeln", generate: generateM6, wuerfelText: "🎲 Neue Funktion" },
   { schwierigkeit: "schwierig", titel: "Scharparameter bestimmen", generate: generateS1 },
   { schwierigkeit: "schwierig", titel: "Punktsymmetrische Funktion aus einem Extrempunkt", generate: generateS2 },
   { schwierigkeit: "schwierig", titel: "Die größte Schachtel", generate: generateS3 },
   { schwierigkeit: "schwierig", titel: "Rechteck unter einer Parabel", generate: generateS4 },
   { schwierigkeit: "schwierig", titel: "Stärkstes Wachstum", generate: generateS5 },
-  { schwierigkeit: "schwierig", titel: "f′ und f″: Sinus und Kosinus", generate: generateS6, wuerfelText: "🎲 Neue Funktion" },
+  { schwierigkeit: "schwierig", titel: "f′ und f″: Produkte", generate: generateS6, wuerfelText: "🎲 Neue Funktion" },
   { schwierigkeit: "komplex", titel: "Kubische Funktion aus Extrem- und Wendepunkt", generate: generateK1 },
   { schwierigkeit: "komplex", titel: "Biquadratische Funktion und Wendetangente", generate: generateK2 },
   { schwierigkeit: "komplex", titel: "Gewinnmaximum bei begrenzter Kapazität", generate: generateK3 },
   { schwierigkeit: "komplex", titel: "Zwei Newton-Schritte", generate: generateK4 },
   { schwierigkeit: "komplex", titel: "Ortskurve der Wendepunkte", generate: generateK5 },
-  { schwierigkeit: "komplex", titel: "f′ und f″: Funktionenschar und Verkettung", generate: generateK6, wuerfelText: "🎲 Neue Funktion" },
+  { schwierigkeit: "komplex", titel: "f′ und f″: Funktionenschar", generate: generateK6, wuerfelText: "🎲 Neue Funktion" },
 ];

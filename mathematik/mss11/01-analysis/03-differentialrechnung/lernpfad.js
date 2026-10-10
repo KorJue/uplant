@@ -987,7 +987,7 @@ function renderStolperstelle() {
   zeige("sp-mount", K.svg);
   if (x0 === 0) {
     setzeHtml("sp-bilanz", `t(x) = −1,5x. f(x) − t(x) = 0,5x³: <span class="wg">dreifache Nullstelle 0</span> — die Tangente durchsetzt den Graphen in P selbst.`);
-    setzeText("sp-text", "Hier ist P der einzige gemeinsame Punkt — und trotzdem „berührt“ die Tangente nicht im Sinne von Ben: Sie geht durch den Graphen hindurch. Links liegt der Graph über ihr, rechts darunter. Einen solchen Punkt nennt man Wendepunkt (Thema 3).");
+    setzeText("sp-text", "Hier ist P der einzige gemeinsame Punkt — und trotzdem „berührt“ die Tangente nicht im Sinne von Ben: Sie geht durch den Graphen hindurch. Links liegt der Graph über ihr, rechts darunter. Einen solchen Punkt nennt man Wendepunkt (Thema 3.1).");
     return;
   }
   setzeHtml("sp-bilanz",

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Formelsammlung — Untersuchung weiterer Funktionen</title>
+<style>
+  @page { size: A4 landscape; margin: 5.5mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    color: #1f2328;
+    font-size: 8.1px;
+    line-height: 1.33;
+  }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  h1 {
+    font-size: 12.4px; margin: 0 0 1.4mm; padding-bottom: 0.8mm;
+    border-bottom: 1.6px solid #1d4ed8; color: #1d4ed8; letter-spacing: 0.01em;
+  }
+  h1 .klein { font-size: 8.4px; font-weight: 400; color: #5b6570; float: right; margin-top: 2px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2.1mm; align-items: start; }
+  .box {
+    border: 0.9px solid #c9d0d8; border-radius: 2mm; padding: 1.5mm 1.8mm;
+    background: #ffffff; break-inside: avoid;
+  }
+  .box.wide { grid-column: span 2; }
+  .box.full { grid-column: span 3; }
+  .box h2 {
+    font-size: 8.6px; margin: 0 0 1.1mm; color: #1d4ed8;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .box.warn { border-color: #e3b341; background: #fffaf0; }
+  .box.warn h2 { color: #8a5b0a; }
+  .box.merk { border-color: #7ec699; background: #f4fbf6; }
+  .box.merk h2 { color: #0f5132; }
+  p { margin: 0 0 0.9mm; }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 0.9mm; padding-left: 3.4mm; }
+  li { margin-bottom: 0.4mm; }
+  .f { font-family: "Cambria Math", Cambria, Georgia, serif; font-size: 9.2px; }
+  .zentral { text-align: center; }
+  .gross { font-size: 10.4px; font-weight: 700; }
+  .al { color: #157347; font-weight: 700; }
+  .be { color: #b3650a; font-weight: 700; }
+  .ga { color: #b3261e; font-weight: 700; }
+  .kr { color: #1d4ed8; font-weight: 700; }
+  .ra { color: #6d28d9; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { border: 0.7px solid #c9d0d8; padding: 0.5mm 0.6mm; text-align: center; }
+  th { background: #eef2f6; font-weight: 700; font-size: 7.4px; }
+  td { font-size: 7.6px; }
+  td.b { font-weight: 700; }
+  td.l { text-align: left; }
+  figure { margin: 0.8mm 0 0; }
+  figure svg { display: block; width: 100%; height: auto; }
+  .m70 { max-width: 70%; margin: 0.8mm auto 0; }
+  .m80 { max-width: 80%; margin: 0.8mm auto 0; }
+  .m88 { max-width: 88%; margin: 0.8mm auto 0; }
+  .m62 { max-width: 62%; margin: 0.8mm auto 0; }
+  .m72 { max-width: 72%; margin: 0.8mm auto 0; }
+  .m55 { max-width: 55%; margin: 0.8mm auto 0; }
+  .bu { font-size: 7.1px; color: #5b6570; text-align: center; margin-top: 0.5mm; }
+  .rechnung { background: #f4f6f8; border-radius: 1.2mm; padding: 1mm 1.2mm; margin: 0.8mm 0 0; }
+  .schritt { display: flex; gap: 1.2mm; margin-bottom: 0.5mm; }
+  .schritt b { flex: 0 0 3.6mm; color: #1d4ed8; }
+  .schritt:last-child { margin-bottom: 0; }
+  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm; align-items: start; }
+  .bruch { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; margin: 0 0.3mm; }
+  .bruch .z { border-bottom: 0.8px solid currentColor; padding: 0 0.6mm; }
+  .binom { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; padding: 0 0.9mm; margin: 0 0.3mm; border-left: 0.9px solid currentColor; border-right: 0.9px solid currentColor; border-radius: 45% / 50%; font-size: 92%; }
+  .tr { color: #157347; font-weight: 700; }
+  .ni { color: #b3650a; font-weight: 700; }
+  .fu { color: #5b6570; font-size: 7.3px; }
+  .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
+  .marke { display: inline-block; font-size: 6.2px; font-weight: 700; letter-spacing: 0.03em; padding: 0 1mm; border-radius: 1mm; margin-left: 1mm; vertical-align: 1px; text-transform: none; }
+  .marke.gk { background: #dcfce7; color: #14532d; }
+  .marke.lk { background: #ede9fe; color: #4c1d95; }
+</style>
+</head>
+<body>
+
+<!-- ===================== Seite 1 ===================== -->
+<div class="page">
+  <h1>Untersuchung weiterer Funktionen<span class="klein">MSS 11 · Analysis, Thema 3.2 · Leistungskurs — <span class="marke gk">GK + LK</span> gilt auch im Grundkurs</span></h1>
+  <div class="grid">
+
+    <div class="box wide merk">
+      <h2>Derselbe Ablauf, andere Antworten <span class="marke gk">GK + LK</span></h2>
+      <table>
+        <tr><th>Schritt</th><th>ganzrational (Thema 3.1)</th><th>p(x) · e<sup>kx</sup></th><th>ln, sin, cos <span class="marke lk">LK</span></th></tr>
+        <tr><td class="l b">Definitionsmenge</td><td>immer ℝ</td><td>ℝ</td><td class="l">ln: nur x &gt; 0 — <b>zuerst klären</b></td></tr>
+        <tr><td class="l b">Symmetrie</td><td>gerade / ungerade Exponenten</td><td>−x einsetzen, meist keine</td><td class="l">Periode 2π: eine Periode genügt</td></tr>
+        <tr><td class="l b">Nullstellen</td><td>höchstens n</td><td>nur aus p(x), da e<sup>kx</sup> &gt; 0</td><td class="l">sin, cos: unendlich viele</td></tr>
+        <tr><td class="l b">Rand</td><td>immer ±∞ (höchstes Glied)</td><td><b>Asymptote y = 0</b> auf einer Seite</td><td class="l">Randpunkt, senkrechte Asymptote, kein Grenzwert</td></tr>
+        <tr><td class="l b">Extrema / Wendep.</td><td>höchstens n − 1 / n − 2</td><td>Klammer von f′ / f″ null setzen</td><td class="l">unendlich viele; tan x = c, cos x = c</td></tr>
+        <tr><td class="l b">Gleichungen</td><td>Formeln (p-q, Ausklammern)</td><td>Nullprodukt, ln</td><td class="l">oft nur numerisch (Newton)</td></tr>
+      </table>
+      <p style="margin-top:0.8mm">Gleich bleiben die Bedingungen: f′(x<sub>E</sub>) = 0 und f″(x<sub>E</sub>) ≠ 0 bzw. Vorzeichenwechsel; f″(x<sub>W</sub>) = 0 mit Vorzeichenwechsel.</p>
+    </div>
+
+    <div class="box">
+      <h2>Zweite Ableitung <span class="marke gk">GK + LK</span></h2>
+      <p class="zentral f">f(x) = p(x) · e<sup>kx</sup></p>
+      <p class="zentral f">f′ = (p′ + k · p) · e<sup>kx</sup></p>
+      <p class="zentral f gross">f″ = (p″ + 2k · p′ + k² · p) · e<sup>kx</sup></p>
+      <p>e<sup>kx</sup> &gt; 0: <b>Vorzeichen und Nullstellen von f″ = die der Klammer.</b></p>
+      <p class="f">x² · e<sup>−x</sup>: f″ = (x² − 4x + 2) · e<sup>−x</sup>, Wendestellen 2 ± √2</p>
+      <p class="fu">Minus vor der Klammer bei k &lt; 0 nicht verlieren.</p>
+    </div>
+
+    <div class="box wide">
+      <h2>Musterrechnung f(x) = x · e<sup>−x</sup> <span class="marke gk">GK + LK</span></h2>
+      <div class="zwei">
+        <div class="rechnung">
+          <div class="schritt"><b>1.</b><span>D = ℝ; f(−x) = −x · e<sup>x</sup> ≠ ±f(x): keine Symmetrie</span></div>
+          <div class="schritt"><b>2.</b><span>x → −∞: f → −∞; x → +∞: e<sup>−x</sup> setzt sich durch, <b>f → 0, Asymptote y = 0</b></span></div>
+          <div class="schritt"><b>3.</b><span>S<sub>y</sub>(0 | 0); Nullstelle nur 0</span></div>
+          <div class="schritt"><b>4.</b><span>f′(x) = (1 − x) · e<sup>−x</sup> = 0 ⟺ x = 1; f″(1) = −e<sup>−1</sup> &lt; 0: <b>H(1 | e<sup>−1</sup>)</b></span></div>
+          <div class="schritt"><b>5.</b><span>f″(x) = (x − 2) · e<sup>−x</sup> = 0 ⟺ x = 2, VZW: <b>W(2 | 2e<sup>−2</sup>)</b></span></div>
+          <div class="schritt"><b>6.</b><span>steigt für x &lt; 1, fällt für x &gt; 1; Rechtskurve für x &lt; 2, Linkskurve für x &gt; 2; W = ]−∞; e<sup>−1</sup>]</span></div>
+        </div>
+        <figure>[[FIG1]]</figure>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Funktionenschar <span class="marke gk">GK + LK</span></h2>
+      <p class="f">f<sub>k</sub>(x) = x · e<sup>−kx</sup>: H(<span class="bruch"><span class="z">1</span><span>k</span></span> | <span class="bruch"><span class="z">1</span><span>k · e</span></span>), W(<span class="bruch"><span class="z">2</span><span>k</span></span> | <span class="bruch"><span class="z">2</span><span>k · e²</span></span>)</p>
+      <p>Ortskurve: x nach k auflösen, in y einsetzen — <b>y = x/e</b> bzw. <b>y = x/e²</b>.</p>
+      <figure>[[FIG2]]</figure>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik MSS 11 · Analysis · Seite 1 von 2</p>
+</div>
+
+<!-- ===================== Seite 2 ===================== -->
+<div class="page">
+  <h1>Anwendungen und Leistungskurs<span class="klein">Wachstum — Extremwertprobleme — Sinus — Schwingung — ln — Glockenkurve</span></h1>
+  <div class="grid">
+
+    <div class="box">
+      <h2>Wachstumsmodelle <span class="marke gk">GK + LK</span></h2>
+      <table>
+        <tr><th>Modell</th><th>f(t)</th><th>größte Rate</th></tr>
+        <tr><td class="l">exponentiell</td><td class="f">a · e<sup>kt</sup></td><td>keine — f″ &gt; 0</td></tr>
+        <tr><td class="l">beschränkt</td><td class="f">S − c · e<sup>−kt</sup></td><td>bei t = 0 — f″ &lt; 0</td></tr>
+        <tr><td class="l">logistisch <span class="marke lk">LK</span></td><td class="f"><span class="bruch"><span class="z">S</span><span>1 + a · e<sup>−kt</sup></span></span></td><td>t = <span class="bruch"><span class="z">ln a</span><span>k</span></span>, f = <span class="bruch"><span class="z">S</span><span>2</span></span>, f′ = <span class="bruch"><span class="z">S · k</span><span>4</span></span></td></tr>
+      </table>
+      <figure>[[FIG3]]</figure>
+    </div>
+
+    <div class="box">
+      <h2>Extremwertprobleme</h2>
+      <p class="f">A(u) = u · 2e<sup>−0,5u</sup>: A′(u) = (2 − u) · e<sup>−0,5u</sup> = 0 ⟺ u = 2, A = 4e<sup>−1</sup> <span class="marke gk">GK + LK</span></p>
+      <p>Ränder prüfen: A(u) → 0 für u → 0 und u → ∞.</p>
+      <p><span class="marke lk">LK</span> Rechteck unter cos x: A(u) = 2u · cos u, A′ = 0 ⟺ cos u = u · sin u — <b>keine Lösungsformel</b>. Newton für g(u) = cos u − u · sin u, u₀ = 1: u₁ ≈ 0,8645, u₂ ≈ 0,8603; A ≈ 1,1222.</p>
+      <h2 style="margin-top:1.6mm">Sinus und Kosinus <span class="marke lk">LK</span></h2>
+      <p class="f">f(x) = x + 2 sin x: f′ = 1 + 2 cos x = 0 ⟺ cos x = −0,5</p>
+      <p>TR: x₁ = cos⁻¹(−0,5) = <span class="bruch"><span class="z">2π</span><span>3</span></span>; <b>zweite Lösung</b> x₂ = 2π − x₁ = <span class="bruch"><span class="z">4π</span><span>3</span></span> (bei sin: π − x₁). Hochpunkte auf y = x + √3, Tiefpunkte auf y = x − √3. Immer RAD, immer mit Intervall.</p>
+    </div>
+
+    <div class="box">
+      <h2>Gedämpfte Schwingung <span class="marke lk">LK</span></h2>
+      <p class="f">f(x) = e<sup>−dx</sup> · sin x: f′ = e<sup>−dx</sup>(cos x − d · sin x)</p>
+      <p class="f">f′ = 0 ⟺ tan x = <span class="bruch"><span class="z">1</span><span>d</span></span> ⟺ x = tan⁻¹(<span class="bruch"><span class="z">1</span><span>d</span></span>) + jπ</p>
+      <p>Hochpunkte liegen <b>links</b> der Berührpunkte (sin x = 1); Höhenverhältnis e<sup>−2πd</sup>.</p>
+      <figure>[[FIG4]]</figure>
+    </div>
+
+    <div class="box">
+      <h2>Funktionen mit ln <span class="marke lk">LK</span></h2>
+      <p class="f">x · ln x: f′ = ln x + 1, f″ = <span class="bruch"><span class="z">1</span><span>x</span></span> &gt; 0; T(e<sup>−1</sup> | −e<sup>−1</sup>)</p>
+      <p class="f"><span class="bruch"><span class="z">ln x</span><span>x</span></span>: f′ = <span class="bruch"><span class="z">1 − ln x</span><span>x²</span></span>; H(e | e<sup>−1</sup>), W(e<sup>1,5</sup> | 1,5e<sup>−1,5</sup>); Asymptoten x = 0, y = 0</p>
+      <p><b>x · ln x → 0 für x → 0⁺:</b> mit x = e<sup>−t</sup> wird daraus −t · e<sup>−t</sup> → 0.</p>
+      <p>ln(x² + 1): achsensymmetrisch, W(±1 | ln 2).</p>
+    </div>
+
+    <div class="box">
+      <h2>Glockenkurve <span class="marke lk">LK</span></h2>
+      <p class="f">f(x) = e<sup>−x²/(2σ²)</sup>: f′ = −<span class="bruch"><span class="z">x</span><span>σ²</span></span> · f, f″ = <span class="bruch"><span class="z">x² − σ²</span><span>σ⁴</span></span> · f</p>
+      <p><b>W(±σ | e<sup>−0,5</sup>)</b>; Wendetangenten treffen die x-Achse bei ±2σ.</p>
+      <figure>[[FIG5]]</figure>
+    </div>
+
+    <div class="box warn">
+      <h2>Typische Fehler</h2>
+      <ul>
+        <li>e<sup>kx</sup> = 0 lösen wollen — es ist nie null.</li>
+        <li>Bei k &lt; 0 das Minus vor der zweiten Klammer verlieren.</li>
+        <li>Nur die TR-Lösung von cos x = c nehmen (LK).</li>
+        <li>Definitionsmenge bei ln vergessen: x = 0 ist keine Nullstelle von x · ln x (LK).</li>
+        <li>Aus dem Rechnerfenster schließen: x³ · e<sup>−0,2x</sup> hat den Hochpunkt erst bei x = 15.</li>
+      </ul>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik MSS 11 · Analysis · Seite 2 von 2</p>
+</div>
+
+</body>
+</html>

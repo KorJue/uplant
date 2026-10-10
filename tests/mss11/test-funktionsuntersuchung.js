@@ -1,4 +1,4 @@
-// Fachliche Prüfung: MSS 11, Analysis, Thema 3 „Funktionsuntersuchung“.
+// Fachliche Prüfung: MSS 11, Analysis, Thema 3.1 „Untersuchung ganzrationaler Funktionen“.
 //
 // Geprüft wird, was die Seite zeigt, gegen eine unabhängige Rechnung. Ableitungen, Extrem- und
 // Wendestellen bestimmt die Prüfung NICHT mit den Formeln der Seite, sondern numerisch: zentrale
@@ -6,12 +6,12 @@
 // Berührstellen. Eine falsch hergeleitete Formel auf der Seite fiele so auf.
 //
 //   * Gerüst: Abschnittsfolge und Nummern, Verweise und Sprungmarken, Menükarte, Formelsammlung,
-//     Verweise von Thema 1.2 und 2 auf diese Seite;
+//     Verweise von Thema 1.2 und 2.1 auf diese Seite, Grundkursniveau (kein Sinus, kein Logarithmus);
 //   * jede Zeichnung wird aus dem SVG zurückgelesen (Maßstab aus den Gitterlinien mit data-wert):
 //     Graphen von f, f′, f″, Tangenten, Krümmungsfärbung, Lenkpfeil, Extrem- und Wendepunkte mit
 //     Typ, Bänder für Monotonie und Krümmung, Randextrema, Ortskurve, Schachtelnetz, Newton-Folge;
 //   * die Bilanzen werden gegen die unabhängige Rechnung gelesen;
-//   * Kontrollfragen, Selbsteinschätzung und alle zwanzig Aufgaben — jede von beiden Seiten.
+//   * Kontrollfragen, Selbsteinschätzung und alle vierundzwanzig Aufgaben — jede von beiden Seiten.
 
 "use strict";
 
@@ -173,7 +173,7 @@ function liesPoly(s, v = "x") {
 const polyFn = (k) => (x) => Object.entries(k).reduce((s, [e, c]) => s + c * x ** Number(e), 0);
 
 // ---------- Gerüst ----------
-const ABSCHNITTE = ["sec-hoehere", "sec-kruemmung", "sec-extrem2", "sec-wendepunkte", "sec-schema", "sec-trig", "sec-global",
+const ABSCHNITTE = ["sec-hoehere", "sec-kruemmung", "sec-extrem2", "sec-wendepunkte", "sec-schema", "sec-global",
   "sec-fstrich", "sec-scharen", "sec-steckbrief", "sec-optimierung", "sec-newton", "sec-stolperstelle"];
 async function geruest(page) {
   const folge = await page.evaluate(() => [...document.querySelectorAll("main section[id]")].map((s) => s.id));
@@ -197,15 +197,22 @@ async function geruest(page) {
     if (anker) pruefe((await antwort.text()).includes(`id="${anker}"`), `Gerüst: Sprungmarke „${anker}“ fehlt in ${ziel}`);
   }
   const menue = fs.readFileSync(path.join(WURZEL, "mathematik/mss11/01-analysis/index.html"), "utf-8");
-  pruefe(/data-section="mss11" href="04-funktionsuntersuchung\/index.html" hidden/.test(menue), "Menü: Karte für die Funktionsuntersuchung fehlt oder ist nicht mit data-section/hidden versehen");
+  pruefe(/data-section="mss11" href="04-funktionsuntersuchung\/index.html" hidden>\s*<span[^>]*>[^<]*<\/span>\s*<h2>3\.1 Untersuchung ganzrationaler Funktionen <span class="kurs-marke gk">GK \+ LK<\/span>/.test(menue),
+    "Menü: Karte „3.1 Untersuchung ganzrationaler Funktionen“ fehlt, trägt keine GK-Marke oder ist nicht mit data-section/hidden versehen");
   // Die Nachbarthemen verweisen hierher — und nicht mehr auf ein „Thema 5“.
   for (const t of ["02-grenzwerte-und-stetigkeit", "03-differentialrechnung"]) {
     const h = fs.readFileSync(path.join(WURZEL, `mathematik/mss11/01-analysis/${t}/index.html`), "utf-8");
     pruefe(h.includes("../04-funktionsuntersuchung/index.html"), `Vernetzung: ${t} verweist nicht auf die Funktionsuntersuchung`);
     pruefe(!/Funktionsuntersuchung[^<]{0,40}Thema 5|Thema 5[^<]{0,80}Funktionsuntersuchung/.test(h), `Vernetzung: ${t} nennt die Funktionsuntersuchung noch Thema 5`);
   }
-  const haupt = await page.evaluate(() => document.querySelector("main").innerText);
+  // Grundkursniveau: Sinus, Kosinus und Logarithmus kommen im Lehrstoff nicht vor. Ausgenommen sind
+  // nur der Kurshinweis, die Vernetzung und die Übungen (deren Eingabehilfe „2sin(3x)“ als Beispiel nennt).
+  const haupt = await page.evaluate(() => [...document.querySelectorAll("main > section")]
+    .filter((s) => !["sec-vernetzung", "sec-uebungen"].includes(s.id))
+    .map((s) => { const k = s.cloneNode(true); k.querySelectorAll(".kurs-hinweis").forEach((h) => h.remove()); return k.innerText; }).join("\n"));
   pruefe(!/\bln\s*\(|\blog\b|\blg\b|Logarithmus/.test(haupt.replace(/Exponential- und Logarithmusfunktionen/g, "")), "Gerüst: Die Seite benutzt einen Logarithmus, der erst später kommt");
+  pruefe(!/\b(sin|cos|tan)\b|Sinus|Kosinus/.test(haupt), `Gerüst: Die Seite benutzt Winkelfunktionen — die gehören zu Thema 3.2 (${(haupt.match(/.{0,40}(\b(sin|cos|tan)\b|Sinus|Kosinus).{0,40}/) || [""])[0]})`);
+  pruefe(/kurs-marke gk/.test(await page.evaluate(() => document.querySelector(".kurs-hinweis").innerHTML)), "Gerüst: Der Kurshinweis trägt keine GK-Marke");
 }
 
 // ---------- 1. Höhere Ableitungen ----------
@@ -243,7 +250,6 @@ async function hoehere(page) {
 const KR = {
   kubik: { f: (x) => 0.5 * x ** 3 - 1.5 * x, xs: [-2.5, -1, -0.25, 0, 0.25, 1.5, 2.5] },
   quartik: { f: (x) => 0.125 * x ** 4 - 0.75 * x * x, xs: [-2, -1, 0, 1, 2] },
-  sinus: { f: Math.sin, xs: [-3, -1.5, 0, 1, 2.5, 4, 6.25] },
 };
 async function kruemmung(page) {
   for (const [art, def] of Object.entries(KR)) {
@@ -386,30 +392,7 @@ async function schema(page) {
   }
 }
 
-// ---------- 6. Funktion mit Sinus ----------
-async function trig(page) {
-  const f = (x) => x + 2 * Math.sin(x);
-  const ex = kritisch(f, 0.01, 2 * Math.PI - 0.01).filter((p) => p.typ !== "S");
-  const ws = wendestellen(f, 0.1, 2 * Math.PI - 0.1);
-  for (const k of [0, 3, 8, 12, 16, 20, 24]) {
-    await setzeRegler(page, "tr-k", k);
-    const x0 = (k * Math.PI) / 12, wo = `Sinus x₀ = ${k}π/12`;
-    const D1 = await lies(page, '#tr-mount svg[data-panel="f"]');
-    const D2 = await lies(page, '#tr-mount svg[data-panel="a"]');
-    pfadAuf(D1, "graph", f, wo);
-    faerbung(D1, f, wo);
-    pfadAuf(D2, "ableitung", (t) => abl(f, t), `${wo}, f′`);
-    punkteGleich(kreise(D1, "extrem"), ex, wo, f);
-    punkteGleich(kreise(D1, "wende"), ws, wo, f);
-    const t = linie(D1, "tangente");
-    pruefe(t && nahe(steigung(t), abl(f, x0), 1e-3), `${wo}: Tangente falsch`);
-    const b = await text(page, "#tr-bilanz");
-    const m = b.match(/f′\(x₀\) = 1 \+ 2 cos\(x₀\) [=≈] (−?[\d,]+)/);
-    pruefe(m && nahe(zahl(m[1]), abl(f, x0), 1e-4), `${wo}: Bilanz f′(x₀) falsch — „${b}“`);
-  }
-}
-
-// ---------- 7. Globale Extrema ----------
+// ---------- 6. Globale Extrema ----------
 async function global(page) {
   const f = (x) => 0.5 * x ** 3 - 1.5 * x;
   for (const [a, b] of [[-1.5, 2.5], [-3, 3], [-2, 1], [-1, 2], [-0.5, 0.5], [0.5, 3], [2.5, 3], [1, 0]]) {
@@ -436,7 +419,7 @@ async function global(page) {
   }
 }
 
-// ---------- 8. Vom Graphen von f′ auf f ----------
+// ---------- 7. Vom Graphen von f′ auf f ----------
 const FS = {
   a: { d: (x) => 0.25 * x ** 3 - 0.75 * x + 0.5 },
   b: { d: (x) => -0.5 * x * x + 2 },
@@ -486,7 +469,7 @@ async function fstrich(page) {
   await haken(page, "fs-zeige", false);
 }
 
-// ---------- 9. Funktionenscharen ----------
+// ---------- 8. Funktionenscharen ----------
 async function scharen(page) {
   const A = [0.25, 0.5, 0.75, 1, 1.25, 1.5];
   // Spur: die Extrempunkte aller Reglerstellungen, numerisch bestimmt.
@@ -519,7 +502,7 @@ async function scharen(page) {
   await haken(page, "sa-ort", true);
 }
 
-// ---------- 10. Steckbriefaufgaben ----------
+// ---------- 9. Steckbriefaufgaben ----------
 async function steckbrief(page) {
   for (const u of [0.5, 1, 1.5, 2]) for (const v of [0.5, 1, 2, 3]) {
     const uu = await setzeRegler(page, "sb-u", u), vv = await setzeRegler(page, "sb-v", v);
@@ -546,7 +529,7 @@ async function steckbrief(page) {
   }
 }
 
-// ---------- 11. Extremwertprobleme ----------
+// ---------- 10. Extremwertprobleme ----------
 async function optimierung(page) {
   const V = (x) => x * (12 - 2 * x) ** 2;
   const xopt = maxStelle(V, 0.001, 5.999);
@@ -573,7 +556,7 @@ async function optimierung(page) {
   }
 }
 
-// ---------- 12. Newton-Verfahren ----------
+// ---------- 11. Newton-Verfahren ----------
 async function newton(page) {
   const f = (x) => x ** 3 - 2 * x - 5;
   for (const x0 of [-2, -1, 0.75, 1, 2, 3, 4]) for (const n of [0, 1, 3, 5]) {
@@ -598,7 +581,7 @@ async function newton(page) {
   }
 }
 
-// ---------- 13. Stolperstelle ----------
+// ---------- 12. Stolperstelle ----------
 async function stolperstelle(page) {
   for (let k = -2; k <= 2 + 1e-9; k += 0.25) {
     const kk = await setzeRegler(page, "st-k", k);
@@ -668,7 +651,7 @@ function gauss(z) {
 // Termaufgaben: weniger Runden, denn jede Runde prüft sechs bis acht Eingaben. Ihre Schranken
 // (6, 12, 18, 24) sind deshalb für 12 Züge gemessen: UPLANT_ZUEGE=12 node tests/werkzeug-streuung.js …
 const RT = 12;
-const SCHRANKE = {1: 21, 2: 20, 3: 20, 4: 14, 5: 15, 6: 9, 7: 19, 8: 20, 9: 19, 10: 14, 11: 9, 12: 9, 13: 10, 14: 10, 15: 9, 16: 7, 17: 8, 18: 10, 19: 15, 20: 9, 21: 17, 22: 15, 23: 10, 24: 9};
+const SCHRANKE = {1: 21, 2: 20, 3: 20, 4: 14, 5: 15, 6: 9, 7: 19, 8: 20, 9: 19, 10: 14, 11: 18, 12: 9, 13: 10, 14: 10, 15: 9, 16: 7, 17: 8, 18: 9, 19: 15, 20: 9, 21: 17, 22: 15, 23: 10, 24: 10};
 
 async function aufgaben(page) {
   const r = 25;
@@ -746,17 +729,25 @@ async function aufgaben(page) {
     const xs = wendestellen(g, -10, 10)[0].x, k = -abl(g, xs);
     return { felder: [k, xs], toleranz: T, falschFelder: [[0, -k, "Vorzeichen"], [0, Math.abs(xs) < 1e-9 ? NaN : 0, "Faktor 2 fehlt"], [1, Math.abs(xs) < 1e-9 ? NaN : -xs, "Vorzeichen"]] };
   });
-  await A(11, "A11 Sinus und Kosinus", (q) => {
-    const m = q.match(/f\(x\) = (−?[\d,]*)x ([+−]) ([\d,]+ )?(sin|cos)\(x\) auf dem Intervall \[0; 2π\]/);
+  await A(11, "A11 Krümmungsintervall", (q) => {
+    const m = q.match(/f\(x\) = (.+?)\. Auf welchem Intervall \]x₁; x₂\[ ist der Graph von f eine (Linkskurve|Rechtskurve)\?/);
     if (!m) return null;
-    const s = m[1] === "" ? 1 : m[1] === "−" ? -1 : zahl(m[1]);
-    const c = (m[2] === "−" ? -1 : 1) * (m[3] ? zahl(m[3]) : 1);
-    const tr = m[4] === "sin" ? Math.sin : Math.cos;
-    const f = (x) => s * x + c * tr(x);
-    const k = kritisch(f, 1e-4, 2 * Math.PI - 1e-4), H = k.find((p) => p.typ === "H"), Tt = k.find((p) => p.typ === "T");
-    if (!H || !Tt) return null;
-    const h = H.x / Math.PI, t = Tt.x / Math.PI;
-    return { felder: [h, t], toleranz: T, falschFelder: [[0, t, "vertauscht"], [0, h * 180, "Winkel in Grad"], [1, h, "vertauscht"], [1, t * 180, "Winkel in Grad"]] };
+    const k = liesPoly(m[1]);
+    // f″ über die Koeffizienten, die Grenzen als Vorzeichenwechsel von f″ — dazwischen muss f″ das
+    // verlangte Vorzeichen haben.
+    const f2 = polyFn(polyAbl(polyAbl(k)));
+    const w = vzw(f2, -10, 10);
+    pruefe(w.length === 2, `A11: f″ hat ${w.length} Vorzeichenwechsel statt 2`);
+    if (w.length !== 2) return null;
+    const mitte = f2((w[0] + w[1]) / 2);
+    pruefe(m[2] === "Linkskurve" ? mitte > 0 : mitte < 0, `A11: Zwischen den Wendestellen ist der Graph keine ${m[2]}`);
+    // Fehlerbild: ax² + bx + c = 0 mit den Koeffizienten von x⁴, x³, x² — ohne die Faktoren 12, 6, 2.
+    // Die Seite gibt dort nur einen Hinweis, wo die Nullstellen glatt sind.
+    const [a4, b3, c2] = [k[4] || 0, k[3] || 0, k[2] || 0], D = b3 * b3 - 4 * a4 * c2;
+    const ohne = D > 0 ? [(-b3 - Math.sqrt(D)) / (2 * a4), (-b3 + Math.sqrt(D)) / (2 * a4)].sort((p, q) => p - q) : [];
+    const glatt = (z) => Math.abs(Math.round(z * 1e4) - z * 1e4) < 1e-6;
+    const fehler = ohne.map((z, i) => [i, glatt(z) ? z : NaN, "Faktoren 12, 6 und 2"]);
+    return { felder: w, toleranz: T, falschFelder: [[0, w[1], "vertauscht"], [1, w[0], "vertauscht"], ...fehler] };
   });
   await A(13, "A13 Scharparameter", (q) => {
     const m = q.match(new RegExp(`fa\\(x\\) = (.+?) − ([\\d,]+)a² · x mit a > 0\\. Für welchen Wert von a hat der Tiefpunkt von fa die y-Koordinate ${Z}\\?`));
@@ -856,7 +847,7 @@ async function aufgaben(page) {
   // Je Stufe eine Termaufgabe mit beliebig vielen Funktionen. Die Angabe wird mit einem eigenen
   // Termleser gelesen und numerisch abgeleitet (tests/lib/terme.js) — die exakten Ableitungen der Seite
   // werden dafür nicht benutzt.
-  for (const [nr, stufe] of [[6, "ganzrational"], [12, "Potenzen und Wurzeln"], [18, "Sinus und Kosinus"], [24, "Funktionenschar und Verkettung"]]) {
+  for (const [nr, stufe] of [[6, "ganzrational"], [12, "Potenzen und Wurzeln"], [18, "Produkte"], [24, "Funktionenschar"]]) {
     const name = `A${nr} f′ und f″: ${stufe}`;
     await pruefeAufgabe(page, bericht, { nr, name, runden: RT, mindestensVerschieden: SCHRANKE[nr] ?? 5,
       liesRoh: liesTermAufgabe, deute: termDeuter(bericht, name, "zweite") });
@@ -876,7 +867,6 @@ async function aufgaben(page) {
       await extrem2(page);
       await wendepunkte(page);
       await schema(page);
-      await trig(page);
       await global(page);
       await fstrich(page);
       await scharen(page);
