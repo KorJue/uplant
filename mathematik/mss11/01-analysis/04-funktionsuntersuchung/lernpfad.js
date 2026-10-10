@@ -1,22 +1,22 @@
 // Selbstlernpfad „Funktionsuntersuchung“ (MSS 11, Analysis, Thema 3). Vanilla-JS, kein Build.
 //
-// Didaktische Reihenfolge — jede Stufe benutzt nur, was davor steht (Thema 2 liefert Ableitungsregeln,
+// Didaktische Reihenfolge — jede Stufe benutzt nur, was davor steht (Thema 2.1 und 2.2 liefern Ableitungsregeln,
 // Monotoniesatz, notwendige Bedingung und Vorzeichenwechsel-Kriterium für Extremstellen):
 //    1. Höhere Ableitungen              (f″ = (f′)′; Deutung als Steigung des Graphen von f′)
 //    2. Krümmung                        (Linkskurve ⟺ f′ steigt; Kriterium = Monotoniesatz für f′)
 //    3. Extremstellen mit f″            (f″ < 0 heißt: f′ fällt durch die Null — VZW + → −; braucht 2)
 //    4. Wendepunkte, Sattelpunkte       (Wendestelle = Extremstelle von f′; Kriterien aus 3, eine
 //                                         Ableitung höher)
-//    5. Vollständige Untersuchung       (fasst 1–4 mit Symmetrie, Nullstellen aus Thema 2 zusammen)
-//    6. Funktion mit Sinus              (Ablauf aus 5, Ableitungen von sin/cos aus Thema 2)
+//    5. Vollständige Untersuchung       (fasst 1–4 mit Symmetrie, Nullstellen aus Thema 2.1 zusammen)
+//    6. Funktion mit Sinus              (Ablauf aus 5, Ableitungen von sin/cos aus Thema 2.2)
 //    7. Globale Extrema, Randextrema    (Kandidaten aus 3 und die Ränder)
 //    8. Vom Graphen von f′ auf f        (Umkehrung von 1–4: Lesen statt Rechnen)
 //    9. Funktionenscharen, Ortskurven   (Ablauf aus 3–4 mit Parameter)
 //   10. Steckbriefaufgaben              (Bedingungen aus 3–4 als Gleichungen, LGS aus der Mittelstufe)
 //   11. Extremwertprobleme              (Zielfunktion; Extrema aus 3, Ränder aus 7)
-//   12. Newton-Verfahren                (Tangente aus Thema 2; Vergleich mit der Intervallhalbierung
+//   12. Newton-Verfahren                (Tangente aus Thema 2.1; Vergleich mit der Intervallhalbierung
 //                                         aus Thema 1.2)
-//   13. Stolperstelle f″ = 0            (Bedingungen aus 4; doppelte Nullstelle aus Thema 2)
+//   13. Stolperstelle f″ = 0            (Bedingungen aus 4; doppelte Nullstelle aus Thema 2.1)
 //
 // Gerechnet wird mit Reglerwerten, nie mit Bildschirmkoordinaten. Die besonderen Punkte stehen als
 // exakte Formeln im Code (−a, 2a³, 2π/3 …), nicht als Ergebnis einer Suche — die Prüfung sucht sie
@@ -26,7 +26,7 @@
 // blau, Wendepunkte violett, Randpunkte und Warnungen rot, Hilfslinien grau.
 
 import { mountUebungsaufgaben } from "../../../aufgaben.js?v=3";
-import { AUFGABEN, parseZahl } from "./aufgaben-funktionsuntersuchung.js?v=3";
+import { AUFGABEN, parseZahl } from "./aufgaben-funktionsuntersuchung.js?v=4";
 
 
 // ---------- Helfer ----------

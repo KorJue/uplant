@@ -262,7 +262,9 @@ Ebenfalls geteilt ist `mathematik/terme.js`: die **Termaufgaben** (Ableitung,
 f′ und f″, Stammfunktion als Term eintippen) mit beliebig vielen Funktionen.
 Eine Funktion wird aus Gliedern zusammengesetzt (`pot`, `trig`, `kette`,
 `prod`, dazu `verkettung` und `trigPotenz` für nichtlineare innere Funktionen
-wie (x² − 1)², √(x² + 1), sin²(x)), die ihre Ableitung und Stammfunktion
+wie (x² − 1)², √(x² + 1), sin²(x), `efunktion` für p(x) · e^(kx) und
+e^(−x) · sin(2x), `lnGlied` für ln(x² + 1) oder x · ln x und `produkt` für zwei
+Polynome), die ihre Ableitung und Stammfunktion
 **exakt** kennen; daraus entstehen Angabe, Rechenweg und Eingabeform der
 Musterlösung. Stammfunktionen gibt es dabei nur auf Wegen, die die
 Integralrechnung-Seite lehrt: (x² − 1)² wird ausmultipliziert, und für sin²(x)
@@ -272,9 +274,18 @@ Stellen numerisch und benennt den wahrscheinlichen Fehler (Faktor, Vorzeichen,
 Konstante, Richtung, einmal zu oft …). Die Aufgabenbauer
 `ableitungsAufgabe()` und `stammAufgabe()` liefern fertige Aufgaben für
 `mountUebungsaufgaben()`; welche Glieder gewürfelt werden, steht in der
-jeweiligen Seite. Benutzt wird das in der Differentialrechnung, der
-Funktionsuntersuchung und der Integralrechnung — eine Änderung wirkt auf alle
-drei, also gehören alle drei Prüfungen danach in den Lauf.
+jeweiligen Seite. Benutzt wird das in der Differentialrechnung (2.1 und 2.2), der
+Funktionsuntersuchung und der Integralrechnung — eine Änderung wirkt auf alle,
+also gehören alle diese Prüfungen danach in den Lauf. Bei linearem Exponenten
+nennt die Musterlösung (e^(kx))′ = k · e^(kx), nicht die Kettenregel — die hat
+der Grundkurs nicht.
+
+**Grund- und Leistungskurs (MSS 11, Analysis):** x.1 ist Grundkursstoff, den auch
+der Leistungskurs braucht, x.2 nur Leistungskurs (rheinland-pfälzischer Lehrplan:
+Kettenregel, sin/cos, Quotientenregel, ln-Funktion). Abschnitte tragen
+`<span class="kurs-marke gk|lk">`; ein Grundkurs-Abschnitt stützt sich nie auf
+einen LK-Abschnitt, und LK-Funktionen in seiner Auswahl tragen „(LK)“ — beides
+prüft `test-weitere-funktionen-ableiten.js`.
 * **Hinweise erklären den Fehler**, sie stellen ihn nicht bloß fest. „Das
   Halbieren fehlt: … ist das umschließende Rechteck, nicht das Dreieck" statt
   „Falsch".

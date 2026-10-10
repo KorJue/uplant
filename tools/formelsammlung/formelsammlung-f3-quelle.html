@@ -80,7 +80,7 @@
 
 <!-- ===================== Seite 1 ===================== -->
 <div class="page">
-  <h1>Differentialrechnung<span class="klein">MSS 11 · Analysis, Thema 2 · <span class="fu">grau: andere Schreibweisen</span></span></h1>
+  <h1>Differentialrechnung<span class="klein">MSS 11 · Analysis, Thema 2.1 · Grund- und Leistungskurs · <span class="fu">grau: andere Schreibweisen</span></span></h1>
   <div class="grid">
 
     <div class="box">
@@ -121,11 +121,10 @@
         <tr><td>Potenzregel</td><td class="f">xʳ (r ≠ 0)</td><td class="f">r · xʳ⁻¹</td><td class="f">(x⁵)′ = 5x⁴ · (x⁻²)′ = −2x⁻³ · (√t)′ = <span class="bruch"><span class="z">1</span><span>2√t</span></span></td></tr>
         <tr><td>Faktorregel</td><td class="f">k · g(x)</td><td class="f">k · g′(x)</td><td class="f">(3x²)′ = 6x · (−2t⁴)′ = −8t³</td></tr>
         <tr><td>Summenregel</td><td class="f">g(x) + h(x)</td><td class="f">g′(x) + h′(x)</td><td class="f">(x² + 4x)′ = 2x + 4 · (2t³ − 3t²)′ = 6t² − 6t</td></tr>
-        <tr><td>Produktregel</td><td class="f">u(x) · v(x)</td><td class="f">u′v + uv′</td><td class="f">(x · sin x)′ = sin x + x cos x</td></tr>
-        <tr><td>Kettenregel</td><td class="f">g(u(x))</td><td class="f">g′(u(x)) · u′(x)</td><td class="f">((x² + 1)³)′ = 3(x² + 1)² · 2x</td></tr>
-        <tr><td>Sinus, Kosinus</td><td class="f">sin x, cos x</td><td class="f">cos x, −sin x</td><td>x im <b>Bogenmaß</b>!</td></tr>
+        <tr><td>Produktregel</td><td class="f">u(x) · v(x)</td><td class="f">u′v + uv′</td><td class="f">((2x + 1)(x² − 3))′ = 2(x² − 3) + (2x + 1) · 2x</td></tr>
       </table>
       <p style="margin-top:0.8mm">Ganzrationale Funktionen: Summand für Summand ableiten, der Grad sinkt um 1. Ein konstanter <b>Faktor</b> bleibt, ein konstanter <b>Summand</b> fällt weg.</p>
+      <p class="fu">Leistungskurs, Thema 2.2: Kettenregel, Quotientenregel, sin und cos, e-Funktion und ln.</p>
     </div>
 
     <div class="box">
@@ -153,14 +152,14 @@
     </div>
 
     <div class="box">
-      <h2>Musterrechnung — Kettenregel</h2>
-      <p><b>Gegeben:</b> f(x) = (2x − 1)³, gesucht f′(2)</p>
+      <h2>Musterrechnung — Produktregel</h2>
+      <p><b>Gegeben:</b> f(x) = (2x + 1)(x² − 3), gesucht f′(1)</p>
       <div class="rechnung">
-        <div class="schritt"><b>1.</b><span>außen u³ → 3u², innen 2x − 1 → 2</span></div>
-        <div class="schritt"><b>2.</b><span>f′(x) = 3(2x − 1)² · 2 = 6(2x − 1)²</span></div>
-        <div class="schritt"><b>3.</b><span>f′(2) = 6 · 3² = <b>54</b></span></div>
+        <div class="schritt"><b>1.</b><span>u = 2x + 1, u′ = 2; v = x² − 3, v′ = 2x</span></div>
+        <div class="schritt"><b>2.</b><span>f′(x) = 2(x² − 3) + (2x + 1) · 2x = 6x² + 2x − 6</span></div>
+        <div class="schritt"><b>3.</b><span>f′(1) = 6 + 2 − 6 = <b>2</b></span></div>
       </div>
-      <p class="fu">Fehler: 3(2x − 1)² ohne die innere Ableitung 2.</p>
+      <p class="fu">Probe: f(x) = 2x³ + x² − 6x − 3 ⟹ f′(x) = 6x² + 2x − 6 ✓. Fehler: u′ · v′ = 4x.</p>
     </div>
 
   </div>
@@ -199,7 +198,7 @@
     </div>
     <div class="box" style="border-style:dashed;background:#f7f8fa">
       <h2 style="color:#5b6570">Ausblick</h2>
-      <p>Thema 3: Funktionsuntersuchungen mit der zweiten Ableitung, Wendepunkte, Extremwertprobleme. Danach: die Exponentialfunktion, die mit ihrer eigenen Ableitung übereinstimmt.</p>
+      <p>Thema 2.2 (Leistungskurs): die e-Funktion, die mit ihrer eigenen Ableitung übereinstimmt, Logarithmus, Sinus und Kosinus, Ketten- und Quotientenregel. Thema 3: Funktionsuntersuchungen mit der zweiten Ableitung, Wendepunkte, Extremwertprobleme.</p>
     </div>
     </div>
 
@@ -239,7 +238,7 @@
       <ul>
         <li><b>Sekante statt Tangente:</b> Ein Differenzenquotient mit x ≠ x₀ ist nie die Ableitung, auch nicht, wenn x dicht bei x₀ liegt.</li>
         <li><b>(x⁻²)′ = −2x⁻¹</b> — falsch: der Exponent wird um 1 <i>kleiner</i>, −2x⁻³.</li>
-        <li><b>(u · v)′ = u′ · v′</b> — falsch, Produktregel. Bei Verkettungen die <b>innere Ableitung</b> nicht vergessen.</li>
+        <li><b>(u · v)′ = u′ · v′</b> — falsch, die Produktregel hat zwei Summanden: u′ · v + u · v′.</li>
         <li><b>Normale −m statt −1/m</b>; Winkel im Bogenmaß statt in Grad.</li>
         <li><b>f′(x) = 0</b> ⟹ <b>Extrempunkt</b> — nur mit Vorzeichenwechsel. <b>Tangente berührt nur einmal</b> — nein, sie darf den Graphen woanders schneiden.</li>
       </ul>

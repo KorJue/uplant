@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ableitung weiterer Funktionen</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="../../../aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">MSS 11</a><span class="sep">/</span>
+  <a href="../index.html">01 Analysis</a><span class="sep">/</span>
+  2.2 Ableitung weiterer Funktionen
+</nav>
+<header class="page-header">
+  <h1>Ableitung weiterer Funktionen: e-Funktion, Logarithmus, Sinus und Kosinus</h1>
+  <p>Ein Selbstlernpfad für den Leistungskurs: Bisher hast du ganzrationale Funktionen und Wurzeln abgeleitet. Jetzt kommen die Funktionen dazu, mit denen man Wachstum, Zerfall und Schwingungen beschreibt — die e-Funktion, der natürliche Logarithmus, Sinus und Kosinus — und Funktionen, die aus ihnen zusammengesetzt sind. Dafür braucht es zwei neue Regeln und einen geschärften Blick darauf, was bei diesen Funktionen anders ist als bei Polynomen. Jeder Abschnitt leitet sein Ergebnis an einer beweglichen Darstellung her, rechnet es nach und endet mit einer Kontrollfrage. Am Schluss stehen vierundzwanzig Übungsaufgaben auf vier Stufen.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Eine Bakterienkultur wächst umso schneller, je mehr Bakterien schon da sind. Ein Getränk kühlt umso schneller ab, je wärmer es noch ist. Ein Pendel ist dort am schnellsten, wo es durch die Ruhelage geht. Solche Vorgänge beschreiben keine Polynome, sondern <span class="term">Exponential-</span> und <span class="term">Winkelfunktionen</span>. Ihre Ableitungen haben eine eigene Gestalt: Die e-Funktion stimmt mit ihrer Ableitung überein, Sinus und Kosinus gehen beim Ableiten reihum ineinander über. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>begründen, warum die Ableitung einer Exponentialfunktion b<sup>x</sup> zu ihr selbst proportional ist und warum die Basis <span class="term">e ≈ 2,718</span> dabei die besondere ist</li>
+      <li>e<sup>x</sup> und e<sup>kx</sup> ableiten und Gleichungen wie e<sup>kx</sup> = c mit dem <span class="term">natürlichen Logarithmus</span> lösen</li>
+      <li>Produkte wie x · e<sup>−x</sup> ableiten und das Ergebnis durch <span class="term">Ausklammern</span> übersichtlich schreiben</li>
+      <li>sin und cos ableiten und begründen, warum das nur im Bogenmaß gilt</li>
+      <li>Verkettungen mit der <span class="term">Kettenregel</span> und Quotienten mit der <span class="term">Quotientenregel</span> ableiten</li>
+      <li>die <span class="term">Logarithmusfunktion</span> ln als Umkehrfunktion der e-Funktion verstehen und (ln x)′ = <span class="bruch"><span class="z">1</span><span class="n">x</span></span> begründen</li>
+      <li>solche Funktionen auf Verhalten für x → ±∞, Symmetrie, Nullstellen, Monotonie und Extrempunkte untersuchen — und sagen, was dabei <strong>anders ist als bei ganzrationalen Funktionen</strong></li>
+      <li>momentane Änderungsraten bei Wachstums- und Schwingungsvorgängen berechnen und deuten</li>
+    </ul>
+    <p class="kurs-hinweis"><span class="kurs-marke lk">Leistungskurs</span> Diese Seite setzt <a href="../03-differentialrechnung/index.html">Thema 2.1</a> fort. Nach dem rheinland-pfälzischen Lehrplan gehören die Kettenregel, Sinus und Kosinus, die Quotientenregel und die Funktion ln zum Leistungsfach. Die e-Funktion in der Form f(x) = a · e<sup>kx</sup>, Produkte mit ihr und das Lösen von e<sup>kx</sup> = c gehören dagegen auch zum Grundfach — diese Abschnitte tragen die Marke <span class="kurs-marke gk">GK + LK</span>, die übrigen <span class="kurs-marke lk">LK</span>.</p>
+    <p>Die Seite folgt der Schreibweise von <strong>Elemente der Mathematik</strong>; <strong>Fundamente der Mathematik</strong> schreibt dasselbe. Für e<sup>x</sup> steht auf manchen Taschenrechnern und in Programmen auch exp(x). ln x ist der Logarithmus zur Basis e; die Taste „log“ meint meist die Basis 10 — sie ist hier nicht gemeint.</p>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../03-differentialrechnung/index.html">Thema 2.1</a> die <a href="../03-differentialrechnung/index.html#sec-ableitung">Ableitung als Grenzwert</a>, die <a href="../03-differentialrechnung/index.html#sec-potenz">Potenzregel</a>, die <a href="../03-differentialrechnung/index.html#sec-produkt">Produktregel</a>, <a href="../03-differentialrechnung/index.html#sec-tangente">Tangenten</a> und den Zusammenhang von <a href="../03-differentialrechnung/index.html#sec-monotonie">f und f′</a>. Aus der Mittelstufe kommen die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/11-exponentialfunktionen/index.html#sec-funktion">Exponentialfunktionen</a>, die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/09-potenzen/index.html#sec-gesetze">Potenzgesetze</a>, das <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/12-trigonometrische-funktionen/index.html#sec-bogenmass">Bogenmaß</a> und die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/12-trigonometrische-funktionen/index.html#sec-kurven">Sinus- und Kosinuskurve</a>, aus <a href="../01-folgen-und-reihen/index.html">Thema 1.1</a> der <a href="../01-folgen-und-reihen/index.html#sec-grenzwert">Grenzwert einer Folge</a>.</p>
+  </section>
+
+  <!-- 1. Die Eulersche Zahl -->
+  <section class="card" id="sec-e">
+    <h2>1. Exponentialfunktionen ableiten: die Eulersche Zahl e <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span></h2>
+    <p>Bei einer Potenzfunktion wie x³ ist der Exponent fest und die Basis variabel. Bei einer <span class="term">Exponentialfunktion</span> f(x) = b<sup>x</sup> (b &gt; 0) ist es umgekehrt: Die Basis ist fest, x steht im Exponenten. Die Potenzregel hilft hier also nicht — es muss zurück zum Differenzenquotienten. Mit dem Potenzgesetz b<sup>x + h</sup> = b<sup>x</sup> · b<sup>h</sup> ergibt sich etwas Bemerkenswertes:</p>
+    <div class="formula-block"><span class="bruch"><span class="z">f(x + h) − f(x)</span><span class="n">h</span></span> = <span class="bruch"><span class="z">b<sup>x</sup> · b<sup>h</sup> − b<sup>x</sup></span><span class="n">h</span></span> = b<sup>x</sup> · <span class="bruch"><span class="z">b<sup>h</sup> − 1</span><span class="n">h</span></span></div>
+    <p>Der zweite Faktor hängt <em>nicht</em> von x ab, nur von b und h. Sein Grenzwert für h → 0 ist eine feste Zahl — nennen wir sie c<sub>b</sub>. Dann ist f′(x) = c<sub>b</sub> · b<sup>x</sup>: Die Ableitung ist an jeder Stelle dasselbe Vielfache der Funktion. Und weil b<sup>0</sup> = 1 ist, ist c<sub>b</sub> = f′(0) gerade die Steigung des Graphen beim Schnitt mit der y-Achse. Verändere b und fahre mit x₀ über den Graphen: Der Quotient aus Steigung und Funktionswert bleibt gleich.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Basis b: <input type="range" id="eb-b" min="1.5" max="4" step="0.01" value="2" style="vertical-align:middle;width:12rem"> <span id="eb-b-anzeige" class="wert farbe-blau"></span></label>
+        <label>x₀: <input type="range" id="eb-x" min="-1.5" max="2" step="0.1" value="1" style="vertical-align:middle;width:10rem"> <span id="eb-x-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap" id="eb-mount"></div>
+      <div class="th-bilanz" id="eb-bilanz"></div>
+      <div id="eb-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Die Eulersche Zahl e</span>
+      Für b = 2 ist c<sub>2</sub> ≈ 0,6931 &lt; 1, für b = 3 ist c<sub>3</sub> ≈ 1,0986 &gt; 1. Dazwischen gibt es genau eine Basis, für die c<sub>b</sub> = 1 ist — die Basis, deren Graph die y-Achse mit der Steigung 1 schneidet. Sie heißt <strong>Eulersche Zahl</strong> e = 2,718281828… Die Funktion f(x) = e<sup>x</sup> heißt <strong>natürliche Exponentialfunktion</strong> oder kurz <strong>e-Funktion</strong>.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Ableitung der Exponentialfunktionen</span>
+      <div class="formula-block">f(x) = b<sup>x</sup> &nbsp; ⟹ &nbsp; f′(x) = c<sub>b</sub> · b<sup>x</sup> &nbsp; mit c<sub>b</sub> = f′(0) &nbsp;&nbsp;&nbsp;&nbsp; f(x) = e<sup>x</sup> &nbsp; ⟹ &nbsp; f′(x) = e<sup>x</sup></div>
+      Die e-Funktion ist die einzige Exponentialfunktion, die mit ihrer Ableitung übereinstimmt: An jeder Stelle ist die Steigung so groß wie der Funktionswert. Welchen Wert c<sub>b</sub> für andere Basen hat, zeigt Abschnitt 3: c<sub>b</sub> = ln b.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: c<sub>2</sub> durch Annähern</span>
+      <span class="bruch"><span class="z">2<sup>h</sup> − 1</span><span class="n">h</span></span> ergibt für h = 0,1 den Wert 0,7177, für h = 0,01 den Wert 0,6956, für h = 0,001 den Wert 0,6934 — der Grenzwert ist c<sub>2</sub> ≈ 0,6931. Also ist (2<sup>x</sup>)′ ≈ 0,6931 · 2<sup>x</sup>: An der Stelle 3 hat der Graph die Steigung ≈ 0,6931 · 8 ≈ 5,545.<br>
+      e lässt sich auch als Grenzwert einer Folge schreiben: e = lim<sub>n→∞</sub> (1 + <span class="bruch"><span class="z">1</span><span class="n">n</span></span>)<sup>n</sup>. Für n = 10 ist der Wert 2,5937, für n = 1000 schon 2,7169 — die Folge wächst langsam gegen e, wie die <a href="../01-folgen-und-reihen/index.html#sec-grenzwert">Folgen in Thema 1.1</a>.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Potenzregel gilt hier nicht</span>
+      (x³)′ = 3x² — aber (2<sup>x</sup>)′ ist <em>nicht</em> x · 2<sup>x − 1</sup>. Die Potenzregel gilt, wenn x die Basis ist und der Exponent fest. Bei 2<sup>x</sup> steht x im Exponenten. Abschnitt 14 zeigt an einer Zeichnung, wie weit die falsche Formel danebenliegt.
+    </div>
+    <div class="quiz" id="quiz-e"></div>
+  </section>
+
+  <!-- 2. e^x und e^(kx) -->
+  <section class="card" id="sec-ex">
+    <h2>2. Die natürliche Exponentialfunktion: e<sup>x</sup> und e<sup>kx</sup> <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span></h2>
+    <p>Wachstums- und Zerfallsvorgänge beschreibt man meist mit f(x) = a · e<sup>kx</sup>. Wie leitet man e<sup>kx</sup> ab? Der Graph von g(x) = e<sup>kx</sup> geht aus dem von e<sup>x</sup> hervor: Der Punkt P(x₀ | e<sup>kx₀</sup>) hat dieselbe Höhe wie der Punkt Q(kx₀ | e<sup>kx₀</sup>) auf dem Graphen von e<sup>x</sup>. Der ganze Graph ist also in x-Richtung um den Faktor <span class="bruch"><span class="z">1</span><span class="n">k</span></span> gestaucht (für k &lt; 0 zusätzlich an der y-Achse gespiegelt). Dabei behält jedes Steigungsdreieck seine Höhe, seine Breite wird durch k geteilt — jede Steigung wird mit k multipliziert. Bewege k und x₀.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>k: <input type="range" id="ek-k" min="-2" max="2" step="0.25" value="0.5" style="vertical-align:middle;width:10rem"> <span id="ek-k-anzeige" class="wert farbe-blau"></span></label>
+        <label>x₀: <input type="range" id="ek-x" min="-2" max="2" step="0.1" value="1.5" style="vertical-align:middle;width:10rem"> <span id="ek-x-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap" id="ek-mount"></div>
+      <div class="th-bilanz" id="ek-bilanz"></div>
+      <div id="ek-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Ableitung von e<sup>kx</sup> und Eigenschaften der e-Funktion</span>
+      <div class="formula-block">f(x) = a · e<sup>kx</sup> &nbsp; ⟹ &nbsp; f′(x) = a · k · e<sup>kx</sup> = k · f(x)</div>
+      Die e-Funktion ist für alle x definiert und überall <strong>positiv</strong>: e<sup>x</sup> &gt; 0. Sie ist streng monoton steigend, geht durch (0 | 1) mit der Steigung 1, und für x → −∞ nähert sich ihr Graph der x-Achse: lim<sub>x→−∞</sub> e<sup>x</sup> = 0 — die x-Achse ist <strong>waagerechte Asymptote</strong>. Für x → +∞ wächst e<sup>x</sup> über jede Grenze, schneller als jede Potenz (Abschnitt 9).
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      f(x) = e<sup>3x</sup> ⟹ f′(x) = 3e<sup>3x</sup> &nbsp;·&nbsp; f(x) = 5e<sup>−0,2x</sup> ⟹ f′(x) = 5 · (−0,2) · e<sup>−0,2x</sup> = −e<sup>−0,2x</sup><br>
+      f(x) = e<sup>x + 2</sup> = e² · e<sup>x</sup> ⟹ f′(x) = e² · e<sup>x</sup> = e<sup>x + 2</sup> — eine Verschiebung in x-Richtung ändert die Steigung nicht.<br>
+      <strong>Deutung:</strong> Für einen Bestand N(t) = N₀ · e<sup>kt</sup> ist N′(t) = k · N(t). Die momentane Wachstumsgeschwindigkeit ist proportional zum Bestand — das ist der Kern des exponentiellen Wachstums.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der Faktor k gehört dazu</span>
+      (e<sup>3x</sup>)′ ist nicht e<sup>3x</sup>. Die Stauchung in x-Richtung macht den Graphen dreimal so steil. Nur e<sup>x</sup> selbst (k = 1) stimmt mit seiner Ableitung überein.
+    </div>
+    <p class="hinweis-box">💡 Dass hier der Faktor k herauskommt, ist ein Sonderfall der <a href="#sec-kette">Kettenregel</a> (Abschnitt 6): Die innere Funktion kx hat die Ableitung k. Für e<sup>kx</sup> reicht aber die Überlegung mit dem gestauchten Graphen — sie braucht keine neue Regel.</p>
+    <div class="quiz" id="quiz-ex"></div>
+  </section>
+
+  <!-- 3. Der natürliche Logarithmus -->
+  <section class="card" id="sec-ln">
+    <h2>3. Gleichungen mit e lösen: der natürliche Logarithmus <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span></h2>
+    <p>Nach wie vielen Stunden hat sich eine Kultur mit N(t) = 100 · e<sup>0,3t</sup> verdoppelt? Gesucht ist ein <em>Exponent</em>: e<sup>0,3t</sup> = 2. So wie die Wurzel die Frage „welche Basis?“ beantwortet, beantwortet der <span class="term">natürliche Logarithmus</span> die Frage „welcher Exponent zur Basis e?“. Weil e<sup>x</sup> streng monoton steigt und jeden positiven Wert genau einmal annimmt, hat e<sup>x</sup> = c für jedes c &gt; 0 genau eine Lösung — man liest sie am Graphen ab. Verändere c (und k).</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Gleichung:
+          <select id="lg-art" class="eingabe" style="padding:0.4rem">
+            <option value="ex">e^x = c</option>
+            <option value="ekx">e^(kx) = c</option>
+            <option value="zwei">2^x = c</option>
+          </select>
+        </label>
+        <label>c: <input type="range" id="lg-c" min="0.25" max="8" step="0.25" value="2" style="vertical-align:middle;width:10rem"> <span id="lg-c-anzeige" class="wert farbe-violett"></span></label>
+        <label>k: <input type="range" id="lg-k" min="-2" max="2" step="0.25" value="0.5" style="vertical-align:middle;width:8rem"> <span id="lg-k-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap" id="lg-mount"></div>
+      <div class="th-bilanz" id="lg-bilanz"></div>
+      <div id="lg-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Natürlicher Logarithmus</span>
+      Für c &gt; 0 ist <strong>ln c</strong> die Zahl, für die e<sup>ln c</sup> = c gilt. Also: <strong>e<sup>x</sup> = c ⟺ x = ln c</strong>. Insbesondere ist ln 1 = 0 und ln e = 1, und ln(e<sup>x</sup>) = x für jedes x.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Rechenregeln (a, b &gt; 0)</span>
+      <div class="formula-block">ln(a · b) = ln a + ln b &nbsp;&nbsp;&nbsp; ln <span class="bruch"><span class="z">a</span><span class="n">b</span></span> = ln a − ln b &nbsp;&nbsp;&nbsp; ln(a<sup>r</sup>) = r · ln a &nbsp;&nbsp;&nbsp; b<sup>x</sup> = e<sup>x · ln b</sup></div>
+      <strong>Begründung:</strong> Alles folgt aus den Potenzgesetzen. e<sup>ln a + ln b</sup> = e<sup>ln a</sup> · e<sup>ln b</sup> = a · b, also ist ln a + ln b der Exponent, der a · b ergibt. Ebenso ist e<sup>r · ln a</sup> = (e<sup>ln a</sup>)<sup>r</sup> = a<sup>r</sup>. Und weil b = e<sup>ln b</sup> ist, gilt b<sup>x</sup> = (e<sup>ln b</sup>)<sup>x</sup> = e<sup>x · ln b</sup>: Jede Exponentialfunktion ist eine e-Funktion mit k = ln b. Damit ist auch c<sub>b</sub> aus Abschnitt 1 geklärt: (b<sup>x</sup>)′ = ln b · b<sup>x</sup>, also c<sub>b</sub> = ln b — zum Beispiel c<sub>2</sub> = ln 2 ≈ 0,6931.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      <strong>Verdopplungszeit:</strong> 100 · e<sup>0,3t</sup> = 200 ⟹ e<sup>0,3t</sup> = 2 ⟹ 0,3t = ln 2 ⟹ t = <span class="bruch"><span class="z">ln 2</span><span class="n">0,3</span></span> ≈ 2,31 Stunden.<br>
+      <strong>Gleichung:</strong> 3e<sup>2x</sup> − 12 = 0 ⟹ e<sup>2x</sup> = 4 ⟹ 2x = ln 4 ⟹ x = <span class="bruch"><span class="z">ln 4</span><span class="n">2</span></span> = <span class="bruch"><span class="z">2 ln 2</span><span class="n">2</span></span> = ln 2 ≈ 0,693. <strong>Probe:</strong> 3e<sup>2 ln 2</sup> = 3 · (e<sup>ln 2</sup>)² = 3 · 4 = 12 ✓<br>
+      <strong>Umschreiben:</strong> f(x) = 5 · 1,2<sup>x</sup> = 5 · e<sup>x · ln 1,2</sup> ≈ 5 · e<sup>0,1823x</sup>. So wird aus einem Wachstumsfaktor 1,2 die Wachstumskonstante k = ln 1,2.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — drei typische Fehler</span>
+      ln(a + b) ist <em>nicht</em> ln a + ln b: Der Logarithmus macht aus Produkten Summen, nicht aus Summen. e<sup>x</sup> = −2 hat keine Lösung, denn e<sup>x</sup> ist immer positiv — ln(−2) gibt es nicht. Und auf dem Taschenrechner ist „ln“ die richtige Taste; „log“ rechnet zur Basis 10.
+    </div>
+    <div class="quiz" id="quiz-ln"></div>
+  </section>
+
+  <!-- 4. Produkte mit e-Funktionen -->
+  <section class="card" id="sec-produkt-e">
+    <h2>4. Produkte mit e-Funktionen: Produktregel und Ausklammern <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span></h2>
+    <p>Viele Anwendungen führen auf Funktionen wie f(x) = x · e<sup>−x</sup>: ein Polynom mal einer e-Funktion. Die <a href="../03-differentialrechnung/index.html#sec-produkt">Produktregel</a> aus Thema 2.1 liefert mit u = x und v = e<sup>−x</sup>: f′(x) = 1 · e<sup>−x</sup> + x · (−e<sup>−x</sup>). Beide Summanden enthalten e<sup>−x</sup> — man klammert aus: f′(x) = (1 − x) · e<sup>−x</sup>. Das ist kein Schönheitsdetail. In dieser Form sieht man sofort, wo f′ null ist und welches Vorzeichen f′ hat: Der e-Faktor ist nie null und immer positiv, also entscheidet allein die Klammer. Fahre mit x₀ über den Graphen und vergleiche das Vorzeichen von f′ mit dem der Klammer.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="pe-art" class="eingabe" style="padding:0.4rem">
+            <option value="xe">f(x) = x · e^(−x)</option>
+            <option value="x2e">f(x) = x² · e^(−x)</option>
+            <option value="lin">f(x) = (2 − x) · e^(0,5x)</option>
+          </select>
+        </label>
+        <label>x₀: <input type="range" id="pe-x" min="-1" max="4" step="0.1" value="0.5" style="vertical-align:middle;width:12rem"> <span id="pe-x-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="pe-mount"></div>
+      <div class="th-bilanz" id="pe-bilanz"></div>
+      <div id="pe-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Polynom mal e-Funktion</span>
+      <div class="formula-block">f(x) = p(x) · e<sup>kx</sup> &nbsp; ⟹ &nbsp; f′(x) = p′(x) · e<sup>kx</sup> + p(x) · k · e<sup>kx</sup> = (p′(x) + k · p(x)) · e<sup>kx</sup></div>
+      Die Ableitung hat wieder die Form <strong>Polynom mal e-Funktion</strong>, und das Polynom in der Klammer hat <strong>denselben Grad</strong> wie p. Da e<sup>kx</sup> &gt; 0 ist, gilt: f′(x) = 0 ⟺ p′(x) + k · p(x) = 0, und f′ hat dasselbe Vorzeichen wie die Klammer.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: f(x) = x² · e<sup>−x</sup></span>
+      u = x², v = e<sup>−x</sup>; u′ = 2x, v′ = −e<sup>−x</sup>. f′(x) = 2x · e<sup>−x</sup> + x² · (−e<sup>−x</sup>) = (2x − x²) · e<sup>−x</sup> = x(2 − x) · e<sup>−x</sup>.<br>
+      f′(x) = 0 ⟺ x(2 − x) = 0 ⟺ x = 0 oder x = 2. Vorzeichen der Klammer: negativ für x &lt; 0, positiv zwischen 0 und 2, negativ für x &gt; 2 — also Tiefpunkt T(0 | 0) und Hochpunkt H(2 | 4e<sup>−2</sup>) ≈ H(2 | 0,541).<br>
+      Noch einmal abgeleitet: f″(x) = ((2 − 2x) − (2x − x²)) · e<sup>−x</sup> = (x² − 4x + 2) · e<sup>−x</sup>.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der Unterschied zu ganzrationalen Funktionen</span>
+      Bei einem Polynom wird der Grad mit jeder Ableitung kleiner, nach genügend vielen Ableitungen bleibt 0. Bei p(x) · e<sup>kx</sup> bleibt der Grad gleich, und der e-Faktor bleibt stehen — man kann beliebig oft ableiten. Und: Nicht faktorweise ableiten! (x · e<sup>−x</sup>)′ ist nicht 1 · (−e<sup>−x</sup>).
+    </div>
+    <div class="quiz" id="quiz-produkt-e"></div>
+  </section>
+
+  <!-- 5. Sinus und Kosinus -->
+  <section class="card" id="sec-sinus">
+    <h2>5. Die Ableitung von Sinus und Kosinus <span class="kurs-marke lk" title="Leistungskurs">LK</span></h2>
+    <p>Beim <a href="../03-differentialrechnung/index.html#sec-grafisch">grafischen Differenzieren</a> in Thema 2.1 sah der Graph von sin′ genau aus wie der von cos. Am Einheitskreis sieht man, warum — wenn x im Bogenmaß gemessen wird. Der Punkt P(cos x | sin x) wandert auf dem Einheitskreis um den Bogen der Länge h weiter. Für kleines h ist dieser Bogen fast eine gerade Strecke, die senkrecht auf dem Radius steht. Der Radius bildet mit der x-Achse den Winkel x, also bildet die kleine Strecke mit der Senkrechten ebenfalls den Winkel x. Sie steigt deshalb um ungefähr h · cos x. Mach h klein.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>x: <input type="range" id="si-x" min="0" max="6.2" step="0.1" value="0.8" style="vertical-align:middle;width:12rem"> <span id="si-x-anzeige" class="wert farbe-blau"></span></label>
+        <label>h: <input type="range" id="si-h" min="0.05" max="1.2" step="0.05" value="0.8" style="vertical-align:middle;width:10rem"> <span id="si-h-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap geo-paar" id="si-mount"></div>
+      <div class="th-bilanz" id="si-bilanz"></div>
+      <div id="si-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Ableitung von Sinus und Kosinus (x im Bogenmaß)</span>
+      <div class="formula-block">f(x) = sin x &nbsp; ⟹ &nbsp; f′(x) = cos x &nbsp;&nbsp;&nbsp;&nbsp; f(x) = cos x &nbsp; ⟹ &nbsp; f′(x) = −sin x</div>
+      Dieselbe kleine Strecke geht um ungefähr h · sin x nach <em>links</em>: Deshalb nimmt cos um h · sin x ab, und die Ableitung des Kosinus ist −sin x. Leitet man weiter ab, schließt sich ein Kreis aus vier Schritten: sin → cos → −sin → −cos → sin.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      f(x) = 3 sin x ⟹ f′(x) = 3 cos x &nbsp;·&nbsp; f(x) = x² + cos x ⟹ f′(x) = 2x − sin x &nbsp;·&nbsp; f(x) = x · sin x ⟹ f′(x) = sin x + x · cos x (Produktregel)<br>
+      Steigung von sin an der Stelle 0: cos 0 = 1 — dort verläuft der Graph wie die Gerade y = x, unter dem Mikroskop nicht zu unterscheiden. An der Stelle π ist die Steigung cos π = −1, bei <span class="bruch"><span class="z">π</span><span class="n">2</span></span> ist sie 0: Dort liegt der Hochpunkt der Sinuskurve.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — nur im Bogenmaß</span>
+      Die Rechnung benutzt, dass der Bogen zum Winkel h die Länge h hat. Das gilt nur im Bogenmaß. Misst man in Grad, wäre die Ableitung <span class="bruch"><span class="z">π</span><span class="n">180</span></span> · cos x. In der Analysis rechnet man deshalb immer im Bogenmaß; der Taschenrechner gehört auf RAD.
+    </div>
+    <p class="hinweis-box">💡 Das ist eine anschauliche Begründung: „Der Bogen ist fast eine Strecke“ wird hier gezeigt und gemessen, aber nicht bewiesen. Einen strengen Beweis liefern die Additionstheoreme für sin(x + h) zusammen mit dem Grenzwert <span class="bruch"><span class="z">sin h</span><span class="n">h</span></span> → 1.</p>
+    <div class="quiz" id="quiz-sinus"></div>
+  </section>
+
+  <!-- 6. Kettenregel -->
+  <section class="card" id="sec-kette">
+    <h2>6. Die Kettenregel <span class="kurs-marke lk" title="Leistungskurs">LK</span></h2>
+    <p>Wie leitet man eine <span class="term">Verkettung</span> wie sin(x²), e<sup>−x²</sup> oder √(x² + 1) ab? Hier wird erst eine <em>innere</em> Funktion u(x) ausgerechnet und auf das Ergebnis eine <em>äußere</em> Funktion g angewandt: f(x) = g(u(x)). Hilfreich ist die Vorstellung der Ableitung als <span class="term">Verstärkungsfaktor</span>: Ein kleines Intervall um x wird von der inneren Funktion ungefähr um den Faktor u′(x) gestreckt, das Ergebnis von der äußeren Funktion noch einmal um den Faktor g′(u). Die drei Zahlengeraden haben denselben Maßstab — so sieht man die Streckung. Mach h klein.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="ke-art" class="eingabe" style="padding:0.4rem">
+            <option value="sin">f(x) = sin(x²)</option>
+            <option value="exp">f(x) = e^(−x²)</option>
+            <option value="wurzel">f(x) = √(x² + 1)</option>
+          </select>
+        </label>
+        <label>x: <input type="range" id="ke-x" min="0.5" max="2" step="0.25" value="1" style="vertical-align:middle;width:8rem"> <span id="ke-x-anzeige" class="wert farbe-blau"></span></label>
+        <label>h: <input type="range" id="ke-h" min="0.05" max="0.5" step="0.05" value="0.4" style="vertical-align:middle;width:9rem"> <span id="ke-h-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap" id="ke-mount"></div>
+      <div class="th-bilanz" id="ke-bilanz"></div>
+      <div id="ke-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Kettenregel</span>
+      <div class="formula-block">f(x) = g(u(x)) &nbsp; ⟹ &nbsp; f′(x) = g′(u(x)) · u′(x) &nbsp; — „äußere Ableitung mal innere Ableitung“</div>
+      <strong>Begründung:</strong> Wächst x um h, wächst u um Δu, und f um Δf. Dann ist <span class="bruch"><span class="z">Δf</span><span class="n">h</span></span> = <span class="bruch"><span class="z">Δf</span><span class="n">Δu</span></span> · <span class="bruch"><span class="z">Δu</span><span class="n">h</span></span>, und für h → 0 geht der erste Faktor gegen g′(u), der zweite gegen u′(x) (solange Δu ≠ 0 ist; der allgemeine Beweis braucht einen kleinen Kunstgriff).
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      f(x) = (x² + 1)³: außen g(u) = u³, innen u(x) = x² + 1. f′(x) = 3(x² + 1)² · 2x = 6x(x² + 1)². <strong>Probe</strong> durch Ausmultiplizieren: (x² + 1)³ = x⁶ + 3x⁴ + 3x² + 1, abgeleitet 6x⁵ + 12x³ + 6x = 6x(x² + 1)² ✓<br>
+      f(x) = e<sup>−x²</sup> ⟹ f′(x) = e<sup>−x²</sup> · (−2x) = −2x · e<sup>−x²</sup> &nbsp;·&nbsp; f(x) = sin(2x) ⟹ f′(x) = cos(2x) · 2 &nbsp;·&nbsp; f(x) = √(x² + 1) ⟹ f′(x) = <span class="bruch"><span class="z">1</span><span class="n">2√(x² + 1)</span></span> · 2x = <span class="bruch"><span class="z">x</span><span class="n">√(x² + 1)</span></span><br>
+      <strong>Zwei frühere Ergebnisse, jetzt mit der Kettenregel:</strong> Für e<sup>kx</sup> ist die innere Ableitung k — wie in Abschnitt 2. Und mit b<sup>x</sup> = e<sup>x · ln b</sup> aus Abschnitt 3 ist (b<sup>x</sup>)′ = e<sup>x · ln b</sup> · ln b = ln b · b<sup>x</sup>.<br>
+      <strong>Potenzregel für ½:</strong> (√x)² = x. Ableiten mit der Kettenregel: 2√x · (√x)′ = 1, also (√x)′ = <span class="bruch"><span class="z">1</span><span class="n">2√x</span></span> — wie in Thema 2.1. Genauso begründet man die Potenzregel für jeden rationalen Exponenten — vorausgesetzt, man weiß schon, dass die Ableitung existiert.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die innere Ableitung nicht vergessen</span>
+      ((2x + 1)³)′ = 3(2x + 1)² · 2 = 6(2x + 1)², nicht 3(2x + 1)². Das innere 2x + 1 läuft doppelt so schnell wie x — dieser Verstärkungsfaktor 2 gehört dazu. Ebenso ist (e<sup>x²</sup>)′ = 2x · e<sup>x²</sup>, nicht e<sup>x²</sup>.
+    </div>
+    <div class="quiz" id="quiz-kette"></div>
+  </section>
+
+  <!-- 7. Quotientenregel -->
+  <section class="card" id="sec-quotient">
+    <h2>7. Die Quotientenregel <span class="kurs-marke lk" title="Leistungskurs">LK</span></h2>
+    <p>Ein Quotient f(x) = <span class="bruch"><span class="z">u(x)</span><span class="n">v(x)</span></span> ist ein Produkt: u(x) · (v(x))<sup>−1</sup>. Produktregel und Kettenregel zusammen liefern f′(x) = u′ · v<sup>−1</sup> + u · (−1) · v<sup>−2</sup> · v′ = <span class="bruch"><span class="z">u′ · v − u · v′</span><span class="n">v²</span></span>. Eine neue Regel ist das also nicht, aber eine bequeme Abkürzung. Bewege x₀ und vergleiche die Steigung nach der Regel mit dem Differenzenquotienten.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="qu-art" class="eingabe" style="padding:0.4rem">
+            <option value="rational">f(x) = x / (x² + 1)</option>
+            <option value="expx">f(x) = e^x / x</option>
+            <option value="tan">f(x) = tan x = sin x / cos x</option>
+          </select>
+        </label>
+        <label>x₀: <input type="range" id="qu-x" min="-3" max="3" step="0.1" value="0.5" style="vertical-align:middle;width:12rem"> <span id="qu-x-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap" id="qu-mount"></div>
+      <div class="th-bilanz" id="qu-bilanz"></div>
+      <div id="qu-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Quotientenregel</span>
+      <div class="formula-block">f(x) = <span class="bruch"><span class="z">u(x)</span><span class="n">v(x)</span></span> &nbsp; ⟹ &nbsp; f′(x) = <span class="bruch"><span class="z">u′(x) · v(x) − u(x) · v′(x)</span><span class="n">(v(x))²</span></span> &nbsp;&nbsp; (v(x) ≠ 0)</div>
+      Merkhilfe: „Ableitung oben mal unten minus oben mal Ableitung unten, durch unten zum Quadrat“. Mit ihr folgt (tan x)′ = <span class="bruch"><span class="z">cos x · cos x − sin x · (−sin x)</span><span class="n">cos² x</span></span> = <span class="bruch"><span class="z">1</span><span class="n">cos² x</span></span> = 1 + tan² x.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      f(x) = <span class="bruch"><span class="z">x</span><span class="n">x² + 1</span></span>: u = x, v = x² + 1, u′ = 1, v′ = 2x. f′(x) = <span class="bruch"><span class="z">1 · (x² + 1) − x · 2x</span><span class="n">(x² + 1)²</span></span> = <span class="bruch"><span class="z">1 − x²</span><span class="n">(x² + 1)²</span></span>. Der Nenner ist positiv; f′ ist null bei x = ±1.<br>
+      f(x) = <span class="bruch"><span class="z">e<sup>x</sup></span><span class="n">x</span></span> (x ≠ 0): f′(x) = <span class="bruch"><span class="z">e<sup>x</sup> · x − e<sup>x</sup> · 1</span><span class="n">x²</span></span> = <span class="bruch"><span class="z">(x − 1) · e<sup>x</sup></span><span class="n">x²</span></span> — auch hier wird e<sup>x</sup> ausgeklammert.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Reihenfolge und Quadrat</span>
+      Im Zähler steht ein Minus, also kommt es auf die Reihenfolge an: u′ · v − u · v′, nicht umgekehrt — sonst ändert sich das Vorzeichen. Der Nenner ist v², nicht v. Und wie beim Produkt gilt: Nicht faktorweise ableiten — (<span class="bruch"><span class="z">u</span><span class="n">v</span></span>)′ ist nicht <span class="bruch"><span class="z">u′</span><span class="n">v′</span></span>.
+    </div>
+    <div class="quiz" id="quiz-quotient"></div>
+  </section>
+
+  <!-- 8. Die Logarithmusfunktion -->
+  <section class="card" id="sec-lnfunktion">
+    <h2>8. Die Logarithmusfunktion ln und ihre Ableitung <span class="kurs-marke lk" title="Leistungskurs">LK</span></h2>
+    <p>In Abschnitt 3 war ln c eine Zahl. Als Funktion von x heißt f(x) = ln x die <span class="term">natürliche Logarithmusfunktion</span>; sie ist für x &gt; 0 definiert. Weil ln die e-Funktion rückgängig macht, ist ihr Graph das Spiegelbild des e-Graphen an der Geraden y = x: Zum Punkt P(a | e<sup>a</sup>) gehört der Punkt Q(e<sup>a</sup> | a). Beim Spiegeln tauschen in jedem Steigungsdreieck die waagerechte und die senkrechte Seite ihre Rollen — aus der Steigung m wird <span class="bruch"><span class="z">1</span><span class="n">m</span></span>. Bewege P.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a: <input type="range" id="lf-a" min="-1.5" max="1.5" step="0.1" value="0.5" style="vertical-align:middle;width:12rem"> <span id="lf-a-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap" id="lf-mount"></div>
+      <div class="th-bilanz" id="lf-bilanz"></div>
+      <div id="lf-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Die Funktion ln</span>
+      <div class="formula-block">f(x) = ln x (x &gt; 0) &nbsp; ⟹ &nbsp; f′(x) = <span class="bruch"><span class="z">1</span><span class="n">x</span></span> &nbsp;&nbsp;&nbsp;&nbsp; f(x) = ln(u(x)) &nbsp; ⟹ &nbsp; f′(x) = <span class="bruch"><span class="z">u′(x)</span><span class="n">u(x)</span></span></div>
+      <strong>Begründung mit der Kettenregel:</strong> Für x &gt; 0 ist e<sup>ln x</sup> = x. Beide Seiten abgeleitet: e<sup>ln x</sup> · (ln x)′ = 1, also (ln x)′ = <span class="bruch"><span class="z">1</span><span class="n">e<sup>ln x</sup></span></span> = <span class="bruch"><span class="z">1</span><span class="n">x</span></span>.<br>
+      <strong>Eigenschaften:</strong> ln 1 = 0, ln e = 1; ln x &lt; 0 für 0 &lt; x &lt; 1; streng monoton steigend, aber immer flacher; lim<sub>x→0⁺</sub> ln x = −∞ — die y-Achse ist <strong>senkrechte Asymptote</strong>; lim<sub>x→∞</sub> ln x = ∞, langsamer als jede Wurzel.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      f(x) = ln(x² + 1) ⟹ f′(x) = <span class="bruch"><span class="z">2x</span><span class="n">x² + 1</span></span> &nbsp;·&nbsp; f(x) = 3 ln(2x) = 3 ln 2 + 3 ln x ⟹ f′(x) = <span class="bruch"><span class="z">3</span><span class="n">x</span></span> &nbsp;·&nbsp; f(x) = x · ln x ⟹ f′(x) = 1 · ln x + x · <span class="bruch"><span class="z">1</span><span class="n">x</span></span> = ln x + 1<br>
+      Damit schließt sich eine Lücke der Potenzregel: x<sup>n</sup> hat für n ≠ 0 die Ableitung n · x<sup>n−1</sup> — aber welche Funktion hat die Ableitung x<sup>−1</sup> = <span class="bruch"><span class="z">1</span><span class="n">x</span></span>? Keine Potenz, sondern ln x. Die Integralrechnung braucht genau das.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Definitionsbereich</span>
+      ln x gibt es nur für x &gt; 0. Bei f(x) = ln(x − 2) muss x &gt; 2 sein, bei ln(x² + 1) gibt es keine Einschränkung, weil x² + 1 immer positiv ist. Und (ln(2x))′ ist <span class="bruch"><span class="z">1</span><span class="n">x</span></span>, nicht <span class="bruch"><span class="z">1</span><span class="n">2x</span></span> — die innere Ableitung 2 kürzt sich weg.
+    </div>
+    <div class="quiz" id="quiz-lnfunktion"></div>
+  </section>
+
+  <!-- 9. Verhalten für x → ±∞ -->
+  <section class="card" id="sec-verhalten">
+    <h2>9. Verhalten für x → ±∞: Die e-Funktion setzt sich durch <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span></h2>
+    <p>Bei einer <a href="../03-differentialrechnung/index.html#sec-ganzrational">ganzrationalen Funktion</a> entscheidet für x → ±∞ der Summand mit der höchsten Potenz. Was passiert bei x³ · e<sup>−x</sup>? Für x → ∞ wächst x³ über jede Grenze, e<sup>−x</sup> geht gegen 0 — wer gewinnt? Vergrößere das Fenster und beobachte, wohin der Graph läuft.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="vh-art" class="eingabe" style="padding:0.4rem">
+            <option value="x3e">f(x) = x³ · e^(−x)</option>
+            <option value="x2e">f(x) = x² · e^x</option>
+            <option value="ex">f(x) = e^x / x²</option>
+            <option value="lnx">f(x) = ln(x) / x (LK)</option>
+            <option value="sin">f(x) = x · sin(x) (LK)</option>
+          </select>
+        </label>
+        <label>Fenster: <input type="range" id="vh-w" min="0" max="4" step="1" value="1" style="vertical-align:middle;width:9rem"> <span id="vh-w-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap" id="vh-mount"></div>
+      <div class="th-bilanz" id="vh-bilanz"></div>
+      <div id="vh-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Exponentiell schlägt jede Potenz — und jede Potenz schlägt den Logarithmus</span>
+      Für jedes n gilt: lim<sub>x→∞</sub> x<sup>n</sup> · e<sup>−x</sup> = 0, &nbsp; lim<sub>x→−∞</sub> x<sup>n</sup> · e<sup>x</sup> = 0, &nbsp; lim<sub>x→∞</sub> <span class="bruch"><span class="z">e<sup>x</sup></span><span class="n">x<sup>n</sup></span></span> = ∞, &nbsp; lim<sub>x→∞</sub> <span class="bruch"><span class="z">ln x</span><span class="n">x</span></span> = 0.<br>
+      Für f(x) = p(x) · e<sup>kx</sup> heißt das: Auf der Seite, auf der e<sup>kx</sup> gegen 0 geht, geht auch f gegen 0 — die x-Achse ist waagerechte Asymptote. Auf der anderen Seite wächst |f| über jede Grenze, und das Vorzeichen bestimmt das Polynom.<br>
+      Sinus und Kosinus haben für x → ±∞ keinen Grenzwert: Sie schwanken immer weiter zwischen −1 und 1.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel und Begründung</span>
+      x³ · e<sup>−x</sup>: bei x = 10 ist der Wert 0,0454, bei x = 20 schon 1,6 · 10<sup>−5</sup>. Die x-Achse ist für x → ∞ Asymptote. Für x → −∞ geht x³ gegen −∞ und e<sup>−x</sup> gegen ∞: f(x) → −∞.<br>
+      <strong>Warum?</strong> Für x ≥ 0 ist e<sup>x</sup> ≥ <span class="bruch"><span class="z">x<sup>n+1</sup></span><span class="n">(n + 1)!</span></span>. Das folgt mit dem Monotoniesatz: Die Funktion d(x) = e<sup>x</sup> − <span class="bruch"><span class="z">x<sup>m</sup></span><span class="n">m!</span></span> hat die Ableitung e<sup>x</sup> − <span class="bruch"><span class="z">x<sup>m−1</sup></span><span class="n">(m − 1)!</span></span>, also die entsprechende Funktion mit m − 1 — von e<sup>x</sup> − 1 ≥ 0 ausgehend sind alle diese Funktionen für x ≥ 0 steigend und wegen d(0) = 1 positiv. Damit ist x<sup>n</sup> · e<sup>−x</sup> ≤ <span class="bruch"><span class="z">(n + 1)!</span><span class="n">x</span></span>, und das geht für x → ∞ gegen 0.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — anders als bei ganzrationalen Funktionen</span>
+      Bei x³ − 100x² entscheidet x³ — der Summand mit der höchsten Potenz. Bei x³ · e<sup>−x</sup> entscheidet der e-Faktor, egal wie hoch die Potenz ist. Das Polynom bestimmt nur das Vorzeichen auf der Seite, auf der f unbeschränkt wird. Und eine Funktion wie x · sin x hat für x → ∞ gar keinen Grenzwert, auch keinen unendlichen: Sie schwingt mit wachsender Weite.
+    </div>
+    <div class="quiz" id="quiz-verhalten"></div>
+  </section>
+
+  <!-- 10. Symmetrie und Periodizität -->
+  <section class="card" id="sec-symmetrie">
+    <h2>10. Symmetrie und Periodizität <span class="kurs-marke lk" title="Leistungskurs">LK</span></h2>
+    <p>Eine ganzrationale Funktion ist achsensymmetrisch zur y-Achse, wenn nur gerade Exponenten vorkommen, und punktsymmetrisch zum Ursprung, wenn nur ungerade vorkommen. Für andere Funktionen gibt es diese Abkürzung nicht — man prüft die Definition: Gilt f(−x) = f(x) für alle x, ist der Graph achsensymmetrisch; gilt f(−x) = −f(x), ist er punktsymmetrisch. Winkelfunktionen haben außerdem eine Eigenschaft, die Polynome nie haben: Sie sind <span class="term">periodisch</span>. Wähle eine Funktion und eine Prüfung und führe die Bewegung aus.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="sy-art" class="eingabe" style="padding:0.4rem">
+            <option value="cos">f(x) = cos x</option>
+            <option value="sin">f(x) = sin x</option>
+            <option value="gauss">f(x) = e^(−x²)</option>
+            <option value="xgauss">f(x) = x · e^(−x²)</option>
+            <option value="xsin">f(x) = x · sin x</option>
+            <option value="ex">f(x) = e^x</option>
+          </select>
+        </label>
+        <label>Prüfung:
+          <select id="sy-modus" class="eingabe" style="padding:0.4rem">
+            <option value="achse">an der y-Achse spiegeln</option>
+            <option value="punkt">um den Ursprung drehen</option>
+            <option value="periode">nach rechts verschieben</option>
+          </select>
+        </label>
+        <label>Bewegung: <input type="range" id="sy-t" min="0" max="1" step="0.05" value="0" style="vertical-align:middle;width:10rem"> <span id="sy-t-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap" id="sy-mount"></div>
+      <div class="th-bilanz" id="sy-bilanz"></div>
+      <div id="sy-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Symmetrie und Periode</span>
+      <strong>Achsensymmetrisch zur y-Achse:</strong> f(−x) = f(x) für alle x — etwa cos x, e<sup>−x²</sup>, x · sin x.<br>
+      <strong>Punktsymmetrisch zum Ursprung:</strong> f(−x) = −f(x) für alle x — etwa sin x, x · e<sup>−x²</sup>.<br>
+      <strong>Periodisch mit der Periode p &gt; 0:</strong> f(x + p) = f(x) für alle x. sin und cos haben die Periode 2π, sin(bx) und cos(bx) die Periode <span class="bruch"><span class="z">2π</span><span class="n">b</span></span>. Ein periodischer Graph ist durch ein Stück der Länge p ganz bestimmt — eine Untersuchung auf [0; 2π] reicht.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      f(x) = x · e<sup>−x²</sup>: f(−x) = (−x) · e<sup>−(−x)²</sup> = −x · e<sup>−x²</sup> = −f(x) — punktsymmetrisch. Ein Produkt aus einer ungeraden (x) und einer geraden Funktion (e<sup>−x²</sup>) ist ungerade, ein Produkt zweier ungerader (x · sin x) ist gerade — wie bei Vorzeichen: minus mal minus ist plus.<br>
+      f(x) = e<sup>x</sup>: f(−1) = e<sup>−1</sup> ≈ 0,37 ist weder f(1) ≈ 2,72 noch −f(1). Ein einziges Gegenbeispiel genügt: keine der beiden Symmetrien.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Symmetrie wird nachgewiesen, nicht gesehen</span>
+      Ein Graph, der „symmetrisch aussieht“, muss es nicht sein. Für den Nachweis gehört f(−x) allgemein ausgerechnet. Und die Exponenten-Regel der Polynome gilt nicht: e<sup>2x</sup> hat einen geraden Faktor im Exponenten und ist trotzdem nicht achsensymmetrisch.
+    </div>
+    <div class="quiz" id="quiz-symmetrie"></div>
+  </section>
+
+  <!-- 11. Nullstellen -->
+  <section class="card" id="sec-nullstellen">
+    <h2>11. Nullstellen: Satz vom Nullprodukt und unendlich viele Lösungen <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span></h2>
+    <p>Eine ganzrationale Funktion vom Grad n hat höchstens n Nullstellen, und man findet sie durch Ausklammern, pq-Formel oder Substitution. Bei den neuen Funktionen ändern sich zwei Dinge. Erstens ist ein e-Faktor <em>nie</em> null — bei p(x) · e<sup>kx</sup> sind die Nullstellen genau die von p. Zweitens haben Winkelfunktionen unendlich viele Nullstellen, und eine Gleichung sin x = c hat in jeder Periode zwei Lösungen. Wähle eine Gleichung und verändere c.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Gleichung:
+          <select id="ns-art" class="eingabe" style="padding:0.4rem">
+            <option value="produkt">(x² − c) · e^(−0,5x) = 0</option>
+            <option value="exp">e^x − c = 0</option>
+            <option value="sin">sin x = c (LK)</option>
+          </select>
+        </label>
+        <label>c: <input type="range" id="ns-c" min="0" max="4" step="0.25" value="2" style="vertical-align:middle;width:10rem"> <span id="ns-c-anzeige" class="wert farbe-violett"></span></label>
+      </div>
+      <div class="geo-wrap" id="ns-mount"></div>
+      <div class="th-bilanz" id="ns-bilanz"></div>
+      <div id="ns-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Nullstellen bestimmen</span>
+      <strong>Satz vom Nullprodukt:</strong> Ein Produkt ist genau dann null, wenn ein Faktor null ist. Da e<sup>u</sup> &gt; 0 ist: p(x) · e<sup>u(x)</sup> = 0 ⟺ p(x) = 0.<br>
+      <strong>Exponentialgleichung:</strong> e<sup>kx</sup> = c mit c &gt; 0 ⟺ x = <span class="bruch"><span class="z">ln c</span><span class="n">k</span></span>; für c ≤ 0 gibt es keine Lösung.<br>
+      <strong>Winkelgleichungen:</strong> sin x = 0 ⟺ x = k · π, &nbsp; cos x = 0 ⟺ x = <span class="bruch"><span class="z">π</span><span class="n">2</span></span> + k · π (k ganzzahlig). Für −1 &lt; c &lt; 1 hat sin x = c im Bereich 0 ≤ x &lt; 2π genau zwei Lösungen: x₁ = sin<sup>−1</sup>(c) (bei c &lt; 0 plus 2π) und x₂ = π − sin<sup>−1</sup>(c); alle weiteren entstehen durch Addieren von Vielfachen von 2π.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      (x² − 2x) · e<sup>0,5x</sup> = 0 ⟺ x(x − 2) = 0 ⟺ x = 0 oder x = 2.<br>
+      2e<sup>x</sup> − 6 = 0 ⟺ e<sup>x</sup> = 3 ⟺ x = ln 3 ≈ 1,099.<br>
+      sin x = 0,5 für 0 ≤ x &lt; 2π: x₁ = sin<sup>−1</sup>(0,5) = <span class="bruch"><span class="z">π</span><span class="n">6</span></span> ≈ 0,524 und x₂ = π − <span class="bruch"><span class="z">π</span><span class="n">6</span></span> = <span class="bruch"><span class="z">5π</span><span class="n">6</span></span> ≈ 2,618 — die Sinuskurve ist symmetrisch zur Geraden x = <span class="bruch"><span class="z">π</span><span class="n">2</span></span>.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — nicht durch etwas teilen, das null sein kann</span>
+      Bei x · e<sup>x</sup> = 2x darf man nicht einfach durch x teilen: Dabei geht die Lösung x = 0 verloren. Richtig: x · e<sup>x</sup> − 2x = x(e<sup>x</sup> − 2) = 0 ⟹ x = 0 oder x = ln 2. Durch e<sup>x</sup> dagegen darf man immer teilen — es ist nie null. Und der Taschenrechner liefert bei sin<sup>−1</sup> nur <em>eine</em> Lösung; die zweite muss man selbst ergänzen.
+    </div>
+    <div class="quiz" id="quiz-nullstellen"></div>
+  </section>
+
+  <!-- 12. Monotonie und Extrempunkte -->
+  <section class="card" id="sec-monotonie">
+    <h2>12. Monotonie und Extrempunkte mit f′ <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span></h2>
+    <p>Wie in <a href="../03-differentialrechnung/index.html#sec-monotonie">Thema 2.1</a> gilt: Wo f′ positiv ist, steigt f; wo f′ das Vorzeichen wechselt, liegt ein Hoch- oder Tiefpunkt. Neu ist nur, wie man das Vorzeichen von f′ findet. Steht f′ in der Form q(x) · e<sup>u(x)</sup>, ist es das Vorzeichen von q. Bei Winkelfunktionen wiederholen sich die Extrempunkte periodisch. Oben steht der Graph von f, unten der von f′. Fahre mit x₀ durch.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="mo-art" class="eingabe" style="padding:0.4rem">
+            <option value="xe">f(x) = x · e^(−x)</option>
+            <option value="x2e">f(x) = (x² − 3) · e^x</option>
+            <option value="xsin">f(x) = x − 2 sin x (LK)</option>
+            <option value="xln">f(x) = x · ln x (LK)</option>
+          </select>
+        </label>
+        <label>x₀: <input type="range" id="mo-x" min="-1" max="4" step="0.1" value="0" style="vertical-align:middle;width:12rem"> <span id="mo-x-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="mo-mount"></div>
+      <div class="th-bilanz" id="mo-bilanz"></div>
+      <div id="mo-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Vorgehen</span>
+      1. f′ bilden und so weit wie möglich <strong>faktorisieren</strong> — den e-Faktor ausklammern. 2. Nullstellen von f′ bestimmen: bei q(x) · e<sup>u</sup> die von q, bei Winkelfunktionen alle Lösungen im betrachteten Intervall. 3. <strong>Vorzeichenwechsel</strong> prüfen — mit einem Wert zwischen den Nullstellen oder mit dem Vorzeichen der Faktoren. 4. y-Werte berechnen und die Punkte angeben.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: f(x) = (x² − 3) · e<sup>x</sup></span>
+      f′(x) = 2x · e<sup>x</sup> + (x² − 3) · e<sup>x</sup> = (x² + 2x − 3) · e<sup>x</sup> = (x + 3)(x − 1) · e<sup>x</sup>.<br>
+      Nullstellen von f′: −3 und 1. Vorzeichen von (x + 3)(x − 1): positiv für x &lt; −3, negativ zwischen −3 und 1, positiv für x &gt; 1. Also Hochpunkt H(−3 | 6e<sup>−3</sup>) ≈ H(−3 | 0,299) und Tiefpunkt T(1 | −2e) ≈ T(1 | −5,437).<br>
+      Für x → −∞ geht f gegen 0 (Abschnitt 9) — der Hochpunkt ist also nur ein lokales Maximum, der Tiefpunkt dagegen das globale Minimum.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der Unterschied zu ganzrationalen Funktionen</span>
+      Bei einem Polynom hat f′ höchstens n − 1 Nullstellen, und der Graph hat höchstens n − 1 Extrempunkte. Bei x − 2 sin x hat f′(x) = 1 − 2 cos x unendlich viele Nullstellen — es gibt unendlich viele Hoch- und Tiefpunkte, die sich alle 2π wiederholen. Man gibt deshalb immer an, in welchem Intervall man sucht.
+    </div>
+    <div class="quiz" id="quiz-monotonie"></div>
+  </section>
+
+  <!-- 13. Wachstum und Schwingung -->
+  <section class="card" id="sec-wachstum">
+    <h2>13. Wachstum und Schwingung: Änderungsraten im Sachzusammenhang <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span></h2>
+    <p>Die Ableitung ist die momentane Änderungsrate — und bei Sachaufgaben trägt sie eine Einheit. Bei exponentiellem Wachstum ist sie proportional zum Bestand, beim Abkühlen proportional zum Temperaturunterschied zur Umgebung, bei einer Schwingung ist sie die Geschwindigkeit. Wähle einen Vorgang und bewege die Zeit.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Vorgang:
+          <select id="wa-art" class="eingabe" style="padding:0.4rem">
+            <option value="bakterien">Bakterien: N(t) = 500 · e^(0,3t)</option>
+            <option value="abkuehlung">Abkühlung: T(t) = 20 + 70 · e^(−0,1t)</option>
+            <option value="pendel">Federpendel: s(t) = 4 · sin(2t) (LK)</option>
+          </select>
+        </label>
+        <label>t: <input type="range" id="wa-t" min="0" max="10" step="0.25" value="2" style="vertical-align:middle;width:12rem"> <span id="wa-t-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap" id="wa-mount"></div>
+      <div class="th-bilanz" id="wa-bilanz"></div>
+      <div id="wa-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Drei Grundmodelle</span>
+      <strong>Exponentielles Wachstum/Zerfall:</strong> N(t) = N₀ · e<sup>kt</sup>, N′(t) = k · N(t). Verdopplungszeit <span class="bruch"><span class="z">ln 2</span><span class="n">k</span></span> (k &gt; 0), Halbwertszeit <span class="bruch"><span class="z">ln 2</span><span class="n">|k|</span></span> (k &lt; 0).<br>
+      <strong>Abkühlen auf die Umgebungstemperatur U:</strong> T(t) = U + (T₀ − U) · e<sup>−kt</sup>, T′(t) = −k · (T(t) − U): Je größer der Unterschied, desto schneller sinkt die Temperatur.<br>
+      <strong>Harmonische Schwingung:</strong> s(t) = A · sin(ωt), Geschwindigkeit v(t) = s′(t) = A · ω · cos(ωt). Sie ist am größten beim Durchgang durch die Ruhelage (s = 0) und null an den Umkehrpunkten.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: N(t) = 500 · e<sup>0,3t</sup> (t in Stunden)</span>
+      N′(t) = 150 · e<sup>0,3t</sup>. Nach 2 Stunden: N(2) = 500 · e<sup>0,6</sup> ≈ 911 Bakterien, N′(2) ≈ 273 Bakterien pro Stunde — das sind 30 % des Bestands pro Stunde, also k · N(2).<br>
+      Die Verdopplungszeit ist <span class="bruch"><span class="z">ln 2</span><span class="n">0,3</span></span> ≈ 2,31 Stunden — in jedem Zeitraum dieser Länge verdoppelt sich der Bestand, egal wann er beginnt.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Rate ist nicht Zuwachs</span>
+      N′(2) ≈ 273 Bakterien pro Stunde heißt nicht, dass in der dritten Stunde genau 273 dazukommen: Die Rate wächst während dieser Stunde weiter. Tatsächlich kommen N(3) − N(2) ≈ 1230 − 911 = 319 dazu. Die momentane Rate beschreibt den Augenblick, nicht ein Intervall.
+    </div>
+    <div class="quiz" id="quiz-wachstum"></div>
+  </section>
+
+  <!-- 14. Stolperstelle -->
+  <section class="card" id="sec-stolperstelle">
+    <h2>14. Stolperstelle: (e<sup>x</sup>)′ ist nicht x · e<sup>x−1</sup> <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span></h2>
+    <p>Wer die Potenzregel gewohnt ist, schreibt leicht (e<sup>x</sup>)′ = x · e<sup>x−1</sup> — „Exponent nach vorn, Exponent minus 1“. Die Zeichnung zeigt, was diese Formel behaupten würde: eine Gerade durch den Punkt mit der Steigung x₀ · e<sup>x₀−1</sup>. Fahre mit x₀ durch und vergleiche sie mit der echten Tangente.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>x₀: <input type="range" id="sp-x" min="-2" max="2" step="0.1" value="-1" style="vertical-align:middle;width:12rem"> <span id="sp-x-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap" id="sp-mount"></div>
+      <div class="th-bilanz" id="sp-bilanz"></div>
+      <div id="sp-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Wo welche Regel gilt</span>
+      <strong>Potenzregel:</strong> (x<sup>n</sup>)′ = n · x<sup>n−1</sup> — die <em>Basis</em> ist variabel, der Exponent fest.<br>
+      <strong>Exponentialfunktion:</strong> (e<sup>x</sup>)′ = e<sup>x</sup>, (b<sup>x</sup>)′ = ln b · b<sup>x</sup> — der <em>Exponent</em> ist variabel, die Basis fest.<br>
+      Steht x an beiden Stellen, wie bei x<sup>x</sup>, hilft keine der beiden direkt. Im Leistungskurs schreibt man x<sup>x</sup> = e<sup>x · ln x</sup> und benutzt die <a href="#sec-kette">Kettenregel</a> und die <a href="#sec-lnfunktion">Ableitung von ln</a>: (x<sup>x</sup>)′ = (ln x + 1) · x<sup>x</sup>.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel</span>
+      An der Stelle 0 behauptet die falsche Formel die Steigung 0 · e<sup>−1</sup> = 0 — eine waagerechte Tangente bei einer streng monoton steigenden Funktion. Die richtige Steigung ist e<sup>0</sup> = 1. Für x &lt; 0 wäre die falsche Steigung sogar negativ.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der Gegencheck mit dem Differenzenquotienten</span>
+      Wer unsicher ist, ob eine Ableitungsregel passt, prüft an einer Stelle mit einem kleinen h nach: <span class="bruch"><span class="z">e<sup>1,001</sup> − e<sup>1</sup></span><span class="n">0,001</span></span> ≈ 2,7196 — das ist e¹ ≈ 2,718, nicht 1 · e<sup>0</sup> = 1.
+    </div>
+    <div class="quiz" id="quiz-stolperstelle"></div>
+  </section>
+
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
+    <div id="se-liste"></div>
+    <div id="se-auswertung" class="event-result"></div>
+  </section>
+
+  <!-- Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Der <a href="../03-differentialrechnung/index.html">Differentialrechnung</a> (Thema 2.1) — Ableitung als Grenzwert, Potenz-, Faktor-, Summen- und Produktregel, Tangenten und der Zusammenhang von f und f′.</li>
+      <li><strong>Baut auf:</strong> Den <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/11-exponentialfunktionen/index.html">Exponentialfunktionen</a> und <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/09-potenzen/index.html#sec-gesetze">Potenzgesetzen</a> der Mittelstufe — aus b<sup>x + h</sup> = b<sup>x</sup> · b<sup>h</sup> folgt, dass die Ableitung zur Funktion proportional ist; der Logarithmus ist die dort angekündigte Umkehrung nach dem Exponenten.</li>
+      <li><strong>Baut auf:</strong> Den <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/12-trigonometrische-funktionen/index.html">trigonometrischen Funktionen</a> — nur im <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/12-trigonometrische-funktionen/index.html#sec-bogenmass">Bogenmaß</a> ist (sin x)′ = cos x.</li>
+      <li><strong>Gleiche Struktur:</strong> e = lim (1 + <span class="bruch"><span class="z">1</span><span class="n">n</span></span>)<sup>n</sup> ist ein <a href="../01-folgen-und-reihen/index.html#sec-grenzwert">Grenzwert einer Folge</a> wie in Thema 1.1 — und die Ableitung ist ein Grenzwert von Differenzenquotienten.</li>
+      <li><strong>Führt weiter zu:</strong> Der Untersuchung dieser Funktionen mit der zweiten Ableitung — Wendepunkte, vollständige Kurvendiskussion, Funktionenscharen und Extremwertprobleme mit e- und Winkelfunktionen in <a href="../04-funktionsuntersuchung/index.html">Thema 3</a>.</li>
+      <li><strong>Führt weiter zu:</strong> Der <a href="../05-integralrechnung/index.html">Integralrechnung</a> — dort wird rückwärts gefragt: Welche Funktion hat die Ableitung e<sup>kx</sup>, sin x oder <span class="bruch"><span class="z">1</span><span class="n">x</span></span>?</li>
+    </ul>
+  </section>
+
+  <!-- Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>Formelsammlung</h2>
+    <p>Eulersche Zahl und Ableitung der Exponentialfunktionen, e<sup>kx</sup>, natürlicher Logarithmus mit Rechenregeln, Produkte mit e-Funktionen, Ableitungen von sin und cos, Ketten- und Quotientenregel, die Funktion ln, Grenzwerte mit e und ln, Symmetrie und Periode, Nullstellen und Extrempunkte im Vergleich zu ganzrationalen Funktionen sowie die drei Grundmodelle für Wachstum und Schwingung — mit gerechneten Figuren und Musterrechnungen auf zwei Seiten.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>Übungsaufgaben</h2>
+    <p>Vierundzwanzig Aufgaben auf vier Stufen, je sechs auf jeder. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu. Tipps gibt es auf Knopfdruck, nach dem Prüfen steht die Musterlösung darunter.</p>
+    <p>Die letzte Aufgabe jeder Stufe ist ein <strong>Ableitungstraining</strong>: Mit „🎲 Neue Funktion“ bekommst du beliebig viele Funktionen zum Ableiten — e-Funktionen und Winkelfunktionen, dann Produkte mit e-Funktionen, dann Verkettungen mit der Kettenregel und schließlich gemischte Funktionen mit Produkt-, Ketten- und Quotientenregel, mit e, ln, sin und cos. Du tippst die Ableitungsfunktion als Term ein; die Seite prüft sie an vielen Stellen nach und sagt dir, welcher Fehler vermutlich passiert ist.</p>
+    <p class="progress-note">Zahlen gibst du mit Komma ein, zum Beispiel 1,5; Brüche wie 3/2 sind ebenfalls erlaubt. Gerundete Ergebnisse gibst du auf vier Nachkommastellen genau ein.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 01 Analysis</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>

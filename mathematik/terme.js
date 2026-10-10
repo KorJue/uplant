@@ -1,8 +1,8 @@
 // Terme lesen, prüfen und erzeugen — gemeinsam für die Analysis-Seiten (Differential-,
 // Funktionsuntersuchung, Integralrechnung).
 //
-//   leseTerm(text, { parameter })   liest eine getippte Eingabe ohne eval: Zahlen mit Komma, x, π,
-//                                   Parameter, + − · * / ^, Klammern, sin, cos, tan, sqrt/√,
+//   leseTerm(text, { parameter })   liest eine getippte Eingabe ohne eval: Zahlen mit Komma, x, π, e,
+//                                   Parameter, + − · * / ^, Klammern, sin, cos, tan, sqrt/√, exp, ln,
 //                                   Hochzahlen (x², x⁻¹), sin²(x) und weggelassene Malzeichen
 //                                   (2x, 3(x + 1), 3a²x).
 //   pruefeTerm({ … })               vergleicht die Eingabe numerisch mit der exakten Ableitung bzw.
@@ -26,6 +26,13 @@
 //          Ableiten abgeschlossen, also gibt es auch f″ und f‴. Eine Stammfunktion gibt es nur über
 //          Umformen: Ausmultiplizieren bzw. sin²(u) = ½ − ½ · cos(2u) — die Kettenregel rückwärts
 //          für nichtlineare innere Funktionen steht auf den Seiten nicht.
+//   ef     k · e^u · (P + S · sin(bx) + C · cos(bx)) mit u = m · aᵐʲ · xʳ + n und Polynomen P, S, C
+//          e-Funktionen in der Form, in der man mit ihnen rechnet: (x − 1) · e^(−x), 3e^(2x), e^(−x²),
+//          e^(−x) · (sin(x) + cos(x)). Ableiten heißt hier Produkt- und Kettenregel und dann e^u
+//          ausklammern — das Ergebnis hat wieder diese Form.
+//   lnk    k · aʲ · xᵖ · ln(m · xʳ + n)    ln(x), ln(x² + 1), x · ln(x)
+//   produkt k · U(x) · V(x) mit zwei Summen U, V aus pot-Gliedern — für die Produktregel ohne
+//          Kettenregel: (x² + 1)(x³ − 2x)
 
 "use strict";
 
@@ -45,8 +52,8 @@ export function leseTerm(text, { parameter = [] } = {}) {
     // Wer „f′(x) = …“ oder „F(x) = …“ mit abschreibt, soll nicht scheitern.
     .replace(/^[a-zₐ]+['′″‴]*\(x\)=/, "");
   if (!quelle) throw new Error("Die Eingabe ist leer.");
-  // Funktionsnamen zuerst: „tan“ enthält das a einer Schar.
-  const NAMEN = ["sqrt", "wurzel", "sin", "cos", "tan", "pi", ...parameter, "x"];
+  // Funktionsnamen zuerst: „tan“ enthält das a einer Schar, „exp“ das e.
+  const NAMEN = ["sqrt", "wurzel", "sin", "cos", "tan", "exp", "ln", "pi", ...parameter, "e", "x"];
   const marken = [];
   for (let i = 0; i < quelle.length;) {
     const rest = quelle.slice(i);
@@ -113,6 +120,7 @@ export function leseTerm(text, { parameter = [] } = {}) {
     if (m.art === "name") {
       if (m.wert === "x") return { f: (x) => x, t: "x" };
       if (m.wert === "pi") return { f: () => Math.PI, t: "π" };
+      if (m.wert === "e") return { f: () => Math.E, t: "e" };
       if (parameter.includes(m.wert)) return { f: (x, p) => p[m.wert], t: m.wert };
       // sin²(x) und sin^2(x): Die Hochzahl gehört zum Funktionswert, nicht zum Argument. sin⁻¹ wäre
       // mehrdeutig (Kehrwert oder Umkehrfunktion) und wird deshalb nicht gelesen.
@@ -123,7 +131,7 @@ export function leseTerm(text, { parameter = [] } = {}) {
         if (!(hochzahl.f(1, {}) > 0)) throw new Error(`${m.wert} mit negativer Hochzahl ist mehrdeutig — schreibe 1/${m.wert}(x).`);
       }
       // sin x und sin(x) sind beide erlaubt; ohne Klammer gilt nur das nächste Grundelement.
-      const arg = grund(), fn = { sqrt: Math.sqrt, sin: Math.sin, cos: Math.cos, tan: Math.tan }[m.wert];
+      const arg = grund(), fn = { sqrt: Math.sqrt, sin: Math.sin, cos: Math.cos, tan: Math.tan, exp: Math.exp, ln: Math.log }[m.wert];
       const innen = arg.t.replace(/^\((.*)\)$/, "$1");
       if (hochzahl) return { f: (x, p) => Math.pow(fn(arg.f(x, p)), hochzahl.f(x, p)), t: `${m.wert}^${hochzahl.t}(${innen})` };
       return { f: (x, p) => fn(arg.f(x, p)), t: `${m.wert === "sqrt" ? "√" : m.wert}(${innen})` };
@@ -269,9 +277,67 @@ function monoText(g, lin) {
   return lin ? `${zaehler}/${nennerLin(nenner)}` : bruchHtml(zaehler, nenner);
 }
 
+// ---------- ef: e-Funktionen, lnk: Logarithmus, produkt: zwei Summen ----------
+const U = (m, r, n, mj = 0) => ({ m, r, n, mj });
+const EF = (k, u, P, S, C, b) => ({ typ: "ef", k, j: 0, u, P, S, C, b });
+const LN = (k, j, p, m, r, n) => ({ typ: "lnk", k, j, p, m, r, n });
+const PR = (k, U, V) => ({ typ: "produkt", k, j: 0, U, V });
+// Höchste Potenz zuerst — so steht ein Polynom in jeder Klammer.
+const sortiere = (L) => [...L].sort((a, b) => qWert(b.e) - qWert(a.e) || a.j - b.j);
+
+// e^u mit u = m · aᵐʲ · xʳ + n; getippt immer mit Klammer, sonst hieße e^2x „e² · x“.
+function eHoch(u, lin) {
+  const mb = q(Math.abs(u.m.z), u.m.n), a = lin ? aLin(u.mj) : aHtml(u.mj);
+  let t = (u.m.z < 0 ? (lin ? "-" : "−") : "") + (mb.z === mb.n && (a || u.r) ? "" : lin ? betragLin(mb) : betragHtml(mb)) + a + xHoch(u.r, lin);
+  if (u.n.z !== 0) {
+    const nb = q(Math.abs(u.n.z), u.n.n);
+    t += lin ? `${u.n.z < 0 ? "-" : "+"}${betragLin(nb)}` : ` ${u.n.z < 0 ? "−" : "+"} ${betragHtml(nb)}`;
+  }
+  return lin ? `e^(${t})` : `e<sup>${t}</sup>`;
+}
+// Ein Polynom-Glied mal sin(bx) bzw. cos(bx) als gewöhnliches trig- oder prod-Glied — damit die Klammer
+// e^u · (…) mit summeHtml gesetzt werden kann.
+function malTrig(h, fn, b) {
+  const v = { typ: "trig", k: EINS, j: 0, fn, b, d: NULL };
+  return h.e.z === 0 ? { ...v, k: h.k, j: h.j } : { typ: "prod", k: h.k, j: h.j, p: h.e.z, v };
+}
+function efText(g, lin) {
+  const c = q(Math.abs(g.k.z), g.k.n), e = eHoch(g.u, lin), punkt = lin ? "*" : " · ";
+  const zahl = c.z === c.n ? "" : lin ? betragLin(c) : betragHtml(c);
+  const summe = (L) => (lin ? summeLin(L) : summeHtml(L));
+  if (!g.S.length && !g.C.length) {
+    // (x − 1) · e^(−x), x² · e^(−x), 3e^(2x)
+    if (g.P.length === 1) {
+      const h = g.P[0];
+      if (h.e.z === 0 && h.j === 0) return (c.z === c.n ? "" : zahl) + e;
+      return `${zahl}${gliedText(h, lin)}${punkt}${e}`;
+    }
+    return `${zahl}(${summe(g.P)})${punkt}${e}`;
+  }
+  // e^(−x) · sin(2x), 2e^(−x) · (sin(x) + cos(x))
+  const innen = [...g.P, ...g.S.map((h) => malTrig(h, "sin", g.b)), ...g.C.map((h) => malTrig(h, "cos", g.b))];
+  return innen.length === 1 ? `${zahl}${e}${punkt}${summe(innen)}` : `${zahl}${e}${punkt}(${summe(innen)})`;
+}
+function lnText(g, lin) {
+  const c = q(Math.abs(g.k.z), g.k.n), a = lin ? aLin(g.j) : aHtml(g.j);
+  const arg = innenPoly(P(g.m, g.r, g.n, 0, EINS), lin);
+  const rest = [a && { art: "a", t: a }, g.p && { art: "x", t: xHoch(g.p, lin) }, { art: "trig", t: `ln(${arg})` }].filter(Boolean);
+  const zahl = c.z === c.n ? "" : lin ? betragLin(c) : betragHtml(c);
+  return verbinde([zahl && { art: "zahl", t: zahl }, ...rest].filter(Boolean), lin);
+}
+function produktText(g, lin) {
+  const c = q(Math.abs(g.k.z), g.k.n);
+  const zahl = c.z === c.n ? "" : lin ? betragLin(c) : betragHtml(c);
+  const faktor = (L) => (L.length === 1 && L[0].k.z > 0 ? gliedText(L[0], lin) : `(${lin ? summeLin(L) : summeHtml(L)})`);
+  return `${zahl}${faktor(g.U)}${faktor(g.V)}`;
+}
+
 // Ein Glied ohne sein Vorzeichen.
 function gliedText(g, lin) {
   if (g.typ === "mono") return monoText(g, lin);
+  if (g.typ === "ef") return efText(g, lin);
+  if (g.typ === "lnk") return lnText(g, lin);
+  if (g.typ === "produkt") return produktText(g, lin);
   const c = q(Math.abs(g.k.z), g.k.n), a = lin ? aLin(g.j) : aHtml(g.j);
   if (negativ(g)) {
     const zaehler = c.z === 1 && a ? a : `${c.z}${a}`;
@@ -302,6 +368,16 @@ function gliedWert(g, x, p) {
   if (g.typ === "pot") return c * Math.pow(x, qWert(g.e));
   if (g.typ === "trig") return c * Math[g.fn](qWert(g.b) * x + qWert(g.d));
   if (g.typ === "kette") return c * Math.pow(qWert(g.m) * x + qWert(g.n), qWert(g.e));
+  if (g.typ === "ef") {
+    const ex = Math.exp(qWert(g.u.m) * (g.u.mj ? Math.pow(p.a, g.u.mj) : 1) * Math.pow(x, g.u.r) + qWert(g.u.n));
+    const w = (L) => L.reduce((s, h) => s + gliedWert(h, x, p), 0), bx = qWert(g.b) * x;
+    return c * ex * (w(g.P) + w(g.S) * Math.sin(bx) + w(g.C) * Math.cos(bx));
+  }
+  if (g.typ === "lnk") return c * Math.pow(x, g.p) * Math.log(qWert(g.m) * Math.pow(x, g.r) + qWert(g.n));
+  if (g.typ === "produkt") {
+    const w = (L) => L.reduce((s, h) => s + gliedWert(h, x, p), 0);
+    return c * w(g.U) * w(g.V);
+  }
   if (g.typ === "mono") {
     let w = c * Math.pow(x, g.p);
     if (g.poly) w *= Math.pow(qWert(g.poly.m) * Math.pow(x, g.poly.r) + qWert(g.poly.n) * (g.poly.t ? Math.pow(p.a, g.poly.t) : 1), qWert(g.poly.e));
@@ -360,8 +436,48 @@ function vereinfache(gl) {
   if (!gl.every(ganzrational) || !gl.some((g) => g.typ === "pot") || !gl.some((g) => g.typ === "mono")) return gl;
   return zusammenfassen(gl.flatMap((g) => (g.typ === "mono" ? umform(g) : [g])));
 }
+// Polynome als Listen von pot-Gliedern.
+const polyMal = (A, B) => zusammenfassen(A.flatMap((x) => B.map((y) => ({ typ: "pot", k: qMal(x.k, y.k), j: x.j + y.j, e: qPlus(x.e, y.e) }))));
+const polyAbl = (L) => zusammenfassen(L.flatMap((h) => ableitungGlied(h)));
+const polySkal = (L, c) => L.map((h) => ({ ...h, k: qMal(h.k, c) }));
+// ef in Normalform: ein einzelnes Glied in der Klammer gibt seinen Koeffizienten nach vorn ab
+// (3e^(2x) statt (3) · e^(2x)), und ein negatives erstes Glied sein Vorzeichen
+// (−(x − 1) · e^(−x) statt (−x + 1) · e^(−x)).
+function normiereEF(k, u, P0, S0, C0, b) {
+  const P = sortiere(zusammenfassen(P0)), S = sortiere(zusammenfassen(S0)), C = sortiere(zusammenfassen(C0));
+  const alle = [...P, ...S, ...C];
+  if (!alle.length || k.z === 0) return [];
+  if (alle.length === 1) {
+    const h = alle[0], eins = [{ ...h, k: EINS }];
+    return [EF(qMal(k, h.k), u, P.length ? eins : [], S.length ? eins : [], C.length ? eins : [], b)];
+  }
+  if (alle[0].k.z < 0) return [EF(qNeg(k), u, polySkal(P, q(-1)), polySkal(S, q(-1)), polySkal(C, q(-1)), b)];
+  return [EF(k, u, P, S, C, b)];
+}
+const uAbl = (u) => (u.m.z === 0 ? [] : [{ typ: "pot", k: qMal(u.m, q(u.r)), j: u.mj, e: q(u.r - 1) }]);
+// (P · e^u)′ = (P′ + u′ · P) · e^u; mit sin und cos kommt b · C bzw. −b · S dazu.
+function ableitungEF(g) {
+  const ua = uAbl(g.u);
+  const P2 = [...polyAbl(g.P), ...polyMal(ua, g.P)];
+  const S2 = [...polyAbl(g.S), ...polyMal(ua, g.S), ...polySkal(g.C, qNeg(g.b))];
+  const C2 = [...polyAbl(g.C), ...polyMal(ua, g.C), ...polySkal(g.S, g.b)];
+  return normiereEF(g.k, g.u, P2, S2, C2, g.b);
+}
+// (xᵖ · ln(m·xʳ + n))′ = p · xᵖ⁻¹ · ln(…) + xᵖ · m·r·xʳ⁻¹ / (m·xʳ + n); für n = 0 kürzt sich das zu r · xᵖ⁻¹.
+function ableitungLn(g) {
+  const teile = [];
+  if (g.p > 0) teile.push(LN(qMal(g.k, q(g.p)), g.j, g.p - 1, g.m, g.r, g.n));
+  if (g.n.z === 0) teile.push({ typ: "pot", k: qMal(g.k, q(g.r)), j: g.j, e: q(g.p - 1) });
+  else teile.push(...normiere(M(qMal(g.k, qMal(g.m, q(g.r))), g.j, g.p + g.r - 1, P(g.m, g.r, g.n, 0, q(-1)), null)));
+  return zusammenfassen(teile);
+}
+// (U · V)′ = U′ · V + U · V′, ausmultipliziert.
+const ableitungProdukt = (g) => sortiere(polySkal(zusammenfassen([...polyMal(polyAbl(g.U), g.V), ...polyMal(g.U, polyAbl(g.V))]), g.k));
 function ableitungGlied(g) {
   if (g.typ === "mono") return ableitungMono(g);
+  if (g.typ === "ef") return ableitungEF(g);
+  if (g.typ === "lnk") return ableitungLn(g);
+  if (g.typ === "produkt") return ableitungProdukt(g);
   if (g.typ === "pot") return g.e.z === 0 ? [] : [{ ...g, k: qMal(g.k, g.e), e: qPlus(g.e, q(-1)) }];
   if (g.typ === "trig") return [{ ...g, fn: g.fn === "sin" ? "cos" : "sin", k: g.fn === "sin" ? qMal(g.k, g.b) : qNeg(qMal(g.k, g.b)) }];
   if (g.typ === "kette") {
@@ -398,6 +514,7 @@ const qHoch = (a, i) => q(Math.pow(a.z, i), Math.pow(a.n, i));
 // Ein mono-Glied so umschreiben, dass die Regeln der Integralrechnung-Seite greifen:
 // (m·xʳ + n)ᵉ ausmultiplizieren (ganzes e), sin²/cos² und sin · cos über den doppelten Winkel.
 function umform(g) {
+  if (g.typ === "produkt") return sortiere(polySkal(polyMal(g.U, g.V), g.k));
   if (g.poly && !g.trig && g.poly.e.n === 1 && g.poly.e.z > 0) {
     const { m, r, n, t } = g.poly, E = g.poly.e.z, aus = [];
     for (let i = E; i >= 0; i--) {
@@ -416,7 +533,7 @@ function umform(g) {
 }
 // sin²(x) = 0,5 − 0,5cos(2x): die Umformung, die eine Aufgabe dazu mit angibt.
 const identitaet = (g) => { const h = M(EINS, 0, 0, null, g.trig); return `${summeHtml([h])} = ${summeHtml(umform(h))}`; };
-const stammGlieder = (g) => (g.typ === "mono" ? zusammenfassen(umform(g).map(stammGlied)) : [stammGlied(g)]);
+const stammGlieder = (g) => (g.typ === "mono" || g.typ === "produkt" ? zusammenfassen(umform(g).map(stammGlied)) : [stammGlied(g)]);
 export const stammfunktion = (gl) => zusammenfassen(gl.flatMap(stammGlieder));
 
 // ================= Musterlösungen =================
@@ -440,7 +557,20 @@ function regelMono(g) {
 }
 // Der Zwischenschritt der Kettenregel, solange er etwas zeigt: ((x² − 1)²)′ = 2(x² − 1) · 2x.
 // Bei xᵖ · (…)ᵉ auch der Zwischenschritt der Produktregel: (x(x² + 1)²)′ = (x² + 1)² + x · 2(x² + 1) · 2x.
+// Eine Summe in Klammern, sobald sie mehr als ein Glied hat oder mit einem Minus beginnt.
+const klammer = (L) => { const t = summeHtml(L); return L.length > 1 || t.startsWith("−") ? `(${t})` : t; };
+function zwischenEF(g) {
+  // (P · e^u)′ = P′ · e^u + P · u′ · e^u — nur ohne sin/cos und mit einem P, das von x abhängt.
+  if (g.S.length || g.C.length || !g.P.some((h) => h.e.z !== 0)) return "";
+  const e = eHoch(g.u, false), kP = polySkal(g.P, g.k), ua = uAbl(g.u);
+  return `${klammer(polyAbl(kP))} · ${e} + ${klammer(kP)} · ${klammer(ua)} · ${e} = `;
+}
 function zwischenAbl(g) {
+  if (g.typ === "ef") return zwischenEF(g);
+  if (g.typ === "produkt") {
+    const kU = polySkal(g.U, g.k);
+    return `${klammer(polyAbl(kU))} · ${klammer(g.V)} + ${klammer(kU)} · ${klammer(polyAbl(g.V))} = `;
+  }
   if (g.typ !== "mono" || !g.poly || g.trig || g.poly.e.n !== 1 || g.poly.e.z < 2) return "";
   const ia = innenAbl(g.poly), iaText = ia.startsWith("−") ? `(${ia})` : ia;
   const aussen = (k) => summeHtml([M(qMal(k, g.poly.e), g.j, 0, { ...g.poly, e: qPlus(g.poly.e, q(-1)) }, null)]);
@@ -449,8 +579,26 @@ function zwischenAbl(g) {
   const u = monoText(M(q(Math.abs(g.k.z), g.k.n), g.j, g.p, null, null), false);
   return `${teil1} ${g.k.z < 0 ? "−" : "+"} ${u} · ${aussen(EINS)}${ia === "1" ? "" : ` · ${iaText}`} = `;
 }
+// Bei linearem Exponenten genügt (e^(kx))′ = k · e^(kx) — das lernt auch der Grundkurs, ohne
+// Kettenregel (Thema 2.2, Abschnitt 2). Die Kettenregel wird erst für x², x³ … im Exponenten genannt.
+function regelEF(g) {
+  const e = eHoch(g.u, false), ua = summeHtml(uAbl(g.u));
+  const linear = g.u.r === 1 && !g.u.mj;
+  const kRegel = g.u.n.z === 0 ? `(e<sup>kx</sup>)′ = k · e<sup>kx</sup> mit k = ${ua}` : `(e<sup>kx + n</sup>)′ = k · e<sup>kx + n</sup> mit k = ${ua}`;
+  if (g.S.length || g.C.length) return `Produktregel mit u = ${e} und v = Klammer; (${e})′ = ${e} · ${ua.startsWith("−") ? `(${ua})` : ua} — dann ${e} ausklammern`;
+  if (!g.P.some((h) => h.e.z !== 0)) return linear ? kRegel : `Kettenregel: (e<sup>u</sup>)′ = e<sup>u</sup> · u′ mit u′ = ${ua}`;
+  return `Produktregel mit u = ${summeHtml(g.P)} und v = ${e}, für v′ ${linear ? `gilt ${kRegel}` : `die Kettenregel (v′ = ${e} · ${ua.startsWith("−") ? `(${ua})` : ua})`} — dann ${e} ausklammern`;
+}
 function regelAbl(g) {
   if (g.typ === "mono") return regelMono(g);
+  if (g.typ === "ef") return regelEF(g);
+  if (g.typ === "lnk") {
+    const arg = innenPoly(P(g.m, g.r, g.n, 0, EINS), false);
+    const ketten = g.n.z !== 0 || g.r !== 1 || g.m.z !== g.m.n;
+    const basis = ketten ? `Kettenregel: (ln u)′ = ${bruchHtml("u′", "u")} mit u = ${arg}` : `(ln x)′ = ${bruchHtml("1", "x")}`;
+    return g.p > 0 ? `Produktregel mit u = ${xHoch(g.p, false)} und v = ln(${arg}); ${basis}` : basis;
+  }
+  if (g.typ === "produkt") return `Produktregel mit u = ${summeHtml(g.U)} und v = ${summeHtml(g.V)}: u′ · v + u · v′, dann ausmultiplizieren`;
   if (g.typ === "pot") return g.e.z === 0 ? "konstanter Summand fällt weg" : "Potenzregel: Exponent als Faktor nach vorn, Exponent um 1 verringern";
   if (g.typ === "trig") {
     const basis = g.fn === "sin" ? "(sin u)′ = cos u" : "(cos u)′ = −sin u";
@@ -460,6 +608,7 @@ function regelAbl(g) {
   return `Produktregel mit u = ${xPot(q(g.p), false)} und v = ${kern(g.v, false)}: u′ · v + u · v′`;
 }
 function regelStamm(g) {
+  if (g.typ === "produkt") return "ausmultiplizieren, dann Potenzregel rückwärts";
   if (g.typ === "mono" && g.poly) return `ausmultiplizieren — innen steht ${innenPoly(g.poly, false)} und nicht mx + n, die Regel für lineare Verkettung gilt hier nicht —, dann Potenzregel rückwärts`;
   if (g.typ === "mono") return `umschreiben mit ${identitaet(g)}, dann lineare Verkettung`;
   if (g.typ === "pot") return g.e.z === 0 ? "Konstante k wird zu k · x" : "Potenzregel rückwärts: Exponent um 1 erhöhen, durch den neuen Exponenten teilen";
@@ -474,7 +623,7 @@ export function ableitungsWeg(gl, ergebnis = "f′(x)") {
   return `${teile.join("<br>")}<br><strong>${ergebnis} = <span class="term">${summeHtml(ableitung(gl))}</span></strong>`;
 }
 export function stammWeg(gl, ergebnis = "F(x)") {
-  const teile = gl.map((g) => zeile(`${summeHtml([g])}${g.typ === "mono" ? ` = ${summeHtml(umform(g))}` : ""} &nbsp;→&nbsp;`, summeHtml(stammGlieder(g)), regelStamm(g)));
+  const teile = gl.map((g) => zeile(`${summeHtml([g])}${g.typ === "mono" || g.typ === "produkt" ? ` = ${summeHtml(umform(g))}` : ""} &nbsp;→&nbsp;`, summeHtml(stammGlieder(g)), regelStamm(g)));
   return `${teile.join("<br>")}<br><strong>${ergebnis} = <span class="term">${summeHtml(stammfunktion(gl))}</span> + C</strong>`;
 }
 export { eingabeform };
@@ -558,7 +707,10 @@ export function pruefeTerm({ eingabe, art, ordnung = 1, abl, f, fAbl, parameter 
       grund = `Bei x = ${zahl(r.x)}${parameter.length ? ` und ${parameter[0]} = ${zahl(r.p[parameter[0]])}` : ""} ergibt deine Eingabe ${zahl(r.ist)}, aber ${S(k)}(x) = ${zahl(r.soll)}.`;
     }
   }
-  return { ok: false, hinweis: grund + gelesen };
+  // e^2x liest jeder Rechner als e² · x — wer den Exponenten ohne Klammer tippt, meint fast immer e^(2x).
+  const eFalle = /e\s*\^\s*[-−]?(\d+([.,]\d+)?\s*[a-z(√]|[a-df-wyz]\s*x)/i.test(eingabe)
+    ? " <strong>Achtung:</strong> Ohne Klammer gehört zum Exponenten von e nur das erste Zeichen — e^2x heißt e² · x. Schreibe e^(2x)." : "";
+  return { ok: false, hinweis: grund + eFalle + gelesen };
 }
 
 // Für die Aufgabenwerkbank: check und hinweis rufen dieselbe Prüfung auf — einmal gerechnet genügt.
@@ -589,10 +741,24 @@ const einGlied = (g) => { const n = normiere(g); if (n.length !== 1) throw new E
 export const verkettung = (k, m, r, n, e, { p = 0, t = 0, j = 0 } = {}) => einGlied(M(alsQ(k), j, p, P(alsQ(m), r, alsQ(n), t, alsQ(e)), null));
 // k · aʲ · sinˢ(bx + d) · cosᶜ(bx + d), etwa trigPotenz(3, 2, 0) = 3sin²(x).
 export const trigPotenz = (k, s, c, b = 1, d = 0, j = 0) => einGlied(M(alsQ(k), j, 0, null, T(alsQ(b), alsQ(d), s, c)));
+// k · e^(m·aᵐʲ·xʳ + n) · (P + S · sin(bx) + C · cos(bx)); P, S, C als Listen von pot-Gliedern.
+// efunktion([pot(1, 1), pot(-1, 0)], { m: -1 }) = (x − 1) · e^(−x); efunktion([pot(3, 0)], { m: 2 }) = 3e^(2x).
+export const efunktion = (Pl, { m = 1, r = 1, n = 0, mj = 0 } = {}, { S = [], C = [], b = 1, k = 1 } = {}) => {
+  const g = normiereEF(alsQ(k), U(alsQ(m), r, alsQ(n), mj), Pl, S, C, alsQ(b));
+  if (g.length !== 1) throw new Error("Die e-Funktion ist null.");
+  return g[0];
+};
+// k · aʲ · xᵖ · ln(m·xʳ + n), etwa lnGlied(1) = ln(x), lnGlied(1, { r: 2, n: 1 }) = ln(x² + 1), lnGlied(1, { p: 1 }) = x · ln(x).
+export const lnGlied = (k, { m = 1, r = 1, n = 0, p = 0, j = 0 } = {}) => LN(alsQ(k), j, p, alsQ(m), r, alsQ(n));
+// k · U(x) · V(x) mit zwei Summen aus pot-Gliedern, etwa produkt([pot(1, 2), pot(1, 0)], [pot(1, 3), pot(-2, 1)]).
+export const produkt = (Ul, Vl, k = 1) => PR(alsQ(k), sortiere(Ul), sortiere(Vl));
 
 // ================= Aufgabenbauer für die Werkbank (mathematik/aufgaben.js) =================
 
 const SCHREIBWEISE = `<br><span class="progress-note">Tippe den Term ein, etwa 3x^2 − 4/x^2 + sqrt(x) oder 2sin(3x); x³ und √x gehen auch, der Malpunkt darf fehlen. Brüche als Bruch: 1/3 statt 0,33.</span>`;
+// Mit e und ln kommt eine Falle dazu: e^2x läse jeder Rechner als e² · x.
+const SCHREIBWEISE_E = `<br><span class="progress-note">Tippe den Term ein, etwa (1 − x)·e^(−x), 2e^(3x) oder ln(x² + 1): den Exponenten von e immer in Klammern — e^2x hieße e² · x. Der Malpunkt darf fehlen, Brüche als Bruch: 1/3 statt 0,33.</span>`;
+const schreibweise = (gl) => (gl.some((g) => g.typ === "ef" || g.typ === "lnk") ? SCHREIBWEISE_E : SCHREIBWEISE);
 const unikat = (arr) => [...new Set(arr)];
 
 // Ableiten: eine Ableitung (f′) oder zwei Felder (f′ und f″).
@@ -615,11 +781,38 @@ export function ableitungsAufgabe(gl, { name = "f", parameter = [], zweite = fal
       text: `Die <strong>innere Ableitung fehlt:</strong> Nach der Kettenregel wird die äußere Ableitung noch mit der Ableitung der inneren Funktion multipliziert — hier ${innere.join(" und ")}.`,
     });
   }
+  // Bei e-Funktionen: e^u abgeleitet ohne u′ — und bei P · e^u die drei Pannen mit der Produktregel.
+  // Ein Fehlerbild, das mit f selbst zusammenfällt (f = 3e^(2x), abgeleitet „vergessen“), bleibt
+  // dem Hinweis „noch nicht abgeleitet“ überlassen.
+  const efs = gl.filter((g) => g.typ === "ef" && !g.S.length && !g.C.length);
+  const efKette = efs.filter((g) => !g.P.some((h) => h.e.z !== 0) && !(g.u.r === 1 && g.u.m.z === g.u.m.n && g.u.mj === 0));
+  const efProdukt = efs.filter((g) => g.P.some((h) => h.e.z !== 0));
+  const mitFehler = (ziel, falsch) => funktion(gl.flatMap((g) => (ziel.includes(g) ? falsch(g) : ableitungGlied(g))));
+  const efMit = (g, Pl) => (Pl.length ? normiereEF(g.k, g.u, Pl, [], [], g.b) : []);
+  const istF = (fn) => STELLEN.every((x) => gleich(fn(x, { a: 1.3 }), abl[0](x, { a: 1.3 }), 1e-9));
+  const kandidaten = [];
+  // Bei linearem Exponenten heißt der Fehler „Faktor k vergessen“ — von innerer Ableitung zu reden,
+  // setzte die Kettenregel voraus, die der Grundkurs nicht hat.
+  if (efKette.length) kandidaten.push({ f: mitFehler(efKette, (g) => [g]),
+    text: efKette.every((g) => g.u.r === 1 && !g.u.mj)
+      ? `Der <strong>Faktor k fehlt:</strong> (e<sup>kx</sup>)′ = k · e<sup>kx</sup> — hier ${unikat(efKette.map((g) => `k = ${summeHtml(uAbl(g.u))}`)).join(" und ")}.`
+      : `Die <strong>innere Ableitung fehlt:</strong> (e<sup>u</sup>)′ = e<sup>u</sup> · u′ — hier ${unikat(efKette.map((g) => `u′ = ${summeHtml(uAbl(g.u))}`)).join(" und ")}.` });
+  if (efProdukt.length) {
+    // Reihenfolge: Ist u′ = 1 (e^(x + n)), sind „u′ · v′“ und „nur u′ · v“ dieselbe Eingabe — dann
+    // trifft der fehlende Summand die Sache genauer.
+    kandidaten.push({ f: mitFehler(efProdukt, (g) => efMit(g, polyAbl(g.P))),
+      text: "Der zweite Summand der Produktregel fehlt: Zu u′ · v gehört noch <strong>u · v′</strong> — und v′ ist die Ableitung des e-Faktors." });
+    kandidaten.push({ f: mitFehler(efProdukt, (g) => efMit(g, polyMal(g.P, uAbl(g.u)))),
+      text: "Der erste Summand der Produktregel fehlt: Zu u · v′ gehört noch <strong>u′ · v</strong> — die Ableitung des Polynoms mal dem e-Faktor." });
+    kandidaten.push({ f: mitFehler(efProdukt, (g) => efMit(g, polyMal(polyAbl(g.P), uAbl(g.u)))),
+      text: "Ein Produkt wird nicht faktorweise abgeleitet: (u · v)′ ist nicht u′ · v′, sondern <strong>u′ · v + u · v′</strong> (Produktregel)." });
+  }
+  extra.push(...kandidaten.filter((d) => !istF(d.f)));
   const tipps = unikat(gl.map(regelAbl)).map((t) => t[0].toUpperCase() + t.slice(1) + ".");
   const angabe = `${name}(x) = <span class="term">${summeHtml(gl)}</span>${zusatz}`;
   if (!zweite) {
     return {
-      promptHtml: `Gegeben ist ${angabe}.<br><strong>Bestimme die Ableitungsfunktion ${name}′.</strong>` + SCHREIBWEISE,
+      promptHtml: `Gegeben ist ${angabe}.<br><strong>Bestimme die Ableitungsfunktion ${name}′.</strong>` + schreibweise(gl),
       ...termCheck({ ...optionen, ordnung: 1, extra }),
       placeholder: `${name}′(x) = …`,
       tipps,
@@ -627,7 +820,7 @@ export function ableitungsAufgabe(gl, { name = "f", parameter = [], zweite = fal
     };
   }
   return {
-    promptHtml: `Gegeben ist ${angabe}.<br><strong>Bestimme ${name}′(x) und ${name}″(x).</strong>` + SCHREIBWEISE,
+    promptHtml: `Gegeben ist ${angabe}.<br><strong>Bestimme ${name}′(x) und ${name}″(x).</strong>` + schreibweise(gl),
     felder: [
       { name: `${name}′(x) =`, platzhalter: `${name}′(x)`, ...termCheck({ ...optionen, ordnung: 1, extra }) },
       { name: `${name}″(x) =`, platzhalter: `${name}″(x)`, ...termCheck({ ...optionen, ordnung: 2 }) },
@@ -651,7 +844,7 @@ export function stammAufgabe(gl, { name = "f" } = {}) {
   const tipps = unikat(gl.map(regelStamm)).map((t) => t[0].toUpperCase() + t.slice(1) + ".");
   return {
     promptHtml: `Gegeben ist ${name}(x) = <span class="term">${summeHtml(gl)}</span>.<br><strong>Bestimme eine Stammfunktion F von ${name}.</strong>` +
-      (umformungen.length ? `<br>Verwende dabei ${umformungen.join(" und ")}.` : "") + SCHREIBWEISE,
+      (umformungen.length ? `<br>Verwende dabei ${umformungen.join(" und ")}.` : "") + schreibweise(gl),
     ...termCheck({ art: "stamm", f: funktion(gl), fAbl: funktion(ableitung(gl)), fName: name, extra }),
     placeholder: "F(x) = …",
     tipps: [...tipps, "Mach die Probe: Leite dein F ab — es muss genau f herauskommen."],

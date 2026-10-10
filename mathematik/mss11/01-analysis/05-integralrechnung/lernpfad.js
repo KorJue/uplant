@@ -8,7 +8,7 @@
 //    4. Integralfunktion          (obere Grenze variabel; Vermutung I′ = f nur beobachtet)
 //    5. Hauptsatz                 (Streifen eingeklemmt zwischen f(x)·h und f(x + h)·h; Stetigkeit
 //                                  aus Thema 1.2)
-//    6. Stammfunktionen, Regeln   (Ableitungsregeln aus Thema 2 rückwärts)
+//    6. Stammfunktionen, Regeln   (Ableitungsregeln aus Thema 2.1 und 2.2 rückwärts)
 //    7. Fläche mit der x-Achse    (Nullstellen aus Thema 3, Beträge der Teilintegrale)
 //    8. Fläche zwischen Graphen   (Differenzfunktion, Schnittstellen)
 //    9. Mittelwert, Bilanz        (Rechteck gleicher Fläche; Rekonstruktion aus 1 mit Stammfunktion)
@@ -24,7 +24,7 @@
 // darunter orange; Untersumme grün, Obersumme orange; Streifen violett; Warnung rot.
 
 import { mountUebungsaufgaben } from "../../../aufgaben.js?v=3";
-import { AUFGABEN, parseZahl } from "./aufgaben-integralrechnung.js?v=4";
+import { AUFGABEN, parseZahl } from "./aufgaben-integralrechnung.js?v=5";
 
 
 // ---------- Helfer ----------

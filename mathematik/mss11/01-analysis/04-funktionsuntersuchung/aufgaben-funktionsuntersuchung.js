@@ -19,7 +19,7 @@
 
 "use strict";
 
-import { pot, trig, prod, verkettung, trigPotenz, q, ableitungsAufgabe, pick as zufall, mische } from "../../../terme.js?v=2";
+import { pot, trig, prod, verkettung, trigPotenz, q, ableitungsAufgabe, pick as zufall, mische } from "../../../terme.js?v=3";
 
 const ZAHLFORMATE = new Map();
 function zahlformat(stellen) {

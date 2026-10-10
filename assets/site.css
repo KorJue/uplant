@@ -231,3 +231,24 @@ input[type="search"] {
 .eingabe-fehler { border-color: #b3261e; background: #fdecec; }
 :root[data-theme="dark"] .eingabe-ok     { border-color: #6fd68f; background: #17321f; }
 :root[data-theme="dark"] .eingabe-fehler { border-color: #ff8a8a; background: #3a1f1f; }
+
+/* ---------- Kursniveau: Grund- und Leistungskurs ----------
+   Eine kleine Marke an Menükarten und Seitenköpfen. Grün für „beide Kurse“, violett für „nur
+   Leistungskurs“ — dieselben Farbtöne in beiden Modi, jeweils mit eigenem, kontrastreichen Grund. */
+.kurs-marke {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.kurs-marke.gk { background: #dcfce7; color: #14532d; }
+.kurs-marke.lk { background: #ede9fe; color: #4c1d95; }
+:root[data-theme="dark"] .kurs-marke.gk { background: #14532d; color: #dcfce7; }
+:root[data-theme="dark"] .kurs-marke.lk { background: #4c1d95; color: #ede9fe; }
+.kurs-hinweis { margin: 0.8rem 0 0; }
+.kurs-hinweis .kurs-marke { margin-right: 0.4rem; }
+h2 .kurs-marke { margin-left: 0.4rem; }
