@@ -1,21 +1,20 @@
-// Die zweiunddreißig Übungsaufgaben zu „Integralrechnung“ — acht je Stufe.
+// Die vierundzwanzig Übungsaufgaben zu „Integralrechnung“ (Thema 4.1, Grundkurs) — sechs je Stufe.
 //
-//   einfach   — Potenzregel, Polynomintegral, Rekonstruktion aus einer Rate, Mittelwert, Sinus und
-//               Kosinus über Vielfache von π/2, Schnittstellen Parabel/Gerade, ∫₁^b c/x² und Grenzwert.
+//   einfach   — Potenzregel, Polynomintegral, Rekonstruktion aus einer Rate, Mittelwert, Schnittstellen
+//               Parabel/Gerade.
 //   mittel    — Fläche mit Vorzeichenwechsel, Fläche zwischen Parabel und Gerade, Stammfunktion durch
-//               einen Punkt, lineare Verkettung, obere Grenze aus dem Integralwert, drei Schnittstellen
-//               (x ausklammern), Polstelle am Rand.
-//   schwierig — Fläche zwischen zwei Parabeln, Parameter aus der Fläche, Rotationsvolumen, uneigentliches
-//               Integral, Bestand bei linear fallender Zuflussrate, Schnittstellen und Fläche zweier
-//               Parabeln, unendlich langer Rotationskörper.
-//   komplex   — Tangente an eine kubische Funktion, Maximum einer Integralfunktion, Kugelschicht,
-//               Ursprungsgerade halbiert eine Fläche, uneigentliche Fläche zwischen zwei Graphen, kubische
-//               Funktion und Parabel (raten, Polynomdivision), Grenze aus einer unbegrenzten Fläche.
+//               einen Punkt, obere Grenze aus dem Integralwert, drei Schnittstellen (x ausklammern).
+//   schwierig — Fläche zwischen zwei Parabeln, Parameter aus der Fläche, Bestand bei linear fallender
+//               Zuflussrate, Schnittstellen und Fläche zweier Parabeln, Fläche zwischen Parabel und Tangente.
+//   komplex   — Tangente an eine kubische Funktion, Maximum einer Integralfunktion, Ursprungsgerade
+//               halbiert eine Fläche, Bilanz null (wann ist der Anfangsbestand wieder erreicht?), kubische
+//               Funktion und Parabel (raten, Polynomdivision).
 //
-// Die achte Aufgabe jeder Stufe ist ein Integrationstraining mit beliebig vielen Funktionen
-// (mathematik/terme.js): ganzrational, Potenzen und Wurzeln, Sinus und Kosinus, lineare Verkettung —
-// in der komplexen Stufe auch (x² − 1)² (ausmultiplizieren) und sin²(x) (mit angegebener Umformung).
-// Die eingegebene Stammfunktion wird durch numerisches Ableiten geprüft — jede Konstante ist richtig.
+// Die sechste Aufgabe jeder Stufe ist ein Integrationstraining mit beliebig vielen Funktionen
+// (mathematik/terme.js): ganzrational, Potenzen und Wurzeln, Produkte zweier Polynome und Klammern mit
+// Hochzahl — beides wird ausmultipliziert. Sinus, Kosinus, e-Funktion, 1/x und lineare Verkettung
+// gehören zum Leistungskurs und stehen in Thema 4.2. Die eingegebene Stammfunktion wird durch
+// numerisches Ableiten geprüft — jede Konstante ist richtig.
 //
 // Gewürfelt wird konstruktiv: Die Kandidatenlisten werden vorher gesiebt, ohneKollision() wählt aus
 // dem Rest. Jeder Fehlerwert ist von der Lösung und von den anderen Fehlerwerten verschieden — wo ein
@@ -23,7 +22,7 @@
 
 "use strict";
 
-import { pot, trig, kette, verkettung, trigPotenz, q, stammAufgabe, pick as zufall, mische } from "../../../terme.js?v=3";
+import { pot, verkettung, produkt, q, stammAufgabe, pick as zufall, mische } from "../../../terme.js?v=4";
 
 const ZAHLFORMATE = new Map();
 function zahlformat(stellen) {
@@ -49,6 +48,10 @@ function glied(c, potenz, mitZeichen) {
   const kern = betrag + potenz;
   if (!mitZeichen) return (c < 0 ? "−" : "") + kern;
   return (c < 0 ? "− " : "+ ") + kern;
+}
+// Ein Faktor vor einer Klammer: „2 · “, „−“ oder nichts — nie „1 ·“ oder „−1 ·“.
+function faktorVor(a) {
+  return a === 1 ? "" : a === -1 ? "−" : `${num(a)} · `;
 }
 // Ein Polynom aus [Koeffizient, Potenz]-Paaren; Nullen fallen weg, das erste Glied ohne „+“.
 function poly(glieder) {
@@ -133,7 +136,6 @@ const EPS = 0.001;
 const intZ = (a, b) => `<span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">${b}</span><span class="u">${a}</span></span></span>`;
 const klammer = (inhalt, a, b) => `<span class="integral">[${inhalt}]<span class="grenzen"><span class="o">${b}</span><span class="u">${a}</span></span></span>`;
 const RUND4 = `<br><span class="progress-note">Runde auf vier Nachkommastellen.</span>`;
-const PI_FAKTOR = `<br><span class="progress-note">Gib V als Vielfaches von π an: Für V = 12π tippst du 12.</span>`;
 // Potenz als Text: x, x², x³ …
 const xh = (n, v = "x") => (n === 1 ? v : v + hochZahl(n));
 // Stammfunktion eines quadratischen Polynoms p·x² + q·x + r (alle Werte so gewählt, dass sie abbrechen).
@@ -284,47 +286,6 @@ function generateE4() {
   };
 }
 
-// ---------- E5: Sinus und Kosinus über Vielfache von π/2 ----------
-// Die Grenzen sind k · π/2; Sinus und Kosinus nehmen dort nur −1, 0 und 1 an — exakt, ohne Rundung.
-const SIN_K = [0, 1, 0, -1, 0], COS_K = [1, 0, -1, 0, 1];
-const PI_TEXT = ["0", "π/2", "π", "3π/2", "2π"];
-const E5_KANDIDATEN = spaeter(() => {
-  const out = [];
-  for (const art of ["sin", "cos"]) for (const c of [1, 2, 3, 4]) for (let a = 0; a < 4; a++) for (let b = a + 1; b <= 4; b++) {
-    // sin hat die Stammfunktion −cos, cos die Stammfunktion sin.
-    const F = (k) => (art === "sin" ? -c * COS_K[k] : c * SIN_K[k]);
-    // Flächeninhalt: Jedes Viertel einer Periode trägt die Fläche 1 bei.
-    out.push({ art, c, a, b, I: F(b) - F(a), A: c * (b - a), Fa: F(a), Fb: F(b) });
-  }
-  return out;
-});
-function e5Werte(v) {
-  // Ist der Flächeninhalt gleich |I|, zeigt der Wert nur das Vorzeichen — dann gehört der Fall zum
-  // Vorzeichenhinweis, die Fläche wird NaN.
-  return { neg: v.I === 0 ? NaN : -v.I, flaeche: v.A === Math.abs(v.I) ? NaN : v.A, ohneC: v.c === 1 ? NaN : v.I / v.c };
-}
-function generateE5() {
-  const k = ohneKollision(E5_KANDIDATEN(), (v) => { const w = e5Werte(v); return [v.I, w.neg, w.flaeche, w.ohneC]; }, EPS);
-  const { art, c, a, b, I, Fa, Fb } = k;
-  const w = e5Werte(k);
-  const ft = `${c === 1 ? "" : num(c) + " · "}${art}(x)`;
-  const Ft = art === "sin" ? `−${c === 1 ? "" : num(c) + " · "}cos(x)` : `${c === 1 ? "" : num(c) + " · "}sin(x)`;
-  return {
-    promptHtml: `<strong>Berechne ${intZ(PI_TEXT[a], PI_TEXT[b])} ${ft} dx.</strong>` + ZAHL,
-    correct: I,
-    tolerance: TOL,
-    placeholder: "Integral",
-    hinweis: (roh, v) => {
-      if (nahe(v, w.neg, TOL)) return art === "sin" ? "Vorzeichen: (cos x)′ = −sin x, also ist −cos x eine Stammfunktion von sin x — nicht cos x." : "Vorzeichen: (sin x)′ = cos x, also ist sin x eine Stammfunktion von cos x — nicht −sin x.";
-      if (nahe(v, w.flaeche, TOL)) return "Das ist der Flächeninhalt zwischen Graph und x-Achse. Das Integral zählt Stücke unter der Achse negativ.";
-      if (nahe(v, w.ohneC, TOL)) return `Der Faktor ${num(c)} fehlt. Konstante Faktoren bleiben beim Integrieren stehen.`;
-      return `Stammfunktion: F(x) = ${Ft}. Dann F(${PI_TEXT[b]}) − F(${PI_TEXT[a]}).`;
-    },
-    tipps: [art === "sin" ? "(−cos x)′ = sin x" : "(sin x)′ = cos x", `F(x) = ${Ft}`],
-    musterloesungHtml: `${intZ(PI_TEXT[a], PI_TEXT[b])} ${ft} dx = ${klammer(Ft, PI_TEXT[a], PI_TEXT[b])} = ${num(Fb)} − ${numK(Fa)} = <strong>${num(I)}</strong>`,
-  };
-}
-
 // ================= mittel =================
 
 // ---------- M1: Fläche mit Vorzeichenwechsel ----------
@@ -359,8 +320,8 @@ function generateM1() {
       if (nahe(v, w.teil, TOL)) return `Das ist nur die Teilfläche über [${num(s)}; ${num(b)}]. Die Fläche über [0; ${num(s)}] fehlt.`;
       return `Nullstellen 0 und ${num(s)}: A = |${intZ("0", num(s))} f(x) dx| + |${intZ(num(s), num(b))} f(x) dx|`;
     },
-    tipps: [`f(x) = ${num(k.k)} · x · (x ${plusMinus(-s)}) — Nullstellen 0 und ${num(s)}`, `F(x) = ${Ft}`],
-    musterloesungHtml: `Nullstellen: f(x) = ${num(k.k)} · x · (x ${plusMinus(-s)}) = 0 ⟺ x = 0 oder x = ${num(s)}; F(x) = ${Ft}<br>` +
+    tipps: [`f(x) = ${faktorVor(k.k)}x · (x ${plusMinus(-s)}) — Nullstellen 0 und ${num(s)}`, `F(x) = ${Ft}`],
+    musterloesungHtml: `Nullstellen: f(x) = ${faktorVor(k.k)}x · (x ${plusMinus(-s)}) = 0 ⟺ x = 0 oder x = ${num(s)}; F(x) = ${Ft}<br>` +
       `${intZ("0", num(s))} f(x) dx = ${num(I1)}; ${intZ(num(s), num(b))} f(x) dx = ${num(I2)}<br>` +
       `A = |${num(I1)}| + |${num(I2)}| = <strong>${num(A)}</strong> (zum Vergleich: das Integral über [0; ${num(b)}] ist nur ${num(k.I)}.)`,
   };
@@ -404,7 +365,7 @@ function generateM2() {
       return "Schnittstellen aus f(x) = g(x), dann A = |∫(f(x) − g(x)) dx| zwischen ihnen.";
     },
     tipps: [`f(x) − g(x) = ${dt}`, `Schnittstellen: x₁ = ${num(x1)}, x₂ = ${num(x2)}`],
-    musterloesungHtml: `f(x) − g(x) = ${dt} = ${num(k.k)} · ${linear(x1)} · ${linear(x2)} = 0 ⟺ x = ${num(x1)} oder x = ${num(x2)}<br>` +
+    musterloesungHtml: `f(x) − g(x) = ${dt} = ${faktorVor(k.k)}${linear(x1)} · ${linear(x2)} = 0 ⟺ x = ${num(x1)} oder x = ${num(x2)}<br>` +
       `${intZ(num(x1), num(x2))} (f(x) − g(x)) dx = ${klammer(Dt, num(x1), num(x2))} = ${num(w.D)}<br>A = |${num(w.D)}| = <strong>${num(A)}</strong>`,
   };
 }
@@ -451,43 +412,6 @@ function generateM3() {
     tipps: [`Alle Stammfunktionen: F(x) = ${Gt} + C`, `F(${num(x0)}) = ${num(w.G(x0))} + C = ${num(y0)}`],
     musterloesungHtml: `F(x) = ${Gt} + C<br>F(${num(x0)}) = ${num(w.G(x0))} + C = ${num(y0)} ⟺ <strong>C = ${num(C)}</strong><br>` +
       `F(x) = ${Ft}; <strong>F(${num(x1)}) = ${num(F1)}</strong><br><strong>Probe:</strong> F(${num(x0)}) = ${num(w.G(x0) + C)} = ${num(y0)} ✓ und F′(x) = ${ft} = f(x) ✓`,
-  };
-}
-
-// ---------- M4: lineare Verkettung ----------
-const M4_KANDIDATEN = spaeter(() => {
-  const out = [];
-  for (const m of [2, 3, -2, 0.5, 4, -1]) for (const n of [-3, -2, -1, 1, 2, 3]) for (const k of [2, 3]) for (const [a, b] of [[0, 1], [-1, 0], [0, 2], [1, 2], [-1, 1]]) {
-    const F = (x) => (m * x + n) ** (k + 1) / (m * (k + 1));
-    const I = F(b) - F(a);
-    if (glatt(I, 4) && Math.abs(I) > 1e-9) out.push({ m, n, k, a, b, I, Fa: F(a), Fb: F(b) });
-  }
-  return out;
-});
-function m4Werte(v) {
-  // Bei |m| = 1 ändern Teilen und Malnehmen mit m nichts — dort NaN.
-  return { ohneM: Math.abs(v.m) === 1 ? NaN : v.I * v.m, malM: Math.abs(v.m) === 1 ? NaN : v.I * v.m * v.m, ohneK: v.I * (v.k + 1) };
-}
-function generateM4() {
-  const kd = ohneKollision(M4_KANDIDATEN(), (v) => { const w = m4Werte(v); return [v.I, w.ohneM, w.malM, w.ohneK]; }, EPS);
-  const { m, n, k, a, b, I, Fa, Fb } = kd;
-  const w = m4Werte(kd);
-  const innen = poly([[m, "x"], [n, ""]]);
-  const Ft = `${bruch("1", `${numK(m)} · ${k + 1}`)} · (${innen})${hochZahl(k + 1)}`;
-  return {
-    promptHtml: `<strong>Berechne ${intZ(num(a), num(b))} (${innen})${hochZahl(k)} dx.</strong>` + ZAHL,
-    correct: I,
-    tolerance: TOL,
-    placeholder: "Integral",
-    hinweis: (roh, v) => {
-      if (nahe(v, w.ohneM, TOL)) return `Beim Aufleiten einer Verkettung mit der inneren Funktion ${innen} wird zusätzlich durch die innere Ableitung ${num(m)} geteilt — sonst liefert die Kettenregel beim Ableiten einen Faktor ${num(m)} zu viel.`;
-      if (nahe(v, w.malM, TOL)) return `Mit der inneren Ableitung ${num(m)} wurde multipliziert statt geteilt. Probe: Leite deine Stammfunktion ab — es muss genau (${innen})${hochZahl(k)} herauskommen.`;
-      if (nahe(v, w.ohneK, TOL)) return `Der Exponent steigt auf ${k + 1}; durch ${k + 1} muss auch geteilt werden.`;
-      return `Stammfunktion: F(x) = ${Ft}. Probe durch Ableiten mit der Kettenregel.`;
-    },
-    tipps: [`Lineare Verkettung: ∫ (mx + n)${hochZahl(k)} dx = ${bruch("1", `m · ${k + 1}`)} · (mx + n)${hochZahl(k + 1)} + C`, `F(x) = ${Ft}`],
-    musterloesungHtml: `F(x) = ${Ft}, denn F′(x) = ${bruch(`${k + 1} · ${numK(m)}`, `${numK(m)} · ${k + 1}`)} · (${innen})${hochZahl(k)} = (${innen})${hochZahl(k)} ✓<br>` +
-      `${intZ(num(a), num(b))} (${innen})${hochZahl(k)} dx = F(${num(b)}) − F(${num(a)}) = ${num(Fb)} − ${numK(Fa)} = <strong>${num(I)}</strong>`,
   };
 }
 
@@ -560,11 +484,11 @@ function generateS1() {
     hinweis: (roh, v) => {
       if (nahe(v, w.signed, TOL)) return "Das Integral von f − g ist negativ, weil g zwischen den Schnittstellen über f liegt. Für den Flächeninhalt den Betrag nehmen.";
       if (nahe(v, w.nurF, TOL)) return "Das ist das Integral über f allein. Die Fläche <em>zwischen</em> zwei Graphen ist das Integral der Differenz.";
-      if (nahe(v, w.ohneK, TOL)) return `Die Differenz f − g ist ${num(k.k)} · ${linear(x1)} · ${linear(x2)} — der Vorfaktor ${num(k.k)} fehlt.`;
+      if (nahe(v, w.ohneK, TOL)) return `Die Differenz f − g ist ${faktorVor(k.k)}${linear(x1)} · ${linear(x2)} — der Vorfaktor ${num(k.k)} fehlt.`;
       return "Bilde d(x) = f(x) − g(x), bestimme dessen Nullstellen und integriere d zwischen ihnen.";
     },
     tipps: [`d(x) = f(x) − g(x) = ${dt}`, `Nullstellen von d: ${num(x1)} und ${num(x2)}`],
-    musterloesungHtml: `d(x) = f(x) − g(x) = ${dt} = ${num(k.k)} · ${linear(x1)} · ${linear(x2)}; Schnittstellen ${num(x1)} und ${num(x2)}<br>` +
+    musterloesungHtml: `d(x) = f(x) − g(x) = ${dt} = ${faktorVor(k.k)}${linear(x1)} · ${linear(x2)}; Schnittstellen ${num(x1)} und ${num(x2)}<br>` +
       `${intZ(num(x1), num(x2))} d(x) dx = ${klammer(Dt, num(x1), num(x2))} = ${num(w.D)}<br>A = |${num(w.D)}| = <strong>${num(A)}</strong>`,
   };
 }
@@ -599,78 +523,8 @@ function generateS2() {
       return `Nullstellen ±k; A(k) = ${intZ("−k", "k")} f<sub>k</sub>(x) dx — mit k als fester Zahl rechnen.`;
     },
     tipps: ["Nullstellen von f<sub>k</sub>: x = −k und x = k", `A(k) = ${intZ("−k", "k")} f<sub>k</sub>(x) dx = ${bruch(num(4 * c), 3)} k³`],
-    musterloesungHtml: `Nullstellen ±k; f<sub>k</sub> ≥ 0 dazwischen.<br>A(k) = ${intZ("−k", "k")} ${ft} dx = ${num(c)} · ${klammer("k²x − ⅓x³", "−k", "k")} = ${num(c)} · (⅔k³ + ⅔k³) = ${bruch(num(4 * c), 3)} k³<br>` +
+    musterloesungHtml: `Nullstellen ±k; f<sub>k</sub> ≥ 0 dazwischen.<br>A(k) = ${intZ("−k", "k")} ${ft} dx = ${faktorVor(c)}${klammer("k²x − ⅓x³", "−k", "k")} = ${faktorVor(c)}(⅔k³ + ⅔k³) = ${bruch(num(4 * c), 3)} k³<br>` +
       `${bruch(num(4 * c), 3)} k³ = ${num(A)} ⟺ k³ = ${num(k ** 3)} ⟺ <strong>k = ${num(k)}</strong><br><strong>Probe:</strong> ${bruch(num(4 * c), 3)} · ${num(k)}³ = ${num(A)} ✓`,
-  };
-}
-
-// ---------- S3: Rotationsvolumen ----------
-// f(x) = √(c·x) rotiert über [0; b]: V = π ∫ c·x dx = π · c · b² / 2.
-const S3_KANDIDATEN = spaeter(() => {
-  const out = [];
-  for (const c of [1, 2, 3, 4, 6, 0.5]) for (const b of [1, 2, 3, 4, 5, 6]) {
-    const V = (c * b * b) / 2;
-    if (glatt(V, 4)) out.push({ c, b, V });
-  }
-  return out;
-});
-function s3Werte(v) {
-  return { mitPi: v.V * Math.PI, ohneHalb: v.c * v.b * v.b, hoch4: (v.c * v.c * v.b ** 3) / 3 };
-}
-function generateS3() {
-  const k = ohneKollision(S3_KANDIDATEN(), (v) => { const w = s3Werte(v); return [v.V, w.mitPi, w.ohneHalb, w.hoch4]; }, EPS);
-  const { c, b, V } = k;
-  const w = s3Werte(k);
-  const innen = c === 1 ? "x" : `${num(c)}x`;
-  return {
-    promptHtml: `Der Graph von f(x) = √(${innen}) rotiert über dem Intervall [0; ${num(b)}] um die x-Achse.<br><strong>Berechne das Volumen V des entstehenden Rotationskörpers.</strong>` + PI_FAKTOR,
-    correct: V,
-    tolerance: TOL,
-    placeholder: "V : π",
-    hinweis: (roh, v) => {
-      if (nahe(v, w.mitPi, 0.001)) return "Das ist V als Dezimalzahl. Gefragt ist nur der Faktor vor π.";
-      if (nahe(v, w.ohneHalb, TOL)) return `Die Stammfunktion von ${innen} ist ${c === 1 ? "" : num(c) + " · "}½x² — der Faktor ½ fehlt.`;
-      if (nahe(v, w.hoch4, TOL)) return "Quadriert wurde zweimal: (f(x))² = " + innen + ", nicht (" + innen + ")².";
-      return `V = π · ${intZ("0", num(b))} (f(x))² dx, und (f(x))² = ${innen}.`;
-    },
-    tipps: [`V = π · ${intZ("a", "b")} (f(x))² dx`, `(f(x))² = ${innen}`],
-    musterloesungHtml: `V = π · ${intZ("0", num(b))} (√(${innen}))² dx = π · ${intZ("0", num(b))} ${innen} dx = π · ${klammer(`${bruch(num(c), 2)} x²`, "0", num(b))} = π · ${bruch(num(c), 2)} · ${num(b * b)} = <strong>${num(V)}π</strong> ≈ ${num(V * Math.PI, 2)}`,
-  };
-}
-
-// ---------- S4: uneigentliches Integral bis ∞ ----------
-const S4_KANDIDATEN = spaeter(() => {
-  const out = [];
-  for (const c of [1, 2, 3, 4, 6, 8, 12]) for (const n of [2, 3, 4]) for (const a of [1, 2, 3]) {
-    const I = c / ((n - 1) * a ** (n - 1));
-    if (glatt(I, 4)) out.push({ c, n, a, I });
-  }
-  return out;
-});
-function s4Werte(v) {
-  const { c, n, a, I } = v;
-  return { plusEins: c / ((n + 1) * a ** (n + 1)), ohneA: a === 1 ? NaN : c / (n - 1), neg: -I };
-}
-function generateS4() {
-  const k = ohneKollision(S4_KANDIDATEN(), (v) => { const w = s4Werte(v); return [v.I, w.plusEins, w.ohneA, w.neg]; }, EPS);
-  const { c, n, a, I } = k;
-  const w = s4Werte(k);
-  const ft = bruch(num(c), xh(n));
-  const Ft = `−${bruch(num(c), `${n - 1 === 1 ? "" : (n - 1) + " · "}${xh(n - 1)}`)}`;
-  return {
-    promptHtml: `<strong>Berechne ${intZ(num(a), "∞")} ${ft} dx.</strong>` + ZAHL,
-    correct: I,
-    tolerance: TOL,
-    placeholder: "Integral",
-    hinweis: (roh, v) => {
-      if (nahe(v, w.plusEins, TOL)) return `Potenzregel mit dem falschen Exponenten: ${bruch("1", xh(n))} = x<sup>−${n}</sup>, und −${n} + 1 = −${n - 1}, nicht −${n + 1}.`;
-      if (nahe(v, w.ohneA, TOL)) return `Das wäre die untere Grenze 1. Hier beginnt das Intervall bei ${num(a)}.`;
-      if (nahe(v, w.neg, TOL)) return "Vorzeichen: Die Stammfunktion ist negativ; F(z) − F(a) mit F(z) → 0 ergibt −F(a) &gt; 0.";
-      return `Rechne erst bis zu einer festen Grenze z: ${intZ(num(a), "z")} … dx, dann z → ∞.`;
-    },
-    tipps: [`${ft} = ${num(c)} · x<sup>−${n}</sup>; Stammfunktion F(x) = ${Ft}`, "Für z → ∞ geht F(z) gegen 0."],
-    musterloesungHtml: `${intZ(num(a), "z")} ${ft} dx = ${klammer(Ft, num(a), "z")} = ${bruch(num(c), `${(n - 1) * a ** (n - 1)}`)} − ${bruch(num(c), `${n - 1 === 1 ? "" : (n - 1) + " · "}z${hochZahl(n - 1)}`)}<br>` +
-      `Für z → ∞ geht der zweite Bruch gegen 0: ${intZ(num(a), "∞")} ${ft} dx = <strong>${num(I)}</strong> — die nach rechts unbegrenzte Fläche hat einen endlichen Inhalt.`,
   };
 }
 
@@ -699,7 +553,7 @@ function generateS5() {
       { name: "t* =", soll: t, toleranz: TOL, hinweis: (roh, v) => (nahe(v, w.doppelt, TOL) ? "Zu diesem Zeitpunkt ist der Bestand wieder so groß wie zu Beginn. Am größten ist er, solange noch Wasser zufließt — also bis r(t) = 0." : "Der Bestand wächst, solange r(t) > 0 ist. Bestimme die Nullstelle der Rate.") },
       { name: "B(t*) =", soll: B, toleranz: TOL, hinweis: (roh, v) => (nahe(v, w.ohneB0, TOL) ? `Das ist nur die zugeflossene Menge. Der Anfangsbestand von ${num(B0)} m³ kommt dazu.` : nahe(v, w.ohneHalb, TOL) ? `Gerechnet wurde mit r₀ · t*. Die Rate fällt aber — die Fläche unter r ist ein Dreieck: ½ · ${num(r0)} · t*.` : "B(t*) = B₀ + ∫ r(t) dt von 0 bis t*.") },
     ],
-    tipps: ["Der Bestand ist maximal, wo die Rate von + nach − wechselt: r(t) = 0.", `B(t) = ${num(B0)} + ${intZ("0", "t")} r(s) ds = ${num(B0)} + ${num(r0)}t − ${num(m / 2)}t²`],
+    tipps: ["Der Bestand ist maximal, wo die Rate von + nach − wechselt: r(t) = 0.", `B(t) = ${num(B0)} + ${intZ("0", "t")} r(s) ds = ${num(B0)} ${glied(r0, "t", true)} ${glied(-m / 2, "t²", true)}`],
     musterloesungHtml: `r(t) = ${rt} = 0 ⟺ <strong>t* = ${num(t)}</strong> h; davor ist r &gt; 0 (Zufluss), danach r &lt; 0 (Abfluss) ⟹ Maximum.<br>` +
       `B(t*) = ${num(B0)} + ${intZ("0", num(t))} (${rt}) dt = ${num(B0)} + ${klammer(poly([[r0, "t"], [-m / 2, "t²"]]), "0", num(t))} = ${num(B0)} + ${num(B - B0)} = <strong>${num(B)} m³</strong><br>` +
       `(Die zugeflossene Menge ist die Dreiecksfläche ½ · ${num(r0)} · ${num(t)} = ${num(B - B0)}.)`,
@@ -754,9 +608,9 @@ function generateK1() {
       { name: "x<sub>Q</sub> =", soll: xq, toleranz: TOL, hinweis: (roh, v) => (nahe(v, w.xPlus, TOL) ? "Vorzeichen: f(x) − t(x) = a(x − x₀)²(x + 2x₀), die zweite Nullstelle ist also −2x₀." : nahe(v, w.xBer, TOL) ? "Das ist der Berührpunkt P selbst. Q ist der <em>zweite</em> gemeinsame Punkt." : "Löse f(x) = t(x); x₀ ist doppelte Nullstelle von f − t.") },
       { name: "A =", soll: A, toleranz: TOL, hinweis: (roh, v) => (nahe(v, w.signed, TOL) ? "Das Integral von f − t ist hier negativ, weil die Tangente über dem Graphen liegt. Für den Flächeninhalt den Betrag nehmen." : nahe(v, w.nurF, TOL) ? "Das ist das Integral über f allein. Die Fläche liegt zwischen Graph und Tangente: Integral der Differenz f − t." : nahe(v, w.ohneA, TOL) ? `Der Faktor ${num(a)} aus f − t = ${num(a)}(x − x₀)²(x + 2x₀) fehlt.` : "Integriere f − t zwischen den beiden Schnittstellen.") },
     ],
-    tipps: [`t(x) = f′(${num(x0)}) · (x ${plusMinus(-x0)}) + f(${num(x0)}) = ${tt}`, `f(x) − t(x) = ${dt} = ${num(a)} · (x ${plusMinus(-x0)})² · (x ${plusMinus(2 * x0)})`],
-    musterloesungHtml: `f′(x) = ${poly([[3 * a, "x²"], [c, ""]])}; f′(${num(x0)}) = ${num(m)} ⟹ t(x) = ${num(m)} · (x ${plusMinus(-x0)}) ${plusMinus(y0)} = ${tt}<br>` +
-      `f(x) − t(x) = ${dt} = ${num(a)} · (x ${plusMinus(-x0)})² · (x ${plusMinus(2 * x0)}) ⟹ doppelte Nullstelle ${num(x0)} (Berührpunkt), <strong>x<sub>Q</sub> = ${num(xq)}</strong><br>` +
+    tipps: [`t(x) = f′(${num(x0)}) · (x ${plusMinus(-x0)}) + f(${num(x0)}) = ${tt}`, `f(x) − t(x) = ${dt} = ${faktorVor(a)}(x ${plusMinus(-x0)})² · (x ${plusMinus(2 * x0)})`],
+    musterloesungHtml: `f′(x) = ${poly([[3 * a, "x²"], [c, ""]])}; f′(${num(x0)}) = ${num(m)} ⟹ t(x) = ${m === 0 ? num(y0) : `${faktorVor(m)}(x ${plusMinus(-x0)})${y0 ? " " + plusMinus(y0) : ""}`} = ${tt}<br>` +
+      `f(x) − t(x) = ${dt} = ${faktorVor(a)}(x ${plusMinus(-x0)})² · (x ${plusMinus(2 * x0)}) ⟹ doppelte Nullstelle ${num(x0)} (Berührpunkt), <strong>x<sub>Q</sub> = ${num(xq)}</strong><br>` +
       `${intZ(num(lo), num(hi))} (f(x) − t(x)) dx = ${klammer(Dt, num(lo), num(hi))} = ${num(Dhi)} − ${numK(Dlo)} = ${num(w.integral)}<br>` +
       `<strong>A = |${num(w.integral)}| = ${num(A)}</strong>. <strong>Probe:</strong> t(${num(xq)}) = ${num(m * xq + n)} = f(${num(xq)}) ✓`,
   };
@@ -791,52 +645,10 @@ function generateK2() {
       { name: "x<sub>M</sub> =", soll: xmax, toleranz: TOL, hinweis: (roh, v) => (nahe(v, xmin, TOL) ? tausch : nahe(v, w.mitte, TOL) ? "Das ist die Extremstelle von f — dort hat I einen Wendepunkt. Die Extremstellen von I sind die Nullstellen von f." : "Nach dem Hauptsatz ist I′(x) = f(x). Bestimme die Nullstellen von f und ihren Vorzeichenwechsel.") },
       { name: "I(x<sub>M</sub>) =", soll: Imax, toleranz: TOL, hinweis: (roh, v) => (nahe(v, w.minWert, TOL) ? tausch : nahe(v, w.neg, TOL) ? "Vorzeichen: I(x) = F(x) − F(0) mit F(0) = 0; die Grenzen nicht vertauschen." : `I(x) = ${It}; setze x<sub>M</sub> ein.`) },
     ],
-    tipps: [`I′(x) = f(x) = ${num(k)} · ${linear(p)} · ${linear(q)}`, `I(x) = ${It}`],
-    musterloesungHtml: `Hauptsatz: I′(x) = f(x) = ${num(k)} · ${linear(p)} · ${linear(q)} = 0 ⟺ x = ${num(p)} oder x = ${num(q)}<br>` +
+    tipps: [`I′(x) = f(x) = ${faktorVor(k)}${linear(p)} · ${linear(q)}`, `I(x) = ${It}`],
+    musterloesungHtml: `Hauptsatz: I′(x) = f(x) = ${faktorVor(k)}${linear(p)} · ${linear(q)} = 0 ⟺ x = ${num(p)} oder x = ${num(q)}<br>` +
       `Bei ${num(xmax)} wechselt f von + nach − ⟹ lokales Maximum von I: <strong>x<sub>M</sub> = ${num(xmax)}</strong> (bei ${num(xmin)} liegt das Minimum).<br>` +
       `I(x) = ${klammer(poly([[k / 3, "t³"], [(-k * (p + q)) / 2, "t²"], [k * p * q, "t"]]), "0", "x")} = ${It}<br><strong>I(${num(xmax)}) = ${num(Imax)}</strong> (zum Vergleich: I(${num(xmin)}) = ${num(Imin)})`,
-  };
-}
-
-// ---------- K3: Kugelschicht ----------
-// f(x) = √(r² − x²) rotiert um die x-Achse; V/π = r²(b − a) − (b³ − a³)/3.
-const K3_KANDIDATEN = spaeter(() => {
-  const out = [];
-  for (const r of [2, 3, 4, 5, 6]) for (let a = -r; a < r; a++) for (let b = a + 1; b <= r; b++) {
-    if ((b ** 3 - a ** 3) % 3 !== 0) continue;
-    out.push({ r, a, b, V: r * r * (b - a) - (b ** 3 - a ** 3) / 3 });
-  }
-  return out;
-});
-function k3Werte(v) {
-  const { r, a, b } = v;
-  return {
-    plus: r * r * (b - a) + (b ** 3 - a ** 3) / 3,
-    // Ist die Schicht die ganze Kugel, ist die Kugelformel die Lösung — dort NaN.
-    kugel: a === -r && b === r ? NaN : (4 * r ** 3) / 3,
-    zylinder: r * r * (b - a),
-  };
-}
-function generateK3() {
-  const k = ohneKollision(K3_KANDIDATEN(), (v) => { const w = k3Werte(v); return [v.V, w.plus, w.kugel, w.zylinder]; }, EPS);
-  const { r, a, b, V } = k;
-  const w = k3Werte(k);
-  const Ft = `${num(r * r)}x − ⅓x³`;
-  return {
-    promptHtml: `Der Graph von f(x) = √(${num(r * r)} − x²) ist ein Halbkreis mit dem Radius ${num(r)}. Er rotiert um die x-Achse und erzeugt eine Kugel.<br><strong>Berechne das Volumen V der Kugelschicht zwischen x = ${num(a)} und x = ${num(b)}.</strong>` + PI_FAKTOR,
-    correct: V,
-    tolerance: TOL,
-    placeholder: "V : π",
-    hinweis: (roh, v) => {
-      if (nahe(v, w.plus, TOL)) return "Vorzeichen: (f(x))² = r² − x², das x³-Glied der Stammfunktion ist also −⅓x³.";
-      if (nahe(v, w.kugel, TOL)) return "Das ist die ganze Kugel. Gefragt ist nur die Schicht zwischen den beiden Grenzen.";
-      if (nahe(v, w.zylinder, TOL)) return "Das ist ein Zylinder mit dem Radius r. Der Radius der Scheiben ist f(x) und wird nach außen kleiner: π ∫ (r² − x²) dx.";
-      return `V = π · ${intZ(num(a), num(b))} (${num(r * r)} − x²) dx`;
-    },
-    tipps: [`(f(x))² = ${num(r * r)} − x²`, `V = π · ${klammer(Ft, num(a), num(b))}`],
-    musterloesungHtml: `V = π · ${intZ(num(a), num(b))} (${num(r * r)} − x²) dx = π · ${klammer(Ft, num(a), num(b))}<br>` +
-      `= π · (${num(r * r * b - b ** 3 / 3, 4)} − ${numK(r * r * a - a ** 3 / 3, 4)}) = <strong>${num(V)}π</strong> ≈ ${num(V * Math.PI, 2)}<br>` +
-      `<strong>Probe:</strong> Über [−${num(r)}; ${num(r)}] ergäbe dieselbe Rechnung ${num((4 * r ** 3) / 3)}π = ${bruch("4", "3")}π · ${num(r)}³ — die bekannte Kugelformel.`,
   };
 }
 
@@ -857,6 +669,8 @@ function generateK4() {
   const w = k4Werte(kd);
   const ft = poly([[k * c, "x"], [-k, "x²"]]);
   const s = c * Math.cbrt(0.5);
+  // Für k = 1 weder „1 · c³“ noch „m/1“.
+  const kM = k === 1 ? "" : `${num(k)} · `, mK = k === 1 ? "m" : bruch("m", num(k));
   return {
     promptHtml: `Der Graph von f(x) = ${ft} schließt mit der x-Achse eine Fläche ein. Eine Ursprungsgerade y = m · x mit m &gt; 0 teilt diese Fläche in zwei gleich große Teile.<br><strong>Bestimme m.</strong>` + RUND4,
     correct: m,
@@ -865,46 +679,14 @@ function generateK4() {
     hinweis: (roh, v) => {
       if (nahe(v, w.halb, TOL)) return "Die halbe Steigung halbiert die Fläche nicht: Die abgeschnittene Fläche wächst mit der dritten Potenz der Breite.";
       if (nahe(v, w.quadrat, TOL)) return "Gezogen wurde die Quadratwurzel. Die Fläche zwischen Parabel und Gerade wächst mit s³ — es braucht die dritte Wurzel.";
-      if (nahe(v, w.verwechselt, TOL)) return `Das ist die Schnittstelle s = ${bruch("c", "∛2")}, nicht die Steigung. Aus s = c − ${bruch("m", num(k))} folgt m.`;
-      return `Gesamtfläche ${bruch(`${num(k)} · c³`, "6")}; die Gerade schneidet f bei s = c − ${bruch("m", num(k))} und schneidet die Fläche ${bruch(`${num(k)} · s³`, "6")} ab.`;
+      if (nahe(v, w.verwechselt, TOL)) return `Das ist die Schnittstelle s = ${bruch("c", "∛2")}, nicht die Steigung. Aus s = c − ${mK} folgt m.`;
+      return `Gesamtfläche ${bruch(`${kM}c³`, "6")}; die Gerade schneidet f bei s = c − ${mK} und schneidet die Fläche ${bruch(`${kM}s³`, "6")} ab.`;
     },
-    tipps: [`f(x) − m · x = ${num(k)} · x · (${num(c)} − ${bruch("m", num(k))} − x); zweiter Schnittpunkt bei s = ${num(c)} − ${bruch("m", num(k))}`, `${intZ("0", "s")} (f(x) − m · x) dx = ${bruch(`${num(k)} · s³`, "6")}`],
-    musterloesungHtml: `Gesamtfläche: ${intZ("0", num(c))} f(x) dx = ${bruch(`${num(k)} · ${num(c)}³`, "6")} = ${num((k * c ** 3) / 6)}<br>` +
-      `f(x) − m · x = ${num(k)} · x · (s − x) mit s = ${num(c)} − ${bruch("m", num(k))}; ${intZ("0", "s")} (f(x) − m · x) dx = ${bruch(`${num(k)} · s³`, "6")}<br>` +
-      `${bruch(`${num(k)} · s³`, "6")} = ½ · ${num((k * c ** 3) / 6)} ⟺ s³ = ${num(c ** 3 / 2)} ⟺ s = ${num(s)}<br>` +
-      `m = ${num(k)} · (${num(c)} − s) ≈ <strong>${num(m)}</strong><br><strong>Probe:</strong> ${bruch(`${num(k)} · ${num(s)}³`, "6")} ≈ ${num((k * s ** 3) / 6)} ≈ ½ · ${num((k * c ** 3) / 6)} ✓`,
-  };
-}
-
-// ---------- K5: uneigentliche Fläche zwischen zwei Graphen ----------
-// f(x) = a/x², g(x) = b/x³; Schnittstelle s = b/a, rechts davon liegt f über g. ∫ₛ^∞ (f − g) dx = a²/(2b).
-const K5_KANDIDATEN = spaeter(() => {
-  const out = [];
-  for (const a of [1, 2, 3, 4, 6]) for (const b of [1, 2, 3, 4, 6, 8, 9, 12]) {
-    const s = b / a, A = (a * a) / (2 * b);
-    if (glatt(s, 4) && glatt(A, 4)) out.push({ a, b, s, A });
-  }
-  return out;
-});
-function k5Werte(v) {
-  const { a, b } = v;
-  return { kehr: a === b ? NaN : a / b, nurF: (a * a) / b, plus: (3 * a * a) / (2 * b), neg: -v.A };
-}
-function generateK5() {
-  const k = ohneFeldKollision(K5_KANDIDATEN(), (v) => { const w = k5Werte(v); return [[v.s, w.kehr], [v.A, w.nurF, w.plus, w.neg]]; }, EPS);
-  const { a, b, s, A } = k;
-  const w = k5Werte(k);
-  const ft = bruch(num(a), "x²"), gt = bruch(num(b), "x³");
-  return {
-    promptHtml: `Gegeben sind f(x) = ${ft} und g(x) = ${gt}. Für x &gt; 0 schneiden sich die Graphen in genau einem Punkt S. Rechts von S schließen sie eine nach rechts unbegrenzte Fläche ein.<br><strong>Bestimme die Schnittstelle x<sub>S</sub> und den Inhalt A dieser Fläche.</strong>` + ZAHL,
-    felder: [
-      { name: "x<sub>S</sub> =", soll: s, toleranz: TOL, hinweis: (roh, v) => (nahe(v, w.kehr, TOL) ? `Umgedreht: Aus ${num(a)}x³ = ${num(b)}x² folgt x = ${bruch(num(b), num(a))}.` : "Setze f(x) = g(x) und multipliziere mit x³.") },
-      { name: "A =", soll: A, toleranz: TOL, hinweis: (roh, v) => (nahe(v, w.nurF, TOL) ? "Das ist nur die Fläche unter f. Die Fläche unter g muss noch abgezogen werden." : nahe(v, w.plus, TOL) ? "Vorzeichen: Die Stammfunktion von −b/x³ ist +b/(2x²), nicht −b/(2x²)." : nahe(v, w.neg, TOL) ? "Rechts von S liegt f über g — integriere f − g, nicht g − f." : `A = ${intZ("x<sub>S</sub>", "∞")} (f(x) − g(x)) dx: erst bis z rechnen, dann z → ∞.`) },
-    ],
-    tipps: [`f(x) = g(x) ⟺ ${num(a)}x = ${num(b)} (für x &gt; 0)`, `Stammfunktion von f − g: −${bruch(num(a), "x")} + ${bruch(num(b), "2x²")}`],
-    musterloesungHtml: `${ft} = ${gt} ⟺ ${num(a)}x³ = ${num(b)}x² ⟺ <strong>x<sub>S</sub> = ${num(s)}</strong> (x &gt; 0); für x &gt; ${num(s)} ist f(x) − g(x) = ${bruch(`${num(a)}x − ${num(b)}`, "x³")} &gt; 0.<br>` +
-      `${intZ(num(s), "z")} (f(x) − g(x)) dx = ${klammer(`−${bruch(num(a), "x")} + ${bruch(num(b), "2x²")}`, num(s), "z")} → 0 − (−${bruch(num(a), num(s))} + ${bruch(num(b), `2 · ${numK(s)}²`)}) für z → ∞<br>` +
-      `<strong>A = ${num(A)}</strong> = ${bruch("a²", "2b")}`,
+    tipps: [`f(x) − m · x = ${kM}x · (${num(c)} − ${mK} − x); zweiter Schnittpunkt bei s = ${num(c)} − ${mK}`, `${intZ("0", "s")} (f(x) − m · x) dx = ${bruch(`${kM}s³`, "6")}`],
+    musterloesungHtml: `Gesamtfläche: ${intZ("0", num(c))} f(x) dx = ${bruch(`${kM}${num(c)}³`, "6")} = ${num((k * c ** 3) / 6)}<br>` +
+      `f(x) − m · x = ${kM}x · (s − x) mit s = ${num(c)} − ${mK}; ${intZ("0", "s")} (f(x) − m · x) dx = ${bruch(`${kM}s³`, "6")}<br>` +
+      `${bruch(`${kM}s³`, "6")} = ½ · ${num((k * c ** 3) / 6)} ⟺ s³ = ${num(c ** 3 / 2)} ⟺ s = ${num(s)}<br>` +
+      `m = ${k === 1 ? `${num(c)} − s` : `${kM}(${num(c)} − s)`} ≈ <strong>${num(m)}</strong><br><strong>Probe:</strong> ${bruch(`${kM}${num(s)}³`, "6")} ≈ ${num((k * s ** 3) / 6)} ≈ ½ · ${num((k * c ** 3) / 6)} ✓`,
   };
 }
 
@@ -951,31 +733,6 @@ function generateE6() {
   };
 }
 
-// ---------- E7: uneigentliches Integral in zwei Schritten ----------
-const E7_KANDIDATEN = spaeter(() => {
-  const out = [];
-  for (const c of [1, 2, 3, 4, 5, 6, 8]) for (const b of [2, 4, 5, 10]) {
-    const I = c * (1 - 1 / b);
-    if (glatt(I, 4)) out.push({ c, b, I });
-  }
-  return out;
-});
-function generateE7() {
-  const k = ohneFeldKollision(E7_KANDIDATEN(), (v) => [[v.I, -v.c / v.b, -v.I], [v.c, v.I, 0]], EPS);
-  const { c, b, I } = k;
-  const ft = bruch(num(c), "x²");
-  return {
-    promptHtml: `<strong>Berechne ${intZ("1", "b")} ${ft} dx für b = ${num(b)} und den Grenzwert für b → ∞.</strong>` + ZAHL,
-    felder: [
-      { name: `für b = ${num(b)}:`, soll: I, toleranz: TOL, hinweis: (roh, v) => (nahe(v, -c / b, TOL) ? "Das ist nur F(b). Die untere Grenze 1 zählt mit: F(b) − F(1)." : nahe(v, -I, TOL) ? `Vorzeichen: Die Stammfunktion von ${ft} ist −${bruch(num(c), "x")}; F(b) − F(1) = −${bruch(num(c), "b")} + ${num(c)}.` : `Stammfunktion F(x) = −${bruch(num(c), "x")}, dann F(${num(b)}) − F(1).`) },
-      { name: "Grenzwert:", soll: c, toleranz: TOL, hinweis: (roh, v) => (nahe(v, I, TOL) ? `Das ist der Wert für b = ${num(b)}. Für b → ∞ geht ${bruch(num(c), "b")} gegen 0.` : nahe(v, 0, TOL) ? "Der Integrand geht gegen 0, das Integral aber nicht: Es nähert sich der Fläche der ganzen unbegrenzten Fläche." : `${num(c)} − ${bruch(num(c), "b")} für b → ∞.`) },
-    ],
-    tipps: [`F(x) = −${bruch(num(c), "x")}`, `${intZ("1", "b")} ${ft} dx = ${num(c)} − ${bruch(num(c), "b")}`],
-    musterloesungHtml: `${intZ("1", "b")} ${ft} dx = ${klammer(`−${bruch(num(c), "x")}`, "1", "b")} = −${bruch(num(c), "b")} + ${num(c)}<br>` +
-      `b = ${num(b)}: <strong>${num(c)} − ${num(c / b)} = ${num(I)}</strong>; für b → ∞ geht ${bruch(num(c), "b")} → 0, also <strong>${intZ("1", "∞")} ${ft} dx = ${num(c)}</strong> (konvergent).`,
-  };
-}
-
 // ---------- M6: drei Schnittstellen — x ausklammern ----------
 // f(x) = m·x + k·x(x − p)(x − q), g(x) = m·x mit p < 0 < q: d = f − g hat die Nullstellen p, 0, q.
 const M6_KANDIDATEN = spaeter(() => {
@@ -1010,7 +767,7 @@ function generateM6() {
       return "d(x) = f(x) − g(x) hat kein absolutes Glied: x ausklammern, den Rest mit der pq-Formel lösen, dann zwei Teilintegrale.";
     },
     tipps: [`d(x) = f(x) − g(x) = ${dt} = x · (${poly([[k, "x²"], [-k * (p + q), "x"], [k * p * q, ""]])})`, `Schnittstellen ${num(p)}, 0 und ${num(q)}`],
-    musterloesungHtml: `d(x) = f(x) − g(x) = ${dt} = ${num(k)} · x · (${pqLinks(p, q)}) = 0<br>` +
+    musterloesungHtml: `d(x) = f(x) − g(x) = ${dt} = ${faktorVor(k)}x · (${pqLinks(p, q)}) = 0<br>` +
       `x = 0 oder ${pqWeg(p, q)}<br>D(x) = ${Dt}: ${intZ(num(p), "0")} d(x) dx = ${num(I1)}, ${intZ("0", num(q))} d(x) dx = ${num(I2)}<br>` +
       `<strong>A = |${num(I1)}| + |${num(I2)}| = ${num(A)}</strong>`,
   };
@@ -1018,41 +775,6 @@ function generateM6() {
 // x² − (p + q)x + pq als Text — der Faktor, der nach dem Ausklammern übrig bleibt.
 function pqLinks(p, q) {
   return poly([[1, "x²"], [-(p + q), "x"], [p * q, ""]]);
-}
-
-// ---------- M7: Polstelle am Rand ----------
-const M7_KANDIDATEN = spaeter(() => {
-  const out = [];
-  for (const c of [1, 2, 3, 0.5, 1.5, 4]) for (const a of [1, 4, 9, 16, 25, 0.25]) {
-    const I = 2 * c * Math.sqrt(a);
-    if (glatt(I, 4)) out.push({ c, a, I });
-  }
-  return out;
-});
-function m7Werte(v) {
-  const { c, a } = v;
-  return { ohne2: c * Math.sqrt(a), abl: -c / (2 * a * Math.sqrt(a)), abEins: a === 1 ? NaN : 2 * c * (Math.sqrt(a) - 1) };
-}
-function generateM7() {
-  const k = ohneKollision(M7_KANDIDATEN(), (v) => { const w = m7Werte(v); return [v.I, w.ohne2, w.abl, w.abEins]; }, EPS);
-  const { c, a, I } = k;
-  const w = m7Werte(k);
-  const ft = bruch(num(c), "√x");
-  return {
-    promptHtml: `Der Integrand ${ft} ist bei x = 0 nicht definiert und wächst dort über alle Grenzen.<br><strong>Berechne das uneigentliche Integral ${intZ("0", num(a))} ${ft} dx.</strong>` + ZAHL,
-    correct: I,
-    tolerance: TOL,
-    placeholder: "Integral",
-    hinweis: (roh, v) => {
-      if (nahe(v, w.ohne2, TOL)) return "Der Faktor 2 fehlt: x<sup>−½</sup> hat die Stammfunktion x<sup>½</sup> : ½ = 2√x.";
-      if (nahe(v, w.abl, TOL)) return "Das ist die Ableitung des Integranden, nicht eine Stammfunktion.";
-      if (nahe(v, w.abEins, TOL)) return "Die untere Grenze ist 0, nicht 1: ε → 0 einsetzen, nicht 1.";
-      return `Ersetze 0 durch ε: ${intZ("ε", num(a))} ${ft} dx, integrieren, dann ε → 0.`;
-    },
-    tipps: [`${ft} = ${num(c)} · x<sup>−½</sup>; Stammfunktion F(x) = ${num(2 * c)}√x`, "Polstelle bei 0: erst bis ε rechnen, dann ε → 0."],
-    musterloesungHtml: `${intZ("ε", num(a))} ${ft} dx = ${klammer(`${num(2 * c)}√x`, "ε", num(a))} = ${num(2 * c)} · ${num(Math.sqrt(a))} − ${num(2 * c)}√ε = ${num(I)} − ${num(2 * c)}√ε<br>` +
-      `Für ε → 0 geht √ε → 0: <strong>${intZ("0", num(a))} ${ft} dx = ${num(I)}</strong> — die Fläche ist endlich, obwohl der Graph bei 0 unbegrenzt steigt.`,
-  };
 }
 
 // ---------- S6: Schnittstellen und Fläche — erst durch den Leitkoeffizienten teilen ----------
@@ -1087,36 +809,6 @@ function generateS6() {
     tipps: [`d(x) = f(x) − g(x) = ${dt}`, `d(x) = 0 ⟺ ${pqLinks(x1, x2)} = 0 (durch ${num(k)} geteilt)`],
     musterloesungHtml: `d(x) = f(x) − g(x) = ${dt} = 0 &nbsp;| : ${numK(k)}<br>${pqWeg(x1, x2)}<br>` +
       `${intZ(num(x1), num(x2))} d(x) dx = ${klammer(Dt, num(x1), num(x2))} = ${num(-k * (x2 - x1) ** 3 / 6)}<br><strong>A = ${num(A)}</strong>`,
-  };
-}
-
-// ---------- S7: unendlich langer Rotationskörper ----------
-const S7_KANDIDATEN = spaeter(() => {
-  const out = [];
-  for (const c of [1, 2, 3, 4, 5, 6, 8, 0.5]) for (const a of [1, 2, 3, 4, 5, 0.5, 0.25]) {
-    const V = (c * c) / a;
-    if (glatt(V, 4)) out.push({ c, a, V });
-  }
-  return out;
-});
-function generateS7() {
-  const k = ohneKollision(S7_KANDIDATEN(), (v) => [v.V, v.c / v.a, (v.c * v.c) / (v.a * v.a), v.V * Math.PI], EPS);
-  const { c, a, V } = k;
-  const ft = bruch(num(c), "x");
-  return {
-    promptHtml: `Der Graph von f(x) = ${ft} rotiert über [${num(a)}; ∞) um die x-Achse. Es entsteht ein unendlich langer Trichter.<br><strong>Berechne sein Volumen V.</strong>` + PI_FAKTOR,
-    correct: V,
-    tolerance: TOL,
-    placeholder: "V : π",
-    hinweis: (roh, v) => {
-      if (nahe(v, c / a, TOL)) return `Quadriert wurde nicht: V = π ∫ (f(x))² dx mit (f(x))² = ${bruch(num(c * c), "x²")}.`;
-      if (nahe(v, (c * c) / (a * a), TOL)) return `Die Stammfunktion von ${bruch(num(c * c), "x²")} ist −${bruch(num(c * c), "x")}, nicht −${bruch(num(c * c), "x²")}.`;
-      if (nahe(v, V * Math.PI, 0.001)) return "Das ist V als Dezimalzahl. Gefragt ist nur der Faktor vor π.";
-      return `V = π · ${intZ(num(a), "∞")} ${bruch(num(c * c), "x²")} dx: erst bis b rechnen, dann b → ∞.`;
-    },
-    tipps: [`(f(x))² = ${bruch(num(c * c), "x²")}`, `π · ${intZ(num(a), "b")} ${bruch(num(c * c), "x²")} dx = π · (${bruch(num(c * c), num(a))} − ${bruch(num(c * c), "b")})`],
-    musterloesungHtml: `V = π · ${intZ(num(a), "b")} ${bruch(num(c * c), "x²")} dx = π · ${klammer(`−${bruch(num(c * c), "x")}`, num(a), "b")} = π · (${bruch(num(c * c), num(a))} − ${bruch(num(c * c), "b")})<br>` +
-      `Für b → ∞: <strong>V = ${num(V)}π</strong> ≈ ${num(V * Math.PI, 2)} — endlich, obwohl der Trichter unendlich lang ist.`,
   };
 }
 
@@ -1159,43 +851,8 @@ function generateK6() {
     },
     tipps: [`d(x) = f(x) − g(x) = ${dt}`, `d(${num(z)}) = 0 — spalte (x ${plusMinus(-z)}) ab.`],
     musterloesungHtml: `d(x) = f(x) − g(x) = ${dt}<br>Raten: d(${num(z)}) = 0. Polynomdivision: d(x) : ${linear(z)} = ${rest}` +
-      `${k === 1 ? "" : ` = ${num(k)} · (${pqLinks(u, o)})`}<br>${pqWeg(Math.min(u, o), Math.max(u, o))} — Schnittstellen ${num(p)}, ${num(q)}, ${num(r)}<br>` +
+      `${k === 1 ? "" : ` = ${faktorVor(k)}(${pqLinks(u, o)})`}<br>${pqWeg(Math.min(u, o), Math.max(u, o))} — Schnittstellen ${num(p)}, ${num(q)}, ${num(r)}<br>` +
       `D(x) = ${Dt}: ${intZ(num(p), num(q))} d(x) dx = ${num(I1)}, ${intZ(num(q), num(r))} d(x) dx = ${num(I2)}<br><strong>A = |${num(I1)}| + |${num(I2)}| = ${num(A)}</strong>`,
-  };
-}
-
-// ---------- K7: Grenze aus einer unbegrenzten Fläche ----------
-const K7_KANDIDATEN = spaeter(() => {
-  const out = [];
-  for (const a of [0.5, 1, 2, 3, 4, 5]) for (const c of [2, 4, 6, 8, 10, 16, 18]) {
-    const A = c / (2 * a * a);
-    if (glatt(A, 4)) out.push({ a, c, A });
-  }
-  return out;
-});
-function k7Werte(v) {
-  const { a, c, A } = v;
-  return { quadrat: a === 1 ? NaN : a * a, ohneHalb: Math.sqrt(c / A), exponent: Math.pow(c / (4 * A), 0.25) };
-}
-function generateK7() {
-  const kd = ohneKollision(K7_KANDIDATEN(), (v) => { const w = k7Werte(v); return [v.a, w.quadrat, w.ohneHalb, w.exponent]; }, EPS);
-  const { a, c, A } = kd;
-  const w = k7Werte(kd);
-  const ft = bruch(num(c), "x³");
-  return {
-    promptHtml: `Die Fläche zwischen dem Graphen von f(x) = ${ft}, der x-Achse und der Geraden x = a (a &gt; 0) reicht nach rechts ins Unendliche. Ihr Inhalt ist ${num(A)}.<br><strong>Bestimme a.</strong>` + ZAHL,
-    correct: a,
-    tolerance: TOL,
-    placeholder: "a",
-    hinweis: (roh, v) => {
-      if (nahe(v, w.quadrat, TOL)) return "Das ist a². Zum Schluss fehlt die Wurzel.";
-      if (nahe(v, w.ohneHalb, TOL)) return `Der Faktor ½ fehlt: Die Stammfunktion von ${ft} ist −${bruch(num(c), "2x²")}.`;
-      if (nahe(v, w.exponent, TOL)) return `Potenzregel mit dem falschen Exponenten: x<sup>−3</sup> wird zu x<sup>−2</sup> : (−2), nicht zu x<sup>−4</sup>.`;
-      return `${intZ("a", "∞")} ${ft} dx = ${bruch(num(c), "2a²")}; setze das gleich ${num(A)}.`;
-    },
-    tipps: [`${intZ("a", "b")} ${ft} dx = ${bruch(num(c), "2a²")} − ${bruch(num(c), "2b²")}`, `Für b → ∞: ${bruch(num(c), "2a²")} = ${num(A)}`],
-    musterloesungHtml: `${intZ("a", "b")} ${ft} dx = ${klammer(`−${bruch(num(c), "2x²")}`, "a", "b")} = ${bruch(num(c), "2a²")} − ${bruch(num(c), "2b²")} → ${bruch(num(c), "2a²")} für b → ∞<br>` +
-      `${bruch(num(c), "2a²")} = ${num(A)} ⟺ a² = ${num(a * a)} ⟺ <strong>a = ${num(a)}</strong> (a &gt; 0)<br><strong>Probe:</strong> ${bruch(num(c), `2 · ${numK(a)}²`)} = ${num(A)} ✓`,
   };
 }
 
@@ -1228,33 +885,95 @@ function generateM8() {
     pot(zufall(KOEFF), zufall([1, 2, 3])),
   ]));
 }
-// schwierig: Sinus und Kosinus mit innerer Ableitung.
-function generateS8() {
-  const gl = [trig(zufall(KOEFF), zufall(["sin", "cos"]), zufall([2, 3, 4, q(1, 2)])), pot(zufall(KOEFF), zufall([1, 2, 3]))];
-  if (zufall([true, false])) gl.push(trig(zufall(KLEIN), zufall(["sin", "cos"]), 1));
-  return stammAufgabe(mische(gl));
-}
-// komplex: Verkettung — lineare Verkettung (Potenzen, Wurzeln und Winkelfunktionen von mx + n), oder
-// erst umformen: (x² − 1)² ausmultiplizieren (die Regel für mx + n gilt dort nicht), sin²(x) und
-// sin(x) · cos(x) über den doppelten Winkel — die Umformung steht in der Aufgabe, denn die Seite
-// leitet sie nicht her.
-function generateK8() {
-  const art = zufall(["linear", "linear", "ausmultiplizieren", "umformen"]);
-  const gl = [];
-  if (art === "linear") {
-    gl.push(kette(zufall([1, 2, 3, 4, -2]), zufall([2, 3, 4]), zufall([1, 2, 3]), zufall([2, 3, 4, -2, -3, q(1, 2), q(-1, 2)])));
-    gl.push(trig(zufall(KLEIN), zufall(["sin", "cos"]), zufall([2, 3]), 1));
-    if (zufall([true, false])) gl.push(pot(zufall(KOEFF), zufall([1, 2])));
-  } else if (art === "ausmultiplizieren") {
-    gl.push(zufall([true, true, false])
-      ? verkettung(zufall([1, 2, 3, -1]), zufall([1, 2]), zufall([2, 3]), zufall([1, 2, 3, -1, -2, -3]), 2, { p: zufall([0, 0, 1]) })
-      : verkettung(zufall([1, 2, -1]), 1, 2, zufall([1, -1, 2, -2]), 3));
-    if (zufall([true, false])) gl.push(pot(zufall(KOEFF), 1));
-  } else {
-    const [s, c] = zufall([[2, 0], [0, 2], [1, 1]]);
-    gl.push(trigPotenz(zufall([1, 2, 4, -2, 3]), s, c, zufall([1, 2])));
-    gl.push(pot(zufall(KOEFF), zufall([0, 1, 2])));
+
+// ---------- S7: Fläche zwischen Parabel und Tangente ----------
+// f(x) = ax² + c, Tangente in P(x₀ | f(x₀)): f(x) − t(x) = a(x − x₀)², also schließen Graph, Tangente
+// und y-Achse die Fläche |a| · |x₀|³ / 3 ein. Fehlerbilder: Steigung ohne den Faktor 2; die Fläche
+// ohne 1/3 und die Fläche unter f statt zwischen f und t.
+const S7_KANDIDATEN = spaeter(() => {
+  const out = [];
+  for (const a of [0.5, 1, 1.5, 2, 3, 0.75, -1, -1.5]) for (const x0 of [1, 2, 3, -1, -2]) for (const c of [1, 2, -1, 3]) {
+    const A = (Math.abs(a) * Math.abs(x0) ** 3) / 3;
+    if (!glatt(A, 4)) continue;
+    out.push({ a, x0, c, m: 2 * a * x0, A, ohneDrittel: Math.abs(a * x0 ** 3), unterF: Math.abs((a * x0 ** 3) / 3 + c * x0) });
   }
+  return out;
+});
+// a/3 als Bruch mit dem Vorzeichen davor: −1,5/3 steht als „−“ vor dem Bruch.
+function drittel(a) {
+  return (a < 0 ? "−" : "") + bruch(num(Math.abs(a)), "3");
+}
+function generateS7() {
+  const v = ohneFeldKollision(S7_KANDIDATEN(), (w) => [[w.m, w.a * w.x0], [w.A, w.ohneDrittel, w.unterF]], EPS);
+  const { a, x0, c, m, A } = v;
+  const ft = poly([[a, "x²"], [c, ""]]), y0 = a * x0 * x0 + c, n = y0 - m * x0;
+  const tt = poly([[m, "x"], [n, ""]]);
+  const [lo, hi] = x0 > 0 ? [0, x0] : [x0, 0];
+  const wert = (a / 3) * ((hi - x0) ** 3 - (lo - x0) ** 3);
+  return {
+    promptHtml: `Gegeben ist f(x) = ${ft}. Die Tangente an den Graphen von f im Punkt P(${num(x0)} | ${num(y0)}), der Graph von f und die y-Achse schließen eine Fläche ein.<br><strong>Bestimme die Steigung m der Tangente und den Inhalt A dieser Fläche.</strong>` + ZAHL,
+    felder: [
+      { name: "m =", soll: m, toleranz: TOL, hinweis: (roh, z) => (nahe(z, a * x0, TOL) ? `Die Ableitung von ${glied(a, "x²", false)} ist ${glied(2 * a, "x", false)} — der Faktor 2 fehlt.` : `m = f′(${num(x0)}).`) },
+      { name: "A =", soll: A, toleranz: TOL, hinweis: (roh, z) => (nahe(z, v.ohneDrittel, TOL) ? "Der Faktor 1/3 aus der Stammfunktion fehlt." : nahe(z, v.unterF, TOL) ? "Das ist die Fläche unter dem Graphen von f. Gesucht ist die Fläche zwischen Graph und Tangente: das Integral über f − t." : "A = |∫ (f(x) − t(x)) dx| zwischen 0 und x₀.") },
+    ],
+    tipps: [`t(x) = f′(${num(x0)}) · (x ${plusMinus(-x0)}) + f(${num(x0)})`, `f(x) − t(x) = ${faktorVor(a)}(x ${plusMinus(-x0)})² — die Tangente berührt den Graphen bei x₀.`],
+    musterloesungHtml: `f′(x) = ${glied(2 * a, "x", false)}, also <strong>m = f′(${num(x0)}) = ${num(m)}</strong> und t(x) = ${tt}.<br>` +
+      `f(x) − t(x) = ${poly([[a, "x²"], [-m, "x"], [c - n, ""]])} = ${faktorVor(a)}(x ${plusMinus(-x0)})²<br>` +
+      `${intZ(num(lo), num(hi))} (f(x) − t(x)) dx = ${klammer(`${drittel(a)} · (x ${plusMinus(-x0)})³`, num(lo), num(hi))} = ${num(wert)}<br>` +
+      `<strong>A = ${wert < 0 ? `|${num(wert)}| = ` : ""}${num(A)}</strong>`,
+  };
+}
+
+// ---------- K5: Bilanz null — wann ist der Anfangsbestand wieder erreicht? ----------
+// r(t) = k · t · (t − s): erst Abfluss, ab s Zufluss. B(t) = B₀ + k t³/3 − k s t²/2 ist bei T = 1,5 · s
+// wieder B₀; der kleinste Bestand liegt bei t = s: B₀ − k s³/6.
+// Fehlerbilder: T = s (Nullstelle der Rate), T = 2s/3 (Bruch verkehrt); beim Minimum das Vorzeichen
+// und der fehlende Anfangsbestand.
+const K5_KANDIDATEN = spaeter(() => {
+  const out = [];
+  for (const k of [0.5, 1, 1.5, 2, 3, 0.25]) for (const s of [2, 3, 4, 6, 8]) for (const B0 of [50, 80, 100, 200, 500]) {
+    const T = 1.5 * s, Bmin = B0 - (k * s ** 3) / 6;
+    if (Bmin <= 0 || !glatt(Bmin, 4)) continue;
+    out.push({ k, s, B0, T, Bmin, verkehrt: (2 * s) / 3, plus: B0 + (k * s ** 3) / 6, ohneB0: -(k * s ** 3) / 6 });
+  }
+  return out;
+});
+function generateK5() {
+  const v = ohneFeldKollision(K5_KANDIDATEN(), (w) => [[w.T, w.s, w.verkehrt], [w.Bmin, w.plus, w.ohneB0]], EPS);
+  const { k, s, B0, T, Bmin } = v;
+  const rt = poly([[k, "t²"], [-k * s, "t"]]);
+  // k/3 bricht nicht immer ab (k = 1 gibt 0,333…) — deshalb als Bruch.
+  const kDrittel = (v) => `${bruch(num(k), "3")}${v}³ − ${glied((k * s) / 2, v + "²", false)}`;
+  return {
+    promptHtml: `Die Wassermenge in einem Becken ändert sich mit der Rate r(t) = ${rt} (t in Stunden, r(t) in m³ pro Stunde; negative Werte bedeuten Abfluss). Zu Beginn sind ${num(B0)} m³ im Becken.<br><strong>Zu welchem Zeitpunkt T &gt; 0 sind wieder ${num(B0)} m³ im Becken, und wie groß ist der kleinste Bestand?</strong>` + ZAHL,
+    felder: [
+      { name: "T =", soll: T, toleranz: TOL, hinweis: (roh, z) => (nahe(z, s, TOL) ? "Dort ist die Rate null — der Bestand ist am kleinsten, aber noch nicht wieder beim Anfangswert." : nahe(z, v.verkehrt, TOL) ? "Bruch verkehrt: Aus T/3 = s/2 folgt T = 3s/2." : "Gesucht ist T mit ∫ r(t) dt = 0 zwischen 0 und T — dann ist die Bilanz ausgeglichen.") },
+      { name: "B<sub>min</sub> =", soll: Bmin, toleranz: TOL, hinweis: (roh, z) => (nahe(z, v.plus, TOL) ? "Vorzeichen: Bis t = s fließt Wasser ab — der Bestand nimmt ab." : nahe(z, v.ohneB0, TOL) ? `Das ist nur die Änderung. Der Anfangsbestand von ${num(B0)} m³ kommt dazu.` : "Der Bestand ist am kleinsten, wo die Rate von − nach + wechselt.") },
+    ],
+    tipps: [`B(t) = ${num(B0)} + ${intZ("0", "t")} r(u) du — erst die Stammfunktion von r, dann B(T) = ${num(B0)} setzen.`, "Kleinster Bestand: r(t) = 0 mit Vorzeichenwechsel von − nach +."],
+    musterloesungHtml: `B(t) = ${num(B0)} + ${intZ("0", "t")} (${rt.replace(/t/g, "u")}) du = ${num(B0)} + ${kDrittel("t")}<br>` +
+      `B(T) = ${num(B0)} ⟺ ${kDrittel("T")} = 0 ⟺ T² · (${bruch(num(k), "3")}T − ${num((k * s) / 2)}) = 0 ⟺ <strong>T = ${num(T)}</strong> h (T &gt; 0)<br>` +
+      `r(t) = ${glied(k, "t", false)} · (t − ${num(s)}) wechselt bei t = ${num(s)} von − nach +: <strong>B<sub>min</sub></strong> = B(${num(s)}) = ${num(B0)} − ${num((k * s ** 3) / 6)} = <strong>${num(Bmin)} m³</strong>`,
+  };
+}
+
+// schwierig: Produkte zweier Polynome — erst ausmultiplizieren, denn eine „Produktregel rückwärts“
+// gibt es nicht: ∫ u · v dx ist nicht ∫ u dx · ∫ v dx.
+function generateS8() {
+  const faktor = () => {
+    const g = zufall([1, 2]);
+    return [pot(zufall(KLEIN), g), pot(zufall(KOEFF), zufall(bereich(0, g - 1)))];
+  };
+  return stammAufgabe([produkt(faktor(), faktor())]);
+}
+// komplex: Klammern mit Hochzahl — (x² − 1)², x · (x² + 2)², (2x³ + 1)² … ausmultiplizieren (binomische
+// Formel oder dritte Potenz), dann Glied für Glied. Eine Regel für die ganze Klammer hat der Grundkurs
+// nicht; die lineare Verkettung folgt erst in Thema 4.2.
+function generateK8() {
+  const gl = [zufall([true, true, false])
+    ? verkettung(zufall([1, 2, 3, -1]), zufall([1, 2]), zufall([2, 3]), zufall([1, 2, 3, -1, -2, -3]), 2, { p: zufall([0, 0, 1]) })
+    : verkettung(zufall([1, 2, -1]), 1, 2, zufall([1, -1, 2, -2]), 3)];
+  if (zufall([true, false])) gl.push(pot(zufall(KOEFF), zufall([1, 2])));
   return stammAufgabe(mische(gl));
 }
 
@@ -1263,32 +982,24 @@ export const AUFGABEN = [
   { schwierigkeit: "einfach", titel: "Integral eines Polynoms", generate: generateE2 },
   { schwierigkeit: "einfach", titel: "Bestand aus Zu- und Abfluss", generate: generateE3 },
   { schwierigkeit: "einfach", titel: "Mittelwert einer Funktion", generate: generateE4 },
-  { schwierigkeit: "einfach", titel: "Sinus und Kosinus", generate: generateE5 },
   { schwierigkeit: "einfach", titel: "Schnittstellen von Parabel und Gerade", generate: generateE6 },
-  { schwierigkeit: "einfach", titel: "Uneigentliches Integral in zwei Schritten", generate: generateE7 },
   { schwierigkeit: "einfach", titel: "Stammfunktion: ganzrational", generate: generateE8, wuerfelText: "🎲 Neue Funktion" },
   { schwierigkeit: "mittel", titel: "Fläche mit Vorzeichenwechsel", generate: generateM1 },
   { schwierigkeit: "mittel", titel: "Fläche zwischen Parabel und Gerade", generate: generateM2 },
   { schwierigkeit: "mittel", titel: "Stammfunktion durch einen Punkt", generate: generateM3 },
-  { schwierigkeit: "mittel", titel: "Lineare Verkettung", generate: generateM4 },
   { schwierigkeit: "mittel", titel: "Obere Grenze gesucht", generate: generateM5 },
   { schwierigkeit: "mittel", titel: "Drei Schnittstellen", generate: generateM6 },
-  { schwierigkeit: "mittel", titel: "Polstelle am Rand", generate: generateM7 },
   { schwierigkeit: "mittel", titel: "Stammfunktion: Potenzen und Wurzeln", generate: generateM8, wuerfelText: "🎲 Neue Funktion" },
   { schwierigkeit: "schwierig", titel: "Fläche zwischen zwei Parabeln", generate: generateS1 },
   { schwierigkeit: "schwierig", titel: "Parameter aus dem Flächeninhalt", generate: generateS2 },
-  { schwierigkeit: "schwierig", titel: "Rotationsvolumen", generate: generateS3 },
-  { schwierigkeit: "schwierig", titel: "Uneigentliches Integral", generate: generateS4 },
   { schwierigkeit: "schwierig", titel: "Größter Bestand", generate: generateS5 },
   { schwierigkeit: "schwierig", titel: "Schnittstellen und Fläche zweier Parabeln", generate: generateS6 },
-  { schwierigkeit: "schwierig", titel: "Unendlich langer Rotationskörper", generate: generateS7 },
-  { schwierigkeit: "schwierig", titel: "Stammfunktion: Sinus und Kosinus", generate: generateS8, wuerfelText: "🎲 Neue Funktion" },
+  { schwierigkeit: "schwierig", titel: "Fläche zwischen Parabel und Tangente", generate: generateS7 },
+  { schwierigkeit: "schwierig", titel: "Stammfunktion: Produkte ausmultiplizieren", generate: generateS8, wuerfelText: "🎲 Neue Funktion" },
   { schwierigkeit: "komplex", titel: "Tangente an eine kubische Funktion", generate: generateK1 },
   { schwierigkeit: "komplex", titel: "Maximum einer Integralfunktion", generate: generateK2 },
-  { schwierigkeit: "komplex", titel: "Kugelschicht", generate: generateK3 },
   { schwierigkeit: "komplex", titel: "Ursprungsgerade halbiert eine Fläche", generate: generateK4 },
-  { schwierigkeit: "komplex", titel: "Unbegrenzte Fläche zwischen zwei Graphen", generate: generateK5 },
+  { schwierigkeit: "komplex", titel: "Bilanz null", generate: generateK5 },
   { schwierigkeit: "komplex", titel: "Kubische Funktion und Parabel", generate: generateK6 },
-  { schwierigkeit: "komplex", titel: "Grenze aus einer unbegrenzten Fläche", generate: generateK7 },
-  { schwierigkeit: "komplex", titel: "Stammfunktion: Verkettung und Umformen", generate: generateK8, wuerfelText: "🎲 Neue Funktion" },
+  { schwierigkeit: "komplex", titel: "Stammfunktion: Klammern auflösen", generate: generateK8, wuerfelText: "🎲 Neue Funktion" },
 ];

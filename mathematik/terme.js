@@ -341,7 +341,8 @@ function gliedText(g, lin) {
   const c = q(Math.abs(g.k.z), g.k.n), a = lin ? aLin(g.j) : aHtml(g.j);
   if (negativ(g)) {
     const zaehler = c.z === 1 && a ? a : `${c.z}${a}`;
-    const nenner = `${c.n === 1 ? "" : c.n}${kern(g, lin)}`;
+    // Im gesetzten Bruch braucht ein Nenner (2x + 1) ohne Hochzahl keine Klammer.
+    const kt = kern(g, lin), nenner = c.n === 1 && !lin && /^\([^()]*\)$/.test(kt) ? kt.slice(1, -1) : `${c.n === 1 ? "" : c.n}${kt}`;
     return lin ? `${zaehler}/${nennerLin(nenner)}` : bruchHtml(zaehler, nenner);
   }
   const kt = kern(g, lin);
@@ -503,7 +504,26 @@ function zusammenfassen(gl) {
 }
 export const ableitung = (gl) => zusammenfassen(gl.flatMap(ableitungGlied));
 
+// Ansatz für p(x) · e^(mx + n): F = Q(x) · e^(mx + n) mit Q′ + m · Q = p, also
+// Q = p/m − p′/m² + p″/m³ − … (die Reihe bricht ab, weil p ein Polynom ist).
+function ansatzQ(Pl, m) {
+  const aus = [];
+  let abl = Pl, faktor = qDurch(EINS, m);
+  for (let i = 0; abl.length && i < 20; i++) {
+    aus.push(...polySkal(abl, faktor));
+    abl = polyAbl(abl);
+    faktor = qNeg(qDurch(faktor, m));
+  }
+  return zusammenfassen(aus);
+}
+const kehrwert = (g) => (g.typ === "pot" || g.typ === "kette") && g.e.z === -1 && g.e.n === 1;
 function stammGlied(g) {
+  // x⁻¹ hat keine Potenz-Stammfunktion: ln(x) (für x > 0), bei 1/(mx + n) durch m geteilt.
+  if (g.typ === "pot" && kehrwert(g)) return LN(g.k, g.j, 0, EINS, 1, NULL);
+  if (g.typ === "kette" && kehrwert(g)) return LN(qDurch(g.k, g.m), g.j, 0, g.m, 1, g.n);
+  if (g.typ === "ef" && !g.S.length && !g.C.length && g.u.r === 1 && g.u.mj === 0 && g.P.every((h) => h.e.n === 1 && h.e.z >= 0)) {
+    return normiereEF(g.k, g.u, ansatzQ(g.P, g.u.m), [], [], g.b)[0];
+  }
   if (g.typ === "pot") { const e = qPlus(g.e, EINS); return { ...g, k: qDurch(g.k, e), e }; }
   if (g.typ === "trig") return { ...g, fn: g.fn === "sin" ? "cos" : "sin", k: g.fn === "sin" ? qNeg(qDurch(g.k, g.b)) : qDurch(g.k, g.b) };
   if (g.typ === "kette") { const e = qPlus(g.e, EINS); return { ...g, k: qDurch(g.k, qMal(g.m, e)), e }; }
@@ -608,8 +628,22 @@ function regelAbl(g) {
   return `Produktregel mit u = ${xPot(q(g.p), false)} und v = ${kern(g.v, false)}: u′ · v + u · v′`;
 }
 function regelStamm(g) {
+  if (g.typ === "pot" && kehrwert(g)) return "x⁻¹ = 1/x wird zu ln|x|, für x &gt; 0 also ln(x) — die Potenzregel versagt hier";
+  if (g.typ === "kette" && kehrwert(g)) return `lineare Verkettung: 1/(mx + n) wird zu ln(mx + n), durch die innere Ableitung ${betragHtml(g.m)} teilen`;
+  if (g.typ === "ef") {
+    return g.P.some((h) => h.e.z !== 0)
+      ? "Ansatz F(x) = Q(x) · e<sup>kx</sup> mit einem Polynom Q vom selben Grad: F′ = (Q′ + k · Q) · e<sup>kx</sup> muss f sein — Koeffizienten vergleichen"
+      : `e<sup>${g.u.n.z === 0 ? "kx" : "kx + n"}</sup> wird zu ${bruchHtml("1", "k")} · e<sup>${g.u.n.z === 0 ? "kx" : "kx + n"}</sup> — durch k = ${summeHtml(uAbl(g.u))} teilen, nicht malnehmen`;
+  }
   if (g.typ === "produkt") return "ausmultiplizieren, dann Potenzregel rückwärts";
-  if (g.typ === "mono" && g.poly) return `ausmultiplizieren — innen steht ${innenPoly(g.poly, false)} und nicht mx + n, die Regel für lineare Verkettung gilt hier nicht —, dann Potenzregel rückwärts`;
+  // Warum nicht „Klammer hoch e + 1“: abgeleitet käme der Faktor u′ dazu — das zeigt der Text an der
+  // Aufgabe selbst, ohne auf die lineare Verkettung (erst Thema 4.2) zu verweisen.
+  if (g.typ === "mono" && g.poly) {
+    const e1 = qPlus(g.poly.e, EINS);
+    return g.p === 0
+      ? `ausmultiplizieren, dann Potenzregel rückwärts — ${bruchHtml(polyPot(g.poly, e1, false), String(qWert(e1)))} passt nicht: abgeleitet käme noch der Faktor ${innenAbl(g.poly)} dazu`
+      : "ausmultiplizieren, dann Potenzregel rückwärts";
+  }
   if (g.typ === "mono") return `umschreiben mit ${identitaet(g)}, dann lineare Verkettung`;
   if (g.typ === "pot") return g.e.z === 0 ? "Konstante k wird zu k · x" : "Potenzregel rückwärts: Exponent um 1 erhöhen, durch den neuen Exponenten teilen";
   if (g.typ === "trig") return `${g.fn === "sin" ? "sin wird zu −cos" : "cos wird zu sin"}${g.b.z === g.b.n ? "" : `, durch die innere Ableitung ${betragHtml(g.b)} teilen`}`;
@@ -831,7 +865,7 @@ export function ableitungsAufgabe(gl, { name = "f", parameter = [], zweite = fal
 }
 
 // Aufleiten: eine Stammfunktion F.
-export function stammAufgabe(gl, { name = "f" } = {}) {
+export function stammAufgabe(gl, { name = "f", zusatz = "" } = {}) {
   const F = stammfunktion(gl);
   // Die Regel für lineare Verkettung auf (x² − 1)² angewandt, ergibt (x² − 1)³ / 3; abgeleitet kommt
   // die innere Ableitung 2x als Faktor dazu. Durch m geteilt (wie bei mx + n) bleibt r·xʳ⁻¹ übrig.
@@ -843,7 +877,7 @@ export function stammAufgabe(gl, { name = "f" } = {}) {
   const umformungen = unikat(gl.filter((g) => g.typ === "mono" && g.trig).map(identitaet));
   const tipps = unikat(gl.map(regelStamm)).map((t) => t[0].toUpperCase() + t.slice(1) + ".");
   return {
-    promptHtml: `Gegeben ist ${name}(x) = <span class="term">${summeHtml(gl)}</span>.<br><strong>Bestimme eine Stammfunktion F von ${name}.</strong>` +
+    promptHtml: `Gegeben ist ${name}(x) = <span class="term">${summeHtml(gl)}</span>${zusatz}.<br><strong>Bestimme eine Stammfunktion F von ${name}.</strong>` +
       (umformungen.length ? `<br>Verwende dabei ${umformungen.join(" und ")}.` : "") + schreibweise(gl),
     ...termCheck({ art: "stamm", f: funktion(gl), fAbl: funktion(ableitung(gl)), fName: name, extra }),
     placeholder: "F(x) = …",

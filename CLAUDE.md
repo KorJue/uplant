@@ -267,7 +267,9 @@ e^(−x) · sin(2x), `lnGlied` für ln(x² + 1) oder x · ln x und `produkt` fü
 Polynome), die ihre Ableitung und Stammfunktion
 **exakt** kennen; daraus entstehen Angabe, Rechenweg und Eingabeform der
 Musterlösung. Stammfunktionen gibt es dabei nur auf Wegen, die die
-Integralrechnung-Seite lehrt: (x² − 1)² wird ausmultipliziert, und für sin²(x)
+Integralrechnung-Seiten lehren: (x² − 1)² und Produkte zweier Polynome werden ausmultipliziert (4.1),
+p(x) · e^(kx) über den Ansatz Q(x) · e^(kx), 1/x und 1/(mx + n) über ln — die Aufgabe nennt dann
+„x > 0“ dazu (4.2) —, und für sin²(x)
 nennt die Aufgabe die Umformung über den doppelten Winkel (§ 1, kein Vorgriff). Die Eingabe liest
 `leseTerm()` — ohne `eval` — und `pruefeTerm()` vergleicht sie an vielen
 Stellen numerisch und benennt den wahrscheinlichen Fehler (Faktor, Vorzeichen,
@@ -275,7 +277,7 @@ Konstante, Richtung, einmal zu oft …). Die Aufgabenbauer
 `ableitungsAufgabe()` und `stammAufgabe()` liefern fertige Aufgaben für
 `mountUebungsaufgaben()`; welche Glieder gewürfelt werden, steht in der
 jeweiligen Seite. Benutzt wird das in der Differentialrechnung (2.1 und 2.2), der
-Funktionsuntersuchung (3.1 und 3.2) und der Integralrechnung — eine Änderung wirkt auf alle,
+Funktionsuntersuchung (3.1 und 3.2) und der Integralrechnung (4.1 und 4.2) — eine Änderung wirkt auf alle,
 also gehören alle diese Prüfungen danach in den Lauf. Bei linearem Exponenten
 nennt die Musterlösung (e^(kx))′ = k · e^(kx), nicht die Kettenregel — die hat
 der Grundkurs nicht.
@@ -285,7 +287,9 @@ der Leistungskurs braucht, x.2 nur Leistungskurs (rheinland-pfälzischer Lehrpla
 Kettenregel, sin/cos, Quotientenregel, ln-Funktion). Abschnitte tragen
 `<span class="kurs-marke gk|lk">`; ein Grundkurs-Abschnitt stützt sich nie auf
 einen LK-Abschnitt, und LK-Funktionen in seiner Auswahl tragen „(LK)“ — beides
-prüfen `test-weitere-funktionen-ableiten.js` und `test-weitere-funktionen-untersuchen.js`.
+prüfen `test-weitere-funktionen-ableiten.js`, `test-weitere-funktionen-untersuchen.js` und
+`test-weitere-funktionen-integrieren.js`; `test-integralrechnung.js` wacht zusätzlich darüber, dass 4.1
+weder in den Abschnitten noch in den Aufgaben Leistungskurs-Stoff (sin, cos, e-Funktion, ln, Verkettung) benutzt.
 Die x.2-Seiten stellen jeden Abschnitt ausdrücklich neben die ganzrationalen
 Funktionen (Kasten `.unterschied-box`) und sagen in `.rechenweg-box`, welcher
 Rechenweg wo erklärt ist; ein Rechenweg mit LK-Mitteln in einem GK-Abschnitt trägt

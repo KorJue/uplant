@@ -186,7 +186,9 @@ async function geruest(page) {
   // Die Nachbarthemen verweisen hierher — der Sinus und die Kettenregel stehen nicht mehr in 2.1.
   const t21 = fs.readFileSync(path.join(WURZEL, "mathematik/mss11/01-analysis/03-differentialrechnung/index.html"), "utf-8");
   pruefe(t21.includes("../03b-weitere-funktionen-ableiten/index.html"), "Vernetzung: Thema 2.1 verweist nicht auf Thema 2.2");
-  for (const t of ["04b-weitere-funktionen-untersuchen", "05-integralrechnung"]) {
+  // Thema 4.1 ist Grundkursstoff und braucht Thema 2.2 nicht; die Integration von e-Funktionen, sin und
+  // cos steht in Thema 4.2 und baut dort auf.
+  for (const t of ["04b-weitere-funktionen-untersuchen", "05b-weitere-funktionen-integrieren"]) {
     const h = fs.readFileSync(path.join(WURZEL, `mathematik/mss11/01-analysis/${t}/index.html`), "utf-8");
     pruefe(!/03-differentialrechnung\/index.html#sec-(sinus|produkt-kette)/.test(h), `Vernetzung: ${t} verweist noch auf den Sinus oder die Kettenregel in Thema 2.1`);
     pruefe(h.includes("../03b-weitere-funktionen-ableiten/index.html#sec-"), `Vernetzung: ${t} verweist nicht auf Thema 2.2`);
