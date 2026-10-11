@@ -25,7 +25,8 @@ benennt. Vorhanden sind:
 | `f22` | Ableitung weiterer Funktionen (MSS 11, Analysis, Thema 2.2, Leistungskurs) | `mathematik/mss11/01-analysis/03b-weitere-funktionen-ableiten/formelsammlung.pdf` |
 | `f4` | Untersuchung ganzrationaler Funktionen (MSS 11, Analysis, Thema 3.1) | `mathematik/mss11/01-analysis/04-funktionsuntersuchung/formelsammlung.pdf` |
 | `f32` | Untersuchung weiterer Funktionen (MSS 11, Analysis, Thema 3.2, Leistungskurs) | `mathematik/mss11/01-analysis/04b-weitere-funktionen-untersuchen/formelsammlung.pdf` |
-| `f5` | Integralrechnung (MSS 11, Analysis, Thema 4) | `mathematik/mss11/01-analysis/05-integralrechnung/formelsammlung.pdf` |
+| `f5` | Integralrechnung (MSS 11, Analysis, Thema 4.1) | `mathematik/mss11/01-analysis/05-integralrechnung/formelsammlung.pdf` |
+| `f52` | Integration weiterer Funktionen (MSS 11, Analysis, Thema 4.2, Leistungskurs) | `mathematik/mss11/01-analysis/05b-weitere-funktionen-integrieren/formelsammlung.pdf` |
 
 ## Der Weg von der Quelle zum PDF
 

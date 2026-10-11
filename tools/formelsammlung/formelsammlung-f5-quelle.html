@@ -80,7 +80,7 @@
 
 <!-- ===================== Seite 1 ===================== -->
 <div class="page">
-  <h1>Integralrechnung<span class="klein">MSS 11 · Analysis, Thema 4 · <span class="fu">grau: andere Schreibweisen</span></span></h1>
+  <h1>Integralrechnung<span class="klein">MSS 11 · Analysis, Thema 4.1 · Grund- und Leistungskurs · <span class="fu">grau: andere Schreibweisen</span></span></h1>
   <div class="grid">
 
     <div class="box">
@@ -125,17 +125,18 @@
       <div class="zwei">
         <table>
           <tr><th>f(x)</th><th>F(x)</th><th>f(x)</th><th>F(x)</th></tr>
-          <tr><td class="f">k</td><td class="f">kx</td><td class="f">sin(x)</td><td class="f">−cos(x)</td></tr>
-          <tr><td class="f">xⁿ (n ≠ −1)</td><td class="f"><span class="bruch"><span class="z">1</span><span>n + 1</span></span> xⁿ⁺¹</td><td class="f">cos(x)</td><td class="f">sin(x)</td></tr>
-          <tr><td class="f"><span class="bruch"><span class="z">1</span><span>x²</span></span> = x⁻²</td><td class="f">−<span class="bruch"><span class="z">1</span><span>x</span></span></td><td class="f">√x = x<sup>½</sup></td><td class="f"><span class="bruch"><span class="z">2</span><span>3</span></span>x√x</td></tr>
-          <tr><td class="f">k · f + g</td><td class="f">k · F + G</td><td class="f">f(mx + c)</td><td class="f"><span class="bruch"><span class="z">1</span><span>m</span></span> F(mx + c)</td></tr>
+          <tr><td class="f">k</td><td class="f">kx</td><td class="f">√x = x<sup>½</sup></td><td class="f"><span class="bruch"><span class="z">2</span><span>3</span></span>x√x</td></tr>
+          <tr><td class="f">xⁿ (n ≠ −1)</td><td class="f"><span class="bruch"><span class="z">1</span><span>n + 1</span></span> xⁿ⁺¹</td><td class="f"><span class="bruch"><span class="z">1</span><span>√x</span></span> = x<sup>−½</sup></td><td class="f">2√x</td></tr>
+          <tr><td class="f"><span class="bruch"><span class="z">1</span><span>x²</span></span> = x⁻²</td><td class="f">−<span class="bruch"><span class="z">1</span><span>x</span></span></td><td class="f">(x² − 1)²</td><td class="l">ausmultiplizieren: <span class="bruch"><span class="z">x⁵</span><span>5</span></span> − <span class="bruch"><span class="z">2</span><span>3</span></span>x³ + x</td></tr>
+          <tr><td class="f">k · f + g</td><td class="f">k · F + G</td><td class="f">u(x) · v(x)</td><td class="l">ausmultiplizieren — keine Produktregel rückwärts</td></tr>
         </table>
         <div>
           <p>F ist Stammfunktion von f, wenn <b>F′ = f</b>. Mit F ist auch <b>F + C</b> eine; auf einem Intervall sind das alle.</p>
           <div class="rechnung">
             <div class="schritt"><b>1.</b><span class="f">∫<sub>1</sub><sup>2</sup> (3x² − 2x) dx = [x³ − x²]<sub>1</sub><sup>2</sup> = (8 − 4) − (1 − 1) = 4</span></div>
-            <div class="schritt"><b>2.</b><span class="f">∫<sub>0</sub><sup>1</sup> (2x + 1)³ dx = [<span class="bruch"><span class="z">1</span><span>2</span></span> · <span class="bruch"><span class="z">(2x + 1)⁴</span><span>4</span></span>]<sub>0</sub><sup>1</sup> = <span class="bruch"><span class="z">81 − 1</span><span>8</span></span> = 10</span></div>
-            <div class="schritt"><b>3.</b><span><b>Probe:</b> Ableiten muss den Integranden ergeben.</span></div>
+            <div class="schritt"><b>2.</b><span class="f">∫<sub>1</sub><sup>4</sup> √x dx = [<span class="bruch"><span class="z">2</span><span>3</span></span>x√x]<sub>1</sub><sup>4</sup> = <span class="bruch"><span class="z">16</span><span>3</span></span> − <span class="bruch"><span class="z">2</span><span>3</span></span> = <span class="bruch"><span class="z">14</span><span>3</span></span></span></div>
+            <div class="schritt"><b>3.</b><span><b>Probe:</b> Ableiten muss den Integranden ergeben: (<span class="bruch"><span class="z">2</span><span>3</span></span>x<sup><span class="bruch"><span class="z">3</span><span>2</span></span></sup>)′ = x<sup>½</sup> ✓</span></div>
+            <div class="schritt"><b>4.</b><span><span class="bruch"><span class="z">1</span><span>x</span></span> = x⁻¹: Potenzregel versagt (n + 1 = 0) — Logarithmus, Thema 4.2 (LK).</span></div>
           </div>
         </div>
       </div>
@@ -147,7 +148,7 @@
 
 <!-- ===================== Seite 2 ===================== -->
 <div class="page">
-  <h1>Anwendungen<span class="klein">Flächen — Schnittstellen — uneigentliche Integrale — Mittelwert — Rotationskörper</span></h1>
+  <h1>Anwendungen<span class="klein">Flächen — Schnittstellen — Mittelwert — Bestand und Bilanz</span></h1>
   <div class="grid">
 
     <div class="box merk">
@@ -189,37 +190,20 @@
     </div>
 
     <div class="box">
-      <h2>Uneigentliche Integrale</h2>
-      <p class="zentral f">∫<sub>a</sub><sup>∞</sup> f dx = lim<sub>b→∞</sub> ∫<sub>a</sub><sup>b</sup> f dx &nbsp;·&nbsp; ∫<sub>0</sub><sup>1</sup> f dx = lim<sub>ε→0</sub> ∫<sub>ε</sub><sup>1</sup> f dx</p>
-      <div class="rechnung">
-        <div class="schritt"><b>1.</b><span>Problemstelle (∞ oder Polstelle) durch b bzw. ε ersetzen</span></div>
-        <div class="schritt"><b>2.</b><span>gewöhnlich integrieren → Term in b bzw. ε</span></div>
-        <div class="schritt"><b>3.</b><span>Grenzwert: existiert er → <b>konvergent</b>, sonst <b>divergent</b></span></div>
-      </div>
-      <figure style="max-width:74%;margin:0.8mm auto 0">[[FIG6]]</figure>
-      <table style="margin-top:0.6mm">
-        <tr><th><span class="bruch"><span class="z">1</span><span>xʳ</span></span></th><th>r &lt; 1</th><th>r = 1</th><th>r &gt; 1</th></tr>
-        <tr><td class="f">∫<sub>1</sub><sup>∞</sup></td><td>divergent</td><td>divergent</td><td class="f">konv., <span class="bruch"><span class="z">1</span><span>r − 1</span></span></td></tr>
-        <tr><td class="f">∫<sub>0</sub><sup>1</sup></td><td class="f">konv., <span class="bruch"><span class="z">1</span><span>1 − r</span></span></td><td>divergent</td><td>divergent</td></tr>
-      </table>
-      <p class="f" style="margin-top:0.6mm">∫<sub>1</sub><sup>b</sup> <span class="bruch"><span class="z">1</span><span>x²</span></span> dx = 1 − <span class="bruch"><span class="z">1</span><span>b</span></span> → 1; &nbsp;∫<sub>ε</sub><sup>1</sup> <span class="bruch"><span class="z">1</span><span>√x</span></span> dx = 2 − 2√ε → 2</p>
-      <p>f → 0 reicht nicht — es kommt darauf an, <b>wie schnell</b>.</p>
-    </div>
-
-    <div class="box">
       <h2>Mittelwert einer Funktion</h2>
       <p class="zentral f gross">m = <span class="bruch"><span class="z">1</span><span>b − a</span></span> · ∫<sub>a</sub><sup>b</sup> f(x) dx</p>
       <figure style="max-width:70%;margin:0.8mm auto 0">[[FIG5]]</figure>
       <p class="bu">∫<sub>0</sub><sup>6</sup> T(t) dt = 78, m = 13 °C; Mittel der Randwerte: 10 °C</p>
-      <p><b>Bilanz:</b> <span class="f">B(t) = B(0) + ∫<sub>0</sub><sup>t</sup> r(s) ds</span>; Maximum, wo r von + nach − wechselt.</p>
+      <p>Nicht das Mittel der Randwerte — das stimmt nur für Geraden.</p>
     </div>
 
     <div class="box">
-      <h2>Rotationskörper</h2>
-      <p class="zentral f gross">V = π · ∫<sub>a</sub><sup>b</sup> (f(x))² dx</p>
-      <figure style="max-width:70%;margin:0.8mm auto 0">[[FIG7]]</figure>
-      <p class="bu">Scheiben π · f(x)² · Δx; Kegel: π ∫<sub>0</sub><sup>h</sup> <span class="bruch"><span class="z">r²</span><span>h²</span></span> x² dx = ⅓πr²h</p>
-      <p><b>Unendlich lang:</b> f(x) = <span class="bruch"><span class="z">1</span><span>x</span></span> auf [1; ∞): V = π ∫<sub>1</sub><sup>∞</sup> <span class="bruch"><span class="z">1</span><span>x²</span></span> dx = π, die Fläche unter f ist unendlich.</p>
+      <h2>Bestand und Bilanz</h2>
+      <p class="zentral f gross">B(t) = B(0) + ∫<sub>0</sub><sup>t</sup> r(s) ds</p>
+      <figure style="max-width:70%;margin:0.8mm auto 0">[[FIG6]]</figure>
+      <p class="bu">∫<sub>0</sub><sup>6</sup> (0,5t² − 2t) dt = [<span class="bruch"><span class="z">t³</span><span>6</span></span> − t²]<sub>0</sub><sup>6</sup> = 36 − 36 = 0</p>
+      <p><b>Größter / kleinster Bestand:</b> wo r von + nach − bzw. von − nach + wechselt (hier t = 4: B(0) − <span class="bruch"><span class="z">16</span><span>3</span></span>).</p>
+      <p><b>Bilanz null:</b> B(T) = B(0) ⟺ ∫<sub>0</sub><sup>T</sup> r(s) ds = 0 — Zu- und Abfluss heben sich auf.</p>
     </div>
 
     <div class="box warn">
@@ -229,8 +213,9 @@
         <li><b>|Gesamtintegral|</b> als Fläche — die Teile haben sich schon aufgehoben.</li>
         <li><b>Nullstellen von f</b> statt Schnittstellen von f und g als Grenzen.</li>
         <li>pq-Formel ohne vorher durch a zu teilen; Vorzeichen von −<span class="bruch"><span class="z">p</span><span>2</span></span>.</li>
-        <li><b>F(a) − F(b)</b> statt F(b) − F(a); durch den <b>alten</b> Exponenten geteilt; bei f(mx + c) <span class="bruch"><span class="z">1</span><span>m</span></span> vergessen.</li>
-        <li>π(∫ f dx)² statt π∫ f² dx; Hauptsatz über eine <b>Polstelle</b> hinweg.</li>
+        <li><b>F(a) − F(b)</b> statt F(b) − F(a); durch den <b>alten</b> Exponenten geteilt.</li>
+        <li><b>Produkt Faktor für Faktor</b> integriert — erst ausmultiplizieren.</li>
+        <li>Hauptsatz über eine <b>Polstelle</b> hinweg; Rate und Bestand verwechselt.</li>
       </ul>
     </div>
 

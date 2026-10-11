@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Erzeugt die Figuren der Formelsammlung „Integralrechnung“ (MSS 11, Analysis, Thema 4).
+"""Erzeugt die Figuren der Formelsammlung „Integralrechnung“ (MSS 11, Analysis, Thema 4.1).
 
 Jeder Graph und jede Fläche wird aus der Funktion gerechnet. Das Skript prüft mit: Unter- und
 Obersumme stimmen mit den gezeichneten Rechtecken überein und schließen das Integral ein, die
 orientierten Teilflächen ergeben das numerisch berechnete Integral, die Schnittstellen der
 Flächen zwischen zwei Graphen sind echte Nullstellen der Differenz, das Mittelwert-Rechteck hat
-den Inhalt der Fläche, und die Scheibensumme des Kegels nähert die Kegelformel.
+den Inhalt der Fläche, und bei der Bilanz heben sich Ab- und Zufluss genau bei T auf.
+Uneigentliche Integrale und Rotationskörper stehen in der Formelsammlung zu Thema 4.2 (f52).
 
     python3 f5-svgs.py      schreibt f5-figuren.txt (eine Figur je Zeile)
 """
@@ -279,45 +280,29 @@ def fig_mittelwert():
     return svg(A.B, A.H, A.t)
 
 
-# ---------- Figur 6: uneigentliches Integral ----------
+# ---------- Figur 6: Bilanz null ----------
 
-def fig_uneigentlich():
+def fig_bilanz():
     UNTERLAGE[0] = WEISS
-    f1 = lambda x: 1 / (x * x)
-    f2 = lambda x: 1 / math.sqrt(x)
-    A = Achsen(150.0, 74.0, 0, 8.4, 0, 1.4, 1, 0.5, None)
-    inhalt = flaeche(A, f1, lambda x: 0.0, 1, 8.4, GRUEN, 0.3, 300)
-    assert abs(inhalt - (1 - 1 / 8.4)) < 2e-3, "uneigentlich: Fläche unter 1/x² falsch"
-    A.graph(f2, 0.52, 8.4, ORANGE, 300, 1.0)
-    A.graph(f1, 0.85, 8.4, BLAU, 300, 1.2)
-    A.t.append(lin((A.X(1), A.Y(0)), (A.X(1), A.Y(1.4)), ROT, 0.5, "2 1.5"))
-    A.t.append(etikett(A.X(5.6), A.Y(0.56), "1/√x: divergent", ORANGE, 5.0, 700))
-    A.t.append(etikett(A.X(5.6), A.Y(0.17), "1/x²: Fläche 1", BLAU, 5.0, 700))
+    r = lambda t: 0.5 * t * t - 2 * t
+    s = [z for z in vzw(r, 0.01, 10) if z > 0.01]
+    assert len(s) == 1 and abs(s[0] - 4) < 1e-9, "Bilanz: Vorzeichenwechsel der Rate nicht bei 4"
+    T = vzw(lambda t: integral(r, 0, t, 200), 0.5, 10)
+    assert len(T) == 1 and abs(T[0] - 6) < 1e-6, "Bilanz: ∫ r dt wird nicht bei T = 6 null"
+    A = Achsen(150.0, 78.0, -0.2, 6.6, -2.4, 6.6, 1, 2, "r(t) = 0,5t² − 2t")
+    ab = flaeche(A, r, lambda t: 0.0, 0, 4, ORANGE)
+    zu = flaeche(A, r, lambda t: 0.0, 4, 6, GRUEN)
+    assert abs(ab - 16 / 3) < 2e-3 and abs(zu - 16 / 3) < 2e-3, "Bilanz: Ab- und Zufluss nicht gleich groß"
+    A.graph(r, -0.2, 6.6)
+    A.t.append(lin((A.X(6), A.Y(-2.4)), (A.X(6), A.Y(6.6)), ROT, 0.5, "2 1.5"))
+    A.t.append(etikett(A.X(2), A.Y(-0.9), "−16/3", ORANGE, 5.2, 700))
+    A.t.append(etikett(A.X(5.3), A.Y(1.2), "+16/3", GRUEN, 5.2, 700))
+    # Unten rechts der Linie ist frei: Dort läuft der Graph schon oberhalb des Bildes.
+    A.t.append(etikett(A.X(6) + 1.5, A.Y(-1.5), "T = 6", ROT, 5.2, 700, "start"))
     return svg(A.B, A.H, A.t)
 
 
-# ---------- Figur 7: Rotationskörper ----------
-
-def fig_rotation():
-    UNTERLAGE[0] = WEISS
-    fn = lambda x: 0.5 * x
-    a, b, n = 0.0, 4.0, 6
-    dx = (b - a) / n
-    A = Achsen(150.0, 74.0, -0.3, 4.4, -2.3, 2.3, 1, 1, "Kegel: f(x) = 0,5x")
-    summe = 0.0
-    for k in range(n):
-        r = fn(a + (k + 0.5) * dx)
-        summe += math.pi * r * r * dx
-        A.t.append(rect(A.X(a + k * dx), A.Y(r), A.X(a + (k + 1) * dx) - A.X(a + k * dx), A.Y(-r) - A.Y(r), BLAU, BLAU, 0.5, 0.15))
-    V = math.pi * integral(lambda x: fn(x) ** 2, a, b)
-    assert abs(V - 16 * math.pi / 3) < 1e-9 and abs(summe - V) < 0.2, "Rotation: Scheibensumme oder Volumen falsch"
-    A.graph(fn, a, b, BLAU, 50, 1.2)
-    A.graph(lambda x: -fn(x), a, b, BLAU, 50, 1.2)
-    A.t.append(etikett(A.X(1.2), A.Y(1.5), "V = 16π/3", BLAU, 5.2, 700))
-    return svg(A.B, A.H, A.t)
-
-
-FIGUREN = [fig_summen, fig_orientiert, fig_hauptsatz, fig_zwischen, fig_mittelwert, fig_uneigentlich, fig_rotation]
+FIGUREN = [fig_summen, fig_orientiert, fig_hauptsatz, fig_zwischen, fig_mittelwert, fig_bilanz]
 
 if __name__ == "__main__":
     zeilen = [fn() for fn in FIGUREN]

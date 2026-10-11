@@ -1,4 +1,6 @@
-// Selbstlernpfad „Integralrechnung“ (MSS 11, Analysis, Thema 4). Vanilla-JS, kein Build.
+// Selbstlernpfad „Integralrechnung“ (MSS 11, Analysis, Thema 4.1 — Grund- und Leistungskurs).
+// Vanilla-JS, kein Build. Gerechnet wird mit ganzrationalen Funktionen und Potenzen; e-Funktionen, sin,
+// cos, 1/x, uneigentliche Integrale und Rotationskörper stehen in Thema 4.2.
 //
 // Didaktische Reihenfolge — jede Stufe benutzt nur, was davor steht:
 //    1. Rekonstruktion            (Fläche = Rate · Zeit bei Rechtecken; orientiert bei Abfluss)
@@ -8,13 +10,11 @@
 //    4. Integralfunktion          (obere Grenze variabel; Vermutung I′ = f nur beobachtet)
 //    5. Hauptsatz                 (Streifen eingeklemmt zwischen f(x)·h und f(x + h)·h; Stetigkeit
 //                                  aus Thema 1.2)
-//    6. Stammfunktionen, Regeln   (Ableitungsregeln aus Thema 2.1 und 2.2 rückwärts)
+//    6. Stammfunktionen, Regeln   (Ableitungsregeln aus Thema 2.1 rückwärts)
 //    7. Fläche mit der x-Achse    (Nullstellen aus Thema 3.1, Beträge der Teilintegrale)
 //    8. Fläche zwischen Graphen   (Differenzfunktion, Schnittstellen)
 //    9. Mittelwert, Bilanz        (Rechteck gleicher Fläche; Rekonstruktion aus 1 mit Stammfunktion)
-//   10. Uneigentliche Integrale   (Grenzwert für x → ∞ aus Thema 1.2)
-//   11. Rotationskörper           (Scheiben statt Streifen, sonst wie 2)
-//   12. Stolperstelle Polstelle   (Voraussetzung des Hauptsatzes aus 5, uneigentlich aus 10)
+//   10. Stolperstelle Polstelle   (Voraussetzung des Hauptsatzes aus 5)
 //
 // Gerechnet wird mit Reglerwerten und exakten Stammfunktionen, nie mit Bildschirmkoordinaten. Die
 // Flächen werden als Vielecke gezeichnet, an den Nullstellen der Differenz geteilt; die Prüfung misst
@@ -24,7 +24,7 @@
 // darunter orange; Untersumme grün, Obersumme orange; Streifen violett; Warnung rot.
 
 import { mountUebungsaufgaben } from "../../../aufgaben.js?v=3";
-import { AUFGABEN, parseZahl } from "./aufgaben-integralrechnung.js?v=5";
+import { AUFGABEN, parseZahl } from "./aufgaben-integralrechnung.js?v=6";
 
 
 // ---------- Helfer ----------
@@ -406,7 +406,6 @@ function renderSummen() {
 const IN = {
   kubik: { f: (x) => 0.5 * x ** 3 - 1.5 * x, F: (x) => 0.125 * x ** 4 - 0.75 * x * x, nullstellen: [-Math.sqrt(3), 0, Math.sqrt(3)], extrem: [-1, 1], y: [-6, 6] },
   para: { f: (x) => x * x - 1, F: (x) => x ** 3 / 3 - x, nullstellen: [-1, 1], extrem: [0], y: [-1.5, 8.5] },
-  sinus: { f: Math.sin, F: (x) => -Math.cos(x), nullstellen: [-Math.PI, 0, Math.PI], extrem: [-Math.PI / 2, Math.PI / 2], y: [-1.5, 1.5] },
 };
 // Unter- und Obersumme mit n gleich breiten Streifen — kleinster und größter Wert je Streifen an den
 // Rändern oder an einer Extremstelle im Inneren.
@@ -536,8 +535,6 @@ const SF = {
   para: { f: (x) => x * x - 1, F: (x) => x ** 3 / 3 - x, ft: "x² − 1", Ft: `${bruch("x³", "3")} − x`, titel: "x³/3 − x", abl: "x² − 1", yF: [-3.5, 3.5], yf: [-1.5, 6] },
   linear: { f: (x) => 2 * x + 1, F: (x) => x * x + x, ft: "2x + 1", Ft: "x² + x", titel: "x² + x", abl: "2x + 1", yF: [-3, 11], yf: [-4.5, 7] },
   kubik: { f: (x) => x ** 3 - 3 * x, F: (x) => x ** 4 / 4 - 1.5 * x * x, ft: "x³ − 3x", Ft: `${bruch("x⁴", "4")} − ${bruch("3", "2")}x²`, titel: "x⁴/4 − 1,5x²", abl: "x³ − 3x", yF: [-4.5, 4.5], yf: [-9, 9] },
-  sinus: { f: Math.sin, F: (x) => -Math.cos(x), ft: "sin(x)", Ft: "−cos(x)", titel: "−cos(x)", abl: "−(−sin(x)) = sin(x)", yF: [-3.5, 3.5], yf: [-1.6, 2.2] },
-  kette: { f: (x) => Math.cos(2 * x), F: (x) => Math.sin(2 * x) / 2, ft: "cos(2x)", Ft: `${bruch("1", "2")} sin(2x)`, titel: "½ sin(2x)", abl: `${bruch("1", "2")} · cos(2x) · 2 = cos(2x) (Kettenregel)`, yF: [-3, 3], yf: [-1.6, 2.2] },
 };
 function renderStamm() {
   const d = SF[wahl("sf-art")];
@@ -679,89 +676,7 @@ function renderMittelwert() {
   setzeText("mw-text", "Das gestrichelte Rechteck hat dieselbe Fläche wie die Fläche unter dem Graphen: Was oben über das Rechteck hinausragt, fehlt ihm an den Rändern. An den violett markierten Stellen ist die Temperatur gerade gleich dem Mittelwert.");
 }
 
-// ================= 10. Uneigentliche Integrale =================
-
-const UE_B = [1.5, 2, 3, 5, 10, 20, 100, 1000];
-const UE_E = [0.5, 0.25, 0.1, 0.05, 0.02, 0.01, 0.001, 0.0001];
-// „pol“: Die Problemstelle ist die Polstelle 0 am linken Rand; der Regler stellt ε statt b ein.
-const UE = {
-  quadrat: { f: (x) => 1 / (x * x), F: (x) => -1 / x, pol: false, grenz: 1, Ftext: "−1/x", term: "1/x²" },
-  wurzel: { f: (x) => 1 / Math.sqrt(x), F: (x) => 2 * Math.sqrt(x), pol: false, grenz: Infinity, Ftext: "2√x", term: "1/√x" },
-  polwurzel: { f: (x) => 1 / Math.sqrt(x), F: (x) => 2 * Math.sqrt(x), pol: true, grenz: 2, Ftext: "2√x", term: "1/√x" },
-  polquadrat: { f: (x) => 1 / (x * x), F: (x) => -1 / x, pol: true, grenz: Infinity, Ftext: "−1/x", term: "1/x²" },
-};
-function renderUneigentlich() {
-  const d = UE[wahl("ue-art")], k = reglerRaster("ue-k");
-  setzeText("ue-k-name", d.pol ? "ε" : "b");
-  if (!d.pol) {
-    const b = UE_B[k];
-    setzeAnzeige("ue-k-anzeige", num(b));
-    const K = koordinatenXY({ hoehe: 300, xmin: 0, xmax: 10.5, ymin: 0, ymax: 1.6 });
-    flaechen(K, d.f, () => 0, 1, Math.min(b, 10.5), { pos: "dr-flaeche-pos" });
-    graph(K, d.f, 0.3, 10.5, { schritte: 400 });
-    strecke(K, 1, 0, 1, 1.6, "dr-intervallrand", { "data-rolle": "grenze-a" });
-    if (b <= 10.5) strecke(K, b, 0, b, 1.6, "dr-intervallrand", { "data-rolle": "grenze-b" });
-    zeige("ue-mount", K.svg);
-    const I = d.F(b) - d.F(1);
-    setzeHtml("ue-bilanz",
-      `${intZ("1", num(b))} ${d.term} dx = ${klammer(d.Ftext, "1", num(b))} = ${d.grenz === 1 ? `1 − ${bruch("1", num(b))}` : `2 · √${num(b)} − 2`} ${gleich(I)}<br>` +
-      (d.grenz === 1 ? `Für b → ∞ geht ${bruch("1", "b")} → 0, das Integral also gegen <span class="wa">1</span>: konvergent.` : `Für b → ∞ wächst 2√b − 2 über jede Grenze: <span class="wo">divergent</span>.`));
-    setzeText("ue-text", (b > 10.5 ? `b = ${num(b)} liegt weit rechts außerhalb des Bildes. ` : "") + (d.grenz === 1
-      ? "Jeder weitere Abschnitt bringt immer weniger dazu — die Summe bleibt unter 1."
-      : "1/√x fällt zu langsam: Die Fläche wächst ohne Grenze, nur immer langsamer."));
-    return;
-  }
-  const e = UE_E[k];
-  setzeAnzeige("ue-k-anzeige", num(e));
-  const K = koordinatenXY({ hoehe: 300, xmin: 0, xmax: 1.25, ymin: 0, ymax: 6 });
-  // Nahe der Polstelle ist der Graph so steil, dass ein grober Sehnenzug die Fläche merklich zu groß
-  // zeichnet (bei ε = 0,0001 um 7 %); 2000 Stützstellen bringen das unter ein Prozent.
-  flaechen(K, d.f, () => 0, e, 1, { pos: "dr-flaeche-pos", n: 2000 });
-  graph(K, d.f, 0.02, 1.25, { schritte: 400 });
-  strecke(K, e, 0, e, 6, "dr-intervallrand", { "data-rolle": "grenze-a" });
-  strecke(K, 1, 0, 1, 6, "dr-intervallrand", { "data-rolle": "grenze-b" });
-  strecke(K, 0, 0, 0, 6, "dr-pol", { "data-rolle": "pol" });
-  zeige("ue-mount", K.svg);
-  const I = d.F(1) - d.F(e);
-  setzeHtml("ue-bilanz",
-    `${intZ(num(e), "1")} ${d.term} dx = ${klammer(d.Ftext, num(e), "1")} = ${d.grenz === 2 ? `2 − 2 · √${num(e)}` : `${bruch("1", num(e))} − 1`} ${gleich(I)}<br>` +
-    (d.grenz === 2 ? `Für ε → 0 geht √ε → 0, das Integral also gegen <span class="wa">2</span>: konvergent.` : `Für ε → 0 wächst ${bruch("1", "ε")} − 1 über jede Grenze: <span class="wo">divergent</span>.`));
-  setzeText("ue-text", (e < 0.02 ? `ε = ${num(e)} liegt so nah an 0, dass der Streifen im Bild nicht mehr zu sehen ist. ` : "") + (d.grenz === 2
-    ? "1/√x wächst bei 0 langsam genug: Die Fläche zwischen 0 und 1 ist endlich, obwohl der Graph über alle Grenzen steigt."
-    : "1/x² wächst bei 0 zu schnell: Rückt ε an 0 heran, kommt immer mehr Fläche dazu — ohne Grenze."));
-}
-
-// ================= 11. Rotationskörper =================
-
-const RK = {
-  kegel: { f: (x) => 0.5 * x, a: 0, b: 4, V: (16 * Math.PI) / 3, Vtext: "16π/3" },
-  paraboloid: { f: (x) => Math.sqrt(x), a: 0, b: 4, V: 8 * Math.PI, Vtext: "8π" },
-  kugel: { f: (x) => Math.sqrt(Math.max(0, 4 - x * x)), a: -2, b: 2, V: (32 * Math.PI) / 3, Vtext: "32π/3" },
-};
-function renderRotation() {
-  const d = RK[wahl("rk-art")], n = reglerRaster("rk-n");
-  setzeAnzeige("rk-n-anzeige", String(n));
-  const dx = (d.b - d.a) / n;
-  const K = koordinatenXY({ hoehe: 300, xmin: d.a - 0.4, xmax: d.b + 0.4, ymin: -2.6, ymax: 2.6 });
-  let summe = 0;
-  for (let k = 0; k < n; k++) {
-    // Jede Scheibe ist ein Zylinder mit dem Radius in der Streifenmitte.
-    const u = d.a + k * dx, r = d.f(u + dx / 2);
-    rechteck(K, u, -r, u + dx, r, "dr-scheibe", { "data-rolle": "scheibe", "data-k": String(k) });
-    summe += Math.PI * r * r * dx;
-  }
-  graph(K, d.f, d.a, d.b, { schritte: 300, rolle: "graph" });
-  graph(K, (x) => -d.f(x), d.a, d.b, { schritte: 300, rolle: "spiegel" });
-  zeige("rk-mount", K.svg);
-  setzeHtml("rk-bilanz",
-    `${n} Scheiben der Dicke ${gleich(dx)}: Summe π · Σ r² · Δx ${gleich(summe)}<br>` +
-    `Exakt: V = π · ${intZ(num(d.a), num(d.b))} (f(x))² dx = <span class="wa">${d.Vtext} ${gleich(d.V)}</span>; Abweichung ${gleich(Math.abs(summe - d.V))}`);
-  setzeText("rk-text", n < 8
-    ? "Wenige dicke Scheiben: Der Treppenkörper weicht noch sichtbar vom glatten Körper ab."
-    : "Mit vielen dünnen Scheiben schmiegt sich der Treppenkörper an — im Grenzwert ist seine Summe das Integral.");
-}
-
-// ================= 12. Stolperstelle =================
+// ================= 10. Stolperstelle =================
 
 const ST_E = [0.5, 0.25, 0.1, 0.05, 0.02, 0.01];
 function renderStolperstelle() {
@@ -845,10 +760,10 @@ const QUIZZE = {
     explain: `Die Integralfunktion einer stetigen Funktion hat die Ableitung f; deshalb ist ${intZ("a", "b")} f(x) dx = F(b) − F(a) für eine Stammfunktion F. Eingesetzt wird in F, nicht in f — das ist der häufigste Fehler beim Anwenden.`,
   },
   "quiz-stammfunktion": {
-    q: "Welche Funktion ist eine Stammfunktion von f(x) = 6x² + cos(x)?",
-    options: ["F(x) = 12x − sin(x)", "F(x) = 2x³ − sin(x)", "F(x) = 6x³ + sin(x)", "F(x) = 2x³ + sin(x) + 7"],
+    q: "Welche Funktion ist eine Stammfunktion von f(x) = 6x² + x⁻²?",
+    options: ["F(x) = 12x − 2x⁻³", "F(x) = 2x³ + x⁻¹", "F(x) = 6x³ − x⁻¹", "F(x) = 2x³ − x⁻¹ + 7"],
     correct: 3,
-    explain: "(2x³)′ = 6x² und (sin x)′ = cos x; die Konstante 7 fällt beim Ableiten weg. 12x − sin(x) ist die Ableitung von f, nicht die Stammfunktion; bei 6x³ fehlt das Teilen durch 3.",
+    explain: "(2x³)′ = 6x² und (−x⁻¹)′ = x⁻²; die Konstante 7 fällt beim Ableiten weg. 12x − 2x⁻³ ist die Ableitung von f, nicht die Stammfunktion; bei 2x³ + x⁻¹ fehlt das Minus aus dem Teilen durch den neuen Exponenten −1, bei 6x³ das Teilen durch 3.",
   },
   "quiz-flaeche": {
     q: "f(x) = x³ auf [−2; 2]. Was ist richtig?",
@@ -868,23 +783,11 @@ const QUIZZE = {
     correct: 3,
     explain: `m = (1/3) · ${intZ("0", "3")} x² dx = (1/3) · 9 = 3. Das Mittel der Randwerte wäre (0 + 9)/2 = 4,5 — es stimmt nur für lineare Funktionen.`,
   },
-  "quiz-uneigentlich": {
-    q: `Welches der Integrale ${intZ("1", "∞")} f(x) dx ist konvergent?`,
-    options: ["f(x) = 1/x³", "f(x) = 1/√x", "f(x) = 1", "f(x) = 1/∛x"],
-    correct: 0,
-    explain: `${intZ("1", "b")} x⁻³ dx = ${klammer("−1/(2x²)", "1", "b")} = 1/2 − 1/(2b²) → 1/2. Bei 1/√x und 1/∛x fällt f zu langsam, die Stammfunktion wächst wie eine Wurzel über jede Grenze; bei f = 1 ist die Fläche b − 1.`,
-  },
-  "quiz-rotation": {
-    q: "Das Volumen des Körpers, der entsteht, wenn f(x) = 2 auf [0; 3] um die x-Achse rotiert, ist …",
-    options: ["6π", "12π", "36π", "18π"],
-    correct: 1,
-    explain: `V = π ${intZ("0", "3")} 2² dx = π · 4 · 3 = 12π — ein Zylinder mit Radius 2 und Höhe 3, also π r² h. 36π entsteht, wenn man die Fläche 6 quadriert statt den Radius.`,
-  },
   "quiz-stolperstelle": {
     q: `Darf man ${intZ("−1", "1")} 1/x² dx mit dem Hauptsatz berechnen?`,
     options: ["Ja, mit F(x) = −1/x ergibt sich −2.", "Ja, das Ergebnis ist 2, weil die Fläche positiv sein muss.", "Ja, wenn man den Betrag nimmt.", "Nein, weil 1/x² bei 0 nicht stetig (nicht einmal definiert) ist."],
     correct: 3,
-    explain: "Der Hauptsatz setzt Stetigkeit auf dem ganzen Intervall voraus. Bei 0 liegt eine Polstelle; als uneigentliches Integral divergiert es, denn ∫_ε¹ 1/x² dx = 1/ε − 1 wächst über jede Grenze.",
+    explain: "Der Hauptsatz setzt Stetigkeit auf dem ganzen Intervall voraus. Bei 0 liegt eine Polstelle: Über [ε; 1] ist die Fläche 1/ε − 1, und sie wächst über jede Grenze, je näher ε an 0 rückt — eine Zahl als Wert gibt es nicht.",
   },
 };
 
@@ -897,12 +800,10 @@ const SE_PUNKTE = [
   ["sec-integral", "Ich kann das Integral als orientierten Flächeninhalt deuten und seine Eigenschaften nutzen."],
   ["sec-integralfunktion", "Ich kann den Graphen einer Integralfunktion aus dem Graphen von f beschreiben."],
   ["sec-hauptsatz", "Ich kann den Hauptsatz formulieren, begründen und anwenden."],
-  ["sec-stammfunktion", "Ich kann Stammfunktionen bilden — auch für sin, cos und bei linearer Verkettung."],
+  ["sec-stammfunktion", "Ich kann Stammfunktionen ganzrationaler Funktionen und von Potenzen bilden und mit der Probe prüfen."],
   ["sec-flaeche", "Ich kann Flächen zwischen Graph und x-Achse berechnen, auch mit Vorzeichenwechsel."],
   ["sec-zwischen", "Ich kann Flächen zwischen zwei Graphen berechnen."],
   ["sec-mittelwert", "Ich kann Mittelwerte bestimmen und Integrale im Sachzusammenhang deuten."],
-  ["sec-uneigentlich", "Ich kann uneigentliche Integrale berechnen und entscheiden, ob sie konvergieren."],
-  ["sec-rotation", "Ich kann Volumina von Rotationskörpern berechnen."],
   ["sec-stolperstelle", "Ich prüfe vor dem Integrieren, ob der Integrand im Intervall stetig ist."],
 ];
 const SE_SCHLUESSEL = "uplant-mss11-integralrechnung-selbsteinschaetzung";
@@ -946,8 +847,6 @@ const REGLER = [
   [["fl-a", "fl-b"], renderFlaeche],
   [["zg-art", "zg-m"], renderZwischen],
   [["mw-b"], renderMittelwert],
-  [["ue-art", "ue-k"], renderUneigentlich],
-  [["rk-art", "rk-n"], renderRotation],
   [["st-k"], renderStolperstelle],
 ];
 for (const [ids, render] of REGLER) {

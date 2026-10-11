@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Integration weiterer Funktionen</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="../../../aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">MSS 11</a><span class="sep">/</span>
+  <a href="../index.html">01 Analysis</a><span class="sep">/</span>
+  4.2 Integration weiterer Funktionen
+</nav>
+<header class="page-header">
+  <h1>Integralrechnung: e-Funktionen, Sinus, Kosinus und 1/x</h1>
+  <p>Ein Selbstlernpfad: Der Hauptsatz gilt für jede stetige Funktion — aber eine Stammfunktion zu finden, ist bei e-, Winkel- und Logarithmusfunktionen eine andere Aufgabe als bei Polynomen. Statt einer Regel für alles gibt es Regeln für einzelne Bausteine, einen Ansatz für Produkte und die Probe durch Ableiten. Dazu kommen Flächen, die bis ins Unendliche reichen, und Körper, die durch Drehen entstehen. Jeder Abschnitt leitet sein Ergebnis an einer beweglichen Darstellung her, rechnet es nach, stellt es ausdrücklich neben die ganzrationalen Funktionen und endet mit einer Kontrollfrage. Am Schluss stehen vierundzwanzig Übungsaufgaben auf vier Stufen.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>In <a href="../05-integralrechnung/index.html">Thema 4.1</a> hast du integriert, was sich mit der Potenzregel rückwärts erledigen ließ: Polynome und Potenzen von x. In <a href="../03b-weitere-funktionen-ableiten/index.html">Thema 2.2</a> hast du e-, Winkel- und Logarithmusfunktionen abgeleitet. Hier wird diese Richtung umgedreht. Der Hauptsatz bleibt derselbe — <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span> f(x) dx = F(b) − F(a) —, neu ist, <em>wie</em> man F findet, und dass das nicht mehr immer mit einer Regel geht. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>die <span class="term">Unterschiede</span> zwischen dem Integrieren ganzrationaler und weiterer Funktionen benennen — und warum die <span class="term">Probe durch Ableiten</span> jetzt unverzichtbar ist</li>
+      <li>Stammfunktionen von <span class="term">a · e<sup>kx</sup></span> bilden und Integrale mit ihnen berechnen</li>
+      <li>Stammfunktionen von <span class="term">p(x) · e<sup>kx</sup></span> mit einem <span class="term">Ansatz</span> und Koeffizientenvergleich bestimmen</li>
+      <li>einen <span class="term">Bestand</span> aus einer abklingenden e-Rate rekonstruieren und seinen Grenzwert angeben</li>
+      <li>Sinus und Kosinus integrieren, die <span class="term">lineare Verkettung</span> f(mx + n) rückwärts behandeln und <span class="bruch"><span class="z">1</span><span class="n">x</span></span> mit dem <span class="term">Logarithmus</span> integrieren (Leistungskurs)</li>
+      <li><span class="term">uneigentliche Integrale</span> berechnen und Volumina von <span class="term">Rotationskörpern</span> bestimmen (Leistungskurs)</li>
+      <li>den häufigsten Fehler erkennen: Ein Produkt wird nicht Faktor für Faktor integriert</li>
+    </ul>
+    <p>Die Seite folgt der Schreibweise von <strong>Elemente der Mathematik</strong> und deckt zugleich die entsprechenden Kapitel in <strong>Fundamente der Mathematik</strong> ab: Integrale von Exponentialfunktionen und ihren Verknüpfungen mit ganzrationalen Funktionen, Bestandsrekonstruktion bei exponentiellen Änderungsraten, im Leistungsfach zusätzlich Integrale von Sinus, Kosinus und <span class="bruch"><span class="z">1</span><span class="n">x</span></span>, lineare Substitution, uneigentliche Integrale und Rotationskörper.</p>
+    <p class="kurs-hinweis"><span class="kurs-marke lk">Leistungskurs</span> Nach dem rheinland-pfälzischen Lehrplan gehören Sinus und Kosinus, die Kettenregel und damit die lineare Verkettung sowie die Funktion ln zum Leistungsfach; uneigentliche Integrale und Rotationskörper behandeln vergleichbare Lehrpläne ebenfalls nur auf erhöhtem Niveau. Integrale von e-Funktionen der Form a · e<sup>kx</sup> und p(x) · e<sup>kx</sup> gehören dagegen auch zum Grundfach — diese Abschnitte tragen die Marke <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span> und kommen ohne die Leistungskurs-Abschnitte aus; die übrigen tragen <span class="kurs-marke lk" title="Leistungskurs">LK</span>. Wo ein Grundkurs-Abschnitt ein Leistungskurs-Beispiel zur Auswahl anbietet, steht „(LK)“ daneben.</p>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../05-integralrechnung/index.html">Thema 4.1</a> den <a href="../05-integralrechnung/index.html#sec-hauptsatz">Hauptsatz</a>, die <a href="../05-integralrechnung/index.html#sec-stammfunktion">Stammfunktionen und Integrationsregeln</a>, die <a href="../05-integralrechnung/index.html#sec-zwischen">Flächen zwischen Graphen</a> und den <a href="../05-integralrechnung/index.html#sec-mittelwert">Mittelwert</a>, aus Thema 2.2 die Ableitung von <a href="../03b-weitere-funktionen-ableiten/index.html#sec-ex">e<sup>kx</sup></a>, die <a href="../03b-weitere-funktionen-ableiten/index.html#sec-produkt-e">Produktregel mit Ausklammern</a>, das <a href="../03b-weitere-funktionen-ableiten/index.html#sec-ln">Lösen von e<sup>kx</sup> = c</a> und das <a href="../03b-weitere-funktionen-ableiten/index.html#sec-verhalten">Verhalten für x → ±∞</a>. Welcher Rechenweg wo erklärt ist, steht ausführlich in Abschnitt 1.</p>
+  </section>
+
+  <!-- 1. Vergleich -->
+  <section class="card" id="sec-vergleich">
+    <h2>1. Integrieren ist schwerer als Ableiten <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span></h2>
+    <p>Ableiten ist ein Rezept: Für Summen, Produkte, Quotienten und Verkettungen gibt es je eine Regel, und jede Funktion aus bekannten Bausteinen hat eine Ableitung aus bekannten Bausteinen. Beim Integrieren fehlt dieses Rezept. Für jeden Baustein gibt es eine eigene Stammfunktion, für Produkte keine Regel — und manche Funktionen haben gar keine Stammfunktion, die sich mit bekannten Funktionen hinschreiben lässt. Wähle eine Funktion und verschiebe die obere Grenze: Die Fläche oben ist das Integral, unten siehst du die Stammfunktion, deren Zuwachs F(b) − F(a) genau diese Fläche ist.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="vg-art" class="eingabe" style="padding:0.4rem">
+            <option value="potenz">f(x) = x² (wie in Thema 4.1)</option>
+            <option value="e">f(x) = e^x</option>
+            <option value="ek">f(x) = e^(−0,5x)</option>
+            <option value="produkt">f(x) = x · e^x</option>
+            <option value="sinus">f(x) = sin(x) (LK)</option>
+            <option value="kehr">f(x) = 1/x (LK)</option>
+          </select>
+        </label>
+        <label>b: <input type="range" id="vg-b" min="0.25" max="3" step="0.25" value="2" style="vertical-align:middle;width:11rem"> <span id="vg-b-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="vg-mount"></div>
+      <div class="th-bilanz" id="vg-bilanz"></div>
+      <div id="vg-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Ableiten und Integrieren nebeneinander</span>
+      <table class="rechenweg-tabelle">
+        <tr><th>f(x)</th><th>Ableitung f′(x)</th><th>Stammfunktion F(x)</th><th>was beim Integrieren anders ist</th></tr>
+        <tr><td>xⁿ (n ≠ −1)</td><td>n · xⁿ⁻¹</td><td><span class="bruch"><span class="z">1</span><span class="n">n + 1</span></span> xⁿ⁺¹</td><td>Thema 4.1: Exponent erhöhen, durch den neuen Exponenten teilen</td></tr>
+        <tr><td>e<sup>kx</sup></td><td>k · e<sup>kx</sup></td><td><span class="bruch"><span class="z">1</span><span class="n">k</span></span> · e<sup>kx</sup></td><td>durch k <em>teilen</em> statt malnehmen; der Exponent bleibt</td></tr>
+        <tr><td>p(x) · e<sup>kx</sup></td><td>Produktregel</td><td>q(x) · e<sup>kx</sup> mit einem Ansatz</td><td>es gibt keine „Produktregel rückwärts“</td></tr>
+        <tr><td>(LK) sin(x)</td><td>cos(x)</td><td>−cos(x)</td><td>das Minus wandert an die andere Stelle</td></tr>
+        <tr><td>(LK) cos(x)</td><td>−sin(x)</td><td>sin(x)</td><td></td></tr>
+        <tr><td>(LK) g(mx + n)</td><td>m · g′(mx + n)</td><td><span class="bruch"><span class="z">1</span><span class="n">m</span></span> · G(mx + n)</td><td>nur für eine <em>lineare</em> innere Funktion</td></tr>
+        <tr><td>(LK) <span class="bruch"><span class="z">1</span><span class="n">x</span></span></td><td>−<span class="bruch"><span class="z">1</span><span class="n">x²</span></span></td><td>ln|x|</td><td>die einzige Potenz ohne Potenz als Stammfunktion</td></tr>
+      </table>
+    </div>
+    <div class="rechenweg-box">
+      <span class="box-label">Welche Rechenwege du brauchst — und wo sie erklärt sind</span>
+      <table class="rechenweg-tabelle">
+        <tr><th>Rechenweg</th><th>erklärt in</th></tr>
+        <tr><td>Hauptsatz, Stammfunktion, Probe durch Ableiten</td><td><a href="../05-integralrechnung/index.html#sec-hauptsatz">Thema 4.1, Abschnitt 5</a> und <a href="../05-integralrechnung/index.html#sec-stammfunktion">6</a></td></tr>
+        <tr><td>Bestand aus Änderungsrate, Mittelwert, Fläche zwischen Graphen</td><td><a href="../05-integralrechnung/index.html#sec-rekonstruktion">Thema 4.1, Abschnitte 1</a>, <a href="../05-integralrechnung/index.html#sec-zwischen">8</a> und <a href="../05-integralrechnung/index.html#sec-mittelwert">9</a></td></tr>
+        <tr><td>(e<sup>kx</sup>)′ = k · e<sup>kx</sup></td><td><a href="../03b-weitere-funktionen-ableiten/index.html#sec-ex">Thema 2.2, Abschnitt 2</a></td></tr>
+        <tr><td>Produktregel mit Ausklammern — für die Probe beim Ansatz</td><td><a href="../03b-weitere-funktionen-ableiten/index.html#sec-produkt-e">Thema 2.2, Abschnitt 4</a></td></tr>
+        <tr><td>e<sup>kx</sup> = c mit dem natürlichen Logarithmus lösen</td><td><a href="../03b-weitere-funktionen-ableiten/index.html#sec-ln">Thema 2.2, Abschnitt 3</a></td></tr>
+        <tr><td>e<sup>−x</sup> → 0 und x · e<sup>−x</sup> → 0 für x → ∞</td><td><a href="../03b-weitere-funktionen-ableiten/index.html#sec-verhalten">Thema 2.2, Abschnitt 9</a></td></tr>
+        <tr><td><strong>Stammfunktion von e<sup>kx</sup></strong></td><td><strong>neu:</strong> <a href="#sec-ekx">Abschnitt 2</a></td></tr>
+        <tr><td><strong>Ansatz und Koeffizientenvergleich für p(x) · e<sup>kx</sup></strong></td><td><strong>neu:</strong> <a href="#sec-ansatz">Abschnitt 3</a></td></tr>
+        <tr><td><strong>Grenzwert eines Bestands bei abklingender Rate</strong></td><td><strong>neu:</strong> <a href="#sec-bestand">Abschnitt 4</a></td></tr>
+        <tr><td>(LK) Ableitungen von sin, cos, ln und die Kettenregel</td><td><a href="../03b-weitere-funktionen-ableiten/index.html#sec-sinus">Thema 2.2, Abschnitte 5</a>, <a href="../03b-weitere-funktionen-ableiten/index.html#sec-kette">6</a> und <a href="../03b-weitere-funktionen-ableiten/index.html#sec-lnfunktion">8</a></td></tr>
+        <tr><td>(LK) <strong>sin und cos integrieren</strong></td><td><strong>neu:</strong> <a href="#sec-sinus">Abschnitt 5</a> (Leistungskurs)</td></tr>
+        <tr><td>(LK) <strong>lineare Verkettung rückwärts</strong></td><td><strong>neu:</strong> <a href="#sec-verkettung">Abschnitt 6</a> (Leistungskurs)</td></tr>
+        <tr><td>(LK) <strong><span class="bruch"><span class="z">1</span><span class="n">x</span></span> integrieren</strong></td><td><strong>neu:</strong> <a href="#sec-ln">Abschnitt 7</a> (Leistungskurs)</td></tr>
+        <tr><td>(LK) Grenzwert für x → ∞ und an einer Polstelle</td><td><a href="../02-grenzwerte-und-stetigkeit/index.html#sec-unendlich">Thema 1.2, Abschnitt 1</a> und <a href="../02-grenzwerte-und-stetigkeit/index.html#sec-luecken">5</a>; <strong>neu angewandt:</strong> <a href="#sec-uneigentlich">Abschnitt 8</a> (Leistungskurs)</td></tr>
+        <tr><td>(LK) Zylindervolumen π · r² · h</td><td><a href="../../../grundwissen-5-10/02-geometrie/12-pyramiden-kegel-kugeln/index.html">Mittelstufe</a>; <strong>neu angewandt:</strong> <a href="#sec-rotation">Abschnitt 9</a> (Leistungskurs)</td></tr>
+      </table>
+    </div>
+    <div class="unterschied-box">
+      <span class="box-label">Anders als bei ganzrationalen Funktionen</span>
+      Bei Polynomen gab es <em>eine</em> Regel für jeden Summanden, und sie funktionierte immer: Exponent erhöhen, durch den neuen Exponenten teilen. Jetzt hängt die Stammfunktion vom Baustein ab, Produkte lassen sich nicht Faktor für Faktor integrieren, und für Funktionen wie e<sup>−x²</sup> — die Glockenkurve der Stochastik — gibt es überhaupt keine Stammfunktion, die man mit e, ln, sin, cos und Potenzen hinschreiben kann. Ableiten ist Rechnen; Integrieren ist oft Suchen: eine Form vermuten, ableiten, vergleichen.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Probe ist jetzt Pflicht</span>
+      Eine Stammfunktion, die man vermutet hat, ist erst eine, wenn ihre Ableitung wieder f ergibt. Bei Polynomen fiel ein Fehler selten auf, weil die Regel so einfach ist; bei e<sup>kx</sup>, bei Produkten und bei sin und cos ist das Vorzeichen oder ein Faktor schnell verloren. Die Probe kostet eine Zeile — und sie findet jeden dieser Fehler.
+    </div>
+    <div class="quiz" id="quiz-vergleich"></div>
+  </section>
+
+  <!-- 2. e^(kx) -->
+  <section class="card" id="sec-ekx">
+    <h2>2. Stammfunktionen von e-Funktionen <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span></h2>
+    <p>Die Ableitung von e<sup>kx</sup> ist k · e<sup>kx</sup> (<a href="../03b-weitere-funktionen-ableiten/index.html#sec-ex">Thema 2.2</a>). Rückwärts gelesen: Eine Stammfunktion von e<sup>kx</sup> muss wieder e<sup>kx</sup> enthalten — aber der Faktor k, der beim Ableiten entsteht, muss vorher ausgeglichen werden. Stelle k ein und vergleiche: Grün ist F(x) = <span class="bruch"><span class="z">1</span><span class="n">k</span></span> · e<sup>kx</sup>, rot gestrichelt der naheliegende Fehler k · e<sup>kx</sup> (wie beim Ableiten). Bei b liegt an beiden die Tangente — nur eine hat die Steigung f(b).</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>k: <input type="range" id="ek-k" min="0" max="5" step="1" value="5" style="vertical-align:middle;width:9rem"> <span id="ek-k-anzeige" class="wert farbe-rot"></span></label>
+        <label>b: <input type="range" id="ek-b" min="-1" max="2" step="0.25" value="0.75" style="vertical-align:middle;width:9rem"> <span id="ek-b-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="ek-mount"></div>
+      <div class="th-bilanz" id="ek-bilanz"></div>
+      <div id="ek-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Stammfunktion der e-Funktion</span>
+      Für k ≠ 0 gilt
+      <div class="formula-block">∫ e<sup>kx</sup> dx = <span class="bruch"><span class="z">1</span><span class="n">k</span></span> · e<sup>kx</sup> + C &nbsp;&nbsp;und&nbsp;&nbsp; ∫ a · e<sup>kx</sup> dx = <span class="bruch"><span class="z">a</span><span class="n">k</span></span> · e<sup>kx</sup> + C</div>
+      <strong>Probe:</strong> (<span class="bruch"><span class="z">1</span><span class="n">k</span></span> · e<sup>kx</sup>)′ = <span class="bruch"><span class="z">1</span><span class="n">k</span></span> · k · e<sup>kx</sup> = e<sup>kx</sup>. Für k = 1: e<sup>x</sup> ist seine eigene Stammfunktion.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">2</span><span class="u">0</span></span></span> e<sup>0,5x</sup> dx = <span class="integral">[2 · e<sup>0,5x</sup>]<span class="grenzen"><span class="o">2</span><span class="u">0</span></span></span> = 2e<sup>1</sup> − 2e<sup>0</sup> = 2e − 2 ≈ 3,4366.<br>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">ln 2</span><span class="u">0</span></span></span> 3e<sup>−x</sup> dx = <span class="integral">[−3e<sup>−x</sup>]<span class="grenzen"><span class="o">ln 2</span><span class="u">0</span></span></span> = −3 · e<sup>−ln 2</sup> + 3 = −<span class="bruch"><span class="z">3</span><span class="n">2</span></span> + 3 = <span class="bruch"><span class="z">3</span><span class="n">2</span></span> — denn e<sup>−ln 2</sup> = <span class="bruch"><span class="z">1</span><span class="n">e<sup>ln 2</sup></span></span> = <span class="bruch"><span class="z">1</span><span class="n">2</span></span>.
+    </div>
+    <div class="rechenweg-box">
+      <span class="box-label">Rechenweg — das Integral von 0 bis b, Schritt für Schritt: <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">1</span><span class="u">0</span></span></span> 4e<sup>2x</sup> dx</span>
+      <ol>
+        <li>Stammfunktion: F(x) = <span class="bruch"><span class="z">4</span><span class="n">2</span></span> · e<sup>2x</sup> = 2e<sup>2x</sup> — durch k = 2 geteilt.</li>
+        <li>Probe: F′(x) = 2 · 2 · e<sup>2x</sup> = 4e<sup>2x</sup> ✓</li>
+        <li>Obere Grenze: F(1) = 2e<sup>2</sup>.</li>
+        <li>Untere Grenze: F(0) = 2e<sup>0</sup> = 2 — <strong>nicht 0</strong>, denn e<sup>0</sup> = 1.</li>
+        <li><span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">1</span><span class="u">0</span></span></span> 4e<sup>2x</sup> dx = 2e<sup>2</sup> − 2 ≈ 12,7781.</li>
+      </ol>
+    </div>
+    <div class="unterschied-box">
+      <span class="box-label">Anders als bei ganzrationalen Funktionen</span>
+      Bei xⁿ ändert sich beim Integrieren der Exponent, und man teilt durch den <em>neuen</em> Exponenten. Bei e<sup>kx</sup> bleibt alles, wie es ist — die Funktion reproduziert sich —, und man teilt durch den Faktor k vor dem x. Und noch ein Unterschied an der unteren Grenze: Eine Stammfunktion von x² ist bei 0 null, eine von e<sup>kx</sup> nie. F(0) = <span class="bruch"><span class="z">1</span><span class="n">k</span></span> muss jedes Mal abgezogen werden.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — e<sup>x</sup> ist keine Potenz von x</span>
+      „<span class="bruch"><span class="z">e<sup>x + 1</sup></span><span class="n">x + 1</span></span>“ ist falsch: Die Potenzregel gilt für x<sup>n</sup>, wo x in der Basis steht. Bei e<sup>x</sup> steht x im Exponenten; die Basis e bleibt fest. Die Probe zeigt den Fehler sofort: Die Ableitung von <span class="bruch"><span class="z">e<sup>x + 1</sup></span><span class="n">x + 1</span></span> ist ein Quotient, nicht e<sup>x</sup>.
+    </div>
+    <div class="quiz" id="quiz-ekx"></div>
+  </section>
+
+  <!-- 3. Ansatz -->
+  <section class="card" id="sec-ansatz">
+    <h2>3. Produkte p(x) · e<sup>kx</sup>: der Ansatz <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span></h2>
+    <p>Für x · e<sup>x</sup> gibt es keine fertige Regel. Aber das Ableiten verrät, welche Form die Stammfunktion haben muss: Leitet man q(x) · e<sup>kx</sup> mit der Produktregel ab, entsteht wieder „Polynom mal e<sup>kx</sup>“ mit einem Polynom vom <em>selben Grad</em> (<a href="../03b-weitere-funktionen-ableiten/index.html#sec-produkt-e">Thema 2.2</a>). Also setzt man die Stammfunktion in dieser Form an und bestimmt die Koeffizienten. Wähle eine Funktion und fahre mit x₀ über den Graphen: Die Tangente an die gefundene Stammfunktion F hat überall die Steigung f(x₀) — das ist die Probe, an jeder Stelle.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="an-art" class="eingabe" style="padding:0.4rem">
+            <option value="a">f(x) = x · e^x</option>
+            <option value="b">f(x) = x · e^(−x)</option>
+            <option value="c">f(x) = (2x + 1) · e^(0,5x)</option>
+            <option value="d">f(x) = x² · e^(−x)</option>
+          </select>
+        </label>
+        <label>x₀: <input type="range" id="an-x" min="-2" max="3" step="0.25" value="1" style="vertical-align:middle;width:11rem"> <span id="an-x-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="an-mount"></div>
+      <div class="th-bilanz" id="an-bilanz"></div>
+      <div id="an-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Ansatz für f(x) = p(x) · e<sup>kx</sup></span>
+      <ol style="margin:0.2rem 0 0;padding-left:1.3rem">
+        <li><strong>Ansatz:</strong> F(x) = q(x) · e<sup>kx</sup> mit einem Polynom q vom selben Grad wie p und unbekannten Koeffizienten: bei Grad 1 q(x) = Ax + B, bei Grad 2 q(x) = Ax² + Bx + C.</li>
+        <li><strong>Ableiten</strong> mit der Produktregel und e<sup>kx</sup> ausklammern: F′(x) = (q′(x) + k · q(x)) · e<sup>kx</sup>.</li>
+        <li><strong>Koeffizientenvergleich:</strong> Weil e<sup>kx</sup> nie 0 ist, muss q′ + k · q = p sein — für jedes x. Also stimmen die Koeffizienten vor x², vor x und das absolute Glied überein. Das gibt ein Gleichungssystem, das man von oben nach unten löst.</li>
+        <li><strong>Probe</strong> durch Ableiten.</li>
+      </ol>
+    </div>
+    <div class="rechenweg-box">
+      <span class="box-label">Rechenweg — vollständig: f(x) = x · e<sup>−x</sup></span>
+      <ol>
+        <li>Ansatz: F(x) = (Ax + B) · e<sup>−x</sup>.</li>
+        <li>Produktregel mit u = Ax + B, v = e<sup>−x</sup>; u′ = A, v′ = −e<sup>−x</sup> (k = −1):<br>F′(x) = A · e<sup>−x</sup> + (Ax + B) · (−e<sup>−x</sup>) = (−Ax + A − B) · e<sup>−x</sup>.</li>
+        <li>Vergleich mit x · e<sup>−x</sup> = (1 · x + 0) · e<sup>−x</sup>:<br>vor x: −A = 1 ⟹ A = −1;&nbsp;&nbsp; absolutes Glied: A − B = 0 ⟹ B = A = −1.</li>
+        <li>F(x) = (−x − 1) · e<sup>−x</sup> = −(x + 1) · e<sup>−x</sup>.</li>
+        <li><strong>Probe:</strong> F′(x) = −e<sup>−x</sup> + (x + 1) · e<sup>−x</sup> = x · e<sup>−x</sup> ✓</li>
+      </ol>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: Grad 2 — f(x) = x² · e<sup>−x</sup></span>
+      Ansatz F(x) = (Ax² + Bx + C) · e<sup>−x</sup>, F′(x) = (−Ax² + (2A − B)x + B − C) · e<sup>−x</sup>.<br>
+      Vergleich: −A = 1, 2A − B = 0, B − C = 0 ⟹ A = −1, B = −2, C = −2, also F(x) = −(x² + 2x + 2) · e<sup>−x</sup>.
+    </div>
+    <div class="unterschied-box">
+      <span class="box-label">Anders als bei ganzrationalen Funktionen</span>
+      Ein Polynom integriert man Summand für Summand, jeder Summand für sich. Ein Produkt darf man <em>nicht</em> Faktor für Faktor integrieren: <span class="bruch"><span class="z">x²</span><span class="n">2</span></span> · e<sup>x</sup> ist keine Stammfunktion von x · e<sup>x</sup> (siehe <a href="#sec-stolperstelle">Abschnitt 10</a>). Bei zwei Polynomen half in Thema 4.1 das Ausmultiplizieren; mit e<sup>kx</sup> geht das nicht. Der Ansatz ersetzt die fehlende Regel — er funktioniert, weil das Ableiten die Form „Polynom mal e<sup>kx</sup>“ nie verlässt.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — den Grad nicht zu klein wählen</span>
+      Wer für x · e<sup>x</sup> nur F(x) = A · x · e<sup>x</sup> ansetzt, findet kein passendes A: Beim Ableiten bleibt der Summand A · e<sup>x</sup> übrig, und der lässt sich nicht wegbringen. Das absolute Glied B gehört in den Ansatz, auch wenn p(x) keins hat.
+    </div>
+    <div class="quiz" id="quiz-ansatz"></div>
+  </section>
+
+  <!-- 4. Bestand -->
+  <section class="card" id="sec-bestand">
+    <h2>4. Bestände aus e-Raten: Zufluss, der nie aufhört <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span></h2>
+    <p>Eine Quelle, die nachlässt; ein Medikament, das immer langsamer ins Blut übergeht: Solche Änderungsraten werden oft durch r(t) = a · e<sup>−kt</sup> beschrieben. Die Rate wird nie 0 — trotzdem wächst der Bestand nicht über alle Grenzen. Stelle die Anfangsrate a, die Abklingkonstante k und den Zeitpunkt t ein. Oben ist die zugeflossene Menge die Fläche unter der Rate, unten der Bestand mit der Grenze, der er sich nähert.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a: <input type="range" id="bs-a" min="2" max="20" step="1" value="8" style="vertical-align:middle;width:8rem"> <span id="bs-a-anzeige" class="wert farbe-blau"></span></label>
+        <label>k: <input type="range" id="bs-k" min="0.1" max="1" step="0.05" value="0.25" style="vertical-align:middle;width:8rem"> <span id="bs-k-anzeige" class="wert farbe-rot"></span></label>
+        <label>t: <input type="range" id="bs-t" min="0" max="30" step="0.5" value="4" style="vertical-align:middle;width:10rem"> <span id="bs-t-anzeige" class="wert farbe-gruen"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="bs-mount"></div>
+      <div class="th-bilanz" id="bs-bilanz"></div>
+      <div id="bs-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Bestand bei der Rate r(t) = a · e<sup>−kt</sup> (k &gt; 0)</span>
+      <div class="formula-block">B(t) = B(0) + <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">t</span><span class="u">0</span></span></span> a · e<sup>−ks</sup> ds = B(0) + <span class="bruch"><span class="z">a</span><span class="n">k</span></span> · (1 − e<sup>−kt</sup>)</div>
+      Für t → ∞ geht e<sup>−kt</sup> → 0, also nähert sich der Bestand dem Wert <strong>B(0) + <span class="bruch"><span class="z">a</span><span class="n">k</span></span></strong>. Die Rate halbiert sich jeweils nach der Zeit t<sub>½</sub> = <span class="bruch"><span class="z">ln 2</span><span class="n">k</span></span> (aus e<sup>−kt</sup> = <span class="bruch"><span class="z">1</span><span class="n">2</span></span>, gelöst wie in <a href="../03b-weitere-funktionen-ableiten/index.html#sec-ln">Thema 2.2</a>).
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: eine nachlassende Quelle</span>
+      In ein Becken mit 20 m³ fließt Wasser mit r(t) = 8 · e<sup>−0,25t</sup> (t in Stunden, r in m³ pro Stunde).<br>
+      Nach 4 Stunden: B(4) = 20 + <span class="bruch"><span class="z">8</span><span class="n">0,25</span></span> · (1 − e<sup>−1</sup>) = 20 + 32 · (1 − e<sup>−1</sup>) ≈ 40,2283 m³.<br>
+      Auf lange Sicht: B(t) → 20 + 32 = 52 m³ — mehr als 32 m³ kommen insgesamt nicht hinzu, so lange man auch wartet.
+    </div>
+    <div class="rechenweg-box">
+      <span class="box-label">Rechenweg — die zugeflossene Menge bis t</span>
+      <ol>
+        <li>Stammfunktion von 8 · e<sup>−0,25s</sup>: <span class="bruch"><span class="z">8</span><span class="n">−0,25</span></span> · e<sup>−0,25s</sup> = −32 · e<sup>−0,25s</sup> (Abschnitt 2).</li>
+        <li><span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">t</span><span class="u">0</span></span></span> 8 · e<sup>−0,25s</sup> ds = −32 · e<sup>−0,25t</sup> − (−32 · e<sup>0</sup>) = 32 − 32 · e<sup>−0,25t</sup> — die untere Grenze liefert +32.</li>
+        <li>Grenzwert: e<sup>−0,25t</sup> → 0 für t → ∞ (<a href="../03b-weitere-funktionen-ableiten/index.html#sec-verhalten">Thema 2.2</a>), also geht der Zufluss gegen 32.</li>
+      </ol>
+    </div>
+    <div class="unterschied-box">
+      <span class="box-label">Anders als bei ganzrationalen Funktionen</span>
+      Ist die Rate ein Polynom, das nicht null ist, wächst oder fällt der Bestand auf lange Sicht über alle Grenzen — die Stammfunktion eines Polynoms ist wieder ein Polynom und hat keine waagerechte Asymptote. Eine abklingende e-Rate dagegen liefert einen Bestand mit <strong>waagerechter Asymptote</strong>: Die Rate wird nie 0, aber sie wird so schnell klein, dass die Summe aller Zuflüsse endlich bleibt.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — „die Rate geht gegen 0“ heißt nicht „der Bestand bleibt stehen“</span>
+      Der Grenzwert der Rate ist 0, der Grenzwert des Bestands B(0) + <span class="bruch"><span class="z">a</span><span class="n">k</span></span>. Wer die beiden verwechselt, gibt als Endbestand B(0) an — und übersieht, dass bis dahin noch <span class="bruch"><span class="z">a</span><span class="n">k</span></span> hinzukommen.
+    </div>
+    <div class="quiz" id="quiz-bestand"></div>
+  </section>
+
+  <!-- 5. Sinus und Kosinus -->
+  <section class="card" id="sec-sinus">
+    <h2>5. Sinus und Kosinus integrieren <span class="kurs-marke lk" title="Leistungskurs">LK</span></h2>
+    <p>(sin x)′ = cos x und (cos x)′ = −sin x (<a href="../03b-weitere-funktionen-ableiten/index.html#sec-sinus">Thema 2.2</a>). Rückwärts gelesen: sin ist eine Stammfunktion von cos, und −cos eine von sin. Verschiebe die Grenzen in Schritten von <span class="bruch"><span class="z">π</span><span class="n">4</span></span>: Grün zählt die Fläche über der Achse positiv, orange die darunter negativ — und unten wächst und fällt die Stammfunktion genau im selben Takt.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="sn-art" class="eingabe" style="padding:0.4rem">
+            <option value="sin">f(x) = sin(x)</option>
+            <option value="cos">f(x) = cos(x)</option>
+          </select>
+        </label>
+        <label>a: <input type="range" id="sn-a" min="0" max="8" step="1" value="0" style="vertical-align:middle;width:9rem"> <span id="sn-a-anzeige" class="wert farbe-rot"></span></label>
+        <label>b: <input type="range" id="sn-b" min="0" max="8" step="1" value="4" style="vertical-align:middle;width:9rem"> <span id="sn-b-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="sn-mount"></div>
+      <div class="th-bilanz" id="sn-bilanz"></div>
+      <div id="sn-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Stammfunktionen von Sinus und Kosinus</span>
+      <div class="formula-block">∫ sin(x) dx = −cos(x) + C &nbsp;&nbsp;&nbsp; ∫ cos(x) dx = sin(x) + C</div>
+      Merkhilfe: Beim Ableiten läuft der Kreis sin → cos → −sin → −cos → sin, beim Integrieren läuft er rückwärts.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">π</span><span class="u">0</span></span></span> sin(x) dx = <span class="integral">[−cos(x)]<span class="grenzen"><span class="o">π</span><span class="u">0</span></span></span> = −cos(π) + cos(0) = 1 + 1 = 2.<br>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">2π</span><span class="u">0</span></span></span> sin(x) dx = −cos(2π) + cos(0) = −1 + 1 = 0 — die Hälfte über und die Hälfte unter der Achse heben sich auf; der Flächeninhalt ist 4.
+    </div>
+    <div class="rechenweg-box">
+      <span class="box-label">Rechenweg — Werte von sin und cos an den Grenzen</span>
+      An Vielfachen von <span class="bruch"><span class="z">π</span><span class="n">2</span></span> nehmen sin und cos nur die Werte −1, 0 und 1 an: cos(0) = 1, cos(<span class="bruch"><span class="z">π</span><span class="n">2</span></span>) = 0, cos(π) = −1, cos(<span class="bruch"><span class="z">3π</span><span class="n">2</span></span>) = 0, cos(2π) = 1. An Vielfachen von <span class="bruch"><span class="z">π</span><span class="n">4</span></span> kommt <span class="bruch"><span class="z">√2</span><span class="n">2</span></span> ≈ 0,7071 dazu. Andere Grenzen rechnet man mit dem Taschenrechner im <strong>Bogenmaß</strong>.
+    </div>
+    <div class="unterschied-box">
+      <span class="box-label">Anders als bei ganzrationalen Funktionen</span>
+      Die Stammfunktion eines Polynoms hat einen höheren Grad und wächst für große x stärker als f. Bei sin und cos bleibt alles im Kreis: Die Stammfunktion ist wieder eine Schwingung mit derselben Periode 2π, und über jede volle Periode ist das Integral 0. Den Flächeninhalt findet man deshalb wie in <a href="../05-integralrechnung/index.html#sec-flaeche">Thema 4.1</a> nur, indem man an den Nullstellen kπ teilt.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — das Vorzeichen</span>
+      Die Stammfunktion von sin ist <strong>−</strong>cos, nicht cos: (cos x)′ = −sin x. Wer das Minus vergisst, bekommt für <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">π</span><span class="u">0</span></span></span> sin(x) dx den Wert −2 — eine negative Fläche über der Achse. Ein Blick auf den Graphen fängt den Fehler.
+    </div>
+    <div class="quiz" id="quiz-sinus"></div>
+  </section>
+
+  <!-- 6. Lineare Verkettung -->
+  <section class="card" id="sec-verkettung">
+    <h2>6. Lineare Verkettung: f(mx + n) <span class="kurs-marke lk" title="Leistungskurs">LK</span></h2>
+    <p>Die Kettenregel (<a href="../03b-weitere-funktionen-ableiten/index.html#sec-kette">Thema 2.2</a>) liefert beim Ableiten von G(mx + n) den Faktor m: (G(mx + n))′ = m · g(mx + n). Rückwärts heißt das: Wer g(mx + n) integriert, muss diesen Faktor vorher ausgleichen — durch m <em>teilen</em>. Stelle m ein: Grün ist die richtige Stammfunktion <span class="bruch"><span class="z">1</span><span class="n">m</span></span> · G(mx + n), rot gestrichelt G(mx + n) ohne das Teilen. Ihre Tangente ist bei jedem x₀ genau m-mal so steil wie f(x₀).</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="vk-art" class="eingabe" style="padding:0.4rem">
+            <option value="cos">f(x) = cos(mx)</option>
+            <option value="pot">f(x) = (mx + 1)²</option>
+            <option value="e">f(x) = e^(mx − 1)</option>
+          </select>
+        </label>
+        <label>m: <input type="range" id="vk-m" min="0" max="3" step="1" value="2" style="vertical-align:middle;width:8rem"> <span id="vk-m-anzeige" class="wert farbe-rot"></span></label>
+        <label>x₀: <input type="range" id="vk-x" min="-1.5" max="1.5" step="0.25" value="0.5" style="vertical-align:middle;width:9rem"> <span id="vk-x-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="vk-mount"></div>
+      <div class="th-bilanz" id="vk-bilanz"></div>
+      <div id="vk-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Lineare Verkettung</span>
+      Ist G eine Stammfunktion von g und m ≠ 0, so gilt
+      <div class="formula-block">∫ g(mx + n) dx = <span class="bruch"><span class="z">1</span><span class="n">m</span></span> · G(mx + n) + C</div>
+      <strong>Probe</strong> mit der Kettenregel: (<span class="bruch"><span class="z">1</span><span class="n">m</span></span> · G(mx + n))′ = <span class="bruch"><span class="z">1</span><span class="n">m</span></span> · g(mx + n) · m = g(mx + n).
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      ∫ cos(2x) dx = <span class="bruch"><span class="z">1</span><span class="n">2</span></span> sin(2x) + C.&nbsp;&nbsp; ∫ e<sup>3x − 1</sup> dx = <span class="bruch"><span class="z">1</span><span class="n">3</span></span> e<sup>3x − 1</sup> + C.<br>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">1</span><span class="u">0</span></span></span> (2x + 1)³ dx = <span class="integral">[<span class="bruch"><span class="z">1</span><span class="n">2</span></span> · <span class="bruch"><span class="z">(2x + 1)⁴</span><span class="n">4</span></span>]<span class="grenzen"><span class="o">1</span><span class="u">0</span></span></span> = <span class="bruch"><span class="z">81 − 1</span><span class="n">8</span></span> = 10.
+    </div>
+    <div class="rechenweg-box">
+      <span class="box-label">Rechenweg — dasselbe Integral ohne Verkettung</span>
+      (2x + 1)³ lässt sich auch ausmultiplizieren wie in <a href="../05-integralrechnung/index.html#sec-stammfunktion">Thema 4.1</a>: 8x³ + 12x² + 6x + 1, Stammfunktion 2x⁴ + 4x³ + 3x² + x, und <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">1</span><span class="u">0</span></span></span> = 2 + 4 + 3 + 1 = 10 ✓. Die Verkettung ist kürzer — und bei cos(2x) oder e<sup>3x − 1</sup> gibt es nichts auszumultiplizieren.
+    </div>
+    <div class="unterschied-box">
+      <span class="box-label">Anders als bei ganzrationalen Funktionen</span>
+      Bei Polynomen brauchte man die Verkettung nie: Jede Klammer ließ sich ausmultiplizieren, und dann reichte die Potenzregel. Bei e- und Winkelfunktionen ist die innere Funktion fest eingebaut. Die Regel gilt aber nur, weil die innere Ableitung m eine <em>Konstante</em> ist — sie lässt sich vor das Integral ziehen.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — nur für lineare innere Funktionen</span>
+      <span class="bruch"><span class="z">(x² + 1)³</span><span class="n">3 · 2x</span></span> ist <em>keine</em> Stammfunktion von (x² + 1)²: Die innere Ableitung 2x hängt von x ab und lässt sich nicht herausteilen. Hier hilft nur Ausmultiplizieren. Und für e<sup>x²</sup> gibt es überhaupt keine Stammfunktion aus bekannten Funktionen.
+    </div>
+    <div class="quiz" id="quiz-verkettung"></div>
+  </section>
+
+  <!-- 7. 1/x -->
+  <section class="card" id="sec-ln">
+    <h2>7. Die Lücke n = −1: ∫ <span class="bruch"><span class="z">1</span><span class="n">x</span></span> dx = ln|x| <span class="kurs-marke lk" title="Leistungskurs">LK</span></h2>
+    <p>Die Potenzregel ∫ xⁿ dx = <span class="bruch"><span class="z">xⁿ⁺¹</span><span class="n">n + 1</span></span> versagt genau bei n = −1, denn dort wäre durch 0 zu teilen. Die Ableitung von ln(x) ist aber <span class="bruch"><span class="z">1</span><span class="n">x</span></span> (<a href="../03b-weitere-funktionen-ableiten/index.html#sec-lnfunktion">Thema 2.2</a>) — also ist ln die gesuchte Stammfunktion. Schiebe n an −1 heran: Die Flächen unter xⁿ von 1 bis b nähern sich der Fläche unter <span class="bruch"><span class="z">1</span><span class="n">x</span></span>, und unten legen sich die Kurven <span class="bruch"><span class="z">xⁿ⁺¹ − 1</span><span class="n">n + 1</span></span> an den Graphen von ln(x).</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>n: <input type="range" id="ln-n" min="0" max="8" step="1" value="2" style="vertical-align:middle;width:10rem"> <span id="ln-n-anzeige" class="wert farbe-rot"></span></label>
+        <label>b: <input type="range" id="ln-b" min="0.25" max="5" step="0.25" value="3" style="vertical-align:middle;width:10rem"> <span id="ln-b-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="ln-mount"></div>
+      <div class="th-bilanz" id="ln-bilanz"></div>
+      <div id="ln-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Stammfunktion von <span class="bruch"><span class="z">1</span><span class="n">x</span></span></span>
+      <div class="formula-block">∫ <span class="bruch"><span class="z">1</span><span class="n">x</span></span> dx = ln|x| + C &nbsp;&nbsp;(x ≠ 0), &nbsp;&nbsp;für x &gt; 0 also ln(x) + C</div>
+      Für x &lt; 0 ist ln(−x) eine Stammfunktion: (ln(−x))′ = <span class="bruch"><span class="z">1</span><span class="n">−x</span></span> · (−1) = <span class="bruch"><span class="z">1</span><span class="n">x</span></span> mit der Kettenregel. Mit der linearen Verkettung aus Abschnitt 6: ∫ <span class="bruch"><span class="z">1</span><span class="n">mx + n</span></span> dx = <span class="bruch"><span class="z">1</span><span class="n">m</span></span> · ln|mx + n| + C.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">e</span><span class="u">1</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">x</span></span> dx = <span class="integral">[ln(x)]<span class="grenzen"><span class="o">e</span><span class="u">1</span></span></span> = ln(e) − ln(1) = 1 − 0 = 1.<br>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">4</span><span class="u">1</span></span></span> <span class="bruch"><span class="z">3</span><span class="n">x</span></span> dx = 3 · (ln 4 − ln 1) = 3 · ln 4 ≈ 4,1589.<br>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">−1</span><span class="u">−e</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">x</span></span> dx = <span class="integral">[ln|x|]<span class="grenzen"><span class="o">−1</span><span class="u">−e</span></span></span> = ln 1 − ln e = −1 — negativ, denn <span class="bruch"><span class="z">1</span><span class="n">x</span></span> liegt für x &lt; 0 unter der Achse.
+    </div>
+    <div class="rechenweg-box">
+      <span class="box-label">Rechenweg — eine Grenze aus der Fläche</span>
+      Gesucht ist b &gt; 1 mit <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> <span class="bruch"><span class="z">2</span><span class="n">x</span></span> dx = 3: 2 · ln(b) = 3 ⟺ ln(b) = 1,5 ⟺ b = e<sup>1,5</sup> ≈ 4,4817 — gelöst wie e<sup>kx</sup> = c in <a href="../03b-weitere-funktionen-ableiten/index.html#sec-ln">Thema 2.2</a>, nur in der anderen Richtung.
+    </div>
+    <div class="unterschied-box">
+      <span class="box-label">Anders als bei ganzrationalen Funktionen</span>
+      Jede Potenz xⁿ mit n ≠ −1 hat wieder eine Potenz als Stammfunktion. Nur bei x⁻¹ entsteht eine ganz neue Funktion: ln wächst über jede Grenze, aber langsamer als jede noch so kleine Potenz von x. Deshalb ist die Fläche unter <span class="bruch"><span class="z">1</span><span class="n">x</span></span> von 1 bis ∞ unendlich groß, unter <span class="bruch"><span class="z">1</span><span class="n">x²</span></span> dagegen endlich (Abschnitt 8).
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — zwei Verwechslungen</span>
+      ∫ <span class="bruch"><span class="z">1</span><span class="n">x²</span></span> dx ist keine ln-Aufgabe: <span class="bruch"><span class="z">1</span><span class="n">x²</span></span> = x⁻², Stammfunktion −<span class="bruch"><span class="z">1</span><span class="n">x</span></span>. Und über 0 hinweg darf man nicht integrieren: <span class="bruch"><span class="z">1</span><span class="n">x</span></span> hat dort eine Polstelle, der Hauptsatz gilt nicht (<a href="../05-integralrechnung/index.html#sec-stolperstelle">Thema 4.1, Abschnitt 10</a>).
+    </div>
+    <div class="quiz" id="quiz-ln"></div>
+  </section>
+
+  <!-- 8. Uneigentliche Integrale -->
+  <section class="card" id="sec-uneigentlich">
+    <h2>8. Uneigentliche Integrale: unendlich lange Flächen <span class="kurs-marke lk" title="Leistungskurs">LK</span></h2>
+    <p>Kann eine Fläche, die bis ins Unendliche reicht, einen endlichen Inhalt haben? Man berechnet das Integral bis zu einer Grenze b und lässt dann b gegen unendlich gehen — mit dem <a href="../02-grenzwerte-und-stetigkeit/index.html#sec-unendlich">Grenzwert aus Thema 1.2</a>. Vergleiche <span class="bruch"><span class="z">1</span><span class="n">x²</span></span>, <span class="bruch"><span class="z">1</span><span class="n">√x</span></span> und e<sup>−x</sup>: Alle gehen für x → ∞ gegen 0, aber verschieden schnell. Dasselbe Problem andersherum: <span class="bruch"><span class="z">1</span><span class="n">√x</span></span> und <span class="bruch"><span class="z">1</span><span class="n">x²</span></span> wachsen bei x → 0 über alle Grenzen — ist die Fläche zwischen 0 und 1 trotzdem endlich? Dann ersetzt man die Problemstelle 0 durch ε und lässt ε gegen 0 gehen.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Funktion:
+          <select id="ue-art" class="eingabe" style="padding:0.4rem">
+            <option value="quadrat">f(x) = 1/x² auf [1; ∞)</option>
+            <option value="wurzel">f(x) = 1/√x auf [1; ∞)</option>
+            <option value="exp">f(x) = e^(−x) auf [0; ∞)</option>
+            <option value="polwurzel">f(x) = 1/√x auf (0; 1]</option>
+            <option value="polquadrat">f(x) = 1/x² auf (0; 1]</option>
+          </select>
+        </label>
+        <label><span id="ue-k-name">b</span>: <input type="range" id="ue-k" min="0" max="7" step="1" value="2" style="vertical-align:middle;width:11rem"> <span id="ue-k-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap" id="ue-mount"></div>
+      <div class="th-bilanz" id="ue-bilanz"></div>
+      <div id="ue-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Uneigentliches Integral</span>
+      Existiert der Grenzwert, so setzt man
+      <div class="formula-block"><span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">∞</span><span class="u">a</span></span></span> f(x) dx = <span style="white-space:nowrap">lim<sub>b→∞</sub></span> <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span> f(x) dx</div>
+      und nennt das uneigentliche Integral <strong>konvergent</strong>, sonst <strong>divergent</strong>. Ebenso für einen Integranden, der an einer Grenze unbeschränkt ist: <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">1</span><span class="u">0</span></span></span> f(x) dx = lim<sub>ε→0</sub> <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">1</span><span class="u">ε</span></span></span> f(x) dx.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Uneigentliche Integrale berechnen — drei Schritte</span>
+      <ol>
+        <li><strong>Problemstelle ersetzen:</strong> die Grenze ∞ durch eine Zahl b, eine Polstelle am Rand durch ε (knapp daneben).</li>
+        <li><strong>Gewöhnlich integrieren</strong> mit dem Hauptsatz — das Ergebnis ist ein Term in b bzw. ε.</li>
+        <li><strong>Grenzwert bestimmen</strong> für b → ∞ bzw. ε → 0: Gibt es ihn, ist das Integral konvergent und hat diesen Wert; sonst ist es divergent.</li>
+      </ol>
+      Liegt die Problemstelle im Inneren — etwa eine Polstelle bei 0 in [−1; 1] —, wird dort geteilt und jeder Teil für sich untersucht (siehe <a href="../05-integralrechnung/index.html#sec-stolperstelle">Thema 4.1, Abschnitt 10</a>).
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">x²</span></span> dx = <span class="integral">[−<span class="bruch"><span class="z">1</span><span class="n">x</span></span>]<span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> = 1 − <span class="bruch"><span class="z">1</span><span class="n">b</span></span> → 1: Die unendlich lange Fläche hat den Inhalt 1.<br>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">0</span></span></span> e<sup>−x</sup> dx = <span class="integral">[−e<sup>−x</sup>]<span class="grenzen"><span class="o">b</span><span class="u">0</span></span></span> = 1 − e<sup>−b</sup> → 1, denn e<sup>−b</sup> → 0.<br>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">√x</span></span> dx = <span class="integral">[2√x]<span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> = 2√b − 2 → ∞: divergent.<br>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">1</span><span class="u">ε</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">√x</span></span> dx = 2 − 2√ε → 2: Obwohl <span class="bruch"><span class="z">1</span><span class="n">√x</span></span> bei 0 über alle Grenzen wächst, ist die Fläche endlich.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: Potenzfunktionen — wann ist die Fläche endlich?</span>
+      Für r ≠ 1: <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">xʳ</span></span> dx = <span class="integral">[<span class="bruch"><span class="z">x¹⁻ʳ</span><span class="n">1 − r</span></span>]<span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> = <span class="bruch"><span class="z">b¹⁻ʳ − 1</span><span class="n">1 − r</span></span>.<br>
+      Für r &gt; 1 ist der Exponent 1 − r negativ, b¹⁻ʳ → 0: Der Grenzwert ist <span class="bruch"><span class="z">1</span><span class="n">r − 1</span></span>. Für r &lt; 1 wächst b¹⁻ʳ über jede Grenze, und für r = 1 ist <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">x</span></span> dx = ln(b) → ∞ (Abschnitt 7).<br>
+      Bei der Polstelle ist es genau umgekehrt: <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">1</span><span class="u">ε</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">xʳ</span></span> dx = <span class="bruch"><span class="z">1 − ε¹⁻ʳ</span><span class="n">1 − r</span></span> → <span class="bruch"><span class="z">1</span><span class="n">1 − r</span></span> nur für r &lt; 1.
+      <table class="fr-tabelle" style="margin-top:0.5rem">
+        <tr><th></th><th>r &lt; 1, z. B. <span class="bruch"><span class="z">1</span><span class="n">√x</span></span></th><th>r = 1: <span class="bruch"><span class="z">1</span><span class="n">x</span></span></th><th>r &gt; 1, z. B. <span class="bruch"><span class="z">1</span><span class="n">x²</span></span></th></tr>
+        <tr><td><span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">∞</span><span class="u">1</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">xʳ</span></span> dx</td><td>divergent</td><td>divergent</td><td>konvergent: <span class="bruch"><span class="z">1</span><span class="n">r − 1</span></span></td></tr>
+        <tr><td><span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">1</span><span class="u">0</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">xʳ</span></span> dx</td><td>konvergent: <span class="bruch"><span class="z">1</span><span class="n">1 − r</span></span></td><td>divergent</td><td>divergent</td></tr>
+      </table>
+    </div>
+    <div class="rechenweg-box">
+      <span class="box-label">Rechenweg — die Grenzwerte, die man braucht</span>
+      <span class="bruch"><span class="z">1</span><span class="n">b</span></span> → 0 und <span class="bruch"><span class="z">1</span><span class="n">b²</span></span> → 0 für b → ∞ (<a href="../02-grenzwerte-und-stetigkeit/index.html#sec-unendlich">Thema 1.2, Abschnitt 1</a>); e<sup>−b</sup> → 0 und sogar b · e<sup>−b</sup> → 0, weil sich die e-Funktion gegen jede Potenz durchsetzt (<a href="../03b-weitere-funktionen-ableiten/index.html#sec-verhalten">Thema 2.2, Abschnitt 9</a>); √ε → 0 für ε → 0.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: eine unbegrenzte Fläche zwischen zwei Graphen</span>
+      f(x) = <span class="bruch"><span class="z">1</span><span class="n">x²</span></span> und g(x) = <span class="bruch"><span class="z">1</span><span class="n">x³</span></span> schneiden sich bei x = 1; rechts davon liegt f oben.<br>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> (<span class="bruch"><span class="z">1</span><span class="n">x²</span></span> − <span class="bruch"><span class="z">1</span><span class="n">x³</span></span>) dx = <span class="integral">[−<span class="bruch"><span class="z">1</span><span class="n">x</span></span> + <span class="bruch"><span class="z">1</span><span class="n">2x²</span></span>]<span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> = −<span class="bruch"><span class="z">1</span><span class="n">b</span></span> + <span class="bruch"><span class="z">1</span><span class="n">2b²</span></span> + <span class="bruch"><span class="z">1</span><span class="n">2</span></span> → <span class="bruch"><span class="z">1</span><span class="n">2</span></span>. Die nach rechts offene Fläche hat den Inhalt <span class="bruch"><span class="z">1</span><span class="n">2</span></span>.
+    </div>
+    <div class="unterschied-box">
+      <span class="box-label">Anders als bei ganzrationalen Funktionen</span>
+      Ein Polynom, das nicht überall 0 ist, geht für x → ∞ nicht gegen 0 — die Fläche bis ∞ ist immer unendlich groß, eine Frage nach Konvergenz stellt sich gar nicht. Erst Funktionen, die gegen 0 streben, machen die Frage interessant, und dann entscheidet das Tempo: e<sup>−x</sup> und <span class="bruch"><span class="z">1</span><span class="n">x²</span></span> schnell genug, <span class="bruch"><span class="z">1</span><span class="n">x</span></span> und <span class="bruch"><span class="z">1</span><span class="n">√x</span></span> nicht.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — gegen null gehen reicht nicht</span>
+      Dass der Integrand gegen 0 geht, ist nötig, aber nicht genug: <span class="bruch"><span class="z">1</span><span class="n">√x</span></span> geht gegen 0, die Fläche wächst trotzdem über jede Grenze. Es kommt darauf an, <em>wie schnell</em> f gegen 0 geht — wie bei den unendlichen Reihen in <a href="../01-folgen-und-reihen/index.html#sec-stolperstelle">Thema 1.1</a>.
+    </div>
+    <div class="quiz" id="quiz-uneigentlich"></div>
+  </section>
+
+  <!-- 9. Rotationskörper -->
+  <section class="card" id="sec-rotation">
+    <h2>9. Volumen von Rotationskörpern <span class="kurs-marke lk" title="Leistungskurs">LK</span></h2>
+    <p>Dreht man den Graphen von f über [a; b] um die x-Achse, entsteht ein <span class="term">Rotationskörper</span> — ein Kegel, eine Kugel, eine Schüssel. Sein Volumen findet man wie die Fläche: Man zerschneidet ihn in n dünne Scheiben. Jede Scheibe ist fast ein Zylinder mit Radius f(x) und Höhe Δx, also Volumen π · f(x)² · Δx. Erhöhe n.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Körper:
+          <select id="rk-art" class="eingabe" style="padding:0.4rem">
+            <option value="kegel">Kegel: f(x) = 0,5x auf [0; 4]</option>
+            <option value="paraboloid">Paraboloid: f(x) = √x auf [0; 4]</option>
+            <option value="kugel">Kugel: f(x) = √(4 − x²) auf [−2; 2]</option>
+            <option value="exp">Trompete: f(x) = 2e^(−0,5x) auf [0; 4]</option>
+          </select>
+        </label>
+        <label>n: <input type="range" id="rk-n" min="1" max="40" step="1" value="6" style="vertical-align:middle;width:11rem"> <span id="rk-n-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap" id="rk-mount"></div>
+      <div class="th-bilanz" id="rk-bilanz"></div>
+      <div id="rk-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Volumen eines Rotationskörpers</span>
+      Rotiert der Graph der auf [a; b] stetigen Funktion f um die x-Achse, so hat der entstehende Körper das Volumen
+      <div class="formula-block">V = π · <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span> (f(x))² dx</div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: der Kegel und seine Formel</span>
+      Ein Kegel mit Radius r und Höhe h entsteht aus f(x) = <span class="bruch"><span class="z">r</span><span class="n">h</span></span> x auf [0; h]:<br>
+      V = π <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">h</span><span class="u">0</span></span></span> <span class="bruch"><span class="z">r²</span><span class="n">h²</span></span> x² dx = π <span class="bruch"><span class="z">r²</span><span class="n">h²</span></span> · <span class="integral">[<span class="bruch"><span class="z">x³</span><span class="n">3</span></span>]<span class="grenzen"><span class="o">h</span><span class="u">0</span></span></span> = <span class="bruch"><span class="z">1</span><span class="n">3</span></span> π r² h — die Formel aus der Mittelstufe ist bewiesen. Für r = 2, h = 4: V = <span class="bruch"><span class="z">16</span><span class="n">3</span></span>π ≈ 16,755.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel: unter einer e-Funktion</span>
+      f(x) = 2e<sup>−0,5x</sup> auf [0; 4]: (f(x))² = 4e<sup>−x</sup> — beim Quadrieren <strong>verdoppelt</strong> sich der Exponent.<br>
+      V = π <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">4</span><span class="u">0</span></span></span> 4e<sup>−x</sup> dx = π · <span class="integral">[−4e<sup>−x</sup>]<span class="grenzen"><span class="o">4</span><span class="u">0</span></span></span> = 4π · (1 − e<sup>−4</sup>) ≈ 12,3363. Lässt man b → ∞ gehen, bleibt das Volumen endlich: 4π.
+    </div>
+    <div class="rechenweg-box">
+      <span class="box-label">Rechenweg — woher die Formel kommt</span>
+      Eine Scheibe der Dicke Δx bei x ist ein Zylinder mit Radius f(x): Volumen π · r² · h = π · (f(x))² · Δx (<a href="../../../grundwissen-5-10/02-geometrie/12-pyramiden-kegel-kugeln/index.html">Mittelstufe</a>). Die Summe aller Scheiben ist eine Rechtecksumme für die Funktion π · (f(x))² — und ihr Grenzwert für n → ∞ das Integral, genau wie bei den <a href="../05-integralrechnung/index.html#sec-summen">Ober- und Untersummen in Thema 4.1</a>.
+    </div>
+    <div class="unterschied-box">
+      <span class="box-label">Anders als bei ganzrationalen Funktionen</span>
+      Bei Polynomen ist (f(x))² wieder ein Polynom, das man ausmultipliziert und Glied für Glied integriert. Bei √x wird das Quadrat einfacher (x), bei e<sup>kx</sup> wird es e<sup>2kx</sup> — die Stammfunktion braucht dann den Faktor <span class="bruch"><span class="z">1</span><span class="n">2k</span></span>. Und wie in Abschnitt 8 kann ein unendlich langer Körper ein endliches Volumen haben.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — das Quadrat gehört in das Integral</span>
+      π · (<span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span> f(x) dx)² ist etwas anderes als π · <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span> f(x)² dx. Quadriert wird der Radius jeder einzelnen Scheibe, nicht die Fläche. Und (e<sup>−0,5x</sup>)² ist e<sup>−x</sup>, nicht e<sup>0,25x²</sup>.
+    </div>
+    <p class="hinweis-box">💡 Rotationskörper und uneigentliches Integral zusammen ergeben eine Merkwürdigkeit: Der Graph von f(x) = <span class="bruch"><span class="z">1</span><span class="n">x</span></span> über [1; ∞) rotiert zu einem unendlich langen Trichter, „Gabriels Horn“. Sein Volumen ist endlich: π · <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">x²</span></span> dx = π · (1 − <span class="bruch"><span class="z">1</span><span class="n">b</span></span>) → π. Die Fläche unter dem Graphen ist dagegen unendlich groß: <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">1</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">x</span></span> dx = ln(b) → ∞ (<a href="#sec-ln">Abschnitt 7</a>). Man könnte den Trichter also mit Farbe füllen — aber nicht die Fläche anstreichen, die ihn erzeugt.</p>
+    <div class="quiz" id="quiz-rotation"></div>
+  </section>
+
+  <!-- 10. Stolperstelle -->
+  <section class="card" id="sec-stolperstelle">
+    <h2>10. Stolperstelle: ∫ x · e<sup>x</sup> dx ist nicht <span class="bruch"><span class="z">x²</span><span class="n">2</span></span> · e<sup>x</sup> <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span></h2>
+    <p>Mia rechnet: „Die Stammfunktion von x ist <span class="bruch"><span class="z">x²</span><span class="n">2</span></span>, die von e<sup>x</sup> ist e<sup>x</sup> — also ist <span class="bruch"><span class="z">x²</span><span class="n">2</span></span> · e<sup>x</sup> eine Stammfunktion von x · e<sup>x</sup>.“ Jonas leitet zur Probe ab. Fahre mit x₀ über den Graphen: Rot gestrichelt ist Mias Kurve mit ihrer Tangente, grün die Stammfunktion aus dem Ansatz. Vergleiche die Steigungen mit f(x₀).</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>x₀: <input type="range" id="st-x" min="-3" max="1.5" step="0.25" value="1" style="vertical-align:middle;width:11rem"> <span id="st-x-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="geo-wrap geo-stapel" id="st-mount"></div>
+      <div class="th-bilanz" id="st-bilanz"></div>
+      <div id="st-text" class="event-result"></div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Produkte nicht Faktor für Faktor integrieren</span>
+      (<span class="bruch"><span class="z">x²</span><span class="n">2</span></span> · e<sup>x</sup>)′ = x · e<sup>x</sup> + <span class="bruch"><span class="z">x²</span><span class="n">2</span></span> · e<sup>x</sup> — die Produktregel liefert einen zweiten Summanden, und der verschwindet nicht. Mias Kurve ist also eine Stammfunktion von (x + <span class="bruch"><span class="z">x²</span><span class="n">2</span></span>) · e<sup>x</sup>, nicht von x · e<sup>x</sup>. Richtig ist der Ansatz aus <a href="#sec-ansatz">Abschnitt 3</a>: F(x) = (x − 1) · e<sup>x</sup>, denn F′(x) = e<sup>x</sup> + (x − 1) · e<sup>x</sup> = x · e<sup>x</sup> ✓.
+    </div>
+    <div class="unterschied-box">
+      <span class="box-label">Anders als bei ganzrationalen Funktionen</span>
+      Bei Summen ist „Glied für Glied“ richtig — beim Ableiten wie beim Integrieren. Bei Produkten war schon das Ableiten nicht „Faktor für Faktor“ (dafür gibt es die Produktregel); beim Integrieren gibt es nicht einmal eine Regel. Bei Polynomen fiel das nie auf, weil man ein Produkt zweier Polynome einfach ausmultiplizieren konnte.
+    </div>
+    <p class="hinweis-box">💡 Bei x₀ = 0 haben beide Kurven die Steigung 0 = f(0) — dort fällt der Fehler nicht auf. Eine Probe an <em>einer</em> Stelle beweist nichts; die Probe durch Ableiten prüft alle Stellen auf einmal.</p>
+    <div class="quiz" id="quiz-stolperstelle"></div>
+  </section>
+
+  <!-- Selbsteinschätzung -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
+    <div id="se-liste"></div>
+    <div id="se-auswertung" class="event-result"></div>
+  </section>
+
+  <!-- Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Der <a href="../05-integralrechnung/index.html">Integralrechnung</a> (Thema 4.1) — Hauptsatz, Stammfunktion, Flächen, Mittelwert und Bestand gelten unverändert; neu sind nur die Stammfunktionen.</li>
+      <li><strong>Baut auf:</strong> Der <a href="../03b-weitere-funktionen-ableiten/index.html">Ableitung weiterer Funktionen</a> (Thema 2.2) — jede Stammfunktion dieser Seite ist eine Ableitungsregel von dort, rückwärts gelesen: (e<sup>kx</sup>)′, Produktregel, <a href="../03b-weitere-funktionen-ableiten/index.html#sec-sinus">sin und cos</a>, <a href="../03b-weitere-funktionen-ableiten/index.html#sec-kette">Kettenregel</a>, <a href="../03b-weitere-funktionen-ableiten/index.html#sec-lnfunktion">ln</a>.</li>
+      <li><strong>Baut auf:</strong> Den <a href="../02-grenzwerte-und-stetigkeit/index.html#sec-unendlich">Grenzwerten für x → ∞</a> (Thema 1.2) und den <a href="../01-folgen-und-reihen/index.html#sec-geo-reihe">unendlichen Reihen</a> (Thema 1.1) — eine unendlich lange Fläche ist endlich, wenn der Integrand schnell genug gegen 0 geht, wie eine Reihe, deren Summanden schnell genug klein werden.</li>
+      <li><strong>Baut auf:</strong> Der <a href="../04b-weitere-funktionen-untersuchen/index.html">Untersuchung weiterer Funktionen</a> (Thema 3.2) — die Wachstumsmodelle dort beschreiben Bestände, deren Änderungsraten hier integriert werden.</li>
+      <li><strong>Baut auf:</strong> Den Volumenformeln der Mittelstufe — <a href="../../../grundwissen-5-10/02-geometrie/12-pyramiden-kegel-kugeln/index.html">Kegel und Kugel</a> werden mit den Rotationskörpern bewiesen.</li>
+      <li><strong>Führt weiter zu:</strong> Den stetigen Zufallsgrößen in der Stochastik (MSS 13) — Wahrscheinlichkeiten sind Flächen unter einer Dichtefunktion, die Gesamtfläche bis ins Unendliche ist 1, und die Glockenkurve e<sup>−x²/2</sup> ist das berühmteste Beispiel einer Funktion ohne elementare Stammfunktion.</li>
+    </ul>
+  </section>
+
+  <!-- Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>Formelsammlung</h2>
+    <p>Ableiten und Integrieren nebeneinander, Stammfunktionen von e<sup>kx</sup>, der Ansatz für p(x) · e<sup>kx</sup>, Bestand bei abklingender Rate, sin und cos, lineare Verkettung, <span class="bruch"><span class="z">1</span><span class="n">x</span></span> und ln, uneigentliche Integrale und Rotationskörper — mit gerechneten Figuren auf zwei Seiten.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>Übungsaufgaben</h2>
+    <p>Vierundzwanzig Aufgaben auf vier Stufen, je sechs auf jeder. Aufgaben mit „(LK)“ im Titel gehören zum Leistungskurs; die übrigen brauchen nur e<sup>kx</sup>, den Ansatz und das Lösen von e<sup>kx</sup> = c. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu. Tipps gibt es auf Knopfdruck, nach dem Prüfen steht die Musterlösung darunter.</p>
+    <p>Die letzte Aufgabe jeder Stufe ist ein <strong>Integrationstraining</strong>: Mit „🎲 Neue Funktion“ bekommst du beliebig viele Funktionen, zu denen du eine Stammfunktion bestimmst — e-Funktionen, Produkte mit e (Ansatz), Sinus, Kosinus und <span class="bruch"><span class="z">1</span><span class="n">x</span></span> und zuletzt Verkettungen (LK). Du tippst die Stammfunktion als Term ein; die Seite macht die Probe durch Ableiten und sagt dir, welcher Fehler vermutlich passiert ist.</p>
+    <p class="progress-note">Zahlen gibst du mit Komma ein, zum Beispiel 1,5; Brüche wie 8/3 sind ebenfalls erlaubt. Wo die Lösung eine e-Potenz oder ein Logarithmus ist, rundest du auf vier Nachkommastellen.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 01 Analysis</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
