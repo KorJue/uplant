@@ -668,8 +668,8 @@ async function liesAngabe(page, box) {
 // Termaufgaben (6, 12, 18, 24) mit 12 Zügen: UPLANT_ZUEGE=12 …
 const RT = 12;
 // Messung (25 Züge): n ≈ 109, 62, 60, 21, 134, –, 267, 286, 73, 30, 24, –, 43, 111, 32, 37, 32, –, 187, 15,
-// 49, 20, 36 (Aufgaben 1 bis 23 ohne die Termaufgaben).
-const SCHRANKE = {1: 16, 2: 13, 3: 13, 4: 8, 5: 16, 7: 19, 8: 19, 9: 14, 10: 10, 11: 9, 13: 12, 14: 16, 15: 10, 16: 11, 17: 10, 19: 18, 20: 7, 21: 12, 22: 8, 23: 11};
+// 49, 20, 36 (Aufgaben 1 bis 23 ohne die Termaufgaben); Termaufgaben (12 Züge): n groß, 2421, groß, 2776.
+const SCHRANKE = {1: 16, 2: 13, 3: 13, 4: 8, 5: 16, 6: 9, 7: 19, 8: 19, 9: 14, 10: 10, 11: 9, 12: 10, 13: 12, 14: 16, 15: 10, 16: 11, 17: 10, 18: 9, 19: 18, 20: 7, 21: 12, 22: 8, 23: 11, 24: 10};
 
 async function aufgaben(page) {
   const r = 25;
