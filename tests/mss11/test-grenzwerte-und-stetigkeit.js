@@ -81,6 +81,9 @@ async function geruest(page) {
   pruefe(!/\bln\s*\(|\blog\b|\blg\b/.test(haupt), "Gerüst: Die Seite benutzt einen Logarithmus, der erst später kommt");
   const menue = fs.readFileSync(path.join(WURZEL, "mathematik/mss11/01-analysis/index.html"), "utf-8");
   pruefe(/data-section="mss11" href="02-grenzwerte-und-stetigkeit\/index.html" hidden/.test(menue), "Menü: Karte für Grenzwerte und Stetigkeit fehlt oder ist nicht mit data-section/hidden versehen");
+  // Grund- und Leistungskurs: Menükarte und Seite tragen die Marke „GK + LK“ wie die Themen 2.1, 3.1 und 4.1.
+  pruefe(/<h2>1\.2 Grenzwerte und Stetigkeit <span class="kurs-marke gk">GK \+ LK<\/span>/.test(menue), "Menü: Die Karte trägt nicht die Marke „GK + LK“");
+  pruefe(await page.evaluate(() => !!document.querySelector("main section:first-child .kurs-hinweis .kurs-marke.gk")), "Gerüst: Der Einstieg kennzeichnet die Seite nicht als Stoff für Grund- und Leistungskurs");
 }
 
 // ---------- 1. x → ∞ ----------

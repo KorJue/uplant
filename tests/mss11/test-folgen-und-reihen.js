@@ -73,6 +73,9 @@ async function geruest(page) {
   // Menü: Die Seite ist in der Analysis-Übersicht als Karte angemeldet.
   const menue = fs.readFileSync(path.join(WURZEL, "mathematik/mss11/01-analysis/index.html"), "utf-8");
   pruefe(/data-section="mss11" href="01-folgen-und-reihen\/index.html" hidden/.test(menue), "Menü: Karte für Folgen und Reihen fehlt oder ist nicht mit data-section/hidden versehen");
+  // Grund- und Leistungskurs: Menükarte und Seite tragen die Marke „GK + LK“ wie die Themen 2.1, 3.1 und 4.1.
+  pruefe(/<h2>1\.1 Folgen und Reihen <span class="kurs-marke gk">GK \+ LK<\/span>/.test(menue), "Menü: Die Karte trägt nicht die Marke „GK + LK“");
+  pruefe(await page.evaluate(() => !!document.querySelector("main section:first-child .kurs-hinweis .kurs-marke.gk")), "Gerüst: Der Einstieg kennzeichnet die Seite nicht als Stoff für Grund- und Leistungskurs");
 }
 
 // ---------- 1. explizit und rekursiv ----------
