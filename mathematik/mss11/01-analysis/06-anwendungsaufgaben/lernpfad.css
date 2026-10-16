@@ -1,0 +1,441 @@
+/* Kapitel 5 „Faktencheck Analysis“. Grundbausteine wie auf den Themenseiten (Karten, Knöpfe, Kästen,
+   Brüche, Integrale), dazu die Bausteine des Faktenchecks (fc-…). */
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  margin-bottom: 1.5rem;
+}
+.card h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+.card h3 {
+  font-size: 1.05rem;
+  margin: 1.5rem 0 0.6rem;
+  color: var(--accent-dark);
+}
+.card h3:first-of-type { margin-top: 0.5rem; }
+
+.lern-intro-list {
+  margin: 0.75rem 0 0;
+  padding-left: 1.3rem;
+}
+.lern-intro-list li { margin-bottom: 0.3rem; }
+
+.term {
+  font-weight: 700;
+  color: var(--accent-dark);
+}
+
+.hinweis-box {
+  background: var(--bg);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin: 0.9rem 0;
+  font-size: 0.92rem;
+}
+
+/* ---------- Widget-Rahmen ---------- */
+
+.widget {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 1rem 0;
+  background: var(--bg);
+}
+.widget-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.widget-col { flex: 1 1 260px; min-width: 240px; }
+
+.btn {
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  font-family: inherit;
+}
+.btn:hover { border-color: var(--accent); }
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--accent-dark); }
+.btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.75rem 0; }
+
+/* ---------- Ergebnisanzeige ---------- */
+
+/* Beschreibung des gewählten Vorgangs über der Zeichnung (Abschnitt 1). */
+.vorgang { margin: 0.4rem 0 0.6rem; }
+
+.event-result {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+  margin-top: 0.5rem;
+  font-family: "Cambria Math", Cambria, serif;
+}
+
+/* ---------- Quiz ---------- */
+
+.quiz {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1.1rem 0 0.5rem;
+}
+.quiz-q { font-weight: 700; margin: 0 0 0.6rem; }
+.quiz-options { display: flex; flex-direction: column; gap: 0.5rem; }
+.quiz-opt {
+  text-align: left;
+  padding: 0.55rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.94rem;
+}
+.quiz-opt:hover { border-color: var(--accent); }
+.quiz-opt.correct { border-color: #157347; background: #e7f6ec; color: #157347; font-weight: 700; }
+.quiz-opt.wrong { border-color: #b3261e; background: #fdecec; color: #b3261e; font-weight: 700; }
+:root[data-theme="dark"] .quiz-opt.correct { background: #17321f; color: #6fd68f; border-color: #6fd68f; }
+:root[data-theme="dark"] .quiz-opt.wrong { background: #3a1f1f; color: #ff8a8a; border-color: #ff8a8a; }
+.quiz-feedback { margin-top: 0.6rem; font-size: 0.9rem; }
+.quiz-feedback.ok { color: #157347; }
+.quiz-feedback.err { color: #b3261e; }
+:root[data-theme="dark"] .quiz-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .quiz-feedback.err { color: #ff8a8a; }
+
+/* ---------- Übungsaufgaben ---------- */
+
+.exercise {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1rem 0;
+}
+.exercise h3 { margin-top: 0; }
+.exercise-input-row { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; margin-top: 0.6rem; }
+.exercise-input-row input {
+  width: 11rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: var(--card-bg);
+  color: var(--text);
+}
+.exercise-feedback { margin-top: 0.6rem; font-size: 0.92rem; font-weight: 600; }
+.exercise-feedback.ok { color: #157347; }
+.exercise-feedback.err { color: #b3261e; }
+:root[data-theme="dark"] .exercise-feedback.ok { color: #6fd68f; }
+:root[data-theme="dark"] .exercise-feedback.err { color: #ff8a8a; }
+
+.formula-block {
+  font-family: "Cambria Math", Cambria, "STIX Two Math", serif;
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  margin: 0.5rem 0;
+  overflow-x: auto;
+}
+
+.progress-note {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+
+/* ---------- Definition / Wissen / Beispiel — farbige Merkboxen wie im Lehrbuch ---------- */
+
+.definition-box, .wissen-box, .beispiel-box {
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin: 0.9rem 0;
+}
+.definition-box .box-label, .wissen-box .box-label, .beispiel-box .box-label {
+  display: block;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+.definition-box, .wissen-box {
+  background: #fdecec;
+  border-left: 4px solid #b3261e;
+}
+.definition-box .box-label, .wissen-box .box-label { color: #b3261e; }
+:root[data-theme="dark"] .definition-box, :root[data-theme="dark"] .wissen-box { background: #3a1f1f; }
+:root[data-theme="dark"] .definition-box .box-label, :root[data-theme="dark"] .wissen-box .box-label { color: #ff8a8a; }
+.beispiel-box {
+  background: #e7f6ec;
+  border-left: 4px solid #157347;
+}
+.beispiel-box .box-label { color: #157347; }
+:root[data-theme="dark"] .beispiel-box { background: #17321f; }
+:root[data-theme="dark"] .beispiel-box .box-label { color: #6fd68f; }
+
+/* ---------- Vernetzung ---------- */
+
+.vernetzung-liste { list-style: none; padding: 0; margin: 0.75rem 0 0; }
+.vernetzung-liste li {
+  padding: 0.6rem 0.85rem;
+  border-left: 3px solid var(--accent);
+  background: var(--bg);
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 0.5rem;
+  font-size: 0.94rem;
+}
+.vernetzung-liste a { font-weight: 700; }
+/* Echte Brüche und Binomialkoeffizienten: Zähler über Nenner, „n über k“ in Klammern. */
+.bruch {
+  display: inline-flex; flex-direction: column; align-items: center;
+  vertical-align: middle; line-height: 1.15; margin: 0 0.1em; text-align: center;
+}
+.bruch .z { padding: 0 0.3em; border-bottom: 1.5px solid currentColor; }
+.bruch .n { padding: 0 0.3em; }
+.binom {
+  display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+  vertical-align: middle; line-height: 1.1; padding: 0 0.35em; margin: 0 0.1em;
+  border-left: 1.5px solid currentColor; border-right: 1.5px solid currentColor;
+  border-radius: 45% / 50%; font-size: 0.92em;
+}
+.binom.gross, .bruch.gross { font-size: 1.12em; font-weight: 700; }
+.nw { white-space: nowrap; }
+/* Integralzeichen mit Grenzen übereinander: ∫ mit b oben, a unten. */
+.integral { display: inline-flex; align-items: center; white-space: nowrap; }
+.integral .zeichen { font-size: 1.35em; line-height: 1; }
+.grenzen { display: inline-flex; flex-direction: column; font-size: 0.68em; line-height: 1.05; margin: 0 0.15em 0 0.05em; vertical-align: middle; }
+.grenzen .o { order: 0; }
+.grenzen .u { order: 1; }
+
+/* ================= Faktencheck ================= */
+/* Jeder Fall hat denselben Aufbau. Die Blöcke sind gleich gebaut und nur über einen farbigen Streifen
+   links voneinander unterscheidbar — wie beim Rätsel um den Goldenen Zirkel (Klasse 8). Hilfen sind
+   einheitlich violett, damit sie sich von der Grün/Orange/Rot-Ampel der Stufen abheben. */
+
+.fc-plan { margin: 0.3rem 0 0; padding-left: 1.2rem; }
+.fc-plan li { margin-bottom: 0.25rem; }
+.fc-meta { font-size: 0.85rem; color: var(--muted); }
+.fc-titel { margin: 1.2rem 0 0.4rem; font-size: 1.15rem; color: var(--text); }
+
+/* Kurswahl, Lösungssatz und Reiter */
+.fc-kurs, .fc-wort-leiste { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin-bottom: 0.8rem; font-size: 0.9rem; }
+.fc-wort-label { font-weight: 700; margin-right: 0.2rem; }
+.fc-wort-feld {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.7rem; height: 2.1rem; border-radius: 6px; border: 1px solid var(--border);
+  background: var(--bg); color: var(--muted); font-weight: 800; font-size: 1rem;
+}
+.fc-wort-feld.fc-wort-frei { border-color: #c2255c; color: #c2255c; background: var(--card-bg); }
+.fc-wort-feld.fc-wort-geschenkt { border-style: dashed; border-color: #6d28d9; color: #6d28d9; background: var(--card-bg); }
+:root[data-theme="dark"] .fc-wort-feld.fc-wort-frei { border-color: #f472b6; color: #f472b6; }
+:root[data-theme="dark"] .fc-wort-feld.fc-wort-geschenkt { border-color: #c4a7ff; color: #c4a7ff; }
+.fc-wort-luecke { display: inline-block; width: 0.5rem; }
+.fc-reiter { display: flex; flex-wrap: wrap; gap: 0.5rem 0.9rem; margin-bottom: 0.4rem; }
+.fc-gruppe { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem; }
+.fc-gruppe-name { font-size: 0.78rem; font-weight: 800; color: var(--muted); margin-right: 0.1rem; }
+.fc-tab {
+  padding: 0.4rem 0.75rem; border-radius: 999px; border: 1px solid var(--border);
+  background: var(--card-bg); color: var(--text); cursor: pointer; font-weight: 600;
+  font-size: 0.85rem; font-family: inherit;
+}
+.fc-tab:hover { border-color: var(--accent); }
+.fc-tab.fc-tab-aktiv { background: var(--accent); border-color: var(--accent); color: #fff; }
+.fc-lk { font-size: 0.65rem; font-weight: 800; padding: 0.05rem 0.3rem; border-radius: 999px; background: #ede9fe; color: #4c1d95; }
+:root[data-theme="dark"] .fc-lk { background: #4c1d95; color: #ede9fe; }
+.fc-stufen { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0 0 0.8rem; }
+.fc-stufen .fc-tab { font-size: 0.82rem; }
+.fc-stufen .fc-tab[data-stufe="1"].fc-tab-aktiv { background: #15803d; border-color: #15803d; }
+.fc-stufen .fc-tab[data-stufe="2"].fc-tab-aktiv { background: #c2410c; border-color: #c2410c; }
+.fc-stufen .fc-tab[data-stufe="3"].fc-tab-aktiv { background: #b91c1c; border-color: #b91c1c; }
+
+/* Fallansicht: links die Fallakte, rechts die Prüfung; schmal untereinander. */
+.fc-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+/* Auf breiten Bildschirmen bleibt die Fallakte (Modell und Zeichnung) beim Rechnen sichtbar. Sie ist
+   oft höher als das Fenster — deshalb rollt sie in sich selbst, sonst wäre ihr unterer Teil, die
+   Zeichnung, beim Arbeiten an den Schritten nicht erreichbar. */
+@media (min-width: 1000px) {
+  .fc-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+  .fc-akte { position: sticky; top: 0.5rem; max-height: calc(100vh - 1rem); overflow-y: auto; padding-right: 0.3rem; }
+}
+.fc-block {
+  background: var(--bg); border-radius: 10px; border-left: 4px solid var(--border);
+  padding: 0.75rem 0.9rem; margin-bottom: 0.8rem;
+}
+.fc-block > strong, .fc-block > summary { display: block; font-size: 0.92rem; margin-bottom: 0.35rem; }
+.fc-block > summary { cursor: pointer; font-weight: 700; }
+.fc-block p { margin: 0.4rem 0 0; font-size: 0.93rem; }
+.fc-block ul, .fc-block ol { margin: 0.4rem 0 0; padding-left: 1.2rem; font-size: 0.93rem; }
+.fc-block li { margin-bottom: 0.25rem; }
+.fc-behauptung { border-left-color: #a16207; }
+.fc-behauptung blockquote { margin: 0.2rem 0 0; font-size: 1.04rem; font-style: italic; line-height: 1.5; }
+.fc-hintergrund, .fc-rueckblick { border-left-color: var(--muted); }
+.fc-modell, .fc-auftrag { border-left-color: var(--accent); }
+.fc-werkzeug { border-left-color: #6d28d9; }
+.fc-urteil { border-left-color: #0f766e; }
+.fc-merksatz { border-left-color: #e08a1e; }
+.fc-selbstcheck { border-left-color: #8a5cf6; }
+.fc-denkfrage { border-left-color: #2563eb; }
+.fc-musterloesung { border-left-color: #157347; }
+.fc-buchstabe { border-left-color: #c2255c; }
+.fc-quellen { font-size: 0.8rem !important; color: var(--muted); }
+.fc-knobel {
+  border: 1px dashed var(--border); border-radius: 10px; padding: 0.7rem 0.9rem;
+  margin-top: 0.7rem; font-size: 0.93rem; background: var(--card-bg);
+}
+.fc-knobel.fc-fertig { border-style: solid; border-color: #157347; }
+:root[data-theme="dark"] .fc-knobel.fc-fertig { border-color: #6fd68f; }
+.fc-knobel .fc-meta { margin: 0; }
+/* Schmaleres Feld, damit Einheit und Haken in der rechten Spalte neben dem Feld bleiben. */
+.fc-knobel .fc-feld input { width: 7rem; }
+/* Eigene Texte: Modellkritik und Exit-Ticket */
+.fc-text { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.5rem; }
+.fc-text textarea {
+  width: 100%; box-sizing: border-box; padding: 0.5rem 0.6rem; border: 1px solid var(--border); border-radius: 6px;
+  font-size: 0.95rem; font-family: inherit; line-height: 1.5; background: var(--card-bg); color: var(--text); resize: vertical;
+}
+.fc-vergleich { margin-top: 0.6rem; padding: 0.6rem 0.8rem; border-radius: 8px; background: var(--bg); border: 1px solid var(--border); }
+.fc-denk-rat { font-weight: 600; }
+.fc-exit ol { padding-left: 1.4rem; }
+.fc-exit li { margin-bottom: 0.7rem; }
+/* Lösungssatz unter der Buchstabenleiste */
+.fc-satz { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.6rem; margin: -0.2rem 0 0.9rem; }
+.fc-satz .fc-status { flex-basis: 100%; margin: 0; }
+.fc-satz .fc-status:empty { display: none; }
+.fc-musterantwort { margin-top: 0.5rem; border-top: 1px dashed var(--border); padding-top: 0.5rem; }
+.fc-musterantwort summary { cursor: pointer; font-size: 0.85rem; color: var(--muted); }
+.fc-status { font-weight: 700; }
+.fc-gross { font-size: 1.35rem; font-weight: 800; color: #c2255c; letter-spacing: 0.06em; }
+:root[data-theme="dark"] .fc-gross { color: #f472b6; }
+.fc-geloest { font-weight: 700; margin-top: 0.5rem; }
+.fc-ampel { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.35rem; }
+.fc-ampel-btn {
+  padding: 0.35rem 0.7rem; border-radius: 999px; border: 1px solid var(--border);
+  background: var(--card-bg); color: var(--text); font-family: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer;
+}
+.fc-ampel-btn.fc-ampel-aktiv { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* Schritte mit Eingabefeldern */
+.fc-schritt {
+  border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem 0.9rem;
+  margin-bottom: 0.8rem; background: var(--card-bg);
+}
+.fc-schritt.fc-kern { border-left: 4px solid #c2255c; }
+.fc-schritt.fc-fertig { border-color: #157347; }
+:root[data-theme="dark"] .fc-schritt.fc-fertig { border-color: #6fd68f; }
+.fc-schritt-kopf { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-size: 0.9rem; }
+.fc-phase { font-size: 0.75rem; font-weight: 700; padding: 0.1rem 0.5rem; border-radius: 999px; background: var(--bg); color: var(--accent-dark); }
+.fc-frage { margin: 0.45rem 0 0.3rem; }
+.fc-felder { display: flex; flex-direction: column; gap: 0.35rem; }
+.fc-feld label { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
+.fc-feld input, .fc-feld select {
+  width: 9rem; padding: 0.4rem 0.55rem; border: 1px solid var(--border); border-radius: 6px;
+  font-size: 1rem; font-family: inherit; background: var(--card-bg); color: var(--text);
+}
+.fc-feld select { width: auto; max-width: 100%; }
+/* Lange Antworttexte in einer Auswahl dürfen die Seite auf dem Telefon nicht verbreitern:
+   Ohne min-width: 0 wächst das Flex-Element auf die Breite der längsten Option. */
+.fc-feld, .fc-feld label { min-width: 0; }
+.fc-feld label > select { flex: 1 1 12rem; min-width: 0; }
+.fc-einheit { color: var(--muted); font-size: 0.9rem; }
+.fc-feld-marke.fc-ok { color: #157347; font-weight: 800; }
+:root[data-theme="dark"] .fc-feld-marke.fc-ok { color: #6fd68f; }
+.fc-rueck { font-size: 0.88rem; font-weight: 600; }
+.fc-rueck:empty { display: none; }
+.fc-rueck.ok { color: #157347; }
+.fc-rueck.err { color: #b3261e; }
+:root[data-theme="dark"] .fc-rueck.ok { color: #6fd68f; }
+:root[data-theme="dark"] .fc-rueck.err { color: #ff8a8a; }
+.fc-tipps {
+  margin: 0.4rem 0 0; padding: 0.5rem 0.8rem 0.5rem 1.8rem; border-left: 4px solid #6d28d9;
+  background: #f3e8ff; border-radius: 6px; font-size: 0.9rem;
+}
+:root[data-theme="dark"] .fc-tipps { background: #2e1a47; border-left-color: #c4a7ff; }
+.fc-loesung { margin-top: 0.5rem; padding: 0.5rem 0.8rem; border-radius: 6px; background: #e7f6ec; font-size: 0.9rem; line-height: 1.6; }
+:root[data-theme="dark"] .fc-loesung { background: #17321f; }
+.fc-deutung { font-style: italic; }
+.fc-muster-liste { font-size: 0.9rem; line-height: 1.6; }
+
+/* Zeichnungen */
+.fc-figur { margin: 0.6rem 0 0; }
+.fc-svg { width: 100%; max-width: 560px; height: auto; display: block; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; }
+.fc-gitter { stroke: var(--border); stroke-width: 1; }
+.fc-achse-zahl { font-size: 13px; fill: var(--muted); }
+.fc-achse-titel { font-size: 14px; fill: var(--muted); font-weight: 600; }
+.fc-kurve { fill: none; stroke-width: 2.6; stroke-linejoin: round; }
+.fc-linie { stroke-width: 1.8; stroke-dasharray: 5 4; }
+.fc-gestrichelt { stroke-dasharray: 7 5; }
+.fc-punkt { stroke: none; }
+.fc-k-blau { stroke: #1d4ed8; } .fc-punkt.fc-k-blau { fill: #1d4ed8; }
+.fc-k-orange { stroke: #b3650a; } .fc-punkt.fc-k-orange { fill: #b3650a; }
+.fc-k-gruen { stroke: #157347; } .fc-punkt.fc-k-gruen { fill: #157347; }
+.fc-k-rot { stroke: #b3261e; } .fc-punkt.fc-k-rot { fill: #b3261e; }
+.fc-k-grau { stroke: #5f6b76; } .fc-punkt.fc-k-grau { fill: #5f6b76; }
+:root[data-theme="dark"] .fc-k-blau { stroke: #8ab4ff; } :root[data-theme="dark"] .fc-punkt.fc-k-blau { fill: #8ab4ff; }
+:root[data-theme="dark"] .fc-k-orange { stroke: #ffbf6e; } :root[data-theme="dark"] .fc-punkt.fc-k-orange { fill: #ffbf6e; }
+:root[data-theme="dark"] .fc-k-gruen { stroke: #6fd68f; } :root[data-theme="dark"] .fc-punkt.fc-k-gruen { fill: #6fd68f; }
+:root[data-theme="dark"] .fc-k-rot { stroke: #ff8a8a; } :root[data-theme="dark"] .fc-punkt.fc-k-rot { fill: #ff8a8a; }
+:root[data-theme="dark"] .fc-k-grau { stroke: #9aa4b1; } :root[data-theme="dark"] .fc-punkt.fc-k-grau { fill: #9aa4b1; }
+.fc-figur figcaption { display: flex; flex-direction: column; gap: 0.25rem; margin-top: 0.4rem; font-size: 0.85rem; }
+.fc-legende { display: flex; flex-wrap: wrap; gap: 0.3rem 0.9rem; }
+.fc-legende-eintrag { display: inline-flex; align-items: center; gap: 0.35rem; }
+.fc-legende-strich { display: inline-block; width: 1.4rem; height: 0; border-top: 3px solid; }
+.fc-legende-strich.fc-gestrichelt { border-top-style: dashed; }
+.fc-l-blau { border-color: #1d4ed8; } .fc-l-orange { border-color: #b3650a; } .fc-l-gruen { border-color: #157347; }
+.fc-l-rot { border-color: #b3261e; } .fc-l-grau { border-color: #5f6b76; }
+:root[data-theme="dark"] .fc-l-blau { border-color: #8ab4ff; } :root[data-theme="dark"] .fc-l-orange { border-color: #ffbf6e; }
+:root[data-theme="dark"] .fc-l-gruen { border-color: #6fd68f; } :root[data-theme="dark"] .fc-l-rot { border-color: #ff8a8a; }
+:root[data-theme="dark"] .fc-l-grau { border-color: #9aa4b1; }
+.fc-figur-hinweis { color: var(--muted); }
+
+/* Tabellen: Pass und Landkarte. Sie dürfen umbrechen — auf dem Telefon rollt nur die Tabelle. */
+.fc-tabelle-wrap { overflow-x: auto; margin-bottom: 0.8rem; }
+.fc-tabelle { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+.fc-tabelle th, .fc-tabelle td { text-align: left; padding: 0.45rem 0.6rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+.fc-tabelle th { color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.fc-tabelle td:first-child { white-space: nowrap; }
+.fc-landkarte { min-width: 640px; }
+.fc-pass-tabelle { min-width: 760px; }
+.fc-wort-eingabe { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.fc-wort-eingabe input {
+  padding: 0.5rem 0.8rem; border-radius: 8px; border: 1px solid var(--border); font-family: inherit;
+  font-size: 1rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; width: 16rem; max-width: 100%;
+  background: var(--card-bg); color: var(--text);
+}
+
+/* Werkzeugkasten und Konzept */
+.fc-werkzeuge { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.4rem 1.2rem; }
+.fc-werkzeuge h3 { margin: 0.6rem 0 0.3rem; }
+.fc-werkzeuge ul { margin: 0; padding-left: 1.2rem; font-size: 0.92rem; line-height: 1.7; }
+.fc-konzept summary { cursor: pointer; font-weight: 700; }
+.fc-konzept h3 { font-size: 1rem; margin: 1.2rem 0 0.4rem; }
+.fc-konzept ul { margin: 0.4rem 0; padding-left: 1.2rem; font-size: 0.92rem; }
+.fc-konzept li { margin-bottom: 0.35rem; }
+.fc-konzept p { font-size: 0.92rem; }
+
+@media (pointer: coarse) {
+  .fc-tab, .fc-ampel-btn, .btn { min-height: 44px; }
+}
