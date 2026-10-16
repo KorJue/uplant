@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Faktencheck Analysis – Anwendungsaufgaben</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="../../../aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">MSS 11</a><span class="sep">/</span>
+  <a href="../index.html">01 Analysis</a><span class="sep">/</span>
+  5 Anwendungsaufgaben: Faktencheck
+</nav>
+<header class="page-header">
+  <h1>Faktencheck Analysis: zwanzig Behauptungen auf dem Prüfstand</h1>
+  <p>Ein Selbstlernpfad: Ob Insta-Story, Familienchat oder Werbeplakat — jeden Tag begegnen dir Behauptungen mit Zahlen. Manche stimmen, manche sind halb wahr, manche schlicht falsch. Die Faktencheck-AG eurer Schülerzeitung hat zwanzig davon gesammelt: zu Geld, Gesundheit, Verkehr, Energie, Klima, Wasser und Musik. Jede lässt sich mit der Mathematik aus den Kapiteln 1 bis 4 prüfen. Wer einen Fall löst, bekommt einen Buchstaben — zusammen ergeben sie das Motto der AG.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card" id="sec-einstieg">
+    <h2>Worum geht es hier?</h2>
+    <p>Jeder Fall beginnt mit einer <span class="term">Behauptung</span>, wie man sie wirklich hört oder liest, und mit dem <span class="term">Hintergrund</span>: echten, aktuellen Daten samt Quelle. Dazu kommt ein <span class="term">Modell</span> — eine Funktion, die die Situation vereinfacht beschreibt. Du prüfst die Behauptung am Modell und fällst am Ende ein <span class="term">Urteil</span>: stimmt, stimmt nicht oder stimmt nur zum Teil. Je zwei Fälle gehören zu den Themen 1.1 bis 4.2; die vier komplexen Fälle am Schluss verbinden Werkzeuge aus mehreren Kapiteln.</p>
+    <div class="wissen-box">
+      <span class="box-label">Dein Lösungsplan — in jedem Fall dieselben vier Schritte</span>
+      <ol class="fc-plan">
+        <li><strong>① Verstehen:</strong> Was genau wird behauptet? Welche Größen kommen vor, in welchen Einheiten?</li>
+        <li><strong>② Modell aufstellen:</strong> Welche Funktion beschreibt die Situation — und was lässt sie weg?</li>
+        <li><strong>③ Mathematik benutzen:</strong> Ableiten, integrieren, Grenzwerte, Gleichungen lösen.</li>
+        <li><strong>④ Ergebnis erklären:</strong> Was bedeutet die Zahl in der Situation? Hält die Behauptung — und hält das Modell?</li>
+      </ol>
+    </div>
+    <ul class="lern-intro-list">
+      <li><strong>Drei Stufen:</strong> 🔴 Stufe 3 (Knobeln) zeigt nur die Behauptung, das Modell und den entscheidenden Beleg — den Weg planst du selbst. 🟠 Stufe 2 gliedert den Fall in Schritte, 🟢 Stufe 1 gibt zu jedem Schritt Hilfen. Wechseln darfst du jederzeit.</li>
+      <li><strong>Jedes Zwischenergebnis wird sofort geprüft.</strong> Ist es falsch, sagt dir die Rückmeldung, woran es vermutlich liegt — eine vergessene Einheit, ein Vorzeichen, ein typischer Denkfehler.</li>
+      <li><strong>Kein Frust durch Folgefehler:</strong> Hängst du an einem Zwischenschritt, kannst du dir sein Ergebnis zeigen lassen und damit weiterrechnen — wie mit den Ersatzwerten im Abitur. Nur den entscheidenden Beleg musst du selbst finden.</li>
+    </ul>
+    <p class="kurs-hinweis"><span class="kurs-marke gk">GK + LK</span> Sechzehn Fälle kommen mit Grundkursstoff aus. <span class="kurs-marke lk">LK</span> Vier Fälle brauchen Leistungskursstoff (Sinus und Kosinus, Kettenregel). Wer im Grundkurs ist, stellt das oben bei „Mein Kurs“ ein — dann sind die Buchstaben der LK-Fälle geschenkt.</p>
+    <p class="hinweis-box">💡 Du brauchst einen wissenschaftlichen Taschenrechner. Bei Sinus und Kosinus muss er auf <strong>Bogenmaß (RAD)</strong> stehen. Der Stand deines Faktenchecks bleibt in diesem Browser gespeichert.</p>
+  </section>
+
+  <section class="card" id="sec-faelle">
+    <h2>Die zwanzig Fälle</h2>
+    <div class="fc-kurs" id="fc-kurs"></div>
+    <div class="fc-wort-leiste" id="fc-wort"></div>
+    <div class="fc-reiter" id="fc-reiter"></div>
+    <div id="fc-fall"></div>
+    <div id="fc-pass" hidden></div>
+  </section>
+
+  <section class="card" id="sec-vernetzung">
+    <h2>Welche Kapitel stecken in welchem Fall?</h2>
+    <p>Die Landkarte zeigt, welche Werkzeuge jeder Fall braucht. Ein Klick auf eine Behauptung öffnet den Fall, ein Klick auf eine Kapitelnummer das Thema zum Nachlesen.</p>
+    <div class="fc-tabelle-wrap" id="fc-landkarte"></div>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../01-folgen-und-reihen/index.html">1.1 Folgen und Reihen</a>, <a href="../02-grenzwerte-und-stetigkeit/index.html">1.2 Grenzwerte und Stetigkeit</a>, <a href="../03-differentialrechnung/index.html">2.1 Differentialrechnung</a>, <a href="../03b-weitere-funktionen-ableiten/index.html">2.2 Ableitung weiterer Funktionen</a>, <a href="../04-funktionsuntersuchung/index.html">3.1 Untersuchung ganzrationaler Funktionen</a>, <a href="../04b-weitere-funktionen-untersuchen/index.html">3.2 Untersuchung weiterer Funktionen</a>, <a href="../05-integralrechnung/index.html">4.1 Integralrechnung</a>, <a href="../05b-weitere-funktionen-integrieren/index.html">4.2 Integration weiterer Funktionen</a></li>
+      <li><strong>Führt weiter zu:</strong> den Anwendungsaufgaben im Abitur, die genauso aufgebaut sind — Sachsituation, Modellfunktion, gegliederte Teilaufgaben, Deutung im Sachzusammenhang.</li>
+    </ul>
+  </section>
+
+  <section class="card" id="sec-formelsammlung">
+    <h2>Werkzeugkasten: die Formeln aus den Kapiteln 1 bis 4</h2>
+    <div class="fc-werkzeuge">
+      <div><h3>1.1 Folgen und Reihen</h3><ul>
+        <li>a<sub>n</sub> = a<sub>1</sub> · q<sup>n−1</sup>; s<sub>n</sub> = a<sub>1</sub> · <span class="bruch"><span class="z">q<sup>n</sup> − 1</span><span class="n">q − 1</span></span></li>
+        <li>Unendliche geometrische Reihe: <span class="bruch"><span class="z">a<sub>1</sub></span><span class="n">1 − q</span></span> für |q| &lt; 1</li>
+        <li>Grenzwert einer Rekursion a<sub>n+1</sub> = q · a<sub>n</sub> + d: <span class="bruch"><span class="z">d</span><span class="n">1 − q</span></span></li>
+      </ul></div>
+      <div><h3>1.2 Grenzwerte und Stetigkeit</h3><ul>
+        <li>Stetig in a: Grenzwert = Funktionswert; an Nahtstellen beide Formeln vergleichen</li>
+        <li>Zwischenwertsatz und Intervallhalbierung (Breite nach k Schritten: 2<sup>−k</sup>)</li>
+        <li><span class="bruch"><span class="z">ax + b</span><span class="n">x</span></span> → a für x → ∞</li>
+      </ul></div>
+      <div><h3>2.1 Differentialrechnung</h3><ul>
+        <li>Mittlere Änderungsrate <span class="bruch"><span class="z">f(b) − f(a)</span><span class="n">b − a</span></span>, momentane f′(x)</li>
+        <li>Tangente: t(x) = f(u) + f′(u) · (x − u); Steigungswinkel tan α = f′(x)</li>
+        <li>(x<sup>n</sup>)′ = n · x<sup>n−1</sup>, auch für negative n</li>
+      </ul></div>
+      <div><h3>2.2 Weitere Funktionen ableiten</h3><ul>
+        <li>(e<sup>kx</sup>)′ = k · e<sup>kx</sup>; e<sup>kx</sup> = c ⟺ x = <span class="bruch"><span class="z">ln c</span><span class="n">k</span></span></li>
+        <li>(sin(mx))′ = m · cos(mx) (LK, Kettenregel)</li>
+      </ul></div>
+      <div><h3>3.1 / 3.2 Funktionsuntersuchung</h3><ul>
+        <li>Extremstelle: f′ = 0 mit Vorzeichenwechsel; Wendestelle: f″ = 0 mit Vorzeichenwechsel</li>
+        <li>Globale Extrema: Randwerte vergleichen</li>
+        <li>Newton: x<sub>neu</sub> = x − <span class="bruch"><span class="z">f(x)</span><span class="n">f′(x)</span></span></li>
+        <li>Gedämpfte Schwingung A · e<sup>−δt</sup> · sin(ωt): Periode <span class="bruch"><span class="z">2π</span><span class="n">ω</span></span> (LK)</li>
+      </ul></div>
+      <div><h3>4.1 / 4.2 Integralrechnung</h3><ul>
+        <li>Bestand = Anfangsbestand + <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">t</span><span class="u">0</span></span></span> Rate</li>
+        <li>Fläche zwischen Graphen: <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span> (f − g) dx zwischen den Schnittstellen</li>
+        <li>∫ e<sup>kx</sup> dx = <span class="bruch"><span class="z">1</span><span class="n">k</span></span> e<sup>kx</sup> + C; ∫ sin(mx) dx = −<span class="bruch"><span class="z">1</span><span class="n">m</span></span> cos(mx) + C (LK)</li>
+        <li>Ansatz für t · e<sup>kt</sup>: F(t) = (at + b) · e<sup>kt</sup></li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <details class="fc-konzept">
+      <summary>📋 Konzept für Lehrkräfte — Aufbau, Differenzierung, Evaluation</summary>
+
+      <h3>Worum es geht</h3>
+      <p>Zwanzig Faktenchecks zu Behauptungen, wie sie Jugendlichen tatsächlich begegnen — im Familienchat, unter einem Video, auf einem Plakat. Jeder Fall folgt demselben Bogen: <em>Behauptung → Hintergrund mit echten Daten → Modell → gegliederte Prüfung → Urteil → Modellkritik</em>. Der Rahmen „Faktencheck“ ist nicht Dekoration: Er macht den letzten Schritt des Modellierungskreislaufs, das <strong>Validieren</strong>, zum eigentlichen Ziel der Aufgabe statt zur Pflichtübung am Ende. Die Urteile sind bewusst gemischt (elfmal „stimmt nicht“, sechsmal „stimmt“, dreimal „stimmt nur zum Teil“), damit niemand lernt, dass Behauptungen grundsätzlich falsch sind.</p>
+
+      <h3>Didaktischer Rahmen</h3>
+      <ul>
+        <li><strong>Modellierungskreislauf</strong> nach Blum und Leiß: Situation verstehen, vereinfachen, mathematisieren, mathematisch arbeiten, interpretieren, validieren, vermitteln. Jeder Schritt eines Falls trägt eine Phasenmarke des vierschrittigen <strong>Lösungsplans</strong> (Verstehen, Modell, Mathematik, Erklären), der sich in der DISUM-Studie als wirksame Selbststeuerungshilfe erwiesen hat.</li>
+        <li><strong>Situationsmodell zuerst:</strong> Jeder Fall beginnt mit Behauptung, Hintergrund und einem Diagramm des Modells. Viele Fehler beim Modellieren entstehen, weil die Situation nicht verstanden ist (Leiss u. a. 2010) — deshalb fragt der erste Schritt fast immer nach einer Größe, die man in der Situation deuten muss.</li>
+        <li><strong>Authentizität, Relevanz, Aktualität</strong> (Maaß 2010; Greefrath und Maaß 2020): Die Kontexte stammen aus Meldungen der Jahre 2024 bis 2026 und sind mit Quellen belegt — das Niedrigwasser am Pegel Kaub im August 2026, der Gesetzentwurf zur Frühstart-Rente, der Steuertarif 2026, die Pflicht zum Notbremsassistenten seit Juli 2024, das Solarpaket I, der CO₂-Höchstwert vom Mai 2026. Mehrere Fälle spielen in Rheinland-Pfalz (Kaub, Geierlay, Mainz, Rheinsteig).</li>
+        <li><strong>Rätselcharakter:</strong> Wie beim Rätsel um den Goldenen Zirkel (Klasse 8) liefert jeder gelöste Fall einen Buchstaben; der Lösungssatz „Erst denken, dann teilen“ ist zugleich die Moral der Einheit. Jeder Fall ist einzeln bearbeitbar.</li>
+      </ul>
+
+      <h3>Fachlicher Kern</h3>
+      <p>Je zwei Fälle zu jedem Thema von 1.1 bis 4.2, dazu vier komplexe Fälle, die jeweils mindestens drei Kapitel verbinden — der Schwerpunkt liegt auf der Differential- und Integralrechnung. Die Landkarte oben zeigt für jeden Fall den mathematischen Kern und die beteiligten Kapitel. Jeder Fall verlangt Modellieren (K3), den Umgang mit formalen und technischen Elementen (K5) und Argumentieren beim Urteil (K1); das Diagramm fordert das Arbeiten mit Darstellungen (K4), der Partnercheck das Kommunizieren (K6), die Knobelfragen und die komplexen Fälle das Problemlösen (K2). Die Teilschritte reichen von Anforderungsbereich I (eine Größe berechnen) über II (Ansatz finden, Werkzeug wählen) bis III (Urteil begründen, Modell kritisieren).</p>
+      <p>Die Distraktoren der Urteile sind keine Füllantworten, sondern verbreitete Fehlvorstellungen: Mittelwert gleich Maximum (Abschnittskontrolle, Rampe), stärkste Änderung am Extremum (Pegel), Würfel als Universaloptimum (Karton), „Tarifsprung“ (Steuer), Proportionalität von Dosis und Wirkdauer (Tabletten), unendliche Summe gleich unendlich (Song, Becken), lineares Denken bei exponentiellen Prozessen (Koffein, Schnellladen).</p>
+
+      <h3>Differenzierte Arbeitsaufträge</h3>
+      <p>Jeder Fall öffnet auf <strong>🔴 Stufe 3 (Knobeln)</strong>: Sichtbar sind Behauptung, Hintergrund, Modell, Diagramm, die Kernfrage und nur der entscheidende Beleg — den Weg dorthin planen die Lernenden selbst. Merksatz und Musterlösung bleiben gesperrt, bis der Fall gelöst ist, weil sie den Weg verraten. <strong>🟠 Stufe 2 (Anwenden)</strong> gliedert den Fall in vier bis fünf Schritte; nach zwei Fehlversuchen an einem Zwischenschritt lässt sich dessen Ergebnis aufdecken. <strong>🟢 Stufe 1 (Sicher werden)</strong> öffnet zu jedem Schritt den ersten Tipp und den Werkzeugkasten, Zwischenergebnisse sind sofort aufdeckbar. Die Bedingung für „gelöst“ ist auf allen Stufen dieselbe: Beleg richtig und Urteil richtig. Niemand bearbeitet heimlich weniger Mathematik — nur mit mehr oder weniger Anleitung.</p>
+      <p><strong>Grund- und Leistungskurs:</strong> Sechzehn Fälle kommen mit Grundkursstoff aus (nach dem rheinland-pfälzischen Lehrplan einschließlich der e-Funktion); vier Fälle brauchen Sinus, Kosinus und die Kettenregel. Im Grundkurs-Modus sind deren Buchstaben geschenkt, damit der Lösungssatz erreichbar bleibt.</p>
+
+      <h3>Hilfestellungen</h3>
+      <ul>
+        <li><strong>Gestufte Tipps</strong> je Schritt, vom Denkanstoß über den Ansatz bis kurz vor das Ergebnis — angelehnt an die Interventionsstufen von Leiß (strategisch vor inhaltlich).</li>
+        <li><strong>Fehlerdiagnose statt „falsch“:</strong> Für jeden typischen Fehler gibt es einen eigenen Hinweis, der die Ursache benennt (einfache statt Zinseszinsen, Grad statt Bogenmaß, Durchschnitt statt Momentanwert, Randwert vergessen, Bestand und Rate verwechselt). Dazu erkennt die Seite allgemein Einheitenfehler (Faktor 3,6, 60, 100, 1.000, 24), Vorzeichenfehler und zu früh gerundete Werte.</li>
+        <li><strong>Ersatzwerte:</strong> Zwischenergebnisse lassen sich aufdecken, damit ein früher Fehler keine Kette von Folgefehlern auslöst. Nur der Beleg selbst ist davon ausgenommen.</li>
+        <li><strong>Musterlösung</strong> mit allen Schritten nach dem Lösen — oder nach drei Fehlversuchen am Beleg; der Fall zählt dann im Pass ehrlich als „mit Musterlösung“.</li>
+      </ul>
+
+      <h3>Evaluationsmethoden</h3>
+      <ul>
+        <li><strong>Formative Prüfung jedes Zwischenergebnisses</strong> mit sofortiger, fehlerbezogener Rückmeldung.</li>
+        <li><strong>Urteil mit Begründung:</strong> Jede der vier Antworten hat eine eigene Erklärung — auch die richtige erklärt noch etwas.</li>
+        <li><strong>Modellkritik</strong> mit Musterantwort: Wo hört das Modell auf zu stimmen? (Validieren als eigene Leistung.)</li>
+        <li><strong>Selbsteinschätzungs-Ampel</strong> und <strong>Partnercheck</strong> in jedem Fall.</li>
+        <li><strong>Faktencheck-Pass</strong> als Lernstandsübersicht und <strong>Exit-Ticket</strong> mit drei Reflexionsfragen.</li>
+      </ul>
+
+      <h3>Wiederkehrende Elemente</h3>
+      <p>Jeder Fall hat denselben Aufbau: links die Fallakte (Behauptung, Hintergrund, Modell, Diagramm), rechts die Prüfung (Rückblick mit Verweisen auf die Themenseiten, Stufen, Auftrag, Werkzeugkasten, Schritte, Urteil, Merksatz, Selbstkontrolle, Modellkritik, Musterlösung, Buchstabe). Nach dem ersten Fall muss sich niemand mehr orientieren. Der Rückblick knüpft spiralförmig an die Themenseiten an, unabhängig von der Reihenfolge, in der die Fälle bearbeitet werden.</p>
+
+      <h3>Organisatorisches</h3>
+      <p>Zeitbedarf: je Fall zu 1.1 bis 4.2 etwa 15 bis 25 Minuten, je komplexer Fall 30 bis 45 Minuten. Geeignet als Stationenarbeit (ein Thema je Station), zur Wiederholung vor Klausuren oder als Hausaufgabe; die Fälle eines Themas lassen sich direkt im Anschluss an die Themenseite einsetzen. Die Modelle sind bewusst einfach und nennen ihre Annahmen offen — das ist Teil der Aufgabe, nicht ihr Mangel. Stand der Daten: Oktober 2026.</p>
+
+      <h3>Literatur</h3>
+      <ul>
+        <li>Blum, W. und Leiß, D. (2005): Modellieren im Unterricht mit der „Tanken“-Aufgabe. mathematik lehren 128, 18–21.</li>
+        <li>Leiß, D. (2007): „Hilf mir es selbst zu tun“ — Lehrerinterventionen beim mathematischen Modellieren. Hildesheim: Franzbecker.</li>
+        <li>Leiss, D., Schukajlow, S., Blum, W., Messner, R. und Pekrun, R. (2010): The role of the situation model in mathematical modelling. Journal für Mathematik-Didaktik 31(1), 119–141.</li>
+        <li>Maaß, K. (2010): Classification scheme for modelling tasks. Journal für Mathematik-Didaktik 31(2), 285–311.</li>
+        <li>Schukajlow, S., Kolter, J. und Blum, W. (2015): Scaffolding mathematical modelling with a solution plan. ZDM 47(7), 1241–1254.</li>
+        <li>Greefrath, G. und Maaß, K. (Hrsg.) (2020): Modellierungskompetenzen — Diagnose und Förderung. Berlin: Springer Spektrum.</li>
+        <li>KMK (2012): Bildungsstandards im Fach Mathematik für die Allgemeine Hochschulreife.</li>
+        <li>IQB: Abituraufgabenpool Mathematik — Vorbild für die Bestandsaufgaben mit Zu- und Abflussraten.</li>
+      </ul>
+    </details>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 01 Analysis</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+<script type="module" src="faktencheck.js?v=1"></script>
+</body>
+</html>

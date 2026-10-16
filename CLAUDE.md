@@ -300,6 +300,18 @@ die Klasse `lk`. LK-Aufgaben tragen „(LK)“ im Titel.
 * **Musterlösung immer**, mit dem gerechneten Weg in Schritten — und bei
   Umkehraufgaben mit einer **Probe**.
 
+**Anwendungsaufgaben (MSS 11, Kapitel 5 „Faktencheck“, `06-anwendungsaufgaben/`)** sind
+anders gebaut als die Übungsaufgaben: zwanzig feste Fälle mit echten, belegten Daten statt
+gewürfelter Zahlen, aufgebaut wie das Geometrie-Rätsel der Klasse 8 (Stufen, Buchstabe je Fall,
+Pass). Jeder Fall ist ein Objekt in `faelle-*.js`: Behauptung, Hintergrund mit Quellen, Modell,
+Zeichnung, Schritte mit Feldern (`soll`, `tol`, `falsch[]` mit Hinweis), Urteil mit vier
+Antworten. **Alle Zahlen in den Texten werden dort aus dem Modell berechnet**, nie abgeschrieben.
+Kernschritte (`kern: true`) sind der Beleg und lassen sich nicht aufdecken; Zwischenschritte schon
+(Ersatzwerte). `test-anwendungsaufgaben.js` rechnet jeden Sollwert auf einem anderen Weg nach
+(Simulation, Simpson, Abtasten) und verlangt für jedes Feld einen eigenen Wert in `SOLL`, für
+jede Kurve eine eigene Funktion in `FIG` — ein neuer Fall ohne beides fällt durch. Grundkursfälle
+dürfen weder Sinus, Kosinus noch Kettenregel enthalten noch auf LK-Abschnitte verweisen.
+
 ### Die Kollisionsprüfung — hier steckt der meiste Ärger
 
 `ohneKollision()` **wirft**, wenn nichts übrig bleibt. Das ist kein rot
