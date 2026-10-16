@@ -122,6 +122,15 @@ const balkon = {
   denkfrage: "Wie sieht die Rechnung an einem sonnigen Wintertag aus, an dem die Anlage nur von 9 bis 16 Uhr liefert, mit höchstens 300 W (wieder als Parabel)?",
   musterantwort: `<p>Die Parabel hat dann die Fläche ${bruch("2", "3")} · 300 W · 7 h = ${n(winterE / 1000, 1)} kWh. Über 150 W liegt sie gut ${n(2 * Math.sqrt(150 / kW), 1)} Stunden lang; der Überschuss ist ${bruch("2", "3")} · 150 W · ${n(2 * Math.sqrt(150 / kW), 2)} h ≈ ${n(winterU / 1000, 2)} kWh. Selbst verbraucht werden ${n((winterE - winterU) / 1000, 2)} kWh — nur noch rund ${n((100 * (winterE - winterU)) / 3600, 0)} % der Grundlast.</p>`,
   knobel: "Wie groß müsste die Grundlast sein, damit an diesem Sommertag nur noch 1 kWh ins Netz fließt?",
+  knobelFelder: [
+    {
+      id: "grundlast", label: "Grundlast g ≈", einheit: "W", soll: gEine, tol: 1, stellen: 0,
+      falsch: [
+        { wert: 150, id: "heute", text: `150 W ist die Grundlast, mit der der Fall rechnet — damit fließen mittags rund ${n(ueber / 1000, 1)} kWh ins Netz. Gesucht ist das g, bei dem die Fläche zwischen P und g nur noch 1.000 Wh beträgt.` },
+        { wert: 600 - (0.75 * Math.sqrt(15)) ** (2 / 3), id: "wattstunde", tol: 0.05, text: "So bliebe nur 1 Wh Überschuss. Die Fläche ist in Wattstunden gerechnet, und 1 kWh sind 1.000 Wh." },
+      ],
+    },
+  ],
   knobelAntwort: `<p>Mit Grundlast g ist der Überschuss ${bruch("2", "3")} · (600 − g) · 2√((600 − g)/15) Wh. Gleich 1.000 gesetzt: (600 − g)<sup>3/2</sup> = 750 · √15, also 600 − g ≈ ${n(600 - gEine, 0)} und g ≈ ${n(gEine, 0)} W — mehr als das Doppelte der Wohnung.</p>`,
   partner: "Zeichnet die Fläche, die ins Netz fließt, und die Fläche, die selbst verbraucht wird, farbig in die Skizze. Vergleicht: Hat jemand die Morgen- und Abendstunden vergessen?",
 };
@@ -242,6 +251,15 @@ const notbremse = {
   denkfrage: "Ist das Bremsmodell bei t = 0,5 stetig? Prüfe die Geschwindigkeit und die Bremsverzögerung a(t) = −v′(t) links und rechts. Warum wäre ein Sprung in a unrealistisch?",
   musterantwort: "<p>Geschwindigkeit: links v₀ − 8 · 0,25 = v₀ − 2, rechts v₀ − 2 — stetig. Verzögerung: links 16t = 8, rechts 8 — ebenfalls stetig, das Modell ist sogar differenzierbar. Ein Sprung in der Verzögerung wäre ein schlagartiger Ruck. Echte Bremsen bauen den Druck in Bruchteilen einer Sekunde auf, nicht in null Sekunden.</p>",
   knobel: "Mit welcher Geschwindigkeit trifft das Auto bei Tempo 50 mit Assistent ein Hindernis in 18 m Entfernung?",
+  knobelFelder: [
+    {
+      id: "aufprall", label: "v ≈", einheit: "km/h", soll: vAufprall, tol: 0.2, stellen: 1,
+      falsch: [
+        { wert: 0, id: "steht", text: `Bei Tempo 50 steht das Auto auch mit Assistent erst nach rund ${n(a50.gesamt, 1)} m — bei 18 m fährt es noch.` },
+        { wert: (a50.v0 - 2) * 3.6, id: "phase1", text: `So schnell ist das Auto am Ende von Phase 1, nach ${n(a50.r + a50.p1, 2)} m. Auf den restlichen ${n(18 - a50.r - a50.p1, 2)} m bremst es mit 8 m/s² weiter.` },
+      ],
+    },
+  ],
   knobelAntwort: `<p>Nach Reaktion und Phase 1 sind ${n(a50.r + a50.p1, 2)} m zurückgelegt, die Geschwindigkeit ist v₀ − 2 ≈ ${n(a50.v0 - 2, 2)} m/s. In Phase 2 bleiben ${n(18 - a50.r - a50.p1, 2)} m. Bei konstanter Verzögerung 8 m/s² gilt v² = (v₀ − 2)² − 2 · 8 · s, also v ≈ ${n(vAufprall / 3.6, 2)} m/s ≈ ${n(vAufprall, 0)} km/h.</p>`,
   partner: "Vergleicht eure Teilwege. Erklärt euch gegenseitig am v-t-Diagramm, welche Fläche zu welchem Teilweg gehört — und welche Fläche im Diagramm gar nicht vorkommt.",
 };
@@ -353,6 +371,15 @@ const becken = {
   denkfrage: "Was passiert, wenn zwei Stunden nach dem ersten Unwetter ein zweites kommt?",
   musterantwort: "<p>Das Modell kennt nur einen Regen. Kommt ein zweiter dazu, addieren sich die Zuflussraten — die Reserve von knapp 300 m³ ist dann schnell aufgebraucht. Deshalb bemisst man Rückhaltebecken für Regenereignisse einer bestimmten Stärke und Häufigkeit und lässt bewusst Reserven.</p>",
   knobel: "Wie viel Wasser ist nach 12 Stunden noch im Becken?",
+  knobelFelder: [
+    {
+      id: "rest", label: "V(12) ≈", einheit: "m³", soll: vBecken(12), tol: 2, stellen: 0,
+      falsch: [
+        { wert: 2000 + 3000 - 300 * 12, id: "ganz", text: "So viel wäre es, wenn schon der ganze Zufluss von 3.000 m³ angekommen wäre. Nach 12 Stunden sind es erst 3.000 · (1 − e<sup>−4,8</sup>) m³." },
+        { wert: 2000 + 3000 * (1 - Math.exp(-4.8)), id: "ohneAbfluss", text: "Die Drossel lässt die ganze Zeit 300 m³ pro Stunde ab — in 12 Stunden 3.600 m³. Ziehe den Abfluss noch ab." },
+      ],
+    },
+  ],
   knobelAntwort: `<p>V(12) = 2.000 + 3.000 · (1 − e<sup>−4,8</sup>) − 300 · 12 ≈ ${n(vBecken(12), 0)} m³. (Das Modell gilt nur, solange das Becken nicht leer ist — die Drossel kann nicht mehr ablassen, als drin ist.)</p>`,
   partner: "Erklärt euch gegenseitig, warum das Becken nicht im Moment des größten Zuflusses am vollsten ist. Zeigt die Stelle im Diagramm.",
 };
@@ -445,7 +472,16 @@ const zwoelfter = {
   denkfrage: "Echte Gezeiten brauchen vom Niedrig- zum Hochwasser gut 6 Stunden, und an vielen Orten ist die Flut kürzer als die Ebbe. Was bedeutet das für die Regel?",
   musterantwort: "<p>Die Zwölftelregel gilt für eine symmetrische Sinus-Tide; mit „Stunde“ ist eigentlich ein Sechstel der Steigdauer gemeint — bei 6 Stunden 12 Minuten also gut 62 Minuten. Wo die Flut kürzer ist als die Ebbe, steigt das Wasser schneller, als die Regel sagt. Wer sicher planen muss, nimmt die Gezeitentafeln des Bundesamts für Seeschifffahrt und Hydrographie.</p>",
   knobel: "Wie schnell steigt das Wasser im schnellsten Moment — in Zentimetern pro Minute?",
-  knobelAntwort: `<p>r(3) = ${bruch("π", "4")} m/h ≈ ${n(Math.PI / 4, 3)} m/h ≈ ${n((Math.PI / 4) * 100 / 60, 1)} cm pro Minute — eine Handbreit in acht Minuten.</p>`,
+  knobelFelder: [
+    {
+      id: "cmMin", label: "im schnellsten Moment ≈", einheit: "cm pro Minute", soll: ((Math.PI / 4) * 100) / 60, tol: 0.01, stellen: 2,
+      falsch: [
+        { wert: Math.PI / 4, id: "meterStunde", tol: 0.005, text: "Das ist die Rate in Metern pro Stunde. Gefragt sind Zentimeter pro Minute: mal 100, durch 60." },
+        { wert: 1.25, id: "regel", text: "1,25 cm pro Minute steigt das Wasser im Mittel in der schnellsten Stunde (3/12 von 3 m). Im schnellsten Moment ist die Rate etwas größer: r(3) = π/4 m/h." },
+      ],
+    },
+  ],
+  knobelAntwort: `<p>r(3) = ${bruch("π", "4")} m/h ≈ ${n(Math.PI / 4, 3)} m/h ≈ ${n((Math.PI / 4) * 100 / 60, 2)} cm pro Minute — eine Handbreit in acht Minuten.</p>`,
   partner: "Vergleicht die blauen und orangen Punkte im Bild. Wo liegt die Regel über dem Modell, wo darunter — und wo genau darauf?",
 };
 

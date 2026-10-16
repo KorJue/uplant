@@ -311,6 +311,11 @@ Kernschritte (`kern: true`) sind der Beleg und lassen sich nicht aufdecken; Zwis
 (Simulation, Simpson, Abtasten) und verlangt für jedes Feld einen eigenen Wert in `SOLL`, für
 jede Kurve eine eigene Funktion in `FIG` — ein neuer Fall ohne beides fällt durch. Grundkursfälle
 dürfen weder Sinus, Kosinus noch Kettenregel enthalten noch auf LK-Abschnitte verweisen.
+Eingetragen wird alles dort, wo es geprüft wird: Auch die Knobelfrage hat Felder
+(`knobelFelder`, gleicher Vertrag wie die Schritte, Sollwerte in `KN` der Prüfung), die
+Modellkritik und das Exit-Ticket sind Textfelder, der Lösungssatz steht unter der Buchstabenleiste.
+Die Musterantwort der Modellkritik öffnet sich erst nach einem eigenen Satz. Hinweistexte werden
+als HTML gesetzt (`<sup>` ist erlaubt); die Prüfung verlangt, dass kein rohes HTML zu sehen ist.
 
 ### Die Kollisionsprüfung — hier steckt der meiste Ärger
 

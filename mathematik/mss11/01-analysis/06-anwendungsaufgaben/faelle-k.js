@@ -30,8 +30,8 @@ function halbiere(f, a, b) {
 const streams = (t) => 2 * t * Math.exp(-0.25 * t);
 const F = (t) => -(8 * t + 32) * Math.exp(-0.25 * t);
 const s30 = F(30) - F(0);
-let summeTage = 0;
-for (let k = 1; k <= 400; k++) summeTage += streams(k);
+let summeTage = 0, summe30 = 0;
+for (let k = 1; k <= 400; k++) { summeTage += streams(k); if (k <= 30) summe30 += streams(k); }
 
 const song = {
   key: "song",
@@ -133,7 +133,30 @@ const song = {
   merksatz: `<p>Eine Fläche, die bis ins Unendliche reicht, kann endlich sein: ${integral("b", "0")} s(t) dt hat für b → ∞ einen Grenzwert, wenn s schnell genug abklingt. Den Grenzwert liefert eine Stammfunktion — beim Produkt t · e<sup>kt</sup> über den Ansatz (at + b) · e<sup>kt</sup>.</p>`,
   denkfrage: "Echte Streaming-Zahlen haben oft einen „langen Schwanz“: Ein Teil der Hörer bleibt dem Song treu. Wie könnte man das ins Modell einbauen — und was folgt daraus für die Gesamtzahl?",
   musterantwort: "<p>Man könnte eine kleine Konstante addieren, etwa s(t) = 2t · e<sup>−0,25t</sup> + 0,05. Dann wächst die Gesamtzahl ohne Grenze, denn das Integral der Konstanten ist 0,05 · b — allerdings langsam: 50.000 Streams am Tag bringen 150 € täglich, rund 55.000 € im Jahr. Für dauerhafte Einnahmen zählen also eher treue Hörer als ein kurzer Hype.</p>",
-  knobel: "Ist die Summe der Tageswerte s(1) + s(2) + s(3) + … größer oder kleiner als das Integral von 0 bis ∞?",
+  knobel: "Ist die Summe der Tageswerte s(1) + s(2) + s(3) + … größer oder kleiner als das Integral von 0 bis ∞ (32 Millionen)? Die Summe liefert die Summenfunktion des Taschenrechners — ab etwa k = 100 ändert sie sich nicht mehr.",
+  knobelFelder: [
+    {
+      id: "summe", label: "s(1) + s(2) + s(3) + … ≈", einheit: "Millionen", soll: summeTage, tol: 0.02, stellen: 2,
+      falsch: [
+        { wert: 32, id: "integral", text: "32 Millionen ist das Integral, also die Fläche unter der Kurve. Die Summe der Tageswerte ist eine eigene Rechnung: s(1) + s(2) + … mit der Summenfunktion." },
+        { wert: summe30, id: "dreissig", text: "Das ist die Summe der ersten 30 Tage. Gefragt ist die ganze Reihe — rechne weiter, bis sich die Summe nicht mehr ändert." },
+      ],
+    },
+    {
+      id: "vergleich", typ: "wahl", label: "Verglichen mit dem Integral ist die Summe", soll: "kleiner",
+      optionen: [
+        { wert: "groesser", text: "größer als 32 Millionen" },
+        { wert: "unendlich", text: "unendlich groß, weil s nie null wird" },
+        { wert: "kleiner", text: "kleiner als 32 Millionen" },
+        { wert: "gleich", text: "genau 32 Millionen" },
+      ],
+      falsch: [
+        { wert: "groesser", id: "groesser", text: "Größer wäre die Summe, wenn die Rechtecke der Breite 1 insgesamt über die Kurve hinausragten. Vergleiche deinen Wert der Summe mit 32." },
+        { wert: "unendlich", id: "unendlich", text: "Die Tageswerte nehmen wie eine geometrische Folge mit q = e<sup>−0,25</sup> ab — die Summe einer solchen Reihe ist endlich, genau wie das Integral." },
+        { wert: "gleich", id: "gleich", text: "Fast, aber nicht genau: Die Summe zählt Rechtecke der Breite 1, das Integral die Fläche unter der Kurve. Beide liegen dicht beieinander, sind aber nicht gleich." },
+      ],
+    },
+  ],
   knobelAntwort: `<p>Etwas kleiner: Die Tageswerte ergeben zusammen ≈ ${n(summeTage, 2)} Millionen, das Integral 32. Die Summe besteht aus Rechtecken der Breite 1 statt aus der Fläche unter der Kurve — beide unterscheiden sich um weniger als 1 %.</p>`,
   partner: "Wer hat in Schritt 4 „unendlich“ vermutet? Erklärt euch gegenseitig, warum eine Funktion, die nie null wird, trotzdem eine endliche Fläche haben kann.",
 };
@@ -253,6 +276,22 @@ const radweg = {
   denkfrage: "Die Rampe ist an den Enden knickfrei, aber die Krümmung springt dort: f″(0) = 36/L², auf dem Uferweg ist sie null. Wann spielt so ein Krümmungssprung eine Rolle?",
   musterantwort: "<p>Beim Radfahren kaum. Bei Achterbahnen und Bahnstrecken dagegen schon: Ein Sprung in der Krümmung bedeutet einen Ruck, weil sich die Kräfte auf die Fahrgäste schlagartig ändern. Dort verlangt man deshalb auch stetige zweite Ableitungen — mit mehr Bedingungen und Polynomen höheren Grades.</p>",
   knobel: "An welchen Stellen hat die 150-m-Rampe genau 3 % Steigung?",
+  knobelFelder: [
+    {
+      id: "x1", label: "kleinere Stelle x₁ ≈", einheit: "m", soll: x3a, tol: 0.05, stellen: 1,
+      falsch: [
+        { wert: 75, id: "wende", text: "Bei x = 75 m, der Wendestelle, ist die Rampe am steilsten: 6 %. Die 3 % werden zweimal erreicht — einmal davor, einmal danach." },
+        { wert: x3b, id: "tausch", text: "Das ist die größere der beiden Stellen; sie gehört ins zweite Feld." },
+      ],
+    },
+    {
+      id: "x2", label: "größere Stelle x₂ ≈", einheit: "m", soll: x3b, tol: 0.05, stellen: 1,
+      falsch: [
+        { wert: 75, id: "wende", text: "Bei x = 75 m, der Wendestelle, ist die Rampe am steilsten: 6 %. Die 3 % werden zweimal erreicht — einmal davor, einmal danach." },
+        { wert: x3a, id: "tausch", text: "Das ist die kleinere der beiden Stellen; sie gehört ins erste Feld." },
+      ],
+    },
+  ],
   knobelAntwort: `<p>f′(x) = 36x/150² − 36x²/150³ = 0,03 ⟺ x² − 150x + 2.812,5 = 0 ⟺ x ≈ ${n(x3a, 1)} m oder x ≈ ${n(x3b, 1)} m — symmetrisch zur Mitte.</p>`,
   partner: "Erklärt euch mit der Skizze, warum die mittlere Steigung (Sekante) und die größte Steigung (Tangente an der Wendestelle) nicht gleich sein können, wenn die Rampe waagerecht beginnt.",
 };
@@ -263,6 +302,7 @@ const ladeP = (t) => 100 * Math.exp(-0.04 * t);
 const eStopp = (2500 * (1 - Math.exp(-1.2))) / 60;      // kWh in 30 Minuten
 const pMittel = eStopp / 0.5;
 const verbrauch = (v) => 8 + 0.00085 * v * v;
+const stopps = (v) => (6 * verbrauch(v) - 50) / eStopp;
 const fahrt = (v) => 600 / v + (6 * verbrauch(v) - 50) / pMittel;
 const vBest = Math.cbrt((600 * pMittel) / (6 * 2 * 0.00085));
 
@@ -375,8 +415,24 @@ const eauto = {
   merksatz: "<p>Geht eine stetige Zielfunktion an beiden Rändern ihres Definitionsbereichs gegen ∞, hat sie dazwischen ein Minimum — man findet es mit T′(v) = 0. Energie aus einer zeitlich veränderlichen Leistung ist ein Integral; mit ihrem Mittelwert lässt sich weiterrechnen.</p>",
   denkfrage: "Das schnellste Tempo hängt im Modell weder von der Streckenlänge noch von den 50 kWh am Start ab. Warum nicht — und wovon hängt es ab?",
   musterantwort: `<p>Die 50 kWh verschieben T(v) nur um eine Konstante; die Ableitung ändert sich nicht. Die Streckenlänge steckt als Faktor in beiden Summanden von T′ und fällt bei T′ = 0 heraus. Übrig bleiben Ladeleistung und Verbrauchsanstieg: v* = ∛(100 · P̄ / (2 · 0,00085)). Mit doppelter mittlerer Ladeleistung wäre v* um den Faktor ∛2 ≈ 1,26 größer, also rund ${n(vBest * Math.cbrt(2), 0)} km/h.</p>`,
-  knobel: "Wie viele 30-Minuten-Stopps braucht man bei 130 km/h, wie viele bei 180 km/h?",
-  knobelAntwort: `<p>Bei 130 km/h sind ${n(6 * verbrauch(130) - 50, 1)} kWh nachzuladen, also ${n((6 * verbrauch(130) - 50) / eStopp, 2)} Stopps — praktisch drei. Bei 180 km/h sind es ${n(6 * verbrauch(180) - 50, 1)} kWh, also ${n((6 * verbrauch(180) - 50) / eStopp, 2)} Stopps — praktisch sechs. Das Modell rechnet mit Bruchteilen; in Wirklichkeit lädt man beim letzten Stopp nur so viel, wie man braucht.</p>`,
+  knobel: "Wie viele 30-Minuten-Stopps braucht man bei 130 km/h, wie viele bei 180 km/h? Ein angefangener Stopp zählt als ganzer.",
+  knobelFelder: [
+    {
+      id: "stopps130", label: "bei 130 km/h:", einheit: "Stopps", soll: Math.ceil(stopps(130)), tol: 0.01, stellen: 0,
+      falsch: [
+        { wert: stopps(130), id: "bruchteil", tol: 0.06, text: "So viele Stopps rechnet das Modell — mit Bruchteilen. Einen angefangenen Stopp muss man aber ganz einlegen: aufrunden." },
+        { wert: Math.floor(stopps(130)), id: "abgerundet", text: `Mit ${Math.floor(stopps(130))} Stopps fehlen noch rund ${n(6 * verbrauch(130) - 50 - Math.floor(stopps(130)) * eStopp, 0)} kWh — abrunden reicht nicht bis ans Ziel.` },
+      ],
+    },
+    {
+      id: "stopps180", label: "bei 180 km/h:", einheit: "Stopps", soll: Math.ceil(stopps(180)), tol: 0.01, stellen: 0,
+      falsch: [
+        { wert: stopps(180), id: "bruchteil", tol: 0.06, text: "So viele Stopps rechnet das Modell — mit Bruchteilen. Einen angefangenen Stopp muss man aber ganz einlegen: aufrunden." },
+        { wert: Math.floor(stopps(180)), id: "abgerundet", text: `Mit ${Math.floor(stopps(180))} Stopps fehlen noch rund ${n(6 * verbrauch(180) - 50 - Math.floor(stopps(180)) * eStopp, 0)} kWh — abrunden reicht nicht bis ans Ziel.` },
+      ],
+    },
+  ],
+  knobelAntwort: `<p>Bei 130 km/h sind ${n(6 * verbrauch(130) - 50, 1)} kWh nachzuladen, also ${n(stopps(130), 2)} Stopps — praktisch ${Math.ceil(stopps(130))}. Bei 180 km/h sind es ${n(6 * verbrauch(180) - 50, 1)} kWh, also ${n(stopps(180), 2)} Stopps — praktisch ${Math.ceil(stopps(180))}. Das Modell rechnet mit Bruchteilen; in Wirklichkeit lädt man beim letzten Stopp nur so viel, wie man braucht.</p>`,
   partner: "Vergleicht eure Werte für T(130) und T(180). Erklärt euch, welcher Teil der Rechnung den Ausschlag gibt — und warum der Unterschied so klein ist.",
 };
 
@@ -391,6 +447,11 @@ const abB = halbiere(co2Strich, 66.7, 67.0);
 const minRate = trendStrich(66.58) - 6 * Math.PI;
 // Jahresmittel 2025: Integral von 66 bis 67 — der Sinusanteil hebt sich über eine Periode weg.
 const mittel2025 = 315.6 + 0.84 * 66.5 + (0.0125 * (67 ** 3 - 66 ** 3)) / 3;
+// Jahresmittel von Jahr k (t = k bis k + 1). Gesucht ist das erste k mit Mittel über 450 ppm; die
+// Mittel wachsen monoton, die Schleife endet also nach wenigen Schritten.
+const mittelJahr = (k) => 315.6 + 0.84 * (k + 0.5) + (0.0125 * ((k + 1) ** 3 - k ** 3)) / 3;
+let jahr450 = 66;
+while (mittelJahr(jahr450) <= 450) jahr450++;
 const MONATE = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
 const TAGE = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 function datumAusBruchteil(b) {
@@ -508,10 +569,17 @@ const keeling = {
   denkfrage: `Das Modell legt den Tiefpunkt jedes Jahres auf Ende Oktober (2025: ${datumAusBruchteil(abB - 66)}); gemessen wird er meist Ende September oder Anfang Oktober. Woran liegt das — und ist es für den Faktencheck wichtig?`,
   musterantwort: "<p>Die echte Jahresschwingung ist nicht symmetrisch: Die Abnahme im Sommer geht schneller als der Wiederanstieg im Winter. Eine Sinuskurve kann das nicht abbilden. Für die Frage, ob der Gehalt über das Jahr steigt, ist das egal: Dafür zählt nur, dass sich die Schwingung im Jahresmittel aufhebt — und das gilt für jede periodische Schwankung.</p>",
   knobel: "In welchem Jahr überschreitet der Jahresmittelwert im Modell erstmals 450 ppm?",
+  knobelFelder: [
+    {
+      id: "jahr", label: "im Jahr", einheit: "", soll: 1959 + jahr450, tol: 0.01, stellen: 0,
+      falsch: [
+        { wert: 1959 + 66 + Math.ceil((450 - mittel2025) / trendStrich(66.5)), id: "linear", text: "So weit kommt man, wenn man vom Mittelwert 2025 aus mit dem heutigen Anstieg von 2,5 ppm pro Jahr gleichmäßig weiterrechnet. Der Anstieg wächst aber: T′(t) = 0,84 + 0,025t." },
+        { wert: jahr450, id: "nurT", tol: 0.5, text: "Das ist der Wert von t, nicht die Jahreszahl: t = 0 ist der Anfang von 1959." },
+      ],
+    },
+  ],
   knobelAntwort: (() => {
-    let j = 66;
-    const mittelJahr = (k) => 315.6 + 0.84 * (k + 0.5) + (0.0125 * ((k + 1) ** 3 - k ** 3)) / 3;
-    while (mittelJahr(j) <= 450) j++;
+    const j = jahr450;
     return `<p>Der Mittelwert von Jahr k ist T(k + 0,5) + 0,0125/12. Er überschreitet 450 ppm erstmals für k = ${j}, also im Jahr ${1959 + j} (Mittelwert ≈ ${n(mittelJahr(j), 1)} ppm). Wer vom Mittelwert 2025 aus linear mit dem heutigen Anstieg von 2,5 ppm pro Jahr weiterrechnet, landet erst bei ${1959 + 66 + Math.ceil((450 - mittel2025) / trendStrich(66.5))} — der wachsende Anstieg holt ein Jahr heraus.</p>`;
   })(),
   partner: "Zeigt euch gegenseitig im Bild einen Zeitraum, in dem C fällt, und erklärt, warum der Trend trotzdem steigt. Wer kann es ohne Rechnung erklären?",

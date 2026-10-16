@@ -147,6 +147,27 @@ const fruehstart = {
   denkfrage: "Die Rechnung nimmt an, dass das Depot 61 Jahre lang jedes Jahr genau 6 % bringt. Was bedeutet das Ergebnis, wenn man die Preissteigerung berücksichtigt — sagen wir 2 % im Jahr?",
   musterantwort: `<p>In heutiger Kaufkraft sind die ${eur(k6)} nur etwa ${eur(k6 / 1.02 ** 61)} wert (geteilt durch 1,02<sup>61</sup>). Das Modell rechnet mit Euro in 61 Jahren, nicht mit Euro von heute. Außerdem schwanken Aktienrenditen stark; 6 % ist ein langjähriger Durchschnitt, keine Garantie. Der Vergleich der Kosten bleibt trotzdem aussagekräftig: Er hängt nur am Unterschied der Faktoren.</p>`,
   knobel: "Welche einzelne Einzahlung ist am 67. Geburtstag am meisten wert — und wievielmal so viel wie die letzte?",
+  knobelFelder: [
+    {
+      id: "welche", typ: "wahl", label: "Am meisten wert ist", soll: "erste",
+      optionen: [
+        { wert: "letzte", text: "die letzte Einzahlung (am 18. Geburtstag)" },
+        { wert: "gleich", text: "jede gleich viel — es sind ja immer 120 €" },
+        { wert: "erste", text: "die erste Einzahlung (am 7. Geburtstag)" },
+      ],
+      falsch: [
+        { wert: "letzte", id: "spaet", text: "Die letzte Einzahlung ist die jüngste — sie wird am kürzesten verzinst, nur 49 Jahre lang." },
+        { wert: "gleich", id: "gleich", text: "Eingezahlt wird zwar jedes Mal 120 €, aber unterschiedlich lange verzinst. Am 67. Geburtstag zählt, wie oft der Faktor 1,06 dazukam." },
+      ],
+    },
+    {
+      id: "faktor", label: "wievielmal so viel wie die letzte:", einheit: "", soll: 1.06 ** 11, tol: 0.005, stellen: 2,
+      falsch: [
+        { wert: 1.06 ** 12, id: "zwoelf", text: "Zwischen der ersten Einzahlung (7. Geburtstag) und der letzten (18.) liegen 11 Jahre, nicht 12 — zwölf Einzahlungen, aber nur elf Abstände." },
+        { wert: 1 + 11 * 0.06, id: "einfach", text: "1 + 11 · 0,06 wäre der einfache Zins. Beim Zinseszins wird elfmal mit 1,06 malgenommen: 1,06<sup>11</sup>." },
+      ],
+    },
+  ],
   knobelAntwort: `<p>Die erste: 120 · 1,06<sup>60</sup> ≈ ${eur(ersteMit67)}, die letzte nur 120 · 1,06<sup>49</sup> ≈ ${eur(letzteMit67)} — das 1,06<sup>11</sup> ≈ ${n(1.06 ** 11, 2)}-Fache. Früh angelegtes Geld arbeitet am längsten.</p>`,
   partner: "Habt ihr in Schritt 2 mit zwölf oder mit dreizehn Summanden gerechnet? Erklärt euch gegenseitig, welche Einzahlung wie lange verzinst wird.",
 };
@@ -266,6 +287,15 @@ const koffeinFall = {
   denkfrage: "Das Modell nimmt an, dass jede Dose sofort vollständig im Blut ist und die Halbwertszeit immer genau 4 Stunden beträgt. Was ändert sich, wenn die Halbwertszeit 6 Stunden ist?",
   musterantwort: `<p>Dann bleibt in zwei Stunden der Anteil 0,5<sup>2/6</sup> ≈ ${n(0.5 ** (1 / 3), 3)}, und der Grenzwert steigt auf 80 / (1 − ${n(0.5 ** (1 / 3), 3)}) ≈ ${n(80 / (1 - 0.5 ** (1 / 3)), 0)} mg. Gerade bei langsamem Abbau staut sich viel mehr an. Dass das Koffein nicht sofort im Blut ist, glättet die Zacken der Kurve: Die Spitzen werden niedriger, der mittlere Spiegel bleibt gleich.</p>`,
   knobel: "Nach wie vielen Stunden ohne neue Dose ist ein Spiegel von 270 mg wieder unter 80 mg (eine Dose) gefallen?",
+  knobelFelder: [
+    {
+      id: "zeit", label: "nach t ≈", einheit: "h", soll: 4 * Math.log2(270 / 80), tol: 0.05, stellen: 1,
+      falsch: [
+        { wert: Math.log2(270 / 80), id: "anzahl", tol: 0.01, text: "Das ist die Zahl der Halbwertszeiten. Jede dauert 4 Stunden — rechne noch in Stunden um." },
+        { wert: 8, id: "schaetzung", text: "Nach zwei Halbwertszeiten (8 h) sind es 67,5 mg — da ist der Spiegel schon unter 80 mg. Gesucht ist der genaue Zeitpunkt: Löse 270 · 0,5<sup>t/4</sup> = 80 mit dem Logarithmus." },
+      ],
+    },
+  ],
   knobelAntwort: `<p>270 · 0,5<sup>t/4</sup> = 80 ergibt t = 4 · log<sub>0,5</sub>(80/270) = 4 · ${n(Math.log(270 / 80) / Math.log(2), 3)} ≈ ${n(4 * Math.log(270 / 80) / Math.log(2), 1)} Stunden — eine ganze Nacht.</p>`,
   partner: "Vergleicht eure Werte für q. Wer 0,75 hatte: Woran lag es? Erklärt euch gegenseitig, warum „halbe Zeit, halber Abbau“ hier nicht stimmt.",
 };
@@ -391,6 +421,16 @@ const steuer = {
   denkfrage: "Das Gesetz rundet die Steuer auf volle Euro ab. Streng genommen ist der echte Tarif damit gar nicht stetig. Warum stört das niemanden?",
   musterantwort: `<p>Die Abrundung erzeugt Sprünge von höchstens einem Euro — viel weniger als der Euro Einkommen, der sie auslöst. Netto kann dadurch nie weniger übrig bleiben. Anders wäre es bei einer Freigrenze ohne Übergang: Beim Solidaritätszuschlag gibt es deshalb eine „Milderungszone“, in der der Zuschlag langsam ansteigt — damit die Funktion stetig bleibt.</p>`,
   knobel: "Bei welchem Einkommen zahlt man im Durchschnitt genau 30 % Steuer?",
+  knobelFelder: [
+    {
+      id: "einkommen", label: "zu versteuerndes Einkommen x ≈", einheit: "€", soll: 11135.63 / 0.12, tol: 2, stellen: 0,
+      falsch: [
+        { wert: 17799 + (10000 * (3000 - 2397)) / 346.2, id: "grenzsatz", tol: 20, text: "Bei diesem Einkommen ist der Grenzsteuersatz 30 %: Jeder weitere Euro wird mit 30 Cent besteuert. Gefragt ist der Durchschnittssteuersatz T(x)/x — die ganze Steuer geteilt durch das ganze Einkommen." },
+        { wert: 19470.38 / 0.15, id: "zone5", tol: 20, text: "Mit 0,45 · x − 19.470,38 hast du die Formel der obersten Zone benutzt. Sie gilt erst ab 277.826 €; dein Ergebnis liegt in der Zone mit 42 %." },
+        { wert: 11135.93 / 0.42, id: "betrag", tol: 20, text: "T(x) = 0,30 hieße: 30 Cent Steuer. Der Durchschnittssteuersatz ist ein Anteil: T(x)/x = 0,30, also 0,42 · x − 11.135,63 = 0,30 · x." },
+      ],
+    },
+  ],
   knobelAntwort: `<p>In der Zone mit 42 %: (0,42 · x − 11.135,63)/x = 0,30 ergibt x = 11.135,63/0,12 ≈ ${eur(11135.63 / 0.12)}. Probe: T ≈ ${eur(T4(11135.63 / 0.12))}, das sind 30 %.</p>`,
   partner: "Erklärt euch gegenseitig in einem Satz den Unterschied zwischen Grenzsteuersatz (42 %) und Durchschnittssteuersatz.",
 };
@@ -496,6 +536,22 @@ const wanderung = {
   denkfrage: "Warum braucht der Beweis die Stetigkeit? Erfinde eine Situation, in der die Behauptung falsch wäre.",
   musterantwort: "<p>Würde Lena am Samstag einen Teil des Weges mit der Seilbahn fahren, „springt“ s₁ — und die beiden Graphen könnten sich genau während dieses Sprungs kreuzen, ohne dass es einen gemeinsamen Punkt gibt. Bei Fußwegen ist die Position stetig: Wer von 2 km nach 5 km kommt, war zwischendurch an jeder Stelle dazwischen.</p>",
   knobel: "Lena macht am Sonntag um 9 Uhr eine halbe Stunde Pause. Gibt es dann immer noch eine solche Stelle — und kann es sogar mehrere geben?",
+  knobelFelder: [
+    {
+      id: "pause", typ: "wahl", label: "Mit der Pause gibt es", soll: "mindestens",
+      optionen: [
+        { wert: "keine", text: "keine solche Stelle mehr — die Pause macht d unstetig" },
+        { wert: "mindestens", text: "mindestens eine solche Stelle, vielleicht auch mehrere" },
+        { wert: "genau", text: "immer genau eine solche Stelle" },
+        { wert: "lage", text: "nur dann eine, wenn die Pause nach der alten Stelle liegt" },
+      ],
+      falsch: [
+        { wert: "keine", id: "unstetig", text: "Während der Pause steht Lena still: Ihr Ort ändert sich nicht, er springt aber auch nicht. Im Graphen ist die Pause ein waagerechtes Stück, kein Sprung — d bleibt stetig." },
+        { wert: "genau", id: "genau", text: "Der Zwischenwertsatz garantiert eine Stelle, aber nicht, dass es nur eine ist. Kreuzen sich die beiden Graphen mehrmals — etwa, wenn Lena ein Stück zurückgeht —, gibt es mehrere." },
+        { wert: "lage", id: "lage", text: "Wo die Pause liegt, verschiebt die Stelle, verhindert sie aber nicht. Der Zwischenwertsatz braucht nur zwei Dinge: d ist stetig, und d wechselt das Vorzeichen." },
+      ],
+    },
+  ],
   knobelAntwort: "<p>Es gibt sie immer noch: d bleibt stetig, und das Vorzeichen wechselt weiterhin von negativ nach positiv. Mehrere solche Stellen sind möglich, wenn die Graphen sich mehrmals kreuzen — etwa, wenn Lena am Sonntag ein Stück zurückgeht, weil sie etwas vergessen hat. Garantiert ist nur mindestens eine.</p>",
   partner: "Erklärt einem Mitschüler, der das Rätsel nicht kennt, in zwei Sätzen, warum es diese Stelle geben muss — ohne eine einzige Rechnung.",
 };

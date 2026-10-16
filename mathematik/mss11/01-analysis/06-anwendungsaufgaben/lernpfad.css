@@ -273,7 +273,7 @@
 .fc-stufen .fc-tab[data-stufe="3"].fc-tab-aktiv { background: #b91c1c; border-color: #b91c1c; }
 
 /* Fallansicht: links die Fallakte, rechts die Prüfung; schmal untereinander. */
-.fc-layout { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+.fc-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; }
 /* Auf breiten Bildschirmen bleibt die Fallakte (Modell und Zeichnung) beim Rechnen sichtbar. Sie ist
    oft höher als das Fenster — deshalb rollt sie in sich selbst, sonst wäre ihr unterer Teil, die
    Zeichnung, beim Arbeiten an den Schritten nicht erreichbar. */
@@ -302,7 +302,29 @@
 .fc-musterloesung { border-left-color: #157347; }
 .fc-buchstabe { border-left-color: #c2255c; }
 .fc-quellen { font-size: 0.8rem !important; color: var(--muted); }
-.fc-knobel { border-top: 1px solid var(--border); padding-top: 0.6rem; margin-top: 0.6rem; font-size: 0.93rem; }
+.fc-knobel {
+  border: 1px dashed var(--border); border-radius: 10px; padding: 0.7rem 0.9rem;
+  margin-top: 0.7rem; font-size: 0.93rem; background: var(--card-bg);
+}
+.fc-knobel.fc-fertig { border-style: solid; border-color: #157347; }
+:root[data-theme="dark"] .fc-knobel.fc-fertig { border-color: #6fd68f; }
+.fc-knobel .fc-meta { margin: 0; }
+/* Schmaleres Feld, damit Einheit und Haken in der rechten Spalte neben dem Feld bleiben. */
+.fc-knobel .fc-feld input { width: 7rem; }
+/* Eigene Texte: Modellkritik und Exit-Ticket */
+.fc-text { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.5rem; }
+.fc-text textarea {
+  width: 100%; box-sizing: border-box; padding: 0.5rem 0.6rem; border: 1px solid var(--border); border-radius: 6px;
+  font-size: 0.95rem; font-family: inherit; line-height: 1.5; background: var(--card-bg); color: var(--text); resize: vertical;
+}
+.fc-vergleich { margin-top: 0.6rem; padding: 0.6rem 0.8rem; border-radius: 8px; background: var(--bg); border: 1px solid var(--border); }
+.fc-denk-rat { font-weight: 600; }
+.fc-exit ol { padding-left: 1.4rem; }
+.fc-exit li { margin-bottom: 0.7rem; }
+/* Lösungssatz unter der Buchstabenleiste */
+.fc-satz { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.6rem; margin: -0.2rem 0 0.9rem; }
+.fc-satz .fc-status { flex-basis: 100%; margin: 0; }
+.fc-satz .fc-status:empty { display: none; }
 .fc-musterantwort { margin-top: 0.5rem; border-top: 1px dashed var(--border); padding-top: 0.5rem; }
 .fc-musterantwort summary { cursor: pointer; font-size: 0.85rem; color: var(--muted); }
 .fc-status { font-weight: 700; }
@@ -334,6 +356,10 @@
   font-size: 1rem; font-family: inherit; background: var(--card-bg); color: var(--text);
 }
 .fc-feld select { width: auto; max-width: 100%; }
+/* Lange Antworttexte in einer Auswahl dürfen die Seite auf dem Telefon nicht verbreitern:
+   Ohne min-width: 0 wächst das Flex-Element auf die Breite der längsten Option. */
+.fc-feld, .fc-feld label { min-width: 0; }
+.fc-feld label > select { flex: 1 1 12rem; min-width: 0; }
 .fc-einheit { color: var(--muted); font-size: 0.9rem; }
 .fc-feld-marke.fc-ok { color: #157347; font-weight: 800; }
 :root[data-theme="dark"] .fc-feld-marke.fc-ok { color: #6fd68f; }
@@ -392,6 +418,7 @@
 .fc-tabelle th { color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
 .fc-tabelle td:first-child { white-space: nowrap; }
 .fc-landkarte { min-width: 640px; }
+.fc-pass-tabelle { min-width: 760px; }
 .fc-wort-eingabe { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
 .fc-wort-eingabe input {
   padding: 0.5rem 0.8rem; border-radius: 8px; border: 1px solid var(--border); font-family: inherit;

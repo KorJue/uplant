@@ -40,6 +40,7 @@
       <li><strong>Drei Stufen:</strong> 🔴 Stufe 3 (Knobeln) zeigt nur die Behauptung, das Modell und den entscheidenden Beleg — den Weg planst du selbst. 🟠 Stufe 2 gliedert den Fall in Schritte, 🟢 Stufe 1 gibt zu jedem Schritt Hilfen. Wechseln darfst du jederzeit.</li>
       <li><strong>Jedes Zwischenergebnis wird sofort geprüft.</strong> Ist es falsch, sagt dir die Rückmeldung, woran es vermutlich liegt — eine vergessene Einheit, ein Vorzeichen, ein typischer Denkfehler.</li>
       <li><strong>Kein Frust durch Folgefehler:</strong> Hängst du an einem Zwischenschritt, kannst du dir sein Ergebnis zeigen lassen und damit weiterrechnen — wie mit den Ersatzwerten im Abitur. Nur den entscheidenden Beleg musst du selbst finden.</li>
+      <li><strong>Alles wird auf der Seite eingetragen, wo es auch geprüft wird:</strong> Zwischenergebnisse und Knobelfragen in Eingabefeldern, deine Modellkritik und das Exit-Ticket als eigener Text, der Lösungssatz direkt unter der Buchstabenleiste. Die Musterantwort zur Modellkritik öffnet sich erst, wenn du selbst geantwortet hast.</li>
     </ul>
     <p class="kurs-hinweis"><span class="kurs-marke gk">GK + LK</span> Sechzehn Fälle kommen mit Grundkursstoff aus. <span class="kurs-marke lk">LK</span> Vier Fälle brauchen Leistungskursstoff (Sinus und Kosinus, Kettenregel). Wer im Grundkurs ist, stellt das oben bei „Mein Kurs“ ein — dann sind die Buchstaben der LK-Fälle geschenkt.</p>
     <p class="hinweis-box">💡 Du brauchst einen wissenschaftlichen Taschenrechner. Bei Sinus und Kosinus muss er auf <strong>Bogenmaß (RAD)</strong> stehen. Der Stand deines Faktenchecks bleibt in diesem Browser gespeichert.</p>
@@ -49,6 +50,7 @@
     <h2>Die zwanzig Fälle</h2>
     <div class="fc-kurs" id="fc-kurs"></div>
     <div class="fc-wort-leiste" id="fc-wort"></div>
+    <div class="fc-satz" id="fc-satz-box"></div>
     <div class="fc-reiter" id="fc-reiter"></div>
     <div id="fc-fall"></div>
     <div id="fc-pass" hidden></div>
@@ -122,6 +124,7 @@
 
       <h3>Differenzierte Arbeitsaufträge</h3>
       <p>Jeder Fall öffnet auf <strong>🔴 Stufe 3 (Knobeln)</strong>: Sichtbar sind Behauptung, Hintergrund, Modell, Diagramm, die Kernfrage und nur der entscheidende Beleg — den Weg dorthin planen die Lernenden selbst. Merksatz und Musterlösung bleiben gesperrt, bis der Fall gelöst ist, weil sie den Weg verraten. <strong>🟠 Stufe 2 (Anwenden)</strong> gliedert den Fall in vier bis fünf Schritte; nach zwei Fehlversuchen an einem Zwischenschritt lässt sich dessen Ergebnis aufdecken. <strong>🟢 Stufe 1 (Sicher werden)</strong> öffnet zu jedem Schritt den ersten Tipp und den Werkzeugkasten, Zwischenergebnisse sind sofort aufdeckbar. Die Bedingung für „gelöst“ ist auf allen Stufen dieselbe: Beleg richtig und Urteil richtig. Niemand bearbeitet heimlich weniger Mathematik — nur mit mehr oder weniger Anleitung.</p>
+      <p>Für Schnelle hat jeder Fall auf Stufe 3 eine <strong>🧩 Knobelfrage</strong>, die über den Beleg hinausführt (eine Probe an anderer Stelle, ein Sonderfall, eine Umkehrfrage). Sie wird wie die Schritte eingetragen und geprüft, mit eigenen Hinweisen zu typischen Fehlern; nach dem ersten Versuch lässt sich der Weg mit der Musterantwort vergleichen. Für den Buchstaben zählt sie nicht — sie ist Angebot, keine Hürde.</p>
       <p><strong>Grund- und Leistungskurs:</strong> Sechzehn Fälle kommen mit Grundkursstoff aus (nach dem rheinland-pfälzischen Lehrplan einschließlich der e-Funktion); vier Fälle brauchen Sinus, Kosinus und die Kettenregel. Im Grundkurs-Modus sind deren Buchstaben geschenkt, damit der Lösungssatz erreichbar bleibt.</p>
 
       <h3>Hilfestellungen</h3>
@@ -136,9 +139,9 @@
       <ul>
         <li><strong>Formative Prüfung jedes Zwischenergebnisses</strong> mit sofortiger, fehlerbezogener Rückmeldung.</li>
         <li><strong>Urteil mit Begründung:</strong> Jede der vier Antworten hat eine eigene Erklärung — auch die richtige erklärt noch etwas.</li>
-        <li><strong>Modellkritik</strong> mit Musterantwort: Wo hört das Modell auf zu stimmen? (Validieren als eigene Leistung.)</li>
+        <li><strong>Modellkritik</strong> als eigener Text auf der Seite: Wo hört das Modell auf zu stimmen? Die Musterantwort öffnet sich erst, wenn mindestens ein ganzer Satz dasteht; danach schätzen die Lernenden selbst ein, ob ihre Antwort den Kern trifft. Eine freie Antwort kann die Seite nicht bewerten — sie verlangt aber, dass man sich festlegt, bevor man vergleicht (Validieren als eigene Leistung).</li>
         <li><strong>Selbsteinschätzungs-Ampel</strong> und <strong>Partnercheck</strong> in jedem Fall.</li>
-        <li><strong>Faktencheck-Pass</strong> als Lernstandsübersicht und <strong>Exit-Ticket</strong> mit drei Reflexionsfragen.</li>
+        <li><strong>Faktencheck-Pass</strong> als Lernstandsübersicht (Fälle, Knobelfragen, Modellkritik, Selbsteinschätzung) und <strong>Exit-Ticket</strong> mit drei Reflexionsfragen, direkt auf der Seite beantwortet und im Browser gespeichert — als Einstieg in die Besprechung.</li>
       </ul>
 
       <h3>Wiederkehrende Elemente</h3>
@@ -166,6 +169,6 @@
   <p><a href="../index.html">Zurück zu 01 Analysis</a></p>
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
-<script type="module" src="faktencheck.js?v=1"></script>
+<script type="module" src="faktencheck.js?v=2"></script>
 </body>
 </html>

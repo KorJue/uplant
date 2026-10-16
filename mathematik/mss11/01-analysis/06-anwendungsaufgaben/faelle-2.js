@@ -118,7 +118,30 @@ const abschnitt = {
   merksatz: `<p>Die mittlere Änderungsrate ${bruch("s(b) − s(a)", "b − a")} ist die Steigung der Sekante, die momentane Änderungsrate s′(t) die Steigung der Tangente. Liegt der Durchschnitt unter einer Grenze, kann die momentane Rate die Grenze trotzdem zeitweise überschreiten.</p>`,
   denkfrage: "Und umgekehrt: Wer im Abschnitt einen Durchschnitt von 104 km/h hat — war der sicher irgendwann schneller als 100 km/h?",
   musterantwort: "<p>Ja. Wäre das Auto die ganze Zeit höchstens 100 km/h gefahren, hätte es in 90 Sekunden höchstens 2,5 km geschafft — der Durchschnitt könnte nicht über 100 liegen. Weil die Geschwindigkeit stetig ist, war sie sogar in einem Moment genau 104 km/h (Mittelwertsatz). Deshalb ist die Abschnittskontrolle fair: Sie bestraft niemanden, der nie zu schnell war.</p>",
-  knobel: "Zu welchen Zeitpunkten fuhr das Auto genau seine Durchschnittsgeschwindigkeit von 96 km/h? Was bedeutet das am Graphen?",
+  knobel: "Zu welchem Zeitpunkt nach dem Start fuhr das Auto genau seine Durchschnittsgeschwindigkeit von 96 km/h? Was bedeutet das am Graphen?",
+  knobelFelder: [
+    {
+      id: "zeitpunkt", label: "t ≈", einheit: "s", soll: 60, tol: 0.5, stellen: 0,
+      falsch: [
+        { wert: 30, id: "schnellste", text: `Bei t = 30 s fährt das Auto am schnellsten, rund ${n(vAk(30) * 3.6, 0)} km/h — dort hat v ihren Hochpunkt. Gesucht ist der Zeitpunkt, an dem v(t) wieder genau 96 km/h beträgt.` },
+        { wert: 90, id: "ende", text: `Nach 90 s ist der Abschnitt zu Ende. Im Durchschnitt über den ganzen Abschnitt fuhr das Auto 96 km/h, im letzten Moment aber nur noch rund ${n(vAk(90) * 3.6, 0)} km/h.` },
+      ],
+    },
+    {
+      id: "graph", typ: "wahl", label: "Am Graphen von s heißt das:", soll: "parallel",
+      optionen: [
+        { wert: "wende", text: "Dort hat s einen Wendepunkt." },
+        { wert: "schnitt", text: "Dort schneidet die Sekante den Graphen von s." },
+        { wert: "parallel", text: "Dort ist die Tangente parallel zur Sekante durch Anfang und Ende." },
+        { wert: "hoch", text: "Dort hat s einen Hochpunkt." },
+      ],
+      falsch: [
+        { wert: "wende", id: "wende", text: "Am Wendepunkt (t = 30 s) ist die Tangente am steilsten — dort fährt das Auto am schnellsten, nicht im Durchschnitt." },
+        { wert: "schnitt", id: "schnitt", text: "Die Sekante schneidet den Graphen nur an den Enden t = 0 und t = 90 s. Gleich groß sind an der gesuchten Stelle die Steigungen, nicht die Werte." },
+        { wert: "hoch", id: "hoch", text: "s hat im Abschnitt keinen Hochpunkt — das Auto fährt die ganze Zeit vorwärts, s wächst also." },
+      ],
+    },
+  ],
   knobelAntwort: `<p>v(t) = ${bruch("80", "3")} ⟹ −0,003t² + 0,18t = 0 ⟹ t = 0 oder t = 60 s. An diesen Stellen ist die Tangente parallel zur Sekante — genau das sagt der Mittelwertsatz voraus: Mindestens einmal muss die Momentangeschwindigkeit gleich der mittleren sein.</p>`,
   partner: "Zeigt euch gegenseitig am Weg-Zeit-Diagramm, wo das Auto am schnellsten war — woran erkennt man das am Graphen von s, ohne zu rechnen?",
 };
@@ -231,8 +254,24 @@ const kuppeFall = {
   merksatz: `<p>Tangente an f in u: t(x) = f(u) + f′(u) · (x − u). Für eine Tangente durch einen Punkt außerhalb des Graphen setzt man den Punkt ein und löst nach u auf — meist gibt es zwei Lösungen, und die Sachsituation entscheidet, welche gemeint ist.</p>`,
   denkfrage: `Die Zeichnung ist etwa ${ueberhoeht}-fach überhöht. Wie hoch ist die Kuppe in Wirklichkeit — und warum versperrt sie trotzdem die Sicht?`,
   musterantwort: "<p>Auf 150 m Abstand liegt der Scheitel nur 2,25 m höher als die Straße an deinem Auto, die Steigung beträgt 3 %. Man sieht die Kuppe kaum. Aber das Auge ist nur 1 m über der Fahrbahn: Schon ein Höhenunterschied von gut einem Meter verdeckt ein ganzes Auto. Mit einem Lkw-Fahrerhaus (Augenhöhe gut 2,5 m) wäre die Sichtweite größer.</p>",
-  knobel: "Zeige: Egal, wo du vor dieser Kuppe stehst — die Sichtweite ist immer 200 m.",
-  knobelAntwort: "<p>Steht das Auge bei x = a (Höhe −a²/10.000 + 1), liefert dieselbe Rechnung den Berührpunkt u = a + 100, und die Sichtlinie erreicht die andere Seite bei x = a + 200. Die Sichtweite ist also immer 200 m. Bei einer Parabel f(x) = −x²/(2R) hängt sie nur vom Krümmungsradius R und der Augenhöhe h ab: Sichtweite = 2 · √(2Rh) — hier 2 · √(2 · 5.000 · 1) = 200.</p>",
+  knobel: "Hängt die Sichtweite davon ab, wo du vor der Kuppe stehst? Rechne es für ein Auge bei x = −120 nach, wieder 1 m über der Fahrbahn, also bei A(−120 | −0,44).",
+  knobelFelder: [
+    {
+      id: "beruehr", label: "Die Sichtlinie berührt die Straße bei u =", einheit: "m", soll: -20, tol: 0.1, stellen: 0,
+      falsch: [
+        { wert: -50, id: "alt", text: "−50 war die Berührstelle vom Standpunkt x = −150 aus. Setze den neuen Punkt A(−120 | −0,44) in die Tangentengleichung ein." },
+        { wert: -220, id: "hinten", text: "Das ist die zweite Lösung der Gleichung: eine Tangente, die hinter dir die Straße berührt. Du schaust nach vorn, zur Kuppe hin." },
+      ],
+    },
+    {
+      id: "sichtweite", label: "Sichtweite:", einheit: "m", soll: 200, tol: 0.5, stellen: 0,
+      falsch: [
+        { wert: 100, id: "bisBeruehr", text: "Bis zum Berührpunkt sind es 100 m. Dahinter fällt die Straße ab — ein entgegenkommendes Auto siehst du erst dort, wo die Sichtlinie 1 m über der Fahrbahn liegt." },
+        { wert: 80, id: "koordinate", text: "x = 80 ist die Stelle, an der du den Gegenverkehr siehst. Die Sichtweite ist der Abstand von deinem Auge bei x = −120." },
+      ],
+    },
+  ],
+  knobelAntwort: "<p>Bei A(−120 | −0,44) ergibt das Einsetzen in die Tangentengleichung (u + 120)² = 10.000, also u = −20 (die Lösung u = −220 liegt hinter dir). Die Sichtlinie erreicht 1 m über der Fahrbahn die Stelle x = 80 — die Sichtweite ist wieder 80 − (−120) = 200 m. Allgemein: Steht das Auge bei x = a (Höhe −a²/10.000 + 1), liefert dieselbe Rechnung den Berührpunkt u = a + 100, und die Sichtlinie erreicht die andere Seite bei x = a + 200. Die Sichtweite ist also immer 200 m. Bei einer Parabel f(x) = −x²/(2R) hängt sie nur vom Krümmungsradius R und der Augenhöhe h ab: Sichtweite = 2 · √(2Rh) — hier 2 · √(2 · 5.000 · 1) = 200.</p>",
   partner: "Wer hat in Schritt 2 beide Lösungen gefunden? Zeichnet beide Tangenten ins Bild ein und erklärt euch, welche zu welcher Blickrichtung gehört.",
 };
 
@@ -335,6 +374,15 @@ const laden = {
   denkfrage: "Echte Ladekurven sind bis etwa 80 % fast eine Gerade und erst danach gekrümmt. Für welchen Teil passt das Modell — und für welchen nicht?",
   musterantwort: "<p>Bis etwa 80 % lädt ein echter Akku mit fast konstanter Stromstärke; der Ladestand wächst nahezu linear. Das Modell lädt am Anfang schneller (4,5 % pro Minute) und kurz vor 80 % langsamer. In der Schlussphase hält das Ladegerät dagegen die Spannung konstant, und der Strom klingt ungefähr exponentiell ab — dort passt das Modell gut. Für die Frage nach den letzten Prozent beschreibt es also genau den richtigen Teil.</p>",
   knobel: "Wie schnell lädt der Akku in dem Moment, in dem er 90 % erreicht?",
+  knobelFelder: [
+    {
+      id: "rate90", label: "L′ ≈", einheit: "Prozentpunkte pro Minute", soll: 10 * kL, tol: 0.005, stellen: 2,
+      falsch: [
+        { wert: 90 * kL, id: "start", text: "So schnell lädt der Akku zu Beginn, bei 10 % — oder du hast k · L statt k · (100 − L) gerechnet. Bei 90 % fehlen nur noch 10 Prozentpunkte: L′ = k · (100 − L)." },
+        { wert: kL, id: "k", tol: 0.001, text: "Das ist die Konstante k. Die Ladegeschwindigkeit ist L′(t) = k · (100 − L(t)) — bei 90 % also k · 10." },
+      ],
+    },
+  ],
   knobelAntwort: `<p>L′ = k · (100 − 90) = 10k ≈ ${n(10 * kL, 2)} Prozentpunkte pro Minute — für jedes weitere Prozent braucht er gut zwei Minuten.</p>`,
   partner: "Vergleicht eure Werte für k. Kam bei jemandem ln(8)/30 heraus? Dann wurde dem Ladestand exponentielles Wachstum unterstellt — welche Größe schrumpft im Modell wirklich exponentiell?",
 };
@@ -436,7 +484,23 @@ const tageslaenge = {
   denkfrage: "In Wirklichkeit wächst der Tag in Mainz um den Frühlingsanfang um knapp 4 Minuten täglich, nicht um gut 4,2. Woher kommt die Abweichung?",
   musterantwort: "<p>Die echte Tageslänge ist keine exakte Sinuskurve: Sie hängt über einen Arkuskosinus vom Sonnenstand ab, dazu kommen die Lichtbrechung in der Atmosphäre und die Größe der Sonnenscheibe. Eine Sinuskurve mit derselben Schwankung (8,1 bis 16,3 Stunden) ist um den Frühlingsanfang etwas zu steil. Als Faustregel taugt das Modell; einen Sonnenkalender ersetzt es nicht.</p>",
   knobel: "In welchem Zeitraum wächst der Tag im Modell um mehr als 3 Minuten täglich?",
-  knobelAntwort: `<p>D′(t) &gt; 3 min ⟺ cos(${bruch("2π", "365")}(t − 80)) &gt; ${bruch("3", n(tagRate(80) * 60, 3))} ≈ ${n(3 / (tagRate(80) * 60), 3)} ⟺ |t − 80| &lt; ${n(halb3, 1)}. Also etwa vom ${datum(80 - halb3)} bis zum ${datum(80 + halb3)} — rund drei Monate lang.</p>`,
+  knobelFelder: [
+    {
+      id: "von", label: "von Tag t ≈", einheit: "(Tag des Jahres)", soll: 80 - halb3, tol: 0.6, stellen: 0,
+      falsch: [
+        { wert: 80 - Math.acos(3 / 60 / (4.1 * w)), id: "ohneW", text: "Du hast den Arkuskosinus direkt von 80 abgezogen. Das Argument des Kosinus ist aber 2π/365 · (t − 80) — teile also zuerst durch 2π/365." },
+        { wert: 262.5 - halb3, id: "herbst", text: "Um diese Zeit ändert sich der Tag zwar um mehr als 3 Minuten täglich, aber er wird kürzer: D′ ist dort negativ. Gesucht ist der Zuwachs." },
+      ],
+    },
+    {
+      id: "bis", label: "bis Tag t ≈", einheit: "(Tag des Jahres)", soll: 80 + halb3, tol: 0.6, stellen: 0,
+      falsch: [
+        { wert: 80 + Math.acos(3 / 60 / (4.1 * w)), id: "ohneW", text: "Du hast den Arkuskosinus direkt zu 80 addiert. Das Argument des Kosinus ist aber 2π/365 · (t − 80) — teile also zuerst durch 2π/365." },
+        { wert: 262.5 + halb3, id: "herbst", text: "Um diese Zeit ändert sich der Tag zwar um mehr als 3 Minuten täglich, aber er wird kürzer: D′ ist dort negativ. Gesucht ist der Zuwachs." },
+      ],
+    },
+  ],
+  knobelAntwort: `<p>D′(t) &gt; 3 min ⟺ cos(${bruch("2π", "365")}(t − 80)) &gt; ${bruch("3", n(tagRate(80) * 60, 3))} ≈ ${n(3 / (tagRate(80) * 60), 3)} ⟺ |t − 80| &lt; ${n(halb3, 1)}, also ${n(80 - halb3, 1)} &lt; t &lt; ${n(80 + halb3, 1)}: etwa vom ${datum(80 - halb3)} bis zum ${datum(80 + halb3)} — rund drei Monate lang.</p>`,
   partner: "Habt ihr beide im Bogenmaß gerechnet? Prüft gegenseitig mit dem Graphen: An welcher Stelle hat er die größte Steigung — und passt das zu eurem Wert für D′(80)?",
 };
 

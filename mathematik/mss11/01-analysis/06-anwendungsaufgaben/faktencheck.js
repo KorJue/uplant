@@ -12,8 +12,13 @@
 // Ein Fall gilt auf allen Stufen unter derselben Bedingung als gelöst: Die Kernschritte (der
 // rechnerische Beleg) stimmen, und das Urteil über die Behauptung ist richtig. Kernschritte lassen
 // sich nicht aufdecken — sonst wäre der Buchstabe geschenkt.
+//
+// Alles wird dort eingetragen, wo es auch geprüft wird: Zwischenergebnisse und Knobelfragen in
+// Eingabefeldern mit Rückmeldung, die Modellkritik und das Exit-Ticket als eigener Text (der
+// Vergleich mit der Musterantwort öffnet sich erst danach), der Lösungssatz direkt unter der
+// Buchstabenleiste.
 
-import { FAELLE, LOESUNGSWORT, LOESUNGSSATZ } from "./faelle.js?v=1";
+import { FAELLE, LOESUNGSWORT, LOESUNGSSATZ } from "./faelle.js?v=2";
 import { num, leseZahlen } from "./hilfen.js?v=1";
 
 const SPEICHER = "uplant-mss11-faktencheck";
@@ -21,6 +26,21 @@ const AMPEL = [
   { wert: "sicher", icon: "😀", text: "Das kann ich" },
   { wert: "teils", icon: "😐", text: "Fast — mit Hilfe" },
   { wert: "unsicher", icon: "🤔", text: "Noch unsicher" },
+];
+// Selbsteinschätzung der eigenen Modellkritik nach dem Vergleich — eine freie Antwort kann die
+// Seite nicht bewerten, wohl aber den Vergleich verlangen, bevor die Musterantwort zu sehen ist.
+const DENK = [
+  { wert: "kern", icon: "🎯", text: "trifft den Kern", rat: "Stark. Prüfe noch, ob du auch gesagt hast, was das für das Urteil über die Behauptung bedeutet." },
+  { wert: "teils", icon: "🌗", text: "teilweise", rat: "Ergänze deine Antwort oben um den Gedanken, der dir gefehlt hat — in eigenen Worten, nicht abgeschrieben." },
+  { wert: "nicht", icon: "🔁", text: "noch nicht", rat: "Kein Problem. Erkläre den Gedanken der Musterantwort deinem Partner mit eigenen Worten und schreib ihn dann oben neu auf." },
+];
+// So viele Wörter braucht eine eigene Antwort, bevor die Musterantwort aufgeht: ein ganzer Satz.
+const DENK_WOERTER = 5;
+const woerter = (t) => (String(t || "").trim().match(/\S+/g) || []).length;
+const EXIT = [
+  "Welche Behauptung hat dich am meisten überrascht — und welche Rechnung hat sie entschieden?",
+  "Bei welchem Fall war das <em>Modell</em> das Schwierigste, nicht die Rechnung? Woran lag das?",
+  "Nenne eine Behauptung aus deinem eigenen Alltag, die du mit einem dieser Werkzeuge prüfen könntest.",
 ];
 const PHASEN = {
   1: "① Verstehen",
@@ -70,6 +90,14 @@ function standVon(key) {
   if (!s.felder) s.felder = {};
   return s;
 }
+function knobelStand(fall) {
+  const st = standVon(fall.key);
+  if (!st.knobel) st.knobel = {};
+  if (!st.knobel.felder) st.knobel.felder = {};
+  if (!st.knobel.eingaben) st.knobel.eingaben = {};
+  return st.knobel;
+}
+const knobelGeloest = (fall) => (fall.knobelFelder || []).length > 0 && fall.knobelFelder.every((f) => knobelStand(fall).felder[f.id] === "ok");
 const geschenkt = (fall) => stand.kurs === "gk" && fall.kurs === "lk";
 const buchstabeFrei = (fall) => standVon(fall.key).geloest || geschenkt(fall);
 
@@ -78,12 +106,14 @@ const versuche = {};
 
 // ---------- Zustand der Ansicht ----------
 
-const ansicht = { fall: 0, stufe: 3, pass: false };
+// denkOffen: Fälle, deren Modellkritik gerade aufgeklappt ist — damit ein Neuzeichnen sie nicht schließt.
+const ansicht = { fall: 0, stufe: 3, pass: false, denkOffen: new Set() };
 const wortLeiste = document.getElementById("fc-wort");
 const reiter = document.getElementById("fc-reiter");
 const fallBox = document.getElementById("fc-fall");
 const passBox = document.getElementById("fc-pass");
 const kursBox = document.getElementById("fc-kurs");
+const satzBox = document.getElementById("fc-satz-box");
 const aktuell = () => FAELLE[ansicht.fall];
 
 // ---------- Prüfen eines Feldes ----------
@@ -220,17 +250,58 @@ function auftrag(fall) {
   return `<p><strong>Schritt für Schritt mit Hilfen.</strong> ${fall.kernfrage} Der erste Tipp jedes Schritts ist schon aufgeklappt, der Werkzeugkasten auch, und jedes Zwischenergebnis darfst du dir sofort zeigen lassen.</p>`;
 }
 
-function feldHtml(fall, feld) {
-  const s = standVon(fall.key).felder[feld.id];
+// art "feld": Feld eines Schritts (data-feld, data-rueck); art "knobel": Feld der Knobelfrage
+// (data-knobel, data-knobel-rueck) — getrennte Namen, damit sich beide nie in die Quere kommen.
+function feldHtml(fall, feld, art = "feld") {
+  const s = art === "knobel" ? knobelStand(fall).felder[feld.id] : standVon(fall.key).felder[feld.id];
   const id = `${fall.key}.${feld.id}`;
+  const attr = art === "knobel" ? "data-knobel" : "data-feld";
   const eingabe = feld.typ === "wahl"
-    ? `<select data-feld="${id}" aria-label="${feld.label}"><option value="">— bitte wählen —</option>${feld.optionen.map((o) => `<option value="${o.wert}">${o.text}</option>`).join("")}</select>`
-    : `<input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" data-feld="${id}" aria-label="${feld.label}">`;
+    ? `<select ${attr}="${id}" aria-label="${feld.label}"><option value="">— bitte wählen —</option>${feld.optionen.map((o) => `<option value="${o.wert}">${o.text}</option>`).join("")}</select>`
+    : `<input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" ${attr}="${id}" aria-label="${feld.label}">`;
   const marke = s === "ok" ? `<span class="fc-feld-marke fc-ok">✓</span>` : s === "auf" ? `<span class="fc-feld-marke fc-auf" title="aufgedeckt">🔓</span>` : "";
   return `<div class="fc-feld">
       <label><span class="fc-feld-label">${feld.label}</span> ${eingabe} ${feld.einheit ? `<span class="fc-einheit">${feld.einheit}</span>` : ""} ${marke}</label>
-      <div class="fc-rueck" data-rueck="${id}" aria-live="polite"></div>
+      <div class="fc-rueck" ${art === "knobel" ? "data-knobel-rueck" : "data-rueck"}="${id}" aria-live="polite"></div>
     </div>`;
+}
+
+function knobelHtml(fall) {
+  const kn = knobelStand(fall);
+  const fertig = knobelGeloest(fall);
+  const antwort = kn.versucht || fertig
+    ? `<details class="fc-musterantwort"><summary>Antwort vergleichen</summary>${fall.knobelAntwort}</details>`
+    : `<p class="fc-meta">Nach deinem ersten Versuch kannst du hier deinen Weg mit der Musterantwort vergleichen.</p>`;
+  return `<div class="fc-knobel${fertig ? " fc-fertig" : ""}">
+      <div class="fc-schritt-kopf"><strong>🧩 Knobelfrage${fertig ? " ✓" : ""}</strong><span class="fc-meta">zum Weiterdenken — zählt nicht für den Buchstaben</span></div>
+      <p class="fc-frage">${fall.knobel}</p>
+      <div class="fc-felder">${(fall.knobelFelder || []).map((f) => feldHtml(fall, f, "knobel")).join("")}</div>
+      <div class="btn-row"><button type="button" class="btn btn-primary" data-knobel-pruefe="1">✓ Prüfen</button></div>
+      ${antwort}
+    </div>`;
+}
+
+function denkHtml(fall) {
+  const st = standVon(fall.key);
+  const offen = st.denkVergleich || woerter(st.denk) > 0 || ansicht.denkOffen.has(fall.key);
+  const d = DENK.find((x) => x.wert === st.denkUrteil);
+  const vergleich = st.denkVergleich
+    ? `<div class="fc-vergleich">
+        <strong>📝 Musterantwort</strong>${fall.musterantwort}
+        <p class="fc-meta">Eine freie Antwort kann die Seite nicht bewerten — das übernimmst du: Wie gut trifft deine Antwort den Kern der Musterantwort?</p>
+        <div class="fc-ampel">${DENK.map((x) => `<button type="button" class="fc-ampel-btn${st.denkUrteil === x.wert ? " fc-ampel-aktiv" : ""}" data-denk-urteil="${x.wert}">${x.icon} ${x.text}</button>`).join("")}</div>
+        ${d ? `<p class="fc-denk-rat" data-denk-rat="${d.wert}">${d.rat}</p>` : ""}
+      </div>`
+    : "";
+  return `<details class="fc-block fc-denkfrage" data-denk-box="${fall.key}"${offen ? " open" : ""}>
+      <summary>🤔 Modellkritik — erst selbst antworten, dann vergleichen</summary>
+      <p>${fall.denkfrage}</p>
+      <label class="fc-text"><span class="fc-feld-label">Deine Antwort:</span>
+        <textarea data-denk="${fall.key}" rows="4" placeholder="Schreib in ganzen Sätzen, was du denkst."></textarea></label>
+      <div class="btn-row"><button type="button" class="btn btn-primary" data-denk-vergleich="1">⚖️ Mit der Musterantwort vergleichen</button></div>
+      <div class="fc-rueck" data-denk-rueck="${fall.key}" aria-live="polite"></div>
+      ${vergleich}
+    </details>`;
 }
 
 function schrittHtml(fall, schritt, i) {
@@ -338,7 +409,7 @@ function renderFall() {
         <div class="fc-block fc-rueckblick"><strong>🔁 Rückblick</strong>${fall.rueckblick}</div>
         ${stufenReiter()}
         <div class="fc-block fc-auftrag"><strong>🎯 Dein Auftrag</strong>${auftrag(fall)}
-          ${ansicht.stufe === 3 || st.geloest ? `<div class="fc-knobel"><strong>🧩 Knobelfrage:</strong> ${fall.knobel}<details class="fc-musterantwort"><summary>Antwort vergleichen</summary>${fall.knobelAntwort}</details></div>` : ""}
+          ${ansicht.stufe === 3 || st.geloest ? knobelHtml(fall) : ""}
         </div>
         <details class="fc-block fc-werkzeug"${ansicht.stufe === 1 ? " open" : ""}><summary>🧰 Werkzeugkasten</summary>${fall.werkzeug}</details>
         <div class="fc-schritte">${loesbar.map(([s, i]) => schrittHtml(fall, s, i)).join("")}</div>
@@ -351,11 +422,7 @@ function renderFall() {
           <div class="fc-ampel">${ampel}</div>
           <p class="fc-meta">👥 Partnercheck: ${fall.partner}</p>
         </div>
-        <details class="fc-block fc-denkfrage">
-          <summary>🤔 Modellkritik — erst selbst antworten, dann vergleichen</summary>
-          <p>${fall.denkfrage}</p>
-          <details class="fc-musterantwort"><summary>Musterantwort</summary>${fall.musterantwort}</details>
-        </details>
+        ${denkHtml(fall)}
         ${musterloesungHtml(fall)}
         <div class="fc-block fc-buchstabe">
           <strong>🔑 Buchstabe ${fall.position} des Lösungssatzes</strong>
@@ -373,6 +440,13 @@ function renderFall() {
       else if (st.felder[f.id] === "auf") e.value = f.typ === "wahl" ? f.soll : num(f.soll, f.stellen ?? 2);
     }
   }
+  const kn = knobelStand(fall);
+  for (const f of fall.knobelFelder || []) {
+    const e = fallBox.querySelector(`[data-knobel="${fall.key}.${f.id}"]`);
+    if (e && kn.eingaben[f.id] != null) e.value = kn.eingaben[f.id];
+  }
+  const denk = fallBox.querySelector(`[data-denk="${fall.key}"]`);
+  if (denk && st.denk) denk.value = st.denk;
   if (Number.isInteger(st.urteil)) zeigeUrteil(fall, st.urteil, false);
 }
 
@@ -413,14 +487,55 @@ function pruefeSchritt(i) {
   renderFall();
   renderWort();
   renderReiter();
-  for (const [feld, r] of rueck) {
-    const box = fallBox.querySelector(`[data-rueck="${fall.key}.${feld.id}"]`);
-    if (!box) continue;
-    box.dataset.hinweis = r.id;
-    box.className = "fc-rueck " + (r.ok ? "ok" : "err");
-    box.textContent = r.ok ? "✓ Richtig." : r.text;
-  }
+  for (const [feld, r] of rueck) zeigeRueck(fallBox.querySelector(`[data-rueck="${fall.key}.${feld.id}"]`), r);
   if (neu) meldeGeloest(fall);
+}
+
+// Die Hinweise sind Text der Seite, kein Eingabetext — sie dürfen Hochzahlen und Brüche enthalten.
+function zeigeRueck(box, r) {
+  if (!box) return;
+  box.dataset.hinweis = r.id;
+  box.className = "fc-rueck " + (r.ok ? "ok" : "err");
+  box.innerHTML = r.ok ? "✓ Richtig." : r.text;
+}
+
+function pruefeKnobel() {
+  const fall = aktuell();
+  const kn = knobelStand(fall);
+  const rueck = [];
+  for (const feld of fall.knobelFelder || []) {
+    const e = fallBox.querySelector(`[data-knobel="${fall.key}.${feld.id}"]`);
+    const roh = e ? e.value : "";
+    kn.eingaben[feld.id] = roh;
+    const r = pruefeFeld(feld, roh);
+    if (r.ok) kn.felder[feld.id] = "ok"; else delete kn.felder[feld.id];
+    // Die Knobelfrage hat keine Tipps; ihre Hilfe ist der Vergleich mit der Musterantwort.
+    if (r.id === "falsch") r.text = "Das stimmt noch nicht. Prüfe deinen Ansatz — oder vergleiche unten deinen Weg mit der Musterantwort.";
+    rueck.push([feld, r]);
+  }
+  kn.versucht = true;
+  speichere();
+  renderFall();
+  for (const [feld, r] of rueck) zeigeRueck(fallBox.querySelector(`[data-knobel-rueck="${fall.key}.${feld.id}"]`), r);
+}
+
+function vergleicheDenk() {
+  const fall = aktuell();
+  const st = standVon(fall.key);
+  const e = fallBox.querySelector(`[data-denk="${fall.key}"]`);
+  st.denk = e ? e.value : st.denk;
+  if (woerter(st.denk) < DENK_WOERTER) {
+    speichere();
+    zeigeRueck(fallBox.querySelector(`[data-denk-rueck="${fall.key}"]`), {
+      id: "kurz",
+      text: "Schreib zuerst deine eigene Antwort — mindestens einen ganzen Satz. Der Vergleich lohnt sich erst, wenn du dich festgelegt hast.",
+    });
+    return;
+  }
+  st.denkVergleich = true;
+  speichere();
+  renderFall();
+  renderReiter();
 }
 
 function meldeGeloest(fall) {
@@ -505,6 +620,42 @@ function renderKurs() {
     <span class="fc-meta">${stand.kurs === "gk" ? "16 Fälle für dich — die Buchstaben der vier LK-Fälle sind geschenkt." : "Alle 20 Fälle zählen."}</span>`;
 }
 
+// ---------- Lösungssatz: eingetragen direkt unter der Buchstabenleiste ----------
+
+function satzMeldung(ein) {
+  if (!ein) return "Trag zuerst den Satz ein.";
+  if (ein === LOESUNGSWORT) return `🎉 Richtig: „${LOESUNGSSATZ}“ — wer erst rechnet und dann teilt, verbreitet keine Zahlen, die nicht stimmen.`;
+  const frei = FAELLE.filter(buchstabeFrei).length;
+  if (ein.length !== LOESUNGSWORT.length) {
+    return `Noch nicht. Der Satz hat ${LOESUNGSWORT.length} Buchstaben, deiner ${ein.length}. Du hast ${frei} der ${LOESUNGSWORT.length} Buchstaben schon in der Leiste — die Lücken zeigen, wo ein Wort endet.`;
+  }
+  return `Noch nicht. Vergleiche mit der Leiste: Du hast ${frei} der ${LOESUNGSWORT.length} Buchstaben schon freigeschaltet, jeder steht an seiner Stelle.`;
+}
+const satzNormal = (t) => String(t || "").toUpperCase().replace(/Ä/g, "AE").replace(/Ö/g, "OE").replace(/Ü/g, "UE").replace(/[^A-Z]/g, "");
+
+function renderSatz() {
+  if (!satzBox) return;
+  satzBox.innerHTML = `<label class="fc-wort-label" for="fc-satz">Lösungssatz eintragen:</label>
+    <span class="fc-wort-eingabe"><input type="text" id="fc-satz" maxlength="40" placeholder="Lösungssatz" autocomplete="off" spellcheck="false">
+      <button type="button" class="btn btn-primary" id="fc-satz-pruefen">Prüfen</button></span>
+    <p class="fc-status" id="fc-satz-rueck" aria-live="polite"></p>`;
+  const feld = document.getElementById("fc-satz");
+  const box = document.getElementById("fc-satz-rueck");
+  if (stand.satz) feld.value = stand.satz;
+  if (stand.satzGeloest) box.textContent = satzMeldung(LOESUNGSWORT);
+  const pruefeSatz = () => {
+    const ein = satzNormal(feld.value);
+    stand.satz = feld.value;
+    if (ein === LOESUNGSWORT) stand.satzGeloest = true;
+    speichere();
+    box.textContent = satzMeldung(ein);
+    box.dataset.satz = ein === LOESUNGSWORT ? "richtig" : "falsch";
+  };
+  document.getElementById("fc-satz-pruefen").addEventListener("click", pruefeSatz);
+  feld.addEventListener("keydown", (e) => { if (e.key === "Enter") pruefeSatz(); });
+  feld.addEventListener("input", () => { stand.satz = feld.value; speichere(); });
+}
+
 // ---------- Pass ----------
 
 function renderPass() {
@@ -512,55 +663,66 @@ function renderPass() {
     const st = standVon(f.key);
     const a = AMPEL.find((x) => x.wert === st.ampel);
     const status = st.geloest ? (st.muster ? "📖 mit Musterlösung" : "✅ gelöst") : geschenkt(f) ? "🎁 geschenkt (LK)" : "⬜ offen";
-    return `<tr><td>${f.icon} ${f.nr}</td><td>${f.titel}</td><td>${f.kurs === "lk" ? "LK" : "GK + LK"}</td><td>${status}</td><td>${a ? `${a.icon} ${a.text}` : "—"}</td><td>${buchstabeFrei(f) ? `${f.position}. → <strong>${f.buchstabe}</strong>` : "—"}</td></tr>`;
+    const knobel = knobelGeloest(f) ? "🧩 gelöst" : knobelStand(f).versucht ? "versucht" : "—";
+    const d = DENK.find((x) => x.wert === st.denkUrteil);
+    const kritik = st.denkVergleich ? (d ? `${d.icon} ${d.text}` : "verglichen") : woerter(st.denk) > 0 ? "✍️ begonnen" : "—";
+    return `<tr><td>${f.icon} ${f.nr}</td><td>${f.titel}</td><td>${f.kurs === "lk" ? "LK" : "GK + LK"}</td><td>${status}</td><td>${knobel}</td><td>${kritik}</td><td>${a ? `${a.icon} ${a.text}` : "—"}</td><td>${buchstabeFrei(f) ? `${f.position}. → <strong>${f.buchstabe}</strong>` : "—"}</td></tr>`;
   }).join("");
+  if (!Array.isArray(stand.exit)) stand.exit = [];
+  const exitFertig = EXIT.filter((_, i) => woerter(stand.exit[i]) > 0).length;
   passBox.innerHTML = `
     <div class="fc-block fc-behauptung">
       <strong>🗂 Dein Faktencheck-Pass</strong>
       <p>Hier siehst du, welche Behauptungen du schon geprüft hast und wie sicher du dich dabei fühlst. Der Pass bleibt in diesem Browser gespeichert.</p>
     </div>
-    <div class="fc-tabelle-wrap"><table class="fc-tabelle">
-      <thead><tr><th>Fall</th><th>Behauptung</th><th>Kurs</th><th>Stand</th><th>Selbsteinschätzung</th><th>Buchstabe</th></tr></thead>
+    <div class="fc-tabelle-wrap"><table class="fc-tabelle fc-pass-tabelle">
+      <thead><tr><th>Fall</th><th>Behauptung</th><th>Kurs</th><th>Stand</th><th>Knobelfrage</th><th>Modellkritik</th><th>Selbsteinschätzung</th><th>Buchstabe</th></tr></thead>
       <tbody>${zeilen}</tbody>
     </table></div>
     <div class="fc-block fc-auftrag">
       <strong>🔑 Der Lösungssatz</strong>
-      <p>Ordne die Buchstaben nach ihrer Nummer. Der Satz ist das Motto jedes Faktenchecks — und eine gute Regel für den nächsten Post, den du weiterleiten willst.</p>
-      <p class="fc-wort-eingabe"><input type="text" id="fc-satz" maxlength="40" placeholder="Lösungssatz" autocomplete="off" spellcheck="false" aria-label="Lösungssatz">
-        <button type="button" class="btn btn-primary" id="fc-satz-pruefen">Prüfen</button></p>
-      <p class="fc-status" id="fc-satz-rueck" aria-live="polite"></p>
+      <p>Ordne die Buchstaben nach ihrer Nummer und trag den Satz oben unter der Buchstabenleiste ein — dort wird er auch geprüft. Er ist das Motto jedes Faktenchecks und eine gute Regel für den nächsten Post, den du weiterleiten willst.</p>
+      <p class="fc-status">${stand.satzGeloest ? `🎉 Gelöst: „${LOESUNGSSATZ}“` : "🔒 Noch nicht eingetragen."}</p>
     </div>
-    <details class="fc-block fc-denkfrage" open>
-      <summary>🎫 Exit-Ticket — drei Sätze zum Schluss</summary>
-      <ol>
-        <li>Welche Behauptung hat dich am meisten überrascht — und welche Rechnung hat sie entschieden?</li>
-        <li>Bei welchem Fall war das <em>Modell</em> das Schwierigste, nicht die Rechnung? Woran lag das?</li>
-        <li>Nenne eine Behauptung aus deinem eigenen Alltag, die du mit einem dieser Werkzeuge prüfen könntest.</li>
-      </ol>
-      <p class="fc-meta">Notiere die Antworten im Heft — sie sind der Einstieg in die Besprechung.</p>
-    </details>
+    <div class="fc-block fc-denkfrage fc-exit">
+      <strong>🎫 Exit-Ticket — drei Sätze zum Schluss</strong>
+      <ol>${EXIT.map((q, i) => `<li><label class="fc-text"><span>${q}</span>
+        <textarea data-exit="${i}" rows="3" placeholder="Deine Antwort"></textarea></label></li>`).join("")}</ol>
+      <p class="fc-meta" id="fc-exit-status" aria-live="polite">${exitFertig} von ${EXIT.length} Antworten geschrieben. Sie werden beim Schreiben in diesem Browser gespeichert und sind der Einstieg in die Besprechung.</p>
+    </div>
     <div class="fc-block fc-selbstcheck">
       <strong>↩ Von vorn beginnen</strong>
       <p>Alles noch einmal frisch lösen, etwa zur Wiederholung vor der Klausur?</p>
-      <p><button type="button" class="btn" id="fc-reset">Pass zurücksetzen</button></p>
+      <p id="fc-reset-zeile"><button type="button" class="btn" id="fc-reset">Pass zurücksetzen</button></p>
     </div>`;
-  const pruefeSatz = () => {
-    const ein = document.getElementById("fc-satz").value.toUpperCase().replace(/Ä/g, "AE").replace(/Ö/g, "OE").replace(/Ü/g, "UE").replace(/[^A-Z]/g, "");
-    const box = document.getElementById("fc-satz-rueck");
-    if (!ein) { box.textContent = "Trag zuerst den Satz ein."; return; }
-    box.textContent = ein === LOESUNGSWORT
-      ? `🎉 Richtig: „${LOESUNGSSATZ}“ — wer erst rechnet und dann teilt, verbreitet keine Zahlen, die nicht stimmen.`
-      : "Noch nicht. Sieh in der Tabelle nach, welche Buchstaben du schon hast und an welcher Stelle sie stehen.";
-  };
-  document.getElementById("fc-satz-pruefen").addEventListener("click", pruefeSatz);
-  document.getElementById("fc-satz").addEventListener("keydown", (e) => { if (e.key === "Enter") pruefeSatz(); });
+  passBox.querySelectorAll("[data-exit]").forEach((e) => {
+    const i = Number(e.dataset.exit);
+    e.value = stand.exit[i] || "";
+    e.addEventListener("input", () => {
+      stand.exit[i] = e.value;
+      speichere();
+      const n = EXIT.filter((_, k) => woerter(stand.exit[k]) > 0).length;
+      document.getElementById("fc-exit-status").textContent = `${n} von ${EXIT.length} Antworten geschrieben. Sie werden beim Schreiben in diesem Browser gespeichert und sind der Einstieg in die Besprechung.`;
+    });
+  });
+  // Zurücksetzen löscht auch die eigenen Texte — deshalb erst eine Rückfrage auf der Seite.
   document.getElementById("fc-reset").addEventListener("click", () => {
-    stand.faelle = {};
-    for (const k of Object.keys(versuche)) delete versuche[k];
-    speichere();
-    renderPass();
-    renderWort();
-    renderReiter();
+    document.getElementById("fc-reset-zeile").innerHTML = `<strong>Wirklich? Auch deine Texte (Modellkritik, Exit-Ticket) werden gelöscht.</strong><br>
+      <button type="button" class="btn" id="fc-reset-ja">Ja, alles löschen</button> <button type="button" class="btn btn-primary" id="fc-reset-nein">Abbrechen</button>`;
+    document.getElementById("fc-reset-nein").addEventListener("click", renderPass);
+    document.getElementById("fc-reset-ja").addEventListener("click", () => {
+      stand.faelle = {};
+      stand.exit = [];
+      delete stand.satz;
+      delete stand.satzGeloest;
+      for (const k of Object.keys(versuche)) delete versuche[k];
+      ansicht.denkOffen.clear();
+      speichere();
+      renderPass();
+      renderSatz();
+      renderWort();
+      renderReiter();
+    });
   });
 }
 
@@ -647,6 +809,15 @@ fallBox.addEventListener("click", (e) => {
     return;
   }
   if (t.dataset.aufdecken) { aufdecken(Number(t.dataset.aufdecken)); return; }
+  if (t.dataset.knobelPruefe) { pruefeKnobel(); return; }
+  if (t.dataset.denkVergleich) { vergleicheDenk(); return; }
+  if (t.dataset.denkUrteil) {
+    const st = standVon(fall.key);
+    st.denkUrteil = st.denkUrteil === t.dataset.denkUrteil ? null : t.dataset.denkUrteil;
+    speichere();
+    renderFall();
+    return;
+  }
   if (t.dataset.urteil) { waehleUrteil(Number(t.dataset.urteil)); return; }
   if (t.dataset.muster) {
     const st = standVon(fall.key);
@@ -670,19 +841,35 @@ fallBox.addEventListener("click", (e) => {
 
 // Eingaben merken, ohne zu prüfen — ein Stufenwechsel soll nichts löschen.
 fallBox.addEventListener("input", (e) => {
-  const id = e.target.dataset && e.target.dataset.feld;
-  if (!id) return;
+  const d = e.target.dataset || {};
   const fall = aktuell();
-  const feld = fall.schritte.flatMap((s) => s.felder).find((f) => `${fall.key}.${f.id}` === id);
-  if (feld) merkeEingabe(fall, feld, e.target.value);
+  if (d.feld) {
+    const feld = fall.schritte.flatMap((s) => s.felder).find((f) => `${fall.key}.${f.id}` === d.feld);
+    if (feld) merkeEingabe(fall, feld, e.target.value);
+  } else if (d.knobel) {
+    const feld = (fall.knobelFelder || []).find((f) => `${fall.key}.${f.id}` === d.knobel);
+    if (feld) knobelStand(fall).eingaben[feld.id] = e.target.value;
+  } else if (d.denk) {
+    standVon(fall.key).denk = e.target.value;
+    speichere();
+  }
 });
 fallBox.addEventListener("keydown", (e) => {
-  if (e.key !== "Enter" || !e.target.dataset || !e.target.dataset.feld) return;
+  if (e.key !== "Enter" || !e.target.dataset) return;
+  if (e.target.dataset.knobel) { pruefeKnobel(); return; }
+  if (!e.target.dataset.feld) return;
   const s = e.target.closest("[data-schritt]");
   if (s) pruefeSchritt(Number(s.dataset.schritt));
 });
+// „toggle“ steigt nicht auf; in der Einfangphase kommt es trotzdem hier an.
+fallBox.addEventListener("toggle", (e) => {
+  const key = e.target.dataset && e.target.dataset.denkBox;
+  if (!key) return;
+  if (e.target.open) ansicht.denkOffen.add(key); else ansicht.denkOffen.delete(key);
+}, true);
 
 renderKurs();
 renderWort();
+renderSatz();
 renderLandkarte();
 zeige();

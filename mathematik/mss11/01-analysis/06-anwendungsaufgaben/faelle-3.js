@@ -115,6 +115,14 @@ const kaub = {
   denkfrage: "Was sagt das Modell für den 30. August voraus — und warum sollte man ihm dort nicht mehr glauben?",
   musterantwort: `<p>P(30) = ${n(pegel(30), 0)} cm — ein ganz normaler Wasserstand, aber nur, weil ein Polynom dritten Grades für große t unbegrenzt wächst. Das Modell beschreibt den Verlauf im August-Fenster; den Regen der nächsten Wochen kennt es nicht. Ganzrationale Modelle taugen zum Beschreiben eines Zeitraums, kaum zum Vorhersagen.</p>`,
   knobel: "Wann erreicht der Pegel im Modell wieder den Wert vom 31. Juli (57 cm)?",
+  knobelFelder: [
+    {
+      id: "wieder", label: "t ≈", einheit: "Tage nach dem 31. Juli", soll: wieder57, tol: 0.06, stellen: 1,
+      falsch: [
+        { wert: 0, id: "start", text: "t = 0 ist der 31. Juli selbst — dort beginnt das Modell mit 57 cm. Gesucht ist der nächste Zeitpunkt danach." },
+      ],
+    },
+  ],
   knobelAntwort: `<p>P(t) = 57 ⟺ t · (0,025t² − 0,45t − 2,1) = 0 ⟺ t = 0 oder t ≈ ${n(wieder57, 1)}. Das liegt außerhalb des Zeitraums — deshalb ist der linke Rand im Zeitraum das globale Maximum.</p>`,
   partner: "Zeigt euch am Graphen, wo der Pegel am steilsten fällt. Erklärt einander, warum diese Stelle eine Wendestelle sein muss.",
 };
@@ -212,6 +220,21 @@ const paket = {
   denkfrage: "Warum durften wir annehmen, dass Breite und Höhe gleich sind?",
   musterantwort: "<p>Im Gurtmaß zählt nur die Summe b + h. Bei fester Summe ist das Produkt b · h am größten, wenn b = h ist — so wie unter allen Rechtecken mit gleichem Umfang das Quadrat den größten Flächeninhalt hat. Ein ungleicher Querschnitt würde bei gleicher Länge also weniger fassen; die Annahme kostet nichts.</p>",
   knobel: "Manche Paketdienste (etwa Hermes) messen anders: längste plus kürzeste Seite, zum Beispiel höchstens 80 cm. Welcher Karton fasst dann am meisten?",
+  knobelFelder: [
+    {
+      id: "laengste", label: "längste Seite a ≈", einheit: "cm", soll: hermesA, tol: 0.1, stellen: 1,
+      falsch: [
+        { wert: 40, id: "wuerfel", text: "Mit a = c = 40 cm wäre der Karton ein Würfel. Die mittlere Seite darf aber so lang sein wie die längste: V = a · a · (80 − a)." },
+        { wert: 80 - hermesA, id: "kuerzeste", text: "Das ist die kürzeste Seite c = 80 − a. Gefragt ist die längste." },
+      ],
+    },
+    {
+      id: "liter", label: "Volumen ≈", einheit: "Liter", soll: (hermesA ** 2 * (80 - hermesA)) / 1000, tol: 0.1, stellen: 1,
+      falsch: [
+        { wert: 64, id: "wuerfel", text: "64 Liter fasst der Würfel mit 40 cm Kantenlänge. Er ist hier nicht der beste Karton: Mit a = b = 160/3 cm und c = 80 − a passt mehr hinein." },
+      ],
+    },
+  ],
   knobelAntwort: `<p>Sei a die längste, c die kürzeste Seite, a + c = 80. Die mittlere Seite b darf so groß wie a sein, also V = a² · (80 − a). V′ = 160a − 3a² = 0 ⟹ a = ${bruch("160", "3")} ≈ ${n(hermesA, 1)} cm, c ≈ ${n(80 - hermesA, 1)} cm. Das ergibt etwa ${n(hermesA ** 2 * (80 - hermesA) / 1000, 1)} Liter — wieder kein Würfel.</p>`,
   partner: "Habt ihr beide den Definitionsbereich bedacht? Erklärt euch, warum x = 75 nicht in Frage kommt, obwohl V(75) = 0 eine „schöne“ Nullstelle ist.",
 };
@@ -313,6 +336,20 @@ const dosis = {
   denkfrage: "Statt zwei Tabletten auf einmal: eine Tablette jetzt und eine zweite nach 4 Stunden. Was ändert sich an Wirkdauer und Spitze?",
   musterantwort: `<p>Dann ist die Konzentration c(t) + c(t − 4) für t ≥ 4. Sie bleibt von t ≈ ${n(ein1, 1)} bis t ≈ ${n(aus4, 1)} über der Schwelle — gut ${n(aus4 - ein1, 0)} Stunden, länger als bei zwei Tabletten auf einmal (${n(aus2 - ein2, 1)} h). Die Spitze liegt bei nur etwa ${n(max4, 1)} mg/l statt ${n(2 * konz(2), 1)}. Deshalb verordnet man lieber Abstände als höhere Einzeldosen.</p>`,
   knobel: "Wann wird der Wirkstoff (bei einer Tablette) am schnellsten abgebaut?",
+  knobelFelder: [
+    {
+      id: "abbau", label: "t =", einheit: "h", soll: 4, tol: 0.02, stellen: 1,
+      falsch: [
+        { wert: 2, id: "maximum", text: "Bei t = 2 h ist die Konzentration am höchsten, dort ist c′ = 0. Am schnellsten abgebaut wird dort, wo c′ am kleinsten (am stärksten negativ) ist — an der Wendestelle von c." },
+      ],
+    },
+    {
+      id: "rate", label: "c′ dort ≈", einheit: "mg/l pro Stunde", soll: -8 * Math.exp(-2), tol: 0.01, stellen: 2,
+      falsch: [
+        { wert: 32 * Math.exp(-2), id: "bestand", text: "Das ist die Konzentration c(4) selbst. Gefragt ist ihre Änderungsrate c′(4)." },
+      ],
+    },
+  ],
   knobelAntwort: `<p>Gesucht ist der Tiefpunkt von c′, also die Wendestelle von c: c″(t) = 8e<sup>−0,5t</sup>(0,25t − 1) = 0 ⟹ t = 4 h. Dort ist c′(4) = −8e<sup>−2</sup> ≈ ${n(-8 * Math.exp(-2), 2)} mg/l pro Stunde.</p>`,
   partner: "Vergleicht, wie ihr die Gleichung c(t) = 4 gelöst habt (Newton, Halbierung, Taschenrechner, Ablesen und Prüfen). Welcher Weg war am schnellsten, welcher am sichersten?",
 };
@@ -416,7 +453,24 @@ const geierlay = {
   denkfrage: "Warum ist es gefährlich, im Takt der Eigenschwingung einer Brücke zu hüpfen — und was hat die Millennium Bridge in London damit zu tun?",
   musterantwort: "<p>Hüpft man im Takt der Eigenschwingung, kommt bei jedem Sprung Energie dazu, bevor die Dämpfung sie abbauen kann — die Ausschläge wachsen (Resonanz). Die Millennium Bridge in London geriet im Jahr 2000 kurz nach der Eröffnung ins seitliche Schwanken, weil die Fußgänger unbewusst im Takt der Brücke mitgingen; sie wurde gesperrt und bekam zusätzliche Dämpfer. Das Modell hier beschreibt nur das Ausschwingen nach dem letzten Sprung.</p>",
   knobel: "Der wievielte Hochpunkt ist der erste mit einem Ausschlag unter 1 cm?",
-  knobelAntwort: `<p>Der k-te Hochpunkt (k = 0, 1, 2, …) hat ${n(bruecke(tH), 2)} · ${n(faktorH, 4)}<sup>k</sup> cm. Das ist ab k = 4 kleiner als 1 cm: Der 5. Hochpunkt bei t ≈ ${n(tH + 4 * Math.PI, 1)} s hat noch ${n(bruecke(tH + 4 * Math.PI), 2)} cm.</p>`,
+  knobelFelder: [
+    {
+      id: "nummer", label: "Es ist der Hochpunkt Nummer", einheit: "", soll: 5, tol: 0.01, stellen: 0,
+      falsch: [
+        { wert: 4, id: "abNull", text: "k = 4 Perioden nach dem ersten Hochpunkt — gezählt ab dem ersten ist das aber schon der 5. Hochpunkt." },
+        { wert: Math.log(bruecke(tH)) / (0.2 * Math.PI), id: "unrund", tol: 0.05, text: "Die Gleichung liefert k ≈ 3,7. Hochpunkte gibt es aber nur für ganze k: Der erste unter 1 cm hat k = 4 — und das ist der 5. Hochpunkt, weil der erste k = 0 hat." },
+      ],
+    },
+    {
+      id: "wann", label: "zur Zeit t ≈", einheit: "s", soll: tH + 4 * Math.PI, tol: 0.02, stellen: 2,
+      falsch: [
+        { wert: Math.PI / 4 + 4 * Math.PI, id: "piViertel", tol: 0.02, text: "Bei π/4 + 4π ist sin(2t) = 1. Der Hochpunkt liegt etwas links davon, weil die Dämpfung mitwirkt: t<sub>H</sub> = ½ · arctan(10) + k · π." },
+        { wert: tH + 3 * Math.PI, id: "vierter", text: `Das ist der 4. Hochpunkt — dort schwingt die Brücke noch ${n(bruecke(tH + 3 * Math.PI), 2)} cm aus.` },
+        { wert: tH + 8 * Math.PI, id: "periode", text: "sin(2t) hat die Periode π, nicht 2π — die Hochpunkte liegen π Sekunden auseinander." },
+      ],
+    },
+  ],
+  knobelAntwort: `<p>Der Hochpunkt Nummer k + 1 (k = 0, 1, 2, …) liegt bei t = t<sub>H</sub> + k · π und hat ${n(bruecke(tH), 2)} · ${n(faktorH, 4)}<sup>k</sup> cm. Das ist ab k = 4 kleiner als 1 cm: Der 5. Hochpunkt bei t ≈ ${n(tH + 4 * Math.PI, 2)} s hat noch ${n(bruecke(tH + 4 * Math.PI), 2)} cm, der 4. noch ${n(bruecke(tH + 3 * Math.PI), 2)} cm.</p>`,
   partner: "Prüft gegenseitig: Hat jemand t<sub>H</sub> = π/4 heraus? Zeigt im Bild, warum der Hochpunkt links davon liegen muss.",
 };
 

@@ -2,11 +2,11 @@
 // Stelle seines Buchstabens im Lösungssatz — so lässt sich der Satz nur vollständig lesen, wenn
 // die Fälle aus allen Kapiteln gelöst sind.
 
-import { FAELLE_1 } from "./faelle-1.js?v=1";
-import { FAELLE_2 } from "./faelle-2.js?v=1";
-import { FAELLE_3 } from "./faelle-3.js?v=1";
-import { FAELLE_4 } from "./faelle-4.js?v=1";
-import { FAELLE_K } from "./faelle-k.js?v=1";
+import { FAELLE_1 } from "./faelle-1.js?v=2";
+import { FAELLE_2 } from "./faelle-2.js?v=2";
+import { FAELLE_3 } from "./faelle-3.js?v=2";
+import { FAELLE_4 } from "./faelle-4.js?v=2";
+import { FAELLE_K } from "./faelle-k.js?v=2";
 
 export const LOESUNGSSATZ = "ERST DENKEN, DANN TEILEN";
 export const LOESUNGSWORT = LOESUNGSSATZ.replace(/[^A-Z]/g, "");
