@@ -249,6 +249,21 @@
     <div class="quiz" id="quiz-zusammenschau"></div>
   </section>
 
+  <!-- Selbsteinschätzung: dieselben Ziele wie in „Worum geht es hier?“, als Ich-kann-Sätze -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele vom Anfang dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst — deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 😐 oder 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-scherung">Ich kann erklären, warum Scheren den Flächeninhalt nicht ändert — den Umfang aber schon.</li>
+      <li data-abschnitt="sec-dreieck">Ich kann die Formel A = ½ · g · h für das Dreieck herleiten und anwenden.</li>
+      <li data-abschnitt="sec-parallelogramm">Ich kann die Formel A = g · h für das Parallelogramm herleiten und anwenden.</li>
+      <li data-abschnitt="sec-trapez">Ich kann die Formel A = ½ · (a + c) · h für das Trapez herleiten und anwenden.</li>
+      <li data-abschnitt="sec-dreieck">Ich kann zu jeder Seite die zugehörige Höhe finden — auch wenn ihr Fußpunkt außerhalb liegt.</li>
+      <li data-abschnitt="sec-zusammenschau">Ich kann aus dem Flächeninhalt eine fehlende Länge zurückrechnen und dabei die Einheiten sauber umrechnen.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
+  </section>
+
   <!-- 6. Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>6. Innermathematische Zusammenhänge</h2>
@@ -282,6 +297,8 @@
     <div id="exercises-mount"></div>
   </section>
 
+  <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
+  <section class="card" data-lehrkraft="flaecheninhalte-lehrkraefte.html" hidden></section>
 </main>
 
 <footer class="site-footer">
@@ -289,6 +306,8 @@
   <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
+<script src="../../../assets/lehrkraft.js"></script>
+<script src="../../../assets/selbsteinschaetzung.js"></script>
 <script type="module" src="flaecheninhalte.js?v=4"></script>
 </body>
 </html>

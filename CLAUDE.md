@@ -171,6 +171,44 @@ ein Sichtschutz, kein Zugriffsschutz: Die Datei ist über ihre Adresse erreichba
 Repository ist öffentlich. `test-lehrkraft.js` findet neue Platzhalter selbst und schlägt an,
 sobald „Lehrkr…“ wieder im Text einer Seite steht.
 
+**Jede Lernseite unter `mathematik/` hat solche Hinweise** (Seitenkopf, keine Menükarten — so
+erkennt die Prüfung eine Lernseite; fehlt der Platzhalter, schlägt sie an). Die Bruchstücke heißen
+`lehrkraefte.html` neben einer `index.html`, sonst `<name>-lehrkraefte.html`, und folgen einem
+festen Bauplan in `<details class="lk-hinweise">`: **Einordnung** (Klassenstufe, Lehrplan
+Rheinland-Pfalz, Bildungsstandards, mit Verweis auf beide Dokumente), **Didaktischer Kern der
+Seite**, **Grundvorstellungen**, **Typische Fehlvorstellungen — und wo die Seite ansetzt**,
+**Vorschlag für den Unterricht** (Phasen nach den Kernprozessen Anknüpfen, Erkunden, Ordnen,
+Vertiefen), **Differenzierung**, **Diagnose und Rückmeldung**, **Literatur und Material**. Auch hier
+gilt der oberste Grundsatz: Schreibt ein Bruchstück „Achtung-Kasten in Abschnitt 3“, „die
+Stolperstelle“ oder „die Selbsteinschätzung“, prüft `test-lehrkraft.js`, dass die Seite genau das
+hat. Wer eine Seite umbaut oder Abschnitte umnummeriert, zieht die Hinweise mit.
+
+### Selbsteinschätzung
+
+Vor der Vernetzung steht auf jedem Lernpfad (Grundwissen, Klasse 8, MSS — nicht auf den Rechnern
+für Dreiecke und Lagebeziehungen; Rätsel und Faktencheck haben ihre eigene je Fall) ein Abschnitt
+`sec-selbsteinschaetzung`: dieselben
+Ziele wie in „Worum geht es hier?“, als Ich-kann-Sätze, jeder mit dem Abschnitt, in dem er
+erarbeitet wird. Ziel und Selbstkontrolle passen so zueinander, und wer 🤔 wählt, landet direkt im
+richtigen Abschnitt. Die Grundwissen- und Klasse-8-Seiten schreiben die Sätze ins HTML und binden
+`assets/selbsteinschaetzung.js` ein:
+
+```html
+<section class="card" id="sec-selbsteinschaetzung">
+  <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+  <p>…</p>
+  <ul class="se-liste">
+    <li data-abschnitt="sec-satz">Ich kann den Satz des Pythagoras anwenden: a² + b² = c².</li>
+  </ul>
+  <div class="se-auswertung event-result" aria-live="polite"></div>
+</section>
+<script src="../../../../assets/selbsteinschaetzung.js"></script>
+```
+
+(Die MSS-Seiten bauen ihre Zeilen im eigenen Modul aus `SE_PUNKTE`.) Kommt ein Ziel in „Worum geht
+es hier?“ dazu, gehört auch ein Ich-kann-Satz dazu — `test-selbsteinschaetzung.js` vergleicht die
+Anzahl.
+
 ### Die Abschnitte
 
 ```html

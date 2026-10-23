@@ -182,6 +182,20 @@
     <div class="quiz" id="quiz-schnitt"></div>
   </section>
 
+  <!-- Selbsteinschätzung: dieselben Ziele wie in „Worum geht es hier?“, als Ich-kann-Sätze -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele vom Anfang dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst — deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 😐 oder 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-funktion">Ich kann entscheiden, ob eine Zuordnung eine Funktion ist.</li>
+      <li data-abschnitt="sec-gerade">Ich kann an y = m · x + b ablesen, was m und b mit der Geraden machen.</li>
+      <li data-abschnitt="sec-steigung">Ich kann die Steigung aus zwei Punkten mit dem Steigungsdreieck berechnen.</li>
+      <li data-abschnitt="sec-aufstellen">Ich kann eine Funktionsgleichung aus zwei Punkten oder aus Punkt und Steigung aufstellen.</li>
+      <li data-abschnitt="sec-schnitt">Ich kann Nullstelle und Schnittpunkt zweier Geraden bestimmen.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
+  </section>
+
   <!-- 6. Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>6. Innermathematische Zusammenhänge</h2>
@@ -216,6 +230,8 @@
     <div id="exercises-mount"></div>
   </section>
 
+  <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
+  <section class="card" data-lehrkraft="lehrkraefte.html" hidden></section>
 </main>
 
 <footer class="site-footer">
@@ -223,6 +239,8 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
+<script src="../../../../assets/lehrkraft.js"></script>
+<script src="../../../../assets/selbsteinschaetzung.js"></script>
 <script type="module" src="lernpfad.js?v=6"></script>
 </body>
 </html>
