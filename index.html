@@ -157,6 +157,10 @@
   // "Alles"-Codes, jetzt aber genauso monatlich berechnet wie jeder Einzelcode.
   var ALLES_NUMMER = 15;
   var ALLE_BEREICHE = SECTIONS.map(function (s) { return s.key; });
+  // Nur der Code für alle Bereiche schaltet zusätzlich die Hinweise für Lehrkräfte frei (Konzepte,
+  // Lösungswege; siehe assets/lehrkraft.js). Sie sind kein eigener Bereich mit Karte, sondern eine
+  // Marke in derselben Liste — so löscht „Freischaltung zurücksetzen“ sie mit.
+  var LEHRKRAFT = "lehrkraft";
 
   // Der Code eines Bereichs wechselt automatisch jeden Monat, ohne dass hier jemals etwas von
   // Hand nachgetragen werden müsste: (Jahr + Menüpunkt-Zahl) * Monat, davon die letzten vier
@@ -200,6 +204,7 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(sections));
   }
   function labelVon(key) {
+    if (key === LEHRKRAFT) return "Hinweise für Lehrkräfte";
     var section = SECTIONS.filter(function (s) { return s.key === key; })[0];
     return section ? section.label : key;
   }
@@ -224,7 +229,7 @@
 
     var neu = [];
     if (berechneCode(ALLES_NUMMER, jetzt) === eingabe) {
-      neu = ALLE_BEREICHE;
+      neu = ALLE_BEREICHE.concat([LEHRKRAFT]);
     } else {
       SECTIONS.filter(function (s) { return berechneCode(s.nummer, jetzt) === eingabe; }).forEach(function (s) {
         (s.bundle || [s.key]).forEach(function (k) { neu.push(k); });

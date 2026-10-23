@@ -151,6 +151,26 @@ nur die Karten ein, deren Bereich auf der Startseite freigeschaltet wurde. Fehlt
 schon vor der Freischaltung zu sehen. (Das ist eine Navigationshilfe, kein
 Zugriffsschutz — jede Seite bleibt über ihre Adresse erreichbar.)
 
+### Hinweise für Lehrkräfte
+
+Was nur Lehrkräfte sehen sollen — Konzept, Didaktik, Zeitbedarf, vor allem aber alles, was einen
+Lösungsweg verrät („Der Brunnen: drei Mittelsenkrechte“, der Lösungssatz eines Rätsels) —, steht
+**nie im Quelltext der Seite**, sondern in einer eigenen Datei daneben (`raetsel-lehrkraefte.html`,
+`lehrkraefte.html`; ein Bruchstück ohne `<html>`, mit `<span class="lehrkraft-marke">` in der
+Überschrift). Die Seite trägt nur einen leeren Platzhalter und bindet das Skript ein:
+
+```html
+<section class="card" data-lehrkraft="raetsel-lehrkraefte.html" hidden></section>
+<script src="../../../assets/lehrkraft.js"></script>
+```
+
+`assets/lehrkraft.js` lädt die Datei nur, wenn auf der Startseite der Code für alle Bereiche (15)
+eingegeben wurde — er setzt `"lehrkraft"` in `uplant-access`; kein anderer Code tut das. Versteckt
+im Seitentext wäre der Inhalt über „Seitenquelltext anzeigen“ lesbar gewesen. Das bleibt trotzdem
+ein Sichtschutz, kein Zugriffsschutz: Die Datei ist über ihre Adresse erreichbar, und das
+Repository ist öffentlich. `test-lehrkraft.js` findet neue Platzhalter selbst und schlägt an,
+sobald „Lehrkr…“ wieder im Text einer Seite steht.
+
 ### Die Abschnitte
 
 ```html
