@@ -252,3 +252,18 @@ input[type="search"] {
 .kurs-hinweis { margin: 0.8rem 0 0; }
 .kurs-hinweis .kurs-marke { margin-right: 0.4rem; }
 h2 .kurs-marke { margin-left: 0.4rem; }
+
+/* Hinweise für Lehrkräfte (assets/lehrkraft.js): eine Marke, die sagt, dass Schülerinnen und
+   Schüler diesen Kasten nicht sehen — sonst hielte man ihn beim Vorführen für Seiteninhalt. */
+.lehrkraft-marke {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+  background: #fef3c7;
+  color: #78350f;
+}
+:root[data-theme="dark"] .lehrkraft-marke { background: #78350f; color: #fef3c7; }
