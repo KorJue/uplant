@@ -127,7 +127,11 @@ function alsFunktion(text) {
 const XS = [0.62, 0.97, 1.34, 1.71, 2.13];
 const AS = [0.8, 1.9];
 const H = 1e-4;
-const ableitungNum = (g) => (x, a) => (g(x + H, a) - g(x - H, a)) / (2 * H);
+// Fünf-Punkte-Formel statt zentralem Differenzenquotienten: Dessen Fehler f‴ · H²/6 war bei
+// f(x) = 3(2x² + 3)³ − 2e^(2x²) − 2x³ an der Stelle x = 1,71 mit 4 · 10⁻⁴ größer als die Toleranz —
+// dort heben sich zwei große Glieder fast auf, f′ ist nur ≈ 60. Der Fehler hier ist von der
+// Ordnung H⁴ und lag in diesem Fall bei 2 · 10⁻⁹.
+const ableitungNum = (g) => (x, a) => (g(x - 2 * H, a) - 8 * g(x - H, a) + 8 * g(x + H, a) - g(x + 2 * H, a)) / (12 * H);
 const nahe = (u, v, tol) => Number.isFinite(u) && Number.isFinite(v) && Math.abs(u - v) <= tol * (1 + Math.abs(v));
 
 // Stimmen zwei Funktionen an allen Prüfstellen überein? Liefert die erste Abweichung als Text.
