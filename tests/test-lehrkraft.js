@@ -5,11 +5,17 @@
 //     Kommentaren), sondern höchstens einen leeren, versteckten Platzhalter mit data-lehrkraft;
 //     der Platzhalter nennt eine vorhandene Datei, die Seite bindet lehrkraft.js ein, die Datei ist
 //     ein Bruchstück (keine eigene Seite) und ihre Verweise lösen auf;
+//   * Vollständigkeit: Jede Lernseite unter mathematik/ hat einen Platzhalter, und jedes Bruchstück
+//     folgt demselben Bauplan (Einordnung mit Lehrplan und Bildungsstandards, didaktischer Kern,
+//     Fehlvorstellungen, Unterrichtsvorschlag, Literatur);
+//   * Verweise in die Seite: Was ein Bruchstück über die Seite behauptet („Achtung-Kasten in
+//     Abschnitt 3“, „die Stolperstelle“, „die Selbsteinschätzung“), muss die Seite auch zeigen;
 //   * ohne Code und mit einem anderen Code: Platzhalter leer und versteckt, die Datei wird nicht
 //     einmal angefragt;
 //   * mit Code 15 (hier unabhängig nachgerechnet und über das Formular der Startseite eingegeben):
 //     Hinweise sichtbar, mit Marke, hell und dunkel lesbar; „Freischaltung zurücksetzen“ nimmt sie
-//     wieder weg; lässt sich die Datei nicht laden, steht dort eine Meldung statt einer Lücke.
+//     wieder weg; lässt sich die Datei nicht laden, steht dort eine Meldung statt einer Lücke;
+//     auf dem Telefon ragt nichts seitlich heraus.
 
 "use strict";
 
@@ -24,11 +30,31 @@ const bericht = neuerBericht();
 const { pruefe } = bericht;
 const WURZEL = path.resolve(__dirname, "..");
 
-// Seiten, deren Konzept Lösungswege nennt — sie MÜSSEN einen Platzhalter haben. Weitere Seiten mit
-// Platzhalter findet die Prüfung selbst.
+// Seiten, deren Konzept Lösungswege nennt — sie hatten die Hinweise zuerst und dürfen sie nie
+// verlieren, auch wenn sich die Erkennung der Lernseiten (unten) einmal ändert.
 const PFLICHT = [
   "/mathematik/klasse-8/geometrie/raetsel.html",
   "/mathematik/mss11/01-analysis/06-anwendungsaufgaben/index.html",
+];
+// So viele Lernseiten gab es, als jede ihre Hinweise bekam. Fällt die Zahl, erkennt die Prüfung
+// Lernseiten nicht mehr — dann prüfte sie stillschweigend weniger.
+const MINDESTENS_LERNSEITEN = 54;
+// Eine Lernseite hat einen Seitenkopf und ist kein Menü.
+const istLernseite = (d, roh) => webpfad(d).startsWith("/mathematik/") && /class="page-header"/.test(roh) && !/class="menu-card/.test(roh);
+// Der Bauplan der Bruchstücke (lk-hinweise). Die beiden älteren Konzepte (Rätsel, Faktencheck) sind
+// anders gegliedert und brauchen nur die Einordnung.
+const BAUPLAN = ["Einordnung", "Didaktischer Kern der Seite", "Grundvorstellungen", "Typische Fehlvorstellungen — und wo die Seite ansetzt",
+  "Vorschlag für den Unterricht", "Differenzierung", "Diagnose und Rückmeldung", "Literatur und Material"];
+// Kästen, auf die ein Bruchstück verweisen darf, und woran man sie in der Seite erkennt.
+const KAESTEN = { "Achtung-Kasten": "achtung-box", "Wissen-Kasten": "wissen-box", "Beispiel-Kasten": "beispiel-box", "Hinweis-Kasten": "hinweis-box" };
+// Was ein Bruchstück beim Namen nennen darf — und woran die Seite (h: ihr HTML, js: ihre eigenen
+// Skripte) zeigt, dass es das gibt. Rätsel und Faktencheck bauen ihre Selbsteinschätzung je Fall
+// im Skript auf, die übrigen Seiten haben dafür einen Abschnitt.
+const BENANNT = [
+  ["Stolperstelle", (h) => /<h2[^>]*>[^<]*Stolperstelle/.test(h)],
+  ["Formelsammlung", (h) => h.includes('id="sec-formelsammlung"')],
+  ["Innermathematische Zusammenhänge", (h) => h.includes("Innermathematische Zusammenhänge")],
+  ["Selbsteinschätzung", (h, js) => h.includes('id="sec-selbsteinschaetzung"') || /Selbsteinschätzung/.test(js)],
 ];
 // Woran man Hinweise für Lehrkräfte im Seitentext erkennt.
 const VERRAETERISCH = /Lehrkr|Distraktor|class="[^"]*konzept/i;
@@ -42,6 +68,7 @@ function alleHtml(verzeichnis = WURZEL, gesammelt = []) {
   }
   return gesammelt;
 }
+const ohneTags = (s) => s.replace(/<[^>]+>/g, "");
 const webpfad = (datei) => "/" + path.relative(WURZEL, datei).split(path.sep).join("/");
 // Was im Quelltext stehen darf: Skripte, Kommentare und der Name des Platzhalters selbst.
 const ohneErlaubtes = (s) => s.replace(/<script[\s\S]*?<\/script>/g, " ").replace(/<!--[\s\S]*?-->/g, " ").replace(/\sdata-lehrkraft="[^"]*"/g, " ");
@@ -67,6 +94,9 @@ function code(nummer, datum = new Date()) {
   }
   const fragmente = new Set(plaetze.map((p) => p.datei));
   for (const p of PFLICHT) pruefe(plaetze.some((x) => webpfad(x.seite) === p), `${p}: kein Platzhalter für die Hinweise für Lehrkräfte`);
+  const lernseiten = dateien.filter((d) => !fragmente.has(d) && istLernseite(d, fs.readFileSync(d, "utf-8")));
+  pruefe(lernseiten.length >= MINDESTENS_LERNSEITEN, `nur ${lernseiten.length} Lernseiten erkannt — erwartet mindestens ${MINDESTENS_LERNSEITEN}`);
+  for (const d of lernseiten) pruefe(plaetze.some((x) => x.seite === d), `${webpfad(d)}: Lernseite ohne Hinweise für Lehrkräfte`);
 
   for (const d of dateien) {
     if (fragmente.has(d)) continue;
@@ -83,6 +113,47 @@ function code(nummer, datum = new Date()) {
     const inhalt = fs.readFileSync(p.datei, "utf-8");
     pruefe(!/<!doctype|<html|<body/i.test(inhalt), `${webpfad(p.datei)}: ist eine ganze Seite statt eines Bruchstücks`);
     pruefe(/Lehrkr/.test(inhalt) && /class="lehrkraft-marke"/.test(inhalt), `${webpfad(p.datei)}: ohne Überschrift „… für Lehrkräfte“ und Marke`);
+
+    // Bauplan: Die Überschriften stehen vollständig und in dieser Reihenfolge da.
+    const h3 = [...inhalt.matchAll(/<h3>([^<]+)<\/h3>/g)].map((m) => m[1]);
+    const soll = /class="lk-hinweise"/.test(inhalt) ? BAUPLAN : ["Einordnung"];
+    const gefunden = h3.filter((t) => soll.includes(t));
+    pruefe(gefunden.join("|") === soll.join("|"), `${webpfad(p.datei)}: Bauplan unvollständig oder vertauscht (${gefunden.join(", ")})`);
+    // Die Einordnung nennt Klassenstufe, rheinland-pfälzischen Lehrplan und Bildungsstandards und
+    // verweist auf beide Dokumente.
+    const einordnung = (inhalt.split("<h3>Einordnung</h3>")[1] || "").split("<h3>")[0];
+    for (const w of ["Klassenstufe:", "Lehrplan Rheinland-Pfalz:", "Bildungsstandards:"]) pruefe(einordnung.includes(w), `${webpfad(p.datei)}: Einordnung ohne „${w}“`);
+    pruefe(/href="https:\/\/(static\.bildung-rp\.de|bildung\.rlp\.de)\//.test(inhalt), `${webpfad(p.datei)}: kein Verweis auf den Lehrplan Rheinland-Pfalz`);
+    pruefe(/href="https:\/\/www\.kmk\.org\//.test(inhalt), `${webpfad(p.datei)}: kein Verweis auf die Bildungsstandards`);
+    // Externe Verweise öffnen sich in einem neuen Reiter — sonst verlässt die Lehrkraft die Seite
+    // und muss die Hinweise nach dem Zurückgehen erneut aufklappen.
+    for (const m of inhalt.matchAll(/<a\s[^>]*href="https?:[^"]*"[^>]*>/g)) pruefe(/target="_blank"/.test(m[0]) && /rel="noopener"/.test(m[0]), `${webpfad(p.datei)}: externer Verweis ohne neuen Reiter → ${m[0]}`);
+
+    // Was das Bruchstück über die Seite behauptet, muss die Seite zeigen (§ 1 der Arbeitsanweisung).
+    const text = ohneTags(inhalt);
+    const abschnitte = new Map();
+    for (const teil of seite.split(/<section\b/).slice(1)) {
+      const m = teil.match(/<h2[^>]*>\s*(\d+)\./);
+      if (m) abschnitte.set(Number(m[1]), teil.split("</section>")[0]);
+    }
+    const nummern = (liste) => {
+      const z = (liste.match(/\d+/g) || []).map(Number);
+      return /bis|–/.test(liste) ? Array.from({ length: z[z.length - 1] - z[0] + 1 }, (_, i) => z[0] + i) : z;
+    };
+    for (const m of text.matchAll(/(?:([\wÄÖÜäöü]+-Kasten) in )?Abschnitt(?:e|en)?\s+((?:\d+(?:\s*(?:,|und|bis|–)\s*(?=\d))?)+)(?:,\s*([\wÄÖÜäöü]+-Kasten))?/g)) {
+      const kasten = m[1] || m[3];
+      for (const n of nummern(m[2])) {
+        pruefe(abschnitte.has(n), `${webpfad(p.datei)}: „${m[0]}“ — die Seite hat keinen Abschnitt ${n}`);
+        if (!kasten || !abschnitte.has(n)) continue;
+        pruefe(kasten in KAESTEN, `${webpfad(p.datei)}: unbekannte Kastenart „${kasten}“`);
+        if (kasten in KAESTEN) pruefe(abschnitte.get(n).includes(KAESTEN[kasten]), `${webpfad(p.datei)}: „${m[0]}“ — Abschnitt ${n} hat keinen ${kasten}`);
+      }
+    }
+    const js = [...seite.matchAll(/<script[^>]*\ssrc="([^"?]+)/g)].map((m) => path.join(path.dirname(p.seite), m[1]))
+      .filter((d) => fs.existsSync(d)).map((d) => fs.readFileSync(d, "utf-8")).join("\n");
+    for (const [wort, vorhanden] of BENANNT) {
+      if (text.includes(wort)) pruefe(vorhanden(seite, js), `${webpfad(p.datei)}: nennt „${wort}“, die Seite hat das nicht`);
+    }
     // Verweise im Bruchstück gelten relativ zur Seite, in die es geladen wird.
     for (const m of inhalt.matchAll(/href="([^"]+)"/g)) {
       if (/^(https?:|mailto:)/.test(m[1])) continue;
@@ -146,7 +217,7 @@ function code(nummer, datum = new Date()) {
       await oeffne(page, s);
       await page.waitForSelector("[data-lehrkraft][data-geladen]", { state: "attached", timeout: 5000 }).catch(() => {});
       const z = await zustand(page);
-      for (const e of z) pruefe(!e.hidden && e.sichtbar && e.geladen === "ja" && /Konzept für Lehrkräfte/.test(e.html), `${s} (Code 15, ${modus}): Hinweise nicht geladen (${e.geladen})`);
+      for (const e of z) pruefe(!e.hidden && e.sichtbar && e.geladen === "ja" && /für Lehrkräfte/.test(e.html), `${s} (Code 15, ${modus}): Hinweise nicht geladen (${e.geladen})`);
       await page.evaluate(() => document.querySelectorAll("[data-lehrkraft] details").forEach((d) => { d.open = true; }));
       pruefe(/nur mit dem Code für alle Bereiche sichtbar/.test(await page.evaluate(() => document.body.innerText)), `${s} (Code 15, ${modus}): Marke fehlt`);
       await pruefeNotation(page, bericht, `${s} (Code 15, ${modus})`);
@@ -174,6 +245,22 @@ function code(nummer, datum = new Date()) {
     }
     await page.close();
   }
+
+  // Auf dem Telefon: Lange Quellenadressen brechen um, statt die Seite seitlich zu verschieben.
+  const telefon = await neueSeite(browser, { breite: 375, hoehe: 740 });
+  await gibCodeEin(telefon, code(15));
+  for (const s of seiten) {
+    await oeffne(telefon, s);
+    await telefon.waitForSelector("[data-lehrkraft][data-geladen]", { state: "attached", timeout: 5000 }).catch(() => {});
+    const zuBreit = await telefon.evaluate(() => {
+      document.querySelectorAll("[data-lehrkraft] details").forEach((d) => { d.open = true; });
+      const w = document.documentElement.clientWidth;
+      return [...document.querySelectorAll("[data-lehrkraft] *")].filter((e) => e.getBoundingClientRect().right > w + 1)
+        .map((e) => e.tagName.toLowerCase() + ": " + e.textContent.slice(0, 40));
+    });
+    pruefe(zuBreit.length === 0, `${s} (Code 15, Telefon): Hinweise ragen seitlich heraus — ${zuBreit.slice(0, 2).join(" | ")}`);
+  }
+  await telefon.close();
 
   await browser.close();
   bericht.abschluss();

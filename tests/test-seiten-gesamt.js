@@ -16,7 +16,11 @@ const bericht = neuerBericht(80);
 const { pruefe } = bericht;
 
 (async () => {
-  const alle = alleSeiten().sort();
+  // Bruchstücke (Hinweise für Lehrkräfte, *-lehrkraefte.html) sind keine Seiten: ohne <html>, ohne
+  // Dunkelmodus-Schalter, und ihre Verweise gelten relativ zur Seite, in die sie geladen werden.
+  // Das prüft test-lehrkraft.js.
+  const istBruchstueck = (p) => !/<html[\s>]/i.test(fs.readFileSync(path.join(WURZEL, p.slice(1)), "utf-8"));
+  const alle = alleSeiten().filter((p) => !istBruchstueck(p)).sort();
   pruefe(alle.length >= 35, `nur ${alle.length} Seiten gefunden — erwartet mindestens 35`);
 
   const browser = await starteBrowser();

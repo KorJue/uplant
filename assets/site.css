@@ -267,3 +267,32 @@ h2 .kurs-marke { margin-left: 0.4rem; }
   color: #78350f;
 }
 :root[data-theme="dark"] .lehrkraft-marke { background: #78350f; color: #fef3c7; }
+
+/* Die didaktischen Hinweise am Seitenende (Bruchstück *-lehrkraefte.html): eingeklappt, damit sie
+   den Lernpfad nicht verlängern, und mit einem bernsteinfarbenen Rand als „nicht für Lernende“
+   erkennbar, falls die Lehrkraft am Beamer vergisst, die Freischaltung zurückzunehmen. */
+section[data-lehrkraft] { border-left: 4px solid #d97706; }
+.lk-hinweise summary { cursor: pointer; font-weight: 700; }
+.lk-hinweise h3 { font-size: 1rem; margin: 1.2rem 0 0.4rem; }
+.lk-hinweise ul,
+.lk-hinweise ol { margin: 0.4rem 0; padding-left: 1.2rem; font-size: 0.92rem; }
+.lk-hinweise li { margin-bottom: 0.35rem; }
+.lk-hinweise p { font-size: 0.92rem; }
+/* Lange Quellenadressen dürfen umbrechen, sonst schieben sie die Seite auf dem Telefon seitlich weg. */
+.lk-hinweise a { overflow-wrap: anywhere; }
+
+/* Selbsteinschätzung (assets/selbsteinschaetzung.js). Ohne Skript bleibt die Liste eine gewöhnliche
+   Aufzählung; erst mit den Knöpfen verschwinden die Punkte. Die MSS-Seiten bauen ihre Zeilen selbst
+   und bringen dieselben Regeln in ihrer lernpfad.css mit. */
+.se-bereit .se-liste { list-style: none; padding-left: 0; margin: 0.6rem 0; }
+.se-bereit .se-zeile {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; justify-content: space-between;
+  padding: 0.45rem 0.2rem; border-bottom: 1px solid var(--border);
+}
+.se-bereit .se-text { flex: 1 1 18rem; }
+.se-bereit .se-knoepfe { display: flex; gap: 0.3rem; }
+.se-bereit .se-knoepfe button {
+  font-size: 1.15rem; padding: 0.2rem 0.5rem; border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--card-bg); color: var(--text);
+}
+.se-bereit .se-knoepfe button[aria-pressed="true"] { border-color: var(--accent); background: var(--bg); box-shadow: 0 0 0 2px var(--accent) inset; }

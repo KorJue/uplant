@@ -571,7 +571,7 @@ async function aufgaben(page) {
 async function geruest(page) {
   const folge = await page.evaluate(() => [...document.querySelectorAll("main section[id]")].map((s) => s.id));
   const soll = ["sec-mittelsenkrechte", "sec-umkreis", "sec-winkelhalbierende", "sec-inkreis", "sec-schwerpunkt",
-    "sec-hoehen", "sec-alle", "sec-konstruieren", "sec-vernetzung", "sec-formelsammlung", "sec-uebungen"];
+    "sec-hoehen", "sec-alle", "sec-konstruieren", "sec-selbsteinschaetzung", "sec-vernetzung", "sec-formelsammlung", "sec-uebungen"];
   pruefe(JSON.stringify(folge) === JSON.stringify(soll), `Gerüst: Abschnitte ${folge.join(", ")} statt ${soll.join(", ")}`);
   // Die Didaktik: Umkreis direkt nach der Mittelsenkrechten, Inkreis direkt nach der
   // Winkelhalbierenden, Seitenhalbierende erst nach der Mittelsenkrechten (sie braucht die Mitte).

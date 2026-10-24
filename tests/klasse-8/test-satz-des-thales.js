@@ -773,7 +773,7 @@ async function aufgaben(page) {
 async function geruest(page) {
   // Jeder Abschnitt der Seite ist über eine Sprungmarke erreichbar, und die Formelsammlung
   // liegt wirklich vor.
-  const anker = ["sec-satz", "sec-beweis", "sec-umkehrung", "sec-konstruktion", "sec-tangenten", "sec-vernetzung", "sec-formelsammlung", "sec-uebungen"];
+  const anker = ["sec-satz", "sec-beweis", "sec-umkehrung", "sec-konstruktion", "sec-tangenten", "sec-selbsteinschaetzung", "sec-vernetzung", "sec-formelsammlung", "sec-uebungen"];
   for (const a of anker) {
     const da = await page.evaluate((id) => !!document.getElementById(id), a);
     pruefe(da, `Gerüst: der Abschnitt #${a} fehlt`);

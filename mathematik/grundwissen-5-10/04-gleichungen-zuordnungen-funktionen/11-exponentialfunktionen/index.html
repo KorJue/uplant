@@ -214,6 +214,21 @@
     <div class="quiz" id="quiz-anwendungen"></div>
   </section>
 
+  <!-- Selbsteinschätzung: dieselben Ziele wie in „Worum geht es hier?“, als Ich-kann-Sätze -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele vom Anfang dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst — deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 😐 oder 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-wachstum">Ich kann an einer Wertetabelle entscheiden, ob ein Wachstum linear oder exponentiell ist.</li>
+      <li data-abschnitt="sec-funktion">Ich kann mit f(x) = a · qˣ arbeiten und a und q deuten.</li>
+      <li data-abschnitt="sec-prozent">Ich kann zwischen Prozentsatz und Wachstumsfaktor hin- und herrechnen.</li>
+      <li data-abschnitt="sec-zeiten">Ich kann Verdopplungszeit und Halbwertszeit bestimmen.</li>
+      <li data-abschnitt="sec-vergleich">Ich kann erklären, warum exponentielles Wachstum jedes Potenzwachstum überholt.</li>
+      <li data-abschnitt="sec-anwendungen">Ich kann Sachaufgaben zu Zinseszins, Zerfall und Wertverlust rechnen.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
+  </section>
+
   <!-- 7. Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>7. Innermathematische Zusammenhänge</h2>
@@ -247,6 +262,8 @@
     <div id="exercises-mount"></div>
   </section>
 
+  <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
+  <section class="card" data-lehrkraft="lehrkraefte.html" hidden></section>
 </main>
 
 <footer class="site-footer">
@@ -254,6 +271,8 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
+<script src="../../../../assets/lehrkraft.js"></script>
+<script src="../../../../assets/selbsteinschaetzung.js"></script>
 <script type="module" src="lernpfad.js?v=5"></script>
 </body>
 </html>

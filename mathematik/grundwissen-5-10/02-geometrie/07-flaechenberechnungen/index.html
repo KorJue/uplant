@@ -148,6 +148,20 @@
     <div class="quiz" id="quiz-uebersicht"></div>
   </section>
 
+  <!-- Selbsteinschätzung: dieselben Ziele wie in „Worum geht es hier?“, als Ich-kann-Sätze -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele vom Anfang dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst — deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 😐 oder 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-parallelogramm">Ich kann begründen, warum das Parallelogramm dieselbe Fläche hat wie ein Rechteck: A = g · h.</li>
+      <li data-abschnitt="sec-dreieck">Ich kann das Dreieck als halbes Parallelogramm erkennen: A = ½ · g · h.</li>
+      <li data-abschnitt="sec-trapez">Ich kann das Trapez berechnen: A = ½ · (a + c) · h.</li>
+      <li data-abschnitt="sec-drachen">Ich kann Drachen und Raute über ihre Diagonalen berechnen: A = ½ · e · f.</li>
+      <li data-abschnitt="sec-parallelogramm">Ich kann die Höhe zuverlässig von der schrägen Seite unterscheiden.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
+  </section>
+
   <!-- 6. Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>6. Innermathematische Zusammenhänge</h2>
@@ -179,6 +193,8 @@
     <div id="exercises-mount"></div>
   </section>
 
+  <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
+  <section class="card" data-lehrkraft="lehrkraefte.html" hidden></section>
 </main>
 
 <footer class="site-footer">
@@ -186,6 +202,8 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
+<script src="../../../../assets/lehrkraft.js"></script>
+<script src="../../../../assets/selbsteinschaetzung.js"></script>
 <script type="module" src="lernpfad.js?v=5"></script>
 </body>
 </html>

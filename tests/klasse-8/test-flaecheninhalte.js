@@ -1042,7 +1042,7 @@ async function aufgaben(page) {
 // ── Seitengerüst ──────────────────────────────────────────────────────────
 async function geruest(page) {
   const anker = ["sec-scherung", "sec-parallelogramm", "sec-dreieck", "sec-trapez",
-    "sec-zusammenschau", "sec-vernetzung", "sec-formelsammlung", "sec-uebungen"];
+    "sec-zusammenschau", "sec-selbsteinschaetzung", "sec-vernetzung", "sec-formelsammlung", "sec-uebungen"];
   for (const a of anker) {
     const da = await page.evaluate((id) => !!document.getElementById(id), a);
     pruefe(da, `Gerüst: der Abschnitt #${a} fehlt`);

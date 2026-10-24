@@ -157,6 +157,20 @@
     <div class="quiz" id="quiz-potenzen"></div>
   </section>
 
+  <!-- Selbsteinschätzung: dieselben Ziele wie in „Worum geht es hier?“, als Ich-kann-Sätze -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele vom Anfang dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst — deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 😐 oder 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-streckung">Ich kann eine zentrische Streckung ausführen und ihren Streckfaktor ablesen.</li>
+      <li data-abschnitt="sec-aehnlich">Ich kann begründen, warum zwei Figuren ähnlich sind: gleiche Winkel und gleiche Seitenverhältnisse.</li>
+      <li data-abschnitt="sec-strahlensaetze">Ich kann mit den Strahlensätzen unzugängliche Längen berechnen.</li>
+      <li data-abschnitt="sec-saetze">Ich kann an den Ähnlichkeitssätzen erkennen, wann zwei Dreiecke ähnlich sein müssen.</li>
+      <li data-abschnitt="sec-potenzen">Ich kann erklären, warum Flächen mit k² und Volumen mit k³ wachsen — nicht mit k.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
+  </section>
+
   <!-- 6. Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>6. Innermathematische Zusammenhänge</h2>
@@ -190,6 +204,8 @@
     <div id="exercises-mount"></div>
   </section>
 
+  <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
+  <section class="card" data-lehrkraft="lehrkraefte.html" hidden></section>
 </main>
 
 <footer class="site-footer">
@@ -197,6 +213,8 @@
   <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
 </footer>
 
+<script src="../../../../assets/lehrkraft.js"></script>
+<script src="../../../../assets/selbsteinschaetzung.js"></script>
 <script type="module" src="lernpfad.js?v=5"></script>
 </body>
 </html>
