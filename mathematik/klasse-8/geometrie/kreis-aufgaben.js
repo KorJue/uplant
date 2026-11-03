@@ -93,7 +93,8 @@ const FLAECHE = [
 const E = (name) => LAENGE.find((e) => e.name === name);
 const F = (name) => FLAECHE.find((e) => e.name === name);
 
-const RUNDEN = `<span class="progress-note">Rechne mit der π-Taste und runde das Ergebnis auf zwei Nachkommastellen.</span>`;
+// Mit Zeilenumbruch davor: .progress-note ist ein Inline-Element und klebte sonst am Fragesatz.
+const RUNDEN = `<br><span class="progress-note">Rechne mit der π-Taste und runde das Ergebnis auf zwei Nachkommastellen.</span>`;
 
 // ---------- Zeichnungen für die Aufgabentexte ----------
 //
@@ -145,14 +146,17 @@ function figurRing(R, r) {
   const ring = (rad) => `M ${f1(M.x - rad)} ${f1(M.y)} a ${f1(rad)} ${f1(rad)} 0 1 0 ${f1(2 * rad)} 0 a ${f1(rad)} ${f1(rad)} 0 1 0 ${f1(-2 * rad)} 0 `;
   out += `<path d="${ring(RP)}${ring(rp)}" fill-rule="evenodd" class="fl-fig-flaeche"/>`;
   out += kreisSvg(M.x, M.y, RP, "fl-fig-kante") + kreisSvg(M.x, M.y, rp, "fl-fig-kante");
-  // Außenradius nach rechts, Innenradius schräg nach links oben — so überdecken sich die
-  // Beschriftungen nie, auch wenn r fast so groß ist wie R.
+  // Außenradius nach rechts, Innenradius schräg nach links oben, jede Beschriftung an der Mitte
+  // ihres Radius. Je nach Verhältnis r : R kreuzt sie dabei eine der Kreislinien — der Hof in der
+  // Hintergrundfarbe (kr-fig-halo) hält sie trotzdem lesbar.
   out += linieSvg(M, { x: M.x + RP, y: M.y }, "fl-fig-grund");
-  out += textSvg({ x: M.x + RP / 2 + rp / 4, y: M.y + 16 }, `R = ${num(R)} cm`, "fl-fig-grund-text");
+  out += textSvg({ x: M.x + 8, y: M.y + 15 }, `R = ${num(R)} cm`, "fl-fig-grund-text kr-fig-halo", "start");
   const a = (3 * Math.PI) / 4;
   const E = { x: M.x + rp * Math.cos(a), y: M.y - rp * Math.sin(a) };
   out += linieSvg(M, E, "fl-fig-zweit");
-  out += textSvg({ x: E.x - 6, y: E.y - 8 }, `r = ${num(r)} cm`, "fl-fig-zweit-text", "end");
+  // Links beginnend, rechts oberhalb der Radiusmitte: Der Radius läuft nach links oben weg, der
+  // Text nach rechts — so liegt er nie auf seiner eigenen Linie.
+  out += textSvg({ x: M.x + (rp / 2) * Math.cos(a) + 6, y: M.y - (rp / 2) * Math.sin(a) - 4 }, `r = ${num(r)} cm`, "fl-fig-zweit-text kr-fig-halo", "start");
   out += punktSvg(M);
   return out + "</svg>";
 }
@@ -592,7 +596,7 @@ function generateS2() {
     promptHtml:
       `Ein Kreisausschnitt hat den Radius <strong>r = ${num(r)} ${eR}</strong> und den Bogen <strong>b = ${num(b)} ${eB}</strong>.<br>` +
       `<strong>Berechne seinen Flächeninhalt in ${ziel}.</strong>` +
-      `<span class="progress-note">Rechne beide Längen zuerst in dieselbe Einheit um.</span>`,
+      `<br><span class="progress-note">Rechne beide Längen zuerst in dieselbe Einheit um.</span>`,
     correct: loesung,
     tolerance: Math.max(1e-4, loesung * 1e-6),
     placeholder: "A in " + ziel,
@@ -778,7 +782,7 @@ function generateS3() {
     promptHtml:
       `Ein Kreisausschnitt hat den Radius <strong>r = ${num(r)} cm</strong> und ${was}.<br>` +
       `<strong>Wie groß ist sein Mittelpunktswinkel α?</strong>` +
-      `<span class="progress-note">Rechne mit der π-Taste und runde auf ganze Grad.</span>`,
+      `<br><span class="progress-note">Rechne mit der π-Taste und runde auf ganze Grad.</span>`,
     correct: richtig,
     tolerance: 0.5,
     placeholder: "α in Grad",

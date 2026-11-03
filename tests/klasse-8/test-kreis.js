@@ -457,9 +457,20 @@ async function quizze(page) {
     const n = await page.evaluate((s) => document.querySelectorAll(`#${s} .quiz`).length, sec);
     pruefe(n >= 1, `Kontrollfragen: Abschnitt ${sec} hat keine`);
   }
+  // Bei den Rechenfragen wird die Lösung hier unabhängig nachgerechnet: Als richtig markiert sein
+  // muss genau die Antwort, in der sie steht — sonst lobte die Seite eine falsche Rechnung.
+  const LOESUNG = {
+    "quiz-umfang": de(Math.round(P * 50)),                 // U = π · 50 cm
+    "quiz-radius": de2(2 * P * 5),                         // U = 2 · π · 5 cm
+    "quiz-flaeche": de2(P * 5 * 5),                        // d = 10 cm, also r = 5 cm
+    "quiz-ring": de2(P * (36 - 16)),                       // R = 6 cm, r = 4 cm
+    "quiz-bogen": `${de(24 * 60 / 360)} cm`,               // 60° von 24 cm
+    "quiz-ausschnitt": `${de(0.5 * 5 * 6)} cm²`,           // ½ · b · r
+  };
   const stellen = [];
   for (const id of ids) {
-    const anzahl = await page.evaluate((q) => document.querySelectorAll(`#${q} .quiz-opt`).length, id);
+    const optionen = await page.evaluate((q) => [...document.querySelectorAll(`#${q} .quiz-opt`)].map((b) => b.textContent.trim()), id);
+    const anzahl = optionen.length;
     pruefe(anzahl === 4, `Quiz ${id}: ${anzahl} Antwortmöglichkeiten statt 4`);
     let richtige = 0;
     for (let i = 0; i < anzahl; i++) {
@@ -468,7 +479,11 @@ async function quizze(page) {
         const f = document.querySelector(`#${q} .quiz-feedback`);
         return { ok: f.classList.contains("ok"), text: f.textContent };
       }, id);
-      if (r.ok) { richtige++; stellen.push(i); }
+      if (r.ok) {
+        richtige++;
+        stellen.push(i);
+        if (LOESUNG[id]) pruefe(optionen[i].includes(LOESUNG[id]), `Quiz ${id}: als richtig gilt „${optionen[i]}“, nachgerechnet ist ${LOESUNG[id]}`);
+      }
       pruefe(r.text.length > 80, `Quiz ${id}, Antwort ${i + 1}: die Erklärung ist nur ${r.text.length} Zeichen lang`);
     }
     pruefe(richtige === 1, `Quiz ${id}: ${richtige} Antworten gelten als richtig, erwartet genau eine`);

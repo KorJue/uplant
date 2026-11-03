@@ -32,7 +32,7 @@
 // Dunkelmodus sie aufhellen kann.
 
 import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../aufgaben.js?v=2";
-import { AUFGABEN } from "./kreis-aufgaben.js?v=1";
+import { AUFGABEN } from "./kreis-aufgaben.js?v=2";
 
 // ---------- Helfer ----------
 

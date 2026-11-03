@@ -818,3 +818,5 @@
 .kr-fig-winkel { fill: none; stroke: #6d28d9; stroke-width: 1.6; }
 :root[data-theme="dark"] .kr-fig-punkt { fill: #e6e8eb; }
 :root[data-theme="dark"] .kr-fig-winkel { stroke: #c4a7ff; }
+/* Hof um eine Beschriftung, die eine Kreislinie kreuzt: dieselbe Farbe wie der Aufgabenkasten. */
+.kr-fig-halo { paint-order: stroke fill; stroke: var(--card-bg); stroke-width: 4px; stroke-linejoin: round; }
