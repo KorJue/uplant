@@ -820,3 +820,25 @@
 :root[data-theme="dark"] .kr-fig-winkel { stroke: #c4a7ff; }
 /* Hof um eine Beschriftung, die eine Kreislinie kreuzt: dieselbe Farbe wie der Aufgabenkasten. */
 .kr-fig-halo { paint-order: stroke fill; stroke: var(--card-bg); stroke-width: 4px; stroke-linejoin: round; }
+
+/* Die Dreisatz-Tabellen der Kreis-Seite (Bogen und Ausschnitt): Winkel, Anteil und Ergebnis in der
+   Mitte, links und rechts außen der Rechenschritt, der von der Zeile darüber hierher führt — links
+   für den Winkel, rechts für Anteil und Ergebnis. Die Rechenschritte stehen ohne Rahmen, damit man
+   sie als Pfeile neben der Tabelle liest und nicht als eigene Spalte. */
+.kr-tabelle-wrap { overflow-x: auto; margin: 0.8rem 0; }
+.kr-tabelle { border-collapse: collapse; margin: 0 auto; font-size: 0.95rem; font-variant-numeric: tabular-nums; }
+.kr-tabelle th, .kr-tabelle td { border: 1px solid var(--border); padding: 0.35rem 0.7rem; text-align: center; vertical-align: middle; }
+.kr-tabelle th { background: var(--bg); }
+/* Ein Term wie „¼ · 2 · π · r“ darf nicht mitten im Produkt umbrechen. */
+.kr-tabelle td { white-space: nowrap; }
+.kr-tabelle .kr-op { border: none; background: none; color: #6d28d9; font-weight: 700; font-size: 0.85rem; white-space: nowrap; padding: 0.35rem 0.4rem; }
+.kr-tabelle tbody tr:last-child td:not(.kr-op) { font-weight: 700; }
+:root[data-theme="dark"] .kr-tabelle .kr-op { color: #c4a7ff; }
+/* Auf dem Telefon muss die Tabelle samt beiden Pfeilspalten in die Karte passen — sonst stünde der
+   rechte Rechenschritt außerhalb des Bildes, und die Tabelle zeigte nur eine Seite des Dreisatzes. */
+@media (max-width: 480px) {
+  .kr-tabelle { font-size: 0.76rem; }
+  .kr-tabelle th, .kr-tabelle td { padding: 0.25rem 0.18rem; }
+  .kr-tabelle .bruch .z, .kr-tabelle .bruch .n { padding: 0 0.1em; }
+  .kr-tabelle .kr-op { padding: 0.25rem 0.05rem; font-size: 0.7rem; }
+}

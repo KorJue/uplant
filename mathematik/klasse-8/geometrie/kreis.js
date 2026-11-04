@@ -10,12 +10,16 @@
 //   2. Umfang mit dem Radius: d = 2 · r eingesetzt.
 //   3. Flächeninhalt, zwei Wege: Ausschnitte zum Fast-Rechteck umlegen (braucht nur Rechteck und
 //      Umfang), Ringe zum Dreieck aufbiegen (braucht das Dreieck aus Thema 4).
-//   4. Kreisring: einer der Ringe aus 3, aufgebogen zum Rechteck aus Mittellinie und Breite.
-//   5. Kreisbogen: proportional zum Mittelpunktswinkel, abgerollt wie in 1.
-//   6. Kreisausschnitt: derselbe Anteil wie der Bogen; zerlegt und umgelegt wie in 3.
+//   4. Kreisring, zwei Wege: zuerst großer Kreis minus kleiner Kreis (braucht nur A = π · r²; die
+//      kleine Scheibe wird starr herausgeschoben), dann einer der Ringe aus 3, aufgebogen zum
+//      Rechteck aus Mittellinie und Breite.
+//   5. Kreisbogen: proportional zum Mittelpunktswinkel — der Anteil steht zuerst als Dreisatz-
+//      Tabelle 360° → 180° → 90° → 1° → α im HTML —, abgerollt wie in 1.
+//   6. Kreisausschnitt: dieselbe Tabelle mit dem Flächeninhalt; zerlegt und umgelegt wie in 3.
 //
 // Jede Bewegung ist flächentreu, und die Prüfung misst das an vielen Reglerstellungen nach:
-//   * Ausschnitte werden nur gedreht und verschoben — starr.
+//   * Ausschnitte werden nur gedreht und verschoben — starr. Ebenso die kleine Scheibe, die aus dem
+//     großen Kreis herausgehoben wird.
 //   * Ringe werden aufgebogen, indem ihre MITTELLINIE ihre Länge und der Ring seine Breite behält.
 //     Ein Ringstück mit der Breite w und der Mittellinienlänge L hat bei jeder Krümmung den
 //     Flächeninhalt w · L (θ/2 · ((ρ + w/2)² − (ρ − w/2)²) = θ · ρ · w = L · w). Die inneren und äußeren
@@ -171,6 +175,15 @@ function linie(b, p, q, klasse, extra = {}) {
   const e = svgEl("line", Object.assign({
     x1: a.x.toFixed(2), y1: a.y.toFixed(2), x2: c.x.toFixed(2), y2: c.y.toFixed(2), class: klasse,
   }, extra));
+  b.g.appendChild(e);
+  return e;
+}
+// Eine Fläche mit Loch: zwei geschlossene Linienzüge in EINEM Pfad, gefüllt nach der
+// Gerade-ungerade-Regel. So ist der Ring wirklich ein Ring — ein weiß ausgemaltes Loch wäre im
+// Dunkelmodus zu sehen und behauptete eine Fläche, die es nicht gibt.
+function flaecheMitLoch(b, aussen, innen, klasse, extra = {}) {
+  const zug = (punkte) => "M " + punkteText(b, punkte).split(" ").join(" L ") + " Z";
+  const e = svgEl("path", Object.assign({ d: zug(aussen) + " " + zug(innen), class: klasse, "fill-rule": "evenodd" }, extra));
   b.g.appendChild(e);
   return e;
 }
@@ -598,6 +611,66 @@ function renderRinge() {
 
 // ================= 4. Der Kreisring =================
 
+// ---- Erster Weg: großer Kreis minus kleiner Kreis ----
+
+const KD_W = 680, KD_H = 380;
+const KD_ABSTAND = 0.7;   // Lücke in cm zwischen dem großen Kreis und der herausgehobenen Scheibe
+
+function renderKreisDifferenz() {
+  const R = reglerZahl("kd-gr");
+  // Der Innenkreis muss im Außenkreis liegen, und der Ring soll sichtbar breit bleiben.
+  const r = begrenzt("kd-kl", reglerZahl("kd-kl"), 0.5, R - 0.5);
+  const t = reglerZahl("kd-t") / 100;
+  setzeText("kd-gr-anzeige", num(R) + " cm");
+  setzeText("kd-kl-anzeige", num(r) + " cm");
+  setzeText("kd-t-anzeige", Math.round(t * 100) + " %");
+
+  const M = { x: 0, y: 0 };
+  // Die kleine Scheibe wird nur verschoben, waagerecht nach rechts, bis sie neben dem großen Kreis
+  // liegt: Ihr Mittelpunkt wandert von M nach C1. Eine Verschiebung ist starr — die Scheibe behält
+  // ihren Flächeninhalt π · r² in jeder Zwischenstellung.
+  const C1 = { x: R + KD_ABSTAND + r, y: 0 };
+  const C = { x: t * C1.x, y: 0 };
+  // Bühne: der große Kreis und die Scheibe am Ende ihres Wegs — dazwischen liegt alles auf der
+  // Strecke von M nach C1, also innerhalb dieses Rahmens. Er hängt nicht von t ab.
+  const b = buehneAuto(KD_W, KD_H, [{ x: -R, y: -R }, { x: R, y: R }, { x: C1.x + r, y: -r }, { x: C1.x + r, y: r }], { rand: 32 });
+
+  const voll = (Z, rr) => bogenPunkte(Z, rr, 0, 2 * Math.PI).slice(0, -1);
+  flaecheMitLoch(b, voll(M, R), voll(M, r).reverse(), "kr-teil-a", { "data-rolle": "ring" });
+  if (t > 0) kreis(b, M, r, "kr-kreis-blass", { "data-rolle": "loch" });
+  // R zeigt nach links: Dorthin fährt die Scheibe nie. Nach rechts gezeichnet, schob sie sich auf
+  // halbem Weg über den Radius, und „r“ landete auf „R“.
+  linie(b, M, { x: -R, y: 0 }, "kr-radius", { "data-rolle": "R" });
+  // „R“ über dem Radius, und zwar im Ring — innen läge es auf der kleinen Scheibe.
+  beschrift(b, { x: -(R + r) / 2, y: 0 }, "R", "kr-t-blau", 0, -7);
+  vieleck(b, voll(C, r), "kr-teil-b", { "data-rolle": "klein" });
+  const a = Math.PI / 4;
+  linie(b, C, { x: C.x + r * Math.cos(a), y: C.y + r * Math.sin(a) }, "kr-radius", { "data-rolle": "r" });
+  beschrift(b, { x: C.x + (r / 2) * Math.cos(a), y: C.y + (r / 2) * Math.sin(a) }, "r", "kr-t-blau", -9, -4);
+  punkt(b, M, "M", 0, 16);
+  if (t === 1) {
+    beschrift(b, { x: 0, y: -R }, "π · R² − π · r²", "kr-t-gruen", 0, 20);
+    beschrift(b, { x: C1.x, y: -r }, "π · r²", "kr-t-orange", 0, 20);
+  }
+  zeige("kd-mount", b);
+
+  const A = Math.PI * (R * R - r * r);
+  document.getElementById("kd-bilanz").innerHTML =
+    `<span class="wc">R = ${num(R)} cm</span>, &nbsp;<span class="wc">r = ${num(r)} cm</span><br>` +
+    `Großer Kreis: π · R² = π · ${num(R * R)} cm² ≈ ${zwei(Math.PI * R * R)} cm²<br>` +
+    `Kleiner Kreis: <span class="wb">π · r² = π · ${num(r * r)} cm² ≈ ${zwei(Math.PI * r * r)} cm²</span><br>` +
+    `Ring: <span class="wa">A = π · R² − π · r² = π · (R² − r²) = π · (${num(R * R)} − ${num(r * r)}) cm² = π · ${num(R * R - r * r)} cm² ≈ ${zwei(A)} cm²</span>`;
+
+  setzeText("kd-text",
+    t === 0
+      ? `Die Kreisscheibe mit R = ${num(R)} cm besteht aus zwei Teilen: dem grünen Ring und der orangen Scheibe mit r = ${num(r)} cm in der Mitte. Heb die kleine Scheibe heraus.`
+      : t < 1
+        ? `Die kleine Scheibe wird nur verschoben — sie bleibt dieselbe, π · r². Zurück bleibt ein Loch.`
+        : `Übrig bleibt der Ring: der große Kreis ohne den kleinen. Sein Flächeninhalt ist π · R² − π · r² ≈ ${zwei(A)} cm².`);
+}
+
+// ---- Zweiter Weg: den Ring aufbiegen ----
+
 const KR_W = 680, KR_H = 340;
 
 function renderKreisring() {
@@ -640,10 +713,9 @@ function renderKreisring() {
   const A = Math.PI * (R * R - r * r);
   document.getElementById("kr-bilanz").innerHTML =
     `<span class="wc">R = ${num(R)} cm</span>, &nbsp;<span class="wc">r = ${num(r)} cm</span><br>` +
-    `Großer Kreis π · R² ≈ ${zwei(Math.PI * R * R)} cm², kleiner Kreis π · r² ≈ ${zwei(Math.PI * r * r)} cm²: ` +
-    `<span class="wa">A = π · (R² − r²) = π · (${num(R * R)} − ${num(r * r)}) cm² ≈ ${zwei(A)} cm²</span><br>` +
-    `Aufgebogen: ein Rechteck, <span class="wb">π · (R + r) ≈ ${zwei(L)} cm</span> lang und <span class="wc">R − r = ${num(w)} cm</span> breit: ` +
-    `π · (R + r) · (R − r) ≈ ${zwei(A)} cm² — dieselbe Zahl.`;
+    `Aufgebogen: ein Rechteck, <span class="wb">π · (R + r) ≈ ${zwei(L)} cm</span> lang und <span class="wc">R − r = ${num(w)} cm</span> breit:<br>` +
+    `<span class="wa">A = π · (R + r) · (R − r) = π · ${num(R + r)} · ${num(w)} cm² ≈ ${zwei(A)} cm²</span><br>` +
+    `Erster Weg: A = π · (R² − r²) = π · (${num(R * R)} − ${num(r * r)}) cm² ≈ ${zwei(A)} cm² — dieselbe Zahl.`;
 
   setzeText("kr-text",
     t === 0
@@ -902,7 +974,19 @@ const QUIZZE = {
     ],
     correct: 3,
     explain:
-      "A = π · (R² − r²) = π · (36 − 16) cm² = π · 20 cm² ≈ 62,83 cm². Aufgebogen: ein Rechteck, π · (6 + 4) cm lang und 2 cm breit — wieder π · 20 cm². Die 12,57 cm² wären π · (R − r)², ein Kreis mit der Ringbreite als Radius. 113,10 cm² ist der große Kreis allein, ohne das Loch, und 163,36 cm² ist π · (R² + r²).",
+      "Großer Kreis minus kleiner Kreis: A = π · 6² cm² − π · 4² cm² = π · (36 − 16) cm² = π · 20 cm² ≈ 62,83 cm². Die 12,57 cm² wären π · (R − r)², ein Kreis mit der Ringbreite als Radius. 113,10 cm² ist der große Kreis allein, ohne das Loch, und 163,36 cm² ist π · (R² + r²) — der kleine Kreis addiert statt abgezogen.",
+  },
+  "quiz-ring-aufbiegen": {
+    q: "Ein Kreisring mit R = 7 cm und r = 3 cm wird aufgebogen. Wie lang und wie breit ist das Rechteck?",
+    options: [
+      "Etwa 62,83 cm lang und 4 cm breit",
+      "Etwa 31,42 cm lang und 4 cm breit",
+      "Etwa 43,98 cm lang und 4 cm breit",
+      "Etwa 31,42 cm lang und 10 cm breit",
+    ],
+    correct: 1,
+    explain:
+      "Die Mitte des Rings liegt auf dem Kreis mit dem Radius (7 + 3) : 2 cm = 5 cm; sie ist 2 · π · 5 cm = π · (R + r) ≈ 31,42 cm lang. Breit ist das Rechteck so wie der Ring: R − r = 4 cm. Probe: π · 10 · 4 cm² = π · (49 − 9) cm² — wie auf dem ersten Weg. 62,83 cm sind beide Umfänge zusammen, 43,98 cm nur der äußere, und 10 cm wäre R + r statt der Ringbreite.",
   },
   "quiz-bogen": {
     q: "Ein Kreis hat den Umfang 24 cm. Wie lang ist der Bogen zum Mittelpunktswinkel α = 60°?",
@@ -947,6 +1031,7 @@ function initExercises() {
 ["ra-r"].forEach((id) => document.getElementById(id).addEventListener("input", renderRadius));
 ["se-r", "se-n", "se-t", "se-quadrate"].forEach((id) => document.getElementById(id).addEventListener("input", renderAusschnitte));
 ["ri-r", "ri-n", "ri-t"].forEach((id) => document.getElementById(id).addEventListener("input", renderRinge));
+["kd-gr", "kd-kl", "kd-t"].forEach((id) => document.getElementById(id).addEventListener("input", renderKreisDifferenz));
 ["kr-gr", "kr-kl", "kr-t"].forEach((id) => document.getElementById(id).addEventListener("input", renderKreisring));
 ["bo-r", "bo-a", "bo-t"].forEach((id) => document.getElementById(id).addEventListener("input", renderBogen));
 ["au-r", "au-a", "au-k", "au-t"].forEach((id) => document.getElementById(id).addEventListener("input", renderAusschnitt));
@@ -956,6 +1041,7 @@ renderEinschachteln();
 renderRadius();
 renderAusschnitte();
 renderRinge();
+renderKreisDifferenz();
 renderKreisring();
 renderBogen();
 renderAusschnitt();

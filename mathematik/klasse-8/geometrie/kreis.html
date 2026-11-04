@@ -32,8 +32,8 @@
       <li>erklären, was <span class="term">π</span> ist — das Verhältnis von Umfang und Durchmesser, bei jedem Kreis dasselbe — und warum π zwischen 3 und 4 liegt</li>
       <li>den <span class="term">Umfang</span> berechnen: <strong>U = π · d = 2 · π · r</strong></li>
       <li>die Formel <strong>A = π · r²</strong> für den <span class="term">Flächeninhalt</span> auf zwei Wegen herleiten: über ein Fast-Rechteck aus Kreisausschnitten und über ein Dreieck aus aufgebogenen Ringen</li>
-      <li>den Flächeninhalt eines <span class="term">Kreisrings</span> berechnen: <strong>A = π · (R² − r²)</strong></li>
-      <li>die Länge eines <span class="term">Kreisbogens</span> über den Anteil α : 360° bestimmen</li>
+      <li>den Flächeninhalt eines <span class="term">Kreisrings</span> auf zwei Wegen herleiten — als großer Kreis minus kleiner Kreis und durch Aufbiegen — und berechnen: <strong>A = π · (R² − r²)</strong></li>
+      <li>den Anteil α : 360° mit dem Dreisatz herleiten (360° → 180° → 90° → 1° → α) und damit die Länge eines <span class="term">Kreisbogens</span> bestimmen</li>
       <li>den Flächeninhalt eines <span class="term">Kreisausschnitts</span> berechnen — über den Anteil und als <strong>A = ½ · b · r</strong></li>
     </ul>
     <p class="hinweis-box">💡 Du brauchst die Begriffe <a href="../../grundwissen-5-10/02-geometrie/04-kreise-und-winkel/index.html#sec-kreis">Radius, Durchmesser und Mittelpunktswinkel</a>, die <a href="../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-proportional">proportionalen Zuordnungen</a> und aus <a href="flaecheninhalte.html">Thema 4</a> die Flächeninhalte von Rechteck, Parallelogramm, Dreieck und Trapez samt der Mittellinie. Die Quadratwurzel und den Satz des Pythagoras brauchst du hier noch <em>nicht</em>: Wo eine Länge nur mit ihnen auszurechnen wäre, ist sie an der Zeichnung gemessen.</p>
@@ -167,9 +167,40 @@
   </section>
 
   <!-- 4. Kreisring -->
+  <!-- Reihenfolge: erst die Differenz — sie braucht nur A = π · r² —, dann das Aufbiegen, das auf den
+       Ringen aus Abschnitt 3 und der Mittellinie des Trapezes aus Thema 4 aufbaut. -->
   <section class="card" id="sec-ring">
     <h2>4. Der Kreisring: A = π · (R² − r²)</h2>
-    <p>Ein <span class="term">Kreisring</span> liegt zwischen zwei Kreisen mit demselben Mittelpunkt — dem äußeren mit dem Radius R und dem inneren mit dem Radius r. Sein Flächeninhalt ist der große Kreis <strong>ohne</strong> den kleinen. Und weil er nichts anderes ist als einer der Ringe aus Abschnitt 3, kann man ihn auch aufbiegen.</p>
+    <p>Ein <span class="term">Kreisring</span> liegt zwischen zwei Kreisen mit demselben Mittelpunkt — dem äußeren mit dem Radius R und dem inneren mit dem Radius r. Du kennst ihn von einer CD, einer Unterlegscheibe oder einem Donut. Zwei Wege führen zu seinem Flächeninhalt.</p>
+
+    <h3>Erster Weg: großer Kreis minus kleiner Kreis</h3>
+    <p>Stanze aus einer Kreisscheibe mit dem Radius R in der Mitte eine kleine Scheibe mit dem Radius r heraus. Was übrig bleibt, ist der Ring. Zieh den Regler <strong>Herausheben</strong>: Die kleine Scheibe wird nur verschoben, sie behält ihren Flächeninhalt π · r².</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Außenradius R: <input type="range" id="kd-gr" min="1.5" max="3" step="0.25" value="2.5" style="vertical-align:middle;width:8rem"> <span id="kd-gr-anzeige" class="th-name-c"></span></label>
+        <label>Innenradius r: <input type="range" id="kd-kl" min="0.5" max="2.75" step="0.25" value="1.5" style="vertical-align:middle;width:8rem"> <span id="kd-kl-anzeige" class="th-name-c"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>Herausheben: <input type="range" id="kd-t" min="0" max="100" step="2" value="0" style="vertical-align:middle;width:14rem"> <span id="kd-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="kd-mount"></div>
+      <div class="th-bilanz" id="kd-bilanz"></div>
+      <div id="kd-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Flächeninhalt des Kreisrings</span>
+      Der Ring ist der große Kreis <strong>ohne</strong> den kleinen. In beiden Flächeninhalten steckt der Faktor π — man kann ihn ausklammern:
+      <div class="formula-block">A = π · R² − π · r² = π · (R² − r²)</div>
+      Zuerst werden R und r quadriert, dann wird abgezogen, zuletzt mit π multipliziert.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — erst quadrieren, dann abziehen</span>
+      π · (R − r)² ist <strong>nicht</strong> der Flächeninhalt des Rings, sondern der eines Kreises, dessen Radius so groß ist wie die Ringbreite. Bei R = 5 cm und r = 3 cm ist π · (R² − r²) = π · 16 cm² ≈ 50,27 cm², aber π · (R − r)² = π · 4 cm² ≈ 12,57 cm² — viel zu wenig.
+    </div>
+    <div class="quiz" id="quiz-ring"></div>
+
+    <h3>Zweiter Weg: den Ring aufbiegen</h3>
+    <p>Der Kreisring ist nichts anderes als einer der Ringe aus Abschnitt 3 — nur breiter. Also kann man ihn genauso aufschneiden und gerade biegen: Er behält seine Breite R − r, und seine Mitte behält ihre Länge. Zieh den Regler <strong>Aufbiegen</strong>.</p>
     <div class="widget">
       <div class="btn-row">
         <label>Außenradius R: <input type="range" id="kr-gr" min="1.5" max="3" step="0.25" value="2.5" style="vertical-align:middle;width:8rem"> <span id="kr-gr-anzeige" class="th-name-c"></span></label>
@@ -183,23 +214,32 @@
       <div id="kr-text" class="event-result"></div>
     </div>
     <div class="wissen-box">
-      <span class="box-label">Flächeninhalt des Kreisrings</span>
-      <div class="formula-block">A = π · R² − π · r² = π · (R² − r²)</div>
-      Aufgebogen wird der Ring zu einem Rechteck: so breit wie der Ring (R − r) und so lang wie seine Mitte. Das ist die Mittellinie des Trapezes mit den parallelen Seiten 2 · π · R und 2 · π · r:
+      <span class="box-label">Der aufgebogene Ring</span>
+      Gerade gebogen ist der Ring ein Rechteck: so breit wie der Ring (R − r) und so lang wie seine Mitte. Die Mitte liegt auf dem Kreis mit dem Radius (R + r) : 2 und ist deshalb 2 · π · (R + r) : 2 = π · (R + r) lang. Das ist zugleich die Mittellinie des Trapezes mit den parallelen Seiten 2 · π · R und 2 · π · r:
       <div class="formula-block">A = π · (R + r) · (R − r)</div>
       Multipliziert man aus, kommt wieder π · (R² − r²) heraus — zwei Wege, eine Zahl.
     </div>
-    <div class="achtung-box">
-      <span class="box-label">Achtung — erst quadrieren, dann abziehen</span>
-      π · (R − r)² ist <strong>nicht</strong> der Flächeninhalt des Rings, sondern der eines Kreises, dessen Radius so groß ist wie die Ringbreite. Bei R = 5 cm und r = 3 cm ist π · (R² − r²) = π · 16 cm² ≈ 50,27 cm², aber π · (R − r)² = π · 4 cm² ≈ 12,57 cm² — viel zu wenig.
-    </div>
-    <div class="quiz" id="quiz-ring"></div>
+    <div class="quiz" id="quiz-ring-aufbiegen"></div>
   </section>
 
   <!-- 5. Kreisbogen -->
   <section class="card" id="sec-bogen">
     <h2>5. Der Kreisbogen: b = α : 360° · 2 · π · r</h2>
-    <p>Ein <span class="term">Kreisbogen</span> ist ein Stück des Kreisrandes. Er gehört zu einem <span class="term">Mittelpunktswinkel</span> α: dem Winkel zwischen den beiden Radien zu seinen Enden. Wie lang ist er? Roll ihn ab und vergleiche ihn mit dem ganzen Umfang darunter.</p>
+    <p>Ein <span class="term">Kreisbogen</span> ist ein Stück des Kreisrandes. Er gehört zu einem <span class="term">Mittelpunktswinkel</span> α: dem Winkel zwischen den beiden Radien zu seinen Enden. Wie lang ist er?</p>
+    <p>Zum Vollwinkel 360° gehört der ganze Kreis, also der ganze Umfang 2 · π · r. Zum halben Winkel gehört der halbe Bogen, zum Viertel des Winkels ein Viertel des Bogens: Winkel und Bogen sind <strong>proportional</strong>. Darum hilft der <span class="term">Dreisatz</span> — erst zweimal halbieren, dann auf 1° hinunter, zuletzt auf α hinauf. Was links mit dem Winkel geschieht, geschieht rechts mit dem Anteil und mit dem Bogen.</p>
+    <div class="kr-tabelle-wrap">
+    <table class="kr-tabelle" id="bo-tabelle">
+      <thead><tr><th class="kr-op"></th><th>Winkel</th><th>Anteil am Vollkreis</th><th>Bogen b</th><th class="kr-op"></th></tr></thead>
+      <tbody>
+        <tr><td class="kr-op"></td><td>360°</td><td>1</td><td>2 · π · r</td><td class="kr-op"></td></tr>
+        <tr><td class="kr-op">↓ : 2</td><td>180°</td><td><span class="bruch"><span class="z">1</span><span class="n">2</span></span></td><td><span class="bruch"><span class="z">1</span><span class="n">2</span></span> · 2 · π · r</td><td class="kr-op">↓ : 2</td></tr>
+        <tr><td class="kr-op">↓ : 2</td><td>90°</td><td><span class="bruch"><span class="z">1</span><span class="n">4</span></span></td><td><span class="bruch"><span class="z">1</span><span class="n">4</span></span> · 2 · π · r</td><td class="kr-op">↓ : 2</td></tr>
+        <tr><td class="kr-op">↓ : 90</td><td>1°</td><td><span class="bruch"><span class="z">1</span><span class="n">360</span></span></td><td><span class="bruch"><span class="z">1</span><span class="n">360</span></span> · 2 · π · r</td><td class="kr-op">↓ : 90</td></tr>
+        <tr><td class="kr-op">↓ · α</td><td>α</td><td><span class="bruch"><span class="z">α</span><span class="n">360°</span></span></td><td><span class="bruch"><span class="z">α</span><span class="n">360°</span></span> · 2 · π · r</td><td class="kr-op">↓ · α</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>In jeder Zeile ist der Bogen derselbe <strong>Anteil</strong> vom Umfang wie der Winkel vom Vollwinkel — bei α also α : 360°. Prüf die Tabelle nach: Stell α auf 180° und auf 90°, roll den Bogen ab und vergleiche ihn mit dem ganzen Umfang darunter.</p>
     <div class="widget">
       <div class="btn-row">
         <label>Radius r: <input type="range" id="bo-r" min="1.5" max="3" step="0.5" value="2.5" style="vertical-align:middle;width:8rem"> <span id="bo-r-anzeige" class="th-name-c"></span></label>
@@ -214,7 +254,7 @@
     </div>
     <div class="wissen-box">
       <span class="box-label">Länge des Kreisbogens</span>
-      Der doppelte Winkel gibt den doppelten Bogen, der halbe Winkel den halben: Bogenlänge und Mittelpunktswinkel sind <strong>proportional</strong>. Zum Vollwinkel 360° gehört der ganze Umfang. Also ist der Bogen derselbe <strong>Anteil</strong> vom Umfang wie α von 360°:
+      Bogenlänge und Mittelpunktswinkel sind <strong>proportional</strong>. Der Bogen ist derselbe <strong>Anteil</strong> vom Umfang wie α von 360° — das ist die letzte Zeile der Tabelle:
       <div class="formula-block">b = <span class="bruch"><span class="z">α</span><span class="n">360°</span></span> · 2 · π · r</div>
       Bei α = 90° ist das ein Viertel des Umfangs, bei α = 180° die Hälfte.
     </div>
@@ -228,7 +268,20 @@
   <!-- 6. Kreisausschnitt -->
   <section class="card" id="sec-ausschnitt">
     <h2>6. Der Kreisausschnitt: A = α : 360° · π · r²</h2>
-    <p>Ein <span class="term">Kreisausschnitt</span> (auch <span class="term">Sektor</span>) ist ein Tortenstück: begrenzt von zwei Radien und dem Bogen zwischen ihnen. Er ist derselbe Anteil des ganzen Kreises wie sein Winkel α vom Vollwinkel. Und er lässt sich genauso zerlegen und umlegen wie der ganze Kreis in Abschnitt 3.</p>
+    <p>Ein <span class="term">Kreisausschnitt</span> (auch <span class="term">Sektor</span>) ist ein Tortenstück: begrenzt von zwei Radien und dem Bogen zwischen ihnen. Auch sein Flächeninhalt ist proportional zum Winkel: Zum halben Winkel gehört das halbe Tortenstück. Der Dreisatz läuft also genauso wie beim Bogen — nur steht rechts jetzt der Flächeninhalt des ganzen Kreises, π · r².</p>
+    <div class="kr-tabelle-wrap">
+    <table class="kr-tabelle" id="au-tabelle">
+      <thead><tr><th class="kr-op"></th><th>Winkel</th><th>Anteil am Vollkreis</th><th>Ausschnitt A</th><th class="kr-op"></th></tr></thead>
+      <tbody>
+        <tr><td class="kr-op"></td><td>360°</td><td>1</td><td>π · r²</td><td class="kr-op"></td></tr>
+        <tr><td class="kr-op">↓ : 2</td><td>180°</td><td><span class="bruch"><span class="z">1</span><span class="n">2</span></span></td><td><span class="bruch"><span class="z">1</span><span class="n">2</span></span> · π · r²</td><td class="kr-op">↓ : 2</td></tr>
+        <tr><td class="kr-op">↓ : 2</td><td>90°</td><td><span class="bruch"><span class="z">1</span><span class="n">4</span></span></td><td><span class="bruch"><span class="z">1</span><span class="n">4</span></span> · π · r²</td><td class="kr-op">↓ : 2</td></tr>
+        <tr><td class="kr-op">↓ : 90</td><td>1°</td><td><span class="bruch"><span class="z">1</span><span class="n">360</span></span></td><td><span class="bruch"><span class="z">1</span><span class="n">360</span></span> · π · r²</td><td class="kr-op">↓ : 90</td></tr>
+        <tr><td class="kr-op">↓ · α</td><td>α</td><td><span class="bruch"><span class="z">α</span><span class="n">360°</span></span></td><td><span class="bruch"><span class="z">α</span><span class="n">360°</span></span> · π · r²</td><td class="kr-op">↓ · α</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Der Ausschnitt ist derselbe Anteil des ganzen Kreises wie sein Winkel α vom Vollwinkel. Und er lässt sich genauso zerlegen und umlegen wie der ganze Kreis in Abschnitt 3 — das gibt eine zweite Formel.</p>
     <div class="widget">
       <div class="btn-row">
         <label>Radius r: <input type="range" id="au-r" min="2" max="4" step="0.5" value="3" style="vertical-align:middle;width:7rem"> <span id="au-r-anzeige" class="th-name-c"></span></label>
@@ -259,8 +312,8 @@
       <li data-abschnitt="sec-umfang">Ich kann erklären, was π ist und warum π zwischen 3 und 4 liegt.</li>
       <li data-abschnitt="sec-radius">Ich kann den Umfang mit U = π · d und U = 2 · π · r berechnen.</li>
       <li data-abschnitt="sec-flaeche">Ich kann die Formel A = π · r² auf zwei Wegen herleiten und anwenden.</li>
-      <li data-abschnitt="sec-ring">Ich kann den Flächeninhalt eines Kreisrings berechnen.</li>
-      <li data-abschnitt="sec-bogen">Ich kann die Länge eines Kreisbogens über den Anteil α : 360° bestimmen.</li>
+      <li data-abschnitt="sec-ring">Ich kann den Flächeninhalt eines Kreisrings als großen Kreis minus kleinen Kreis berechnen und durch Aufbiegen begründen.</li>
+      <li data-abschnitt="sec-bogen">Ich kann den Anteil α : 360° mit dem Dreisatz herleiten und damit die Länge eines Kreisbogens bestimmen.</li>
       <li data-abschnitt="sec-ausschnitt">Ich kann den Flächeninhalt eines Kreisausschnitts über den Anteil und mit A = ½ · b · r berechnen.</li>
     </ul>
     <div class="se-auswertung event-result" aria-live="polite"></div>
@@ -309,6 +362,6 @@
 
 <script src="../../../assets/lehrkraft.js"></script>
 <script src="../../../assets/selbsteinschaetzung.js"></script>
-<script type="module" src="kreis.js?v=2"></script>
+<script type="module" src="kreis.js?v=3"></script>
 </body>
 </html>

@@ -70,6 +70,9 @@
   .bruch { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; margin: 0 0.3mm; }
   .bruch .z { border-bottom: 0.8px solid currentColor; padding: 0 0.6mm; }
   .gh { color: #6d28d9; font-weight: 700; }
+  /* Rechenschritte neben der Dreisatz-Tabelle: ohne Rahmen, damit sie als Pfeile neben der Tabelle
+     stehen und nicht als eigene Spalte gelesen werden. */
+  td.op { border: none; color: #6d28d9; font-weight: 700; font-size: 7px; white-space: nowrap; padding: 0.5mm 1.6mm; }
   .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
 </style>
 </head>
@@ -131,7 +134,8 @@
       <h2>Kreisring</h2>
       <p class="zentral f gross">A = π · (R² − r²)</p>
       <figure>[[FIG5]]</figure>
-      <p>Großer Kreis <b>ohne</b> kleinen: <span class="f">A = π · R² − π · r²</span>. Aufgebogen: ein Rechteck, so lang wie die Mittellinie des Trapezes der beiden Umfänge und so breit wie der Ring:</p>
+      <p><b>1. Weg — großer Kreis minus kleiner:</b> <span class="f">A = π · R² − π · r²</span>, π ausgeklammert.</p>
+      <p><b>2. Weg — aufbiegen:</b> ein Rechteck, so lang wie die Mitte des Rings (Mittellinie des Trapezes der beiden Umfänge) und so breit wie der Ring:</p>
       <p class="zentral f">A = π · (R + r) · (R − r)</p>
       <p class="bu">Beispiel: R = 5 cm, r = 3 cm ⟹ A = π · (25 − 9) cm² = π · 16 cm² ≈ <b>50,27 cm²</b></p>
     </div>
@@ -161,15 +165,17 @@
     </div>
 
     <div class="box">
-      <h2>Häufige Winkel</h2>
-      <table>
-        <tr><th>α</th><th>Anteil</th><th>α</th><th>Anteil</th></tr>
-        <tr><td>30°</td><td>1 : 12</td><td>120°</td><td>1 : 3</td></tr>
-        <tr><td>45°</td><td>1 : 8</td><td>180°</td><td>1 : 2</td></tr>
-        <tr><td>60°</td><td>1 : 6</td><td>270°</td><td>3 : 4</td></tr>
-        <tr><td>90°</td><td>1 : 4</td><td>360°</td><td>ganz</td></tr>
+      <h2>Der Anteil — mit dem Dreisatz</h2>
+      <table style="width:auto;margin:0 auto">
+        <tr><td class="op"></td><th style="padding:0.5mm 3mm">Winkel</th><th style="padding:0.5mm 3mm">Anteil</th><td class="op"></td></tr>
+        <tr><td class="op"></td><td>360°</td><td>1</td><td class="op"></td></tr>
+        <tr><td class="op">↓ : 2</td><td>180°</td><td><span class="bruch"><span class="z">1</span><span class="n">2</span></span></td><td class="op">↓ : 2</td></tr>
+        <tr><td class="op">↓ : 2</td><td>90°</td><td><span class="bruch"><span class="z">1</span><span class="n">4</span></span></td><td class="op">↓ : 2</td></tr>
+        <tr><td class="op">↓ : 90</td><td>1°</td><td><span class="bruch"><span class="z">1</span><span class="n">360</span></span></td><td class="op">↓ : 90</td></tr>
+        <tr><td class="op">↓ · α</td><td class="b">α</td><td class="b"><span class="bruch"><span class="z">α</span><span class="n">360°</span></span></td><td class="op">↓ · α</td></tr>
       </table>
-      <p style="margin-top:0.8mm"><b>Uhr:</b> Der Minutenzeiger dreht sich in einer Minute um 360° : 60 = <b>6°</b>.</p>
+      <p style="margin-top:0.8mm">Bogen = Anteil · Umfang, Ausschnitt = Anteil · Kreisfläche. Häufig: 30° → 1&nbsp;:&nbsp;12, 45° → 1&nbsp;:&nbsp;8, 60° → 1&nbsp;:&nbsp;6, 120° → 1&nbsp;:&nbsp;3, 270° → 3&nbsp;:&nbsp;4.</p>
+      <p><b>Uhr:</b> Der Minutenzeiger dreht sich in einer Minute um 360° : 60 = <b>6°</b>.</p>
     </div>
 
     <div class="box wide">
