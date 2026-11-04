@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Der Kreis: Umfang, Flächeninhalt, Kreisring, Bogen und Ausschnitt</title>
+<script src="../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../assets/site.css">
+<link rel="stylesheet" href="../../aufgaben.css">
+<link rel="stylesheet" href="geometrie.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../index.html">Klasse 8</a><span class="sep">/</span>
+  <a href="index.html">Geometrie</a><span class="sep">/</span>
+  5 Kreis
+</nav>
+<header class="page-header">
+  <h1>Der Kreis: Umfang, Flächeninhalt, Kreisring, Bogen und Ausschnitt</h1>
+  <p>Ein Selbstlernpfad: Warum in jeder Kreisformel dieselbe Zahl π steht. Jeder Abschnitt leitet eine Formel an einer beweglichen Zeichnung her — der Kreis rollt ab, wird in Stücke geschnitten und umgelegt, Ringe werden aufgebogen — und endet mit einer Kontrollfrage. Am Schluss stehen zwölf Übungsaufgaben, die du hier auf der Seite löst.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Beim Rechteck, beim Dreieck und beim Trapez war alles gerade: Man konnte schneiden, umlegen und am Ende ein Rechteck ausmessen. Der Kreis hat keine einzige gerade Kante. Trotzdem gelingt dasselbe — man braucht nur <strong>eine</strong> neue Zahl, die Kreiszahl <span class="term">π</span>. Wir gehen der Reihe nach vor: erst der Umfang, dann der Flächeninhalt, dann die Teile des Kreises — jede Formel nur mit dem, was vorher schon da ist. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>erklären, was <span class="term">π</span> ist — das Verhältnis von Umfang und Durchmesser, bei jedem Kreis dasselbe — und warum π zwischen 3 und 4 liegt</li>
+      <li>den <span class="term">Umfang</span> berechnen: <strong>U = π · d = 2 · π · r</strong></li>
+      <li>die Formel <strong>A = π · r²</strong> für den <span class="term">Flächeninhalt</span> auf zwei Wegen herleiten: über ein Fast-Rechteck aus Kreisausschnitten und über ein Dreieck aus aufgebogenen Ringen</li>
+      <li>den Flächeninhalt eines <span class="term">Kreisrings</span> berechnen: <strong>A = π · (R² − r²)</strong></li>
+      <li>die Länge eines <span class="term">Kreisbogens</span> über den Anteil α : 360° bestimmen</li>
+      <li>den Flächeninhalt eines <span class="term">Kreisausschnitts</span> berechnen — über den Anteil und als <strong>A = ½ · b · r</strong></li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst die Begriffe <a href="../../grundwissen-5-10/02-geometrie/04-kreise-und-winkel/index.html#sec-kreis">Radius, Durchmesser und Mittelpunktswinkel</a>, die <a href="../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-proportional">proportionalen Zuordnungen</a> und aus <a href="flaecheninhalte.html">Thema 4</a> die Flächeninhalte von Rechteck, Parallelogramm, Dreieck und Trapez samt der Mittellinie. Die Quadratwurzel und den Satz des Pythagoras brauchst du hier noch <em>nicht</em>: Wo eine Länge nur mit ihnen auszurechnen wäre, ist sie an der Zeichnung gemessen.</p>
+  </section>
+
+  <!-- 1. Umfang und π -->
+  <section class="card" id="sec-umfang">
+    <h2>1. Der Umfang und die Zahl π</h2>
+    <p>Wie lang ist der Rand eines Kreises? Mit dem Lineal lässt er sich nicht messen — aber man kann den Kreis <strong>abrollen</strong>. Ein Rad mit dem Durchmesser d rollt ohne zu rutschen auf dem Boden. Nach einer ganzen Umdrehung hat jeder Punkt seines Randes einmal den Boden berührt: Die abgerollte Strecke ist genau so lang wie der <span class="term">Umfang</span> U. Zieh den Regler <strong>Abrollen</strong> und vergleiche die orange Strecke mit den Durchmessern darunter.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Durchmesser d: <input type="range" id="ab-d" min="1" max="4" step="0.5" value="2" style="vertical-align:middle;width:9rem"> <span id="ab-d-anzeige" class="th-name-c"></span></label>
+        <label>Abrollen: <input type="range" id="ab-t" min="0" max="100" step="2" value="0" style="vertical-align:middle;width:14rem"> <span id="ab-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="ab-mount"></div>
+      <div class="th-bilanz" id="ab-bilanz"></div>
+      <div id="ab-text" class="event-result"></div>
+    </div>
+    <p>Stell jetzt einen anderen Durchmesser ein und roll noch einmal ab. Das Bild wird größer oder kleiner — aber es ändert seine <em>Form</em> nicht: Jeder Kreis ist eine Vergrößerung jedes anderen. Beim doppelten Durchmesser ist deshalb auch der Umfang doppelt so lang, beim dreifachen dreimal so lang. Umfang und Durchmesser sind <strong>proportional</strong>.</p>
+    <div class="wissen-box">
+      <span class="box-label">Die Kreiszahl π</span>
+      Bei jedem Kreis ist der Umfang dasselbe Vielfache des Durchmessers. Dieser Faktor heißt <span class="term">π</span> (sprich „pi“):
+      <div class="formula-block">U : d = π &nbsp;&nbsp;⟺&nbsp;&nbsp; U = π · d &nbsp;&nbsp;&nbsp; mit π ≈ 3,14159</div>
+      π ist also der Proportionalitätsfaktor der Zuordnung Durchmesser → Umfang. Der Durchmesser passt gut dreimal um den Kreis herum — genau 3 Mal und noch ein Stück von gut einem Siebtel.
+    </div>
+
+    <h3>Wie groß ist π? — einschachteln</h3>
+    <p>Dass π ein wenig größer ist als 3, lässt sich begründen, ohne irgendetwas zu messen. Stecke in den Kreis ein Vieleck und lege eines um ihn herum. Der Kreisrand liegt dazwischen: Er ist länger als der Umfang des inneren Vielecks und kürzer als der des äußeren. Wähle unten die Zahl der Ecken.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Ecken: <input type="range" id="es-n" min="0" max="5" step="1" value="1" style="vertical-align:middle;width:12rem"> <span id="es-n-anzeige" class="wert"></span></label>
+      </div>
+      <div class="th-wrap" id="es-mount"></div>
+      <div class="th-bilanz" id="es-bilanz"></div>
+      <div id="es-text" class="event-result"></div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Zwei Umfänge ohne Messen</span>
+      <strong>Das Sechseck innen</strong> zerfällt in sechs Dreiecke mit der Spitze im Mittelpunkt. Der Winkel an der Spitze ist 360° : 6 = 60°, zwei Seiten sind Radien und gleich lang — also sind auch die beiden anderen Winkel 60° groß, und jedes Dreieck ist <strong>gleichseitig</strong>. Jede Sechseckseite ist so lang wie der Radius: U<sub>Sechseck</sub> = 6 · r = 3 · d.<br>
+      <strong>Das Quadrat außen</strong> hat die Seitenlänge d: U<sub>Quadrat</sub> = 4 · d.<br>
+      Der Kreis liegt dazwischen: 3 · d &lt; U &lt; 4 · d — also <strong>3 &lt; π &lt; 4</strong>.
+    </div>
+    <p class="hinweis-box">💡 Mit immer mehr Ecken rücken die beiden Vielecke an den Kreis heran. Archimedes hat so vor über 2200 Jahren mit 96 Ecken gezeigt, dass π zwischen 3<span class="bruch"><span class="z">10</span><span class="n">71</span></span> und 3<span class="bruch"><span class="z">1</span><span class="n">7</span></span> liegt. Die Seitenlängen der feineren Vielecke berechnet man mit dem Satz des Pythagoras, der erst in Klasse 9 kommt — oben sind sie deshalb an der Zeichnung gemessen. π hat unendlich viele Nachkommastellen, die sich nie wiederholen. Zum Rechnen genügt fast immer π ≈ 3,14 oder die π-Taste des Taschenrechners.</p>
+    <div class="quiz" id="quiz-umfang"></div>
+    <div class="quiz" id="quiz-pi"></div>
+  </section>
+
+  <!-- 2. Umfang mit dem Radius -->
+  <section class="card" id="sec-radius">
+    <h2>2. Der Umfang mit dem Radius: U = 2 · π · r</h2>
+    <p>Meist ist nicht der Durchmesser gegeben, sondern der <span class="term">Radius</span> r — der Abstand vom Mittelpunkt zum Rand. Der Durchmesser ist doppelt so lang: d = 2 · r. In die Formel aus Abschnitt 1 eingesetzt:</p>
+    <div class="formula-block">U = π · d = π · 2 · r = 2 · π · r</div>
+    <p>Unter dem Kreis liegt sein abgerollter Umfang. Oben ist er in Durchmesser eingeteilt, unten in Radien. Verändere den Radius und zähle mit.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Radius r: <input type="range" id="ra-r" min="1" max="3" step="0.25" value="1.5" style="vertical-align:middle;width:12rem"> <span id="ra-r-anzeige" class="th-name-c"></span></label>
+      </div>
+      <div class="th-wrap" id="ra-mount"></div>
+      <div class="th-bilanz" id="ra-bilanz"></div>
+      <div id="ra-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Umfang des Kreises</span>
+      <div class="formula-block">U = π · d = 2 · π · r</div>
+      Beide Formeln sagen dasselbe. Der Radius passt gut <strong>sechsmal</strong> um den Kreis herum (2 · π ≈ 6,28), der Durchmesser gut dreimal.<br>
+      <strong>Rückwärts:</strong> Kennt man den Umfang, so ist d = U : π und r = U : (2 · π).
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Radius oder Durchmesser?</span>
+      In U = π · d steht der <strong>Durchmesser</strong>. Wer den Radius einsetzt und π · r rechnet, bekommt nur den <em>halben</em> Umfang. Prüfe deshalb immer zuerst, welche der beiden Längen gegeben ist — in Sachaufgaben steht oft der Durchmesser (ein Rad, ein Rohr, eine Pizza), in Zeichnungen oft der Radius.
+    </div>
+    <div class="quiz" id="quiz-radius"></div>
+  </section>
+
+  <!-- 3. Flächeninhalt -->
+  <!-- Reihenfolge: erst die Ausschnitte — sie brauchen nur das Rechteck (bzw. das Parallelogramm) und den
+       Umfang —, dann die Ringe, die auf das Dreieck aus Thema 4 führen. Der Kreisring in Abschnitt 4
+       baut auf dem zweiten Weg auf. -->
+  <section class="card" id="sec-flaeche">
+    <h2>3. Der Flächeninhalt: A = π · r²</h2>
+    <p>Wie viel Fläche hat ein Kreis mit dem Radius r? Eine erste Abschätzung gelingt mit zwei Quadraten. Das Quadrat <strong>um</strong> den Kreis hat die Seite 2r, also den Flächeninhalt 4 · r². Das Quadrat <strong>im</strong> Kreis zerfällt durch seine Diagonalen in vier Dreiecke mit der Grundseite r und der Höhe r — zusammen 4 · ½ · r · r = 2 · r². Der Kreis liegt dazwischen: <strong>2 · r² &lt; A &lt; 4 · r²</strong>. Der Flächeninhalt ist also eine Zahl zwischen 2 und 4, mal r². Welche Zahl genau, zeigen zwei Herleitungen.</p>
+
+    <h3>Erster Weg: in Ausschnitte zerlegen und zum Fast-Rechteck umlegen</h3>
+    <p>Schneide den Kreis wie eine Torte in gleich große Stücke — <span class="term">Kreisausschnitte</span>. Leg sie abwechselnd nach oben und nach unten nebeneinander. Zieh den Regler <strong>Umlegen</strong> und erhöhe dann die Zahl der Stücke.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Radius r: <input type="range" id="se-r" min="2" max="4" step="0.5" value="3" style="vertical-align:middle;width:8rem"> <span id="se-r-anzeige" class="th-name-c"></span></label>
+        <label>Stücke: <input type="range" id="se-n" min="4" max="32" step="2" value="8" style="vertical-align:middle;width:8rem"> <span id="se-n-anzeige" class="wert"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>Umlegen: <input type="range" id="se-t" min="0" max="100" step="2" value="0" style="vertical-align:middle;width:14rem"> <span id="se-t-anzeige" class="th-name-a"></span></label>
+        <label><input type="checkbox" id="se-quadrate"> Quadrate innen und außen zeigen</label>
+      </div>
+      <div class="th-wrap" id="se-mount"></div>
+      <div class="th-bilanz" id="se-bilanz"></div>
+      <div id="se-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Was das Fast-Rechteck verrät</span>
+      Es besteht aus <strong>denselben Stücken</strong> wie der Kreis — sein Flächeninhalt ist also genau der des Kreises. Unten liegen die Bögen der halben Stücke, oben die der anderen Hälfte: Unten und oben ist es je einen <strong>halben Umfang</strong> lang, also π · r. Seine Höhe ist der Radius r. Je mehr Stücke, desto gerader die Ränder und desto steiler die Seiten — es wird zum Rechteck mit den Seiten π · r und r:
+      <div class="formula-block">A = π · r · r = π · r²</div>
+    </div>
+    <div class="quiz" id="quiz-ausschnitte"></div>
+
+    <h3>Zweiter Weg: Ringe aufbiegen — das Dreieck</h3>
+    <p>Man kann den Kreis auch anders zerlegen: in schmale <span class="term">Ringe</span> wie die Jahresringe eines Baumstamms. Schneide jeden Ring oben auf und biege ihn gerade. Dabei behält er seine Breite, und seine Mitte behält ihre Länge — es geht keine Fläche verloren. Die geraden Streifen liegen dann übereinander: unten der längste, oben der kürzeste.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Radius r: <input type="range" id="ri-r" min="1.5" max="3" step="0.5" value="2.5" style="vertical-align:middle;width:8rem"> <span id="ri-r-anzeige" class="th-name-c"></span></label>
+        <label>Ringe: <input type="range" id="ri-n" min="2" max="12" step="1" value="5" style="vertical-align:middle;width:8rem"> <span id="ri-n-anzeige" class="wert"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>Aufbiegen: <input type="range" id="ri-t" min="0" max="100" step="2" value="0" style="vertical-align:middle;width:14rem"> <span id="ri-t-anzeige" class="th-name-a"></span></label>
+      </div>
+      <div class="th-wrap" id="ri-mount"></div>
+      <div class="th-bilanz" id="ri-bilanz"></div>
+      <div id="ri-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Das Dreieck aus Ringen</span>
+      Der äußerste Streifen ist fast so lang wie der Umfang U = 2 · π · r, der innerste fast 0 — dazwischen nimmt die Länge gleichmäßig ab. Die Streifen füllen ein <strong>Dreieck</strong> mit der Grundseite U und der Höhe r, und dessen Flächeninhalt kennst du aus Thema 4:
+      <div class="formula-block">A = ½ · U · r = ½ · 2 · π · r · r = π · r²</div>
+      Das ist dieselbe Formel wie auf dem ersten Weg.
+    </div>
+    <p class="hinweis-box">💡 Warum füllen die Stufen das Dreieck genau? Jeder Streifen ist so lang wie die Mitte seines Rings — und das ist genau die Breite des Dreiecks auf halber Höhe des Streifens. Was ein Streifen oben über das Dreieck hinausragt, fehlt ihm unten: Es ist die <a href="flaecheninhalte.html#sec-trapez">Mittellinie des Trapezes</a> aus Thema 4, und ein Trapez ist genauso groß wie das Rechteck aus Mittellinie und Höhe.</p>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — r² ist nicht 2 · r</span>
+      r² heißt r · r. Bei r = 5 cm ist r² = 25 cm², nicht 10 cm. Und mit dem <strong>Durchmesser</strong> ist die Formel eine andere: Wer π · d² rechnet, bekommt das <em>Vierfache</em> des Flächeninhalts — richtig wäre π · (d : 2)². Rechne am sichersten immer zuerst den Radius aus.
+    </div>
+    <div class="quiz" id="quiz-flaeche"></div>
+  </section>
+
+  <!-- 4. Kreisring -->
+  <section class="card" id="sec-ring">
+    <h2>4. Der Kreisring: A = π · (R² − r²)</h2>
+    <p>Ein <span class="term">Kreisring</span> liegt zwischen zwei Kreisen mit demselben Mittelpunkt — dem äußeren mit dem Radius R und dem inneren mit dem Radius r. Sein Flächeninhalt ist der große Kreis <strong>ohne</strong> den kleinen. Und weil er nichts anderes ist als einer der Ringe aus Abschnitt 3, kann man ihn auch aufbiegen.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Außenradius R: <input type="range" id="kr-gr" min="1.5" max="3" step="0.25" value="2.5" style="vertical-align:middle;width:8rem"> <span id="kr-gr-anzeige" class="th-name-c"></span></label>
+        <label>Innenradius r: <input type="range" id="kr-kl" min="0.5" max="2.75" step="0.25" value="1.5" style="vertical-align:middle;width:8rem"> <span id="kr-kl-anzeige" class="th-name-c"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>Aufbiegen: <input type="range" id="kr-t" min="0" max="100" step="2" value="0" style="vertical-align:middle;width:14rem"> <span id="kr-t-anzeige" class="th-name-a"></span></label>
+      </div>
+      <div class="th-wrap" id="kr-mount"></div>
+      <div class="th-bilanz" id="kr-bilanz"></div>
+      <div id="kr-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Flächeninhalt des Kreisrings</span>
+      <div class="formula-block">A = π · R² − π · r² = π · (R² − r²)</div>
+      Aufgebogen wird der Ring zu einem Rechteck: so breit wie der Ring (R − r) und so lang wie seine Mitte. Das ist die Mittellinie des Trapezes mit den parallelen Seiten 2 · π · R und 2 · π · r:
+      <div class="formula-block">A = π · (R + r) · (R − r)</div>
+      Multipliziert man aus, kommt wieder π · (R² − r²) heraus — zwei Wege, eine Zahl.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — erst quadrieren, dann abziehen</span>
+      π · (R − r)² ist <strong>nicht</strong> der Flächeninhalt des Rings, sondern der eines Kreises, dessen Radius so groß ist wie die Ringbreite. Bei R = 5 cm und r = 3 cm ist π · (R² − r²) = π · 16 cm² ≈ 50,27 cm², aber π · (R − r)² = π · 4 cm² ≈ 12,57 cm² — viel zu wenig.
+    </div>
+    <div class="quiz" id="quiz-ring"></div>
+  </section>
+
+  <!-- 5. Kreisbogen -->
+  <section class="card" id="sec-bogen">
+    <h2>5. Der Kreisbogen: b = α : 360° · 2 · π · r</h2>
+    <p>Ein <span class="term">Kreisbogen</span> ist ein Stück des Kreisrandes. Er gehört zu einem <span class="term">Mittelpunktswinkel</span> α: dem Winkel zwischen den beiden Radien zu seinen Enden. Wie lang ist er? Roll ihn ab und vergleiche ihn mit dem ganzen Umfang darunter.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Radius r: <input type="range" id="bo-r" min="1.5" max="3" step="0.5" value="2.5" style="vertical-align:middle;width:8rem"> <span id="bo-r-anzeige" class="th-name-c"></span></label>
+        <label>Winkel α: <input type="range" id="bo-a" min="10" max="360" step="10" value="90" style="vertical-align:middle;width:10rem"> <span id="bo-a-anzeige" class="th-name-r"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>Bogen abrollen: <input type="range" id="bo-t" min="0" max="100" step="2" value="0" style="vertical-align:middle;width:14rem"> <span id="bo-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="bo-mount"></div>
+      <div class="th-bilanz" id="bo-bilanz"></div>
+      <div id="bo-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Länge des Kreisbogens</span>
+      Der doppelte Winkel gibt den doppelten Bogen, der halbe Winkel den halben: Bogenlänge und Mittelpunktswinkel sind <strong>proportional</strong>. Zum Vollwinkel 360° gehört der ganze Umfang. Also ist der Bogen derselbe <strong>Anteil</strong> vom Umfang wie α von 360°:
+      <div class="formula-block">b = <span class="bruch"><span class="z">α</span><span class="n">360°</span></span> · 2 · π · r</div>
+      Bei α = 90° ist das ein Viertel des Umfangs, bei α = 180° die Hälfte.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Bogen oder Rand des Stücks?</span>
+      Der Bogen ist <strong>nur</strong> das krumme Stück. Wer den Rand eines Tortenstücks rundherum sucht, muss die beiden Radien noch dazuzählen: b + 2 · r.
+    </div>
+    <div class="quiz" id="quiz-bogen"></div>
+  </section>
+
+  <!-- 6. Kreisausschnitt -->
+  <section class="card" id="sec-ausschnitt">
+    <h2>6. Der Kreisausschnitt: A = α : 360° · π · r²</h2>
+    <p>Ein <span class="term">Kreisausschnitt</span> (auch <span class="term">Sektor</span>) ist ein Tortenstück: begrenzt von zwei Radien und dem Bogen zwischen ihnen. Er ist derselbe Anteil des ganzen Kreises wie sein Winkel α vom Vollwinkel. Und er lässt sich genauso zerlegen und umlegen wie der ganze Kreis in Abschnitt 3.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Radius r: <input type="range" id="au-r" min="2" max="4" step="0.5" value="3" style="vertical-align:middle;width:7rem"> <span id="au-r-anzeige" class="th-name-c"></span></label>
+        <label>Winkel α: <input type="range" id="au-a" min="30" max="360" step="10" value="120" style="vertical-align:middle;width:8rem"> <span id="au-a-anzeige" class="th-name-r"></span></label>
+        <label>Teile: <input type="range" id="au-k" min="2" max="16" step="2" value="6" style="vertical-align:middle;width:7rem"> <span id="au-k-anzeige" class="wert"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>Umlegen: <input type="range" id="au-t" min="0" max="100" step="2" value="0" style="vertical-align:middle;width:14rem"> <span id="au-t-anzeige" class="th-name-a"></span></label>
+      </div>
+      <div class="th-wrap" id="au-mount"></div>
+      <div class="th-bilanz" id="au-bilanz"></div>
+      <div id="au-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Flächeninhalt des Kreisausschnitts</span>
+      <div class="formula-block">A = <span class="bruch"><span class="z">α</span><span class="n">360°</span></span> · π · r² &nbsp;&nbsp;&nbsp;oder&nbsp;&nbsp;&nbsp; A = ½ · b · r</div>
+      Die erste Form nimmt den Anteil vom ganzen Kreis. Die zweite liest das Fast-Parallelogramm ab: unten halb so lang wie der Bogen, so hoch wie der Radius. Sie sieht aus wie die Dreiecksformel — und tatsächlich ist ein schmaler Ausschnitt fast ein Dreieck mit der Grundseite b und der Höhe r.
+    </div>
+    <p class="hinweis-box">💡 Für α = 360° ist der Ausschnitt der ganze Kreis, und b ist der Umfang: ½ · 2 · π · r · r = π · r² — das ist der zweite Weg aus Abschnitt 3 noch einmal.</p>
+    <div class="quiz" id="quiz-ausschnitt"></div>
+  </section>
+
+  <!-- Selbsteinschätzung: dieselben Ziele wie in „Worum geht es hier?“, als Ich-kann-Sätze -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele vom Anfang dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst — deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 😐 oder 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-umfang">Ich kann erklären, was π ist und warum π zwischen 3 und 4 liegt.</li>
+      <li data-abschnitt="sec-radius">Ich kann den Umfang mit U = π · d und U = 2 · π · r berechnen.</li>
+      <li data-abschnitt="sec-flaeche">Ich kann die Formel A = π · r² auf zwei Wegen herleiten und anwenden.</li>
+      <li data-abschnitt="sec-ring">Ich kann den Flächeninhalt eines Kreisrings berechnen.</li>
+      <li data-abschnitt="sec-bogen">Ich kann die Länge eines Kreisbogens über den Anteil α : 360° bestimmen.</li>
+      <li data-abschnitt="sec-ausschnitt">Ich kann den Flächeninhalt eines Kreisausschnitts über den Anteil und mit A = ½ · b · r berechnen.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
+  </section>
+
+  <!-- 7. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>7. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Den <a href="flaecheninhalte.html">Flächeninhalten aus Thema 4</a> — der Kreis wird wie dort auf bekannte Figuren zurückgeführt: auf ein Fast-Rechteck, auf ein Dreieck, und beim Ring auf die <a href="flaecheninhalte.html#sec-trapez">Mittellinie des Trapezes</a>.</li>
+      <li><strong>Baut auf:</strong> Den <a href="../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-proportional">proportionalen Zuordnungen</a> — π ist der Proportionalitätsfaktor von Durchmesser und Umfang, und Bogen und Ausschnitt sind proportional zum Mittelpunktswinkel.</li>
+      <li><strong>Baut auf:</strong> Den <a href="../../grundwissen-5-10/02-geometrie/04-kreise-und-winkel/index.html#sec-kreis">Begriffen am Kreis</a> — Radius, Durchmesser, Mittelpunktswinkel und der Vollwinkel von 360°.</li>
+      <li><strong>Gleiche Struktur:</strong> Der <a href="satz-des-thales.html">Satz des Thales</a> und die <a href="grundkonstruktionen.html#sec-umkreis">Umkreise</a> aus Thema 1 haben den Kreis als Ort gleichen Abstands benutzt; hier wird er vermessen. Und wie beim Trapez führen zwei ganz verschiedene Zerlegungen auf dieselbe Formel.</li>
+      <li><strong>Führt weiter zu (Klasse 9):</strong> Dem <a href="../../grundwissen-5-10/02-geometrie/09-pythagoras/index.html">Satz des Pythagoras</a> — mit ihm lassen sich die Seiten der Vielecke aus Abschnitt 1 berechnen statt messen, und man kann π selbst auf viele Stellen einschachteln.</li>
+      <li><strong>Führt weiter zu:</strong> Dem <a href="../../grundwissen-5-10/02-geometrie/11-prismen-zylinder/index.html#sec-zylinder">Zylinder</a> — seine Grundfläche ist ein Kreis, sein Mantel ein abgerollter Kreisumfang mal Höhe — und zu <a href="../../grundwissen-5-10/02-geometrie/12-pyramiden-kegel-kugeln/index.html#sec-kegel">Kegel und Kugel</a>, wo der Kreisausschnitt als Kegelmantel wiederkehrt.</li>
+      <li><strong>Führt weiter zu:</strong> Dem <a href="../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/12-trigonometrische-funktionen/index.html#sec-bogenmass">Bogenmaß</a> — dort wird ein Winkel durch die Länge seines Bogens am Kreis mit dem Radius 1 gemessen: b = α : 360° · 2 · π.</li>
+      <li><strong>Zum Nachschlagen:</strong> Die <a href="../../grundwissen-5-10/02-geometrie/10-kreisberechnungen/index.html">Kreisberechnungen im Grundwissen</a> fassen dieselben Formeln kurz zusammen — mit Rückwärtsrechnen bis zum Radius aus dem Flächeninhalt, für das man die Quadratwurzel aus Klasse 9 braucht.</li>
+    </ul>
+  </section>
+
+  <!-- 8. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>8. Formelsammlung</h2>
+    <p>Umfang, Flächeninhalt, Kreisring, Kreisbogen und Kreisausschnitt mit ihren Herleitungen als gerechnete Zeichnungen, die Umkehrformeln, vier Musterrechnungen und die typischen Fehler auf zwei Seiten. Zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="kreis.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 9. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>9. Übungsaufgaben</h2>
+    <p>Zwölf Aufgaben — vier zum ganzen Kreis, vier zum Kreisring, vier zu Bogen und Ausschnitt, je eine auf jeder Schwierigkeitsstufe. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu.</p>
+    <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit. Als Dezimaltrennzeichen dient das Komma. Rechne mit der π-Taste und runde erst das Ergebnis.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+  <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
+  <section class="card" data-lehrkraft="kreis-lehrkraefte.html" hidden></section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="index.html">Zurück zu Geometrie</a></p>
+  <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script src="../../../assets/lehrkraft.js"></script>
+<script src="../../../assets/selbsteinschaetzung.js"></script>
+<script type="module" src="kreis.js?v=2"></script>
+</body>
+</html>

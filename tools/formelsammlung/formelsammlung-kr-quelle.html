@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Formelsammlung — Der Kreis</title>
+<style>
+  @page { size: A4 landscape; margin: 5.5mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    color: #1f2328;
+    font-size: 8.1px;
+    line-height: 1.33;
+  }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  h1 {
+    font-size: 12.4px; margin: 0 0 1.4mm; padding-bottom: 0.8mm;
+    border-bottom: 1.6px solid #1d4ed8; color: #1d4ed8; letter-spacing: 0.01em;
+  }
+  h1 .klein { font-size: 8.4px; font-weight: 400; color: #5b6570; float: right; margin-top: 2px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2.1mm; align-items: start; }
+  .box {
+    border: 0.9px solid #c9d0d8; border-radius: 2mm; padding: 1.5mm 1.8mm;
+    background: #ffffff; break-inside: avoid;
+  }
+  .box.wide { grid-column: span 2; }
+  .box.full { grid-column: span 3; }
+  .box h2 {
+    font-size: 8.6px; margin: 0 0 1.1mm; color: #1d4ed8;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .box.warn { border-color: #e3b341; background: #fffaf0; }
+  .box.warn h2 { color: #8a5b0a; }
+  .box.merk { border-color: #7ec699; background: #f4fbf6; }
+  .box.merk h2 { color: #0f5132; }
+  p { margin: 0 0 0.9mm; }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 0.9mm; padding-left: 3.4mm; }
+  li { margin-bottom: 0.4mm; }
+  .f { font-family: "Cambria Math", Cambria, Georgia, serif; font-size: 9.2px; }
+  .zentral { text-align: center; }
+  .gross { font-size: 10.4px; font-weight: 700; }
+  .al { color: #157347; font-weight: 700; }
+  .be { color: #b3650a; font-weight: 700; }
+  .ga { color: #b3261e; font-weight: 700; }
+  .kr { color: #1d4ed8; font-weight: 700; }
+  .ra { color: #6d28d9; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { border: 0.7px solid #c9d0d8; padding: 0.5mm 0.6mm; text-align: center; }
+  th { background: #eef2f6; font-weight: 700; font-size: 7.4px; }
+  td { font-size: 7.6px; }
+  td.b { font-weight: 700; }
+  td.l { text-align: left; }
+  figure { margin: 0.8mm 0 0; }
+  figure svg { display: block; width: 100%; height: auto; }
+  .m70 { max-width: 70%; margin: 0.8mm auto 0; }
+  .m80 { max-width: 80%; margin: 0.8mm auto 0; }
+  .m88 { max-width: 88%; margin: 0.8mm auto 0; }
+  .m62 { max-width: 62%; margin: 0.8mm auto 0; }
+  .m72 { max-width: 72%; margin: 0.8mm auto 0; }
+  .m55 { max-width: 55%; margin: 0.8mm auto 0; }
+  .bu { font-size: 7.1px; color: #5b6570; text-align: center; margin-top: 0.5mm; }
+  .rechnung { background: #f4f6f8; border-radius: 1.2mm; padding: 1mm 1.2mm; margin: 0.8mm 0 0; }
+  .schritt { display: flex; gap: 1.2mm; margin-bottom: 0.5mm; }
+  .schritt b { flex: 0 0 3.6mm; color: #1d4ed8; }
+  .schritt:last-child { margin-bottom: 0; }
+  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm; align-items: start; }
+  .bruch { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; margin: 0 0.3mm; }
+  .bruch .z { border-bottom: 0.8px solid currentColor; padding: 0 0.6mm; }
+  .gh { color: #6d28d9; font-weight: 700; }
+  .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ===================== Seite 1 ===================== -->
+<div class="page">
+  <h1>Der Kreis — Umfang und Flächeninhalt<span class="klein">Klasse 8 · Geometrie, Thema 5</span></h1>
+  <div class="grid">
+
+    <div class="box merk">
+      <h2>Umfang und die Zahl π</h2>
+      <p>Ein Rad mit dem <span class="kr">Durchmesser d</span> rollt eine Umdrehung ab: Die Strecke ist so lang wie sein <span class="be">Umfang U</span>. Jeder Kreis ist eine Vergrößerung jedes anderen — <b>U und d sind proportional</b>, der Faktor heißt <b>π</b>.</p>
+      <p class="zentral f gross">U : d = π &nbsp;⟺&nbsp; U = π · d = 2 · π · r</p>
+      <figure class="m88">[[FIG1]]</figure>
+      <p class="bu">π ≈ 3,14159 — unendlich viele Nachkommastellen, die sich nie wiederholen. Rechnen mit der π-Taste, erst das Ergebnis runden.</p>
+    </div>
+
+    <div class="box">
+      <h2>π einschachteln</h2>
+      <p>Das <span class="al">Sechseck im Kreis</span> besteht aus sechs gleichseitigen Dreiecken (Winkel 360° : 6 = 60°, zwei Seiten sind Radien): Sein Umfang ist 6 · r = 3 · d. Das <span class="be">Quadrat um den Kreis</span> hat die Seite d, also den Umfang 4 · d.</p>
+      <figure class="m88">[[FIG2]]</figure>
+      <p class="zentral f gross">3 · d &lt; U &lt; 4 · d &nbsp;⟹&nbsp; 3 &lt; π &lt; 4</p>
+      <p class="bu">Archimedes, mit 96 Ecken: 3<span class="bruch"><span class="z">10</span><span class="n">71</span></span> &lt; π &lt; 3<span class="bruch"><span class="z">1</span><span class="n">7</span></span>. Die Seiten der feineren Vielecke berechnet man erst mit dem Satz des Pythagoras (Klasse 9).</p>
+    </div>
+
+    <div class="box">
+      <h2>Radius, Durchmesser, Umfang</h2>
+      <p>Der <span class="kr">Durchmesser</span> ist doppelt so lang wie der <span class="kr">Radius</span>: <span class="f">d = 2 · r</span>.</p>
+      <table>
+        <tr><th>gegeben</th><th>Umfang</th><th>rückwärts</th></tr>
+        <tr><td class="l b">Durchmesser d</td><td class="f">U = π · d</td><td class="f">d = U : π</td></tr>
+        <tr><td class="l b">Radius r</td><td class="f">U = 2 · π · r</td><td class="f">r = U : (2 · π)</td></tr>
+      </table>
+      <p style="margin-top:0.8mm">Der Durchmesser passt gut <b>3-mal</b> um den Kreis (π ≈ 3,14), der Radius gut <b>6-mal</b> (2 · π ≈ 6,28).</p>
+      <div class="rechnung">
+        <div class="schritt"><b>r</b><span>r = 5 cm: <span class="f">U = 2 · π · 5 cm ≈ <b>31,42 cm</b></span></span></div>
+        <div class="schritt"><b>d</b><span>U = 50 cm: <span class="f">d = 50 cm : π ≈ <b>15,92 cm</b></span>, r ≈ 7,96 cm</span></div>
+      </div>
+    </div>
+
+    <div class="box wide">
+      <h2>Flächeninhalt — zwei Herleitungen</h2>
+      <p class="zentral f gross">A = π · r² = ½ · U · r</p>
+      <p>Abschätzung vorweg: Das Quadrat im Kreis hat 2 · r², das um den Kreis 4 · r² — also <span class="f">2 · r² &lt; A &lt; 4 · r²</span>.</p>
+      <div class="zwei">
+        <div>
+          <figure>[[FIG3]]</figure>
+          <p class="bu"><b>1. Weg — Ausschnitte umlegen:</b> Abwechselnd nach oben und unten gelegt, werden die Stücke zum Fast-Rechteck — unten und oben je der halbe Umfang π · r, so hoch wie r. Je mehr Stücke, desto genauer das Rechteck π · r mal r.</p>
+        </div>
+        <div>
+          <figure>[[FIG4]]</figure>
+          <p class="bu"><b>2. Weg — Ringe aufbiegen:</b> Jeder Ring wird zu einem Streifen, so lang wie seine Mitte. Die Streifen füllen ein Dreieck mit der Grundseite U = 2 · π · r und der Höhe r (Mittellinie aus Thema 4): <span class="f">A = ½ · U · r</span>.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Kreisring</h2>
+      <p class="zentral f gross">A = π · (R² − r²)</p>
+      <figure>[[FIG5]]</figure>
+      <p>Großer Kreis <b>ohne</b> kleinen: <span class="f">A = π · R² − π · r²</span>. Aufgebogen: ein Rechteck, so lang wie die Mittellinie des Trapezes der beiden Umfänge und so breit wie der Ring:</p>
+      <p class="zentral f">A = π · (R + r) · (R − r)</p>
+      <p class="bu">Beispiel: R = 5 cm, r = 3 cm ⟹ A = π · (25 − 9) cm² = π · 16 cm² ≈ <b>50,27 cm²</b></p>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik Klasse 8 · Geometrie · Seite 1 von 2</p>
+</div>
+
+<!-- ===================== Seite 2 ===================== -->
+<div class="page">
+  <h1>Kreisbogen, Kreisausschnitt und Rechnen am Kreis<span class="klein">Anteile, Umkehrungen, Musterrechnungen — ohne Wurzel</span></h1>
+  <div class="grid">
+
+    <div class="box merk wide">
+      <h2>Kreisbogen und Kreisausschnitt — derselbe Anteil</h2>
+      <figure class="m55">[[FIG6]]</figure>
+      <div class="zwei">
+        <div>
+          <p><b><span class="be">Kreisbogen</span></b> — das Stück des Randes zum Mittelpunktswinkel α. Er ist proportional zu α:</p>
+          <p class="zentral f gross">b = α : 360° · 2 · π · r</p>
+        </div>
+        <div>
+          <p><b><span class="al">Kreisausschnitt</span></b> (Sektor) — das „Tortenstück“. Derselbe Anteil vom ganzen Kreis — oder umgelegt zum Fast-Parallelogramm:</p>
+          <p class="zentral f gross">A = α : 360° · π · r² &nbsp;&nbsp;oder&nbsp;&nbsp; A = ½ · b · r</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Häufige Winkel</h2>
+      <table>
+        <tr><th>α</th><th>Anteil</th><th>α</th><th>Anteil</th></tr>
+        <tr><td>30°</td><td>1 : 12</td><td>120°</td><td>1 : 3</td></tr>
+        <tr><td>45°</td><td>1 : 8</td><td>180°</td><td>1 : 2</td></tr>
+        <tr><td>60°</td><td>1 : 6</td><td>270°</td><td>3 : 4</td></tr>
+        <tr><td>90°</td><td>1 : 4</td><td>360°</td><td>ganz</td></tr>
+      </table>
+      <p style="margin-top:0.8mm"><b>Uhr:</b> Der Minutenzeiger dreht sich in einer Minute um 360° : 60 = <b>6°</b>.</p>
+    </div>
+
+    <div class="box wide">
+      <h2>Alle Formeln und ihre Umkehrungen</h2>
+      <table>
+        <tr><th>Größe</th><th>Formel</th><th>rückwärts</th></tr>
+        <tr><td class="l b">Umfang</td><td class="f">U = π · d = 2 · π · r</td><td class="f">d = U : π, &nbsp;r = U : (2 · π)</td></tr>
+        <tr><td class="l b">Flächeninhalt</td><td class="f">A = π · r²</td><td class="l">den Radius aus A erst mit der Quadratwurzel (Klasse 9)</td></tr>
+        <tr><td class="l b">Kreisring</td><td class="f">A = π · (R² − r²)</td><td class="f">Breite R − r = (U<sub>außen</sub> − U<sub>innen</sub>) : (2 · π)</td></tr>
+        <tr><td class="l b">Kreisbogen</td><td class="f">b = α : 360° · 2 · π · r</td><td class="f">α = b : (2 · π · r) · 360°</td></tr>
+        <tr><td class="l b">Kreisausschnitt</td><td class="f">A = α : 360° · π · r² = ½ · b · r</td><td class="f">α = A : (π · r²) · 360°, &nbsp;b = 2 · A : r</td></tr>
+      </table>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 1 — das Fahrrad</h2>
+      <p><b>Gegeben:</b> Reifen mit d = 70 cm. <b>Gesucht:</b> der Weg bei 100 Umdrehungen.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span><span class="f">U = π · 70 cm ≈ 219,91 cm</span> — eine Umdrehung</span></div>
+        <div class="schritt"><b>2.</b><span><span class="f">100 · 219,91 cm ≈ 21.991 cm ≈ <b>219,91 m</b></span></span></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 2 — die Pizza</h2>
+      <p><b>Gegeben:</b> d = 30 cm. <b>Gesucht:</b> A.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>Erst der Radius: <span class="f">r = 30 cm : 2 = 15 cm</span></span></div>
+        <div class="schritt"><b>2.</b><span><span class="f">A = π · (15 cm)² = π · 225 cm² ≈ <b>706,86 cm²</b></span></span></div>
+      </div>
+      <p style="margin-top:1mm"><b>Nicht</b> π · 30² ≈ 2.827 cm² — das ist das Vierfache.</p>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 3 — die Unterlegscheibe</h2>
+      <p><b>Gegeben:</b> Außendurchmesser 24 mm, Innendurchmesser 10 mm. <b>Gesucht:</b> A in cm².</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>Radien: <span class="f">R = 12 mm, r = 5 mm</span></span></div>
+        <div class="schritt"><b>2.</b><span><span class="f">A = π · (144 − 25) mm² = π · 119 mm² ≈ 373,85 mm²</span></span></div>
+        <div class="schritt"><b>3.</b><span><span class="f">373,85 mm² : 100 ≈ <b>3,74 cm²</b></span></span></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Musterrechnung 4 — rückwärts zum Winkel</h2>
+      <p><b>Gegeben:</b> Ausschnitt mit r = 6 cm und b = 5 cm. <b>Gesucht:</b> A und α.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span><span class="f">A = ½ · 5 cm · 6 cm = <b>15 cm²</b></span> — ohne π</span></div>
+        <div class="schritt"><b>2.</b><span><span class="f">α = 5 cm : (2 · π · 6 cm) · 360° ≈ <b>47,75°</b></span></span></div>
+      </div>
+      <p style="margin-top:1mm"><b>Probe:</b> 47,75° : 360° · π · 36 cm² ≈ 15,00 cm² ✓</p>
+    </div>
+
+    <div class="box warn wide">
+      <h2>Typische Fehler</h2>
+      <ul>
+        <li><b>Radius und Durchmesser verwechselt.</b> U = π · d, aber U = 2 · π · r. Wer π · r rechnet, bekommt den halben Umfang; wer mit d quadriert (π · d²), das Vierfache des Flächeninhalts.</li>
+        <li><b>r² als 2 · r gelesen.</b> r² = r · r: bei r = 5 cm sind das 25 cm², nicht 10 cm.</li>
+        <li><b>Umfang und Fläche verwechselt.</b> U ist eine Länge (cm), A eine Fläche (cm²).</li>
+        <li><b>Kreisring als π · (R − r)².</b> Erst quadrieren, dann abziehen: π · (R² − r²).</li>
+        <li><b>Bogen und Rand des Tortenstücks.</b> Der Rand rundherum ist b + 2 · r; der Bogen nur das krumme Stück.</li>
+        <li><b>Mit π ≈ 3,14 statt der π-Taste</b> gerechnet und auf zwei Stellen gerundet — das Ergebnis weicht oft schon in der ersten Nachkommastelle ab.</li>
+      </ul>
+    </div>
+
+    <div class="box full" style="border-style:dashed;background:#f7f8fa">
+      <h2 style="color:#5b6570">Ausblick auf Klasse 9 — was dann dazukommt</h2>
+      <p>Mit dem <b>Satz des Pythagoras</b> lassen sich die Seiten der Vielecke berechnen statt messen — und π auf viele Stellen einschachteln. Mit der <b>Quadratwurzel</b> bestimmt man den Radius aus dem Flächeninhalt: aus A = π · r² wird r = √(A : π). Beim <b>Zylinder</b> wird der Kreis zur Grundfläche und der abgerollte Umfang zum Mantel, beim <b>Kegel</b> der Kreisausschnitt zum Mantel. Und im <b>Bogenmaß</b> misst man einen Winkel durch die Länge seines Bogens am Kreis mit dem Radius 1.</p>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik Klasse 8 · Geometrie · Seite 2 von 2</p>
+</div>
+
+</body>
+</html>

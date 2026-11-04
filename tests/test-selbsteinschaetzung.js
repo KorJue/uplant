@@ -25,10 +25,11 @@ const WURZEL = path.resolve(__dirname, "..");
 
 // Die Klasse-8-Lernpfade. Rätsel und Faktencheck haben ihre eigene Selbsteinschätzung je Fall,
 // die MSS-Seiten bauen sie im eigenen Modul.
-const KLASSE_8 = ["flaecheninhalte", "grundkonstruktionen", "satz-des-thales"].map((n) => `/mathematik/klasse-8/geometrie/${n}.html`);
+const KLASSE_8 = ["flaecheninhalte", "grundkonstruktionen", "satz-des-thales", "kreis"].map((n) => `/mathematik/klasse-8/geometrie/${n}.html`);
 const SEITEN = [...alleThemen().map((t) => t.pfad), ...KLASSE_8];
-// So viele waren es, als die Selbsteinschätzung dazukam (34 Grundwissen-Themen und 3 Klasse-8-Seiten).
-const MINDESTENS = 37;
+// So viele waren es, als die Selbsteinschätzung dazukam (34 Grundwissen-Themen und 3 Klasse-8-Seiten),
+// dazu seither der Kreis (Klasse 8, Thema 5).
+const MINDESTENS = 38;
 
 const lies = (p) => fs.readFileSync(path.join(WURZEL, p.slice(1)), "utf-8");
 const ohneTags = (s) => s.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();

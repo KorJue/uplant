@@ -38,7 +38,7 @@ const PFLICHT = [
 ];
 // So viele Lernseiten gab es, als jede ihre Hinweise bekam. Fällt die Zahl, erkennt die Prüfung
 // Lernseiten nicht mehr — dann prüfte sie stillschweigend weniger.
-const MINDESTENS_LERNSEITEN = 54;
+const MINDESTENS_LERNSEITEN = 55;   // 54, als jede Lernseite ihre Hinweise bekam; seither der Kreis
 // Eine Lernseite hat einen Seitenkopf und ist kein Menü.
 const istLernseite = (d, roh) => webpfad(d).startsWith("/mathematik/") && /class="page-header"/.test(roh) && !/class="menu-card/.test(roh);
 // Der Bauplan der Bruchstücke (lk-hinweise). Die beiden älteren Konzepte (Rätsel, Faktencheck) sind

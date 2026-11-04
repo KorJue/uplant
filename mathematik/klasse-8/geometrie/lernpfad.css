@@ -754,3 +754,69 @@
 :root[data-theme="dark"] .bl-leg-i { color: #6fd68f; }
 :root[data-theme="dark"] .bl-leg-s { color: #ffbf6e; }
 :root[data-theme="dark"] .bl-leg-h { color: #c4a7ff; }
+
+
+/* ================= Der Kreis ================= */
+
+/* Farben wie auf den Flächeninhalten: Radius und Durchmesser blau (die gegebene Länge, wie dort die
+   Grundseite), Umfang und Bogen orange, Fläche grün, Winkel violett, Hilfslinien grau. Alles steht
+   als Klasse hier und nicht im Skript, damit der Dunkelmodus die Farben aufhellen kann — ein
+   fest eingetragenes Dunkelblau wäre auf dunklem Grund kaum zu sehen. */
+.kr-kreis { fill: none; stroke: #1d4ed8; stroke-width: 2.4; }
+.kr-kreis-blass { fill: none; stroke: #9aa4b1; stroke-width: 1.4; stroke-dasharray: 5 4; }
+.kr-radius { stroke: #1d4ed8; stroke-width: 2.4; stroke-linecap: round; }
+.kr-gestrichelt { stroke-dasharray: 6 4; stroke-width: 1.8; }
+.kr-umfang { stroke: #b3650a; stroke-width: 4.5; stroke-linecap: round; fill: none; }
+.kr-umfang-blass { stroke: #b3650a; stroke-width: 4.5; stroke-opacity: 0.25; stroke-linecap: round; }
+.kr-bogen { stroke: #b3650a; stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.kr-boden { stroke: #6b7280; stroke-width: 1.6; }
+.kr-marke { stroke: #1f2328; stroke-width: 1.6; }
+.kr-lineal-a { stroke: #1d4ed8; stroke-width: 5; }
+.kr-lineal-b { stroke: #1d4ed8; stroke-width: 5; stroke-opacity: 0.4; }
+.kr-hilfe { fill: none; stroke: #6b7280; stroke-width: 1.6; stroke-dasharray: 6 4; }
+.kr-quadrat { stroke: #6d28d9; }
+.kr-innen { fill: #157347; fill-opacity: 0.08; stroke: #157347; stroke-width: 2; stroke-linejoin: round; }
+.kr-aussen { fill: none; stroke: #b3650a; stroke-width: 2; stroke-linejoin: round; }
+.kr-speiche { stroke: #157347; stroke-width: 1.2; stroke-opacity: 0.7; }
+.kr-teil-a { fill: #157347; fill-opacity: 0.25; stroke: #157347; stroke-width: 1.3; stroke-linejoin: round; }
+.kr-teil-b { fill: #b3650a; fill-opacity: 0.25; stroke: #b3650a; stroke-width: 1.3; stroke-linejoin: round; }
+.kr-winkel { fill: #6d28d9; fill-opacity: 0.18; stroke: #6d28d9; stroke-width: 1.4; }
+.kr-t-blau, .kr-t-orange, .kr-t-gruen, .kr-t-violett { font-size: 13px; font-weight: 700; }
+.kr-t-blau { fill: #1d4ed8; }
+.kr-t-orange { fill: #b3650a; }
+.kr-t-gruen { fill: #157347; }
+.kr-t-violett { fill: #6d28d9; }
+
+:root[data-theme="dark"] .kr-kreis,
+:root[data-theme="dark"] .kr-radius,
+:root[data-theme="dark"] .kr-lineal-a,
+:root[data-theme="dark"] .kr-lineal-b { stroke: #8ab4ff; }
+:root[data-theme="dark"] .kr-umfang,
+:root[data-theme="dark"] .kr-umfang-blass,
+:root[data-theme="dark"] .kr-bogen,
+:root[data-theme="dark"] .kr-aussen { stroke: #ffbf6e; }
+:root[data-theme="dark"] .kr-boden,
+:root[data-theme="dark"] .kr-hilfe,
+:root[data-theme="dark"] .kr-kreis-blass { stroke: #9aa4b1; }
+:root[data-theme="dark"] .kr-marke { stroke: #e6e8eb; }
+:root[data-theme="dark"] .kr-quadrat { stroke: #c4a7ff; }
+:root[data-theme="dark"] .kr-innen { fill: #6fd68f; stroke: #6fd68f; }
+:root[data-theme="dark"] .kr-speiche { stroke: #6fd68f; }
+:root[data-theme="dark"] .kr-teil-a { fill: #6fd68f; stroke: #6fd68f; }
+:root[data-theme="dark"] .kr-teil-b { fill: #ffbf6e; stroke: #ffbf6e; }
+:root[data-theme="dark"] .kr-winkel { fill: #c4a7ff; stroke: #c4a7ff; }
+:root[data-theme="dark"] .kr-t-blau { fill: #8ab4ff; }
+:root[data-theme="dark"] .kr-t-orange { fill: #ffbf6e; }
+:root[data-theme="dark"] .kr-t-gruen { fill: #6fd68f; }
+:root[data-theme="dark"] .kr-t-violett { fill: #c4a7ff; }
+
+/* Die Figuren in den Aufgabentexten der Kreis-Seite: Kanten, Flächen und Maße wie auf den
+   Flächeninhalten (.fl-fig-…), dazu der Mittelpunkt, der blasse Vollkreis um einen Ausschnitt und
+   der Winkelbogen. */
+.kr-fig-punkt { fill: #1f2328; }
+.kr-fig-hilfe { fill: none; stroke: #9aa4b1; stroke-width: 1.2; stroke-dasharray: 4 3; }
+.kr-fig-winkel { fill: none; stroke: #6d28d9; stroke-width: 1.6; }
+:root[data-theme="dark"] .kr-fig-punkt { fill: #e6e8eb; }
+:root[data-theme="dark"] .kr-fig-winkel { stroke: #c4a7ff; }
+/* Hof um eine Beschriftung, die eine Kreislinie kreuzt: dieselbe Farbe wie der Aufgabenkasten. */
+.kr-fig-halo { paint-order: stroke fill; stroke: var(--card-bg); stroke-width: 4px; stroke-linejoin: round; }

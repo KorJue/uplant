@@ -14,6 +14,7 @@ benennt. Vorhanden sind:
 | `gk` | Grundkonstruktionen und besondere Linien am Dreieck (Klasse 8, Geometrie, Thema 1) | `mathematik/klasse-8/geometrie/grundkonstruktionen-formelsammlung.pdf` |
 | `th` | Satz des Thales (Klasse 8, Geometrie, Thema 3) | `mathematik/klasse-8/geometrie/satz-des-thales.pdf` |
 | `fl` | Flächeninhalte (Klasse 8, Geometrie, Thema 4) | `mathematik/klasse-8/geometrie/flaecheninhalte.pdf` |
+| `kr` | Der Kreis (Klasse 8, Geometrie, Thema 5) | `mathematik/klasse-8/geometrie/kreis.pdf` |
 | `w1` | Grundbegriffe, Baumdiagramme und Vierfeldertafel (MSS 13, Wahrscheinlichkeitsrechnung, Thema 1) | `mathematik/mss13/01-wahrscheinlichkeitsrechnung/01-grundbegriffe-baumdiagramme-vierfeldertafel/formelsammlung.pdf` |
 | `w2` | Bedingte Wahrscheinlichkeit (MSS 13, Wahrscheinlichkeitsrechnung, Thema 2) | `mathematik/mss13/01-wahrscheinlichkeitsrechnung/02-bedingte-wahrscheinlichkeit/formelsammlung.pdf` |
 | `w3` | Baumdiagramme umdrehen (MSS 13, Wahrscheinlichkeitsrechnung, Thema 3) | `mathematik/mss13/01-wahrscheinlichkeitsrechnung/03-baumdiagramme-umdrehen/formelsammlung.pdf` |
