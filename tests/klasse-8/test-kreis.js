@@ -8,12 +8,14 @@
 //      Zeichnung zeigen.
 //   2. Die BEWEGUNGEN sind flächentreu. Jedes Stück des Kreises hat in jeder Zwischenstellung
 //      denselben Flächeninhalt wie am Anfang: Die Ausschnitte bleiben Ausschnitte (jeder Bogenpunkt
-//      liegt im Abstand r von der Spitze), die Ringe behalten ihre Fläche w · L, der abgerollte
-//      Bogen seine Länge, und das Rad rollt, ohne zu rutschen.
+//      liegt im Abstand r von der Spitze), die Ringe behalten ihre Fläche w · L, die aus dem
+//      Kreisring herausgehobene Scheibe ihre Fläche π · r², der abgerollte Bogen seine Länge, und
+//      das Rad rollt, ohne zu rutschen.
 //   3. Die AUFGABEN rechnen richtig. Jede der zwölf wird über viele Runden gewürfelt, unabhängig
 //      nachgerechnet und mit jedem vorgesehenen Fehlerwert geprüft.
 //
-// Dazu das Gerüst: Reihenfolge der Abschnitte (kein Vorgriff), keine Quadratwurzel und kein Satz
+// Dazu das Gerüst: Reihenfolge der Abschnitte und der beiden Wege zum Kreisring (kein Vorgriff), die
+// Dreisatz-Tabellen vor Bogen und Ausschnitt, keine Quadratwurzel und kein Satz
 // des Pythagoras außer als ausdrücklicher Ausblick auf Klasse 9, gemessene Längen als gemessen
 // gekennzeichnet, Kontrollfragen, Formelsammlung als PDF, Menükarte.
 
@@ -64,12 +66,18 @@ async function zeichnung(page, mountId) {
       return { x, y };
     });
     const teile = [];
-    for (const e of svg.querySelectorAll("polygon, polyline, line, circle, text")) {
+    for (const e of svg.querySelectorAll("polygon, polyline, line, circle, path, text")) {
       if (e.closest(".th-punkt-gruppe")) continue;
       const o = { tag: e.tagName, rolle: e.getAttribute("data-rolle"), nr: e.getAttribute("data-nr"), klasse: e.getAttribute("class") || "" };
       if (o.tag === "polygon" || o.tag === "polyline") o.punkte = lies(e);
       if (o.tag === "line") o.punkte = [{ x: +e.getAttribute("x1"), y: +e.getAttribute("y1") }, { x: +e.getAttribute("x2"), y: +e.getAttribute("y2") }];
       if (o.tag === "circle") { o.c = { x: +e.getAttribute("cx"), y: +e.getAttribute("cy") }; o.r = +e.getAttribute("r"); }
+      // Ein Pfad aus mehreren geschlossenen Linienzügen „M x,y L x,y … Z M …“ — die Fläche mit Loch.
+      if (o.tag === "path") {
+        o.fuellregel = e.getAttribute("fill-rule");
+        o.wege = e.getAttribute("d").split("M").map((t) => t.replace("Z", "").trim()).filter(Boolean)
+          .map((t) => t.split("L").map((q) => { const [x, y] = q.trim().split(",").map(Number); return { x, y }; }));
+      }
       if (o.tag === "text") o.text = e.textContent;
       teile.push(o);
     }
@@ -326,7 +334,72 @@ async function ringe(page) {
   }
 }
 
-// ── Abschnitt 4: Kreisring ────────────────────────────────────────────────
+// ── Abschnitt 4, erster Weg: großer Kreis minus kleiner Kreis ─────────────
+//
+// Der Maßstab kommt aus dem Radius R, einer Linie bekannter Länge. Nachgemessen wird: Der Ring ist
+// wirklich ein Ring zwischen r und R um M und hat π · (R² − r²); die kleine Scheibe ist ein Kreis mit
+// dem Radius r und behält auf dem ganzen Weg ihren Flächeninhalt π · r² — sie wird nur waagerecht
+// verschoben; am Anfang füllt sie genau das Loch, am Ende liegt sie ganz außerhalb des großen
+// Kreises; Ring und Scheibe ergeben zusammen π · R².
+const mittelpunkt = (punkte) => ({
+  x: punkte.reduce((a, p) => a + p.x, 0) / punkte.length,
+  y: punkte.reduce((a, p) => a + p.y, 0) / punkte.length,
+});
+async function kreisDifferenz(page) {
+  for (const [R, rWunsch] of [[3, 1.5], [2.5, 2], [1.5, 0.5], [3, 2.75], [2, 1.75], [1.5, 1.5]]) {
+    await setzeRegler(page, "kd-gr", R);
+    const r = await setzeRegler(page, "kd-kl", rWunsch);
+    const erwartet = Math.min(rWunsch, R - 0.5);
+    pruefe(Math.abs(r - erwartet) < 1e-9, `Kreis minus Kreis: R = ${R}, gewünscht r = ${rWunsch} — der Regler steht auf ${r} statt ${erwartet}`);
+    const anzeige = await text(page, "#kd-kl-anzeige");
+    pruefe(anzeige === `${de(r)} cm`, `Kreis minus Kreis: R = ${R} — die Anzeige „${anzeige}“ passt nicht zum Regler ${r}`);
+    const A = Math.PI * (R * R - r * r), Ak = Math.PI * r * r, Ag = Math.PI * R * R;
+    let skalaAnfang = null, xVorher = -Infinity;
+    for (const tProzent of [0, 26, 50, 74, 100]) {
+      const t = (await setzeRegler(page, "kd-t", tProzent)) / 100;
+      const wo = `R = ${R}, r = ${r}, Herausheben ${tProzent} %`;
+      const z = await zeichnung(page, "kd-mount");
+      const M = z.namen.M;
+      const [radiusR] = mitRolle(z, "R");
+      const skala = laenge(radiusR.punkte) / R;
+      pruefe(abstand(radiusR.punkte[0], M) < 0.6, `Kreis minus Kreis: ${wo} — der Radius R beginnt nicht in M`);
+      // Die Bühne hängt nicht von t ab: Sonst sähe die Scheibe größer oder kleiner aus, während sie wandert.
+      if (t === 0) skalaAnfang = skala;
+      else pruefe(Math.abs(skala - skalaAnfang) < 1e-3, `Kreis minus Kreis: ${wo} — der Maßstab ändert sich beim Herausheben`);
+
+      const [ring] = mitRolle(z, "ring");
+      pruefe(!!ring && ring.wege && ring.wege.length === 2 && ring.fuellregel === "evenodd", `Kreis minus Kreis: ${wo} — der Ring ist keine Fläche mit Loch`);
+      if (!ring || !ring.wege || ring.wege.length !== 2) continue;
+      const [aussen, innen] = ring.wege;
+      const ringFl = (flaeche(aussen) - flaeche(innen)) / (skala * skala);
+      pruefe(Math.abs(ringFl - A) < 0.003 * A, `Kreis minus Kreis: ${wo} — der Ring hat ${de(ringFl, 3)} cm² statt π · (R² − r²) = ${de(A, 3)} cm²`);
+      pruefe(aussen.every((p) => Math.abs(abstand(p, M) / skala - R) < 0.01) && innen.every((p) => Math.abs(abstand(p, M) / skala - r) < 0.01),
+        `Kreis minus Kreis: ${wo} — der Ring liegt nicht zwischen den Kreisen mit r und R um M`);
+
+      const [klein] = mitRolle(z, "klein");
+      const C = mittelpunkt(klein.punkte);
+      pruefe(klein.punkte.every((p) => Math.abs(abstand(p, C) / skala - r) < 0.01), `Kreis minus Kreis: ${wo} — die kleine Scheibe ist kein Kreis mit dem Radius ${de(r)} cm mehr`);
+      const kleinFl = flaeche(klein.punkte) / (skala * skala);
+      pruefe(Math.abs(kleinFl - Ak) < 0.003 * Ak, `Kreis minus Kreis: ${wo} — die kleine Scheibe hat ${de(kleinFl, 3)} cm² statt π · r² = ${de(Ak, 3)} cm²`);
+      pruefe(Math.abs(ringFl + kleinFl - Ag) < 0.003 * Ag, `Kreis minus Kreis: ${wo} — Ring und Scheibe ergeben zusammen ${de(ringFl + kleinFl, 3)} cm² statt π · R² = ${de(Ag, 3)} cm²`);
+      // Starr und nur verschoben: waagerecht, von M weg, nie zurück.
+      pruefe(Math.abs(C.y - M.y) < 0.6 && C.x >= xVorher - 0.01, `Kreis minus Kreis: ${wo} — die Scheibe wandert nicht waagerecht von M weg`);
+      xVorher = C.x;
+      if (t === 0) pruefe(abstand(C, M) < 0.6, `Kreis minus Kreis: ${wo} — die kleine Scheibe füllt am Anfang nicht genau das Loch`);
+      if (t === 1) pruefe(abstand(C, M) / skala >= R + r + 0.1, `Kreis minus Kreis: ${wo} — die herausgehobene Scheibe liegt noch im großen Kreis`);
+      if (t > 0) {
+        const [loch] = mitRolle(z, "loch");
+        pruefe(!!loch && Math.abs(loch.r / skala - r) < 0.01 && abstand(loch.c, M) < 0.6, `Kreis minus Kreis: ${wo} — das Loch ist nicht als Kreis mit dem Radius r um M zu sehen`);
+      }
+      const bilanz = await text(page, "#kd-bilanz");
+      pruefe(bilanz.includes(`π · R² = π · ${de(R * R)} cm² ≈ ${de2(Ag)} cm²`) && bilanz.includes(`π · r² = π · ${de(r * r)} cm² ≈ ${de2(Ak)} cm²`)
+        && bilanz.includes(`A = π · R² − π · r² = π · (R² − r²) = π · (${de(R * R)} − ${de(r * r)}) cm² = π · ${de(R * R - r * r)} cm² ≈ ${de2(A)} cm²`),
+      `Kreis minus Kreis: ${wo} — die Bilanz stimmt nicht — „${bilanz}“`);
+    }
+  }
+}
+
+// ── Abschnitt 4, zweiter Weg: Kreisring aufbiegen ─────────────────────────
 async function kreisring(page) {
   for (const [R, rWunsch] of [[3, 1.5], [2.5, 2], [1.5, 0.5], [3, 2.5], [2, 1.75]]) {
     await setzeRegler(page, "kr-gr", R);
@@ -374,7 +447,8 @@ async function kreisring(page) {
         `Kreisring: ${wo} — das Trapez hat nicht die Umfänge als parallele Seiten oder nicht den Flächeninhalt des Rings`);
       }
       const bilanz = await text(page, "#kr-bilanz");
-      pruefe(bilanz.includes(`A = π · (R² − r²) = π · (${de(R * R)} − ${de(r * r)}) cm² ≈ ${de2(A)} cm²`) && bilanz.includes(`π · (R + r) · (R − r) ≈ ${de2(A)} cm²`),
+      pruefe(bilanz.includes(`A = π · (R² − r²) = π · (${de(R * R)} − ${de(r * r)}) cm² ≈ ${de2(A)} cm²`)
+        && bilanz.includes(`A = π · (R + r) · (R − r) = π · ${de(R + r)} · ${de(R - r)} cm² ≈ ${de2(A)} cm²`),
         `Kreisring: ${wo} — die Bilanz stimmt nicht — „${bilanz}“`);
     }
   }
@@ -448,10 +522,64 @@ async function ausschnitt(page) {
   }
 }
 
+// ── Die Dreisatz-Tabellen in Abschnitt 5 und 6 ────────────────────────────
+//
+// Die Tabelle leitet den Anteil her, BEVOR die Zeichnung ihn zeigt: Sie steht im Abschnitt vor dem
+// Regler. Nachgerechnet wird jede Zeile: Der Rechenschritt links führt vom Winkel der Zeile darüber
+// auf den Winkel dieser Zeile, rechts steht derselbe Schritt, der Anteil ist Winkel : 360°
+// (gekürzt), und das Ergebnis ist Anteil · Ganzes.
+const ggT = (a, b) => (b ? ggT(b, a % b) : a);
+async function tabellen(page) {
+  for (const [sec, id, mount, ganzes] of [["sec-bogen", "bo-tabelle", "bo-mount", "2 · π · r"], ["sec-ausschnitt", "au-tabelle", "au-mount", "π · r²"]]) {
+    const tab = await page.evaluate(([s, i, m]) => {
+      const t = document.getElementById(i);
+      if (!t) return null;
+      // Brüche als „z/n“ lesen: innerText gäbe Zähler und Nenner je nach Satz auf zwei Zeilen.
+      const lesbar = (td) => {
+        const k = td.cloneNode(true);
+        for (const b of k.querySelectorAll(".bruch")) b.replaceWith(`${b.querySelector(".z").textContent}/${b.querySelector(".n").textContent}`);
+        return k.textContent.replace(/\s+/g, " ").trim();
+      };
+      return {
+        imAbschnitt: !!t.closest("#" + s),
+        vorDerZeichnung: !!(t.compareDocumentPosition(document.getElementById(m)) & Node.DOCUMENT_POSITION_FOLLOWING),
+        zeilen: [...t.querySelectorAll("tbody tr")].map((tr) => [...tr.children].map(lesbar)),
+      };
+    }, [sec, id, mount]);
+    pruefe(!!tab, `Tabelle: ${sec} hat keine Dreisatz-Tabelle #${id}`);
+    if (!tab) continue;
+    pruefe(tab.imAbschnitt && tab.vorDerZeichnung, `Tabelle ${id}: steht nicht in ${sec} vor der Zeichnung`);
+    const winkel = tab.zeilen.map((z) => z[1]);
+    pruefe(JSON.stringify(winkel) === JSON.stringify(["360°", "180°", "90°", "1°", "α"]), `Tabelle ${id}: Winkel ${winkel.join(", ")} statt 360°, 180°, 90°, 1°, α`);
+    tab.zeilen.forEach((z, i) => {
+      const [links, w, anteil, ergebnis, rechts] = z;
+      const wo = `Tabelle ${id}, Zeile ${w}`;
+      pruefe(z.length === 5, `${wo}: ${z.length} Zellen statt 5`);
+      pruefe(links === rechts, `${wo}: links steht „${links}“, rechts „${rechts}“ — beim Dreisatz geschieht auf beiden Seiten dasselbe`);
+      const zahl = w === "α" ? null : Number(w.replace("°", ""));
+      if (i === 0) pruefe(links === "", `${wo}: die erste Zeile hat einen Rechenschritt`);
+      else {
+        const vorher = tab.zeilen[i - 1][1] === "α" ? null : Number(tab.zeilen[i - 1][1].replace("°", ""));
+        const m = links.match(/^↓ ([:·]) (\d+|α)$/);
+        pruefe(!!m, `${wo}: der Rechenschritt „${links}“ ist nicht lesbar`);
+        if (m && zahl !== null) pruefe(m[1] === ":" && Math.abs(vorher / Number(m[2]) - zahl) < 1e-12, `${wo}: ${vorher}° ${m[1]} ${m[2]} ergibt nicht ${w}`);
+        if (m && zahl === null) pruefe(m[1] === "·" && m[2] === "α" && vorher === 1, `${wo}: auf α kommt man nur von 1° mit · α, nicht mit „${links}“`);
+      }
+      let soll;
+      if (zahl === null) soll = "α/360°";
+      else if (zahl === 360) soll = "1";
+      else { const g = ggT(zahl, 360); soll = `${zahl / g}/${360 / g}`; }
+      pruefe(anteil === soll, `${wo}: Anteil „${anteil}“ statt ${soll}`);
+      const sollErgebnis = soll === "1" ? ganzes : `${soll} · ${ganzes}`;
+      pruefe(ergebnis === sollErgebnis, `${wo}: „${ergebnis}“ statt ${sollErgebnis}`);
+    });
+  }
+}
+
 // ── Die Kontrollfragen ────────────────────────────────────────────────────
 async function quizze(page) {
   const ids = await page.evaluate(() => [...document.querySelectorAll(".quiz")].map((e) => e.id));
-  pruefe(ids.length === 8, `Kontrollfragen: ${ids.length} statt 8`);
+  pruefe(ids.length === 9, `Kontrollfragen: ${ids.length} statt 9`);
   // Jeder Erarbeitungsabschnitt hat seine eigene Kontrollfrage.
   for (const sec of ["sec-umfang", "sec-radius", "sec-flaeche", "sec-ring", "sec-bogen", "sec-ausschnitt"]) {
     const n = await page.evaluate((s) => document.querySelectorAll(`#${s} .quiz`).length, sec);
@@ -464,6 +592,7 @@ async function quizze(page) {
     "quiz-radius": de2(2 * P * 5),                         // U = 2 · π · 5 cm
     "quiz-flaeche": de2(P * 5 * 5),                        // d = 10 cm, also r = 5 cm
     "quiz-ring": de2(P * (36 - 16)),                       // R = 6 cm, r = 4 cm
+    "quiz-ring-aufbiegen": `${de2(P * (7 + 3))} cm lang und ${de(7 - 3)} cm breit`,   // π · (R + r) und R − r
     "quiz-bogen": `${de(24 * 60 / 360)} cm`,               // 60° von 24 cm
     "quiz-ausschnitt": `${de(0.5 * 5 * 6)} cm²`,           // ½ · b · r
   };
@@ -781,8 +910,18 @@ async function geruest(page) {
   const [ersterWeg] = flaecheText.split("Zweiter Weg");
   pruefe(!/Ring/.test(ersterWeg), "Gerüst: der erste Flächenweg greift auf die Ringe vor");
   pruefe(/Dreieck/.test(flaecheText.split("Zweiter Weg")[1] || "") && /Thema 4/.test(flaecheText), "Gerüst: der zweite Flächenweg führt nicht auf das Dreieck aus Thema 4 zurück");
+  // Der Kreisring: erst die Differenz (braucht nur A = π · r²), dann das Aufbiegen (braucht die Ringe
+  // aus Abschnitt 3). Der erste Weg darf vom zweiten noch nichts wissen.
   const ringText = await textVon("sec-ring");
-  pruefe(/Abschnitt 3/.test(ringText), "Gerüst: der Kreisring stützt sich nicht auf die Ringe aus Abschnitt 3");
+  const iErst = ringText.indexOf("Erster Weg"), iZweit = ringText.indexOf("Zweiter Weg");
+  pruefe(iErst >= 0 && iZweit > iErst, "Gerüst: der Kreisring hat nicht erst einen ersten, dann einen zweiten Weg");
+  const ersterRingWeg = ringText.slice(iErst, iZweit), zweiterRingWeg = ringText.slice(iZweit);
+  pruefe(/großer Kreis minus kleiner Kreis/.test(ersterRingWeg) && /π · R² − π · r²/.test(ersterRingWeg), "Gerüst: der erste Weg zum Kreisring ist nicht die Differenz der beiden Kreise");
+  pruefe(!/aufbieg|aufgebogen|Abschnitt 3|Mittellinie|Rechteck/i.test(ersterRingWeg), "Gerüst: der erste Weg zum Kreisring greift auf das Aufbiegen vor");
+  pruefe(/aufbiegen/i.test(zweiterRingWeg) && /Abschnitt 3/.test(zweiterRingWeg), "Gerüst: der zweite Weg zum Kreisring stützt sich nicht auf die Ringe aus Abschnitt 3");
+  const ringFolge = await page.evaluate(() => [...document.querySelectorAll("#sec-ring .th-wrap, #sec-ring .quiz")].map((e) => e.id));
+  pruefe(JSON.stringify(ringFolge) === JSON.stringify(["kd-mount", "quiz-ring", "kr-mount", "quiz-ring-aufbiegen"]),
+    `Gerüst: im Kreisring stehen ${ringFolge.join(", ")} statt Differenz, Kontrollfrage, Aufbiegen, Kontrollfrage`);
   for (const id of ["sec-umfang", "sec-radius", "sec-flaeche", "sec-ring"]) {
     const t = await textVon(id);
     pruefe(!/Kreisbogen|α : 360/.test(t), `Gerüst: ${id} benutzt schon den Kreisbogen`);
@@ -865,7 +1004,9 @@ async function geruest(page) {
       await radius(page);
       await ausschnitte(page);
       await ringe(page);
+      await kreisDifferenz(page);
       await kreisring(page);
+      await tabellen(page);
       await bogen(page);
       await ausschnitt(page);
       await quizze(page);
