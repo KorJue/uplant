@@ -391,6 +391,28 @@ async function hauptsatz(page) {
 
 // ---------- 6. Stammfunktionen ----------
 async function stammfunktion(page) {
+  // Der Abschnitt beginnt mit der linearen Funktion: Sie ist beim Laden gewählt, steht als erste
+  // Zeile der Regeltabelle und als erstes Beispiel — erst danach kommen Parabel und Potenzregel.
+  const anfang = await page.evaluate(() => {
+    const sec = document.getElementById("sec-stammfunktion");
+    const tab = sec.querySelector(".wissen-box table");
+    return {
+      gewaehlt: document.getElementById("sf-art").value,
+      erste: document.querySelector("#sf-art option").value,
+      zeile: tab ? tab.querySelectorAll("tr")[1].innerText.replace(/\s+/g, " ") : "",
+      beispiel: sec.querySelector(".beispiel-box").innerText.replace(/\s+/g, " "),
+      einstieg: sec.querySelector("p").innerText,
+    };
+  });
+  pruefe(anfang.gewaehlt === "linear" && anfang.erste === "linear", `Stammfunktion: beim Laden ist „${anfang.gewaehlt}“ gewählt, nicht die lineare Funktion`);
+  pruefe(/^m · x \+ n/.test(anfang.zeile), `Stammfunktion: die Regeltabelle beginnt nicht mit der linearen Funktion — „${anfang.zeile}“`);
+  pruefe(/^beispiele\s*∫.*\(2x \+ 1\) dx = \[x² \+ x\]/i.test(anfang.beispiel), `Stammfunktion: das erste Beispiel ist nicht linear — „${anfang.beispiel.slice(0, 80)}“`);
+  pruefe(/lineare/.test(anfang.einstieg) && /F\(x\) = x² \+ x/.test(anfang.einstieg), "Stammfunktion: der Einstieg beginnt nicht mit der linearen Funktion");
+  // ∫₀² (2x + 1) dx = 6, unabhängig nachgerechnet über die Trapezsumme.
+  let trapez = 0;
+  for (let i = 0; i < 2000; i++) { const x0 = (2 * i) / 2000, x1 = (2 * (i + 1)) / 2000; trapez += ((2 * x0 + 1) + (2 * x1 + 1)) / 2 * (x1 - x0); }
+  pruefe(Math.abs(trapez - 6) < 1e-9 && /= \(4 \+ 2\) − 0 = 6\./.test(anfang.beispiel), "Stammfunktion: das lineare Beispiel rechnet nicht 6");
+
   // f je Beispiel und der Wert der gezeichneten Stammfunktion bei 0 für C = 0.
   const ARTEN = {
     para: { f: (x) => x * x - 1, F0: 0 },

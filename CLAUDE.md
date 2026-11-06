@@ -138,12 +138,14 @@ Eine Seite, die in keinem Menü steht, findet niemand. Sie gehört in die
 
 ```html
 <a class="menu-card" data-section="klasse-8" href="neue-seite.html" hidden>
-  <h2>7. Titel<br><small class="menu-tiny">Untertitel</small></h2>
+  <h2>7. Titel</h2>
 </a>
 ```
 
-(Der `menu-tiny`-Untertitel ist freiwillig und lohnt sich, wo der Titel allein
-nicht verrät, was auf der Seite passiert.)
+Menükarten tragen **nur den Titel**, keinen Untertitel (Vorgabe des
+Projektinhabers); `test-seiten-gesamt.js` lehnt `<br>`, `<small>` und weiteren
+Text in einer Karte ab. Erlaubt sind das Symbol (`menu-icon`) und eine
+Kursmarke im Titel.
 
 `hidden` und `data-section` sind beide **nötig**: `assets/access-gate.js` blendet
 nur die Karten ein, deren Bereich auf der Startseite freigeschaltet wurde. Fehlt

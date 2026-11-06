@@ -215,13 +215,13 @@
   <!-- 6. Stammfunktionen -->
   <section class="card" id="sec-stammfunktion">
     <h2>6. Stammfunktionen und Integrationsregeln</h2>
-    <p>Integrieren heißt jetzt: eine Funktion F finden, deren Ableitung f ist. Weil eine Konstante beim Ableiten wegfällt, gibt es zu jedem f unendlich viele Stammfunktionen — ihre Graphen sind in y-Richtung gegeneinander verschoben und haben an jeder Stelle dieselbe Steigung. Verschiebe C.</p>
+    <p>Integrieren heißt jetzt: eine Funktion F finden, deren Ableitung f ist. Am einfachsten gelingt das bei einer <strong>linearen Funktion</strong>. Zu f(x) = 2x + 1 passt F(x) = x² + x, denn F′(x) = 2x + 1. Weil eine Konstante beim Ableiten wegfällt, passt aber auch x² + x + 5: Zu jedem f gibt es unendlich viele Stammfunktionen. Ihre Graphen sind in y-Richtung gegeneinander verschoben und haben an jeder Stelle dieselbe Steigung. Verschiebe C — und wähle danach die Parabel und die kubische Funktion.</p>
     <div class="widget">
       <div class="btn-row">
         <label>Funktion:
           <select id="sf-art" class="eingabe" style="padding:0.4rem">
-            <option value="para">f(x) = x² − 1</option>
             <option value="linear">f(x) = 2x + 1</option>
+            <option value="para">f(x) = x² − 1</option>
             <option value="kubik">f(x) = x³ − 3x</option>
           </select>
         </label>
@@ -240,6 +240,7 @@
       <span class="box-label">Integrationsregeln</span>
       <table class="fr-tabelle" style="margin-top:0.3rem">
         <tr><th>Funktion f</th><th>Stammfunktion F</th><th>Begründung</th></tr>
+        <tr><td>m · x + n</td><td><span class="bruch"><span class="z">m</span><span class="n">2</span></span> x² + n · x</td><td>lineare Funktion: (<span class="bruch"><span class="z">m</span><span class="n">2</span></span> x² + n · x)′ = m · x + n</td></tr>
         <tr><td>xⁿ (n ≠ −1)</td><td><span class="bruch"><span class="z">1</span><span class="n">n + 1</span></span> xⁿ⁺¹</td><td>Potenzregel rückwärts</td></tr>
         <tr><td>k · f(x)</td><td>k · F(x)</td><td>Faktorregel</td></tr>
         <tr><td>f(x) + g(x)</td><td>F(x) + G(x)</td><td>Summenregel</td></tr>
@@ -247,6 +248,7 @@
     </div>
     <div class="beispiel-box">
       <span class="box-label">Beispiele</span>
+      <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">2</span><span class="u">0</span></span></span> (2x + 1) dx = <span class="integral">[x² + x]<span class="grenzen"><span class="o">2</span><span class="u">0</span></span></span> = (4 + 2) − 0 = 6.<br>
       <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">2</span><span class="u">1</span></span></span> (3x² − 2x) dx = <span class="integral">[x³ − x²]<span class="grenzen"><span class="o">2</span><span class="u">1</span></span></span> = (8 − 4) − (1 − 1) = 4.<br>
       <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">4</span><span class="u">1</span></span></span> √x dx = <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">4</span><span class="u">1</span></span></span> x<sup><span class="bruch"><span class="z">1</span><span class="n">2</span></span></sup> dx = <span class="integral">[<span class="bruch"><span class="z">2</span><span class="n">3</span></span> x<sup><span class="bruch"><span class="z">3</span><span class="n">2</span></span></sup>]<span class="grenzen"><span class="o">4</span><span class="u">1</span></span></span> = <span class="bruch"><span class="z">2</span><span class="n">3</span></span> · 8 − <span class="bruch"><span class="z">2</span><span class="n">3</span></span> · 1 = <span class="bruch"><span class="z">14</span><span class="n">3</span></span> — denn 4<sup><span class="bruch"><span class="z">3</span><span class="n">2</span></span></sup> = (√4)³ = 8.<br>
       <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">2</span><span class="u">1</span></span></span> <span class="bruch"><span class="z">1</span><span class="n">x²</span></span> dx = <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">2</span><span class="u">1</span></span></span> x⁻² dx = <span class="integral">[−<span class="bruch"><span class="z">1</span><span class="n">x</span></span>]<span class="grenzen"><span class="o">2</span><span class="u">1</span></span></span> = −<span class="bruch"><span class="z">1</span><span class="n">2</span></span> + 1 = <span class="bruch"><span class="z">1</span><span class="n">2</span></span>.
@@ -457,6 +459,6 @@
 </footer>
 
 <script src="../../../../assets/lehrkraft.js"></script>
-<script type="module" src="lernpfad.js?v=8"></script>
+<script type="module" src="lernpfad.js?v=9"></script>
 </body>
 </html>

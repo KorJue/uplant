@@ -243,7 +243,10 @@ async function ausschnitte(page) {
           // jedes Stück genau r hoch.
           const c = 2 * r * Math.sin(Math.PI / n), h = r * Math.cos(Math.PI / n);
           const spitzen = stuecke.map((s) => s.punkte[0]);
-          const ys = [...new Set(spitzen.map((p) => Math.round(p.y)))];
+          // Gruppiert mit Toleranz, nicht über Math.round: Liegt eine Höhe bei x,5 Bildpunkten, teilte
+          // die Rundung sie in zwei.
+          const ys = [];
+          for (const p of spitzen) if (!ys.some((y) => Math.abs(y - p.y) < 0.6)) ys.push(p.y);
           pruefe(ys.length === 2 && Math.abs(Math.abs(ys[0] - ys[1]) / skala - h) < 0.02, `Ausschnitte: ${wo} — die Spitzen liegen nicht abwechselnd auf zwei Höhen im Abstand ${de(h, 3)} cm`);
           const xs = spitzen.map((p) => p.x).sort((a, b) => a - b);
           pruefe(xs.every((x, i) => i === 0 || Math.abs((x - xs[i - 1]) / skala - c / 2) < 0.01), `Ausschnitte: ${wo} — die Stücke liegen nicht lückenlos nebeneinander`);
@@ -273,6 +276,49 @@ async function ausschnitte(page) {
   const bilanz = await text(page, "#se-bilanz");
   pruefe(bilanz.includes("Quadrat innen 2 · r² = 18 cm², außen 4 · r² = 36 cm²"), `Ausschnitte: die Bilanz nennt die Quadrate nicht — „${bilanz}“`);
   await setzeHaken(page, "se-quadrate", false);
+}
+
+// ── Fester Maßstab ────────────────────────────────────────────────────────
+//
+// Ein größerer Radius muss im Bild größer sein. Passte die Bühne jede Figur auf dieselbe Größe ein,
+// wäre die Änderung nur an der Zahl darunter zu erkennen — und Abschnitt 1 behauptete „das Bild
+// wird größer oder kleiner“, ohne es zu zeigen. Gemessen wird deshalb der Maßstab (Bildpunkte je
+// Zentimeter) an einer Strecke bekannter Länge, beim kleinsten und beim größten Radius; er muss
+// derselbe sein. Beim Bogen zusätzlich über den Winkel: Der doppelte Winkel gibt sichtbar den
+// doppelten Bogen.
+const MASSSTAB = [
+  { mount: "ab-mount", name: "Abrollen", regler: "ab-d", werte: [1, 2.5, 4], sonst: [["ab-t", 50]],
+    skala: (z, d) => laenge(mitRolle(z, "lineal")[0].punkte) / d },
+  { mount: "se-mount", name: "Ausschnitte", regler: "se-r", werte: [2, 3, 4], sonst: [["se-n", 8], ["se-t", 100]],
+    skala: (z, r) => z.teile.find((e) => e.tag === "circle").r / r },
+  { mount: "ri-mount", name: "Ringe", regler: "ri-r", werte: [1.5, 2, 3], sonst: [["ri-n", 5], ["ri-t", 50]],
+    skala: (z, r) => ringSkala(z, r) },
+  { mount: "kd-mount", name: "Kreis minus Kreis", regler: "kd-gr", werte: [1.5, 2.25, 3], sonst: [["kd-kl", 0.5], ["kd-t", 100]],
+    skala: (z, R) => laenge(mitRolle(z, "R")[0].punkte) / R },
+  { mount: "kd-mount", name: "Kreis minus Kreis (r)", regler: "kd-kl", werte: [0.5, 1.5, 2.5], sonst: [["kd-gr", 3], ["kd-t", 100]],
+    skala: (z) => laenge(mitRolle(z, "R")[0].punkte) / 3 },
+  { mount: "kr-mount", name: "Kreisring aufbiegen", regler: "kr-gr", werte: [1.5, 2.25, 3], sonst: [["kr-kl", 0.5], ["kr-t", 0]],
+    skala: (z, R) => (Math.max(...mitRolle(z, "ring")[0].punkte.map((p) => p.y)) - z.namen.M.y) / R },
+  { mount: "bo-mount", name: "Bogen", regler: "bo-r", werte: [1.5, 2, 3], sonst: [["bo-a", 90], ["bo-t", 0]],
+    skala: (z, r) => laenge(z.teile.find((e) => e.klasse === "kr-radius").punkte) / r },
+  { mount: "bo-mount", name: "Bogen (Winkel)", regler: "bo-a", werte: [60, 90, 180, 360], sonst: [["bo-r", 2.5], ["bo-t", 50]],
+    skala: (z) => laenge(z.teile.find((e) => e.klasse === "kr-radius").punkte) / 2.5 },
+  { mount: "au-mount", name: "Ausschnitt", regler: "au-r", werte: [2, 3, 4], sonst: [["au-a", 120], ["au-k", 6], ["au-t", 100]],
+    skala: (z, r) => z.teile.find((e) => e.tag === "circle").r / r },
+];
+async function masssstab(page) {
+  for (const { mount, name, regler, werte, sonst, skala } of MASSSTAB) {
+    for (const [id, v] of sonst) await setzeRegler(page, id, v);
+    const gemessen = [];
+    for (const w of werte) {
+      const ist = await setzeRegler(page, regler, w);
+      gemessen.push([ist, skala(await zeichnung(page, mount), ist)]);
+    }
+    const [, s0] = gemessen[0];
+    for (const [w, sk] of gemessen) {
+      pruefe(Math.abs(sk - s0) < 0.003 * s0, `Maßstab ${name}: bei ${regler} = ${w} ${de(sk, 2)} px/cm, bei ${gemessen[0][0]} aber ${de(s0, 2)} px/cm — die Änderung wäre im Bild nicht zu sehen`);
+    }
+  }
 }
 
 // ── Abschnitt 3b: Ringe zum Dreieck ───────────────────────────────────────
@@ -899,6 +945,29 @@ async function geruest(page) {
     "sec-selbsteinschaetzung", "sec-vernetzung", "sec-formelsammlung", "sec-uebungen"];
   pruefe(JSON.stringify(folge) === JSON.stringify(soll), `Gerüst: Abschnitte ${folge.join(", ")} statt ${soll.join(", ")}`);
 
+  // Die Einschachtelung ist ein markierter Zusatz: Sie steht in einem eigenen Teil mit der Marke
+  // „optional“, samt ihrer Zeichnung und ihrer Kontrollfrage; die Pflicht-Kontrollfrage zum Umfang
+  // steht davor. Und kein späterer Abschnitt baut auf ihr auf.
+  const opt = await page.evaluate(() => {
+    const t = document.querySelector("#sec-umfang .optional-teil");
+    if (!t) return null;
+    const marke = t.querySelector("h3 .optional-marke");
+    return {
+      marke: marke ? marke.textContent.trim().toLowerCase() : "",
+      sichtbar: marke ? marke.getBoundingClientRect().width > 0 : false,
+      inhalt: ["es-mount", "quiz-pi"].every((id) => t.contains(document.getElementById(id))),
+      pflichtDavor: !t.contains(document.getElementById("quiz-umfang"))
+        && !!(document.getElementById("quiz-umfang").compareDocumentPosition(t) & Node.DOCUMENT_POSITION_FOLLOWING),
+      ueberspringen: !!t.querySelector('a[href="#sec-radius"]'),
+    };
+  });
+  pruefe(!!opt && opt.marke === "optional" && opt.sichtbar, "Gerüst: die Einschachtelung ist nicht sichtbar als optional markiert");
+  pruefe(!!opt && opt.inhalt && opt.pflichtDavor && opt.ueberspringen, `Gerüst: der optionale Teil enthält nicht Zeichnung und Kontrollfrage der Einschachtelung, die Pflichtfrage steht nicht davor, oder der Sprung zu Abschnitt 2 fehlt — ${JSON.stringify(opt)}`);
+  for (const id of ["sec-radius", "sec-flaeche", "sec-ring", "sec-bogen", "sec-ausschnitt"]) {
+    const t = await page.evaluate((i) => document.getElementById(i).innerText, id);
+    pruefe(!/Sechseck|Vieleck|einschachtel|3 < π/i.test(t), `Gerüst: ${id} baut auf der optionalen Einschachtelung auf`);
+  }
+
   // Kein Vorgriff: Der Umfang kommt ohne Flächenformel aus, der erste Flächenweg ohne die Ringe, und
   // der zweite Weg benutzt das Dreieck aus Thema 4 — nicht etwas, das erst danach kommt.
   const textVon = (id) => page.evaluate((i) => document.getElementById(i).innerText, id);
@@ -1002,6 +1071,7 @@ async function geruest(page) {
       await abrollen(page);
       await einschachteln(page);
       await radius(page);
+      await masssstab(page);
       await ausschnitte(page);
       await ringe(page);
       await kreisDifferenz(page);

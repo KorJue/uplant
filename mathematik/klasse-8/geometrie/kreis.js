@@ -238,6 +238,39 @@ function spur(stellung, schritte = 24) {
   return out;
 }
 
+// Der Rahmen einer Zeichnung über ALLE Reglerstellungen. Die Bühne bekommt ihn zusätzlich zur
+// augenblicklichen Figur; dann bleibt der Maßstab fest, und ein größerer Radius ist im Bild größer.
+// Ohne das passte buehneAuto jede Figur auf dieselbe Größe ein, und eine Änderung des Radius wäre
+// nur an der Zahl darunter zu erkennen — die Seite behauptete „das Bild wird größer“ und zeigte es
+// nicht. Gerechnet wird der Rahmen einmal, beim ersten Zeichnen: Er hängt nur von den Grenzen der
+// Regler ab. `stellungen` ist eine Generatorfunktion, die Punktlisten liefert.
+const RAHMEN = new Map();
+function festerRahmen(name, stellungen) {
+  if (!RAHMEN.has(name)) {
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (const punkte of stellungen()) {
+      for (const p of punkte) {
+        if (p.x < minX) minX = p.x;
+        if (p.x > maxX) maxX = p.x;
+        if (p.y < minY) minY = p.y;
+        if (p.y > maxY) maxY = p.y;
+      }
+    }
+    RAHMEN.set(name, [{ x: minX, y: minY }, { x: maxX, y: maxY }]);
+  }
+  return RAHMEN.get(name);
+}
+// Alle Werte, die ein Regler annehmen kann — aus seinen Attributen, damit Rahmen und Regler nicht
+// auseinanderlaufen, wenn jemand die Grenzen im HTML ändert.
+function reglerWerte(id) {
+  const e = document.getElementById(id);
+  const min = Number(e.min), max = Number(e.max), step = Number(e.step);
+  const out = [];
+  for (let i = 0; min + i * step <= max + 1e-9; i++) out.push(Math.round((min + i * step) * 1e6) / 1e6);
+  return out;
+}
+const groesster = (id) => Math.max(...reglerWerte(id));
+
 // Drehung um M — für .map().
 function drehUm(M, winkel) {
   const co = Math.cos(winkel), si = Math.sin(winkel);
@@ -286,9 +319,11 @@ function renderAbrollen() {
   setzeText("ab-t-anzeige", Math.round(t * 360) + "°");
 
   // Die Bühne nimmt den ganzen Weg auf, nicht nur die augenblickliche Stellung — sonst spränge
-  // die Zeichnung beim Abrollen.
+  // die Zeichnung beim Abrollen. Und sie ist für den größten Durchmesser gemacht: Ein kleineres Rad
+  // ist dann auch kleiner zu sehen.
   const ende = Math.max(U, 4 * d);
-  const b = buehneAuto(AB_W, AB_H, [{ x: -r - 0.2, y: -0.9 }, { x: ende + r + 0.2, y: d + 0.15 }]);
+  const abRahmen = (dd) => [{ x: -dd / 2 - 0.2, y: -0.9 }, { x: Math.max(Math.PI * dd, 4 * dd) + dd / 2 + 0.2, y: dd + 0.15 }];
+  const b = buehneAuto(AB_W, AB_H, [...festerRahmen("ab", function* () { yield abRahmen(groesster("ab-d")); }), ...abRahmen(d)]);
 
   // Der Boden und darunter vier Durchmesser hintereinander — das Maß, an dem gemessen wird.
   linie(b, { x: -r - 0.2, y: 0 }, { x: ende + r + 0.2, y: 0 }, "kr-boden");
@@ -500,9 +535,14 @@ function renderAusschnitte() {
   const theta = (2 * Math.PI) / n;
   const lage = (rr) => ({ C0: { x: rr, y: rr / 2 }, X0: 2 * rr + 1.4 });
   const { C0, X0 } = lage(r);
-  // Die Bühne nimmt den ganzen Weg der Stücke auf, damit keines unterwegs aus dem Bild ragt.
-  const weg = spur((tt) => ausschnittStuecke(r, theta, n, Math.PI / 2, C0, X0, tt).stuecke.flatMap((s) => s.punkte), 16);
-  const b = buehneAuto(SE_W, SE_H, [...weg, { x: X0, y: -0.25 * r - 0.5 }], { rand: 30 });
+  // Die Bühne nimmt den ganzen Weg der Stücke auf, damit keines unterwegs aus dem Bild ragt — und
+  // zwar beim größten Radius (fester Rahmen, siehe oben): Der Radius ändert den Maßstab nicht.
+  const seWeg = (rr, nn) => {
+    const { C0: c0, X0: x0 } = lage(rr), th = (2 * Math.PI) / nn;
+    return [...spur((tt) => ausschnittStuecke(rr, th, nn, Math.PI / 2, c0, x0, tt).stuecke.flatMap((s) => s.punkte), 16), { x: x0, y: -0.25 * rr - 0.5 }];
+  };
+  const seRahmen = festerRahmen("se-" + n, function* () { yield seWeg(groesster("se-r"), n); });
+  const b = buehneAuto(SE_W, SE_H, [...seRahmen, ...seWeg(r, n)], { rand: 30 });
 
   const { stuecke, c, h } = ausschnittStuecke(r, theta, n, Math.PI / 2, C0, X0, t);
 
@@ -565,15 +605,20 @@ function renderRinge() {
   // wo er ist. So landet jeder Streifen genau in der Höhe, in der er im Kreis unten lag, und die
   // Spitze des Dreiecks ist der Mittelpunkt des Kreises.
   // Bühne: alle Stellungen aller Ringe — auf halbem Weg wölben sie sich höher als der Kreis.
-  const weg = spur((tt) => {
-    const out = [];
-    for (let i = 0; i < n; i++) {
-      const rho = r - (i + 0.5) * w;
-      out.push(...streifen(2 * Math.PI * rho, w, rho, tt, 0, (i + 0.5) * w, 36));
-    }
-    return out;
-  });
-  const b = buehneAuto(RI_W, RI_H, [...weg, { x: -Math.PI * r - 0.9, y: -0.25 * r - 0.3 }], { rand: 30 });
+  const riWeg = (rr, nn) => {
+    const ww = rr / nn;
+    return [...spur((tt) => {
+      const out = [];
+      for (let i = 0; i < nn; i++) {
+        const rho = rr - (i + 0.5) * ww;
+        out.push(...streifen(2 * Math.PI * rho, ww, rho, tt, 0, (i + 0.5) * ww, 36));
+      }
+      return out;
+    }), { x: -Math.PI * rr - 0.9, y: -0.25 * rr - 0.3 }];
+  };
+  // Fester Rahmen: der größte Radius bei der eingestellten Zahl von Ringen.
+  const riRahmen = festerRahmen("ri-" + n, function* () { yield riWeg(groesster("ri-r"), n); });
+  const b = buehneAuto(RI_W, RI_H, [...riRahmen, ...riWeg(r, n)], { rand: 30 });
 
   const M = { x: 0, y: r };
   const U = 2 * Math.PI * r;
@@ -632,8 +677,14 @@ function renderKreisDifferenz() {
   const C1 = { x: R + KD_ABSTAND + r, y: 0 };
   const C = { x: t * C1.x, y: 0 };
   // Bühne: der große Kreis und die Scheibe am Ende ihres Wegs — dazwischen liegt alles auf der
-  // Strecke von M nach C1, also innerhalb dieses Rahmens. Er hängt nicht von t ab.
-  const b = buehneAuto(KD_W, KD_H, [{ x: -R, y: -R }, { x: R, y: R }, { x: C1.x + r, y: -r }, { x: C1.x + r, y: r }], { rand: 32 });
+  // Strecke von M nach C1, also innerhalb dieses Rahmens. Er hängt nicht von t ab, und er ist für die
+  // größten Radien gemacht (fester Rahmen): Ein kleinerer Kreis ist auch kleiner zu sehen.
+  const kdPunkte = (RR, rr) => {
+    const x1 = RR + KD_ABSTAND + rr;
+    return [{ x: -RR, y: -RR }, { x: RR, y: RR }, { x: x1 + rr, y: -rr }, { x: x1 + rr, y: rr }];
+  };
+  const kdRahmen = festerRahmen("kd", function* () { const RR = groesster("kd-gr"); yield kdPunkte(RR, RR - 0.5); });
+  const b = buehneAuto(KD_W, KD_H, [...kdRahmen, ...kdPunkte(R, r)], { rand: 32 });
 
   const voll = (Z, rr) => bogenPunkte(Z, rr, 0, 2 * Math.PI).slice(0, -1);
   flaecheMitLoch(b, voll(M, R), voll(M, r).reverse(), "kr-teil-a", { "data-rolle": "ring" });
@@ -683,9 +734,17 @@ function renderKreisring() {
   setzeText("kr-t-anzeige", Math.round(t * 100) + " %");
 
   const w = R - r, rho = (R + r) / 2, L = 2 * Math.PI * rho;
-  // Bühne: der ganze Weg des Rings — auf halbem Weg wölbt er sich höher als der Kreis.
-  const weg = spur((tt) => streifen(L, w, rho, tt, 0, w / 2, 36));
-  const b = buehneAuto(KR_W, KR_H, [...weg, { x: -Math.PI * R - 0.3, y: -0.25 * R - 0.3 }, { x: Math.PI * R + 1.4, y: 0 }], { rand: 30 });
+  // Bühne: der ganze Weg des Rings — auf halbem Weg wölbt er sich höher als der Kreis. Fester
+  // Rahmen: größter Außenradius, jeder Innenradius, den der Regler dazu zulässt.
+  const krWeg = (RR, rr) => {
+    const ww = RR - rr, rh = (RR + rr) / 2;
+    return [...spur((tt) => streifen(2 * Math.PI * rh, ww, rh, tt, 0, ww / 2, 36)), { x: -Math.PI * RR - 0.3, y: -0.25 * RR - 0.3 }, { x: Math.PI * RR + 1.4, y: 0 }];
+  };
+  const krRahmen = festerRahmen("kr", function* () {
+    const RR = groesster("kr-gr");
+    for (const rr of reglerWerte("kr-kl")) if (rr <= RR - 0.5) yield krWeg(RR, rr);
+  });
+  const b = buehneAuto(KR_W, KR_H, [...krRahmen, ...krWeg(R, r)], { rand: 30 });
   const M = { x: 0, y: R };
 
   if (t === 1) {
@@ -727,7 +786,7 @@ function renderKreisring() {
 
 // ================= 5. Der Kreisbogen =================
 
-const BO_W = 680, BO_H = 360;
+const BO_W = 680, BO_H = 500;   // hoch genug, dass der Vollwinkel beim Abrollen nicht an die Höhe stößt
 
 function renderBogen() {
   const r = reglerZahl("bo-r");
@@ -741,18 +800,24 @@ function renderBogen() {
   const bLaenge = (alpha / 360) * U;
   // Der Bogen rollt sich ab, indem seine Krümmung abnimmt — auf halbem Weg ist er ein Stück eines
   // größeren Kreises und reicht höher hinauf als der Kreis selbst. Die Bühne nimmt das mit auf.
-  const bogenBei = (rr, tt, schritte) => {
-    const kap = (1 - tt) / rr, laenge = (alpha / 360) * 2 * Math.PI * rr, out = [];
+  const bogenBei = (rr, tt, schritte, aa = alpha) => {
+    const kap = (1 - tt) / rr, laenge = (aa / 360) * 2 * Math.PI * rr, out = [];
     for (let i = 0; i <= schritte; i++) {
       const s = (laenge * i) / schritte;
       out.push(kap < 1e-12 ? { x: s, y: 0 } : { x: Math.sin(kap * s) / kap, y: (1 - Math.cos(kap * s)) / kap });
     }
     return out;
   };
-  const b = buehneAuto(BO_W, BO_H, [
-    ...spur((tt) => bogenBei(r, tt, 36)),
-    { x: -r - 0.3, y: -0.45 * r - 0.3 }, { x: U + 0.3, y: 2 * r + 0.2 },
-  ], { rand: 30 });
+  const boWeg = (rr, aa) => [...spur((tt) => bogenBei(rr, tt, 72, aa)), { x: -rr - 0.3, y: -0.45 * rr - 0.3 }, { x: 2 * Math.PI * rr + 0.3, y: 2 * rr + 0.2 }];
+  // Fester Rahmen beim größten Radius. Die BREITE kommt vom Vollwinkel: Beim Abrollen holt der
+  // volle Bogen nach links aus, und richtete sich die Breite nach dem eingestellten Winkel, schrumpfte
+  // der Maßstab bei großem Winkel. Die HÖHE kommt vom eingestellten Winkel — ein großer Winkel macht
+  // die Bühne nur höher, BO_H lässt dafür Platz. So hängt der Maßstab weder am Radius noch am
+  // Winkel, und der doppelte Winkel gibt sichtbar den doppelten Bogen.
+  const [voll0, voll1] = festerRahmen("bo-360", function* () { yield boWeg(groesster("bo-r"), 360); });
+  const [hier0, hier1] = festerRahmen("bo-" + alpha, function* () { yield boWeg(groesster("bo-r"), alpha); });
+  const boRahmen = [{ x: voll0.x, y: hier0.y }, { x: voll1.x, y: hier1.y }];
+  const b = buehneAuto(BO_W, BO_H, [...boRahmen, ...boWeg(r, alpha)], { rand: 30 });
   const M = { x: 0, y: r };
   const B0 = { x: 0, y: 0 };
   const a0 = -Math.PI / 2, a1 = a0 + (alpha * Math.PI) / 180;
@@ -824,9 +889,15 @@ function renderAusschnitt() {
   const { C0, X0 } = lage(r);
   const start = Math.PI / 2 - A / 2;   // der Ausschnitt steht symmetrisch nach oben
   const { stuecke, c, h } = ausschnittStuecke(r, theta, k, start, C0, X0, t);
-  // Bühne: der ganze Weg der Teile, dazu der Kreis, aus dem sie stammen.
-  const weg = spur((tt) => ausschnittStuecke(r, theta, k, start, C0, X0, tt).stuecke.flatMap((s) => s.punkte), 16);
-  const b = buehneAuto(AU_W, AU_H, [...weg, { x: C0.x - r, y: C0.y - r }, { x: C0.x + r, y: C0.y + r }, { x: X0, y: -0.25 * r - 0.5 }], { rand: 30 });
+  // Bühne: der ganze Weg der Teile, dazu der Kreis, aus dem sie stammen. Fester Rahmen: der größte
+  // Radius bei eingestelltem Winkel und eingestellter Teilzahl — der Radius ändert den Maßstab nicht.
+  const auWeg = (rr, aa, kk, schritte) => {
+    const { C0: c0, X0: x0 } = lage(rr), AA = (aa * Math.PI) / 180;
+    return [...spur((tt) => ausschnittStuecke(rr, AA / kk, kk, Math.PI / 2 - AA / 2, c0, x0, tt).stuecke.flatMap((s) => s.punkte), schritte),
+      { x: c0.x - rr, y: c0.y - rr }, { x: c0.x + rr, y: c0.y + rr }, { x: x0, y: -0.25 * rr - 0.5 }];
+  };
+  const auRahmen = festerRahmen(`au-${alpha}-${k}`, function* () { yield auWeg(groesster("au-r"), alpha, k, 16); });
+  const b = buehneAuto(AU_W, AU_H, [...auRahmen, ...auWeg(r, alpha, k, 16)], { rand: 30 });
 
   kreis(b, C0, r, "kr-kreis-blass");
   for (const s of stuecke) {
