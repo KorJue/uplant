@@ -193,11 +193,17 @@ const ohneTags = (s) => s.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
           await oeffne(page, p);
           falsch = await klickeErste(1);
         }
-        // Danach alle übrigen Antworten — eine davon ist richtig. Gezählt wird trotzdem der erste Versuch.
-        await page.evaluate((i) => {
+        // Danach die richtige Antwort als LETZTEN Klick: Gezählt wird trotzdem der erste Versuch. (Alle
+        // der Reihe nach anzuklicken genügte nicht — endete die Reihe auf einer falschen, stand das ✗
+        // auch dann noch da, wenn das Skript den letzten Versuch zählte.)
+        const zuletztRichtig = await page.evaluate((i) => {
           const q = [...document.querySelectorAll(`#${i} .quiz[id]`)].find((x) => !x.closest(".optional-teil"));
-          q.querySelectorAll(".quiz-opt").forEach((b) => b.click());
+          const opts = [...q.querySelectorAll(".quiz-opt")];
+          const richtig = opts.findIndex((b) => { b.click(); return !!q.querySelector(".quiz-feedback.ok"); });
+          if (richtig >= 0) opts[richtig].click();
+          return richtig >= 0 && !!q.querySelector(".quiz-feedback.ok");
         }, id);
+        pruefe(zuletztRichtig, `${p} (${modus}): die Kontrollfrage in ${id} hat keine richtige Antwort`);
         z = await zustand(page);
         const beleg = await page.evaluate((i) => document.querySelectorAll("#sec-selbsteinschaetzung .se-beleg")[i].textContent, mitFrage);
         pruefe(falsch && /✗/.test(beleg), `${p} (${modus}): die falsch beantwortete Kontrollfrage steht nicht beim Satz — „${beleg}“`);
