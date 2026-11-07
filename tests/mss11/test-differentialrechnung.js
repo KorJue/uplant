@@ -120,7 +120,7 @@ const ABSCHNITTE = ["sec-mittlere", "sec-lokal", "sec-ableitung", "sec-grafisch"
   "sec-tangente", "sec-differenzierbar", "sec-ganzrational", "sec-nullstellen", "sec-monotonie", "sec-stolperstelle"];
 async function geruest(page) {
   const folge = await page.evaluate(() => [...document.querySelectorAll("main section[id]")].map((s) => s.id));
-  const soll = [...ABSCHNITTE, "sec-selbsteinschaetzung", "sec-vernetzung", "sec-formelsammlung", "sec-uebungen"];
+  const soll = [...ABSCHNITTE, "sec-vernetzung", "sec-formelsammlung", "sec-uebungen", "sec-selbsteinschaetzung"];
   pruefe(JSON.stringify(folge) === JSON.stringify(soll), `Gerüst: Abschnitte ${folge.join(", ")} statt ${soll.join(", ")}`);
   // Die Normalparabel trägt die ganze Herleitung; deshalb steht sie in Abschnitt 1 bis 4 vorn.
   const start = await page.evaluate(() => ["mr-art", "lr-art", "fm-art", "gd-art"].map((id) => document.getElementById(id).value));

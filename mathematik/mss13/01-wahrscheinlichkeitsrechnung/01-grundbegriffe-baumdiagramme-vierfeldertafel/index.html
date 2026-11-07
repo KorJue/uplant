@@ -19,7 +19,7 @@
 </nav>
 <header class="page-header">
   <h1>Grundbegriffe, Baumdiagramme und Vierfeldertafel</h1>
-  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Fachbegriff, zeigt ihn an einer Simulation oder einer beweglichen Zeichnung und endet mit einer Kontrollfrage. Am Schluss stehen eine Selbsteinschätzung und sechzehn Übungsaufgaben auf vier Stufen, die du hier auf der Seite löst.</p>
+  <p>Ein Selbstlernpfad: die Grundbegriffe der Wahrscheinlichkeitsrechnung an Simulationen und beweglichen Zeichnungen — mit Kontrollfragen, sechzehn Übungsaufgaben und einer Selbsteinschätzung, die deine Ergebnisse auswertet.</p>
 </header>
 
 <main class="menu-main">
@@ -50,7 +50,7 @@
         </tbody>
       </table>
     </div>
-    <p class="hinweis-box">💡 Arbeite die Abschnitte der Reihe nach durch. Probiere jede Simulation selbst aus, bevor du die Kontrollfrage beantwortest — die Antwort ergibt sich meist direkt aus dem, was du gerade beobachtet hast. Du brauchst aus dem Grundwissen die <a href="../../../grundwissen-5-10/03-daten-und-zufall/02-zufall-und-wahrscheinlichkeit/index.html">Wahrscheinlichkeit als Anteil</a> und die <a href="../../../grundwissen-5-10/03-daten-und-zufall/03-mehrstufige-zufallsexperimente/index.html">mehrstufigen Zufallsexperimente</a>.</p>
+    <p class="hinweis-box">💡 Probiere jede Simulation selbst aus, bevor du die Kontrollfrage beantwortest. Du brauchst aus dem Grundwissen die <a href="../../../grundwissen-5-10/03-daten-und-zufall/02-zufall-und-wahrscheinlichkeit/index.html">Wahrscheinlichkeit als Anteil</a> und die <a href="../../../grundwissen-5-10/03-daten-und-zufall/03-mehrstufige-zufallsexperimente/index.html">mehrstufigen Zufallsexperimente</a>.</p>
   </section>
 
   <!-- 1. Zufallsexperiment, Ergebnis, Ergebnismenge -->
@@ -223,14 +223,6 @@
     <div class="quiz" id="quiz-vft"></div>
   </section>
 
-  <!-- Selbsteinschätzung -->
-  <section class="card" id="sec-selbsteinschaetzung">
-    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
-    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
-    <div id="se-liste"></div>
-    <div id="se-auswertung" class="event-result"></div>
-  </section>
-
   <!-- Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>Innermathematische Zusammenhänge</h2>
@@ -263,6 +255,20 @@
     <p>Zum Schluss Aufgaben, bei denen du direkt ins Baumdiagramm und in die Vierfeldertafel schreibst — durch Ankreuzen und Ausfüllen der nummerierten Lücken.</p>
     <div id="ausfuell-mount"></div>
   </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste" id="se-liste">
+      <li data-abschnitt="sec-ergebnis">Ich kann zu einem Zufallsexperiment die Ergebnismenge Ω angeben.</li>
+      <li data-abschnitt="sec-haeufigkeit">Ich kann absolute und relative Häufigkeit berechnen und das Gesetz der großen Zahlen erklären.</li>
+      <li data-abschnitt="sec-ereignis">Ich kann Ereignisse als Mengen schreiben und mit Summenregel und Gegenereignis rechnen.</li>
+      <li data-abschnitt="sec-laplace">Ich erkenne ein Laplace-Experiment und berechne P(E) = |E| : |Ω|.</li>
+      <li data-abschnitt="sec-baum1">Ich kann ein Baumdiagramm zeichnen und mit den Pfadregeln auswerten — und weiß, warum multipliziert wird.</li>
+      <li data-abschnitt="sec-baum2">Ich kann mit und ohne Zurücklegen rechnen und eine Vierfeldertafel aus einem Baum füllen.</li>
+    </ul>
+    <div class="se-auswertung event-result" id="se-auswertung" aria-live="polite"></div>
+  </section>
 
   <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
   <section class="card" data-lehrkraft="lehrkraefte.html" hidden></section>
@@ -274,6 +280,7 @@
 </footer>
 
 <script src="../../../../assets/lehrkraft.js"></script>
+<script src="../../../../assets/selbsteinschaetzung.js"></script>
 <script type="module" src="lernpfad.js?v=9"></script>
 </body>
 </html>

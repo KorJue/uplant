@@ -1290,14 +1290,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — wie viele Pfade?", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Stufen verschiedener Größe", generate: generateAufgabe2b },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — 1. Pfadregel", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — mindestens einmal", generate: generateAufgabe4b },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — ohne Zurücklegen", generate: generateAufgabe3 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Zwei gleiche Farben", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — beide Pfadregeln", generate: generateAufgabe4 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Zwei Drehungen, viele Runden", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — wie viele Pfade?", abschnitt: "sec-baum", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Stufen verschiedener Größe", abschnitt: "sec-ungleich", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — 1. Pfadregel", abschnitt: "sec-produktregel", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — mindestens einmal", abschnitt: "sec-produktregel", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — ohne Zurücklegen", abschnitt: "sec-zuruecklegen", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Zwei gleiche Farben", abschnitt: "sec-zuruecklegen", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — beide Pfadregeln", abschnitt: ["sec-produktregel", "sec-summenregel"], generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Zwei Drehungen, viele Runden", abschnitt: ["sec-produktregel", "sec-summenregel"], generate: generateAufgabe8 },
   ]);
 }
 

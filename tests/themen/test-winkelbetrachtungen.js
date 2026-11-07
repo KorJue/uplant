@@ -28,6 +28,31 @@ async function feldnamen(page, box) {
   }), box);
 }
 
+// Der Basiswinkelsatz steht im Abschnitt zur Winkelsumme: Der Satz des Thales (Klasse 8) verweist
+// für ihn hierher, und Aufgabe 6 sowie die Konstruktionen (Thema 6) setzen ihn voraus. Die
+// Begründung muss ohne Kongruenzsätze auskommen — die kommen erst in Thema 6.
+async function basiswinkel(page) {
+  const t = await page.evaluate(() => {
+    const sec = document.getElementById("sec-dreieck");
+    const box = [...sec.querySelectorAll(".wissen-box")].find((b) => /Basiswinkel/.test(b.textContent));
+    return {
+      box: box ? box.textContent.replace(/\s+/g, " ") : "",
+      ganz: sec.textContent.replace(/\s+/g, " "),
+    };
+  });
+  pruefe(/gleichschenklig.*Basiswinkel gleich groß/.test(t.box),
+    "Winkelsumme: kein Merksatz „im gleichschenkligen Dreieck sind die Basiswinkel gleich groß“");
+  pruefe(/180° − 2 · Basiswinkel/.test(t.box), "Winkelsumme: der Basiswinkelsatz nennt die Spitze nicht");
+  pruefe(/[Ff]alt/.test(t.ganz) && /Schenkel gleich lang/.test(t.ganz), "Winkelsumme: der Basiswinkelsatz ist nicht begründet");
+  pruefe(!/kongruen|SWS|SSS|WSW/i.test(t.ganz), "Winkelsumme: die Begründung greift auf die Kongruenzsätze aus Thema 6 vor");
+
+  // Die Verweise der Thales-Seite auf den Basiswinkelsatz zeigen auf genau diesen Abschnitt.
+  const thales = require("fs").readFileSync(require("path").join(__dirname, "../../mathematik/klasse-8/geometrie/satz-des-thales.html"), "utf8");
+  const ziele = [...thales.matchAll(/<a href="([^"]+)">Basiswinkelsatz<\/a>/g)].map((m) => m[1]);
+  pruefe(ziele.length >= 1, "Thales: kein Verweis auf den Basiswinkelsatz gefunden");
+  for (const z of ziele) pruefe(/05-winkelbetrachtungen\/index\.html#sec-dreieck$/.test(z), `Thales: der Basiswinkelsatz verweist auf ${z}`);
+}
+
 async function aufgaben(page) {
   // Aufgabe 1 — Scheitel- und Nebenwinkel. 32 Winkel × 2 Fragen = 64 Fassungen;
   // bei 30 Zügen ist E = 30·(1 − 29/(2·64)) ≈ 23,6 (erwartete Doppel 6,8,
@@ -256,7 +281,7 @@ async function aufgaben(page) {
     const wo = dunkel ? "dunkel" : "hell";
     const page = await neueSeite(browser, { dunkel });
     await oeffne(page, SEITE);
-    if (!dunkel) await aufgaben(page);
+    if (!dunkel) { await basiswinkel(page); await aufgaben(page); }
     else await pruefeKontrast(page, bericht, "dunkel");
     await pruefeNotation(page, bericht, wo);
     for (const s of page.stoerungen) pruefe(false, `${wo}: ${s}`);

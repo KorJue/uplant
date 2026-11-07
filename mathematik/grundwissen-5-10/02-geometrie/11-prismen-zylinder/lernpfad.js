@@ -991,14 +991,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Volumen eines Dreiecksprismas", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — V = G · h, vorwärts und rückwärts", generate: generateAufgabe2b },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Oberfläche eines Quaders", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Oberfläche einer Konservendose", generate: generateAufgabe4b },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Zylinder", generate: generateAufgabe3 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Wie hoch ist das Gefäß?", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Fassungsvermögen in Litern", generate: generateAufgabe4 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Ein Rohr wiegen", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Volumen eines Dreiecksprismas", abschnitt: "sec-volumen", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — V = G · h, vorwärts und rückwärts", abschnitt: ["sec-volumen", "sec-hohlmasse"], generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Oberfläche eines Quaders", abschnitt: "sec-oberflaeche", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Oberfläche einer Konservendose", abschnitt: ["sec-oberflaeche", "sec-zylinder"], generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Zylinder", abschnitt: "sec-zylinder", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Wie hoch ist das Gefäß?", abschnitt: ["sec-zylinder", "sec-hohlmasse"], generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Fassungsvermögen in Litern", abschnitt: "sec-hohlmasse", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Ein Rohr wiegen", abschnitt: "sec-zylinder", generate: generateAufgabe8 },
   ]);
 }
 

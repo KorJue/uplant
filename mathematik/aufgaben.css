@@ -96,3 +96,63 @@
 /* Die Eingabeform steht in Schreibmaschinenschrift: So sieht man, dass „x^2“ und „sqrt(x)“ wörtlich
    getippt werden, nicht als Formel gemeint sind. */
 .eingabeform { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.95em; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 0 0.3rem; }
+
+/* ---------- Themen: jede Aufgabe gehört zu einem Abschnitt ----------
+   Die Themenleiste wählt nach Abschnitt, die Reiter nach Stufe; beides zusammen bestimmt, was zu
+   sehen ist. Mit gewähltem Thema zeigt jeder Reiter in einem Zähler, wie viele Aufgaben er dazu hat,
+   und leere Reiter sind gesperrt. Die Sprünge „Gleich üben“ stehen am Ende der Abschnitte. */
+.aufgaben-themen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0.8rem 0 0.1rem;
+}
+.aufgaben-themen-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin-right: 0.15rem;
+}
+.aufgaben-themen button {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+}
+.aufgaben-themen button.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent) inset;
+  background: var(--card-bg);
+  font-weight: 700;
+}
+.schwierigkeit-tabs button .anzahl:not(:empty) {
+  margin-left: 0.35rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  font-size: 0.78em;
+  background: var(--border);
+}
+.schwierigkeit-tabs button:disabled { opacity: 0.45; cursor: not-allowed; }
+.aufgabe-thema {
+  margin: -0.15rem 0 0.45rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.aufgabe-thema a { color: inherit; }
+.uebung-sprung { margin: 1rem 0 0; text-align: right; }
+.uebung-sprung a {
+  display: inline-block;
+  padding: 0.35rem 0.85rem;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  color: var(--accent);
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.uebung-sprung a:hover, .uebung-sprung a:focus-visible { background: var(--accent); color: #fff; }

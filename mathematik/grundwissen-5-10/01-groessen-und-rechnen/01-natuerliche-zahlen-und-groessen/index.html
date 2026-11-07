@@ -132,19 +132,6 @@
     <div class="quiz" id="quiz-groessen"></div>
   </section>
 
-  <!-- Selbsteinschätzung: dieselben Ziele wie in „Worum geht es hier?“, als Ich-kann-Sätze -->
-  <section class="card" id="sec-selbsteinschaetzung">
-    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
-    <p>Das sind die Ziele vom Anfang dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst — deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 😐 oder 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
-    <ul class="se-liste">
-      <li data-abschnitt="sec-stellenwertsystem">Ich kann eine Zahl in eine Stellenwerttafel eintragen und in ihre Stellenwerte zerlegen.</li>
-      <li data-abschnitt="sec-runden">Ich kann Zahlen sachgerecht runden — auch wenn an der Rundungsstelle eine 9 steht.</li>
-      <li data-abschnitt="sec-zahlenstrahl">Ich kann Zahlen auf dem Zahlenstrahl darstellen, vergleichen und ordnen.</li>
-      <li data-abschnitt="sec-groessen">Ich kann Längen, Massen, Zeiten und Geldbeträge in andere Einheiten umrechnen.</li>
-    </ul>
-    <div class="se-auswertung event-result" aria-live="polite"></div>
-  </section>
-
   <!-- 5. Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>5. Innermathematische Zusammenhänge</h2>
@@ -172,6 +159,18 @@
     <h2>7. Übungsaufgaben</h2>
     <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
     <div id="exercises-mount"></div>
+  </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-stellenwertsystem">Ich kann eine Zahl in eine Stellenwerttafel eintragen und in ihre Stellenwerte zerlegen.</li>
+      <li data-abschnitt="sec-runden">Ich kann Zahlen sachgerecht runden — auch wenn an der Rundungsstelle eine 9 steht.</li>
+      <li data-abschnitt="sec-zahlenstrahl">Ich kann Zahlen auf dem Zahlenstrahl darstellen, vergleichen und ordnen.</li>
+      <li data-abschnitt="sec-groessen">Ich kann Längen, Massen, Zeiten und Geldbeträge in andere Einheiten umrechnen.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
   </section>
 
   <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->

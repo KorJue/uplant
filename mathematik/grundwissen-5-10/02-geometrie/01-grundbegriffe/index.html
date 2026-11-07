@@ -184,21 +184,6 @@
     <div class="quiz" id="quiz-symmetrie"></div>
   </section>
 
-  <!-- Selbsteinschätzung: dieselben Ziele wie in „Worum geht es hier?“, als Ich-kann-Sätze -->
-  <section class="card" id="sec-selbsteinschaetzung">
-    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
-    <p>Das sind die Ziele vom Anfang dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst — deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 😐 oder 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
-    <ul class="se-liste">
-      <li data-abschnitt="sec-linien">Ich kann Punkt, Strecke, Strahl und Gerade unterscheiden und richtig aufschreiben.</li>
-      <li data-abschnitt="sec-lage">Ich kann erkennen, ob zwei Geraden parallel, senkrecht oder schneidend sind.</li>
-      <li data-abschnitt="sec-abstand">Ich kann Abstände bestimmen — auch den eines Punktes von einer Geraden.</li>
-      <li data-abschnitt="sec-koordinaten">Ich kann Punkte im Koordinatensystem ablesen und eintragen.</li>
-      <li data-abschnitt="sec-winkel">Ich kann Winkel benennen, messen und in Winkelarten einordnen.</li>
-      <li data-abschnitt="sec-symmetrie">Ich kann Achsen- und Punktsymmetrie unterscheiden.</li>
-    </ul>
-    <div class="se-auswertung event-result" aria-live="polite"></div>
-  </section>
-
   <!-- 7. Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>7. Innermathematische Zusammenhänge</h2>
@@ -227,6 +212,20 @@
     <h2>9. Übungsaufgaben</h2>
     <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
     <div id="exercises-mount"></div>
+  </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-linien">Ich kann Punkt, Strecke, Strahl und Gerade unterscheiden und richtig aufschreiben.</li>
+      <li data-abschnitt="sec-lage">Ich kann erkennen, ob zwei Geraden parallel, senkrecht oder schneidend sind.</li>
+      <li data-abschnitt="sec-abstand">Ich kann Abstände bestimmen — auch den eines Punktes von einer Geraden.</li>
+      <li data-abschnitt="sec-koordinaten">Ich kann Punkte im Koordinatensystem ablesen und eintragen.</li>
+      <li data-abschnitt="sec-winkel">Ich kann Winkel benennen, messen und in Winkelarten einordnen.</li>
+      <li data-abschnitt="sec-symmetrie">Ich kann Achsen- und Punktsymmetrie unterscheiden.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
   </section>
 
   <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->

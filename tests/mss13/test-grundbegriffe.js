@@ -41,7 +41,7 @@ function wkeit(t) {
 async function geruest(page) {
   const folge = await page.evaluate(() => [...document.querySelectorAll("main section[id]")].map((s) => s.id));
   const soll = ["sec-ergebnis", "sec-haeufigkeit", "sec-ereignis", "sec-laplace", "sec-baum1", "sec-baum2",
-    "sec-selbsteinschaetzung", "sec-vernetzung", "sec-formelsammlung", "sec-uebungen"];
+    "sec-vernetzung", "sec-formelsammlung", "sec-uebungen", "sec-selbsteinschaetzung"];
   pruefe(JSON.stringify(folge) === JSON.stringify(soll), `Gerüst: Abschnitte ${folge.join(", ")} statt ${soll.join(", ")}`);
   const pdf = path.join(WURZEL, path.dirname(SEITE), "formelsammlung.pdf");
   pruefe(fs.existsSync(pdf), "Formelsammlung: formelsammlung.pdf fehlt");

@@ -1228,14 +1228,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Scheitel ablesen", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Punktprobe", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — quadratische Ergänzung", generate: generateAufgabe3 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Diskriminante", generate: generateAufgabe4 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — pq-Formel", generate: generateAufgabe5 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Parabel aus Scheitel und Punkt", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — größte Fläche", generate: generateAufgabe7 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Wurfparabel", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Scheitel ablesen", abschnitt: "sec-scheitelform", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Punktprobe", abschnitt: "sec-scheitelform", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — quadratische Ergänzung", abschnitt: "sec-ergaenzung", generate: generateAufgabe3 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Diskriminante", abschnitt: "sec-diskriminante", generate: generateAufgabe4 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — pq-Formel", abschnitt: "sec-pq", generate: generateAufgabe5 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Parabel aus Scheitel und Punkt", abschnitt: "sec-scheitelform", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — größte Fläche", abschnitt: "sec-extremwert", generate: generateAufgabe7 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Wurfparabel", abschnitt: ["sec-pq", "sec-extremwert"], generate: generateAufgabe8 },
   ]);
 }
 

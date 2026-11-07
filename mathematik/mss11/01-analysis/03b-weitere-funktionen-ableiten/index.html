@@ -19,14 +19,14 @@
 </nav>
 <header class="page-header">
   <h1>Ableitung weiterer Funktionen: e-Funktion, Logarithmus, Sinus und Kosinus</h1>
-  <p>Ein Selbstlernpfad für den Leistungskurs: Bisher hast du ganzrationale Funktionen und Wurzeln abgeleitet. Jetzt kommen die Funktionen dazu, mit denen man Wachstum, Zerfall und Schwingungen beschreibt — die e-Funktion, der natürliche Logarithmus, Sinus und Kosinus — und Funktionen, die aus ihnen zusammengesetzt sind. Dafür braucht es zwei neue Regeln und einen geschärften Blick darauf, was bei diesen Funktionen anders ist als bei Polynomen. Jeder Abschnitt leitet sein Ergebnis an einer beweglichen Darstellung her, rechnet es nach und endet mit einer Kontrollfrage. Am Schluss stehen vierundzwanzig Übungsaufgaben auf vier Stufen.</p>
+  <p>Ein Selbstlernpfad für den Leistungskurs: e-Funktion, natürlicher Logarithmus, Sinus und Kosinus ableiten — die Funktionen für Wachstum, Zerfall und Schwingungen. Mit Kontrollfragen und vierundzwanzig Übungsaufgaben.</p>
 </header>
 
 <main class="menu-main">
 
   <section class="card">
     <h2>Worum geht es hier?</h2>
-    <p>Eine Bakterienkultur wächst umso schneller, je mehr Bakterien schon da sind. Ein Getränk kühlt umso schneller ab, je wärmer es noch ist. Ein Pendel ist dort am schnellsten, wo es durch die Ruhelage geht. Solche Vorgänge beschreiben keine Polynome, sondern <span class="term">Exponential-</span> und <span class="term">Winkelfunktionen</span>. Ihre Ableitungen haben eine eigene Gestalt: Die e-Funktion stimmt mit ihrer Ableitung überein, Sinus und Kosinus gehen beim Ableiten reihum ineinander über. Am Ende kannst du:</p>
+    <p>Bakterien wachsen umso schneller, je mehr schon da sind; ein Pendel ist in der Ruhelage am schnellsten. Solche Vorgänge beschreiben Exponential- und Winkelfunktionen — und ihre Ableitungen haben eine eigene Gestalt. Am Ende kannst du:</p>
     <ul class="lern-intro-list">
       <li>begründen, warum die Ableitung einer Exponentialfunktion b<sup>x</sup> zu ihr selbst proportional ist und warum die Basis <span class="term">e ≈ 2,718</span> dabei die besondere ist</li>
       <li>e<sup>x</sup> und e<sup>kx</sup> ableiten und Gleichungen wie e<sup>kx</sup> = c mit dem <span class="term">natürlichen Logarithmus</span> lösen</li>
@@ -37,8 +37,8 @@
       <li>solche Funktionen auf Verhalten für x → ±∞, Symmetrie, Nullstellen, Monotonie und Extrempunkte untersuchen — und sagen, was dabei <strong>anders ist als bei ganzrationalen Funktionen</strong></li>
       <li>momentane Änderungsraten bei Wachstums- und Schwingungsvorgängen berechnen und deuten</li>
     </ul>
-    <p class="kurs-hinweis"><span class="kurs-marke lk">Leistungskurs</span> Diese Seite setzt <a href="../03-differentialrechnung/index.html">Thema 2.1</a> fort. Nach dem rheinland-pfälzischen Lehrplan gehören die Kettenregel, Sinus und Kosinus, die Quotientenregel und die Funktion ln zum Leistungsfach. Die e-Funktion in der Form f(x) = a · e<sup>kx</sup>, Produkte mit ihr und das Lösen von e<sup>kx</sup> = c gehören dagegen auch zum Grundfach — diese Abschnitte tragen die Marke <span class="kurs-marke gk">GK + LK</span>, die übrigen <span class="kurs-marke lk">LK</span>.</p>
-    <p>Die Seite folgt der Schreibweise von <strong>Elemente der Mathematik</strong>; <strong>Fundamente der Mathematik</strong> schreibt dasselbe. Für e<sup>x</sup> steht auf manchen Taschenrechnern und in Programmen auch exp(x). ln x ist der Logarithmus zur Basis e; die Taste „log“ meint meist die Basis 10 — sie ist hier nicht gemeint.</p>
+    <p class="kurs-hinweis"><span class="kurs-marke lk">Leistungskurs</span> Fortsetzung von <a href="../03-differentialrechnung/index.html">Thema 2.1</a>. Kettenregel, Sinus und Kosinus, Quotientenregel und ln gehören zum Leistungskurs; die e-Funktion a · e<sup>kx</sup>, Produkte mit ihr und das Lösen von e<sup>kx</sup> = c auch zum Grundkurs — diese Abschnitte tragen <span class="kurs-marke gk">GK + LK</span>, die übrigen <span class="kurs-marke lk">LK</span>.</p>
+    <p>Schreibweise wie in <strong>Elemente der Mathematik</strong> und <strong>Fundamente der Mathematik</strong>. e<sup>x</sup> heißt auf manchen Rechnern exp(x); ln ist der Logarithmus zur Basis e, nicht die Taste „log“.</p>
     <p class="hinweis-box">💡 Du brauchst aus <a href="../03-differentialrechnung/index.html">Thema 2.1</a> die <a href="../03-differentialrechnung/index.html#sec-ableitung">Ableitung als Grenzwert</a>, die <a href="../03-differentialrechnung/index.html#sec-potenz">Potenzregel</a>, die <a href="../03-differentialrechnung/index.html#sec-produkt">Produktregel</a>, <a href="../03-differentialrechnung/index.html#sec-tangente">Tangenten</a> und den Zusammenhang von <a href="../03-differentialrechnung/index.html#sec-monotonie">f und f′</a>. Aus der Mittelstufe kommen die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/11-exponentialfunktionen/index.html#sec-funktion">Exponentialfunktionen</a>, die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/09-potenzen/index.html#sec-gesetze">Potenzgesetze</a>, das <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/12-trigonometrische-funktionen/index.html#sec-bogenmass">Bogenmaß</a> und die <a href="../../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/12-trigonometrische-funktionen/index.html#sec-kurven">Sinus- und Kosinuskurve</a>, aus <a href="../01-folgen-und-reihen/index.html">Thema 1.1</a> der <a href="../01-folgen-und-reihen/index.html#sec-grenzwert">Grenzwert einer Folge</a>.</p>
   </section>
 
@@ -552,13 +552,6 @@
     <div class="quiz" id="quiz-stolperstelle"></div>
   </section>
 
-  <section class="card" id="sec-selbsteinschaetzung">
-    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
-    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
-    <div id="se-liste"></div>
-    <div id="se-auswertung" class="event-result"></div>
-  </section>
-
   <!-- Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>Innermathematische Zusammenhänge</h2>
@@ -589,6 +582,28 @@
     <p class="progress-note">Zahlen gibst du mit Komma ein, zum Beispiel 1,5; Brüche wie 3/2 sind ebenfalls erlaubt. Gerundete Ergebnisse gibst du auf vier Nachkommastellen genau ein.</p>
     <div id="exercises-mount"></div>
   </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste" id="se-liste">
+      <li data-abschnitt="sec-e">Ich kann erklären, warum (b^x)′ ein festes Vielfaches von b^x ist und was die Zahl e auszeichnet.</li>
+      <li data-abschnitt="sec-ex">Ich kann a · eᵏˣ ableiten und f′ = k · f deuten.</li>
+      <li data-abschnitt="sec-ln">Ich kann Gleichungen wie a · eᵏˣ = c mit dem natürlichen Logarithmus lösen und die Logarithmusregeln anwenden.</li>
+      <li data-abschnitt="sec-produkt-e">Ich kann Produkte wie x² · e⁻ˣ ableiten und den e-Faktor ausklammern.</li>
+      <li data-abschnitt="sec-sinus">Ich kann sin und cos ableiten und weiß, warum das nur im Bogenmaß gilt.</li>
+      <li data-abschnitt="sec-kette">Ich kann Verkettungen mit der Kettenregel ableiten — äußere mal innere Ableitung.</li>
+      <li data-abschnitt="sec-quotient">Ich kann Quotienten mit der Quotientenregel ableiten.</li>
+      <li data-abschnitt="sec-lnfunktion">Ich kann ln x und ln(u(x)) ableiten und den Definitionsbereich beachten.</li>
+      <li data-abschnitt="sec-verhalten">Ich kann das Verhalten von p(x) · eᵏˣ für x → ±∞ angeben und begründen.</li>
+      <li data-abschnitt="sec-symmetrie">Ich kann Symmetrie mit f(−x) nachweisen und die Periode von sin(bx) angeben.</li>
+      <li data-abschnitt="sec-nullstellen">Ich kann Nullstellen mit dem Satz vom Nullprodukt, mit ln und bei sin x = c bestimmen.</li>
+      <li data-abschnitt="sec-monotonie">Ich kann Monotonie und Extrempunkte von e- und Winkelfunktionen bestimmen.</li>
+      <li data-abschnitt="sec-wachstum">Ich kann Änderungsraten bei Wachstum, Abkühlung und Schwingung mit Einheit berechnen und deuten.</li>
+      <li data-abschnitt="sec-stolperstelle">Ich verwechsle die Potenzregel nicht mit der Ableitung von Exponentialfunktionen.</li>
+    </ul>
+    <div class="se-auswertung event-result" id="se-auswertung" aria-live="polite"></div>
+  </section>
 
   <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
   <section class="card" data-lehrkraft="lehrkraefte.html" hidden></section>
@@ -600,6 +615,7 @@
 </footer>
 
 <script src="../../../../assets/lehrkraft.js"></script>
+<script src="../../../../assets/selbsteinschaetzung.js"></script>
 <script type="module" src="lernpfad.js?v=1"></script>
 </body>
 </html>

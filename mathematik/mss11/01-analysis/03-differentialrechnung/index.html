@@ -19,14 +19,14 @@
 </nav>
 <header class="page-header">
   <h1>Differentialrechnung</h1>
-  <p>Ein Selbstlernpfad: Wie schnell ändert sich etwas — nicht im Durchschnitt, sondern genau jetzt? Aus dieser Frage entsteht die Ableitung. Jeder Abschnitt leitet sein Ergebnis an einer beweglichen Darstellung her, rechnet es nach und endet mit einer Kontrollfrage. Am Schluss stehen vierundzwanzig Übungsaufgaben auf vier Stufen, die du hier auf der Seite löst.</p>
+  <p>Ein Selbstlernpfad: Wie schnell ändert sich etwas — nicht im Durchschnitt, sondern genau jetzt? Daraus entsteht die Ableitung. Mit beweglichen Darstellungen, Kontrollfragen und vierundzwanzig Übungsaufgaben.</p>
 </header>
 
 <main class="menu-main">
 
   <section class="card">
     <h2>Worum geht es hier?</h2>
-    <p>Ein Stein fällt, ein Kurs steigt, ein Wasserstand sinkt: Überall ändert sich eine Größe mit der Zeit oder mit einer anderen Größe. Wie stark sie sich <em>im Mittel</em> ändert, sagt ein Quotient aus zwei Differenzen. Wie stark sie sich <em>in einem Augenblick</em> ändert, sagt die <span class="term">Ableitung</span> — der Grenzwert dieser Quotienten. Sie ist der Grundbegriff der Differentialrechnung, und mit ihr werden in <a href="../04-funktionsuntersuchung/index.html">Thema 3.1</a> Funktionen untersucht. Am Ende kannst du:</p>
+    <p>Ein Stein fällt, ein Wasserstand sinkt: Wie stark sich eine Größe <em>im Mittel</em> ändert, sagt ein Quotient aus zwei Differenzen — wie stark <em>in einem Augenblick</em>, die <span class="term">Ableitung</span>. Mit ihr werden in <a href="../04-funktionsuntersuchung/index.html">Thema 3.1</a> Funktionen untersucht. Am Ende kannst du:</p>
     <ul class="lern-intro-list">
       <li>die <span class="term">mittlere Änderungsrate</span> als Sekantensteigung und die <span class="term">lokale Änderungsrate</span> als Tangentensteigung deuten und berechnen</li>
       <li>die Ableitung f′(x₀) als Grenzwert des Differenzenquotienten — den <span class="term">Differentialquotienten</span> — erklären und mit der <span class="term">x₀-Methode</span> (oder der h-Methode) bestimmen</li>
@@ -576,14 +576,6 @@
     <div class="quiz" id="quiz-stolperstelle"></div>
   </section>
 
-  <!-- Selbsteinschätzung -->
-  <section class="card" id="sec-selbsteinschaetzung">
-    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
-    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
-    <div id="se-liste"></div>
-    <div id="se-auswertung" class="event-result"></div>
-  </section>
-
   <!-- Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>Innermathematische Zusammenhänge</h2>
@@ -615,6 +607,27 @@
     <p class="progress-note">Zahlen gibst du mit Komma ein, zum Beispiel 1,5; Brüche wie 3/2 sind ebenfalls erlaubt.</p>
     <div id="exercises-mount"></div>
   </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste" id="se-liste">
+      <li data-abschnitt="sec-mittlere">Ich kann eine mittlere Änderungsrate berechnen und als Sekantensteigung deuten — mit Einheit.</li>
+      <li data-abschnitt="sec-lokal">Ich kann erklären, wie aus Sekanten PQ mit x → x₀ die Tangente und die lokale Änderungsrate werden.</li>
+      <li data-abschnitt="sec-ableitung">Ich kann f′(x₀) als Differentialquotienten mit der x₀-Methode (oder der h-Methode) berechnen und die drei Sichten auf die Ableitung nennen.</li>
+      <li data-abschnitt="sec-grafisch">Ich kann zu einem Graphen den Graphen der Ableitungsfunktion skizzieren.</li>
+      <li data-abschnitt="sec-potenz">Ich kann die Ableitungsfunktion erst an einer Stelle, dann allgemein herleiten und die Potenzregel anwenden — auch bei negativen Exponenten und bei √x.</li>
+      <li data-abschnitt="sec-regeln">Ich kann ganzrationale Funktionen mit Faktor- und Summenregel ableiten.</li>
+      <li data-abschnitt="sec-produkt">Ich kann Produkte mit der Produktregel ableiten und weiß, warum (u · v)′ nicht u′ · v′ ist.</li>
+      <li data-abschnitt="sec-tangente">Ich kann Tangente und Normale aufstellen und Steigungs- und Schnittwinkel berechnen.</li>
+      <li data-abschnitt="sec-differenzierbar">Ich kann prüfen, ob eine Funktion an einer Stelle differenzierbar ist.</li>
+      <li data-abschnitt="sec-ganzrational">Ich kann am Term den Verlauf für x → ±∞ und die Symmetrie einer ganzrationalen Funktion ablesen.</li>
+      <li data-abschnitt="sec-nullstellen">Ich kann Nullstellen durch Faktorisieren, Ausklammern und Substitution bestimmen und ihre Vielfachheit deuten.</li>
+      <li data-abschnitt="sec-monotonie">Ich kann aus f′ ablesen, wo f steigt und fällt und wo Hoch-, Tief- und Sattelpunkte liegen.</li>
+      <li data-abschnitt="sec-stolperstelle">Ich weiß, dass eine Tangente den Graphen an anderer Stelle schneiden darf.</li>
+    </ul>
+    <div class="se-auswertung event-result" id="se-auswertung" aria-live="polite"></div>
+  </section>
 
   <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
   <section class="card" data-lehrkraft="lehrkraefte.html" hidden></section>
@@ -626,6 +639,7 @@
 </footer>
 
 <script src="../../../../assets/lehrkraft.js"></script>
+<script src="../../../../assets/selbsteinschaetzung.js"></script>
 <script type="module" src="lernpfad.js?v=9"></script>
 </body>
 </html>

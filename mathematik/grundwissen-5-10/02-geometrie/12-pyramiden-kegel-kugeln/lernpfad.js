@@ -1137,14 +1137,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Volumen einer Pyramide", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Die Kugel", generate: generateAufgabe2b },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Oberfläche einer Pyramide", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Volumen eines Kegels", generate: generateAufgabe4b },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Mantelfläche eines Kegels", generate: generateAufgabe3 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Von der Oberfläche zur Kugel", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — zusammengesetzter Körper", generate: generateAufgabe4 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Ein Silo streichen", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Volumen einer Pyramide", abschnitt: "sec-pyramide", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Die Kugel", abschnitt: "sec-kugel", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Oberfläche einer Pyramide", abschnitt: ["sec-pyramide", "sec-hoehen"], generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Volumen eines Kegels", abschnitt: "sec-kegel", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Mantelfläche eines Kegels", abschnitt: "sec-kegel", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Von der Oberfläche zur Kugel", abschnitt: "sec-kugel", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — zusammengesetzter Körper", abschnitt: "sec-kugel", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Ein Silo streichen", abschnitt: "sec-kugel", generate: generateAufgabe8 },
   ]);
 }
 

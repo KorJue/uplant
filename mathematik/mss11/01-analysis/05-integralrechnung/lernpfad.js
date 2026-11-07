@@ -791,49 +791,6 @@ const QUIZZE = {
   },
 };
 
-// ================= Selbsteinschätzung =================
-//
-// Die Auswahl liegt nur im Browser dieser Person — eine Lernhilfe, keine Leistungsmessung.
-const SE_PUNKTE = [
-  ["sec-rekonstruktion", "Ich kann einen Bestand aus seiner Änderungsrate rekonstruieren und Abnahmen richtig abziehen."],
-  ["sec-summen", "Ich kann Unter- und Obersummen aufstellen und erklären, warum ihr gemeinsamer Grenzwert die Fläche ist."],
-  ["sec-integral", "Ich kann das Integral als orientierten Flächeninhalt deuten und seine Eigenschaften nutzen."],
-  ["sec-integralfunktion", "Ich kann den Graphen einer Integralfunktion aus dem Graphen von f beschreiben."],
-  ["sec-hauptsatz", "Ich kann den Hauptsatz formulieren, begründen und anwenden."],
-  ["sec-stammfunktion", "Ich kann Stammfunktionen ganzrationaler Funktionen und von Potenzen bilden und mit der Probe prüfen."],
-  ["sec-flaeche", "Ich kann Flächen zwischen Graph und x-Achse berechnen, auch mit Vorzeichenwechsel."],
-  ["sec-zwischen", "Ich kann Flächen zwischen zwei Graphen berechnen."],
-  ["sec-mittelwert", "Ich kann Mittelwerte bestimmen und Integrale im Sachzusammenhang deuten."],
-  ["sec-stolperstelle", "Ich prüfe vor dem Integrieren, ob der Integrand im Intervall stetig ist."],
-];
-const SE_SCHLUESSEL = "uplant-mss11-integralrechnung-selbsteinschaetzung";
-
-function leseSE() {
-  try { return JSON.parse(localStorage.getItem(SE_SCHLUESSEL) || "{}"); } catch { return {}; }
-}
-function schreibeSE(d) {
-  try { localStorage.setItem(SE_SCHLUESSEL, JSON.stringify(d)); } catch { /* ohne Speicher geht es auch */ }
-}
-function renderSelbsteinschaetzung() {
-  const liste = document.getElementById("se-liste");
-  const stand = leseSE();
-  liste.innerHTML = "";
-  SE_PUNKTE.forEach(([id, text]) => {
-    const knoepfe = el("div", { class: "se-knoepfe", role: "group", "aria-label": text });
-    [["sicher", "😀", "sicher"], ["teils", "😐", "teilweise"], ["unsicher", "🤔", "noch unsicher"]].forEach(([wert, z, name]) => {
-      const b = el("button", { type: "button", "aria-pressed": String(stand[id] === wert), title: name, "aria-label": name }, z);
-      b.addEventListener("click", () => { const d = leseSE(); d[id] = wert; schreibeSE(d); renderSelbsteinschaetzung(); });
-      knoepfe.appendChild(b);
-    });
-    liste.appendChild(el("div", { class: "se-zeile" }, [el("span", { class: "se-text" }, text), knoepfe]));
-  });
-  const unsicher = SE_PUNKTE.filter(([id]) => stand[id] === "unsicher");
-  const sicher = SE_PUNKTE.filter(([id]) => stand[id] === "sicher").length;
-  const aus = document.getElementById("se-auswertung");
-  if (!Object.keys(stand).length) aus.textContent = "Noch nichts angekreuzt.";
-  else if (unsicher.length) aus.innerHTML = `Wiederhole zuerst: ${unsicher.map(([id]) => `<a href="#${id}">${document.querySelector(`#${id} h2`).textContent}</a>`).join(", ")}. Danach passen die Übungsaufgaben auf den Stufen „einfach“ und „mittel“.`;
-  else aus.textContent = `${sicher} von ${SE_PUNKTE.length} Punkten sicher — probier dich an den Aufgaben auf den Stufen „schwierig“ und „komplex“.`;
-}
 
 // ================= Start =================
 
@@ -858,5 +815,4 @@ for (const [ids, render] of REGLER) {
   render();   // nicht vergessen — sonst bleibt die Zeichnung leer, bis jemand einen Regler anfasst
 }
 for (const [id, def] of Object.entries(QUIZZE)) mountQuiz(document.getElementById(id), def);
-renderSelbsteinschaetzung();
 mountUebungsaufgaben(document.getElementById("exercises-mount"), AUFGABEN, { parse: parseZahl });

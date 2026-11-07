@@ -148,20 +148,6 @@
     <div class="quiz" id="quiz-anwendungen"></div>
   </section>
 
-  <!-- Selbsteinschätzung: dieselben Ziele wie in „Worum geht es hier?“, als Ich-kann-Sätze -->
-  <section class="card" id="sec-selbsteinschaetzung">
-    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
-    <p>Das sind die Ziele vom Anfang dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst — deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 😐 oder 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
-    <ul class="se-liste">
-      <li data-abschnitt="sec-satz">Ich kann den Satz des Pythagoras anwenden: a² + b² = c².</li>
-      <li data-abschnitt="sec-beweis">Ich kann mit einer Zerlegung begründen, warum der Satz gilt.</li>
-      <li data-abschnitt="sec-satz">Ich kann die fehlende Seite berechnen, egal ob sie Kathete oder Hypotenuse ist.</li>
-      <li data-abschnitt="sec-umkehrung">Ich kann mit der Umkehrung prüfen, ob ein Dreieck rechtwinklig ist.</li>
-      <li data-abschnitt="sec-satzgruppe">Ich kann Kathetensatz und Höhensatz anwenden: a² = c · p und h² = p · q.</li>
-    </ul>
-    <div class="se-auswertung event-result" aria-live="polite"></div>
-  </section>
-
   <!-- 6. Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>6. Innermathematische Zusammenhänge</h2>
@@ -192,6 +178,19 @@
     <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
     <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit. Alle Ergebnisse gehen glatt auf.</p>
     <div id="exercises-mount"></div>
+  </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-satz">Ich kann den Satz des Pythagoras anwenden: a² + b² = c².</li>
+      <li data-abschnitt="sec-beweis">Ich kann mit einer Zerlegung begründen, warum der Satz gilt.</li>
+      <li data-abschnitt="sec-satz">Ich kann die fehlende Seite berechnen, egal ob sie Kathete oder Hypotenuse ist.</li>
+      <li data-abschnitt="sec-umkehrung">Ich kann mit der Umkehrung prüfen, ob ein Dreieck rechtwinklig ist.</li>
+      <li data-abschnitt="sec-satzgruppe">Ich kann Kathetensatz und Höhensatz anwenden: a² = c · p und h² = p · q.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
   </section>
 
   <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->

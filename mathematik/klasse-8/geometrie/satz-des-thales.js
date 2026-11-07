@@ -1270,10 +1270,10 @@ function generateAufgabe4() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — der zweite spitze Winkel", generate: generateAufgabe1 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Umkreisradius und längste Seite", generate: generateAufgabe2 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — die Winkel am Mittelpunkt", generate: generateAufgabe3 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 4 — wie hoch liegt C?", generate: generateAufgabe4 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — der zweite spitze Winkel", abschnitt: "sec-satz", generate: generateAufgabe1 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 2 — Umkreisradius und längste Seite", abschnitt: "sec-umkehrung", generate: generateAufgabe2 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 3 — die Winkel am Mittelpunkt", abschnitt: "sec-beweis", generate: generateAufgabe3 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 4 — wie hoch liegt C?", abschnitt: "sec-satz", generate: generateAufgabe4 },
   ]);
 }
 

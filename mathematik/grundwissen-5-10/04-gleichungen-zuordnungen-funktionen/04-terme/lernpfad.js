@@ -1266,14 +1266,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Termwert berechnen", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Ausmultiplizieren", generate: generateAufgabe2b },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — zusammenfassen und einsetzen", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Binomische Formeln", generate: generateAufgabe4b },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — binomische Formel rückwärts", generate: generateAufgabe3 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Ausklammern", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Term aufstellen und auswerten", generate: generateAufgabe4 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Der Zahlentrick", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Termwert berechnen", abschnitt: "sec-term", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Ausmultiplizieren", abschnitt: "sec-ausmultiplizieren", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — zusammenfassen und einsetzen", abschnitt: "sec-zusammenfassen", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Binomische Formeln", abschnitt: "sec-binomisch", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — binomische Formel rückwärts", abschnitt: "sec-binomisch", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Ausklammern", abschnitt: "sec-ausmultiplizieren", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Term aufstellen und auswerten", abschnitt: "sec-term", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Der Zahlentrick", abschnitt: ["sec-zusammenfassen", "sec-ausmultiplizieren"], generate: generateAufgabe8 },
   ]);
 }
 

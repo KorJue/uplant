@@ -1316,14 +1316,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Funktionswert berechnen", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Ablesen und Punktprobe", generate: generateAufgabe2b },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Steigung aus zwei Punkten", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Ist die Tabelle linear?", generate: generateAufgabe4b },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Gleichung aufstellen und auswerten", generate: generateAufgabe3 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Die Parallele durch einen Punkt", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Schnittpunkt zweier Geraden", generate: generateAufgabe4 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Eine Gerade mit Bedeutung", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Funktionswert berechnen", abschnitt: "sec-funktion", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Ablesen und Punktprobe", abschnitt: "sec-gerade", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Steigung aus zwei Punkten", abschnitt: "sec-steigung", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Ist die Tabelle linear?", abschnitt: "sec-steigung", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Gleichung aufstellen und auswerten", abschnitt: "sec-aufstellen", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Die Parallele durch einen Punkt", abschnitt: "sec-aufstellen", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Schnittpunkt zweier Geraden", abschnitt: "sec-schnitt", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Eine Gerade mit Bedeutung", abschnitt: ["sec-aufstellen", "sec-schnitt"], generate: generateAufgabe8 },
   ]);
 }
 

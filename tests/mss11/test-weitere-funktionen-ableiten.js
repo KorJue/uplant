@@ -121,7 +121,7 @@ const ABSCHNITTE = ["sec-e", "sec-ex", "sec-ln", "sec-produkt-e", "sec-sinus", "
 const NUR_LK = new Set(["sec-sinus", "sec-kette", "sec-quotient", "sec-lnfunktion", "sec-symmetrie"]);
 async function geruest(page) {
   const folge = await page.evaluate(() => [...document.querySelectorAll("main section[id]")].map((s) => s.id));
-  const soll = [...ABSCHNITTE, "sec-selbsteinschaetzung", "sec-vernetzung", "sec-formelsammlung", "sec-uebungen"];
+  const soll = [...ABSCHNITTE, "sec-vernetzung", "sec-formelsammlung", "sec-uebungen", "sec-selbsteinschaetzung"];
   pruefe(JSON.stringify(folge) === JSON.stringify(soll), `Gerüst: Abschnitte ${folge.join(", ")} statt ${soll.join(", ")}`);
   const titel = await page.evaluate((ids) => ids.map((id) => {
     const h = document.querySelector(`#${id} h2`);

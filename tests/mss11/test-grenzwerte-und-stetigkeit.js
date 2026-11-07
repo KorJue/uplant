@@ -63,7 +63,7 @@ async function lies(page, mount) {
 async function geruest(page) {
   const folge = await page.evaluate(() => [...document.querySelectorAll("main section[id]")].map((s) => s.id));
   const soll = ["sec-unendlich", "sec-stelle", "sec-rational", "sec-stetigkeit", "sec-luecken", "sec-zwischenwert", "sec-stolperstelle",
-    "sec-selbsteinschaetzung", "sec-vernetzung", "sec-formelsammlung", "sec-uebungen"];
+    "sec-vernetzung", "sec-formelsammlung", "sec-uebungen", "sec-selbsteinschaetzung"];
   pruefe(JSON.stringify(folge) === JSON.stringify(soll), `Gerüst: Abschnitte ${folge.join(", ")} statt ${soll.join(", ")}`);
   pruefe(fs.existsSync(path.join(WURZEL, path.dirname(SEITE), "formelsammlung.pdf")), "Formelsammlung: formelsammlung.pdf fehlt");
   const notation = await page.evaluate(() => (document.querySelector(".notation-box") || {}).innerText || "");

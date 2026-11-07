@@ -1523,14 +1523,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Kathete aus dem Verhältnis", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — die Werte für 30°, 45° und 60°", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Seite berechnen", generate: generateAufgabe3 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — am Einheitskreis", generate: generateAufgabe4 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Winkel berechnen", generate: generateAufgabe5 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Steigung in Prozent", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Turmhöhe messen", generate: generateAufgabe7 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Höhe aus zwei Standpunkten", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Kathete aus dem Verhältnis", abschnitt: "sec-seiten", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — die Werte für 30°, 45° und 60°", abschnitt: "sec-besondere", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Seite berechnen", abschnitt: "sec-seiten", generate: generateAufgabe3 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — am Einheitskreis", abschnitt: "sec-einheitskreis", generate: generateAufgabe4 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Winkel berechnen", abschnitt: "sec-winkel", generate: generateAufgabe5 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Steigung in Prozent", abschnitt: "sec-anwendungen", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Turmhöhe messen", abschnitt: "sec-anwendungen", generate: generateAufgabe7 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Höhe aus zwei Standpunkten", abschnitt: "sec-anwendungen", generate: generateAufgabe8 },
   ]);
 }
 

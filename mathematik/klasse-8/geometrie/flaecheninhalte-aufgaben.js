@@ -944,19 +944,19 @@ function generateT4() {
 
 // Die Reihenfolge folgt der des Lernpfads: Dreieck, Parallelogramm, Trapez.
 export const AUFGABEN = [
-  { schwierigkeit: "einfach", titel: "Dreieck — Flächeninhalt ablesen", generate: generateD1 },
-  { schwierigkeit: "einfach", titel: "Parallelogramm — Flächeninhalt ablesen", generate: generateP1 },
-  { schwierigkeit: "einfach", titel: "Trapez — Flächeninhalt ablesen", generate: generateT1 },
+  { schwierigkeit: "einfach", titel: "Dreieck — Flächeninhalt ablesen", abschnitt: "sec-dreieck", generate: generateD1 },
+  { schwierigkeit: "einfach", titel: "Parallelogramm — Flächeninhalt ablesen", abschnitt: "sec-parallelogramm", generate: generateP1 },
+  { schwierigkeit: "einfach", titel: "Trapez — Flächeninhalt ablesen", abschnitt: "sec-trapez", generate: generateT1 },
 
-  { schwierigkeit: "mittel", titel: "Dreieck — mit Einheiten", generate: generateD2 },
-  { schwierigkeit: "mittel", titel: "Parallelogramm — mit Einheiten", generate: generateP2 },
-  { schwierigkeit: "mittel", titel: "Trapez — mit Einheiten", generate: generateT2 },
+  { schwierigkeit: "mittel", titel: "Dreieck — mit Einheiten", abschnitt: "sec-dreieck", generate: generateD2 },
+  { schwierigkeit: "mittel", titel: "Parallelogramm — mit Einheiten", abschnitt: "sec-parallelogramm", generate: generateP2 },
+  { schwierigkeit: "mittel", titel: "Trapez — mit Einheiten", abschnitt: "sec-trapez", generate: generateT2 },
 
-  { schwierigkeit: "schwierig", titel: "Dreieck — die fehlende Größe", generate: generateD3 },
-  { schwierigkeit: "schwierig", titel: "Parallelogramm — die fehlende Größe", generate: generateP3 },
-  { schwierigkeit: "schwierig", titel: "Trapez — die fehlende Größe", generate: generateT3 },
+  { schwierigkeit: "schwierig", titel: "Dreieck — die fehlende Größe", abschnitt: "sec-dreieck", generate: generateD3 },
+  { schwierigkeit: "schwierig", titel: "Parallelogramm — die fehlende Größe", abschnitt: "sec-parallelogramm", generate: generateP3 },
+  { schwierigkeit: "schwierig", titel: "Trapez — die fehlende Größe", abschnitt: "sec-trapez", generate: generateT3 },
 
-  { schwierigkeit: "komplex", titel: "Dreieck — ein Viereck zerlegen", generate: generateD4 },
-  { schwierigkeit: "komplex", titel: "Parallelogramm — zwei Seiten, zwei Höhen", generate: generateP4 },
-  { schwierigkeit: "komplex", titel: "Trapez — zerlegen statt Formel", generate: generateT4 },
+  { schwierigkeit: "komplex", titel: "Dreieck — ein Viereck zerlegen", abschnitt: "sec-dreieck", generate: generateD4 },
+  { schwierigkeit: "komplex", titel: "Parallelogramm — zwei Seiten, zwei Höhen", abschnitt: "sec-parallelogramm", generate: generateP4 },
+  { schwierigkeit: "komplex", titel: "Trapez — zerlegen statt Formel", abschnitt: "sec-trapez", generate: generateT4 },
 ];

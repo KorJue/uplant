@@ -730,14 +730,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — In ℤ addieren", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Betrag und Gegenzahl", generate: generateAufgabe2b },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Eine negative Zahl subtrahieren", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Negative Zahlen ordnen", generate: generateAufgabe4b },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Vorzeichenregeln bei mehreren Faktoren", generate: generateAufgabe3 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Punkt vor Strich in ℤ", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Mehrschrittige Sachaufgabe", generate: generateAufgabe4 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Ein Verlauf mit Höchst- und Tiefstwert", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — In ℤ addieren", abschnitt: "sec-addieren", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Betrag und Gegenzahl", abschnitt: "sec-betrag", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Eine negative Zahl subtrahieren", abschnitt: "sec-addieren", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Negative Zahlen ordnen", abschnitt: "sec-ordnen", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Vorzeichenregeln bei mehreren Faktoren", abschnitt: "sec-vorzeichen", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Punkt vor Strich in ℤ", abschnitt: "sec-vorzeichen", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Mehrschrittige Sachaufgabe", abschnitt: "sec-addieren", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Ein Verlauf mit Höchst- und Tiefstwert", abschnitt: ["sec-ordnen", "sec-addieren"], generate: generateAufgabe8 },
   ]);
 }
 

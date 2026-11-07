@@ -1183,14 +1183,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Wurzel aus einer Quadratzahl", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Produkt- und Quotientenregel", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Wurzel einschachteln", generate: generateAufgabe3 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — rational oder irrational?", generate: generateAufgabe4 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — teilweise wurzelziehen", generate: generateAufgabe5 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Wurzeln zusammenfassen", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Diagonale berechnen", generate: generateAufgabe7 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Diagonale mit Wurzel", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Wurzel aus einer Quadratzahl", abschnitt: "sec-begriff", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Produkt- und Quotientenregel", abschnitt: "sec-regeln", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Wurzel einschachteln", abschnitt: "sec-einschachteln", generate: generateAufgabe3 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — rational oder irrational?", abschnitt: "sec-irrational", generate: generateAufgabe4 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — teilweise wurzelziehen", abschnitt: "sec-teilweise", generate: generateAufgabe5 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Wurzeln zusammenfassen", abschnitt: "sec-teilweise", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Diagonale berechnen", abschnitt: "sec-laengen", generate: generateAufgabe7 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Diagonale mit Wurzel", abschnitt: ["sec-teilweise", "sec-laengen"], generate: generateAufgabe8 },
   ]);
 }
 

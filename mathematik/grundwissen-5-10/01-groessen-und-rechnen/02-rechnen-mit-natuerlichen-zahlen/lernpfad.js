@@ -1021,14 +1021,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Rangfolge anwenden", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Division mit Rest", generate: generateAufgabe2b },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Schriftliche Addition", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — vorteilhaft rechnen", generate: generateAufgabe4b },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Fehlenden Subtrahenden bestimmen", generate: generateAufgabe3 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — schriftliche Multiplikation", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Mehrschrittige Textaufgabe", generate: generateAufgabe4 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Überschlag und genaue Rechnung", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Rangfolge anwenden", abschnitt: "sec-rangfolge", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Division mit Rest", abschnitt: "sec-division", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Schriftliche Addition", abschnitt: "sec-schriftlich-addition", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — vorteilhaft rechnen", abschnitt: "sec-rechengesetze", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Fehlenden Subtrahenden bestimmen", abschnitt: ["sec-fachbegriffe", "sec-schriftlich-addition"], generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — schriftliche Multiplikation", abschnitt: "sec-schriftlich-multiplikation", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Mehrschrittige Textaufgabe", abschnitt: ["sec-rangfolge", "sec-division"], generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Überschlag und genaue Rechnung", abschnitt: ["sec-ueberschlag", "sec-schriftlich-multiplikation"], generate: generateAufgabe8 },
   ]);
 }
 

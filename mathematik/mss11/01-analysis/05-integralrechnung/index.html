@@ -19,14 +19,14 @@
 </nav>
 <header class="page-header">
   <h1>Integralrechnung</h1>
-  <p>Ein Selbstlernpfad: Aus einer Geschwindigkeit den Weg, aus einer Zuflussrate die Wassermenge, aus einem Graphen die Fläche darunter — die Integralrechnung kehrt das Ableiten um. Jeder Abschnitt leitet sein Ergebnis an einer beweglichen Darstellung her, rechnet es nach und endet mit einer Kontrollfrage. Am Schluss stehen vierundzwanzig Übungsaufgaben auf vier Stufen.</p>
+  <p>Ein Selbstlernpfad: Aus der Geschwindigkeit den Weg, aus der Zuflussrate die Wassermenge — die Integralrechnung kehrt das Ableiten um. Mit beweglichen Darstellungen, Kontrollfragen und vierundzwanzig Übungsaufgaben.</p>
 </header>
 
 <main class="menu-main">
 
   <section class="card">
     <h2>Worum geht es hier?</h2>
-    <p>Die Differentialrechnung beantwortet die Frage: Wie schnell ändert sich ein Bestand? Die Integralrechnung beantwortet die umgekehrte: Wie viel ist zusammengekommen, wenn man weiß, wie schnell es sich geändert hat? Die Antwort ist ein <span class="term">Flächeninhalt</span> unter dem Graphen der Änderungsrate. Wie man ihn berechnet, ohne Kästchen zu zählen, sagt der <span class="term">Hauptsatz der Differential- und Integralrechnung</span> — er verbindet Fläche und Ableitung. Am Ende kannst du:</p>
+    <p>Die Differentialrechnung fragt, wie schnell sich ein Bestand ändert; die Integralrechnung fragt umgekehrt, wie viel zusammengekommen ist. Die Antwort ist ein <span class="term">Flächeninhalt</span> — und der <span class="term">Hauptsatz</span> sagt, wie man ihn ohne Kästchenzählen berechnet. Am Ende kannst du:</p>
     <ul class="lern-intro-list">
       <li>einen <span class="term">Bestand</span> aus seiner Änderungsrate rekonstruieren</li>
       <li>Flächen mit <span class="term">Unter- und Obersummen</span> einschachteln und daraus das <span class="term">bestimmte Integral</span> als Grenzwert verstehen</li>
@@ -36,8 +36,8 @@
       <li>Flächen zwischen Graph und x-Achse und <span class="term">zwischen zwei Graphen</span> berechnen</li>
       <li>den <span class="term">Mittelwert</span> einer Funktion bestimmen und Integrale im Sachzusammenhang deuten</li>
     </ul>
-    <p>Die Seite folgt der Schreibweise von <strong>Elemente der Mathematik</strong> und deckt zugleich die Kapitel zur Integralrechnung in <strong>Fundamente der Mathematik</strong> ab: Rekonstruktion von Beständen, Ober- und Untersummen, bestimmtes Integral, Integralfunktion, Hauptsatz, Stammfunktionen und Integrationsregeln, Flächenberechnung und Mittelwerte.</p>
-    <p class="kurs-hinweis"><span class="kurs-marke gk">Grund- und Leistungskurs</span> Diese Seite legt die Grundlagen, die beide Kurse brauchen, und rechnet mit ganzrationalen Funktionen und Potenzen. Was bei e-Funktionen, sin, cos und <span class="bruch"><span class="z">1</span><span class="n">x</span></span> anders ist, steht in <a href="../05b-weitere-funktionen-integrieren/index.html">Thema 4.2</a>. Dort gehören die Abschnitte zur e-Funktion auch zum Grundkurs; sin und cos, die lineare Verkettung, der Logarithmus als Stammfunktion, uneigentliche Integrale und Rotationskörper gehören zum Leistungskurs.</p>
+    <p>Schreibweise wie in <strong>Elemente der Mathematik</strong>; die Kapitel zur Integralrechnung in <strong>Fundamente der Mathematik</strong> sind abgedeckt.</p>
+    <p class="kurs-hinweis"><span class="kurs-marke gk">Grund- und Leistungskurs</span> Hier liegen die Grundlagen für beide Kurse, mit ganzrationalen Funktionen und Potenzen. Was bei e-Funktionen, sin, cos und <span class="bruch"><span class="z">1</span><span class="n">x</span></span> anders ist, steht in <a href="../05b-weitere-funktionen-integrieren/index.html">Thema 4.2</a>.</p>
     <p class="hinweis-box">💡 Du brauchst den <a href="../01-folgen-und-reihen/index.html#sec-grenzwert">Grenzwert einer Folge</a> aus Thema 1.1, den <a href="../02-grenzwerte-und-stetigkeit/index.html#sec-unendlich">Grenzwert für x → ∞</a> aus Thema 1.2, die <a href="../03-differentialrechnung/index.html#sec-regeln">Ableitungsregeln</a> aus Thema 2.1 sowie <a href="../04-funktionsuntersuchung/index.html#sec-schema">Nullstellen und Schnittpunkte</a> aus Thema 3.1.</p>
   </section>
 
@@ -410,14 +410,6 @@
     <div class="quiz" id="quiz-stolperstelle"></div>
   </section>
 
-  <!-- Selbsteinschätzung -->
-  <section class="card" id="sec-selbsteinschaetzung">
-    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
-    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
-    <div id="se-liste"></div>
-    <div id="se-auswertung" class="event-result"></div>
-  </section>
-
   <!-- Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>Innermathematische Zusammenhänge</h2>
@@ -448,6 +440,24 @@
     <p class="progress-note">Zahlen gibst du mit Komma ein, zum Beispiel 1,5; Brüche wie 8/3 sind ebenfalls erlaubt.</p>
     <div id="exercises-mount"></div>
   </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste" id="se-liste">
+      <li data-abschnitt="sec-rekonstruktion">Ich kann einen Bestand aus seiner Änderungsrate rekonstruieren und Abnahmen richtig abziehen.</li>
+      <li data-abschnitt="sec-summen">Ich kann Unter- und Obersummen aufstellen und erklären, warum ihr gemeinsamer Grenzwert die Fläche ist.</li>
+      <li data-abschnitt="sec-integral">Ich kann das Integral als orientierten Flächeninhalt deuten und seine Eigenschaften nutzen.</li>
+      <li data-abschnitt="sec-integralfunktion">Ich kann den Graphen einer Integralfunktion aus dem Graphen von f beschreiben.</li>
+      <li data-abschnitt="sec-hauptsatz">Ich kann den Hauptsatz formulieren, begründen und anwenden.</li>
+      <li data-abschnitt="sec-stammfunktion">Ich kann Stammfunktionen ganzrationaler Funktionen und von Potenzen bilden und mit der Probe prüfen.</li>
+      <li data-abschnitt="sec-flaeche">Ich kann Flächen zwischen Graph und x-Achse berechnen, auch mit Vorzeichenwechsel.</li>
+      <li data-abschnitt="sec-zwischen">Ich kann Flächen zwischen zwei Graphen berechnen.</li>
+      <li data-abschnitt="sec-mittelwert">Ich kann Mittelwerte bestimmen und Integrale im Sachzusammenhang deuten.</li>
+      <li data-abschnitt="sec-stolperstelle">Ich prüfe vor dem Integrieren, ob der Integrand im Intervall stetig ist.</li>
+    </ul>
+    <div class="se-auswertung event-result" id="se-auswertung" aria-live="polite"></div>
+  </section>
 
   <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
   <section class="card" data-lehrkraft="lehrkraefte.html" hidden></section>
@@ -459,6 +469,7 @@
 </footer>
 
 <script src="../../../../assets/lehrkraft.js"></script>
+<script src="../../../../assets/selbsteinschaetzung.js"></script>
 <script type="module" src="lernpfad.js?v=9"></script>
 </body>
 </html>

@@ -223,7 +223,7 @@ const NUR_LK = new Set(["sec-sinus", "sec-verkettung", "sec-ln", "sec-uneigentli
 const LK_22 = ["sec-sinus", "sec-kette", "sec-quotient", "sec-lnfunktion", "sec-symmetrie"];
 async function geruest(page) {
   const folge = await page.evaluate(() => [...document.querySelectorAll("main section[id]")].map((s) => s.id));
-  const soll = [...ABSCHNITTE, "sec-selbsteinschaetzung", "sec-vernetzung", "sec-formelsammlung", "sec-uebungen"];
+  const soll = [...ABSCHNITTE, "sec-vernetzung", "sec-formelsammlung", "sec-uebungen", "sec-selbsteinschaetzung"];
   pruefe(JSON.stringify(folge) === JSON.stringify(soll), `Gerüst: Abschnitte ${folge.join(", ")} statt ${soll.join(", ")}`);
   const titel = await page.evaluate((ids) => ids.map((id) => {
     const h = document.querySelector(`#${id} h2`);
@@ -297,7 +297,9 @@ async function geruest(page) {
   }
   // Alle Leistungskurs-Aufgaben tragen „(LK)“; die übrigen kommen ohne sin, cos, ln und Verkettung aus.
   const quelle = fs.readFileSync(path.join(WURZEL, path.dirname(SEITE), "aufgaben-weitere-funktionen-integrieren.js"), "utf-8");
-  const titelListe = [...quelle.matchAll(/titel: "([^"]+)", generate: generate(\w+)/g)].map((m) => ({ titel: m[1], name: m[2] }));
+  // Zwischen Titel und Generator steht der Abschnitt — eine id oder eine Liste davon.
+  const titelListe = [...quelle.matchAll(/titel: "([^"]+)", (?:abschnitt: (?:"[^"]*"|\[[^\]]*\]), )?generate: generate(\w+)/g)]
+    .map((m) => ({ titel: m[1], name: m[2] }));
   pruefe(titelListe.length === 24, `Aufgaben: ${titelListe.length} Titel statt 24 gelesen`);
   const lkAnzahl = titelListe.filter((t) => /\(LK\)$/.test(t.titel)).length;
   pruefe(lkAnzahl === 15, `Aufgaben: ${lkAnzahl} Aufgaben mit „(LK)“ statt 15`);

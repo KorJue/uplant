@@ -19,14 +19,14 @@
 </nav>
 <header class="page-header">
   <h1>Funktionsuntersuchung: e-, ln- und Winkelfunktionen</h1>
-  <p>Ein Selbstlernpfad: Der Ablauf einer Funktionsuntersuchung bleibt derselbe — aber die Antworten werden andere. Funktionen mit e haben Asymptoten und nur so viele Nullstellen, wie ihr Polynomfaktor hergibt; Winkelfunktionen haben unendlich viele Extrempunkte; ln-Funktionen gibt es nur für positive Zahlen. Jeder Abschnitt leitet sein Ergebnis an einer beweglichen Darstellung her, rechnet es nach, stellt es ausdrücklich neben die ganzrationalen Funktionen und endet mit einer Kontrollfrage. Am Schluss stehen vierundzwanzig Übungsaufgaben auf vier Stufen.</p>
+  <p>Ein Selbstlernpfad: Funktionen mit e, ln, sin und cos untersuchen — derselbe Ablauf wie bei Polynomen, aber andere Antworten. Mit Kontrollfragen und vierundzwanzig Übungsaufgaben.</p>
 </header>
 
 <main class="menu-main">
 
   <section class="card">
     <h2>Worum geht es hier?</h2>
-    <p>In <a href="../04-funktionsuntersuchung/index.html">Thema 3.1</a> hast du ganzrationale Funktionen vollständig untersucht: Symmetrie, Verhalten im Unendlichen, Nullstellen, Extrem- und Wendepunkte, Monotonie und Krümmung. In <a href="../03b-weitere-funktionen-ableiten/index.html">Thema 2.2</a> hast du gelernt, e-, ln- und Winkelfunktionen abzuleiten. Hier kommt beides zusammen. Die Bedingungen f′(x) = 0, f″(x) ≠ 0 und der Vorzeichenwechsel gelten unverändert — neu ist, <em>wie</em> man die Gleichungen löst, welche Schritte auf einmal wichtig werden und worauf man sich nicht mehr verlassen kann. Am Ende kannst du:</p>
+    <p>Die Bedingungen für Extrem- und Wendepunkte aus <a href="../04-funktionsuntersuchung/index.html">Thema 3.1</a> gelten weiter, die Ableitungen kennst du aus <a href="../03b-weitere-funktionen-ableiten/index.html">Thema 2.2</a>. Neu ist, <em>wie</em> man die Gleichungen löst — und worauf man sich nicht mehr verlassen kann. Am Ende kannst du:</p>
     <ul class="lern-intro-list">
       <li>die <span class="term">Unterschiede</span> zwischen der Untersuchung ganzrationaler und weiterer Funktionen Schritt für Schritt benennen</li>
       <li>die <span class="term">zweite Ableitung</span> von f(x) = p(x) · e<sup>kx</sup> bilden und ihr Vorzeichen am Polynomfaktor ablesen</li>
@@ -37,8 +37,8 @@
       <li>Funktionen mit Sinus und Kosinus, <span class="term">gedämpfte Schwingungen</span>, Funktionen mit ln und die <span class="term">Gaußsche Glockenkurve</span> untersuchen (Leistungskurs)</li>
       <li>erkennen, wann das Bild auf dem Rechner etwas Wesentliches verschweigt</li>
     </ul>
-    <p>Die Seite folgt der Schreibweise von <strong>Elemente der Mathematik</strong> und deckt zugleich die entsprechenden Kapitel in <strong>Fundamente der Mathematik</strong> ab: Untersuchung von Exponentialfunktionen und ihrer Verknüpfungen mit ganzrationalen Funktionen, Funktionenscharen, Wachstumsmodelle und Extremwertprobleme, im Leistungsfach zusätzlich Logarithmus- und trigonometrische Funktionen.</p>
-    <p class="kurs-hinweis"><span class="kurs-marke lk">Leistungskurs</span> Nach dem rheinland-pfälzischen Lehrplan gehören Sinus und Kosinus, die Kettenregel, die Quotientenregel und die Funktion ln zum Leistungsfach. Funktionen der Form p(x) · e<sup>kx</sup> zu untersuchen gehört dagegen auch zum Grundfach — diese Abschnitte tragen die Marke <span class="kurs-marke gk">GK + LK</span> und kommen ohne die Leistungskurs-Abschnitte aus; die übrigen tragen <span class="kurs-marke lk">LK</span>. Wo ein Grundkurs-Abschnitt ein Leistungskurs-Beispiel zur Auswahl anbietet, steht „(LK)“ daneben.</p>
+    <p>Schreibweise wie in <strong>Elemente der Mathematik</strong>; die entsprechenden Kapitel in <strong>Fundamente der Mathematik</strong> sind abgedeckt.</p>
+    <p class="kurs-hinweis"><span class="kurs-marke lk">Leistungskurs</span> Sinus, Kosinus, Kettenregel, Quotientenregel und ln gehören zum Leistungskurs; Funktionen p(x) · e<sup>kx</sup> zu untersuchen auch zum Grundkurs — diese Abschnitte tragen <span class="kurs-marke gk">GK + LK</span>, die übrigen <span class="kurs-marke lk">LK</span>. Ein Leistungskurs-Beispiel in einem Grundkurs-Abschnitt trägt „(LK)“.</p>
     <p class="hinweis-box">💡 Du brauchst den <a href="../04-funktionsuntersuchung/index.html#sec-schema">Ablauf einer Funktionsuntersuchung</a> und die <a href="../04-funktionsuntersuchung/index.html#sec-extrem2">Bedingungen für Extrem-</a> und <a href="../04-funktionsuntersuchung/index.html#sec-wendepunkte">Wendepunkte</a> aus Thema 3.1, aus Thema 2.2 die Ableitung von <a href="../03b-weitere-funktionen-ableiten/index.html#sec-ex">e<sup>kx</sup></a>, die <a href="../03b-weitere-funktionen-ableiten/index.html#sec-produkt-e">Produktregel mit Ausklammern</a>, das <a href="../03b-weitere-funktionen-ableiten/index.html#sec-ln">Lösen von e<sup>kx</sup> = c</a> und das <a href="../03b-weitere-funktionen-ableiten/index.html#sec-verhalten">Verhalten für x → ±∞</a> sowie die <a href="../02-grenzwerte-und-stetigkeit/index.html#sec-unendlich">waagerechte Asymptote</a> aus Thema 1.2. Welcher Rechenweg wo erklärt ist, steht ausführlich in Abschnitt 1.</p>
   </section>
 
@@ -505,13 +505,6 @@
     <div class="quiz" id="quiz-stolperstelle"></div>
   </section>
 
-  <section class="card" id="sec-selbsteinschaetzung">
-    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
-    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
-    <div id="se-liste"></div>
-    <div id="se-auswertung" class="event-result"></div>
-  </section>
-
   <!-- Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>Innermathematische Zusammenhänge</h2>
@@ -543,6 +536,25 @@
     <p class="progress-note">Zahlen gibst du mit Komma ein, zum Beispiel 1,5; Brüche wie 3/2 sind ebenfalls erlaubt.</p>
     <div id="exercises-mount"></div>
   </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste" id="se-liste">
+      <li data-abschnitt="sec-vergleich">Ich kann Schritt für Schritt sagen, was sich bei e-, ln- und Winkelfunktionen gegenüber ganzrationalen Funktionen ändert.</li>
+      <li data-abschnitt="sec-zweite">Ich kann f″ von p(x) · e<sup>kx</sup> bilden und sein Vorzeichen an der Klammer ablesen.</li>
+      <li data-abschnitt="sec-schema">Ich kann eine Funktion mit e vollständig untersuchen, einschließlich der Asymptote.</li>
+      <li data-abschnitt="sec-scharen">Ich kann eine Funktionenschar mit e untersuchen und eine Ortskurve bestimmen.</li>
+      <li data-abschnitt="sec-wachstum">Ich kann bei einem Wachstumsmodell sagen, wann der Bestand am schnellsten wächst.</li>
+      <li data-abschnitt="sec-optimierung">Ich kann ein Extremwertproblem mit e lösen und weiß, was zu tun ist, wenn sich A′(u) = 0 nicht auflösen lässt.</li>
+      <li data-abschnitt="sec-trig">(LK) Ich kann Funktionen mit Sinus und Kosinus untersuchen und finde alle Lösungen von cos(x) = c im Intervall.</li>
+      <li data-abschnitt="sec-schwingung">(LK) Ich kann die Extremstellen einer gedämpften Schwingung mit tan(x) = c bestimmen.</li>
+      <li data-abschnitt="sec-ln">(LK) Ich kann Funktionen mit ln untersuchen, einschließlich Definitionsmenge und Verhalten am Rand.</li>
+      <li data-abschnitt="sec-glocke">(LK) Ich kann die Wendestellen der Glockenkurve herleiten.</li>
+      <li data-abschnitt="sec-stolperstelle">Ich weiß, warum man ein Rechnerfenster erst nach der Rechnung wählt.</li>
+    </ul>
+    <div class="se-auswertung event-result" id="se-auswertung" aria-live="polite"></div>
+  </section>
 
   <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
   <section class="card" data-lehrkraft="lehrkraefte.html" hidden></section>
@@ -554,6 +566,7 @@
 </footer>
 
 <script src="../../../../assets/lehrkraft.js"></script>
+<script src="../../../../assets/selbsteinschaetzung.js"></script>
 <script type="module" src="lernpfad.js?v=1"></script>
 </body>
 </html>

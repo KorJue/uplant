@@ -1094,55 +1094,6 @@ const QUIZZE = {
   },
 };
 
-// ================= Selbsteinschätzung =================
-//
-// Die Auswahl liegt nur im Browser dieser Person — eine Lernhilfe, keine Leistungsmessung.
-const SE_PUNKTE = [
-  ["sec-e", "Ich kann erklären, warum (b^x)′ ein festes Vielfaches von b^x ist und was die Zahl e auszeichnet."],
-  ["sec-ex", "Ich kann a · eᵏˣ ableiten und f′ = k · f deuten."],
-  ["sec-ln", "Ich kann Gleichungen wie a · eᵏˣ = c mit dem natürlichen Logarithmus lösen und die Logarithmusregeln anwenden."],
-  ["sec-produkt-e", "Ich kann Produkte wie x² · e⁻ˣ ableiten und den e-Faktor ausklammern."],
-  ["sec-sinus", "Ich kann sin und cos ableiten und weiß, warum das nur im Bogenmaß gilt."],
-  ["sec-kette", "Ich kann Verkettungen mit der Kettenregel ableiten — äußere mal innere Ableitung."],
-  ["sec-quotient", "Ich kann Quotienten mit der Quotientenregel ableiten."],
-  ["sec-lnfunktion", "Ich kann ln x und ln(u(x)) ableiten und den Definitionsbereich beachten."],
-  ["sec-verhalten", "Ich kann das Verhalten von p(x) · eᵏˣ für x → ±∞ angeben und begründen."],
-  ["sec-symmetrie", "Ich kann Symmetrie mit f(−x) nachweisen und die Periode von sin(bx) angeben."],
-  ["sec-nullstellen", "Ich kann Nullstellen mit dem Satz vom Nullprodukt, mit ln und bei sin x = c bestimmen."],
-  ["sec-monotonie", "Ich kann Monotonie und Extrempunkte von e- und Winkelfunktionen bestimmen."],
-  ["sec-wachstum", "Ich kann Änderungsraten bei Wachstum, Abkühlung und Schwingung mit Einheit berechnen und deuten."],
-  ["sec-stolperstelle", "Ich verwechsle die Potenzregel nicht mit der Ableitung von Exponentialfunktionen."],
-];
-const SE_SCHLUESSEL = "uplant-mss11-weitere-funktionen-ableiten-selbsteinschaetzung";
-
-function leseSE() {
-  try { return JSON.parse(localStorage.getItem(SE_SCHLUESSEL) || "{}"); } catch { return {}; }
-}
-function schreibeSE(d) {
-  try { localStorage.setItem(SE_SCHLUESSEL, JSON.stringify(d)); } catch { /* ohne Speicher geht es auch */ }
-}
-function renderSelbsteinschaetzung() {
-  const liste = document.getElementById("se-liste");
-  const stand = leseSE();
-  liste.innerHTML = "";
-  SE_PUNKTE.forEach(([id, text]) => {
-    const knoepfe = el("div", { class: "se-knoepfe", role: "group", "aria-label": text });
-    [["sicher", "😀", "sicher"], ["teils", "😐", "teilweise"], ["unsicher", "🤔", "noch unsicher"]].forEach(([wert, z, name]) => {
-      const b = el("button", { type: "button", "aria-pressed": String(stand[id] === wert), title: name, "aria-label": name }, z);
-      b.addEventListener("click", () => { const d = leseSE(); d[id] = wert; schreibeSE(d); renderSelbsteinschaetzung(); });
-      knoepfe.appendChild(b);
-    });
-    liste.appendChild(el("div", { class: "se-zeile" }, [el("span", { class: "se-text" }, text), knoepfe]));
-  });
-  const unsicher = SE_PUNKTE.filter(([id]) => stand[id] === "unsicher");
-  const sicher = SE_PUNKTE.filter(([id]) => stand[id] === "sicher").length;
-  const aus = document.getElementById("se-auswertung");
-  // Die Überschriften tragen die Kursmarke — im Verweis stünde sie sonst als „… GK + LK“ mit.
-  const titel = (id) => { const h = document.querySelector(`#${id} h2`).cloneNode(true); h.querySelectorAll(".kurs-marke").forEach((m) => m.remove()); return h.textContent.trim(); };
-  if (!Object.keys(stand).length) aus.textContent = "Noch nichts angekreuzt.";
-  else if (unsicher.length) aus.innerHTML = `Wiederhole zuerst: ${unsicher.map(([id]) => `<a href="#${id}">${titel(id)}</a>`).join(", ")}. Danach passen die Übungsaufgaben auf den Stufen „einfach“ und „mittel“.`;
-  else aus.textContent = `${sicher} von ${SE_PUNKTE.length} Punkten sicher — probier dich an den Aufgaben auf den Stufen „schwierig“ und „komplex“.`;
-}
 
 // ================= Start =================
 
@@ -1177,5 +1128,4 @@ for (const [ids, render] of REGLER) {
   render();   // nicht vergessen — sonst bleibt die Zeichnung leer, bis jemand einen Regler anfasst
 }
 for (const [id, def] of Object.entries(QUIZZE)) mountQuiz(document.getElementById(id), def);
-renderSelbsteinschaetzung();
 mountUebungsaufgaben(document.getElementById("exercises-mount"), AUFGABEN, { parse: parseZahl });

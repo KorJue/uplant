@@ -942,7 +942,7 @@ async function geruest(page) {
   // Die Reihenfolge ist die Herleitungskette: Umfang vor Fläche, Fläche vor Ring, Bogen vor Ausschnitt.
   const folge = await page.evaluate(() => [...document.querySelectorAll("main section[id]")].map((s) => s.id));
   const soll = ["sec-umfang", "sec-radius", "sec-flaeche", "sec-ring", "sec-bogen", "sec-ausschnitt",
-    "sec-selbsteinschaetzung", "sec-vernetzung", "sec-formelsammlung", "sec-uebungen"];
+    "sec-vernetzung", "sec-formelsammlung", "sec-uebungen", "sec-selbsteinschaetzung"];
   pruefe(JSON.stringify(folge) === JSON.stringify(soll), `Gerüst: Abschnitte ${folge.join(", ")} statt ${soll.join(", ")}`);
 
   // Die Einschachtelung ist ein markierter Zusatz: Sie steht in einem eigenen Teil mit der Marke

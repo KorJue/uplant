@@ -26,7 +26,7 @@
 
   <section class="card">
     <h2>Worum geht es hier?</h2>
-    <p>Ein Würfel, ein Wurf — das war <a href="../02-zufall-und-wahrscheinlichkeit/index.html">Thema 2</a>. Sobald man <em>zweimal</em> würfelt, hat Ω schon 36 Ergebnisse, bei dreimal 216. Abzählen wird unübersichtlich. Das <strong>Baumdiagramm</strong> bringt Ordnung hinein: Jede Stufe ist eine Verzweigung, jeder vollständige Weg von der Wurzel zum Blatt ist genau <em>ein</em> Ergebnis. Am Ende kannst du:</p>
+    <p>Wer zweimal würfelt, hat schon 36 Ergebnisse. Das Baumdiagramm bringt Ordnung hinein: Jeder Weg von der Wurzel zum Blatt ist genau ein Ergebnis. Am Ende kannst du:</p>
     <ul class="lern-intro-list">
       <li>ein mehrstufiges Experiment als <span class="term">Baumdiagramm</span> zeichnen und daran |Ω| ablesen</li>
       <li>mit der <span class="term">1. Pfadregel (Produktregel)</span> die Wahrscheinlichkeit eines einzelnen Pfades bestimmen</li>
@@ -187,20 +187,6 @@
     <div class="quiz" id="quiz-ungleich"></div>
   </section>
 
-  <!-- Selbsteinschätzung: dieselben Ziele wie in „Worum geht es hier?“, als Ich-kann-Sätze -->
-  <section class="card" id="sec-selbsteinschaetzung">
-    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
-    <p>Das sind die Ziele vom Anfang dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst — deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 😐 oder 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
-    <ul class="se-liste">
-      <li data-abschnitt="sec-baum">Ich kann ein mehrstufiges Experiment als Baumdiagramm zeichnen und daran |Ω| ablesen.</li>
-      <li data-abschnitt="sec-produktregel">Ich kann mit der 1. Pfadregel die Wahrscheinlichkeit eines Pfades bestimmen.</li>
-      <li data-abschnitt="sec-summenregel">Ich kann mit der 2. Pfadregel mehrere Pfade zu einem Ereignis zusammenfassen.</li>
-      <li data-abschnitt="sec-summenregel">Ich kann Aufgaben mit „mindestens einmal“ über das Gegenereignis abkürzen.</li>
-      <li data-abschnitt="sec-zuruecklegen">Ich kann Ziehen mit und ohne Zurücklegen unterscheiden und begründen, warum sich nur die zweite Stufe ändert.</li>
-    </ul>
-    <div class="se-auswertung event-result" aria-live="polite"></div>
-  </section>
-
   <!-- 6. Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>6. Innermathematische Zusammenhänge</h2>
@@ -230,6 +216,19 @@
     <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
     <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit. Wo eine Prozentzahl verlangt ist, trägst du nur die Zahl vor dem Prozentzeichen ein.</p>
     <div id="exercises-mount"></div>
+  </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-baum">Ich kann ein mehrstufiges Experiment als Baumdiagramm zeichnen und daran |Ω| ablesen.</li>
+      <li data-abschnitt="sec-produktregel">Ich kann mit der 1. Pfadregel die Wahrscheinlichkeit eines Pfades bestimmen.</li>
+      <li data-abschnitt="sec-summenregel">Ich kann mit der 2. Pfadregel mehrere Pfade zu einem Ereignis zusammenfassen.</li>
+      <li data-abschnitt="sec-summenregel">Ich kann Aufgaben mit „mindestens einmal“ über das Gegenereignis abkürzen.</li>
+      <li data-abschnitt="sec-zuruecklegen">Ich kann Ziehen mit und ohne Zurücklegen unterscheiden und begründen, warum sich nur die zweite Stufe ändert.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
   </section>
 
   <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->

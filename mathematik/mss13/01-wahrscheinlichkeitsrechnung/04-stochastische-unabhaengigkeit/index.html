@@ -19,14 +19,14 @@
 </nav>
 <header class="page-header">
   <h1>Stochastische Unabhängigkeit</h1>
-  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Aspekt, zeigt ihn an einer interaktiven Zeichnung und endet mit einer Kontrollfrage. Am Schluss stehen eine Selbsteinschätzung und sechzehn Übungsaufgaben auf vier Stufen.</p>
+  <p>Ein Selbstlernpfad: Wann beeinflussen sich zwei Ereignisse nicht? Mit beweglichen Zeichnungen, Kontrollfragen, sechzehn Übungsaufgaben und einer Selbsteinschätzung, die deine Ergebnisse auswertet.</p>
 </header>
 
 <main class="menu-main">
 
   <section class="card">
     <h2>Worum geht es hier?</h2>
-    <p>Ein Fußballspieler hat in seiner Karriere 90&nbsp;% aller Elfmeter verwandelt. Er tritt an, um den entscheidenden Elfmeter im Pokalfinale zu schießen. Beträgt seine Trefferwahrscheinlichkeit jetzt wirklich genau 90&nbsp;%, oder spielt der Druck der Situation eine Rolle? Diese Frage führt zum Begriff der <span class="term">stochastischen Unabhängigkeit</span>. Auf diesem Lernpfad lernst du:</p>
+    <p>Ein Fußballspieler verwandelt 90&nbsp;% seiner Elfmeter. Gilt das auch im Pokalfinale — oder spielt der Druck eine Rolle? Diese Frage führt zur stochastischen Unabhängigkeit. Auf diesem Lernpfad lernst du:</p>
     <ul class="lern-intro-list">
       <li>wann zwei Ereignisse <span class="term">stochastisch unabhängig</span> heißen — und wie man das im Baumdiagramm erkennt</li>
       <li>die <span class="term">Multiplikationsregel</span> P(A∩B) = P(A) · P(B) als praktischen Test auf Unabhängigkeit</li>
@@ -125,14 +125,6 @@
     </div>
   </section>
 
-  <!-- Selbsteinschätzung -->
-  <section class="card" id="sec-selbsteinschaetzung">
-    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
-    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
-    <div id="se-liste"></div>
-    <div id="se-auswertung" class="event-result"></div>
-  </section>
-
   <!-- Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>Innermathematische Zusammenhänge</h2>
@@ -163,6 +155,18 @@
     <p>Aufgaben, bei denen du direkt ins Baumdiagramm und in die Vierfeldertafel schreibst.</p>
     <div id="ausfuell-mount"></div>
   </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste" id="se-liste">
+      <li data-abschnitt="sec-urne-unabhaengig">Ich kann an einem Baum erkennen, ob zwei Ereignisse unabhängig sind.</li>
+      <li data-abschnitt="sec-multiplikationsregel">Ich kann mit der Multiplikationsregel prüfen, ob A und B unabhängig sind, und das im Flächenmodell deuten.</li>
+      <li data-abschnitt="sec-korrelation-kausalitaet">Ich kann Korrelation und Kausalität unterscheiden.</li>
+      <li data-abschnitt="sec-stolperstelle">Ich wende die Multiplikationsregel nur an, wenn die Unabhängigkeit gezeigt oder vorausgesetzt ist.</li>
+    </ul>
+    <div class="se-auswertung event-result" id="se-auswertung" aria-live="polite"></div>
+  </section>
 
   <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
   <section class="card" data-lehrkraft="lehrkraefte.html" hidden></section>
@@ -174,6 +178,7 @@
 </footer>
 
 <script src="../../../../assets/lehrkraft.js"></script>
+<script src="../../../../assets/selbsteinschaetzung.js"></script>
 <script type="module" src="lernpfad.js?v=3"></script>
 </body>
 </html>

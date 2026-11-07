@@ -187,13 +187,19 @@ hat. Wer eine Seite umbaut oder Abschnitte umnummeriert, zieht die Hinweise mit.
 
 ### Selbsteinschätzung
 
-Vor der Vernetzung steht auf jedem Lernpfad (Grundwissen, Klasse 8, MSS — nicht auf den Rechnern
-für Dreiecke und Lagebeziehungen; Rätsel und Faktencheck haben ihre eigene je Fall) ein Abschnitt
-`sec-selbsteinschaetzung`: dieselben
-Ziele wie in „Worum geht es hier?“, als Ich-kann-Sätze, jeder mit dem Abschnitt, in dem er
-erarbeitet wird. Ziel und Selbstkontrolle passen so zueinander, und wer 🤔 wählt, landet direkt im
-richtigen Abschnitt. Die Grundwissen- und Klasse-8-Seiten schreiben die Sätze ins HTML und binden
-`assets/selbsteinschaetzung.js` ein:
+Als **letzter Abschnitt, nach den Übungsaufgaben,** steht auf jedem Lernpfad (Grundwissen,
+Klasse 8, MSS — nicht auf den Rechnern für Dreiecke und Lagebeziehungen; Rätsel und Faktencheck
+haben ihre eigene je Fall) ein Abschnitt `sec-selbsteinschaetzung`: dieselben Ziele wie in „Worum
+geht es hier?“, als Ich-kann-Sätze, jeder mit dem Abschnitt, in dem er erarbeitet wird (die
+MSS-Seiten: ein Satz je Abschnitt). Er steht hinter den Aufgaben, weil er sie auswertet:
+`assets/selbsteinschaetzung.js` schreibt auf der ganzen Seite mit, ob jede Kontrollfrage **beim
+ersten Versuch** stimmte (Klick-Lauscher auf `.quiz-opt`, danach `.quiz-feedback ok/err`) und wie die
+Übungsaufgaben ausgingen (Ereignis `uplant:aufgabe`, siehe § 5). Neben jedem Satz steht das; ein
+Abschnitt mit falscher Kontrollfrage oder ungelöster Aufgabe kommt auch ohne 🤔 auf die
+Wiederholungsliste, ein 😀 dazu wird als Widerspruch benannt, und zu wiederholenden Abschnitten
+folgen Voraussetzungen aus früheren Themen — die Verweise auf andere Seiten, die **in** diesen
+Abschnitten stehen, ersatzweise die aus „Du brauchst …“. Kontrollfragen in einem `.optional-teil`
+zählen nicht. Alle Seiten schreiben die Sätze ins HTML und binden das Skript ein:
 
 ```html
 <section class="card" id="sec-selbsteinschaetzung">
@@ -207,9 +213,9 @@ richtigen Abschnitt. Die Grundwissen- und Klasse-8-Seiten schreiben die Sätze i
 <script src="../../../../assets/selbsteinschaetzung.js"></script>
 ```
 
-(Die MSS-Seiten bauen ihre Zeilen im eigenen Modul aus `SE_PUNKTE`.) Kommt ein Ziel in „Worum geht
-es hier?“ dazu, gehört auch ein Ich-kann-Satz dazu — `test-selbsteinschaetzung.js` vergleicht die
-Anzahl.
+Kommt ein Ziel in „Worum geht es hier?“ dazu, gehört auch ein Ich-kann-Satz dazu —
+`test-selbsteinschaetzung.js` vergleicht die Anzahl (außer auf den MSS-Seiten) und spielt Kontrollfrage,
+Aufgabenergebnis, Widerspruch und Zurücksetzen auf jeder Seite durch.
 
 ### Die Abschnitte
 
@@ -235,7 +241,10 @@ Anzahl.
 Feste Reihenfolge am Seitenende: **Vernetzung** (`sec-vernetzung`,
 `<ul class="vernetzung-liste">` mit „Baut auf" / „Führt weiter zu"), dann
 **Formelsammlung** (`sec-formelsammlung`), dann **Übungsaufgaben**
-(`sec-uebungen` mit einem leeren Mount-`div`).
+(`sec-uebungen` mit einem leeren Mount-`div`), zuletzt die **Selbsteinschätzung**
+(`sec-selbsteinschaetzung`). Ein optionaler Teil eines Abschnitts steht in
+`<div class="optional-teil">` mit `<span class="optional-marke">optional</span>` in seiner
+Überschrift; nichts Späteres darf auf ihm aufbauen.
 
 Eingebunden werden `assets/theme.js` (vor allem anderen, gegen Aufblitzen im
 Dunkelmodus), `assets/site.css`, `mathematik/aufgaben.css`, die eigene
@@ -280,10 +289,19 @@ mountUebungsaufgaben(container, AUFGABEN, { parse: eigeneZahlenerkennung });
 ```
 
 Vier Stufen (`einfach`, `mittel`, `schwierig`, `komplex`). Jede Aufgabe ist
-`{ schwierigkeit, titel, generate }`; `generate()` würfelt und liefert
+`{ schwierigkeit, titel, abschnitt, generate }`; `generate()` würfelt und liefert
 `promptHtml`, `correct`+`tolerance` (oder `felder[]`, oder `check(roh)`),
 `hinweis(roh, wert)`, `tipps[]` und `musterloesungHtml`. Der vollständige
 Vertrag steht als Kommentar über `mountUebungsaufgaben()`.
+
+**Jede Aufgabe gehört zu einem Abschnitt.** `abschnitt` nennt die `id` des Abschnitts, den sie
+übt, oder eine Liste, wenn sie mehrere verbindet. Daraus baut `mountUebungsaufgaben()` selbst:
+eine Themenleiste über den Reitern (wählbar nach Thema **und** Stufe, wie auf der Kreis-Seite),
+in jeder Aufgabe eine Zeile mit ihrem Abschnitt, am Ende jedes Abschnitts mit Aufgaben einen
+Sprung „Gleich üben“ zu genau diesen, und nach jedem Prüfen das Ereignis `uplant:aufgabe` für die
+Selbsteinschätzung. Eine Aufgabe steht beim **letzten** ihrer Abschnitte (in der Reihenfolge der
+Seite) — ein Sprung darf nicht zu einer Aufgabe führen, die Späteres verlangt. Neue Aufgaben ohne
+`abschnitt` lehnt `test-aufgaben-abschnitte.js` ab; es findet die Seiten selbst.
 
 **Der Grundwissen-Bestand:** acht Aufgaben je Seite, **zwei auf jeder Stufe**.
 Die Klasse-8-Seiten sind freier gebaut; die Flächeninhalte haben zwölf, je eine
@@ -464,6 +482,8 @@ Quelle stillschweigend ungeprüfter Neuerungen:
 * `test-seiten-gesamt.js` und `test-alle-themen.js` lesen das Dateisystem
   (`tests/lib/themen.js`). Ein neues Grundwissen-Thema wird dadurch
   **automatisch** mitgeprüft — es muss die Zusagen also von Anfang an erfüllen.
+  Ebenso `test-aufgaben-abschnitte.js` (jede Seite mit `#exercises-mount`) und
+  `test-selbsteinschaetzung.js` (Grundwissen, MSS; Klasse 8 per Liste).
 * `test-vollbild.js` dagegen führt seine Seiten in einer **fest verdrahteten
   Liste** `SEITEN` samt Knopf- und SVG-Kennung. Eine neue Geometrieseite mit
   Zeichenfläche muss dort von Hand eingetragen werden, sonst bleibt ihr Vollbild
@@ -569,6 +589,10 @@ Eine Prüfung, die nicht fehlschlagen kann, ist wertlos. Bei jeder neuen Prüfun
 **eine gezielte Mutation in den Code einbauen und nachsehen, ob sie anschlägt** —
 eine Ecke um 0,4 cm verschieben, einen Lösungswert um 2 % verstellen. Schlägt
 sie nicht an, fehlt eine Prüfung. Danach zurücksetzen.
+
+Die beiden Prüfungen, die jede Seite durchgehen (`test-aufgaben-abschnitte.js`,
+`test-selbsteinschaetzung.js`), nehmen für Gegenproben `UPLANT_SEITEN=kreis,03-brueche` —
+dann laden sie nur Seiten, deren Pfad einen der Teile enthält.
 
 So wurde auf der Flächeninhalte-Seite gefunden, dass der Zusammenschau-Abschnitt
 zwar die Ecken zählte, aber den gezeichneten Flächeninhalt nie gemessen hat.

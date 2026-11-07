@@ -445,6 +445,10 @@ async function quizze(page) {
 }
 
 async function selbsteinschaetzung(page) {
+  // Erst aufräumen: Die Kontrollfragen davor hinterlassen einen Lernstand, und ein beim ersten Versuch
+  // falsch beantworteter Abschnitt stünde sonst vor dem gesuchten Verweis.
+  await page.evaluate(() => { for (const k of Object.keys(localStorage)) if (/^uplant-(selbsteinschaetzung|lernstand):/.test(k)) localStorage.removeItem(k); });
+  await page.reload({ waitUntil: "networkidle" });
   const zeilen = await page.locator("#se-liste .se-zeile").count();
   pruefe(zeilen === 9, `Selbsteinschätzung: ${zeilen} Punkte statt 9`);
   await page.locator("#se-liste .se-zeile").nth(6).locator("button").nth(2).click();
@@ -455,7 +459,7 @@ async function selbsteinschaetzung(page) {
   await page.reload({ waitUntil: "networkidle" });
   const gedrueckt = await page.evaluate(() => document.querySelectorAll('#se-liste button[aria-pressed="true"]').length);
   pruefe(gedrueckt === 1, `Selbsteinschätzung: nach dem Neuladen sind ${gedrueckt} Einschätzungen gespeichert statt 1`);
-  await page.evaluate(() => localStorage.removeItem("uplant-mss13-binomial-selbsteinschaetzung"));
+  await page.evaluate(() => { for (const k of Object.keys(localStorage)) if (/^uplant-(selbsteinschaetzung|lernstand):/.test(k)) localStorage.removeItem(k); });
   await page.reload({ waitUntil: "networkidle" });
 }
 
@@ -663,9 +667,9 @@ async function geruest(page) {
     "sec-binomialverteilung", "sec-kumuliert", "sec-kenngroessen", "sec-parameter"];
   const ist = folge.filter((id) => soll.includes(id));
   pruefe(JSON.stringify(ist) === JSON.stringify(soll), `Gerüst: die Herleitungen stehen in der Reihenfolge ${ist.join(", ")}`);
-  // Vernetzung, Formelsammlung, Übungen am Ende in fester Reihenfolge
-  const ende = folge.slice(-3);
-  pruefe(JSON.stringify(ende) === JSON.stringify(["sec-vernetzung", "sec-formelsammlung", "sec-uebungen"]), `Gerüst: das Seitenende lautet ${ende.join(", ")}`);
+  // Vernetzung, Formelsammlung, Übungen und Selbsteinschätzung am Ende in fester Reihenfolge
+  const ende = folge.slice(-4);
+  pruefe(JSON.stringify(ende) === JSON.stringify(["sec-vernetzung", "sec-formelsammlung", "sec-uebungen", "sec-selbsteinschaetzung"]), `Gerüst: das Seitenende lautet ${ende.join(", ")}`);
   // Erst Zufallsgröße und Erwartungswert, dann Bernoulli — wie verlangt am Anfang.
   pruefe(folge.indexOf("sec-zufallsgroesse") < folge.indexOf("sec-bernoulli"), "Gerüst: Zufallsgrößen stehen nicht vor den Bernoulli-Ketten");
 

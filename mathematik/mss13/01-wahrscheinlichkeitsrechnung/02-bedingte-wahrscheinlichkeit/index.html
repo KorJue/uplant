@@ -19,7 +19,7 @@
 </nav>
 <header class="page-header">
   <h1>Bedingte Wahrscheinlichkeit</h1>
-  <p>Ein Selbstlernpfad: Jeder Abschnitt erklärt einen neuen Fachbegriff, zeigt ihn an einer interaktiven Zeichnung und endet mit einer Kontrollfrage. Am Schluss stehen eine Selbsteinschätzung und sechzehn Übungsaufgaben auf vier Stufen.</p>
+  <p>Ein Selbstlernpfad: Wie ändert eine Zusatzinformation eine Wahrscheinlichkeit? Mit beweglichen Zeichnungen, Kontrollfragen, sechzehn Übungsaufgaben und einer Selbsteinschätzung, die deine Ergebnisse auswertet.</p>
 </header>
 
 <main class="menu-main">
@@ -170,14 +170,6 @@
     </div>
   </section>
 
-  <!-- Selbsteinschätzung -->
-  <section class="card" id="sec-selbsteinschaetzung">
-    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
-    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
-    <div id="se-liste"></div>
-    <div id="se-auswertung" class="event-result"></div>
-  </section>
-
   <!-- Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>Innermathematische Zusammenhänge</h2>
@@ -209,6 +201,19 @@
     <p>Aufgaben, bei denen du direkt ins Baumdiagramm und in die Vierfeldertafel schreibst.</p>
     <div id="ausfuell-mount"></div>
   </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste" id="se-liste">
+      <li data-abschnitt="sec-baum-bedingt">Ich kann bedingte Wahrscheinlichkeiten an den Ästen eines Baums ablesen und erklären, was der Index bedeutet.</li>
+      <li data-abschnitt="sec-reduziert">Ich kann P_A(B) über die reduzierte Ergebnismenge bestimmen.</li>
+      <li data-abschnitt="sec-vft-bedingt">Ich kann bedingte Wahrscheinlichkeiten aus einer Vierfeldertafel berechnen — mit der Zeile oder der Spalte als Bedingung.</li>
+      <li data-abschnitt="sec-formel">Ich kann die Formel P_A(B) = P(A ∩ B) : P(A) herleiten und im Flächenmodell deuten.</li>
+      <li data-abschnitt="sec-stolperstelle">Ich erkenne, wenn in einem Baum statt bedingter Wahrscheinlichkeiten Zellenwerte an den Ästen stehen.</li>
+    </ul>
+    <div class="se-auswertung event-result" id="se-auswertung" aria-live="polite"></div>
+  </section>
 
   <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
   <section class="card" data-lehrkraft="lehrkraefte.html" hidden></section>
@@ -220,6 +225,7 @@
 </footer>
 
 <script src="../../../../assets/lehrkraft.js"></script>
+<script src="../../../../assets/selbsteinschaetzung.js"></script>
 <script type="module" src="lernpfad.js?v=4"></script>
 </body>
 </html>

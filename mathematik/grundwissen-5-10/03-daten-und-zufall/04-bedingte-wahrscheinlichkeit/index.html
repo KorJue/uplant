@@ -26,7 +26,7 @@
 
   <section class="card">
     <h2>Worum geht es hier?</h2>
-    <p>Bisher galt: Wahrscheinlichkeit ist der Anteil der günstigen an <em>allen</em> Ergebnissen. Jetzt kommt eine Zusatzinformation ins Spiel — „von den Radfahrenden …“, „unter denen mit positivem Test …“. Damit ändert sich nicht das Ereignis, sondern das <strong>Ganze</strong>, auf das man den Anteil bezieht. Am Ende kannst du:</p>
+    <p>„Von den Radfahrenden …“, „unter denen mit positivem Test …“: Mit einer Zusatzinformation ändert sich nicht das Ereignis, sondern das Ganze, auf das man den Anteil bezieht. Am Ende kannst du:</p>
     <ul class="lern-intro-list">
       <li>eine <span class="term">bedingte Wahrscheinlichkeit</span> P(A|B) als Anteil in einer <em>verkleinerten</em> Grundmenge bestimmen</li>
       <li>eine <span class="term">Vierfeldertafel</span> aufstellen, vervollständigen und daraus alle Wahrscheinlichkeiten ablesen</li>
@@ -168,20 +168,6 @@
     <div class="quiz" id="quiz-basisrate"></div>
   </section>
 
-  <!-- Selbsteinschätzung: dieselben Ziele wie in „Worum geht es hier?“, als Ich-kann-Sätze -->
-  <section class="card" id="sec-selbsteinschaetzung">
-    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
-    <p>Das sind die Ziele vom Anfang dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst — deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 😐 oder 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
-    <ul class="se-liste">
-      <li data-abschnitt="sec-bedingt">Ich kann P(A|B) als Anteil in einer verkleinerten Grundmenge bestimmen.</li>
-      <li data-abschnitt="sec-vierfeldertafel">Ich kann eine Vierfeldertafel aufstellen, vervollständigen und alle Wahrscheinlichkeiten ablesen.</li>
-      <li data-abschnitt="sec-umdrehen">Ich kann einen Sachverhalt als Baum in beiden Reihenfolgen darstellen und erklären, warum P(A|B) und P(B|A) verschieden sind.</li>
-      <li data-abschnitt="sec-unabhaengig">Ich kann stochastische Unabhängigkeit prüfen: P(A ∩ B) = P(A) · P(B).</li>
-      <li data-abschnitt="sec-basisrate">Ich kann begründen, warum ein guter Test bei einer seltenen Krankheit meistens falschen Alarm gibt.</li>
-    </ul>
-    <div class="se-auswertung event-result" aria-live="polite"></div>
-  </section>
-
   <!-- 6. Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>6. Innermathematische Zusammenhänge</h2>
@@ -211,6 +197,19 @@
     <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
     <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit. Wo eine Prozentzahl verlangt ist, trägst du nur die Zahl vor dem Prozentzeichen ein.</p>
     <div id="exercises-mount"></div>
+  </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-bedingt">Ich kann P(A|B) als Anteil in einer verkleinerten Grundmenge bestimmen.</li>
+      <li data-abschnitt="sec-vierfeldertafel">Ich kann eine Vierfeldertafel aufstellen, vervollständigen und alle Wahrscheinlichkeiten ablesen.</li>
+      <li data-abschnitt="sec-umdrehen">Ich kann einen Sachverhalt als Baum in beiden Reihenfolgen darstellen und erklären, warum P(A|B) und P(B|A) verschieden sind.</li>
+      <li data-abschnitt="sec-unabhaengig">Ich kann stochastische Unabhängigkeit prüfen: P(A ∩ B) = P(A) · P(B).</li>
+      <li data-abschnitt="sec-basisrate">Ich kann begründen, warum ein guter Test bei einer seltenen Krankheit meistens falschen Alarm gibt.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
   </section>
 
   <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->

@@ -1009,51 +1009,6 @@ const QUIZZE = {
   },
 };
 
-// ================= Selbsteinschätzung =================
-//
-// Die Auswahl liegt nur im Browser dieser Person — eine Lernhilfe, keine Leistungsmessung.
-const SE_PUNKTE = [
-  ["sec-hoehere", "Ich kann höhere Ableitungen bilden und f″ als Steigung des Graphen von f′ deuten."],
-  ["sec-kruemmung", "Ich kann am Vorzeichen von f″ ablesen, ob der Graph eine Links- oder Rechtskurve ist, und das begründen."],
-  ["sec-extrem2", "Ich kann Extremstellen mit f″ nachweisen und weiß, was bei f″(x<sub>E</sub>) = 0 zu tun ist."],
-  ["sec-wendepunkte", "Ich kann Wendepunkte, Sattelpunkte und die Wendetangente bestimmen."],
-  ["sec-schema", "Ich kann eine ganzrationale Funktion vollständig untersuchen und den Graphen zeichnen."],
-  ["sec-global", "Ich kann globale Extrema auf einem Intervall bestimmen, auch am Rand."],
-  ["sec-fstrich", "Ich kann aus dem Graphen von f′ auf Monotonie, Extrem- und Wendepunkte von f schließen."],
-  ["sec-scharen", "Ich kann eine Funktionenschar untersuchen und eine Ortskurve bestimmen."],
-  ["sec-steckbrief", "Ich kann eine ganzrationale Funktion aus Eigenschaften bestimmen und die Probe machen."],
-  ["sec-optimierung", "Ich kann ein Extremwertproblem mit Haupt- und Nebenbedingung lösen."],
-  ["sec-newton", "Ich kann Nullstellen mit dem Newton-Verfahren annähern und weiß, wann es scheitert."],
-  ["sec-stolperstelle", "Ich weiß, dass f″(x) = 0 allein noch keinen Wendepunkt beweist."],
-];
-const SE_SCHLUESSEL = "uplant-mss11-funktionsuntersuchung-selbsteinschaetzung";
-
-function leseSE() {
-  try { return JSON.parse(localStorage.getItem(SE_SCHLUESSEL) || "{}"); } catch { return {}; }
-}
-function schreibeSE(d) {
-  try { localStorage.setItem(SE_SCHLUESSEL, JSON.stringify(d)); } catch { /* ohne Speicher geht es auch */ }
-}
-function renderSelbsteinschaetzung() {
-  const liste = document.getElementById("se-liste");
-  const stand = leseSE();
-  liste.innerHTML = "";
-  SE_PUNKTE.forEach(([id, text]) => {
-    const knoepfe = el("div", { class: "se-knoepfe", role: "group", "aria-label": text.replace(/<[^>]+>/g, "") });
-    [["sicher", "😀", "sicher"], ["teils", "😐", "teilweise"], ["unsicher", "🤔", "noch unsicher"]].forEach(([wert, z, name]) => {
-      const b = el("button", { type: "button", "aria-pressed": String(stand[id] === wert), title: name, "aria-label": name }, z);
-      b.addEventListener("click", () => { const d = leseSE(); d[id] = wert; schreibeSE(d); renderSelbsteinschaetzung(); });
-      knoepfe.appendChild(b);
-    });
-    liste.appendChild(el("div", { class: "se-zeile" }, [el("span", { class: "se-text", html: text }), knoepfe]));
-  });
-  const unsicher = SE_PUNKTE.filter(([id]) => stand[id] === "unsicher");
-  const sicher = SE_PUNKTE.filter(([id]) => stand[id] === "sicher").length;
-  const aus = document.getElementById("se-auswertung");
-  if (!Object.keys(stand).length) aus.textContent = "Noch nichts angekreuzt.";
-  else if (unsicher.length) aus.innerHTML = `Wiederhole zuerst: ${unsicher.map(([id]) => `<a href="#${id}">${document.querySelector(`#${id} h2`).textContent}</a>`).join(", ")}. Danach passen die Übungsaufgaben auf den Stufen „einfach“ und „mittel“.`;
-  else aus.textContent = `${sicher} von ${SE_PUNKTE.length} Punkten sicher — probier dich an den Aufgaben auf den Stufen „schwierig“ und „komplex“.`;
-}
 
 // ================= Start =================
 
@@ -1085,5 +1040,4 @@ for (const [ids, render] of REGLER) {
   render();   // nicht vergessen — sonst bleibt die Zeichnung leer, bis jemand einen Regler anfasst
 }
 for (const [id, def] of Object.entries(QUIZZE)) mountQuiz(document.getElementById(id), def);
-renderSelbsteinschaetzung();
 mountUebungsaufgaben(document.getElementById("exercises-mount"), AUFGABEN, { parse: parseZahl });

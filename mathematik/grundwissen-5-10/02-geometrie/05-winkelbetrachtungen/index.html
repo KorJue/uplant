@@ -26,7 +26,7 @@
 
   <section class="card">
     <h2>Worum geht es hier?</h2>
-    <p>Bisher hast du einzelne Winkel gemessen. Jetzt geht es um ihre <strong>Beziehungen</strong>: Wenn ein Winkel bekannt ist, lassen sich viele andere <em>ausrechnen</em>, ohne noch einmal zu messen. Das ganze Kapitel steht auf zwei Bausteinen, die du schon kennst — dem <strong>gestreckten Winkel (180°)</strong> und dem <strong>Vollwinkel (360°)</strong>. Am Ende kannst du:</p>
+    <p>Ist ein Winkel bekannt, lassen sich viele andere ausrechnen, ohne noch einmal zu messen. Alles steht auf zwei Bausteinen: dem gestreckten Winkel (180°) und dem Vollwinkel (360°). Am Ende kannst du:</p>
     <ul class="lern-intro-list">
       <li><span class="term">Scheitelwinkel</span> und <span class="term">Nebenwinkel</span> an einem Geradenkreuz bestimmen</li>
       <li>an geschnittenen Parallelen <span class="term">Stufen-</span>, <span class="term">Wechsel-</span> und <span class="term">Nachbarwinkel</span> erkennen</li>
@@ -118,6 +118,13 @@
       <div class="geo-wrap" id="dr-mount"></div>
       <div id="dr-text" class="event-result"></div>
     </div>
+    <!-- Der Satz des Thales (Klasse 8) und die Konstruktionen (Thema 6) verweisen für den
+         Basiswinkelsatz hierher; die Begründung kommt ohne Kongruenzsätze aus, die erst in Thema 6 stehen. -->
+    <div class="wissen-box">
+      <span class="box-label">Folgerung: der Basiswinkelsatz</span>
+      Im <strong>gleichschenkligen</strong> Dreieck sind die beiden <strong>Basiswinkel gleich groß</strong>. Mit der Winkelsumme folgt: Winkel an der Spitze = 180° − 2 · Basiswinkel.
+    </div>
+    <p>Warum die Basiswinkel gleich sind, zeigt ein Faltversuch: Faltet man das Dreieck so, dass die beiden gleich langen Schenkel aufeinanderliegen, geht der Falz durch die Spitze. Weil die Schenkel gleich lang sind, treffen sich ihre Enden — die beiden Ecken an der Basis. Die Basis liegt dann doppelt, und der eine Basiswinkel deckt genau den anderen.</p>
     <div class="quiz" id="quiz-dreieck"></div>
   </section>
 
@@ -162,20 +169,6 @@
     <div class="quiz" id="quiz-vieleck"></div>
   </section>
 
-  <!-- Selbsteinschätzung: dieselben Ziele wie in „Worum geht es hier?“, als Ich-kann-Sätze -->
-  <section class="card" id="sec-selbsteinschaetzung">
-    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
-    <p>Das sind die Ziele vom Anfang dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst — deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 😐 oder 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
-    <ul class="se-liste">
-      <li data-abschnitt="sec-geradenkreuz">Ich kann Scheitel- und Nebenwinkel an einem Geradenkreuz bestimmen.</li>
-      <li data-abschnitt="sec-parallelen">Ich kann an geschnittenen Parallelen Stufen-, Wechsel- und Nachbarwinkel erkennen.</li>
-      <li data-abschnitt="sec-dreieck">Ich kann die Winkelsumme im Dreieck nicht nur nennen, sondern begründen.</li>
-      <li data-abschnitt="sec-vieleck">Ich kann die Innenwinkelsumme jedes Vielecks berechnen.</li>
-      <li data-abschnitt="sec-aussenwinkel">Ich kann mit dem Außenwinkelsatz in zwei Schritten statt in dreien rechnen.</li>
-    </ul>
-    <div class="se-auswertung event-result" aria-live="polite"></div>
-  </section>
-
   <!-- 6. Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>6. Innermathematische Zusammenhänge</h2>
@@ -205,6 +198,19 @@
     <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
     <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Gradzeichen.</p>
     <div id="exercises-mount"></div>
+  </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-geradenkreuz">Ich kann Scheitel- und Nebenwinkel an einem Geradenkreuz bestimmen.</li>
+      <li data-abschnitt="sec-parallelen">Ich kann an geschnittenen Parallelen Stufen-, Wechsel- und Nachbarwinkel erkennen.</li>
+      <li data-abschnitt="sec-dreieck">Ich kann die Winkelsumme im Dreieck nicht nur nennen, sondern begründen.</li>
+      <li data-abschnitt="sec-vieleck">Ich kann die Innenwinkelsumme jedes Vielecks berechnen.</li>
+      <li data-abschnitt="sec-aussenwinkel">Ich kann mit dem Außenwinkelsatz in zwei Schritten statt in dreien rechnen.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
   </section>
 
   <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
