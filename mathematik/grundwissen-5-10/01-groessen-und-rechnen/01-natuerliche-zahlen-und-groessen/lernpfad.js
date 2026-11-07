@@ -683,14 +683,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Runden", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Stellenwert einer Ziffer", generate: generateAufgabe2b },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Stellenwerte zusammensetzen", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — die Mitte auf dem Zahlenstrahl", generate: generateAufgabe4b },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Größen addieren", generate: generateAufgabe3 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — eine Länge in drei Schreibweisen", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Größen, Runden und Rechnen kombiniert", generate: generateAufgabe4 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — ordnen, runden, vergleichen", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Runden", abschnitt: "sec-runden", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Stellenwert einer Ziffer", abschnitt: "sec-stellenwertsystem", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Stellenwerte zusammensetzen", abschnitt: "sec-stellenwertsystem", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — die Mitte auf dem Zahlenstrahl", abschnitt: "sec-zahlenstrahl", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Größen addieren", abschnitt: "sec-groessen", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — eine Länge in drei Schreibweisen", abschnitt: "sec-groessen", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Größen, Runden und Rechnen kombiniert", abschnitt: ["sec-runden", "sec-groessen"], generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — ordnen, runden, vergleichen", abschnitt: ["sec-zahlenstrahl", "sec-runden"], generate: generateAufgabe8 },
   ]);
 }
 

@@ -956,14 +956,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Quader: Volumen oder Oberfläche", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Volumen und Oberfläche nebeneinander", generate: generateAufgabe2b },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Raumeinheiten und Hohlmaße", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Die fehlende Kante", generate: generateAufgabe4b },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Zusammengesetzter Körper", generate: generateAufgabe3 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Gleiches Volumen, andere Oberfläche", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Becken auskleiden", generate: generateAufgabe4 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Das Aquarium", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Quader: Volumen oder Oberfläche", abschnitt: ["sec-quader", "sec-netz"], generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Volumen und Oberfläche nebeneinander", abschnitt: ["sec-quader", "sec-netz"], generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Raumeinheiten und Hohlmaße", abschnitt: "sec-einheiten", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Die fehlende Kante", abschnitt: "sec-quader", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Zusammengesetzter Körper", abschnitt: "sec-zusammengesetzt", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Gleiches Volumen, andere Oberfläche", abschnitt: "sec-vergleich", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Becken auskleiden", abschnitt: "sec-netz", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Das Aquarium", abschnitt: ["sec-quader", "sec-einheiten"], generate: generateAufgabe8 },
   ]);
 }
 

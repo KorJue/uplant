@@ -19,14 +19,14 @@
 </nav>
 <header class="page-header">
   <h1>Bernoulli-Ketten und Binomialverteilung</h1>
-  <p>Ein Selbstlernpfad: Von der Zufallsgröße über die Formel von Bernoulli bis zur Frage, wie oft man etwas versuchen muss. Jeder Abschnitt leitet sein Ergebnis an einer beweglichen Darstellung her, rechnet es nach und endet mit einer Kontrollfrage. Am Schluss stehen sechzehn Übungsaufgaben auf vier Stufen, die du hier auf der Seite löst.</p>
+  <p>Ein Selbstlernpfad: von der Zufallsgröße über die Formel von Bernoulli bis zur Frage, wie oft man etwas versuchen muss — mit beweglichen Darstellungen, Kontrollfragen und sechzehn Übungsaufgaben.</p>
 </header>
 
 <main class="menu-main">
 
   <section class="card">
     <h2>Worum geht es hier?</h2>
-    <p>Ein Würfel wird zehnmal geworfen. Wie wahrscheinlich sind genau drei Sechsen? Höchstens zwei? Wie viele Sechsen sind „normal“, wie viele schon verdächtig? Solche Fragen haben eine gemeinsame Gestalt: Ein Versuch mit nur zwei Ausgängen wird mehrmals unabhängig wiederholt, und man zählt die Treffer. Für genau diese Situation gibt es eine eigene Formel und eine eigene Verteilung. Am Ende kannst du:</p>
+    <p>Ein Würfel wird zehnmal geworfen: Wie wahrscheinlich sind genau drei Sechsen, höchstens zwei? Ein Versuch mit zwei Ausgängen, mehrmals unabhängig wiederholt — dafür gibt es eine eigene Formel und eine eigene Verteilung. Am Ende kannst du:</p>
     <ul class="lern-intro-list">
       <li>eine <span class="term">Zufallsgröße</span> X festlegen und ihre <span class="term">Wahrscheinlichkeitsverteilung</span> als Tabelle und Histogramm angeben</li>
       <li><span class="term">Erwartungswert</span> μ = E(X), <span class="term">Varianz</span> V(X) und <span class="term">Standardabweichung</span> σ berechnen und entscheiden, ob ein Spiel fair ist</li>
@@ -49,7 +49,7 @@
         </tbody>
       </table>
     </div>
-    <p class="hinweis-box">💡 Du brauchst aus <a href="../01-grundbegriffe-baumdiagramme-vierfeldertafel/index.html">Thema 1</a> die Pfadregeln am Baumdiagramm und aus <a href="../04-stochastische-unabhaengigkeit/index.html">Thema 4</a> den Begriff der stochastischen Unabhängigkeit: Bei einer Bernoulli-Kette sind die einzelnen Versuche unabhängig voneinander, und nur deshalb darf man die Wahrscheinlichkeiten entlang eines Pfades einfach multiplizieren.</p>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../01-grundbegriffe-baumdiagramme-vierfeldertafel/index.html">Thema 1</a> die Pfadregeln am Baumdiagramm und aus <a href="../04-stochastische-unabhaengigkeit/index.html">Thema 4</a> die stochastische Unabhängigkeit — nur ihretwegen darf man entlang eines Pfades einfach multiplizieren.</p>
   </section>
 
   <!-- 1. Zufallsgröße und Wahrscheinlichkeitsverteilung -->
@@ -373,14 +373,6 @@
     <div class="quiz" id="quiz-parameter"></div>
   </section>
 
-  <!-- Selbsteinschätzung -->
-  <section class="card" id="sec-selbsteinschaetzung">
-    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
-    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
-    <div id="se-liste"></div>
-    <div id="se-auswertung" class="event-result"></div>
-  </section>
-
   <!-- 10. Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>Innermathematische Zusammenhänge</h2>
@@ -411,6 +403,23 @@
     <p class="progress-note">Wahrscheinlichkeiten gibst du als Dezimalzahl mit vier Nachkommastellen ein, zum Beispiel 0,2461 — mit Komma. Taschenrechner oder Tabelle sind erlaubt.</p>
     <div id="exercises-mount"></div>
   </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste" id="se-liste">
+      <li data-abschnitt="sec-zufallsgroesse">Ich kann zu einem Zufallsversuch eine Zufallsgröße festlegen und ihre Verteilung als Tabelle und Histogramm angeben.</li>
+      <li data-abschnitt="sec-erwartungswert">Ich kann E(X), V(X) und σ berechnen und entscheiden, ob ein Spiel fair ist.</li>
+      <li data-abschnitt="sec-bernoulli">Ich erkenne, ob eine Bernoulli-Kette vorliegt, und kann n und p angeben.</li>
+      <li data-abschnitt="sec-binomialkoeffizient">Ich kann den Binomialkoeffizienten berechnen und als Anzahl der Pfade deuten.</li>
+      <li data-abschnitt="sec-formel">Ich kann mit der Formel von Bernoulli P(X = k) berechnen — auch für p > 0,5 mit der Tabelle.</li>
+      <li data-abschnitt="sec-binomialverteilung">Ich kann beschreiben, wie n und p die Gestalt des Histogramms beeinflussen.</li>
+      <li data-abschnitt="sec-kumuliert">Ich kann „höchstens“, „mindestens“ und „zwischen“ mit F(n; p; k) ausdrücken, ohne mich um eins zu verzählen.</li>
+      <li data-abschnitt="sec-kenngroessen">Ich kann μ und σ einer Binomialverteilung berechnen und deuten.</li>
+      <li data-abschnitt="sec-parameter">Ich kann n, k oder p zu einer vorgegebenen Mindestwahrscheinlichkeit bestimmen.</li>
+    </ul>
+    <div class="se-auswertung event-result" id="se-auswertung" aria-live="polite"></div>
+  </section>
 
   <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
   <section class="card" data-lehrkraft="lehrkraefte.html" hidden></section>
@@ -422,6 +431,7 @@
 </footer>
 
 <script src="../../../../assets/lehrkraft.js"></script>
+<script src="../../../../assets/selbsteinschaetzung.js"></script>
 <script type="module" src="lernpfad.js?v=1"></script>
 </body>
 </html>

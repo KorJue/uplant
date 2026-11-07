@@ -1090,14 +1090,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — relative Häufigkeit", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Modalwert und Spannweite", generate: generateAufgabe2b },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — arithmetisches Mittel", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Anteil im Kreisdiagramm", generate: generateAufgabe4b },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Median", generate: generateAufgabe3 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Notendurchschnitt aus der Tabelle", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — der fehlende Wert", generate: generateAufgabe4 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Ein Ausreißer und der Durchschnitt", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — relative Häufigkeit", abschnitt: "sec-urliste", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Modalwert und Spannweite", abschnitt: "sec-mittelwerte", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — arithmetisches Mittel", abschnitt: "sec-mittelwerte", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Anteil im Kreisdiagramm", abschnitt: "sec-diagramme", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Median", abschnitt: "sec-mittelwerte", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Notendurchschnitt aus der Tabelle", abschnitt: "sec-mittelwerte", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — der fehlende Wert", abschnitt: ["sec-mittelwerte", "sec-waage"], generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Ein Ausreißer und der Durchschnitt", abschnitt: "sec-mittelwerte", generate: generateAufgabe8 },
   ]);
 }
 

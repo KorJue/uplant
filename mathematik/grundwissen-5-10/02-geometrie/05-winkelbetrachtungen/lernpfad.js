@@ -1003,14 +1003,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Scheitel- oder Nebenwinkel", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Alle vier Winkel am Geradenkreuz", generate: generateAufgabe2b },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — An geschnittenen Parallelen", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Winkelsumme im Vieleck", generate: generateAufgabe4b },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Winkelsumme im Dreieck", generate: generateAufgabe3 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Winkel mit einer Bedingung", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Außenwinkel", generate: generateAufgabe4 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Drei Winkel an Parallelen", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Scheitel- oder Nebenwinkel", abschnitt: "sec-geradenkreuz", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Alle vier Winkel am Geradenkreuz", abschnitt: "sec-geradenkreuz", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — An geschnittenen Parallelen", abschnitt: "sec-parallelen", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Winkelsumme im Vieleck", abschnitt: "sec-vieleck", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Winkelsumme im Dreieck", abschnitt: "sec-dreieck", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Winkel mit einer Bedingung", abschnitt: "sec-dreieck", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Außenwinkel", abschnitt: "sec-aussenwinkel", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Drei Winkel an Parallelen", abschnitt: "sec-parallelen", generate: generateAufgabe8 },
   ]);
 }
 

@@ -1219,14 +1219,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — proportionaler Dreisatz", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Der Proportionalitätsfaktor", generate: generateAufgabe2b },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — antiproportionaler Dreisatz", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Der Dreisatz rückwärts", generate: generateAufgabe4b },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — welche Art ist es?", generate: generateAufgabe3 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Zwei Größen auf einmal", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Grundpreis und Stückpreis", generate: generateAufgabe4 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Welcher Tarif lohnt sich?", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — proportionaler Dreisatz", abschnitt: ["sec-proportional", "sec-dreisatz"], generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Der Proportionalitätsfaktor", abschnitt: "sec-proportional", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — antiproportionaler Dreisatz", abschnitt: ["sec-antiproportional", "sec-dreisatz"], generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Der Dreisatz rückwärts", abschnitt: ["sec-proportional", "sec-dreisatz"], generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — welche Art ist es?", abschnitt: ["sec-proportional", "sec-antiproportional"], generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Zwei Größen auf einmal", abschnitt: "sec-dreisatz", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Grundpreis und Stückpreis", abschnitt: "sec-weder", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Welcher Tarif lohnt sich?", abschnitt: "sec-weder", generate: generateAufgabe8 },
   ]);
 }
 

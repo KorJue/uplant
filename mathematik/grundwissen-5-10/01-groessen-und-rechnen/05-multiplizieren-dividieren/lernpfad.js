@@ -774,14 +774,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Bruch mal natürliche Zahl", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Kehrwert bilden", generate: generateAufgabe2b },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Bruch mal Bruch", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Dezimalzahlen multiplizieren", generate: generateAufgabe4b },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Durch einen Bruch dividieren", generate: generateAufgabe3 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Durch eine Dezimalzahl dividieren", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Sachaufgabe mit Dezimalzahlen", generate: generateAufgabe4 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Rezept umrechnen", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Bruch mal natürliche Zahl", abschnitt: "sec-vervielfachen", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Kehrwert bilden", abschnitt: "sec-division", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Bruch mal Bruch", abschnitt: "sec-bruchmalbruch", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Dezimalzahlen multiplizieren", abschnitt: "sec-dezmal", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Durch einen Bruch dividieren", abschnitt: "sec-division", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Durch eine Dezimalzahl dividieren", abschnitt: "sec-dezdurch", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Sachaufgabe mit Dezimalzahlen", abschnitt: ["sec-dezmal", "sec-dezdurch"], generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Rezept umrechnen", abschnitt: ["sec-dezmal", "sec-dezdurch"], generate: generateAufgabe8 },
   ]);
 }
 

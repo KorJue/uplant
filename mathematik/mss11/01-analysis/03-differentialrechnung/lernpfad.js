@@ -1138,52 +1138,6 @@ const QUIZZE = {
   },
 };
 
-// ================= Selbsteinschätzung =================
-//
-// Die Auswahl liegt nur im Browser dieser Person — eine Lernhilfe, keine Leistungsmessung.
-const SE_PUNKTE = [
-  ["sec-mittlere", "Ich kann eine mittlere Änderungsrate berechnen und als Sekantensteigung deuten — mit Einheit."],
-  ["sec-lokal", "Ich kann erklären, wie aus Sekanten PQ mit x → x₀ die Tangente und die lokale Änderungsrate werden."],
-  ["sec-ableitung", "Ich kann f′(x₀) als Differentialquotienten mit der x₀-Methode (oder der h-Methode) berechnen und die drei Sichten auf die Ableitung nennen."],
-  ["sec-grafisch", "Ich kann zu einem Graphen den Graphen der Ableitungsfunktion skizzieren."],
-  ["sec-potenz", "Ich kann die Ableitungsfunktion erst an einer Stelle, dann allgemein herleiten und die Potenzregel anwenden — auch bei negativen Exponenten und bei √x."],
-  ["sec-regeln", "Ich kann ganzrationale Funktionen mit Faktor- und Summenregel ableiten."],
-  ["sec-produkt", "Ich kann Produkte mit der Produktregel ableiten und weiß, warum (u · v)′ nicht u′ · v′ ist."],
-  ["sec-tangente", "Ich kann Tangente und Normale aufstellen und Steigungs- und Schnittwinkel berechnen."],
-  ["sec-differenzierbar", "Ich kann prüfen, ob eine Funktion an einer Stelle differenzierbar ist."],
-  ["sec-ganzrational", "Ich kann am Term den Verlauf für x → ±∞ und die Symmetrie einer ganzrationalen Funktion ablesen."],
-  ["sec-nullstellen", "Ich kann Nullstellen durch Faktorisieren, Ausklammern und Substitution bestimmen und ihre Vielfachheit deuten."],
-  ["sec-monotonie", "Ich kann aus f′ ablesen, wo f steigt und fällt und wo Hoch-, Tief- und Sattelpunkte liegen."],
-  ["sec-stolperstelle", "Ich weiß, dass eine Tangente den Graphen an anderer Stelle schneiden darf."],
-];
-const SE_SCHLUESSEL = "uplant-mss11-differentialrechnung-selbsteinschaetzung";
-
-function leseSE() {
-  try { return JSON.parse(localStorage.getItem(SE_SCHLUESSEL) || "{}"); } catch { return {}; }
-}
-function schreibeSE(d) {
-  try { localStorage.setItem(SE_SCHLUESSEL, JSON.stringify(d)); } catch { /* ohne Speicher geht es auch */ }
-}
-function renderSelbsteinschaetzung() {
-  const liste = document.getElementById("se-liste");
-  const stand = leseSE();
-  liste.innerHTML = "";
-  SE_PUNKTE.forEach(([id, text]) => {
-    const knoepfe = el("div", { class: "se-knoepfe", role: "group", "aria-label": text });
-    [["sicher", "😀", "sicher"], ["teils", "😐", "teilweise"], ["unsicher", "🤔", "noch unsicher"]].forEach(([wert, z, name]) => {
-      const b = el("button", { type: "button", "aria-pressed": String(stand[id] === wert), title: name, "aria-label": name }, z);
-      b.addEventListener("click", () => { const d = leseSE(); d[id] = wert; schreibeSE(d); renderSelbsteinschaetzung(); });
-      knoepfe.appendChild(b);
-    });
-    liste.appendChild(el("div", { class: "se-zeile" }, [el("span", { class: "se-text" }, text), knoepfe]));
-  });
-  const unsicher = SE_PUNKTE.filter(([id]) => stand[id] === "unsicher");
-  const sicher = SE_PUNKTE.filter(([id]) => stand[id] === "sicher").length;
-  const aus = document.getElementById("se-auswertung");
-  if (!Object.keys(stand).length) aus.textContent = "Noch nichts angekreuzt.";
-  else if (unsicher.length) aus.innerHTML = `Wiederhole zuerst: ${unsicher.map(([id]) => `<a href="#${id}">${document.querySelector(`#${id} h2`).textContent}</a>`).join(", ")}. Danach passen die Übungsaufgaben auf den Stufen „einfach“ und „mittel“.`;
-  else aus.textContent = `${sicher} von ${SE_PUNKTE.length} Punkten sicher — probier dich an den Aufgaben auf den Stufen „schwierig“ und „komplex“.`;
-}
 
 // ================= Start =================
 
@@ -1219,5 +1173,4 @@ for (const [ids, render] of REGLER) {
   render();   // nicht vergessen — sonst bleibt die Zeichnung leer, bis jemand einen Regler anfasst
 }
 for (const [id, def] of Object.entries(QUIZZE)) mountQuiz(document.getElementById(id), def);
-renderSelbsteinschaetzung();
 mountUebungsaufgaben(document.getElementById("exercises-mount"), AUFGABEN, { parse: parseZahl });

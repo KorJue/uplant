@@ -858,41 +858,6 @@ function initQuizzes() {
   for (const [id, def] of Object.entries(QUIZZE)) mountQuiz(document.getElementById(id), def);
 }
 
-// ================= Selbsteinschätzung =================
-const SE_PUNKTE = [
-  ["sec-baum-bedingt", "Ich kann bedingte Wahrscheinlichkeiten an den Ästen eines Baums ablesen und erklären, was der Index bedeutet."],
-  ["sec-reduziert", "Ich kann P_A(B) über die reduzierte Ergebnismenge bestimmen."],
-  ["sec-vft-bedingt", "Ich kann bedingte Wahrscheinlichkeiten aus einer Vierfeldertafel berechnen — mit der Zeile oder der Spalte als Bedingung."],
-  ["sec-formel", "Ich kann die Formel P_A(B) = P(A ∩ B) : P(A) herleiten und im Flächenmodell deuten."],
-  ["sec-stolperstelle", "Ich erkenne, wenn in einem Baum statt bedingter Wahrscheinlichkeiten Zellenwerte an den Ästen stehen."],
-];
-const SE_SCHLUESSEL = "uplant-mss13-bedingt-selbsteinschaetzung";
-function leseSE() {
-  try { return JSON.parse(localStorage.getItem(SE_SCHLUESSEL) || "{}"); } catch { return {}; }
-}
-function schreibeSE(d) {
-  try { localStorage.setItem(SE_SCHLUESSEL, JSON.stringify(d)); } catch { /* ohne Speicher geht es auch */ }
-}
-function renderSelbsteinschaetzung() {
-  const liste = document.getElementById("se-liste");
-  const stand = leseSE();
-  liste.innerHTML = "";
-  SE_PUNKTE.forEach(([id, text]) => {
-    const knoepfe = el("div", { class: "se-knoepfe", role: "group", "aria-label": text });
-    [["sicher", "😀", "sicher"], ["teils", "😐", "teilweise"], ["unsicher", "🤔", "noch unsicher"]].forEach(([wert, zeichen, name]) => {
-      const b = el("button", { type: "button", "aria-pressed": String(stand[id] === wert), title: name, "aria-label": name }, zeichen);
-      b.addEventListener("click", () => { const d = leseSE(); d[id] = wert; schreibeSE(d); renderSelbsteinschaetzung(); });
-      knoepfe.appendChild(b);
-    });
-    liste.appendChild(el("div", { class: "se-zeile" }, [el("span", { class: "se-text" }, text), knoepfe]));
-  });
-  const unsicher = SE_PUNKTE.filter(([id]) => stand[id] === "unsicher");
-  const sicher = SE_PUNKTE.filter(([id]) => stand[id] === "sicher").length;
-  const aus = document.getElementById("se-auswertung");
-  if (!Object.keys(stand).length) aus.textContent = "Noch nichts angekreuzt.";
-  else if (unsicher.length) aus.innerHTML = `Wiederhole zuerst: ${unsicher.map(([id]) => `<a href="#${id}">${document.querySelector(`#${id} h2`).textContent}</a>`).join(", ")}. Danach passen die Übungsaufgaben auf den Stufen „einfach“ und „mittel“.`;
-  else aus.textContent = `${sicher} von ${SE_PUNKTE.length} Punkten sicher — probier dich an den Aufgaben auf den Stufen „schwierig“ und „komplex“.`;
-}
 
 // ================= Start =================
 
@@ -909,6 +874,5 @@ document.addEventListener("DOMContentLoaded", () => {
     e.addEventListener("change", renderFormelModell);
   });
   renderFormelModell();   // nicht vergessen — sonst bleibt das Modell leer
-  renderSelbsteinschaetzung();
-  mountUebungsaufgaben(document.getElementById("exercises-mount"), AUFGABEN, { parse: parseZahl });
+    mountUebungsaufgaben(document.getElementById("exercises-mount"), AUFGABEN, { parse: parseZahl });
 });

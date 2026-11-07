@@ -19,14 +19,14 @@
 </nav>
 <header class="page-header">
   <h1>Grenzwerte und Stetigkeit</h1>
-  <p>Ein Selbstlernpfad: Was tut eine Funktion, wenn x sehr groß wird — und was an einer Stelle, an der man nicht einfach einsetzen kann? Jeder Abschnitt leitet sein Ergebnis an einer beweglichen Darstellung her, rechnet es nach und endet mit einer Kontrollfrage. Am Schluss stehen sechzehn Übungsaufgaben auf vier Stufen, die du hier auf der Seite löst.</p>
+  <p>Ein Selbstlernpfad: Was tut eine Funktion für sehr große x — und an einer Stelle, an der man nicht einfach einsetzen kann? Mit beweglichen Darstellungen, Kontrollfragen und sechzehn Übungsaufgaben.</p>
 </header>
 
 <main class="menu-main">
 
   <section class="card">
     <h2>Worum geht es hier?</h2>
-    <p>Die Funktion f(x) = (x² − 1)/(x − 1) ist an der Stelle 1 nicht definiert — man würde durch 0 teilen. Trotzdem hat ihr Graph dort kein Loch, in das man fallen könnte, sondern nur einen fehlenden Punkt: Kommt x der 1 nahe, kommt f(x) der 2 beliebig nahe. Solche Fragen beantwortet der <span class="term">Grenzwert einer Funktion</span>. Er ist das Werkzeug, mit dem später die Ableitung gebaut wird. Am Ende kannst du:</p>
+    <p>f(x) = (x² − 1)/(x − 1) ist bei 1 nicht definiert — und doch kommt f(x) der 2 beliebig nahe, wenn x der 1 nahe kommt. Das beschreibt der Grenzwert einer Funktion, aus dem später die Ableitung entsteht. Am Ende kannst du:</p>
     <ul class="lern-intro-list">
       <li>den Grenzwert lim<sub>x→∞</sub> f(x) mit dem ε-Streifen erklären und eine <span class="term">waagerechte Asymptote</span> angeben</li>
       <li>mit <span class="term">Testfolgen</span> untersuchen, was f an einer Stelle x₀ tut — auch von links und von rechts getrennt</li>
@@ -269,14 +269,6 @@
     <div class="quiz" id="quiz-stolperstelle"></div>
   </section>
 
-  <!-- Selbsteinschätzung -->
-  <section class="card" id="sec-selbsteinschaetzung">
-    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
-    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
-    <div id="se-liste"></div>
-    <div id="se-auswertung" class="event-result"></div>
-  </section>
-
   <!-- Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>Innermathematische Zusammenhänge</h2>
@@ -306,6 +298,21 @@
     <p class="progress-note">Zahlen gibst du mit Komma ein, zum Beispiel 1,5; Brüche wie 3/2 sind ebenfalls erlaubt.</p>
     <div id="exercises-mount"></div>
   </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste" id="se-liste">
+      <li data-abschnitt="sec-unendlich">Ich kann lim f(x) für x → ∞ mit dem ε-Streifen erklären und eine waagerechte Asymptote angeben.</li>
+      <li data-abschnitt="sec-stelle">Ich kann mit Testfolgen oder der h-Methode den Grenzwert an einer Stelle bestimmen — auch einseitig.</li>
+      <li data-abschnitt="sec-rational">Ich kann Grenzwerte gebrochenrationaler Funktionen für x → ±∞ über die Grade bestimmen.</li>
+      <li data-abschnitt="sec-stetigkeit">Ich kann prüfen, ob eine Funktion an einer Stelle stetig ist, und Parameter dafür bestimmen.</li>
+      <li data-abschnitt="sec-luecken">Ich kann hebbare Lücken und Polstellen unterscheiden und eine stetige Fortsetzung angeben.</li>
+      <li data-abschnitt="sec-zwischenwert">Ich kann mit dem Zwischenwertsatz eine Nullstelle begründen und sie durch Halbieren einschachteln.</li>
+      <li data-abschnitt="sec-stolperstelle">Ich weiß, dass Stetigkeit nur an Stellen der Definitionsmenge gefragt wird.</li>
+    </ul>
+    <div class="se-auswertung event-result" id="se-auswertung" aria-live="polite"></div>
+  </section>
 
   <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
   <section class="card" data-lehrkraft="lehrkraefte.html" hidden></section>
@@ -317,6 +324,7 @@
 </footer>
 
 <script src="../../../../assets/lehrkraft.js"></script>
+<script src="../../../../assets/selbsteinschaetzung.js"></script>
 <script type="module" src="lernpfad.js?v=2"></script>
 </body>
 </html>

@@ -630,16 +630,16 @@ function generateK3() {
 // Die Reihenfolge ist die der Reiter: drei je Stufe. Die Prüfung rechnet aus der Nummer die
 // Stufe zurück — wer umsortiert, muss sie mitziehen.
 export const AUFGABEN = [
-  { schwierigkeit: "einfach", titel: "Mittelpunkt einer Strecke", generate: generateE1 },
-  { schwierigkeit: "einfach", titel: "Die Winkelhalbierende halbiert", generate: generateE2 },
-  { schwierigkeit: "einfach", titel: "Der Schwerpunkt teilt 2 : 1", generate: generateE3 },
-  { schwierigkeit: "mittel", titel: "Umkreismittelpunkt im Koordinatensystem", generate: generateM1 },
-  { schwierigkeit: "mittel", titel: "Schwerpunkt aus den Ecken", generate: generateM2 },
-  { schwierigkeit: "mittel", titel: "Der Winkel am Inkreismittelpunkt", generate: generateM3 },
-  { schwierigkeit: "schwierig", titel: "Der Winkel am Höhenschnittpunkt", generate: generateS1 },
-  { schwierigkeit: "schwierig", titel: "Der Winkel am Umkreismittelpunkt", generate: generateS2 },
-  { schwierigkeit: "schwierig", titel: "Rückwärts: aus Ecke und Schwerpunkt die Seitenmitte", generate: generateS3 },
-  { schwierigkeit: "komplex", titel: "Inkreisradius aus Fläche und Umfang", generate: generateK1 },
-  { schwierigkeit: "komplex", titel: "Die Eulersche Gerade", generate: generateK2 },
-  { schwierigkeit: "komplex", titel: "Höhe und Winkelhalbierende von derselben Ecke", generate: generateK3 },
+  { schwierigkeit: "einfach", titel: "Mittelpunkt einer Strecke", abschnitt: "sec-mittelsenkrechte", generate: generateE1 },
+  { schwierigkeit: "einfach", titel: "Die Winkelhalbierende halbiert", abschnitt: "sec-winkelhalbierende", generate: generateE2 },
+  { schwierigkeit: "einfach", titel: "Der Schwerpunkt teilt 2 : 1", abschnitt: "sec-schwerpunkt", generate: generateE3 },
+  { schwierigkeit: "mittel", titel: "Umkreismittelpunkt im Koordinatensystem", abschnitt: "sec-umkreis", generate: generateM1 },
+  { schwierigkeit: "mittel", titel: "Schwerpunkt aus den Ecken", abschnitt: "sec-schwerpunkt", generate: generateM2 },
+  { schwierigkeit: "mittel", titel: "Der Winkel am Inkreismittelpunkt", abschnitt: "sec-inkreis", generate: generateM3 },
+  { schwierigkeit: "schwierig", titel: "Der Winkel am Höhenschnittpunkt", abschnitt: "sec-hoehen", generate: generateS1 },
+  { schwierigkeit: "schwierig", titel: "Der Winkel am Umkreismittelpunkt", abschnitt: "sec-umkreis", generate: generateS2 },
+  { schwierigkeit: "schwierig", titel: "Rückwärts: aus Ecke und Schwerpunkt die Seitenmitte", abschnitt: "sec-schwerpunkt", generate: generateS3 },
+  { schwierigkeit: "komplex", titel: "Inkreisradius aus Fläche und Umfang", abschnitt: "sec-inkreis", generate: generateK1 },
+  { schwierigkeit: "komplex", titel: "Die Eulersche Gerade", abschnitt: "sec-alle", generate: generateK2 },
+  { schwierigkeit: "komplex", titel: "Höhe und Winkelhalbierende von derselben Ecke", abschnitt: ["sec-winkelhalbierende", "sec-hoehen"], generate: generateK3 },
 ];

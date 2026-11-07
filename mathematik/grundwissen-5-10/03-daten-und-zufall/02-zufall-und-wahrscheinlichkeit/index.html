@@ -178,20 +178,6 @@
     <div class="quiz" id="quiz-nichtlaplace"></div>
   </section>
 
-  <!-- Selbsteinschätzung: dieselben Ziele wie in „Worum geht es hier?“, als Ich-kann-Sätze -->
-  <section class="card" id="sec-selbsteinschaetzung">
-    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
-    <p>Das sind die Ziele vom Anfang dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst — deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 😐 oder 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
-    <ul class="se-liste">
-      <li data-abschnitt="sec-ergebnis">Ich kann Ergebnis und Ereignis unterscheiden und beide als Menge aufschreiben.</li>
-      <li data-abschnitt="sec-laplace">Ich kann die Laplace-Wahrscheinlichkeit anwenden und prüfen, ob sie gelten darf.</li>
-      <li data-abschnitt="sec-grosse-zahlen">Ich kann begründen, warum sich relative Häufigkeiten bei vielen Versuchen bei P einpendeln.</li>
-      <li data-abschnitt="sec-gegen">Ich kann mit dem Gegenereignis rechnen: P(Ē) = 1 − P(E).</li>
-      <li data-abschnitt="sec-nichtlaplace">Ich kann an einem ungleichmäßigen Glücksrad zeigen, dass Abzählen dort in die Irre führt.</li>
-    </ul>
-    <div class="se-auswertung event-result" aria-live="polite"></div>
-  </section>
-
   <!-- 6. Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>6. Innermathematische Zusammenhänge</h2>
@@ -220,6 +206,19 @@
     <p>Jetzt bist du dran. Alle Aufgaben löst du direkt hier auf der Seite — mit dem Würfel-Knopf kannst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu stellen.</p>
     <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit. Wo gerundet werden soll, steht es in der Aufgabe.</p>
     <div id="exercises-mount"></div>
+  </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-ergebnis">Ich kann Ergebnis und Ereignis unterscheiden und beide als Menge aufschreiben.</li>
+      <li data-abschnitt="sec-laplace">Ich kann die Laplace-Wahrscheinlichkeit anwenden und prüfen, ob sie gelten darf.</li>
+      <li data-abschnitt="sec-grosse-zahlen">Ich kann begründen, warum sich relative Häufigkeiten bei vielen Versuchen bei P einpendeln.</li>
+      <li data-abschnitt="sec-gegen">Ich kann mit dem Gegenereignis rechnen: P(Ē) = 1 − P(E).</li>
+      <li data-abschnitt="sec-nichtlaplace">Ich kann an einem ungleichmäßigen Glücksrad zeigen, dass Abzählen dort in die Irre führt.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
   </section>
 
   <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->

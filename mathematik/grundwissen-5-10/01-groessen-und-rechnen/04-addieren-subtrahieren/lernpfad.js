@@ -854,14 +854,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Gleichnamige Brüche addieren", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Gleichnamige Brüche subtrahieren", generate: generateAufgabe2b },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Ungleichnamige Brüche addieren", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Dezimalzahlen schriftlich", generate: generateAufgabe4b },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Gemischte Zahlen subtrahieren", generate: generateAufgabe3 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Fehlenden Summanden finden", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Sachaufgabe mit Bruch und Dezimalzahl", generate: generateAufgabe4 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Drei Mengen, zwei Schreibweisen", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Gleichnamige Brüche addieren", abschnitt: "sec-gleichnamig", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Gleichnamige Brüche subtrahieren", abschnitt: "sec-gleichnamig", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Ungleichnamige Brüche addieren", abschnitt: "sec-ungleichnamig", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Dezimalzahlen schriftlich", abschnitt: "sec-dezimal", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Gemischte Zahlen subtrahieren", abschnitt: "sec-gemischt", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Fehlenden Summanden finden", abschnitt: "sec-ungleichnamig", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Sachaufgabe mit Bruch und Dezimalzahl", abschnitt: ["sec-ungleichnamig", "sec-dezimal"], generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Drei Mengen, zwei Schreibweisen", abschnitt: ["sec-ungleichnamig", "sec-dezimal"], generate: generateAufgabe8 },
   ]);
 }
 

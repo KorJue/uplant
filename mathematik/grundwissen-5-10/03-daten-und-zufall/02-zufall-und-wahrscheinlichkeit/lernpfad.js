@@ -911,14 +911,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Laplace-Wahrscheinlichkeit", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Günstige Ergebnisse zählen", generate: generateAufgabe2b },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Gegenereignis", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Wahrscheinlichkeit schätzen", generate: generateAufgabe4b },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — vom Winkel zur Wahrscheinlichkeit", generate: generateAufgabe3 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Die Urne verändern", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — erwartete Anzahl", generate: generateAufgabe4 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Lohnt sich das Glücksrad?", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Laplace-Wahrscheinlichkeit", abschnitt: "sec-laplace", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Günstige Ergebnisse zählen", abschnitt: ["sec-ergebnis", "sec-laplace"], generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Gegenereignis", abschnitt: "sec-gegen", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Wahrscheinlichkeit schätzen", abschnitt: ["sec-grosse-zahlen", "sec-nichtlaplace"], generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — vom Winkel zur Wahrscheinlichkeit", abschnitt: "sec-nichtlaplace", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Die Urne verändern", abschnitt: "sec-laplace", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — erwartete Anzahl", abschnitt: "sec-grosse-zahlen", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Lohnt sich das Glücksrad?", abschnitt: "sec-grosse-zahlen", generate: generateAufgabe8 },
   ]);
 }
 

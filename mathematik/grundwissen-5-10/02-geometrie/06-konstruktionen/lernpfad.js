@@ -1024,14 +1024,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Wie kurz darf die dritte Seite sein?", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Gibt es dieses Dreieck?", generate: generateAufgabe2b },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Gleichschenkliges Dreieck", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Welcher Kongruenzsatz?", generate: generateAufgabe4b },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Wie viele Möglichkeiten?", generate: generateAufgabe3 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Umfang, Basis und Dreiecksungleichung", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Winkelhalbierende im Dreieck", generate: generateAufgabe4 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Eine WSW-Angabe durchdacht", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Wie kurz darf die dritte Seite sein?", abschnitt: "sec-ungleichung", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Gibt es dieses Dreieck?", abschnitt: "sec-ungleichung", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Gleichschenkliges Dreieck", abschnitt: "sec-kongruenz", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Welcher Kongruenzsatz?", abschnitt: "sec-kongruenz", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Wie viele Möglichkeiten?", abschnitt: "sec-ungleichung", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Umfang, Basis und Dreiecksungleichung", abschnitt: "sec-ungleichung", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Winkelhalbierende im Dreieck", abschnitt: "sec-linien", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Eine WSW-Angabe durchdacht", abschnitt: "sec-kongruenz", generate: generateAufgabe8 },
   ]);
 }
 

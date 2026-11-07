@@ -1492,14 +1492,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Gleichsetzungsverfahren", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Die Probe", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Einsetzungsverfahren", generate: generateAufgabe3 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Additionsverfahren Schritt für Schritt", generate: generateAufgabe4 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Additionsverfahren", generate: generateAufgabe5 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Die drei Lösungsfälle", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Sachaufgabe", generate: generateAufgabe7 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Mischungsaufgabe", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Gleichsetzungsverfahren", abschnitt: "sec-gleichsetzen", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Die Probe", abschnitt: "sec-system", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Einsetzungsverfahren", abschnitt: "sec-einsetzen", generate: generateAufgabe3 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Additionsverfahren Schritt für Schritt", abschnitt: "sec-addieren", generate: generateAufgabe4 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Additionsverfahren", abschnitt: "sec-addieren", generate: generateAufgabe5 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Die drei Lösungsfälle", abschnitt: "sec-faelle", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Sachaufgabe", abschnitt: "sec-aufstellen", generate: generateAufgabe7 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Mischungsaufgabe", abschnitt: "sec-aufstellen", generate: generateAufgabe8 },
   ]);
 }
 

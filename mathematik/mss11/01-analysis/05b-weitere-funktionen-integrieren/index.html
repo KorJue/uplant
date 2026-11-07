@@ -19,14 +19,14 @@
 </nav>
 <header class="page-header">
   <h1>Integralrechnung: e-Funktionen, Sinus, Kosinus und 1/x</h1>
-  <p>Ein Selbstlernpfad: Der Hauptsatz gilt für jede stetige Funktion — aber eine Stammfunktion zu finden, ist bei e-, Winkel- und Logarithmusfunktionen eine andere Aufgabe als bei Polynomen. Statt einer Regel für alles gibt es Regeln für einzelne Bausteine, einen Ansatz für Produkte und die Probe durch Ableiten. Dazu kommen Flächen, die bis ins Unendliche reichen, und Körper, die durch Drehen entstehen. Jeder Abschnitt leitet sein Ergebnis an einer beweglichen Darstellung her, rechnet es nach, stellt es ausdrücklich neben die ganzrationalen Funktionen und endet mit einer Kontrollfrage. Am Schluss stehen vierundzwanzig Übungsaufgaben auf vier Stufen.</p>
+  <p>Ein Selbstlernpfad: Stammfunktionen von e-, Winkel- und Logarithmusfunktionen, Flächen bis ins Unendliche und Körper, die durch Drehen entstehen. Mit Kontrollfragen und vierundzwanzig Übungsaufgaben.</p>
 </header>
 
 <main class="menu-main">
 
   <section class="card">
     <h2>Worum geht es hier?</h2>
-    <p>In <a href="../05-integralrechnung/index.html">Thema 4.1</a> hast du integriert, was sich mit der Potenzregel rückwärts erledigen ließ: Polynome und Potenzen von x. In <a href="../03b-weitere-funktionen-ableiten/index.html">Thema 2.2</a> hast du e-, Winkel- und Logarithmusfunktionen abgeleitet. Hier wird diese Richtung umgedreht. Der Hauptsatz bleibt derselbe — <span class="integral"><span class="zeichen">∫</span><span class="grenzen"><span class="o">b</span><span class="u">a</span></span></span> f(x) dx = F(b) − F(a) —, neu ist, <em>wie</em> man F findet, und dass das nicht mehr immer mit einer Regel geht. Am Ende kannst du:</p>
+    <p>Der Hauptsatz aus <a href="../05-integralrechnung/index.html">Thema 4.1</a> bleibt derselbe; neu ist, <em>wie</em> man zu e-, Winkel- und Logarithmusfunktionen aus <a href="../03b-weitere-funktionen-ableiten/index.html">Thema 2.2</a> eine Stammfunktion findet — und dass das nicht mehr immer mit einer Regel geht. Am Ende kannst du:</p>
     <ul class="lern-intro-list">
       <li>die <span class="term">Unterschiede</span> zwischen dem Integrieren ganzrationaler und weiterer Funktionen benennen — und warum die <span class="term">Probe durch Ableiten</span> jetzt unverzichtbar ist</li>
       <li>Stammfunktionen von <span class="term">a · e<sup>kx</sup></span> bilden und Integrale mit ihnen berechnen</li>
@@ -36,8 +36,8 @@
       <li><span class="term">uneigentliche Integrale</span> berechnen und Volumina von <span class="term">Rotationskörpern</span> bestimmen (Leistungskurs)</li>
       <li>den häufigsten Fehler erkennen: Ein Produkt wird nicht Faktor für Faktor integriert</li>
     </ul>
-    <p>Die Seite folgt der Schreibweise von <strong>Elemente der Mathematik</strong> und deckt zugleich die entsprechenden Kapitel in <strong>Fundamente der Mathematik</strong> ab: Integrale von Exponentialfunktionen und ihren Verknüpfungen mit ganzrationalen Funktionen, Bestandsrekonstruktion bei exponentiellen Änderungsraten, im Leistungsfach zusätzlich Integrale von Sinus, Kosinus und <span class="bruch"><span class="z">1</span><span class="n">x</span></span>, lineare Substitution, uneigentliche Integrale und Rotationskörper.</p>
-    <p class="kurs-hinweis"><span class="kurs-marke lk">Leistungskurs</span> Nach dem rheinland-pfälzischen Lehrplan gehören Sinus und Kosinus, die Kettenregel und damit die lineare Verkettung sowie die Funktion ln zum Leistungsfach; uneigentliche Integrale und Rotationskörper behandeln vergleichbare Lehrpläne ebenfalls nur auf erhöhtem Niveau. Integrale von e-Funktionen der Form a · e<sup>kx</sup> und p(x) · e<sup>kx</sup> gehören dagegen auch zum Grundfach — diese Abschnitte tragen die Marke <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span> und kommen ohne die Leistungskurs-Abschnitte aus; die übrigen tragen <span class="kurs-marke lk" title="Leistungskurs">LK</span>. Wo ein Grundkurs-Abschnitt ein Leistungskurs-Beispiel zur Auswahl anbietet, steht „(LK)“ daneben.</p>
+    <p>Schreibweise wie in <strong>Elemente der Mathematik</strong>; die entsprechenden Kapitel in <strong>Fundamente der Mathematik</strong> sind abgedeckt.</p>
+    <p class="kurs-hinweis"><span class="kurs-marke lk">Leistungskurs</span> Sinus, Kosinus, die lineare Verkettung, ln, uneigentliche Integrale und Rotationskörper gehören zum Leistungskurs; Integrale von a · e<sup>kx</sup> und p(x) · e<sup>kx</sup> auch zum Grundkurs — diese Abschnitte tragen <span class="kurs-marke gk" title="Grund- und Leistungskurs">GK + LK</span>, die übrigen <span class="kurs-marke lk" title="Leistungskurs">LK</span>. Ein Leistungskurs-Beispiel in einem Grundkurs-Abschnitt trägt „(LK)“.</p>
     <p class="hinweis-box">💡 Du brauchst aus <a href="../05-integralrechnung/index.html">Thema 4.1</a> den <a href="../05-integralrechnung/index.html#sec-hauptsatz">Hauptsatz</a>, die <a href="../05-integralrechnung/index.html#sec-stammfunktion">Stammfunktionen und Integrationsregeln</a>, die <a href="../05-integralrechnung/index.html#sec-zwischen">Flächen zwischen Graphen</a> und den <a href="../05-integralrechnung/index.html#sec-mittelwert">Mittelwert</a>, aus Thema 2.2 die Ableitung von <a href="../03b-weitere-funktionen-ableiten/index.html#sec-ex">e<sup>kx</sup></a>, die <a href="../03b-weitere-funktionen-ableiten/index.html#sec-produkt-e">Produktregel mit Ausklammern</a>, das <a href="../03b-weitere-funktionen-ableiten/index.html#sec-ln">Lösen von e<sup>kx</sup> = c</a> und das <a href="../03b-weitere-funktionen-ableiten/index.html#sec-verhalten">Verhalten für x → ±∞</a>. Welcher Rechenweg wo erklärt ist, steht ausführlich in Abschnitt 1.</p>
   </section>
 
@@ -530,14 +530,6 @@
     <div class="quiz" id="quiz-stolperstelle"></div>
   </section>
 
-  <!-- Selbsteinschätzung -->
-  <section class="card" id="sec-selbsteinschaetzung">
-    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
-    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
-    <div id="se-liste"></div>
-    <div id="se-auswertung" class="event-result"></div>
-  </section>
-
   <!-- Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>Innermathematische Zusammenhänge</h2>
@@ -568,6 +560,24 @@
     <p class="progress-note">Zahlen gibst du mit Komma ein, zum Beispiel 1,5; Brüche wie 8/3 sind ebenfalls erlaubt. Wo die Lösung eine e-Potenz oder ein Logarithmus ist, rundest du auf vier Nachkommastellen.</p>
     <div id="exercises-mount"></div>
   </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste" id="se-liste">
+      <li data-abschnitt="sec-vergleich">Ich kann erklären, warum Integrieren schwerer ist als Ableiten, und mache die Probe durch Ableiten.</li>
+      <li data-abschnitt="sec-ekx">Ich kann Stammfunktionen von a · e^(kx) bilden und Integrale damit berechnen — mit F(0) ≠ 0.</li>
+      <li data-abschnitt="sec-ansatz">Ich kann für p(x) · e^(kx) eine Stammfunktion mit Ansatz und Koeffizientenvergleich bestimmen.</li>
+      <li data-abschnitt="sec-bestand">Ich kann einen Bestand aus einer abklingenden e-Rate berechnen und seinen Grenzwert angeben.</li>
+      <li data-abschnitt="sec-sinus">Ich kann Sinus und Kosinus integrieren, ohne das Vorzeichen zu verlieren.</li>
+      <li data-abschnitt="sec-verkettung">Ich kann Funktionen der Form g(mx + n) integrieren und weiß, wann die Regel nicht gilt.</li>
+      <li data-abschnitt="sec-ln">Ich kann 1/x und c/(mx + n) mit dem Logarithmus integrieren.</li>
+      <li data-abschnitt="sec-uneigentlich">Ich kann uneigentliche Integrale berechnen und entscheiden, ob sie konvergieren.</li>
+      <li data-abschnitt="sec-rotation">Ich kann Volumina von Rotationskörpern berechnen — auch unter e-Funktionen.</li>
+      <li data-abschnitt="sec-stolperstelle">Ich integriere Produkte nicht Faktor für Faktor.</li>
+    </ul>
+    <div class="se-auswertung event-result" id="se-auswertung" aria-live="polite"></div>
+  </section>
 
   <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
   <section class="card" data-lehrkraft="lehrkraefte.html" hidden></section>
@@ -579,6 +589,7 @@
 </footer>
 
 <script src="../../../../assets/lehrkraft.js"></script>
+<script src="../../../../assets/selbsteinschaetzung.js"></script>
 <script type="module" src="lernpfad.js?v=1"></script>
 </body>
 </html>

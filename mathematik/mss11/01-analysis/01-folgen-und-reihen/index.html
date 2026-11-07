@@ -19,14 +19,14 @@
 </nav>
 <header class="page-header">
   <h1>Folgen und Reihen</h1>
-  <p>Ein Selbstlernpfad: von der Zahlenfolge über ihren Grenzwert bis zur unendlichen Summe, die trotzdem endlich ist. Jeder Abschnitt leitet sein Ergebnis an einer beweglichen Darstellung her, rechnet es nach und endet mit einer Kontrollfrage. Am Schluss stehen sechzehn Übungsaufgaben auf vier Stufen, die du hier auf der Seite löst.</p>
+  <p>Ein Selbstlernpfad: von der Zahlenfolge über ihren Grenzwert bis zur unendlichen Summe, die trotzdem endlich ist — mit beweglichen Darstellungen, Kontrollfragen und sechzehn Übungsaufgaben.</p>
 </header>
 
 <main class="menu-main">
 
   <section class="card">
     <h2>Worum geht es hier?</h2>
-    <p>Ein Ball springt nach jedem Aufprall auf drei Viertel seiner Höhe zurück. Wie hoch springt er beim zehnten Mal? Hört er irgendwann auf? Und welchen Weg legt er <em>insgesamt</em> zurück — unendlich viele Sprünge, aber vielleicht doch eine endliche Strecke? Solche Fragen handeln von <span class="term">Folgen</span>: Zahlen, die der Reihe nach entstehen. Am Ende kannst du:</p>
+    <p>Ein Ball springt nach jedem Aufprall auf drei Viertel seiner Höhe zurück. Wie hoch springt er beim zehnten Mal — und welchen Weg legt er insgesamt zurück? Solche Fragen handeln von Folgen. Am Ende kannst du:</p>
     <ul class="lern-intro-list">
       <li>eine Folge <span class="term">explizit</span> und <span class="term">rekursiv</span> angeben und ihren Graphen als Punktmenge zeichnen</li>
       <li><span class="term">arithmetische</span> und <span class="term">geometrische</span> Folgen erkennen und ihr n-tes Glied berechnen</li>
@@ -308,14 +308,6 @@
     <div class="quiz" id="quiz-stolperstelle"></div>
   </section>
 
-  <!-- Selbsteinschätzung -->
-  <section class="card" id="sec-selbsteinschaetzung">
-    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
-    <p>Kreuze ehrlich an, wie sicher du dich bei den einzelnen Punkten fühlst. Deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
-    <div id="se-liste"></div>
-    <div id="se-auswertung" class="event-result"></div>
-  </section>
-
   <!-- Vernetzung -->
   <section class="card" id="sec-vernetzung">
     <h2>Innermathematische Zusammenhänge</h2>
@@ -346,6 +338,22 @@
     <p class="progress-note">Zahlen gibst du mit Komma ein, zum Beispiel 2,5; Brüche wie 3/11 sind ebenfalls erlaubt.</p>
     <div id="exercises-mount"></div>
   </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste" id="se-liste">
+      <li data-abschnitt="sec-folge">Ich kann eine Folge explizit und rekursiv angeben und Glieder berechnen.</li>
+      <li data-abschnitt="sec-arith-geo">Ich erkenne arithmetische und geometrische Folgen und berechne aₙ — mit n − 1 Schritten.</li>
+      <li data-abschnitt="sec-monotonie">Ich kann Monotonie und Schranken für alle n begründen, nicht nur an Beispielen.</li>
+      <li data-abschnitt="sec-grenzwert">Ich kann den ε-Streifen erklären und zu einem ε das n₀ bestimmen.</li>
+      <li data-abschnitt="sec-arith-reihe">Ich kann die Summe einer arithmetischen Folge berechnen und die Formel herleiten.</li>
+      <li data-abschnitt="sec-geo-reihe">Ich kann die Summe einer geometrischen Folge berechnen und den Verschiebetrick erklären.</li>
+      <li data-abschnitt="sec-unendlich">Ich kann den Wert einer unendlichen geometrischen Reihe angeben und weiß, wann es ihn gibt.</li>
+      <li data-abschnitt="sec-stolperstelle">Ich weiß, warum Summanden, die gegen 0 gehen, noch keine konvergente Reihe garantieren.</li>
+    </ul>
+    <div class="se-auswertung event-result" id="se-auswertung" aria-live="polite"></div>
+  </section>
 
   <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
   <section class="card" data-lehrkraft="lehrkraefte.html" hidden></section>
@@ -357,6 +365,7 @@
 </footer>
 
 <script src="../../../../assets/lehrkraft.js"></script>
+<script src="../../../../assets/selbsteinschaetzung.js"></script>
 <script type="module" src="lernpfad.js?v=2"></script>
 </body>
 </html>

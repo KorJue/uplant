@@ -893,14 +893,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Umfang und Fläche als Vielfaches von π", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Umfang aus dem Durchmesser", generate: generateAufgabe2b },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Bogen und Ausschnitt", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Der Rand eines Tortenstücks", generate: generateAufgabe4b },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Radius rückwärts bestimmen", generate: generateAufgabe3 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Vom Bogen zum Winkel", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Weg um einen Brunnen", generate: generateAufgabe4 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Sportplatz mit Rundungen", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Umfang und Fläche als Vielfaches von π", abschnitt: ["sec-umfang", "sec-flaeche"], generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Umfang aus dem Durchmesser", abschnitt: "sec-umfang", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Bogen und Ausschnitt", abschnitt: "sec-ausschnitt", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Der Rand eines Tortenstücks", abschnitt: "sec-ausschnitt", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Radius rückwärts bestimmen", abschnitt: "sec-rueckwaerts", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Vom Bogen zum Winkel", abschnitt: "sec-ausschnitt", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Weg um einen Brunnen", abschnitt: "sec-zusammengesetzt", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Sportplatz mit Rundungen", abschnitt: "sec-zusammengesetzt", generate: generateAufgabe8 },
   ]);
 }
 

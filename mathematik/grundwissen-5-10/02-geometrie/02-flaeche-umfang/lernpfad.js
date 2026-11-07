@@ -759,14 +759,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Rechteck: Fläche oder Umfang", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Fläche und Umfang nebeneinander", generate: generateAufgabe2b },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Flächeneinheiten umrechnen", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Die fehlende Seitenlänge", generate: generateAufgabe4b },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Zusammengesetzte Fläche", generate: generateAufgabe3 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Gleicher Umfang, andere Fläche", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Zaun und Rasen", generate: generateAufgabe4 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Ein Weg um das Beet", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Rechteck: Fläche oder Umfang", abschnitt: "sec-rechteck", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Fläche und Umfang nebeneinander", abschnitt: "sec-rechteck", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Flächeneinheiten umrechnen", abschnitt: "sec-einheiten", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Die fehlende Seitenlänge", abschnitt: "sec-rechteck", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Zusammengesetzte Fläche", abschnitt: "sec-zusammengesetzt", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Gleicher Umfang, andere Fläche", abschnitt: "sec-vergleich", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Zaun und Rasen", abschnitt: "sec-rechteck", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Ein Weg um das Beet", abschnitt: "sec-zusammengesetzt", generate: generateAufgabe8 },
   ]);
 }
 

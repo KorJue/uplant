@@ -6,7 +6,10 @@
 // einmal hier.
 //
 // Aufbau: vier Reiter (einfach, mittel, schwierig, komplex), in jedem die Aufgaben dieser Stufe
-// untereinander. Jede Aufgabe kann
+// untereinander. Darüber eine Themenleiste: Jede Aufgabe nennt den Abschnitt der Seite, den sie übt
+// (`abschnitt`), und so lässt sie sich nach Thema UND Stufe wählen — wie auf der Kreis-Seite, wo jede
+// Stufe eine Aufgabe je Thema hat. Am Ende jedes Abschnitts, zu dem es Aufgaben gibt, steht ein
+// Sprung „Gleich üben“ zu genau diesen. Jede Aufgabe kann
 //   * eine einzelne Zahl verlangen (wie bisher) oder mehrere Felder zum Ausfüllen,
 //   * Tipps anbieten, die auf Knopfdruck einer nach dem anderen erscheinen,
 //   * neu gewürfelt werden, ohne dass die Seite neu geladen wird.
@@ -17,6 +20,32 @@
 "use strict";
 
 const STUFEN = ["einfach", "mittel", "schwierig", "komplex"];
+
+// Die Abschnitte einer Aufgabe als Liste — `abschnitt` darf ein einzelner sein oder mehrere.
+function abschnitteVon(def) {
+  return [].concat(def.abschnitt || []);
+}
+// Die Abschnitte der Seite in ihrer Reihenfolge.
+function seitenFolge() {
+  return [...document.querySelectorAll("main section[id]")].map((s) => s.id);
+}
+// Der Abschnitt, unter dem eine Aufgabe steht: der LETZTE ihrer Abschnitte in der Reihenfolge der
+// Seite. Ein Sprung aus einem Abschnitt darf nur zu Aufgaben führen, die nichts verlangen, was dort
+// noch nicht erarbeitet ist — eine Aufgabe, die Abschnitt 2 und 5 verbindet, gehört deshalb zu 5.
+function themaVon(def, folge) {
+  return abschnitteVon(def).reduce((a, b) => (a === null || folge.indexOf(b) > folge.indexOf(a) ? b : a), null);
+}
+// Überschrift eines Abschnitts als Knoten — mit Auszeichnung (e<sup>kx</sup>), ohne Kursmarken (GK/LK).
+function ueberschriftVon(id) {
+  const h2 = document.querySelector(`#${id} h2`);
+  if (!h2) return [id];
+  const kopie = h2.cloneNode(true);
+  kopie.querySelectorAll(".kurs-marke").forEach((m) => m.remove());
+  const knoten = [...kopie.childNodes];
+  const letzter = knoten[knoten.length - 1];
+  if (letzter && letzter.nodeType === 3) letzter.textContent = letzter.textContent.replace(/\s+$/, "");
+  return knoten;
+}
 
 function el(tag, attrs = {}, children = []) {
   const e = document.createElement(tag);
@@ -44,6 +73,16 @@ export function parseFlexibleNumber(raw) {
 function mountAufgabe(container, def, parse) {
   const box = el("div", { class: "aufgabe-box" });
   box.appendChild(el("h3", {}, [def.titel, el("span", { class: "schwierigkeit-badge " + def.schwierigkeit }, def.schwierigkeit)]));
+  // Zu welchem Abschnitt die Aufgabe gehört — sichtbar, mit Verweis zurück dorthin.
+  const abschnitte = abschnitteVon(def);
+  if (abschnitte.length) {
+    const zeile = el("div", { class: "aufgabe-thema" }, abschnitte.length === 1 ? "Zum Abschnitt " : "Zu den Abschnitten ");
+    abschnitte.forEach((id, i) => {
+      if (i) zeile.appendChild(document.createTextNode(i === abschnitte.length - 1 ? " und " : ", "));
+      zeile.appendChild(el("a", { href: "#" + id }, ueberschriftVon(id)));
+    });
+    box.appendChild(zeile);
+  }
   const promptEl = el("div", { class: "aufgabe-prompt" });
   box.appendChild(promptEl);
 
@@ -155,6 +194,13 @@ function mountAufgabe(container, def, parse) {
     // Die eigene Eingabe wird zurückgespiegelt: Wer „3,5“ tippt und „35“ liest, sieht sofort, dass
     // das Komma verrutscht ist.
     const roh = current.felder ? felder.map(({ input: i }) => i.value.trim()).filter(Boolean).join(" | ") : input.value.trim();
+    // Das Ergebnis für die Selbsteinschätzung (assets/selbsteinschaetzung.js). Ein Prüfen ohne
+    // Eingabe zählt nicht — es ist kein Fehlversuch, sondern ein Klick zu früh.
+    if (roh && abschnitte.length) {
+      document.dispatchEvent(new CustomEvent("uplant:aufgabe", {
+        detail: { titel: def.titel, abschnitte, schwierigkeit: def.schwierigkeit, richtig: ok },
+      }));
+    }
     feedback.innerHTML =
       (ok
         ? `<div class="status ok">✓ Richtig!</div>`
@@ -192,6 +238,8 @@ function mountAufgabe(container, def, parse) {
  * @param defs       die Aufgaben. Jede braucht:
  *                     schwierigkeit  "einfach" | "mittel" | "schwierig" | "komplex"
  *                     titel          Überschrift
+ *                     abschnitt      id des Abschnitts, den sie übt ("sec-…"), oder eine Liste,
+ *                                    wenn sie mehrere verbindet; sie steht dann beim letzten
  *                     generate()     liefert eine gewürfelte Aufgabe:
  *                       promptHtml         die Angabe
  *                       correct, tolerance gesuchte Zahl (eine einzelne Eingabe)
@@ -206,31 +254,80 @@ function mountAufgabe(container, def, parse) {
  */
 export function mountUebungsaufgaben(container, defs, opt = {}) {
   const parse = opt.parse || parseFlexibleNumber;
+  const folge = seitenFolge();
+  // Die Themen: jeder Abschnitt, unter dem mindestens eine Aufgabe steht, in der Reihenfolge der Seite.
+  const themen = folge.filter((id) => defs.some((d) => themaVon(d, folge) === id));
+  let thema = null;   // null: alle Themen
+
+  const themenLeiste = el("div", { class: "aufgaben-themen", role: "group", "aria-label": "Aufgaben nach Thema wählen" });
   const tabBar = el("div", { class: "schwierigkeit-tabs" });
   const panel = el("div", { class: "schwierigkeit-tab-panel" });
+  if (themen.length > 1) container.appendChild(themenLeiste);
   container.appendChild(tabBar);
   container.appendChild(panel);
 
   // Die Reiter stehen in der Reihenfolge der Stufen, nicht in der Reihenfolge der Aufgaben: Eine
   // Seite darf ihre Aufgaben aufschreiben, wie sie will.
   const stufen = STUFEN.filter((s) => defs.some((d) => d.schwierigkeit === s));
+  const passt = (d, stufe) => d.schwierigkeit === stufe && (thema === null || themaVon(d, folge) === thema);
+  let offen = 0;
 
   function zeige(idx) {
+    offen = idx;
     // aria-pressed sagt einem Screenreader, welcher Reiter gerade offen ist — die Farbe allein
     // sieht er nicht.
     [...tabBar.children].forEach((b, i) => {
       b.classList.toggle("active", i === idx);
       b.setAttribute("aria-pressed", String(i === idx));
+      // Mit gewähltem Thema zeigt jeder Reiter, wie viele Aufgaben er dazu hat; leere sind aus.
+      const n = defs.filter((d) => passt(d, stufen[i])).length;
+      b.querySelector(".anzahl").textContent = thema === null ? "" : String(n);
+      b.disabled = thema !== null && n === 0;
     });
     panel.innerHTML = "";
-    for (const d of defs.filter((x) => x.schwierigkeit === stufen[idx])) mountAufgabe(panel, d, parse);
+    for (const d of defs.filter((x) => passt(x, stufen[idx]))) mountAufgabe(panel, d, parse);
   }
 
   stufen.forEach((s, i) => {
     const label = s.charAt(0).toUpperCase() + s.slice(1);
-    const btn = el("button", { type: "button" }, label);
+    const btn = el("button", { type: "button" }, [label, el("span", { class: "anzahl" })]);
     btn.addEventListener("click", () => zeige(i));
     tabBar.appendChild(btn);
   });
-  zeige(0);
+
+  // Themenleiste: „Alle Themen“ und je Abschnitt ein Knopf.
+  function waehleThema(id) {
+    thema = id;
+    [...themenLeiste.querySelectorAll("button")].forEach((b) => {
+      const an = (b.dataset.thema || null) === thema;
+      b.classList.toggle("active", an);
+      b.setAttribute("aria-pressed", String(an));
+    });
+    // Die offene Stufe bleibt, wenn sie zum Thema etwas hat — sonst die erste, die etwas hat.
+    const hat = (i) => defs.some((d) => passt(d, stufen[i]));
+    zeige(hat(offen) ? offen : Math.max(0, stufen.findIndex((_, i) => hat(i))));
+  }
+  themenLeiste.appendChild(el("span", { class: "aufgaben-themen-label" }, "Thema:"));
+  const alle = el("button", { type: "button" }, "Alle Themen");
+  alle.addEventListener("click", () => waehleThema(null));
+  themenLeiste.appendChild(alle);
+  for (const id of themen) {
+    const b = el("button", { type: "button", "data-thema": id }, ueberschriftVon(id));
+    b.addEventListener("click", () => waehleThema(id));
+    themenLeiste.appendChild(b);
+  }
+
+  // Sprünge: am Ende jedes Abschnitts mit Aufgaben ein Verweis zu genau diesen. Er führt zu den
+  // Übungsaufgaben (ohne Skript wenigstens dorthin) und wählt dabei das Thema.
+  for (const id of themen) {
+    const abschnitt = document.getElementById(id);
+    if (!abschnitt || abschnitt.querySelector(":scope > .uebung-sprung")) continue;
+    const n = defs.filter((d) => themaVon(d, folge) === id).length;
+    const a = el("a", { href: "#sec-uebungen", "data-thema": id },
+      `✏️ Gleich üben: ${n === 1 ? "eine Aufgabe" : n + " Aufgaben"} zu diesem Abschnitt`);
+    a.addEventListener("click", () => waehleThema(id));
+    abschnitt.appendChild(el("p", { class: "uebung-sprung" }, a));
+  }
+
+  waehleThema(null);
 }

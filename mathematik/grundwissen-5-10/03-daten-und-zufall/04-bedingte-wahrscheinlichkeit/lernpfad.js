@@ -1241,14 +1241,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — P(A|B) aus der Tafel", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Die Tafel füllen", generate: generateAufgabe2b },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — die andere Richtung", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Sind sie unabhängig?", generate: generateAufgabe4b },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — unabhängig machen", generate: generateAufgabe3 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Die Richtung umdrehen", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — der seltene Fall", generate: generateAufgabe4 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Zwei Maschinen, zwei Richtungen", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — P(A|B) aus der Tafel", abschnitt: ["sec-bedingt", "sec-vierfeldertafel"], generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Die Tafel füllen", abschnitt: "sec-vierfeldertafel", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — die andere Richtung", abschnitt: ["sec-bedingt", "sec-vierfeldertafel"], generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Sind sie unabhängig?", abschnitt: "sec-unabhaengig", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — unabhängig machen", abschnitt: "sec-unabhaengig", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Die Richtung umdrehen", abschnitt: "sec-umdrehen", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — der seltene Fall", abschnitt: "sec-basisrate", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Zwei Maschinen, zwei Richtungen", abschnitt: "sec-umdrehen", generate: generateAufgabe8 },
   ]);
 }
 

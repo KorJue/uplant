@@ -883,14 +883,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Radius und Durchmesser", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Durchmesser und Lage eines Punktes", generate: generateAufgabe2b },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Winkel ergänzen", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Welche Winkelart?", generate: generateAufgabe4b },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Welche Skala gilt?", generate: generateAufgabe3 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Drei Sektoren im Kreisdiagramm", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Mittelpunktswinkel im Kreisdiagramm", generate: generateAufgabe4 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Vom Winkel zurück zur Anzahl", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Radius und Durchmesser", abschnitt: "sec-kreis", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Durchmesser und Lage eines Punktes", abschnitt: "sec-kreis", generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Winkel ergänzen", abschnitt: "sec-winkel", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Welche Winkelart?", abschnitt: "sec-winkel", generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Welche Skala gilt?", abschnitt: "sec-messen", generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Drei Sektoren im Kreisdiagramm", abschnitt: "sec-kreisdiagramm", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Mittelpunktswinkel im Kreisdiagramm", abschnitt: "sec-kreisdiagramm", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Vom Winkel zurück zur Anzahl", abschnitt: "sec-kreisdiagramm", generate: generateAufgabe8 },
   ]);
 }
 

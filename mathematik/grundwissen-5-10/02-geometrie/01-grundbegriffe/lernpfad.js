@@ -841,14 +841,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Winkel ergänzen", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Punktspiegelung am Ursprung", generate: generateAufgabe2b },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Punkte im Koordinatensystem", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Abstand zweier Punkte", generate: generateAufgabe4b },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Abstand von einer Geraden", generate: generateAufgabe3 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Spiegeln an einer Geraden", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Rechteck aus Koordinaten", generate: generateAufgabe4 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Die vierte Ecke und der Umfang", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Winkel ergänzen", abschnitt: "sec-winkel", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Punktspiegelung am Ursprung", abschnitt: ["sec-koordinaten", "sec-symmetrie"], generate: generateAufgabe2b },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Punkte im Koordinatensystem", abschnitt: ["sec-koordinaten", "sec-symmetrie"], generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Abstand zweier Punkte", abschnitt: ["sec-abstand", "sec-koordinaten"], generate: generateAufgabe4b },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — Abstand von einer Geraden", abschnitt: ["sec-abstand", "sec-koordinaten"], generate: generateAufgabe3 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Spiegeln an einer Geraden", abschnitt: ["sec-koordinaten", "sec-symmetrie"], generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Rechteck aus Koordinaten", abschnitt: "sec-koordinaten", generate: generateAufgabe4 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Die vierte Ecke und der Umfang", abschnitt: "sec-koordinaten", generate: generateAufgabe8 },
   ]);
 }
 

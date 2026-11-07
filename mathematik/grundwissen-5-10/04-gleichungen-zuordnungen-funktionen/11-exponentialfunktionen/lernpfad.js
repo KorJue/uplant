@@ -1495,14 +1495,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Bestand nach n Schritten", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — linear oder exponentiell?", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Prozentsatz und Faktor", generate: generateAufgabe3 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Zinseszins", generate: generateAufgabe4 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — den Faktor bestimmen", generate: generateAufgabe5 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Verdopplungszeit", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Halbwertszeit", generate: generateAufgabe7 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — wer holt wen ein?", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Bestand nach n Schritten", abschnitt: "sec-funktion", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — linear oder exponentiell?", abschnitt: "sec-wachstum", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Prozentsatz und Faktor", abschnitt: "sec-prozent", generate: generateAufgabe3 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Zinseszins", abschnitt: "sec-anwendungen", generate: generateAufgabe4 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — den Faktor bestimmen", abschnitt: "sec-funktion", generate: generateAufgabe5 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — Verdopplungszeit", abschnitt: "sec-zeiten", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Halbwertszeit", abschnitt: "sec-zeiten", generate: generateAufgabe7 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — wer holt wen ein?", abschnitt: ["sec-prozent", "sec-vergleich"], generate: generateAufgabe8 },
   ]);
 }
 

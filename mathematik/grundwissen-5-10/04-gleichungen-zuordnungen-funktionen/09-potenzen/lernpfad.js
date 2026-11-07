@@ -1559,14 +1559,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Potenzwert berechnen", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — wissenschaftliche Schreibweise", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Potenzgesetze anwenden", generate: generateAufgabe3 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Potenzfunktionen", generate: generateAufgabe4 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — negativer Exponent", generate: generateAufgabe5 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — n-te Wurzel und Gleichung", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Kante eines Würfels", generate: generateAufgabe7 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — rechnen mit Zehnerpotenzen", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Potenzwert berechnen", abschnitt: "sec-begriff", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — wissenschaftliche Schreibweise", abschnitt: "sec-zehnerpotenzen", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Potenzgesetze anwenden", abschnitt: "sec-gesetze", generate: generateAufgabe3 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — Potenzfunktionen", abschnitt: "sec-potenzfunktionen", generate: generateAufgabe4 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — negativer Exponent", abschnitt: "sec-ganzzahlig", generate: generateAufgabe5 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — n-te Wurzel und Gleichung", abschnitt: "sec-wurzeln", generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Kante eines Würfels", abschnitt: ["sec-zehnerpotenzen", "sec-wurzeln"], generate: generateAufgabe7 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — rechnen mit Zehnerpotenzen", abschnitt: "sec-zehnerpotenzen", generate: generateAufgabe8 },
   ]);
 }
 

@@ -1784,14 +1784,14 @@ function generateAufgabe8() {
 
 function initExercises() {
   mountUebungsaufgaben(document.getElementById("exercises-mount"), [
-    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Periode ablesen", generate: generateAufgabe1 },
-    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Amplitude, Periode, Wertebereich", generate: generateAufgabe2 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Bogenmaß ins Gradmaß", generate: generateAufgabe3 },
-    { schwierigkeit: "mittel", titel: "Aufgabe 4 — die Kurve im Viertelschritt", generate: generateAufgabe4 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — die Verschiebung c bestimmen", generate: generateAufgabe5 },
-    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — eine Sinusgleichung lösen", generate: generateAufgabe6 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Riesenrad", generate: generateAufgabe7 },
-    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Gezeiten", generate: generateAufgabe8 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 1 — Periode ablesen", abschnitt: "sec-amplitude", generate: generateAufgabe1 },
+    { schwierigkeit: "einfach", titel: "Aufgabe 2 — Amplitude, Periode, Wertebereich", abschnitt: "sec-verschiebung", generate: generateAufgabe2 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 3 — Bogenmaß ins Gradmaß", abschnitt: "sec-bogenmass", generate: generateAufgabe3 },
+    { schwierigkeit: "mittel", titel: "Aufgabe 4 — die Kurve im Viertelschritt", abschnitt: "sec-amplitude", generate: generateAufgabe4 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 5 — die Verschiebung c bestimmen", abschnitt: "sec-verschiebung", generate: generateAufgabe5 },
+    { schwierigkeit: "schwierig", titel: "Aufgabe 6 — eine Sinusgleichung lösen", abschnitt: ["sec-einheitskreis", "sec-kurven"], generate: generateAufgabe6 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 7 — Riesenrad", abschnitt: "sec-anwendungen", generate: generateAufgabe7 },
+    { schwierigkeit: "komplex", titel: "Aufgabe 8 — Gezeiten", abschnitt: "sec-anwendungen", generate: generateAufgabe8 },
   ]);
 }
 

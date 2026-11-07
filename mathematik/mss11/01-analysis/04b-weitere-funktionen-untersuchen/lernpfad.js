@@ -1073,56 +1073,6 @@ const QUIZZE = {
   },
 };
 
-// ================= Selbsteinschätzung =================
-//
-// Die Auswahl liegt nur im Browser dieser Person — eine Lernhilfe, keine Leistungsmessung.
-const SE_PUNKTE = [
-  ["sec-vergleich", "Ich kann Schritt für Schritt sagen, was sich bei e-, ln- und Winkelfunktionen gegenüber ganzrationalen Funktionen ändert."],
-  ["sec-zweite", "Ich kann f″ von p(x) · e<sup>kx</sup> bilden und sein Vorzeichen an der Klammer ablesen."],
-  ["sec-schema", "Ich kann eine Funktion mit e vollständig untersuchen, einschließlich der Asymptote."],
-  ["sec-scharen", "Ich kann eine Funktionenschar mit e untersuchen und eine Ortskurve bestimmen."],
-  ["sec-wachstum", "Ich kann bei einem Wachstumsmodell sagen, wann der Bestand am schnellsten wächst."],
-  ["sec-optimierung", "Ich kann ein Extremwertproblem mit e lösen und weiß, was zu tun ist, wenn sich A′(u) = 0 nicht auflösen lässt."],
-  ["sec-trig", "(LK) Ich kann Funktionen mit Sinus und Kosinus untersuchen und finde alle Lösungen von cos(x) = c im Intervall."],
-  ["sec-schwingung", "(LK) Ich kann die Extremstellen einer gedämpften Schwingung mit tan(x) = c bestimmen."],
-  ["sec-ln", "(LK) Ich kann Funktionen mit ln untersuchen, einschließlich Definitionsmenge und Verhalten am Rand."],
-  ["sec-glocke", "(LK) Ich kann die Wendestellen der Glockenkurve herleiten."],
-  ["sec-stolperstelle", "Ich weiß, warum man ein Rechnerfenster erst nach der Rechnung wählt."],
-];
-const SE_SCHLUESSEL = "uplant-mss11-weitere-funktionen-untersuchen-selbsteinschaetzung";
-
-function leseSE() {
-  try { return JSON.parse(localStorage.getItem(SE_SCHLUESSEL) || "{}"); } catch { return {}; }
-}
-function schreibeSE(d) {
-  try { localStorage.setItem(SE_SCHLUESSEL, JSON.stringify(d)); } catch { /* ohne Speicher geht es auch */ }
-}
-// Die Überschrift ohne die Kursmarke — „2. Die zweite Ableitung von p(x) · e^kx“, nicht „… GK + LK“.
-function titelOhneMarke(id) {
-  const h = document.querySelector(`#${id} h2`).cloneNode(true);
-  h.querySelectorAll(".kurs-marke").forEach((m) => m.remove());
-  return h.textContent.trim();
-}
-function renderSelbsteinschaetzung() {
-  const liste = document.getElementById("se-liste");
-  const stand = leseSE();
-  liste.innerHTML = "";
-  SE_PUNKTE.forEach(([id, text]) => {
-    const knoepfe = el("div", { class: "se-knoepfe", role: "group", "aria-label": text.replace(/<[^>]+>/g, "") });
-    [["sicher", "😀", "sicher"], ["teils", "😐", "teilweise"], ["unsicher", "🤔", "noch unsicher"]].forEach(([wert, z, name]) => {
-      const b = el("button", { type: "button", "aria-pressed": String(stand[id] === wert), title: name, "aria-label": name }, z);
-      b.addEventListener("click", () => { const d = leseSE(); d[id] = wert; schreibeSE(d); renderSelbsteinschaetzung(); });
-      knoepfe.appendChild(b);
-    });
-    liste.appendChild(el("div", { class: "se-zeile" }, [el("span", { class: "se-text", html: text }), knoepfe]));
-  });
-  const unsicher = SE_PUNKTE.filter(([id]) => stand[id] === "unsicher");
-  const sicher = SE_PUNKTE.filter(([id]) => stand[id] === "sicher").length;
-  const aus = document.getElementById("se-auswertung");
-  if (!Object.keys(stand).length) aus.textContent = "Noch nichts angekreuzt.";
-  else if (unsicher.length) aus.innerHTML = `Wiederhole zuerst: ${unsicher.map(([id]) => `<a href="#${id}">${titelOhneMarke(id)}</a>`).join(", ")}. Danach passen die Übungsaufgaben auf den Stufen „einfach“ und „mittel“.`;
-  else aus.textContent = `${sicher} von ${SE_PUNKTE.length} Punkten sicher — probier dich an den Aufgaben auf den Stufen „schwierig“ und „komplex“.`;
-}
 
 // ================= Start =================
 
@@ -1153,5 +1103,4 @@ for (const [ids, render] of REGLER) {
   render();   // nicht vergessen — sonst bleibt die Zeichnung leer, bis jemand einen Regler anfasst
 }
 for (const [id, def] of Object.entries(QUIZZE)) mountQuiz(document.getElementById(id), def);
-renderSelbsteinschaetzung();
 mountUebungsaufgaben(document.getElementById("exercises-mount"), AUFGABEN, { parse: parseZahl });

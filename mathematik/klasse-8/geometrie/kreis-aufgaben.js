@@ -1029,19 +1029,19 @@ function generateS4() {
 // Die Reihenfolge ist bedeutsam: Die Prüfung rechnet aus der laufenden Nummer die erwartete Stufe
 // zurück. Wer umsortiert, zieht tests/klasse-8/test-kreis.js mit.
 export const AUFGABEN = [
-  { schwierigkeit: "einfach", titel: "Kreis — Umfang oder Flächeninhalt ablesen", generate: generateK1 },
-  { schwierigkeit: "einfach", titel: "Kreisring — Flächeninhalt ablesen", generate: generateR1 },
-  { schwierigkeit: "einfach", titel: "Kreisausschnitt — Bogen oder Fläche ablesen", generate: generateS1 },
+  { schwierigkeit: "einfach", titel: "Kreis — Umfang oder Flächeninhalt ablesen", abschnitt: ["sec-radius", "sec-flaeche"], generate: generateK1 },
+  { schwierigkeit: "einfach", titel: "Kreisring — Flächeninhalt ablesen", abschnitt: "sec-ring", generate: generateR1 },
+  { schwierigkeit: "einfach", titel: "Kreisausschnitt — Bogen oder Fläche ablesen", abschnitt: ["sec-bogen", "sec-ausschnitt"], generate: generateS1 },
 
-  { schwierigkeit: "mittel", titel: "Kreis — mit Einheiten", generate: generateK2 },
-  { schwierigkeit: "mittel", titel: "Kreisring — die Unterlegscheibe", generate: generateR2 },
-  { schwierigkeit: "mittel", titel: "Kreisausschnitt — Fläche aus Bogen und Radius", generate: generateS2 },
+  { schwierigkeit: "mittel", titel: "Kreis — mit Einheiten", abschnitt: ["sec-radius", "sec-flaeche"], generate: generateK2 },
+  { schwierigkeit: "mittel", titel: "Kreisring — die Unterlegscheibe", abschnitt: "sec-ring", generate: generateR2 },
+  { schwierigkeit: "mittel", titel: "Kreisausschnitt — Fläche aus Bogen und Radius", abschnitt: "sec-ausschnitt", generate: generateS2 },
 
-  { schwierigkeit: "schwierig", titel: "Kreis — Radius oder Durchmesser aus dem Umfang", generate: generateK3 },
-  { schwierigkeit: "schwierig", titel: "Kreisring — die Breite aus zwei Umfängen", generate: generateR3 },
-  { schwierigkeit: "schwierig", titel: "Kreisausschnitt — der Mittelpunktswinkel", generate: generateS3 },
+  { schwierigkeit: "schwierig", titel: "Kreis — Radius oder Durchmesser aus dem Umfang", abschnitt: ["sec-umfang", "sec-radius"], generate: generateK3 },
+  { schwierigkeit: "schwierig", titel: "Kreisring — die Breite aus zwei Umfängen", abschnitt: ["sec-radius", "sec-ring"], generate: generateR3 },
+  { schwierigkeit: "schwierig", titel: "Kreisausschnitt — der Mittelpunktswinkel", abschnitt: "sec-bogen", generate: generateS3 },
 
-  { schwierigkeit: "komplex", titel: "Kreis — das Rundbogenfenster", generate: generateK4 },
-  { schwierigkeit: "komplex", titel: "Kreisring — der Rohrquerschnitt", generate: generateR4 },
-  { schwierigkeit: "komplex", titel: "Kreisausschnitt — der Minutenzeiger", generate: generateS4 },
+  { schwierigkeit: "komplex", titel: "Kreis — das Rundbogenfenster", abschnitt: ["sec-radius", "sec-flaeche"], generate: generateK4 },
+  { schwierigkeit: "komplex", titel: "Kreisring — der Rohrquerschnitt", abschnitt: "sec-ring", generate: generateR4 },
+  { schwierigkeit: "komplex", titel: "Kreisausschnitt — der Minutenzeiger", abschnitt: ["sec-bogen", "sec-ausschnitt"], generate: generateS4 },
 ];

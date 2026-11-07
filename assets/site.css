@@ -281,18 +281,30 @@ section[data-lehrkraft] { border-left: 4px solid #d97706; }
 /* Lange Quellenadressen dürfen umbrechen, sonst schieben sie die Seite auf dem Telefon seitlich weg. */
 .lk-hinweise a { overflow-wrap: anywhere; }
 
-/* Selbsteinschätzung (assets/selbsteinschaetzung.js). Ohne Skript bleibt die Liste eine gewöhnliche
-   Aufzählung; erst mit den Knöpfen verschwinden die Punkte. Die MSS-Seiten bauen ihre Zeilen selbst
-   und bringen dieselben Regeln in ihrer lernpfad.css mit. */
+/* Selbsteinschätzung (assets/selbsteinschaetzung.js), auf allen Lernpfaden nach den Übungsaufgaben.
+   Ohne Skript bleibt die Liste eine gewöhnliche Aufzählung; erst mit den Knöpfen verschwinden die
+   Punkte. Unter jedem Satz steht, was Kontrollfragen und Übungsaufgaben dazu ergeben haben. */
 .se-bereit .se-liste { list-style: none; padding-left: 0; margin: 0.6rem 0; }
 .se-bereit .se-zeile {
   display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; justify-content: space-between;
   padding: 0.45rem 0.2rem; border-bottom: 1px solid var(--border);
 }
-.se-bereit .se-text { flex: 1 1 18rem; }
+.se-bereit .se-satz { flex: 1 1 18rem; }
 .se-bereit .se-knoepfe { display: flex; gap: 0.3rem; }
 .se-bereit .se-knoepfe button {
   font-size: 1.15rem; padding: 0.2rem 0.5rem; border-radius: 8px; cursor: pointer;
   border: 1px solid var(--border); background: var(--card-bg); color: var(--text);
 }
 .se-bereit .se-knoepfe button[aria-pressed="true"] { border-color: var(--accent); background: var(--bg); box-shadow: 0 0 0 2px var(--accent) inset; }
+.se-bereit .se-beleg { display: block; margin-top: 0.15rem; font-size: 0.82rem; color: var(--muted); }
+.se-bereit .se-beleg-schwach { color: #b3261e; }
+.se-bereit .se-beleg-stark { color: #157347; }
+:root[data-theme="dark"] .se-bereit .se-beleg-schwach { color: #ff8a8a; }
+:root[data-theme="dark"] .se-bereit .se-beleg-stark { color: #6fd68f; }
+.se-auswertung p { margin: 0.35rem 0; }
+.se-auswertung .se-widerspruch { border-left: 3px solid #b3261e; padding-left: 0.6rem; }
+:root[data-theme="dark"] .se-auswertung .se-widerspruch { border-left-color: #ff8a8a; }
+.se-zuruecksetzen {
+  margin-top: 0.7rem; font: inherit; font-size: 0.85rem; padding: 0.3rem 0.75rem; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--bg); color: var(--muted); cursor: pointer;
+}

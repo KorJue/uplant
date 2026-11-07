@@ -1669,49 +1669,6 @@ function initQuizzes() {
   for (const [id, def] of Object.entries(QUIZZE)) mountQuiz(document.getElementById(id), def);
 }
 
-// ================= Selbsteinschätzung =================
-//
-// Die Auswahl liegt nur im Browser dieser Person — eine Lernhilfe, keine Leistungsmessung.
-const SE_PUNKTE = [
-  ["sec-ergebnis", "Ich kann zu einem Zufallsexperiment die Ergebnismenge Ω angeben."],
-  ["sec-haeufigkeit", "Ich kann absolute und relative Häufigkeit berechnen und das Gesetz der großen Zahlen erklären."],
-  ["sec-ereignis", "Ich kann Ereignisse als Mengen schreiben und mit Summenregel und Gegenereignis rechnen."],
-  ["sec-laplace", "Ich erkenne ein Laplace-Experiment und berechne P(E) = |E| : |Ω|."],
-  ["sec-baum1", "Ich kann ein Baumdiagramm zeichnen und mit den Pfadregeln auswerten — und weiß, warum multipliziert wird."],
-  ["sec-baum2", "Ich kann mit und ohne Zurücklegen rechnen und eine Vierfeldertafel aus einem Baum füllen."],
-];
-const SE_SCHLUESSEL = "uplant-mss13-grundbegriffe-selbsteinschaetzung";
-
-function leseSE() {
-  try { return JSON.parse(localStorage.getItem(SE_SCHLUESSEL) || "{}"); } catch { return {}; }
-}
-function schreibeSE(d) {
-  try { localStorage.setItem(SE_SCHLUESSEL, JSON.stringify(d)); } catch { /* ohne Speicher geht es auch */ }
-}
-function renderSelbsteinschaetzung() {
-  const liste = document.getElementById("se-liste");
-  const stand = leseSE();
-  liste.innerHTML = "";
-  SE_PUNKTE.forEach(([id, text]) => {
-    const knoepfe = el("div", { class: "se-knoepfe", role: "group", "aria-label": text });
-    [["sicher", "😀", "sicher"], ["teils", "😐", "teilweise"], ["unsicher", "🤔", "noch unsicher"]].forEach(([wert, zeichen, name]) => {
-      const b = el("button", { type: "button", "aria-pressed": String(stand[id] === wert), title: name, "aria-label": name }, zeichen);
-      b.addEventListener("click", () => { const d = leseSE(); d[id] = wert; schreibeSE(d); renderSelbsteinschaetzung(); });
-      knoepfe.appendChild(b);
-    });
-    liste.appendChild(el("div", { class: "se-zeile" }, [el("span", { class: "se-text" }, text), knoepfe]));
-  });
-  const unsicher = SE_PUNKTE.filter(([id]) => stand[id] === "unsicher");
-  const sicher = SE_PUNKTE.filter(([id]) => stand[id] === "sicher").length;
-  const aus = document.getElementById("se-auswertung");
-  if (!Object.keys(stand).length) {
-    aus.textContent = "Noch nichts angekreuzt.";
-  } else if (unsicher.length) {
-    aus.innerHTML = `Wiederhole zuerst: ${unsicher.map(([id]) => `<a href="#${id}">${document.querySelector(`#${id} h2`).textContent}</a>`).join(", ")}. Danach passen die Übungsaufgaben auf den Stufen „einfach“ und „mittel“.`;
-  } else {
-    aus.textContent = `${sicher} von ${SE_PUNKTE.length} Punkten sicher — probier dich an den Aufgaben auf den Stufen „schwierig“ und „komplex“.`;
-  }
-}
 
 // ================= Start =================
 
@@ -1728,6 +1685,5 @@ document.addEventListener("DOMContentLoaded", () => {
     e.addEventListener("change", renderFlaechenmodell);
   });
   renderFlaechenmodell();   // nicht vergessen — sonst bleibt das Modell leer, bis jemand zieht
-  renderSelbsteinschaetzung();
-  mountUebungsaufgaben(document.getElementById("exercises-mount"), AUFGABEN, { parse: parseZahl });
+    mountUebungsaufgaben(document.getElementById("exercises-mount"), AUFGABEN, { parse: parseZahl });
 });
