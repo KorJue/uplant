@@ -842,3 +842,9 @@
   .kr-tabelle .bruch .z, .kr-tabelle .bruch .n { padding: 0 0.1em; }
   .kr-tabelle .kr-op { padding: 0.25rem 0.05rem; font-size: 0.7rem; }
 }
+
+/* Ein optionaler Teil eines Abschnitts (Kreis: die Einschachtelung von π). Er ist sichtbar
+   abgesetzt und trägt eine Marke, damit niemand glaubt, ohne ihn fehle etwas Späteres. */
+.optional-teil { border-left: 4px dashed var(--border); padding-left: 1rem; margin-top: 1.4rem; }
+.optional-marke { display: inline-block; vertical-align: middle; margin-left: 0.4rem; padding: 0.1rem 0.55rem; border: 1px solid var(--border); border-radius: 999px; background: var(--bg); color: var(--muted); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.optional-hinweis { color: var(--muted); font-size: 0.93rem; }

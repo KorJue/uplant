@@ -23,6 +23,30 @@ const { pruefe } = bericht;
   const alle = alleSeiten().filter((p) => !istBruchstueck(p)).sort();
   pruefe(alle.length >= 35, `nur ${alle.length} Seiten gefunden — erwartet mindestens 35`);
 
+  // Menükarten tragen nur ihren Titel, keinen Untertitel (Vorgabe des Projektinhabers). Geprüft im
+  // Quelltext aller HTML-Dateien der Website, nicht nur des Grundwissens: Die Menüs der Klasse 8 und
+  // der MSS hatten welche.
+  const website = [];
+  (function sammle(dir) {
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (e.name.startsWith(".") || ["node_modules", "tests", "tools"].includes(e.name)) continue;
+      const voll = path.join(dir, e.name);
+      if (e.isDirectory()) sammle(voll);
+      else if (e.name.endsWith(".html")) website.push(voll);
+    }
+  })(WURZEL);
+  let karten = 0;
+  for (const datei of website) {
+    const html = fs.readFileSync(datei, "utf-8");
+    for (const m of html.matchAll(/<a class="menu-card[^"]*"[^>]*>([\s\S]*?)<\/a>/g)) {
+      karten++;
+      const h2 = (m[1].match(/<h2>([\s\S]*?)<\/h2>/) || ["", ""])[1];
+      const rest = m[1].replace(/<h2>[\s\S]*?<\/h2>/, "").replace(/<span class="menu-icon">[\s\S]*?<\/span>/, "").trim();
+      pruefe(!/<br|<small|menu-tiny/.test(h2) && rest === "", `${path.relative(WURZEL, datei)}: Menükarte mit Untertitel — „${(h2 + " " + rest).replace(/\s+/g, " ").slice(0, 120)}“`);
+    }
+  }
+  pruefe(karten >= 60, `nur ${karten} Menükarten gefunden — erwartet mindestens 60`);
+
   const browser = await starteBrowser();
   // Die Sprungmarken jeder Datei einmal einlesen, statt sie je Verweis zu holen.
   const marken = new Map();

@@ -29,7 +29,7 @@
     <h2>Worum geht es hier?</h2>
     <p>Beim Rechteck, beim Dreieck und beim Trapez war alles gerade: Man konnte schneiden, umlegen und am Ende ein Rechteck ausmessen. Der Kreis hat keine einzige gerade Kante. Trotzdem gelingt dasselbe — man braucht nur <strong>eine</strong> neue Zahl, die Kreiszahl <span class="term">π</span>. Wir gehen der Reihe nach vor: erst der Umfang, dann der Flächeninhalt, dann die Teile des Kreises — jede Formel nur mit dem, was vorher schon da ist. Am Ende kannst du:</p>
     <ul class="lern-intro-list">
-      <li>erklären, was <span class="term">π</span> ist — das Verhältnis von Umfang und Durchmesser, bei jedem Kreis dasselbe — und warum π zwischen 3 und 4 liegt</li>
+      <li>erklären, was <span class="term">π</span> ist — das Verhältnis von Umfang und Durchmesser, bei jedem Kreis dasselbe (als Zusatz auch, warum π zwischen 3 und 4 liegt)</li>
       <li>den <span class="term">Umfang</span> berechnen: <strong>U = π · d = 2 · π · r</strong></li>
       <li>die Formel <strong>A = π · r²</strong> für den <span class="term">Flächeninhalt</span> auf zwei Wegen herleiten: über ein Fast-Rechteck aus Kreisausschnitten und über ein Dreieck aus aufgebogenen Ringen</li>
       <li>den Flächeninhalt eines <span class="term">Kreisrings</span> auf zwei Wegen herleiten — als großer Kreis minus kleiner Kreis und durch Aufbiegen — und berechnen: <strong>A = π · (R² − r²)</strong></li>
@@ -57,10 +57,15 @@
       <span class="box-label">Die Kreiszahl π</span>
       Bei jedem Kreis ist der Umfang dasselbe Vielfache des Durchmessers. Dieser Faktor heißt <span class="term">π</span> (sprich „pi“):
       <div class="formula-block">U : d = π &nbsp;&nbsp;⟺&nbsp;&nbsp; U = π · d &nbsp;&nbsp;&nbsp; mit π ≈ 3,14159</div>
-      π ist also der Proportionalitätsfaktor der Zuordnung Durchmesser → Umfang. Der Durchmesser passt gut dreimal um den Kreis herum — genau 3 Mal und noch ein Stück von gut einem Siebtel.
+      π ist also der Proportionalitätsfaktor der Zuordnung Durchmesser → Umfang. Der Durchmesser passt gut dreimal um den Kreis herum — genau 3 Mal und noch ein Stück von gut einem Siebtel. π hat unendlich viele Nachkommastellen, die sich nie wiederholen. Zum Rechnen genügt fast immer π ≈ 3,14 oder die π-Taste des Taschenrechners.
     </div>
+    <div class="quiz" id="quiz-umfang"></div>
 
-    <h3>Wie groß ist π? — einschachteln</h3>
+    <!-- Die Einschachtelung ist ein Zusatz: Sie begründet 3 < π < 4, gebraucht wird das aber in
+         keinem späteren Abschnitt. Wer sie überspringt, verpasst nichts, worauf die Seite aufbaut. -->
+    <div class="optional-teil" id="teil-einschachteln">
+    <h3>Wie groß ist π? — einschachteln <span class="optional-marke">optional</span></h3>
+    <p class="optional-hinweis">Dieser Teil ist ein Zusatz für Neugierige. Du kannst ihn überspringen und direkt mit <a href="#sec-radius">Abschnitt 2</a> weitermachen — nichts Späteres baut darauf auf.</p>
     <p>Dass π ein wenig größer ist als 3, lässt sich begründen, ohne irgendetwas zu messen. Stecke in den Kreis ein Vieleck und lege eines um ihn herum. Der Kreisrand liegt dazwischen: Er ist länger als der Umfang des inneren Vielecks und kürzer als der des äußeren. Wähle unten die Zahl der Ecken.</p>
     <div class="widget">
       <div class="btn-row">
@@ -76,9 +81,9 @@
       <strong>Das Quadrat außen</strong> hat die Seitenlänge d: U<sub>Quadrat</sub> = 4 · d.<br>
       Der Kreis liegt dazwischen: 3 · d &lt; U &lt; 4 · d — also <strong>3 &lt; π &lt; 4</strong>.
     </div>
-    <p class="hinweis-box">💡 Mit immer mehr Ecken rücken die beiden Vielecke an den Kreis heran. Archimedes hat so vor über 2200 Jahren mit 96 Ecken gezeigt, dass π zwischen 3<span class="bruch"><span class="z">10</span><span class="n">71</span></span> und 3<span class="bruch"><span class="z">1</span><span class="n">7</span></span> liegt. Die Seitenlängen der feineren Vielecke berechnet man mit dem Satz des Pythagoras, der erst in Klasse 9 kommt — oben sind sie deshalb an der Zeichnung gemessen. π hat unendlich viele Nachkommastellen, die sich nie wiederholen. Zum Rechnen genügt fast immer π ≈ 3,14 oder die π-Taste des Taschenrechners.</p>
-    <div class="quiz" id="quiz-umfang"></div>
+    <p class="hinweis-box">💡 Mit immer mehr Ecken rücken die beiden Vielecke an den Kreis heran. Archimedes hat so vor über 2200 Jahren mit 96 Ecken gezeigt, dass π zwischen 3<span class="bruch"><span class="z">10</span><span class="n">71</span></span> und 3<span class="bruch"><span class="z">1</span><span class="n">7</span></span> liegt. Die Seitenlängen der feineren Vielecke berechnet man mit dem Satz des Pythagoras, der erst in Klasse 9 kommt — oben sind sie deshalb an der Zeichnung gemessen.</p>
     <div class="quiz" id="quiz-pi"></div>
+    </div>
   </section>
 
   <!-- 2. Umfang mit dem Radius -->
@@ -309,7 +314,7 @@
     <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
     <p>Das sind die Ziele vom Anfang dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst — deine Auswahl bleibt nur in diesem Browser gespeichert. Wo du 😐 oder 🤔 wählst, führt ein Verweis direkt zum passenden Abschnitt.</p>
     <ul class="se-liste">
-      <li data-abschnitt="sec-umfang">Ich kann erklären, was π ist und warum π zwischen 3 und 4 liegt.</li>
+      <li data-abschnitt="sec-umfang">Ich kann erklären, was π ist: das Verhältnis von Umfang und Durchmesser.</li>
       <li data-abschnitt="sec-radius">Ich kann den Umfang mit U = π · d und U = 2 · π · r berechnen.</li>
       <li data-abschnitt="sec-flaeche">Ich kann die Formel A = π · r² auf zwei Wegen herleiten und anwenden.</li>
       <li data-abschnitt="sec-ring">Ich kann den Flächeninhalt eines Kreisrings als großen Kreis minus kleinen Kreis berechnen und durch Aufbiegen begründen.</li>
@@ -362,6 +367,6 @@
 
 <script src="../../../assets/lehrkraft.js"></script>
 <script src="../../../assets/selbsteinschaetzung.js"></script>
-<script type="module" src="kreis.js?v=3"></script>
+<script type="module" src="kreis.js?v=4"></script>
 </body>
 </html>

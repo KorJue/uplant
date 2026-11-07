@@ -56,8 +56,9 @@ const BENANNT = [
   ["Innermathematische Zusammenhänge", (h) => h.includes("Innermathematische Zusammenhänge")],
   ["Selbsteinschätzung", (h, js) => h.includes('id="sec-selbsteinschaetzung"') || /Selbsteinschätzung/.test(js)],
 ];
-// Woran man Hinweise für Lehrkräfte im Seitentext erkennt.
-const VERRAETERISCH = /Lehrkr|Distraktor|class="[^"]*konzept/i;
+// Woran man Hinweise für Lehrkräfte im Seitentext erkennt. „Didaktisch“ dazu, seit auf den
+// Lagebeziehungen (MSS 12) ein didaktischer Kommentar für alle sichtbar im Seitentext stand.
+const VERRAETERISCH = /Lehrkr|Distraktor|Didakti|Fehlvorstellung|Grundvorstellung|Unterrichtsvorschlag|class="[^"]*konzept/i;
 
 function alleHtml(verzeichnis = WURZEL, gesammelt = []) {
   for (const e of fs.readdirSync(verzeichnis, { withFileTypes: true })) {
