@@ -1069,7 +1069,7 @@ async function geruest(page) {
     const quelle = fs.readFileSync(quellDatei, "utf8").replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ")
       .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/\s+/g, " ");
     for (const f of ["A = a · b", "A = ½ · g · h", "A = ½ · (a + c) · h", "A = π · r²", "U = 2 · π · r", "A = ½ · π · r²", "A = ¼ · π · r²",
-      "A = α : 360° · π · r²", "b = α : 360° · 2 · π · r", "A = A₁ + A₂ + A₃", "A = A voll − A Ausschnitt", "U = Summe aller Randstücke", "gemessen"]) {
+      "A = α : 360° · π · r²", "b = α : 360° · 2 · π · r", "A = A₁ + A₂ + A₃", "A = Avoll − AAusschnitt", "U = Summe aller Randstücke", "gemessen"]) {
       pruefe(quelle.includes(f), `Formelsammlung: „${f}“ fehlt in der Quelle des PDFs`);
     }
   }

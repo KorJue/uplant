@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Formelsammlung — Zusammengesetzte Figuren</title>
+<style>
+  @page { size: A4 landscape; margin: 5.5mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    color: #1f2328;
+    font-size: 8.1px;
+    line-height: 1.33;
+  }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  h1 {
+    font-size: 12.4px; margin: 0 0 1.4mm; padding-bottom: 0.8mm;
+    border-bottom: 1.6px solid #1d4ed8; color: #1d4ed8; letter-spacing: 0.01em;
+  }
+  h1 .klein { font-size: 8.4px; font-weight: 400; color: #5b6570; float: right; margin-top: 2px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2.1mm; align-items: start; }
+  .box {
+    border: 0.9px solid #c9d0d8; border-radius: 2mm; padding: 1.5mm 1.8mm;
+    background: #ffffff; break-inside: avoid;
+  }
+  .box.wide { grid-column: span 2; }
+  .box.full { grid-column: span 3; }
+  .box h2 {
+    font-size: 8.6px; margin: 0 0 1.1mm; color: #1d4ed8;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .box.warn { border-color: #e3b341; background: #fffaf0; }
+  .box.warn h2 { color: #8a5b0a; }
+  .box.merk { border-color: #7ec699; background: #f4fbf6; }
+  .box.merk h2 { color: #0f5132; }
+  p { margin: 0 0 0.9mm; }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 0.9mm; padding-left: 3.4mm; }
+  li { margin-bottom: 0.4mm; }
+  .f { font-family: "Cambria Math", Cambria, Georgia, serif; font-size: 9.2px; }
+  .zentral { text-align: center; }
+  .gross { font-size: 10.4px; font-weight: 700; }
+  .al { color: #157347; font-weight: 700; }
+  .be { color: #b3650a; font-weight: 700; }
+  .ga { color: #b3261e; font-weight: 700; }
+  .kr { color: #1d4ed8; font-weight: 700; }
+  .ra { color: #6d28d9; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { border: 0.7px solid #c9d0d8; padding: 0.5mm 0.6mm; text-align: center; }
+  th { background: #eef2f6; font-weight: 700; font-size: 7.4px; }
+  td { font-size: 7.6px; }
+  td.b { font-weight: 700; }
+  td.l { text-align: left; }
+  figure { margin: 0.8mm 0 0; }
+  figure svg { display: block; width: 100%; height: auto; }
+  .m70 { max-width: 70%; margin: 0.8mm auto 0; }
+  .m80 { max-width: 80%; margin: 0.8mm auto 0; }
+  .m88 { max-width: 88%; margin: 0.8mm auto 0; }
+  .m62 { max-width: 62%; margin: 0.8mm auto 0; }
+  .m72 { max-width: 72%; margin: 0.8mm auto 0; }
+  .m55 { max-width: 55%; margin: 0.8mm auto 0; }
+  .bu { font-size: 7.1px; color: #5b6570; text-align: center; margin-top: 0.5mm; }
+  .rechnung { background: #f4f6f8; border-radius: 1.2mm; padding: 1mm 1.2mm; margin: 0.8mm 0 0; }
+  .schritt { display: flex; gap: 1.2mm; margin-bottom: 0.5mm; }
+  .schritt b { flex: 0 0 3.6mm; color: #1d4ed8; }
+  .schritt:last-child { margin-bottom: 0; }
+  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm; align-items: start; }
+  .bruch { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; margin: 0 0.3mm; }
+  .bruch .z { border-bottom: 0.8px solid currentColor; padding: 0 0.6mm; }
+  .gh { color: #6d28d9; font-weight: 700; }
+  .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ===================== Seite 1 ===================== -->
+<div class="page">
+  <h1>Zusammengesetzte Figuren — Flächeninhalt und Umfang<span class="klein">Klasse 8 · Geometrie, Thema 6</span></h1>
+  <div class="grid">
+
+    <div class="box merk">
+      <h2>Flächeninhalt — zerlegen und addieren</h2>
+      <p>Für die Figur gibt es keine Formel — für ihre <span class="al">Teile</span> schon. Die Teile sind zusammen genau so groß wie die Figur.</p>
+      <figure>[[FIG1]]</figure>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span><b>Zerlegen</b> in Teile, deren Formel du kennst.</span></div>
+        <div class="schritt"><b>2.</b><span><b>Maße bestimmen</b> — auch die, die nicht dastehen.</span></div>
+        <div class="schritt"><b>3.</b><span><b>Einzeln berechnen</b>, jedes Teil mit seiner Formel.</span></div>
+        <div class="schritt"><b>4.</b><span><b>Addieren</b> — und erst das Endergebnis runden.</span></div>
+      </div>
+      <p class="zentral f gross" style="margin-top:1mm">A = A₁ + A₂ + A₃ + …</p>
+    </div>
+
+    <div class="box merk">
+      <h2>Umfang — einmal außen herum</h2>
+      <p>Der Umfang ist die Länge des <span class="be">Randes</span>. Geh von einem Startpunkt einmal außen herum und addiere alle Randstücke — Strecken und Bögen.</p>
+      <figure>[[FIG2]]</figure>
+      <p class="zentral f gross">U = Summe aller Randstücke</p>
+      <p><span class="ga">Schnittkanten</span> zwischen den Teilen liegen innen und zählen nicht. Die Umfänge der Teile zusammen sind deshalb <b>zu lang</b>: Jede Schnittkante steckt darin zweimal.</p>
+    </div>
+
+    <div class="box merk">
+      <h2>Ergänzen und abziehen</h2>
+      <p>Fehlt der Figur ein Stück, so ergänze sie in Gedanken zur vollen Figur und zieh das <span class="be">fehlende Stück</span> ab.</p>
+      <figure>[[FIG3]]</figure>
+      <p class="zentral f gross">A = A<sub>voll</sub> − A<sub>Ausschnitt</sub></p>
+      <p>Beim <b>Umfang</b> wird <b>nichts</b> abgezogen: Der Rand des Ausschnitts ist ein Stück Rand — er kommt dazu. Weg fällt nur die Strecke, die vorher dort war.</p>
+    </div>
+
+    <div class="box wide">
+      <h2>Die Bausteine</h2>
+      <table>
+        <tr><th>Figur</th><th>Flächeninhalt</th><th>Rand</th><th>hergeleitet in</th></tr>
+        <tr><td class="l b">Rechteck</td><td class="f">A = a · b</td><td class="f">U = 2 · (a + b)</td><td>Grundwissen</td></tr>
+        <tr><td class="l b">Dreieck</td><td class="f">A = ½ · g · h</td><td class="l">drei Seiten — die Höhe liegt innen</td><td>Thema 4</td></tr>
+        <tr><td class="l b">Parallelogramm</td><td class="f">A = g · h</td><td class="f">U = 2 · (a + b)</td><td>Thema 4</td></tr>
+        <tr><td class="l b">Trapez</td><td class="f">A = ½ · (a + c) · h</td><td class="l">vier Seiten — die Höhe liegt innen</td><td>Thema 4</td></tr>
+        <tr><td class="l b">Kreis</td><td class="f">A = π · r²</td><td class="f">U = 2 · π · r</td><td>Thema 5</td></tr>
+        <tr><td class="l b">Halbkreis</td><td class="f">A = ½ · π · r²</td><td class="f">Bogen: π · r</td><td>Thema 5</td></tr>
+        <tr><td class="l b">Viertelkreis</td><td class="f">A = ¼ · π · r²</td><td class="f">Bogen: ½ · π · r</td><td>Thema 5</td></tr>
+        <tr><td class="l b">Kreisausschnitt</td><td class="f">A = α : 360° · π · r²</td><td class="f">b = α : 360° · 2 · π · r</td><td>Thema 5</td></tr>
+        <tr><td class="l b">Kreisring</td><td class="f">A = π · (R² − r²)</td><td class="f">2 · π · R + 2 · π · r</td><td>Thema 5</td></tr>
+      </table>
+      <p style="margin-top:0.8mm">Die Höhe eines Dreiecks oder Trapezes steht <b>senkrecht</b> auf der Grundseite. Eine schräge Seite ist nie die Höhe — sie gehört aber zum Rand.</p>
+    </div>
+
+    <div class="box">
+      <h2>Maße erschließen</h2>
+      <p>Oft stehen nicht alle Maße an der Figur. Sie folgen aus den anderen:</p>
+      <ul>
+        <li>Ein <b>Halbkreis sitzt auf einer Seite</b>: Die Seite ist sein Durchmesser, <span class="f">r = Seite : 2</span>.</li>
+        <li>Ein <b>Viertelkreis schließt an ein Rechteck an</b>: Das Rechteck ist so hoch wie der Radius.</li>
+        <li>Ein <b>Ausschnitt in der Mitte</b> einer Seite h, über und unter ihm bleibt je a: <span class="f">d&nbsp;=&nbsp;h&nbsp;−&nbsp;2&nbsp;·&nbsp;a</span>.</li>
+        <li>Eine Länge kann <b>zwei Rollen</b> haben: Seite des einen Teils, Radius oder Höhe des anderen.</li>
+      </ul>
+      <p><b>Schräge Seiten</b> sind in Klasse 8 <b>gemessen</b> oder gegeben. Berechnen kann man sie erst mit dem Satz des Pythagoras (Klasse 9).</p>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik Klasse 8 · Geometrie · Seite 1 von 2</p>
+</div>
+
+<!-- ===================== Seite 2 ===================== -->
+<div class="page">
+  <h1>Drei Musterrechnungen und typische Fehler<span class="klein">die Beispiele der Lernseite mit ihren Anfangsmaßen</span></h1>
+  <div class="grid">
+
+    <div class="box">
+      <h2>Beispiel 1 — Rechteck mit zwei Viertelkreisen</h2>
+      <p><b>Gegeben:</b> r = 4 cm, b = 6 cm (Figuren auf Seite 1). Das Rechteck ist so hoch wie der Radius.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>①</b><span><span class="f">A₁ = ¼ · π · (4 cm)² = 4 · π cm² ≈ 12,57 cm²</span></span></div>
+        <div class="schritt"><b>②</b><span><span class="f">A₂ = 6 cm · 4 cm = 24 cm²</span></span></div>
+        <div class="schritt"><b>③</b><span><span class="f">A₃ = A₁ ≈ 12,57 cm²</span></span></div>
+        <div class="schritt"><b>Σ</b><span><span class="f">A = 8 · π cm² + 24 cm² ≈ <b>49,13 cm²</b></span></span></div>
+      </div>
+      <p style="margin-top:1mm"><b>Umfang:</b> zwei Viertelbögen und zwei gerade Kanten der Länge b + r.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>①</b><span><span class="f">u₁ = ¼ · 2 · π · 4 cm = 2 · π cm ≈ 6,28 cm</span> — ebenso u₃</span></div>
+        <div class="schritt"><b>②</b><span><span class="f">u₂ = 6 cm + 4 cm = 10 cm</span> — ebenso u₄</span></div>
+        <div class="schritt"><b>Σ</b><span><span class="f">U = 4 · π cm + 20 cm ≈ <b>32,57 cm</b></span></span></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Beispiel 2 — Rechteck, Dreieck, Kreisausschnitt</h2>
+      <figure class="m88">[[FIG4]]</figure>
+      <div class="rechnung">
+        <div class="schritt"><b>①</b><span><span class="f">A₁ = 4 cm · 4 cm = 16 cm²</span></span></div>
+        <div class="schritt"><b>②</b><span><span class="f">A₂ = ½ · 3 cm · 4 cm = 6 cm²</span> — Höhe ist h, nicht s</span></div>
+        <div class="schritt"><b>③</b><span><span class="f">A₃ = 60° : 360° · π · (5 cm)² ≈ 13,09 cm²</span></span></div>
+        <div class="schritt"><b>Σ</b><span><span class="f">A ≈ 16 + 6 + 13,09 = <b>35,09 cm²</b></span></span></div>
+      </div>
+      <p style="margin-top:1mm"><b>Umfang:</b> gerade Stücke <span class="f">b + h + b + c + s = 20 cm</span>, Bogen <span class="f">60° : 360° · 2 · π · 5 cm ≈ 5,24&nbsp;cm</span>, zusammen <span class="f">U ≈ <b>25,24 cm</b></span>. Die beiden gestrichelten Schnittkanten (h und s) zählen nicht.</p>
+    </div>
+
+    <div class="box">
+      <h2>Beispiel 3 — Rechteck plus Halbkreis minus Halbkreis</h2>
+      <p><b>Gegeben:</b> b = 4 cm, h = 4 cm, a = 1 cm (Figur auf Seite 1).</p>
+      <div class="rechnung">
+        <div class="schritt"><b>R</b><span><span class="f">R = h : 2 = 2 cm</span>, &nbsp;<span class="f">r = (h − 2 · a) : 2 = 1 cm</span></span></div>
+        <div class="schritt"><b>①</b><span><span class="f">A₁ = 4 cm · 4 cm = 16 cm²</span> — das ganze Rechteck</span></div>
+        <div class="schritt"><b>②</b><span><span class="f">A₂ = ½ · π · (2 cm)² = 2 · π cm² ≈ 6,28 cm²</span></span></div>
+        <div class="schritt"><b>③</b><span><span class="f">A₃ = ½ · π · (1 cm)² = 0,5 · π cm² ≈ 1,57 cm²</span></span></div>
+        <div class="schritt"><b>Σ</b><span><span class="f">A = A₁ + A₂ − A₃ ≈ <b>20,71 cm²</b></span></span></div>
+      </div>
+      <p style="margin-top:1mm"><b>Umfang:</b> <span class="f">2 · b + 2 · a + π · R + π · r = 10 cm + 3 · π cm ≈ <b>19,42 cm</b></span>.</p>
+      <p>Ohne Ausschnitt wären es <span class="f">2 · b + h + π · R ≈ 18,28&nbsp;cm</span>: weniger Fläche, aber <b>mehr Rand</b> — der Bogen π · r ist länger als die Strecke 2 · r, die er ersetzt.</p>
+    </div>
+
+    <div class="box warn wide">
+      <h2>Typische Fehler</h2>
+      <ul>
+        <li><b>Umfänge der Teile addiert.</b> Schnittkanten liegen innen. Zum Umfang gehört nur, was man außen abschreiten kann.</li>
+        <li><b>„Etwas weggenommen, also beim Umfang abziehen.“</b> Abgezogen wird nur die Fläche. Der Rand eines Ausschnitts kommt zum Umfang dazu.</li>
+        <li><b>Durchmesser als Radius eingesetzt.</b> Sitzt ein Halbkreis auf einer Seite, ist die Seite sein Durchmesser: erst halbieren.</li>
+        <li><b>Ganzer Kreis statt Halb- oder Viertelkreis</b> — und umgekehrt: Zwei Viertelkreise sind zusammen ein Halbkreis, zwei Halbkreise ein ganzer Kreis.</li>
+        <li><b>Bogenlänge statt Flächeninhalt</b> (oder umgekehrt). Längen in cm, Flächen in cm²: In der Flächenformel steht r², in der Bogenformel r.</li>
+        <li><b>Schräge Seite als Höhe benutzt.</b> Für A = ½ · g · h zählt nur die Höhe, die senkrecht auf der Grundseite steht.</li>
+        <li><b>Zwischenergebnisse gerundet.</b> Mit der π-Taste weiterrechnen und erst am Ende runden — sonst stimmt die letzte Stelle nicht.</li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h2>Rückwärts — die Laufbahn</h2>
+      <p><b>Gegeben:</b> Eine Runde ist U = 400 m lang; die Bahn besteht aus zwei Geraden und zwei Halbkreisbögen mit d = 60 m. <b>Gesucht:</b> die Länge l einer Geraden.</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>Formel aufstellen: <span class="f">U = 2 · l + π · d</span></span></div>
+        <div class="schritt"><b>2.</b><span><span class="f">π · d = π · 60 m ≈ 188,50 m</span></span></div>
+        <div class="schritt"><b>3.</b><span><span class="f">l = (400 m − 188,50 m) : 2 ≈ <b>105,75 m</b></span></span></div>
+      </div>
+      <p style="margin-top:1mm"><b>Probe:</b> 2 · 105,75 m + 188,50 m = 400,00 m ✓</p>
+    </div>
+
+    <div class="box full" style="border-style:dashed;background:#f7f8fa">
+      <h2 style="color:#5b6570">Ausblick — wo zusammengesetzte Figuren wiederkehren</h2>
+      <p>Mit dem <b>Satz des Pythagoras</b> (Klasse 9) lassen sich schräge Seiten berechnen statt messen. Bei <b>Prismen und Zylindern</b> ist die Grundfläche oft eine zusammengesetzte Figur — das Volumen ist Grundfläche mal Höhe. Und die <b>Oberfläche</b> eines Körpers ist selbst eine zusammengesetzte Figur: sein Netz. Die Rechnung A = b · r + ½ · π · r² ist ein <b>Term</b> — einmal aufgestellt, gilt er für jede Figur dieser Bauart.</p>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik Klasse 8 · Geometrie · Seite 2 von 2</p>
+</div>
+
+</body>
+</html>
