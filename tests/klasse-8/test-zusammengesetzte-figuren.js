@@ -150,7 +150,9 @@ function verschiebung(von, nach, eps = 0.03) {
   return von.every((p, i) => Math.abs(nach[i].x - p.x - v.x) < eps && Math.abs(nach[i].y - p.y - v.y) < eps) ? v : null;
 }
 
-const klick = (page, sel) => page.evaluate((s) => document.querySelector(s).click(), sel);
+// Klickt, was der Selektor trifft — und sagt, ob es da war. (Ein Klick ins Leere wäre ein Absturz
+// der Prüfung statt einer Meldung.)
+const klick = (page, sel) => page.evaluate((s) => { const e = document.querySelector(s); if (e) e.click(); return !!e; }, sel);
 
 // ── Die Rechnung eines Beispiels durchspielen ─────────────────────────────
 //
@@ -218,11 +220,14 @@ async function spieleRechnung(page, kuerzel, schritte, wo, { zeigen = null } = {
       bisher.push(wert);
       const r = await eingabe(deutsch(rund2(wert)));
       pruefe(!r.fertig && /err/.test(r.klasse), `${w}: der Fehlerwert ${de2(wert)} wird anerkannt`);
+      // Ein anerkannter Fehlerwert schließt den Schritt ab — weiter geht es hier nicht.
+      if (r.fertig) return;
       if (!verdeckt) pruefe(r.rueck.includes(muster), `${w}: bei ${de2(wert)} fehlt der Hinweis „${muster}“ — „${r.rueck}“`);
     }
     // Knapp daneben ist auch daneben.
     const knapp = await eingabe(deutsch(rund2(s.soll + s.tol + 0.02)));
     pruefe(!knapp.fertig, `${w}: ${de2(s.soll + s.tol + 0.02)} wird anerkannt, obwohl es außerhalb der Toleranz liegt`);
+    if (knapp.fertig) return;
 
     await klick(page, `${zeile} .zf-tipp`);
     const tipp = await page.evaluate((zl) => { const r = document.querySelector(`${zl} .zf-rueck`); return { text: r.innerText.trim(), klasse: r.className }; }, zeile);
@@ -242,6 +247,9 @@ async function spieleRechnung(page, kuerzel, schritte, wo, { zeigen = null } = {
       return { fertig: e.classList.contains("fertig"), weg: weg ? weg.innerText.replace(/\s+/g, " ") : "", haken: haken ? haken.innerText.trim() : "", eingabe: !!e.querySelector("input") };
     }, zeile);
     pruefe(danach.fertig && !danach.eingabe, `${w}: der Schritt ist nach der Lösung nicht abgeschlossen`);
+    // Bleibt ein Schritt offen, kommen die folgenden nie an die Reihe — die Rechnung endet hier, mit
+    // dieser Meldung statt mit einem Absturz beim Warten auf ein Eingabefeld, das es nicht gibt.
+    if (!danach.fertig) return;
     pruefe(danach.haken === (zeigen === s.id ? "aufgedeckt" : "✓"), `${w}: die Zeile trägt „${danach.haken}“`);
     // Ein glattes Ergebnis steht genau da (3,375), ein gerundetes mit zwei Stellen.
     const erwartet = Math.abs(s.soll - Number(s.soll.toFixed(4))) < 1e-9 ? de(s.soll) : de2(s.soll);
@@ -255,7 +263,7 @@ async function spieleRechnung(page, kuerzel, schritte, wo, { zeigen = null } = {
 }
 
 async function rechnungZurueck(page, kuerzel, wo) {
-  await klick(page, `#${kuerzel}-rechnung .zf-neu`);
+  pruefe(await klick(page, `#${kuerzel}-rechnung .zf-neu`), `${wo}: der Knopf „Rechnung neu beginnen“ fehlt`);
   const stand = await page.evaluate((b) => [...document.querySelectorAll(`${b} .zf-schritt`)].map((z) => z.className), `#${kuerzel}-rechnung`);
   pruefe(/aktiv/.test(stand[0]) && stand.slice(1).every((k) => /wartet/.test(k)), `${wo}: „Rechnung neu beginnen“ setzt die Schritte nicht zurück`);
 }
