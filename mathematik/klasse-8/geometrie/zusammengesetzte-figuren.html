@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zusammengesetzte Figuren: Flächeninhalt und Umfang</title>
+<script src="../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../assets/site.css">
+<link rel="stylesheet" href="../../aufgaben.css">
+<link rel="stylesheet" href="geometrie.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../index.html">Klasse 8</a><span class="sep">/</span>
+  <a href="index.html">Geometrie</a><span class="sep">/</span>
+  6 Zusammengesetzte Figuren
+</nav>
+<header class="page-header">
+  <h1>Zusammengesetzte Figuren: Flächeninhalt und Umfang</h1>
+  <p>Ein Selbstlernpfad: Figuren in bekannte Teile zerlegen, Teilflächen addieren oder abziehen und den Rand abschreiten — an drei Beispielen mit verschiebbaren Teilen und zwölf Übungsaufgaben.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Ein Fenster mit Rundbogen, eine Laufbahn, ein Blech mit Aussparung: Für solche Figuren gibt es keine eigene Formel. Sie bestehen aber aus Teilen, die du schon berechnen kannst. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>eine <span class="term">zusammengesetzte Figur</span> in bekannte Teile zerlegen und ihren <span class="term">Flächeninhalt</span> als Summe der Teilflächen berechnen</li>
+      <li>ihren <span class="term">Umfang</span> bestimmen: Nur der Rand zählt — die Schnittkanten zwischen den Teilen nicht</li>
+      <li>Figuren aus Rechteck, Dreieck und <span class="term">Kreisausschnitt</span> berechnen und dabei Maße erschließen, die nicht an der Figur stehen</li>
+      <li>Flächen <span class="term">ergänzen und abziehen</span> — und erklären, warum der Umfang dabei größer werden kann</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst die Flächeninhalte von <a href="flaecheninhalte.html#sec-dreieck">Dreieck</a>, <a href="flaecheninhalte.html#sec-parallelogramm">Parallelogramm</a> und <a href="flaecheninhalte.html#sec-trapez">Trapez</a> aus Thema 4 und vom Kreis aus Thema 5: <a href="kreis.html#sec-radius">Umfang</a>, <a href="kreis.html#sec-flaeche">Flächeninhalt</a>, <a href="kreis.html#sec-bogen">Kreisbogen</a> und <a href="kreis.html#sec-ausschnitt">Kreisausschnitt</a>. Den Satz des Pythagoras brauchst du noch <em>nicht</em>: Schräge Seiten sind an der Zeichnung gemessen.</p>
+  </section>
+
+  <!-- 1. Flächeninhalt: zerlegen und addieren -->
+  <!-- Reihenfolge: erst der Flächeninhalt (nur addieren), dann der Umfang derselben Figur, dann ein
+       Beispiel mit Dreieck und Kreisausschnitt, zuletzt das Abziehen. Jeder Abschnitt benutzt nur,
+       was vorher da war — das Abziehen etwa setzt voraus, dass Flächeninhalt UND Umfang einer
+       zusammengesetzten Figur schon erarbeitet sind. -->
+  <section class="card" id="sec-zerlegen">
+    <h2>1. Flächeninhalt: zerlegen und addieren</h2>
+    <p>Die Figur unten hat zwei gerade und zwei runde Kanten — eine Formel für sie gibt es nicht. Zerlegt man sie aber mit zwei Schnitten, entstehen drei Teile, die du kennst: links ein <span class="term">Viertelkreis</span>, in der Mitte ein Rechteck, rechts wieder ein Viertelkreis. Zieh die Teile auseinander — mit dem Regler oder direkt mit der Maus oder dem Finger. Dabei wird nichts größer und nichts kleiner: Zusammen sind die Teile genau so groß wie die Figur.</p>
+    <p><strong>Beispiel 1:</strong> Berechne die drei Teilflächen nacheinander und addiere sie.</p>
+    <div class="widget" id="z1-widget">
+      <div class="btn-row">
+        <label>Radius r: <input type="range" id="z1-r" min="2" max="4" step="0.5" value="4" style="vertical-align:middle;width:8rem"> <span id="z1-r-anzeige" class="th-name-c"></span></label>
+        <label>Breite b: <input type="range" id="z1-b" min="3" max="7" step="0.5" value="6" style="vertical-align:middle;width:8rem"> <span id="z1-b-anzeige" class="th-name-c"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>Auseinanderziehen: <input type="range" id="z1-t" min="0" max="100" step="5" value="0" style="vertical-align:middle;width:12rem"> <span id="z1-t-anzeige" class="th-name-b"></span></label>
+        <button type="button" class="btn" id="z1-heim">Teile zusammensetzen</button>
+      </div>
+      <div class="th-wrap" id="z1-mount"></div>
+      <div class="th-bilanz zf-rechnung" id="z1-rechnung"></div>
+      <div id="z1-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Flächeninhalt einer zusammengesetzten Figur</span>
+      <strong>1. Zerlegen:</strong> Schneide die Figur in Teile, deren Formel du kennst.<br>
+      <strong>2. Maße bestimmen:</strong> Lies für jedes Teil ab, was seine Formel braucht. Manches steht nicht da und folgt aus den anderen Maßen — hier ist das Rechteck so hoch wie der Radius der Viertelkreise.<br>
+      <strong>3. Einzeln berechnen:</strong> Jedes Teil mit seiner Formel.<br>
+      <strong>4. Addieren:</strong>
+      <div class="formula-block">A = A<sub>1</sub> + A<sub>2</sub> + A<sub>3</sub> + …</div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — erst am Ende runden</span>
+      Kreisteile gehen fast nie glatt auf. Wer jede Teilfläche rundet und dann addiert, liegt in der letzten Stelle manchmal knapp daneben. Rechne mit der π-Taste weiter, solange es geht, und runde erst das Endergebnis. Die Seite erkennt beide Wege an.
+    </div>
+    <div class="quiz" id="quiz-zerlegen"></div>
+  </section>
+
+  <!-- 2. Umfang -->
+  <section class="card" id="sec-umfang">
+    <h2>2. Umfang: einmal außen herum</h2>
+    <p>Der <span class="term">Umfang</span> ist die Länge des Randes — der Weg, den eine Ameise zurücklegt, wenn sie einmal außen um die Figur läuft. Bei den Flächen hast du die Teile einfach addiert. Beim Umfang geht das <strong>nicht</strong>: Wo zwei Teile aneinanderstoßen, liegt eine <span class="term">Schnittkante</span> im Inneren der Figur. Dort läuft die Ameise nie entlang.</p>
+    <p><strong>Beispiel 1, zweiter Teil:</strong> Dieselbe Figur wie in Abschnitt 1. Zieh den Regler <strong>Rand abschreiten</strong> und verfolge den orangen Weg. Zieh danach die Teile auseinander: Die beiden roten Schnittkanten kommen zum Vorschein — sie gehören zu den Teilen, aber nicht zum Rand der Figur.</p>
+    <div class="widget" id="u1-widget">
+      <div class="btn-row">
+        <label>Radius r: <input type="range" id="u1-r" min="2" max="4" step="0.5" value="4" style="vertical-align:middle;width:8rem"> <span id="u1-r-anzeige" class="th-name-c"></span></label>
+        <label>Breite b: <input type="range" id="u1-b" min="3" max="7" step="0.5" value="6" style="vertical-align:middle;width:8rem"> <span id="u1-b-anzeige" class="th-name-c"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>Rand abschreiten: <input type="range" id="u1-s" min="0" max="100" step="2" value="0" style="vertical-align:middle;width:12rem"> <span id="u1-s-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>Auseinanderziehen: <input type="range" id="u1-t" min="0" max="100" step="5" value="0" style="vertical-align:middle;width:12rem"> <span id="u1-t-anzeige" class="th-name-b"></span></label>
+        <button type="button" class="btn" id="u1-heim">Teile zusammensetzen</button>
+      </div>
+      <div class="th-wrap" id="u1-mount"></div>
+      <div class="th-bilanz zf-rechnung" id="u1-rechnung"></div>
+      <div id="u1-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Umfang einer zusammengesetzten Figur</span>
+      Geh einmal außen um die Figur herum und addiere die Längen aller <strong>Randstücke</strong> — gerade Strecken und Bögen:
+      <div class="formula-block">U = Summe aller Randstücke</div>
+      Schnittkanten zwischen den Teilen zählen nicht. Markiere dir einen Startpunkt, dann vergisst du kein Stück und zählst keines doppelt.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Umfänge der Teile nicht addieren</span>
+      Die Umfänge der drei Teile zusammen sind <strong>länger</strong> als der Umfang der Figur: Jede Schnittkante steckt darin zweimal, einmal in jedem der beiden Teile, die sie trennt. Bei der Figur oben sind das zwei Schnittkanten der Länge r — die Summe der Teilumfänge ist um 4 · r zu groß.
+    </div>
+    <div class="quiz" id="quiz-umfang"></div>
+  </section>
+
+  <!-- 3. Rechteck, Dreieck und Kreisausschnitt -->
+  <section class="card" id="sec-teile">
+    <h2>3. Rechteck, Dreieck und Kreisausschnitt</h2>
+    <p>Dieselben beiden Schritte gelingen mit jeder Figur, deren Teile du kennst — auch mit Dreiecken aus Thema 4 und Kreisausschnitten aus Thema 5. Schwieriger wird nur das Ablesen: Welche Länge gehört in welche Formel?</p>
+    <p><strong>Beispiel 2:</strong> An ein Rechteck schließt ein rechtwinkliges Dreieck an, und an dessen schräge Seite ein Kreisausschnitt. Die schräge Seite s ist <strong>gemessen</strong>; sie ist zugleich der Radius des Ausschnitts. Berechne zuerst den Flächeninhalt, dann den Umfang.</p>
+    <div class="widget" id="t2-widget">
+      <div class="btn-row">
+        <label>Breite b: <input type="range" id="t2-b" min="2" max="5" step="0.5" value="4" style="vertical-align:middle;width:7rem"> <span id="t2-b-anzeige" class="th-name-c"></span></label>
+        <label>Höhe h: <input type="range" id="t2-h" min="2" max="4" step="1" value="4" style="vertical-align:middle;width:6rem"> <span id="t2-h-anzeige" class="th-name-r"></span></label>
+        <label>Winkel α: <input type="range" id="t2-w" min="30" max="120" step="10" value="60" style="vertical-align:middle;width:8rem"> <span id="t2-w-anzeige" class="th-name-r"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>Auseinanderziehen: <input type="range" id="t2-t" min="0" max="100" step="5" value="0" style="vertical-align:middle;width:12rem"> <span id="t2-t-anzeige" class="th-name-b"></span></label>
+        <button type="button" class="btn" id="t2-heim">Teile zusammensetzen</button>
+      </div>
+      <div class="th-wrap" id="t2-mount"></div>
+      <div class="th-bilanz zf-rechnung" id="t2-rechnung"></div>
+      <div id="t2-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Welche Länge gehört in welche Formel?</span>
+      Eine Länge kann zu <strong>zwei</strong> Teilen gehören — in verschiedenen Rollen. Die Höhe h ist eine Seite des Rechtecks <em>und</em> die Höhe des Dreiecks. Die schräge Seite s gehört zum Dreieck, wird aber für dessen Flächeninhalt nicht gebraucht; für den Kreisausschnitt ist sie der Radius.<br>
+      <strong>Dreieck:</strong> A = ½ · Grundseite · Höhe — die Höhe steht <em>senkrecht</em> auf der Grundseite.<br>
+      <strong>Kreisausschnitt:</strong> A = <span class="bruch"><span class="z">α</span><span class="n">360°</span></span> · π · r², &nbsp; Bogen b = <span class="bruch"><span class="z">α</span><span class="n">360°</span></span> · 2 · π · r.
+    </div>
+    <p class="hinweis-box">💡 Warum steht an der schrägen Seite „gemessen“? Aus den beiden anderen Seiten des rechtwinkligen Dreiecks ließe sie sich berechnen — mit dem Satz des Pythagoras, der erst in Klasse 9 kommt. Bis dahin wird sie an der Zeichnung gemessen oder steht in der Aufgabe.</p>
+    <div class="quiz" id="quiz-teile"></div>
+  </section>
+
+  <!-- 4. Ergänzen und abziehen -->
+  <section class="card" id="sec-abziehen">
+    <h2>4. Ergänzen und abziehen</h2>
+    <p>Manche Figuren entstehen nicht durch Zusammensetzen, sondern durch <strong>Wegnehmen</strong>: ein Blech mit Aussparung, eine Platte mit abgerundeter Ecke. Dann rechnet man die volle Fläche aus und zieht ab, was fehlt — so wie beim <a href="kreis.html#sec-ring">Kreisring</a>, der ein großer Kreis ohne den kleinen ist.</p>
+    <p><strong>Beispiel 3:</strong> An ein Rechteck schließt rechts ein Halbkreis an, und links ist ein kleiner Halbkreis ausgeschnitten. Zieh die Teile auseinander: Das orange Stück wird herausgenommen — es behält dabei seinen Flächeninhalt, und genau der fehlt der Figur. Die Radien stehen nicht an der Zeichnung: Du erschließt sie aus der Höhe h und dem Abstand a.</p>
+    <div class="widget" id="a3-widget">
+      <div class="btn-row">
+        <label>Breite b: <input type="range" id="a3-b" min="3" max="6" step="0.5" value="4" style="vertical-align:middle;width:7rem"> <span id="a3-b-anzeige" class="th-name-c"></span></label>
+        <label>Höhe h: <input type="range" id="a3-h" min="3" max="6" step="1" value="4" style="vertical-align:middle;width:6rem"> <span id="a3-h-anzeige" class="th-name-r"></span></label>
+        <label>Abstand a: <input type="range" id="a3-a" min="0.5" max="2.5" step="0.5" value="1" style="vertical-align:middle;width:7rem"> <span id="a3-a-anzeige" class="th-name-c"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>Auseinanderziehen: <input type="range" id="a3-t" min="0" max="100" step="5" value="0" style="vertical-align:middle;width:12rem"> <span id="a3-t-anzeige" class="th-name-b"></span></label>
+        <button type="button" class="btn" id="a3-heim">Teile zusammensetzen</button>
+      </div>
+      <div class="th-wrap" id="a3-mount"></div>
+      <div class="th-bilanz zf-rechnung" id="a3-rechnung"></div>
+      <div id="a3-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Ergänzen und abziehen</span>
+      Fehlt einer Figur ein Stück, so ergänze sie in Gedanken zur vollen Figur und zieh das fehlende Stück ab:
+      <div class="formula-block">A = A<sub>voll</sub> − A<sub>Ausschnitt</sub></div>
+      Für den <strong>Umfang</strong> gilt das nicht. Der Rand des Ausschnitts gehört zum Rand der Figur — er kommt <em>dazu</em>. Weg fällt nur die gerade Strecke, die vorher dort war.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — weniger Fläche, aber mehr Rand</span>
+      Durch das Ausschneiden wird der Flächeninhalt kleiner, der Umfang aber <strong>größer</strong>: An der Stelle der geraden Strecke 2 · r steht jetzt der Halbkreisbogen π · r, und π · r ≈ 3,14 · r ist länger als 2 · r. Wer beim Umfang abzieht, weil „etwas weggenommen wurde“, rechnet falsch herum.
+    </div>
+    <div class="quiz" id="quiz-abziehen"></div>
+  </section>
+
+  <!-- 5. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>5. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Den <a href="flaecheninhalte.html">Flächeninhalten aus Thema 4</a> — Rechteck, <a href="flaecheninhalte.html#sec-dreieck">Dreieck</a>, <a href="flaecheninhalte.html#sec-parallelogramm">Parallelogramm</a> und <a href="flaecheninhalte.html#sec-trapez">Trapez</a>. Schon dort war Zerlegen und Ergänzen die Idee jeder Herleitung: Das Dreieck ist ein halbes Rechteck.</li>
+      <li><strong>Baut auf:</strong> Dem <a href="kreis.html">Kreis aus Thema 5</a> — <a href="kreis.html#sec-radius">Umfang</a>, <a href="kreis.html#sec-flaeche">Flächeninhalt</a>, <a href="kreis.html#sec-bogen">Bogen</a> und <a href="kreis.html#sec-ausschnitt">Ausschnitt</a>. Der <a href="kreis.html#sec-ring">Kreisring</a> war die erste Figur, die durch Abziehen entstand.</li>
+      <li><strong>Baut auf:</strong> <a href="../../grundwissen-5-10/02-geometrie/02-flaeche-umfang/index.html">Fläche und Umfang</a> aus dem Grundwissen — dort werden Rechtecke zu Figuren zusammengesetzt, und der Unterschied zwischen Umfang (eine Länge) und Flächeninhalt wird eingeführt.</li>
+      <li><strong>Gleiche Struktur:</strong> Die Rechnung A = b · r + ½ · π · r² ist ein <a href="../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/04-terme/index.html#sec-term">Term</a> mit zwei Variablen. Wer ihn einmal aufgestellt hat, setzt für jede neue Figur nur noch andere Zahlen ein.</li>
+      <li><strong>Führt weiter zu (Klasse 9):</strong> Dem <a href="../../grundwissen-5-10/02-geometrie/09-pythagoras/index.html">Satz des Pythagoras</a> — mit ihm lassen sich die schrägen Seiten berechnen, die hier noch gemessen sind.</li>
+      <li><strong>Führt weiter zu:</strong> <a href="../../grundwissen-5-10/02-geometrie/11-prismen-zylinder/index.html">Prismen und Zylindern</a> — ihre Grundfläche ist oft eine zusammengesetzte Figur, und das Volumen ist Grundfläche mal Höhe. Auch die Oberfläche eines Körpers ist eine zusammengesetzte Figur: sein Netz.</li>
+    </ul>
+  </section>
+
+  <!-- 6. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>6. Formelsammlung</h2>
+    <p>Alle Bausteine auf einen Blick — Rechteck, Dreieck, Parallelogramm, Trapez, Kreis, Halb- und Viertelkreis, Kreisausschnitt — mit Flächeninhalt und Randstück, dazu die vier Schritte, die drei Beispiele dieser Seite als Musterrechnungen und die typischen Fehler. Zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="zusammengesetzte-figuren.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 7. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>7. Übungsaufgaben</h2>
+    <p>Zwölf Aufgaben, drei auf jeder Schwierigkeitsstufe. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu.</p>
+    <p class="progress-note">Gib nur die <strong>Maßzahl</strong> ein, ohne Einheit. Als Dezimaltrennzeichen dient das Komma. Rechne mit der π-Taste und runde erst das Ergebnis auf zwei Nachkommastellen.</p>
+    <div id="exercises-mount"></div>
+  </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-zerlegen">Ich kann eine zusammengesetzte Figur in bekannte Teile zerlegen und ihren Flächeninhalt als Summe der Teilflächen berechnen.</li>
+      <li data-abschnitt="sec-umfang">Ich kann den Umfang einer zusammengesetzten Figur bestimmen und dabei Rand und Schnittkanten unterscheiden.</li>
+      <li data-abschnitt="sec-teile">Ich kann Figuren aus Rechteck, Dreieck und Kreisausschnitt berechnen und fehlende Maße aus den gegebenen erschließen.</li>
+      <li data-abschnitt="sec-abziehen">Ich kann Flächen ergänzen und abziehen und erklären, warum der Umfang dabei größer werden kann.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
+  </section>
+
+  <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
+  <section class="card" data-lehrkraft="zusammengesetzte-figuren-lehrkraefte.html" hidden></section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="index.html">Zurück zu Geometrie</a></p>
+  <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script src="../../../assets/lehrkraft.js"></script>
+<script src="../../../assets/selbsteinschaetzung.js"></script>
+<script type="module" src="zusammengesetzte-figuren.js?v=1"></script>
+</body>
+</html>
