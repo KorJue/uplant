@@ -35,6 +35,11 @@ const path = require("path");
 const bericht = neuerBericht();
 const { pruefe } = bericht;
 const SEITE = "/mathematik/klasse-8/geometrie/zusammengesetzte-figuren.html";
+// Für Gegenproben: UPLANT_NUR=zerlegen,aufgaben lässt nur die genannten Teile laufen (geruest,
+// zerlegen, umfang, teile, abziehen, ziehen, quizze, aufgaben, dunkel, telefon). Ohne die Angabe
+// läuft alles.
+const NUR = (process.env.UPLANT_NUR || "").split(",").map((t) => t.trim()).filter(Boolean);
+const will = (teil) => NUR.length === 0 || NUR.includes(teil);
 const WURZEL = path.resolve(__dirname, "..", "..");
 const P = Math.PI;
 
@@ -766,9 +771,15 @@ function felder(name, sollwerte, falsch, stellen) {
 //
 //   UPLANT_ZUEGE=20 node tests/werkzeug-streuung.js /mathematik/klasse-8/geometrie/zusammengesetzte-figuren.html
 //
-// (20, weil hier mit `runden: 20` geprüft wird; die Schranke hängt an der Rundenzahl). Die Messung
-// steht unten bei den Aufgaben.
-const SCHRANKE = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+// (20, weil hier mit `runden: 20` geprüft wird; die Schranke hängt an der Rundenzahl).
+// Gemessen am 2026-11-14, verschiedene Fassungen in 200 Würfen und sichere Schranke je Aufgabe:
+//
+//   A1  51 → 10   A2  36 →  9   A3  93 → 13   A4   55 → 11   A5  129 → 14   A6  101 → 13
+//   A7  37 →  9   A8  46 → 10   A9  35 →  9   A10 114 → 14   A11  71 → 12   A12 108 → 14
+//
+// Eingetragen ist jeweils eine weniger: Eine zu hohe Schranke macht den Gesamtlauf launisch, und
+// geprüft wird ja, ob ein Generator überhaupt streut, nicht wie gut.
+const SCHRANKE = [9, 8, 12, 10, 13, 12, 8, 9, 8, 13, 11, 13];
 const RUNDEN = 20;
 
 async function aufgaben(page) {
@@ -1132,15 +1143,15 @@ async function telefon(browser) {
     const page = await neueSeite(browser, { dunkel });
     await oeffne(page, SEITE);
     if (!dunkel) {
-      await geruest(page);
-      await zerlegen(page);
-      await umfang(page);
-      await teile(page);
-      await abziehen(page);
-      for (const k of ["z1", "u1", "t2", "a3"]) await ziehen(page, k, `Verschieben (${k})`, KLEINSTE[k]);
-      await quizze(page);
-      await aufgaben(page);
-    } else {
+      if (will("geruest")) await geruest(page);
+      if (will("zerlegen")) await zerlegen(page);
+      if (will("umfang")) await umfang(page);
+      if (will("teile")) await teile(page);
+      if (will("abziehen")) await abziehen(page);
+      if (will("ziehen")) for (const k of ["z1", "u1", "t2", "a3"]) await ziehen(page, k, `Verschieben (${k})`, KLEINSTE[k]);
+      if (will("quizze")) await quizze(page);
+      if (will("aufgaben")) await aufgaben(page);
+    } else if (will("dunkel")) {
       // Damit auch die Farben der Rechnung und der auseinandergezogenen Teile geprüft werden: je
       // einen Schritt lösen, einen Tipp und einen Fehlerhinweis zeigen, die Teile auseinanderziehen.
       await page.locator("#z1-rechnung .zf-schritt.aktiv input").fill(deutsch(rund2(P * 4)));
@@ -1164,7 +1175,7 @@ async function telefon(browser) {
     for (const s of page.stoerungen) pruefe(false, `${wo}: ${s}`);
     await page.close();
   }
-  await telefon(browser);
+  if (will("telefon")) await telefon(browser);
   await browser.close();
   bericht.abschluss();
 })();

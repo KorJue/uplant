@@ -790,8 +790,8 @@ function generateS1() {
 // ---------- S2: rückwärts — die Gerade der Laufbahn ----------
 const S2_KANDIDATEN = spaeter(() => {
   const liste = [];
-  for (const U of [200, 250, 300, 400]) {
-    for (const d of [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70]) {
+  for (const U of [200, 250, 300, 350, 400, 450, 500]) {
+    for (const d of [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80]) {
       const l = (U - Math.PI * d) / 2;
       // Die Gerade soll deutlich länger sein als die Bahn breit ist, sonst sieht es nicht nach
       // Laufbahn aus — und nicht so lang, dass die Zeichnung zum Strich wird.
@@ -870,16 +870,18 @@ function generateS2() {
 // Halbkreis (Radius p = a : 2 − q). Angeschrieben sind nur a, h und r.
 const S3_KANDIDATEN = spaeter(() => {
   const liste = [];
-  for (const a of [8, 9, 10, 12, 14]) {
-    for (const h of [4, 5, 6]) {
-      for (const r of [2, 2.5, 3, 3.5, 4, 4.5]) {
+  for (const a of [7, 8, 9, 10, 11, 12, 13, 14, 15, 16]) {
+    for (const h of [4, 4.5, 5, 5.5, 6, 7, 8]) {
+      for (const r of [2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6]) {
         const q = h - r, p = a / 2 - q;
-        if (q < 1 || p < 1.5 || a - 2 * r < 1) continue;
-        // Der Halbkreis oben darf die Viertelkreise unten nicht berühren und nicht bis an den
-        // unteren Rand reichen.
-        if (Math.hypot(a / 2, h) < p + r + 0.4 || p > h - 0.8) continue;
+        if (q < 1 || p < 1 || a - 2 * r < 1.5) continue;
+        // Die Aufgabe nennt die oberen Viertelkreise „kleiner“ — das muss dann auch stimmen.
+        if (q > r - 0.4) continue;
+        // Der Halbkreis oben bleibt den Viertelkreisen unten und dem unteren Rand deutlich fern:
+        // Sonst zerfiele die Figur fast in zwei dünne Hörner.
+        if (Math.hypot(a / 2, h) < p + r + 0.6 || p > h - 1.5) continue;
         // Verschiedene Radien: Sonst fielen Fehlerwerte zusammen, die sie verwechseln.
-        if (Math.abs(q - r) < 0.4 || Math.abs(p - r) < 0.4 || Math.abs(p - q) < 0.4) continue;
+        if (Math.abs(p - r) < 0.4 || Math.abs(p - q) < 0.4) continue;
         liste.push({ a, h, r });
       }
     }
