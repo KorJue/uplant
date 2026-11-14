@@ -129,7 +129,7 @@ function buehne(breite, hoehe, ox, oy, skala) {
   });
   const g = svgEl("g");
   svg.appendChild(g);
-  return { svg, g, skala, P: (x, y) => ({ x: ox + x * skala, y: oy - y * skala }) };
+  return { svg, g, skala, breite, hoehe, P: (x, y) => ({ x: ox + x * skala, y: oy - y * skala }) };
 }
 // Breite fest, Höhe aus dem Inhalt. Die Punkte sind der RAHMEN über alle Reglerstellungen und alle
 // Lagen beim Auseinanderziehen (siehe rahmenVon): So bleibt der Maßstab fest, nichts springt, und
@@ -176,14 +176,15 @@ const weglaenge = (punkte) => punkte.reduce((s, p, i) => (i ? s + Math.hypot(p.x
 
 // Eine Maßlinie neben der Strecke von p nach q, um `versatz` Zentimeter nach links (in Laufrichtung
 // gesehen; negativ: nach rechts) herausgerückt, mit Endstrichen und der Beschriftung außen daneben.
-// `bei` ist die Stelle der Beschriftung auf der Linie (0 = Anfang, 1 = Ende).
-function massLinie(b, p, q, text, versatz, art, bei = 0.5) {
+// `bei` ist die Stelle der Beschriftung auf der Linie (0 = Anfang, 1 = Ende), `extra` kommt als
+// Attribute an jedes Element.
+function massLinie(b, p, q, text, versatz, art, bei = 0.5, extra = {}) {
   const len = Math.hypot(q.x - p.x, q.y - p.y);
   const nx = -(q.y - p.y) / len, ny = (q.x - p.x) / len;
   const a = { x: p.x + nx * versatz, y: p.y + ny * versatz }, c = { x: q.x + nx * versatz, y: q.y + ny * versatz };
-  linie(b, a, c, `zf-mass-linie zf-${art}`, { "data-rolle": "mass" });
+  linie(b, a, c, `zf-mass-linie zf-${art}`, Object.assign({ "data-rolle": "mass" }, extra));
   const k = 0.11;
-  for (const e of [a, c]) linie(b, { x: e.x - nx * k, y: e.y - ny * k }, { x: e.x + nx * k, y: e.y + ny * k }, `zf-mass-linie zf-${art}`);
+  for (const e of [a, c]) linie(b, { x: e.x - nx * k, y: e.y - ny * k }, { x: e.x + nx * k, y: e.y + ny * k }, `zf-mass-linie zf-${art}`, extra);
   // Die Beschriftung sitzt auf der Seite, auf die der Versatz zeigt. In Bildpunkten zeigt y nach
   // unten, deshalb das Minus vor ny.
   const s = versatz < 0 ? -1 : 1;
@@ -195,7 +196,7 @@ function massLinie(b, p, q, text, versatz, art, bei = 0.5) {
   // Linie über die halbe Textbreite steigt (geschätzt mit 6,6 Bildpunkten je Zeichen).
   const steigung = Math.abs(q.y - p.y) / Math.max(1e-9, Math.abs(q.x - p.x));
   const hinaus = 11 + (anker === "middle" ? Math.min(34, (steigung * text.length * 6.6) / 2) : 0);
-  b.g.appendChild(svgText(m.x + px * 7, m.y + py * hinaus + 4.5, text, { class: `zf-mass-text zf-${art}-text`, "text-anchor": anker }));
+  b.g.appendChild(svgText(m.x + px * 7, m.y + py * hinaus + 4.5, text, Object.assign({ class: `zf-mass-text zf-${art}-text`, "text-anchor": anker }, extra)));
 }
 
 // ================= Die Zerlegefigur =================
@@ -216,7 +217,7 @@ const TOL = 0.015;        // ein Teilergebnis, auf zwei Nachkommastellen gerunde
 const TOL_SUMME = 0.035;  // eine Summe — auch aus gerundeten Teilergebnissen gebildet
 const EINRASTEN = 0.3;    // näher als das am Platz (in cm): Das Teil schnappt zurück
 
-const ZUSTAND = new Map();   // Kürzel → { zug: [{x, y}], stand: Map(Schritt → "richtig" | "gezeigt"), kasten, skala }
+const ZUSTAND = new Map();   // Kürzel → { zug: [{x, y}], stand: Map(Schritt → "richtig" | "gezeigt"), skala, bild, huelle }
 const RAHMEN = new Map();
 
 // Der Rahmen eines Beispiels: alle Teile an ihrem Platz und ganz auseinandergezogen, samt Maßlinien —
@@ -279,7 +280,6 @@ function zeichne(bsp) {
 
   const kasten = rahmenVon(bsp);
   const b = buehneAuto(bsp.breite, bsp.hoehe, kasten);
-  st.kasten = kasten;
   st.skala = b.skala;
 
   // Die Teile. Das Teil des laufenden Schritts ist kräftiger gefärbt.
@@ -288,7 +288,7 @@ function zeichne(bsp) {
     const e = svgEl("polygon", {
       points: punkteText(b, teil.punkte, lage[i].x, lage[i].y),
       class: `zf-teil ${teil.klasse}${aktiveTeile.includes(i) ? " zf-aktiv" : ""}${st.zieht === i ? " zf-zieht" : ""}`,
-      "data-rolle": "teil", "data-teil": String(i + 1), "data-index": String(i),
+      "data-rolle": "teil", "data-teil": String(i + 1), "data-index": String(i), "data-g": String(i),
       tabindex: "0", role: "img",
       "aria-label": `Teil ${i + 1}: ${teil.name}. Mit Maus, Finger oder Pfeiltasten verschieben.`,
     });
@@ -302,7 +302,7 @@ function zeichne(bsp) {
       b.g.appendChild(svgEl("polyline", {
         points: punkteText(b, s.punkte, lage[i].x, lage[i].y),
         class: "zf-schnitt" + (bsp.schnitteRot ? " zf-schnitt-rot" : ""),
-        "data-rolle": "schnitt", "data-teil": String(i + 1),
+        "data-rolle": "schnitt", "data-teil": String(i + 1), "data-g": String(i),
       }));
     }
   }
@@ -313,7 +313,7 @@ function zeichne(bsp) {
     b.g.appendChild(svgEl("polyline", {
       points: punkteText(b, r.punkte, lage[r.teil].x, lage[r.teil].y),
       class: "zf-rand" + (aktiveStuecke.includes(r.stueck) ? " zf-rand-aktiv" : ""),
-      "data-rolle": "rand", "data-nr": String(nr), "data-stueck": String(r.stueck),
+      "data-rolle": "rand", "data-nr": String(nr), "data-stueck": String(r.stueck), "data-g": String(r.teil),
     }));
   });
 
@@ -341,9 +341,9 @@ function zeichne(bsp) {
       laeufer = { p: { x: ende.x + l.x, y: ende.y + l.y }, stueck: r.stueck };
     }
     const q0 = b.P(start.punkte[0].x + lage[start.teil].x, start.punkte[0].y + lage[start.teil].y);
-    b.g.appendChild(svgEl("circle", { cx: q0.x.toFixed(2), cy: q0.y.toFixed(2), r: 4, class: "zf-start", "data-rolle": "start" }));
+    b.g.appendChild(svgEl("circle", { cx: q0.x.toFixed(2), cy: q0.y.toFixed(2), r: 4, class: "zf-start", "data-rolle": "start", "data-g": String(start.teil) }));
     // „Start“ steht links unter dem Startpunkt: Darüber liegt die Maßlinie für r.
-    b.g.appendChild(svgText(q0.x - 8, q0.y + 16, "Start", { class: "zf-start-text", "text-anchor": "end" }));
+    b.g.appendChild(svgText(q0.x - 8, q0.y + 16, "Start", { class: "zf-start-text", "text-anchor": "end", "data-g": String(start.teil) }));
     const q = b.P(laeufer.p.x, laeufer.p.y);
     b.g.appendChild(svgEl("circle", { cx: q.x.toFixed(2), cy: q.y.toFixed(2), r: 6.5, class: "zf-laeufer", "data-rolle": "laeufer" }));
   }
@@ -352,16 +352,16 @@ function zeichne(bsp) {
   for (const w of fig.winkel || []) {
     const l = lage[w.teil];
     const M = { x: w.M.x + l.x, y: w.M.y + l.y };
-    b.g.appendChild(svgEl("polygon", { points: punkteText(b, [M, ...bogenPunkte(M, w.r, w.w0, w.w1)]), class: "zf-winkel", "data-rolle": "winkel" }));
+    b.g.appendChild(svgEl("polygon", { points: punkteText(b, [M, ...bogenPunkte(M, w.r, w.w0, w.w1)]), class: "zf-winkel", "data-rolle": "winkel", "data-g": String(w.teil) }));
   }
   for (const ms of fig.masse) {
     const l = lage[ms.teil];
-    massLinie(b, { x: ms.von.x + l.x, y: ms.von.y + l.y }, { x: ms.bis.x + l.x, y: ms.bis.y + l.y }, ms.text, ms.versatz, ms.art || "laenge", ms.bei);
+    massLinie(b, { x: ms.von.x + l.x, y: ms.von.y + l.y }, { x: ms.bis.x + l.x, y: ms.bis.y + l.y }, ms.text, ms.versatz, ms.art || "laenge", ms.bei, { "data-g": String(ms.teil) });
   }
   for (const tx of fig.texte || []) {
     const l = lage[tx.teil];
     const q = b.P(tx.p.x + l.x, tx.p.y + l.y);
-    b.g.appendChild(svgText(q.x + (tx.dx || 0), q.y + (tx.dy || 0), tx.text, { class: tx.klasse, "text-anchor": tx.anker || "middle" }));
+    b.g.appendChild(svgText(q.x + (tx.dx || 0), q.y + (tx.dy || 0), tx.text, { class: tx.klasse, "text-anchor": tx.anker || "middle", "data-g": String(tx.teil) }));
   }
   // Nummern: in der Flächenrechnung an den Teilen, beim Umfang an den Randstücken. Unter der Nummer
   // eines Teils steht sein Flächeninhalt, sobald der Schritt gelöst ist.
@@ -369,19 +369,37 @@ function zeichne(bsp) {
     for (const n of fig.randNummern) {
       const l = lage[n.teil];
       const q = b.P(n.p.x + l.x, n.p.y + l.y);
-      b.g.appendChild(svgText(q.x, q.y + 5, n.text, { class: "zf-nr zf-nr-rand" }));
+      b.g.appendChild(svgText(q.x, q.y + 5, n.text, { class: "zf-nr zf-nr-rand", "data-g": String(n.teil) }));
     }
   } else {
     fig.teile.forEach((teil, i) => {
       const q = b.P(teil.marke.x + lage[i].x, teil.marke.y + lage[i].y);
-      b.g.appendChild(svgText(q.x, q.y + 5, "①②③④"[i], { class: "zf-nr" + (teil.klasse === "zf-teil-b" ? " zf-nr-b" : "") }));
+      b.g.appendChild(svgText(q.x, q.y + 5, "①②③④"[i], { class: "zf-nr" + (teil.klasse === "zf-teil-b" ? " zf-nr-b" : ""), "data-g": String(i) }));
       const schritt = schritte.find((s) => s.wertAn === i);
       if (schritt && st.stand.has(schritt.id)) {
-        b.g.appendChild(svgText(q.x, q.y + 21, `${zwei(schritt.soll)} cm²`, { class: "zf-wert" + (teil.klasse === "zf-teil-b" ? " zf-nr-b" : "") }));
+        b.g.appendChild(svgText(q.x, q.y + 21, `${zwei(schritt.soll)} cm²`, { class: "zf-wert" + (teil.klasse === "zf-teil-b" ? " zf-nr-b" : ""), "data-g": String(i) }));
       }
     });
   }
   zeige(bsp.id + "-mount", b);
+
+  // Die Hülle jedes Teils samt allem, was mit ihm wandert — Maßlinien, Beschriftungen, Nummern —,
+  // an seinem Platz und in Bildpunkten. Mit ihr hält imRahmen() ein von Hand verschobenes Teil
+  // mitsamt seiner Beschriftung im Bild; nur das Vieleck zu begrenzen genügte nicht, dann ragte
+  // „r = 3 cm“ über den Rand.
+  st.bild = { breite: b.breite, hoehe: b.hoehe };
+  st.huelle = fig.teile.map((_, i) => {
+    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+    for (const e of b.svg.querySelectorAll(`[data-g="${i}"]`)) {
+      const k = e.getBBox();
+      if (k.x < x0) x0 = k.x;
+      if (k.x + k.width > x1) x1 = k.x + k.width;
+      if (k.y < y0) y0 = k.y;
+      if (k.y + k.height > y1) y1 = k.y + k.height;
+    }
+    const dx = lage[i].x * b.skala, dy = -lage[i].y * b.skala;
+    return { x0: x0 - dx, x1: x1 - dx, y0: y0 - dy, y1: y1 - dy };
+  });
 
   setzeText(bsp.id + "-text", bsp.text(m, {
     t, zusammen, bewegt: !zusammen,
@@ -482,19 +500,13 @@ function baueRechnung(bsp, { fokus = false } = {}) {
 
 // ---------- Verschieben von Hand ----------
 
-// Hält ein Teil im Bild: Seine Verschiebung wird so begrenzt, dass es den Rahmen nicht verlässt.
-function imRahmen(bsp, teil, lage) {
-  const k = zustand(bsp).kasten;
-  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-  for (const p of teil.punkte) {
-    if (p.x < minX) minX = p.x;
-    if (p.x > maxX) maxX = p.x;
-    if (p.y < minY) minY = p.y;
-    if (p.y > maxY) maxY = p.y;
-  }
+// Hält ein Teil im Bild: Seine Verschiebung (in cm, y nach oben) wird so begrenzt, dass seine Hülle
+// — das Teil samt Maßlinien und Beschriftungen — die Zeichenfläche nicht verlässt.
+function imRahmen(bsp, i, lage) {
+  const st = zustand(bsp), h = st.huelle[i], s = st.skala, rand = 3;
   return {
-    x: Math.min(k.maxX - maxX, Math.max(k.minX - minX, lage.x)),
-    y: Math.min(k.maxY - maxY, Math.max(k.minY - minY, lage.y)),
+    x: Math.min((st.bild.breite - rand - h.x1) / s, Math.max((rand - h.x0) / s, lage.x)),
+    y: Math.min((h.y0 - rand) / s, Math.max((h.y1 - (st.bild.hoehe - rand)) / s, lage.y)),
   };
 }
 
@@ -502,7 +514,7 @@ function verschiebe(bsp, i, lage, { einrasten = false } = {}) {
   const st = zustand(bsp);
   const fig = bsp.figur(bsp.lies());
   const t = reglerZahl(bsp.id + "-t") / 100;
-  let ziel = imRahmen(bsp, fig.teile[i], lage);
+  let ziel = imRahmen(bsp, i, lage);
   if (einrasten && Math.hypot(ziel.x, ziel.y) < EINRASTEN) ziel = { x: 0, y: 0 };
   st.zug[i] = { x: ziel.x - t * fig.teile[i].weg.x, y: ziel.y - t * fig.teile[i].weg.y };
 }
@@ -867,7 +879,7 @@ const BEISPIEL_2 = {
       {
         id: "a1", gruppe: "Flächeninhalt", nr: "①", name: "Rechteck", groesse: "A<sub>1</sub>", einheit: "cm²",
         soll: A1, tol: TOL, teil: 0, wertAn: 0,
-        tipp: "Breite mal Höhe: b · h.",
+        tipp: "Das Rechteck ist b breit und h hoch — beide Maße stehen an der Zeichnung: A = b · h.",
         weg: `A<sub>1</sub> = b · h = ${num(b)} cm · ${num(h)} cm = <strong>${num(A1)} cm²</strong>`,
         falsch: [
           [2 * (b + h), "Das ist der Umfang des Rechtecks. Der Flächeninhalt ist Breite mal Höhe."],
@@ -904,7 +916,7 @@ const BEISPIEL_2 = {
       {
         id: "a", gruppe: "Flächeninhalt", nr: "Σ", name: "Ganze Figur", groesse: "A", einheit: "cm²",
         soll: A, tol: TOL_SUMME, teil: [0, 1, 2],
-        tipp: "Addiere die drei Teilflächen.",
+        tipp: "Addiere die drei Teilflächen: A = A<sub>1</sub> + A<sub>2</sub> + A<sub>3</sub>.",
         weg: `A = A<sub>1</sub> + A<sub>2</sub> + A<sub>3</sub> ≈ ${num(A1)} cm² + ${num(A2)} cm² + ${zwei(A3)} cm² ≈ <strong>${zwei(A)} cm²</strong>` +
           rundungsHinweis(A, A1 + A2 + rund2(A3), "cm²"),
         falsch: [
