@@ -482,3 +482,23 @@
 :root[data-theme="dark"] .tm-figur-flaeche { stroke: #8ab4ff; }
 :root[data-theme="dark"] .tm-figur-flaeche-a { fill: #2a2140; }
 :root[data-theme="dark"] .tm-figur-flaeche-b { fill: #17321f; }
+/* ---------- Summen multiplizieren (Thema 4) ---------- */
+.tm-label-flaeche { fill: #1f2328; font-size: 14px; paint-order: stroke; stroke: var(--card-bg); stroke-width: 4px; stroke-linejoin: round; }  /* Rand in Grundfarbe: Die Kachelfugen laufen sonst durch die Zahl */
+.tm-alt { fill: none; stroke: #59636e; stroke-width: 2; stroke-dasharray: 6 4; }
+:root[data-theme="dark"] .tm-label-flaeche { fill: #e6e8eb; }
+:root[data-theme="dark"] .tm-alt { stroke: #9aa4b1; }
+.tm-figur-loch { fill: var(--card-bg); stroke: #b3261e; stroke-width: 2; stroke-dasharray: 5 3; }
+:root[data-theme="dark"] .tm-figur-loch { stroke: #ff8a8a; }
+/* ---------- Binomische Formeln (Thema 5) ---------- */
+/* a² blau, ab orange, b² grün. Die herausgezogenen Streifen sind halb durchsichtig: Wo sie sich zu
+   Anfang überdecken, sieht man das Eckquadrat doppelt. */
+.tm-bf { stroke-width: 2; }
+.tm-bf-a { fill: #dbe5ff; stroke: #1d4ed8; }
+.tm-bf-ab { fill: #fdebd3; stroke: #b3650a; }
+.tm-bf-b { fill: #dff3e6; stroke: #157347; }
+.tm-bf-streifen { fill-opacity: 0.62; }
+.tm-bf-ecke { fill: #157347; fill-opacity: 0.22; stroke: #157347; stroke-width: 1.5; stroke-dasharray: 4 2; }
+:root[data-theme="dark"] .tm-bf-a { fill: #1e2a4a; stroke: #8ab4ff; }
+:root[data-theme="dark"] .tm-bf-ab { fill: #3a2a10; stroke: #ffbf6e; }
+:root[data-theme="dark"] .tm-bf-b { fill: #17321f; stroke: #6fd68f; }
+:root[data-theme="dark"] .tm-bf-ecke { fill: #6fd68f; stroke: #6fd68f; }

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binomische Formeln anwenden</title>
+<script src="../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../assets/site.css">
+<link rel="stylesheet" href="../../aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../index.html">Klasse 8</a><span class="sep">/</span>
+  <a href="index.html">Terme</a><span class="sep">/</span>
+  5 Binomische Formeln anwenden
+</nav>
+<header class="page-header">
+  <h1>Binomische Formeln anwenden</h1>
+  <p>Ein Selbstlernpfad: drei Produkte, die man auswendig kennt — jedes an einem Quadrat hergeleitet, das man zerlegt, beschneidet oder umlegt, mit Kontrollfragen und acht Übungsaufgaben.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>(a + b)², (a − b)² und (a + b) · (a − b) kommen so oft vor, dass man ihr Ergebnis nicht jedes Mal neu ausmultipliziert. Die drei <span class="term">binomischen Formeln</span> sparen Rechenarbeit — vorwärts beim Ausmultiplizieren und rückwärts beim Umformen in ein Produkt. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>die <span class="term">erste binomische Formel</span> (a + b)² = a² + 2ab + b² an einem Quadrat erklären und anwenden</li>
+      <li>die <span class="term">zweite binomische Formel</span> (a − b)² = a² − 2ab + b² erklären und anwenden</li>
+      <li>die <span class="term">dritte binomische Formel</span> (a + b) · (a − b) = a² − b² erklären und anwenden</li>
+      <li>die Formeln <span class="term">rückwärts</span> lesen und zum Kopfrechnen nutzen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst das <a href="klammern-multiplizieren.html#sec-jeder">Multiplizieren von Summen</a> aus Thema 4 — jede binomische Formel ist ein Produkt, das man auch Glied für Glied ausrechnen kann.</p>
+  </section>
+
+  <!-- 1. Erste binomische Formel -->
+  <!-- Reihenfolge: erst (a + b)² (vier Teile, wie in Thema 4), dann (a − b)² (zwei Streifen weg, ein
+       Eckquadrat zurück), dann (a + b)(a − b) (ein Streifen wird umgelegt), zuletzt rückwärts und zum
+       Kopfrechnen. Jede Formel wird zusätzlich Glied für Glied ausmultipliziert — so stützt sie sich
+       nur auf Thema 4. -->
+  <section class="card" id="sec-erste">
+    <h2>1. Die erste binomische Formel: (a + b)²</h2>
+    <p>Ein Quadrat mit der Seite a + b lässt sich in vier Teile zerlegen: ein Quadrat a², ein Quadrat b² und <strong>zwei gleiche</strong> Rechtecke a · b. Stelle a und b ein (in cm) und zieh das Quadrat auseinander.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a = <input type="range" id="bf1-a" min="2" max="8" step="1" value="5" style="vertical-align:middle;width:7rem"> <span id="bf1-a-anzeige" class="th-name-c"></span></label>
+        <label>b = <input type="range" id="bf1-b" min="1" max="5" step="1" value="3" style="vertical-align:middle;width:6rem"> <span id="bf1-b-anzeige" class="th-name-a"></span></label>
+        <label>auseinanderziehen: <input type="range" id="bf1-t" min="0" max="100" step="5" value="0" style="vertical-align:middle;width:9rem"> <span id="bf1-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="bf1-mount"></div>
+      <div class="th-bilanz" id="bf1-bilanz"></div>
+      <div id="bf1-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Erste binomische Formel</span>
+      <strong>(a + b)² = a² + 2ab + b²</strong><br>
+      Glied für Glied: (a + b) · (a + b) = a² + ab + ba + b² = a² + 2ab + b². Beispiel: (x + 3)² = x² + 2 · x · 3 + 3² = x² + 6x + 9.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — das gemischte Glied</span>
+      (a + b)² ist <strong>nicht</strong> a² + b². Es fehlen die beiden Rechtecke 2ab — im Bild sieht man, dass das Quadrat ohne sie Lücken hätte. Für a = 5, b = 3: (5 + 3)² = 64, aber 5² + 3² = 34.
+    </div>
+    <div class="quiz" id="quiz-erste"></div>
+  </section>
+
+  <!-- 2. Zweite binomische Formel -->
+  <section class="card" id="sec-zweite">
+    <h2>2. Die zweite binomische Formel: (a − b)²</h2>
+    <p>Vom Quadrat a² bleibt das Quadrat (a − b)² übrig, wenn man rechts und unten je einen Streifen der Breite b wegnimmt. Jeder Streifen hat den Flächeninhalt a · b — aber das Eckquadrat b² steckt in <em>beiden</em>. Zieh die Streifen heraus und sieh hin.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a = <input type="range" id="bf2-a" min="4" max="9" step="1" value="6" style="vertical-align:middle;width:7rem"> <span id="bf2-a-anzeige" class="th-name-c"></span></label>
+        <label>b = <input type="range" id="bf2-b" min="1" max="3" step="1" value="2" style="vertical-align:middle;width:6rem"> <span id="bf2-b-anzeige" class="th-name-a"></span></label>
+        <label>Streifen herausziehen: <input type="range" id="bf2-t" min="0" max="100" step="5" value="0" style="vertical-align:middle;width:9rem"> <span id="bf2-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="bf2-mount"></div>
+      <div class="th-bilanz" id="bf2-bilanz"></div>
+      <div id="bf2-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Zweite binomische Formel</span>
+      <strong>(a − b)² = a² − 2ab + b²</strong><br>
+      Zwei Streifen ab weggenommen — dabei das Eckquadrat b² zweimal —, also einmal b² wieder dazu. Glied für Glied: (a − b) · (a − b) = a² − ab − ba + b².
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — b² ist immer positiv</span>
+      (x − 4)² = x² − 8x <strong>+ 16</strong>, nicht − 16: (−4) · (−4) = +16. Nur das gemischte Glied bekommt das Minus.
+    </div>
+    <div class="quiz" id="quiz-zweite"></div>
+  </section>
+
+  <!-- 3. Dritte binomische Formel -->
+  <section class="card" id="sec-dritte">
+    <h2>3. Die dritte binomische Formel: (a + b) · (a − b)</h2>
+    <p>Nimm vom Quadrat a² das Eckquadrat b² weg. Was übrig bleibt, lässt sich zu einem Rechteck umlegen: Der untere Streifen wird gedreht und rechts angelegt. Das Rechteck ist a + b lang und a − b hoch.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>a = <input type="range" id="bf3-a" min="4" max="9" step="1" value="6" style="vertical-align:middle;width:7rem"> <span id="bf3-a-anzeige" class="th-name-c"></span></label>
+        <label>b = <input type="range" id="bf3-b" min="1" max="3" step="1" value="2" style="vertical-align:middle;width:6rem"> <span id="bf3-b-anzeige" class="th-name-a"></span></label>
+        <label>umlegen: <input type="range" id="bf3-t" min="0" max="100" step="5" value="0" style="vertical-align:middle;width:9rem"> <span id="bf3-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="bf3-mount"></div>
+      <div class="th-bilanz" id="bf3-bilanz"></div>
+      <div id="bf3-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Dritte binomische Formel</span>
+      <strong>(a + b) · (a − b) = a² − b²</strong><br>
+      Glied für Glied: a² − ab + ba − b² = a² − b² — die gemischten Glieder heben sich auf. Beispiel: (x + 5) · (x − 5) = x² − 25.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — hier gibt es kein gemischtes Glied</span>
+      (x + 5) · (x − 5) ist nicht x² − 10x − 25 und nicht x² + 25. Plus mal Minus gibt beim letzten Glied Minus: 5 · (−5) = −25.
+    </div>
+    <div class="quiz" id="quiz-dritte"></div>
+  </section>
+
+  <!-- 4. Anwenden -->
+  <section class="card" id="sec-anwenden">
+    <h2>4. Rückwärts und im Kopf</h2>
+    <p>Die Formeln gelten in beiden Richtungen. Rückwärts gelesen machen sie aus einer Summe ein Produkt: x² + 6x + 9 = (x + 3)². Und mit Zahlen gelesen helfen sie beim Kopfrechnen: 51² = (50 + 1)². Wähle eine Aufgabe.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Aufgabe:
+          <select id="bf4-term" class="eingabe" style="padding:0.4rem">
+            <option value="0">51²</option>
+            <option value="1">49²</option>
+            <option value="2">48 · 52</option>
+            <option value="3">x² + 12x + 36</option>
+            <option value="4">9x² − 4</option>
+          </select>
+        </label>
+        <label>Schritt: <input type="range" id="bf4-schritt" min="0" max="3" step="1" value="0" style="vertical-align:middle;width:6rem"> <span id="bf4-schritt-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="tm-schritte" id="bf4-mount"></div>
+      <div id="bf4-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Rückwärts lesen</span>
+      Drei Glieder, davon zwei Quadrate: Ist das dritte Glied das Doppelte des Produkts, ist es eine <strong>erste</strong> (Plus) oder <strong>zweite</strong> (Minus) binomische Formel: x² + 12x + 36 = (x + 6)², denn 2 · x · 6 = 12x.<br>
+      Zwei Quadrate mit Minus dazwischen: <strong>dritte</strong> binomische Formel: 9x² − 4 = (3x + 2) · (3x − 2).
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Kopfrechnen</span>
+      51² = (50 + 1)² = 2500 + 100 + 1 = 2601 &nbsp; 49² = (50 − 1)² = 2500 − 100 + 1 = 2401 &nbsp; 48 · 52 = (50 − 2) · (50 + 2) = 2500 − 4 = 2496
+    </div>
+    <div class="quiz" id="quiz-anwenden"></div>
+  </section>
+
+  <!-- 5. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>5. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="klammern-multiplizieren.html#sec-rechteck">Summe mal Summe</a> aus Thema 4 — jede binomische Formel ist ein solches Produkt mit einer besonderen Form.</li>
+      <li><strong>Baut auf:</strong> <a href="ausmultiplizieren-ausklammern.html#sec-ausklammern">Ausklammern</a> aus Thema 3 — rückwärts gelesen machen die Formeln wie das Ausklammern aus einer Summe ein Produkt.</li>
+      <li><strong>Zum Nachschlagen:</strong> <a href="../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/04-terme/index.html#sec-binomisch">Die binomischen Formeln</a> im Grundwissen.</li>
+      <li><strong>Führt weiter zu:</strong> Den <a href="../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/08-quadratische-funktionen/index.html#sec-ergaenzung">quadratischen Funktionen</a> — mit der ersten und zweiten Formel bringt man f(x) = x² + 6x + 5 in die Scheitelpunktform.</li>
+      <li><strong>Gleiche Struktur:</strong> Der <a href="../geometrie/flaecheninhalte.html">Flächeninhalt</a> von Quadrat und Rechteck — jede Formel ist eine Aussage über Flächen, die gleich groß sind.</li>
+    </ul>
+  </section>
+
+  <!-- 6. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>6. Formelsammlung</h2>
+    <p>Die Formelsammlung gilt für alle fünf Termseiten: Variable und Term, Rechenbaum, gleichwertige Terme, die Rechengesetze, Ausmultiplizieren und Ausklammern, Summen multiplizieren und die drei binomischen Formeln — mit Flächenbildern und den typischen Fehlern, auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 7. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>7. Übungsaufgaben</h2>
+    <p>Acht Aufgaben, zwei auf jeder Schwierigkeitsstufe. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu.</p>
+    <p class="progress-note">Beim Ausmultiplizieren ist der fertig zusammengefasste Term gefragt, beim Umformen in ein Produkt die Produktform. Die Reihenfolge der Glieder ist frei.</p>
+    <div id="exercises-mount"></div>
+  </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-erste">Ich kann die erste binomische Formel an einem Quadrat erklären und anwenden.</li>
+      <li data-abschnitt="sec-zweite">Ich kann die zweite binomische Formel erklären und anwenden.</li>
+      <li data-abschnitt="sec-dritte">Ich kann die dritte binomische Formel erklären und anwenden.</li>
+      <li data-abschnitt="sec-anwenden">Ich kann die Formeln rückwärts lesen und zum Kopfrechnen nutzen.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
+  </section>
+
+  <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
+  <section class="card" data-lehrkraft="binomische-formeln-lehrkraefte.html" hidden></section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="index.html">Zurück zu Terme</a></p>
+  <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script src="../../../assets/lehrkraft.js"></script>
+<script src="../../../assets/selbsteinschaetzung.js"></script>
+<script type="module" src="binomische-formeln.js?v=1"></script>
+</body>
+</html>

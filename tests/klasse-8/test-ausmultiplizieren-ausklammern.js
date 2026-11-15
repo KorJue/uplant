@@ -164,6 +164,7 @@ async function ausklammern(page) {
       keineUeberdeckung(kk, wo);
       const geht = A % k === 0 && B % k === 0;
       const rest = kk.filter((z) => z.rest);
+      if (rest.length) await restAbgehoben(page, wo);
       pruefe(rest.filter((z) => z.art === "x").length === A % k && rest.filter((z) => z.art === "1").length === B % k, `${wo}: ${rest.length} Kacheln im Rest statt ${A % k} + ${B % k}`);
       for (let r = 0; r < k; r++) {
         const zeile = kk.filter((z) => z.zeile === String(r));
@@ -181,6 +182,18 @@ async function ausklammern(page) {
     }
   }
   await setzeRegler(page, "ak-k", 1);
+}
+
+// Ein Rest muss als Rest zu sehen sein: anderer Rand als die Kacheln derselben Sorte im Rechteck.
+// (Im Dunkelmodus überschrieb die Sortenfarbe einmal fast die Restfarbe — gleiche Sorte, gleicher Rand.)
+async function restAbgehoben(page, wo) {
+  const r = await page.evaluate(() => {
+    const farbe = (sel) => [...document.querySelectorAll(sel)].map((e) => getComputedStyle(e).stroke);
+    return ["x", "1"].map((a) => ({ a, rest: farbe(`#ak-mount g[data-art="${a}"][data-zeile="rest"] rect`), sonst: farbe(`#ak-mount g[data-art="${a}"]:not([data-zeile="rest"]) rect`) }));
+  });
+  for (const { a, rest, sonst } of r) {
+    if (rest.length && sonst.length) pruefe(rest.every((f) => !sonst.includes(f)), `${wo}: der Rest (${a}) hat denselben Rand wie die übrigen Kacheln (${rest[0]})`);
+  }
 }
 
 // ── 4. Vollständig ausklammern ────────────────────────────────────────────
@@ -292,6 +305,10 @@ const produkt = (f, glieder) => `${f}(${bau(glieder.slice().reverse())})`;
 const SCHRANKE = [14, 14, 15, 15, 15, 14, 12, 5];
 const RUNDEN = 20;
 
+// Welche Fassungen einer Aufgabe gezogen wurden. Fällt eine Fassung ganz aus dem Vorrat — etwa weil
+// ihr Sollwert mit einem Fehlerwert zusammenfällt und die Kollisionsprüfung sie jedes Mal aussiebt —,
+// bliebe das sonst unbemerkt: Die übrigen Fassungen bestehen ja.
+const FASSUNGEN = { C3: new Set(), C4: new Set(), C6: new Set() };
 async function aufgaben(page) {
   await pruefeAufgabe(page, bericht, {
     nr: 1, name: "C1 Zahl mal Klammer", runden: RUNDEN, mindestensVerschieden: SCHRANKE[0],
@@ -335,6 +352,7 @@ async function aufgaben(page) {
       const k = m[1] === "" ? 1 : m[1] === "−" ? -1 : zahl(m[1]);
       const mm = m[3] === "" ? 1 : Number(m[3]);
       const c = (m[4] === "−" ? -1 : 1) * (m[5] === "" ? 1 : Number(m[5]));
+      FASSUNGEN.C3.add(m[2]);
       if (m[2] === "x") {
         const q = quad(term);
         pruefe(q.c2 === k * mm && q.c1 === k * c, `C3: die Prüfung liest den Term anders — „${frage}“`);
@@ -359,6 +377,7 @@ async function aufgaben(page) {
       const m = term && term.match(/^(\d+) · \(x \+ (\d+)\) ([+−]) (\d+) · \(x − (\d+)\)$/);
       if (!m) return null;
       const [a, b, c, d] = [m[1], m[2], m[4], m[5]].map(Number);
+      FASSUNGEN.C4.add(m[3]);
       const { c1, c0 } = linear(term);
       const falsch = m[3] === "+"
         ? [[bau([[a + c, "x"], [a * b - d, ""]]), "ganze zweite Klammer"], [bau([[a + c, "x"], [b - c * d, ""]]), "ganze erste Klammer"]]
@@ -402,6 +421,7 @@ async function aufgaben(page) {
       if (!term) return null;
       let m = term.match(/^(\d*)x − (\d+) · \((\d*)x − (\d+)\)$/);
       const { c1, c0 } = linear(term);
+      FASSUNGEN.C6.add(m ? "a" : "b");
       if (m) {
         const [e, k, mm, c] = [m[1] || "1", m[2], m[3] || "1", m[4]].map(Number);
         return { richtig: bau([[c1, "x"], [c0, ""]]), falsch: [[bau([[e - k * mm, "x"], [-k * c, ""]]), "Minus mal Minus"], [bau([[e - k * mm, "x"], [c, ""]]), "jedes Glied"]] };
@@ -455,6 +475,11 @@ async function aufgaben(page) {
       return { felder: [bau([[A, "n"], [B, ""]]), produkt(g, [[A / g, "n"], [B / g, ""]]), g], falschFelder };
     },
   });
+
+  // Zwei Fassungen je Aufgabe, je zur Hälfte: In 20 Zügen fehlt eine nur mit Wahrscheinlichkeit 2 · 2⁻²⁰.
+  for (const [name, soll] of [["C3", ["x", "a"]], ["C4", ["+", "−"]], ["C6", ["a", "b"]]]) {
+    pruefe(soll.every((f) => FASSUNGEN[name].has(f)), `${name}: gezogen wurden nur die Fassungen ${[...FASSUNGEN[name]].join(", ")} — eine fällt aus dem Vorrat`);
+  }
 }
 
 // ── Gerüst ────────────────────────────────────────────────────────────────
@@ -490,6 +515,17 @@ async function geruest(page) {
   pruefe(JSON.stringify(proStufe) === "[2,2,2,2]", `Gerüst: die Stufen haben ${proStufe.join("/")} Aufgaben statt 2/2/2/2`);
 }
 
+// Ein Teil, der abbricht (etwa weil ein Aufgabengenerator der Seite wirft und die Aufgabe nie
+// erscheint), ist ein Fehler — gemeldet wird er trotzdem, und die übrigen Teile laufen weiter.
+async function teil(name, fn, page) {
+  if (!will(name)) return;
+  try {
+    await fn(page);
+  } catch (e) {
+    pruefe(false, `${name}: Abbruch — ${String(e && e.message).split("\n")[0]}`);
+  }
+}
+
 (async () => {
   const browser = await starteBrowser();
   for (const dunkel of [false, true]) {
@@ -497,19 +533,20 @@ async function geruest(page) {
     const page = await neueSeite(browser, { dunkel });
     await oeffne(page, SEITE);
     if (!dunkel) {
-      if (will("geruest")) await geruest(page);
-      if (will("distributiv")) await distributiv(page);
-      if (will("ausmultiplizieren")) await ausmultiplizieren(page);
-      if (will("ausklammern")) await ausklammern(page);
-      if (will("vollstaendig")) await vollstaendig(page);
-      if (will("quizze")) await quizze(page);
-      if (will("aufgaben")) await aufgaben(page);
+      await teil("geruest", geruest, page);
+      await teil("distributiv", distributiv, page);
+      await teil("ausmultiplizieren", ausmultiplizieren, page);
+      await teil("ausklammern", ausklammern, page);
+      await teil("vollstaendig", vollstaendig, page);
+      await teil("quizze", quizze, page);
+      await teil("aufgaben", aufgaben, page);
     } else if (will("dunkel")) {
       await setzeRegler(page, "dg-t", 100);
       await waehle(page, "ak-term", "4");
       await setzeRegler(page, "ak-k", 4);
       await pruefeKontrast(page, bericht, "dunkel");
       await pruefeStrichKontrast(page, bericht, "dunkel, Rechteck", "#dg-mount rect.tm-kachel, #ak-mount rect.tm-kachel");
+      await restAbgehoben(page, "dunkel, Ausklammern 10x + 15 in 4 Zeilen");
       await waehle(page, "dg-art", "x");
       await pruefeStrichKontrast(page, bericht, "dunkel, Rechteck mit x", "#dg-mount rect.tm-kachel");
     }

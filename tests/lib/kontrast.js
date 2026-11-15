@@ -88,4 +88,34 @@ async function pruefeStrichKontrast(page, bericht, wo, selektor) {
   bericht.pruefe(proben.length > 0, `${wo}: keine Linien für „${selektor}“ gefunden`);
 }
 
-module.exports = { pruefeKontrast, pruefeStrichKontrast, leuchtdichte, SCHRANKE };
+// Beschriftungen, die AUF einer farbigen Fläche einer Zeichnung stehen (ein Name in einem Rechteck):
+// gemessen wird gegen die Fläche darunter, nicht gegen den Bildhintergrund. Eine halb durchsichtige
+// Fläche wird mit dem Hintergrund gemischt. Steht unter dem Text keine Fläche, zählt der Hintergrund.
+async function pruefeTextAufFlaeche(page, bericht, wo, selektor) {
+  const proben = await page.evaluate(([quelle, sel]) => {
+    const grundVon = eval(quelle);
+    const rgb = (f) => (String(f).match(/[\d.]+/g) || []).slice(0, 3).map(Number);
+    return [...document.querySelectorAll(sel)].filter((t) => (t.textContent || "").trim()).map((t) => {
+      t.scrollIntoView({ block: "center" });
+      const k = t.getBoundingClientRect();
+      const svg = t.closest("svg");
+      const grund = rgb(grundVon(svg));
+      const unter = document.elementsFromPoint(k.x + k.width / 2, k.y + k.height / 2)
+        .find((e) => e !== t && e.closest("svg") === svg && /^(rect|polygon|path|circle)$/.test(e.tagName) && getComputedStyle(e).fill !== "none");
+      let flaeche = grund;
+      if (unter) {
+        const cs = getComputedStyle(unter);
+        const op = Number(cs.fillOpacity) * Number(cs.opacity);
+        flaeche = rgb(cs.fill).map((c, i) => op * c + (1 - op) * grund[i]);
+      }
+      return { text: t.textContent.trim(), farbe: getComputedStyle(t).fill, flaeche: `rgb(${flaeche.map((c) => c.toFixed(0)).join(", ")})` };
+    });
+  }, [GRUND_IM_BROWSER, selektor]);
+  for (const p of proben) {
+    const abstand = Math.abs(leuchtdichte(p.farbe) - leuchtdichte(p.flaeche)) * 255;
+    bericht.pruefe(abstand > SCHRANKE, `${wo}: „${p.text}“ (${p.farbe}) hat auf seiner Fläche (${p.flaeche}) nur Δ${abstand.toFixed(0)} Leuchtdichte (nötig > ${SCHRANKE})`);
+  }
+  bericht.pruefe(proben.length > 0, `${wo}: keine Beschriftungen für „${selektor}“ gefunden`);
+}
+
+module.exports = { pruefeKontrast, pruefeStrichKontrast, pruefeTextAufFlaeche, leuchtdichte, SCHRANKE };

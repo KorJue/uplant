@@ -384,6 +384,9 @@ const ergebnisPruefen = (name, soll, vars) => (f2, r) => {
 const SCHRANKE = [17, 14, 15, 15, 16, 15, 14, 17];
 const RUNDEN = 20;
 
+// Welche Fassungen gezogen wurden — eine Fassung, die die Kollisionsprüfung jedes Mal aussiebt, fiele
+// sonst lautlos aus dem Vorrat.
+const FASSUNGEN = { B3: new Set(), B2: new Set() };
 async function aufgaben(page) {
   await pruefeAufgabe(page, bericht, {
     nr: 1, name: "B1 Zusammenfassen", runden: RUNDEN, mindestensVerschieden: SCHRANKE[0],
@@ -414,6 +417,7 @@ async function aufgaben(page) {
       const term = termAus(frage, "Vereinfache das Produkt:");
       if (!term) return null;
       const vz = term.startsWith("−") ? -1 : 1;
+      FASSUNGEN.B2.add(vz);
       const zahlen = (term.match(/\d+/g) || []).map(Number);
       if (zahlen.length !== 2) return null;
       const [a, b] = zahlen;
@@ -435,6 +439,7 @@ async function aufgaben(page) {
       const term = termAus(frage, "Fasse zusammen:");
       if (!term) return null;
       const g = P.summanden(term);
+      FASSUNGEN.B3.add(/y/.test(term) ? "y" : "q");
       if (/y/.test(term)) {
         const { cx, cy, c0 } = linXY(term);
         const d = -Number(g.find((s) => /^-\d*y$/.test(s)).replace("y", "").replace(/^-$/, "-1"));
@@ -581,6 +586,10 @@ async function aufgaben(page) {
       return { felder: [k, bau([[c1, "x"], [c0, ""]])], falschFelder, pruefe: (f2, r) => pruefe(r.includes(`Tims Fehler steckt in Schritt ${k}`), `B8: die Musterlösung nennt nicht Schritt ${k} — „${f2}“`) };
     },
   });
+
+  // Je zwei Fassungen zu gleichen Teilen: In 20 Zügen fehlt eine nur mit Wahrscheinlichkeit 2 · 2⁻²⁰.
+  pruefe(FASSUNGEN.B3.has("q") && FASSUNGEN.B3.has("y"), `B3: gezogen wurden nur die Fassungen ${[...FASSUNGEN.B3]} — eine fällt aus dem Vorrat`);
+  pruefe(FASSUNGEN.B2.has(1) && FASSUNGEN.B2.has(-1), "B2: nur Produkte mit einem Vorzeichen gezogen — die anderen fallen aus dem Vorrat");
 }
 
 // ── Gerüst ────────────────────────────────────────────────────────────────
@@ -616,6 +625,17 @@ async function geruest(page) {
   pruefe(JSON.stringify(proStufe) === "[2,2,2,2]", `Gerüst: die Stufen haben ${proStufe.join("/")} Aufgaben statt 2/2/2/2`);
 }
 
+// Ein Teil, der abbricht (etwa weil ein Aufgabengenerator der Seite wirft und die Aufgabe nie
+// erscheint), ist ein Fehler — gemeldet wird er trotzdem, und die übrigen Teile laufen weiter.
+async function teil(name, fn, page) {
+  if (!will(name)) return;
+  try {
+    await fn(page);
+  } catch (e) {
+    pruefe(false, `${name}: Abbruch — ${String(e && e.message).split("\n")[0]}`);
+  }
+}
+
 (async () => {
   const browser = await starteBrowser();
   for (const dunkel of [false, true]) {
@@ -623,13 +643,13 @@ async function geruest(page) {
     const page = await neueSeite(browser, { dunkel });
     await oeffne(page, SEITE);
     if (!dunkel) {
-      if (will("geruest")) await geruest(page);
-      if (will("kacheln")) await kacheln(page);
-      if (will("produkte")) await produkte(page);
-      if (will("klammern")) await klammern(page);
-      if (will("schritte")) await schritte(page);
-      if (will("quizze")) await quizze(page);
-      if (will("aufgaben")) await aufgaben(page);
+      await teil("geruest", geruest, page);
+      await teil("kacheln", kacheln, page);
+      await teil("produkte", produkte, page);
+      await teil("klammern", klammern, page);
+      await teil("schritte", schritte, page);
+      await teil("quizze", quizze, page);
+      await teil("aufgaben", aufgaben, page);
     } else if (will("dunkel")) {
       await waehle(page, "ka-term", "4");
       await setzeRegler(page, "ka-t", 100);

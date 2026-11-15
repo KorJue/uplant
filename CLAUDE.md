@@ -12,6 +12,7 @@ nach, bevor er etwas erfindet:
 | Grundwissen 5–10 (34 Themen, einheitlicher Bauplan) | `mathematik/grundwissen-5-10/` |
 | Satz des Thales (Klasse 8, freier Aufbau, Konstruktion) | `mathematik/klasse-8/geometrie/satz-des-thales.*` |
 | Flächeninhalte (Klasse 8, bewegliche Herleitungen) | `mathematik/klasse-8/geometrie/flaecheninhalte.*` |
+| Terme (Klasse 8, fünf Seiten, Kachelmodell, Termeingabe) | `mathematik/klasse-8/terme/` |
 
 ## Arbeitsablauf für eine neue Seite
 
@@ -336,6 +337,22 @@ Die kleinen Helfer (`pick`, `trifft`, `glatt`, `ohneKollision`, `num`) stehen
 also in der Nachbarseite — und wer eine davon verbessert, sollte wissen, dass
 die anderen davon nichts mitbekommen.
 
+Für die fünf Termseiten der Klasse 8 (`mathematik/klasse-8/terme/`) gilt das anders: Sie teilen
+`seite.js` (Zeichenfläche, Regler, `begrenzt()`, Kontrollfragen, `num()`, `ohneKollision()`) und
+`termwerk.js`, den **Termprüfer**. `termwerk.js` liest eine getippte Eingabe ohne `eval` in ein
+**exaktes** Polynom (Brüche statt Kommazahlen) samt ihrer Struktur und prüft damit zweierlei:
+gleichwertig — Glied für Glied — und in der verlangten **Form** (`"normal"`: vereinfacht, keine
+Klammer, keine zwei gleichartigen Glieder; `"produkt"`; `"ausgeklammert"`: Produkt, in der Klammer
+kein gemeinsamer Faktor mehr). Eine gleichwertige, aber halb fertige Eingabe bekommt eine eigene
+Rückmeldung; eine falsche den passenden vorgesehenen Fehler, sonst eine Probe mit konkreten Zahlen.
+Aufgaben entstehen über `termAufgabe()` und `termFeld()`. Eine Änderung an `termwerk.js` wirkt auf
+alle fünf Seiten — danach gehören alle fünf Prüfungen in den Lauf. Die Prüfungen rechnen mit einem
+**eigenen**, absichtlich anders gebauten Auswerter nach (`tests/lib/polynom.js`: numerisch an zwölf
+krummen Stellen, dazu `istVereinfacht()` und `istProdukt()`). Die Seiten bauen der Reihe nach
+aufeinander auf; jede Prüfung wacht darüber, dass ihre Seite nicht vorgreift (vor Thema 3 kein
+Faktor vor einer Klammer, vor Thema 4 kein Produkt zweier Summen, vor Thema 5 keine binomische
+Formel). Gemeinsam ist auch die Formelsammlung (`formelsammlung.pdf`, Präfix `tm`).
+
 Ebenfalls geteilt ist `mathematik/terme.js`: die **Termaufgaben** (Ableitung,
 f′ und f″, Stammfunktion als Term eintippen) mit beliebig vielen Funktionen.
 Eine Funktion wird aus Gliedern zusammengesetzt (`pot`, `trig`, `kette`,
@@ -483,7 +500,8 @@ Quelle stillschweigend ungeprüfter Neuerungen:
   (`tests/lib/themen.js`). Ein neues Grundwissen-Thema wird dadurch
   **automatisch** mitgeprüft — es muss die Zusagen also von Anfang an erfüllen.
   Ebenso `test-aufgaben-abschnitte.js` (jede Seite mit `#exercises-mount`) und
-  `test-selbsteinschaetzung.js` (Grundwissen, MSS; Klasse 8 per Liste).
+  `test-selbsteinschaetzung.js` (Grundwissen, MSS, die Termseiten der Klasse 8; die
+  Geometrieseiten der Klasse 8 per Liste).
 * `test-vollbild.js` dagegen führt seine Seiten in einer **fest verdrahteten
   Liste** `SEITEN` samt Knopf- und SVG-Kennung. Eine neue Geometrieseite mit
   Zeichenfläche muss dort von Hand eingetragen werden, sonst bleibt ihr Vollbild

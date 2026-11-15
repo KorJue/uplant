@@ -468,6 +468,17 @@ async function geruest(page) {
   pruefe(JSON.stringify(proStufe) === "[2,2,2,2]", `Gerüst: die Stufen haben ${proStufe.join("/")} Aufgaben statt 2/2/2/2`);
 }
 
+// Ein Teil, der abbricht (etwa weil ein Aufgabengenerator der Seite wirft und die Aufgabe nie
+// erscheint), ist ein Fehler — gemeldet wird er trotzdem, und die übrigen Teile laufen weiter.
+async function teil(name, fn, page) {
+  if (!will(name)) return;
+  try {
+    await fn(page);
+  } catch (e) {
+    pruefe(false, `${name}: Abbruch — ${String(e && e.message).split("\n")[0]}`);
+  }
+}
+
 (async () => {
   const browser = await starteBrowser();
   for (const dunkel of [false, true]) {
@@ -475,13 +486,13 @@ async function geruest(page) {
     const page = await neueSeite(browser, { dunkel });
     await oeffne(page, SEITE);
     if (!dunkel) {
-      if (will("geruest")) await geruest(page);
-      if (will("muster")) await muster(page);
-      if (will("baum")) await baum(page);
-      if (will("tabelle")) await tabelle(page);
-      if (will("gleichwertig")) await gleichwertig(page);
-      if (will("quizze")) await quizze(page);
-      if (will("aufgaben")) await aufgaben(page);
+      await teil("geruest", geruest, page);
+      await teil("muster", muster, page);
+      await teil("baum", baum, page);
+      await teil("tabelle", tabelle, page);
+      await teil("gleichwertig", gleichwertig, page);
+      await teil("quizze", quizze, page);
+      await teil("aufgaben", aufgaben, page);
     } else if (will("dunkel")) {
       await setzeRegler(page, "sm-t", 100);
       await pruefeKontrast(page, bericht, "dunkel");
