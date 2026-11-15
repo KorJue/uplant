@@ -62,4 +62,60 @@ async function pruefeKontrast(page, bericht, wo) {
   bericht.pruefe(geprueft > 10, `${wo}: nur ${geprueft} Textproben für die Kontrastprüfung gefunden`);
 }
 
-module.exports = { pruefeKontrast, leuchtdichte, SCHRANKE };
+// Farbige Linien einer Zeichnung (Hölzchen, Kanten): gleiche Schranke, gemessen wird die Strichfarbe
+// gegen den Untergrund der Zeichnung. Text allein reicht nicht — eine Zählweise, die nur aus
+// farbigen Strichen besteht, verschwände sonst unbemerkt im dunklen Grund.
+async function pruefeStrichKontrast(page, bericht, wo, selektor) {
+  const proben = await page.evaluate(([quelle, sel]) => {
+    const grundVon = eval(quelle);
+    return [...document.querySelectorAll(sel)].map((e) => ({
+      farbe: getComputedStyle(e).stroke,
+      grund: grundVon(e.closest("svg") || e),
+      name: e.getAttribute("class") || e.tagName,
+    }));
+  }, [GRUND_IM_BROWSER, selektor]);
+  const schon = new Set();
+  for (const p of proben) {
+    const lv = leuchtdichte(p.farbe), lg = leuchtdichte(p.grund);
+    if (lv === null || lg === null) continue;
+    const abstand = Math.abs(lv - lg) * 255;
+    const schluessel = `${p.name}|${p.farbe}|${p.grund}`;
+    if (schon.has(schluessel)) continue;
+    schon.add(schluessel);
+    bericht.pruefe(abstand > SCHRANKE,
+      `${wo}: Linie „${p.name}“ (${p.farbe}) hat nur Δ${abstand.toFixed(0)} Leuchtdichte zum Untergrund (nötig > ${SCHRANKE})`);
+  }
+  bericht.pruefe(proben.length > 0, `${wo}: keine Linien für „${selektor}“ gefunden`);
+}
+
+// Beschriftungen, die AUF einer farbigen Fläche einer Zeichnung stehen (ein Name in einem Rechteck):
+// gemessen wird gegen die Fläche darunter, nicht gegen den Bildhintergrund. Eine halb durchsichtige
+// Fläche wird mit dem Hintergrund gemischt. Steht unter dem Text keine Fläche, zählt der Hintergrund.
+async function pruefeTextAufFlaeche(page, bericht, wo, selektor) {
+  const proben = await page.evaluate(([quelle, sel]) => {
+    const grundVon = eval(quelle);
+    const rgb = (f) => (String(f).match(/[\d.]+/g) || []).slice(0, 3).map(Number);
+    return [...document.querySelectorAll(sel)].filter((t) => (t.textContent || "").trim()).map((t) => {
+      t.scrollIntoView({ block: "center" });
+      const k = t.getBoundingClientRect();
+      const svg = t.closest("svg");
+      const grund = rgb(grundVon(svg));
+      const unter = document.elementsFromPoint(k.x + k.width / 2, k.y + k.height / 2)
+        .find((e) => e !== t && e.closest("svg") === svg && /^(rect|polygon|path|circle)$/.test(e.tagName) && getComputedStyle(e).fill !== "none");
+      let flaeche = grund;
+      if (unter) {
+        const cs = getComputedStyle(unter);
+        const op = Number(cs.fillOpacity) * Number(cs.opacity);
+        flaeche = rgb(cs.fill).map((c, i) => op * c + (1 - op) * grund[i]);
+      }
+      return { text: t.textContent.trim(), farbe: getComputedStyle(t).fill, flaeche: `rgb(${flaeche.map((c) => c.toFixed(0)).join(", ")})` };
+    });
+  }, [GRUND_IM_BROWSER, selektor]);
+  for (const p of proben) {
+    const abstand = Math.abs(leuchtdichte(p.farbe) - leuchtdichte(p.flaeche)) * 255;
+    bericht.pruefe(abstand > SCHRANKE, `${wo}: „${p.text}“ (${p.farbe}) hat auf seiner Fläche (${p.flaeche}) nur Δ${abstand.toFixed(0)} Leuchtdichte (nötig > ${SCHRANKE})`);
+  }
+  bericht.pruefe(proben.length > 0, `${wo}: keine Beschriftungen für „${selektor}“ gefunden`);
+}
+
+module.exports = { pruefeKontrast, pruefeStrichKontrast, pruefeTextAufFlaeche, leuchtdichte, SCHRANKE };

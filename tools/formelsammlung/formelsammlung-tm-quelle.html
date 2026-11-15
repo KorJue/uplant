@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Formelsammlung — Terme</title>
+<style>
+  @page { size: A4 landscape; margin: 5.5mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    color: #1f2328;
+    font-size: 8.1px;
+    line-height: 1.33;
+  }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  h1 {
+    font-size: 12.4px; margin: 0 0 1.4mm; padding-bottom: 0.8mm;
+    border-bottom: 1.6px solid #1d4ed8; color: #1d4ed8; letter-spacing: 0.01em;
+  }
+  h1 .klein { font-size: 8.4px; font-weight: 400; color: #5b6570; float: right; margin-top: 2px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2.1mm; align-items: start; }
+  .box {
+    border: 0.9px solid #c9d0d8; border-radius: 2mm; padding: 1.5mm 1.8mm;
+    background: #ffffff; break-inside: avoid;
+  }
+  .box.wide { grid-column: span 2; }
+  .box.full { grid-column: span 3; }
+  .box h2 {
+    font-size: 8.6px; margin: 0 0 1.1mm; color: #1d4ed8;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .box.warn { border-color: #e3b341; background: #fffaf0; }
+  .box.warn h2 { color: #8a5b0a; }
+  .box.merk { border-color: #7ec699; background: #f4fbf6; }
+  .box.merk h2 { color: #0f5132; }
+  p { margin: 0 0 0.9mm; }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 0.9mm; padding-left: 3.4mm; }
+  li { margin-bottom: 0.4mm; }
+  .f { font-family: "Cambria Math", Cambria, Georgia, serif; font-size: 9.2px; }
+  .zentral { text-align: center; }
+  .gross { font-size: 10.4px; font-weight: 700; }
+  .al { color: #157347; font-weight: 700; }
+  .be { color: #b3650a; font-weight: 700; }
+  .ga { color: #b3261e; font-weight: 700; }
+  .kr { color: #1d4ed8; font-weight: 700; }
+  .ra { color: #6d28d9; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { border: 0.7px solid #c9d0d8; padding: 0.5mm 0.6mm; text-align: center; }
+  th { background: #eef2f6; font-weight: 700; font-size: 7.4px; }
+  td { font-size: 7.6px; }
+  td.b { font-weight: 700; }
+  td.l { text-align: left; }
+  figure { margin: 0.8mm 0 0; }
+  figure svg { display: block; width: 100%; height: auto; }
+  .m70 { max-width: 70%; margin: 0.8mm auto 0; }
+  .m80 { max-width: 80%; margin: 0.8mm auto 0; }
+  .m88 { max-width: 88%; margin: 0.8mm auto 0; }
+  .m62 { max-width: 62%; margin: 0.8mm auto 0; }
+  .m72 { max-width: 72%; margin: 0.8mm auto 0; }
+  .m55 { max-width: 55%; margin: 0.8mm auto 0; }
+  .bu { font-size: 7.1px; color: #5b6570; text-align: center; margin-top: 0.5mm; }
+  .rechnung { background: #f4f6f8; border-radius: 1.2mm; padding: 1mm 1.2mm; margin: 0.8mm 0 0; }
+  .schritt { display: flex; gap: 1.2mm; margin-bottom: 0.5mm; }
+  .schritt b { flex: 0 0 3.6mm; color: #1d4ed8; }
+  .schritt:last-child { margin-bottom: 0; }
+  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm; align-items: start; }
+  .bruch { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; margin: 0 0.3mm; }
+  .bruch .z { border-bottom: 0.8px solid currentColor; padding: 0 0.6mm; }
+  .gh { color: #6d28d9; font-weight: 700; }
+  .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ===================== Seite 1 ===================== -->
+<div class="page">
+  <h1>Terme — aufstellen, vereinfachen, ausmultiplizieren, ausklammern<span class="klein">Klasse 8 · Terme, Themen 1 bis 3</span></h1>
+  <div class="grid">
+
+    <div class="box merk">
+      <h2>Variable und Term (Thema 1)</h2>
+      <p>Eine <span class="ra">Variable</span> ist ein Platzhalter für eine Zahl. Ein <b>Term</b> ist ein Rechenausdruck aus Zahlen, Variablen und Rechenzeichen — er gilt für jede Zahl zugleich.</p>
+      <figure>[[FIG1]]</figure>
+      <p>Den Malpunkt zwischen Zahl und Variable lässt man weg: <span class="f">3 · n = 3n</span>. Zwischen zwei Zahlen bleibt er.</p>
+    </div>
+
+    <div class="box">
+      <h2>Rechenbaum und Termwert</h2>
+      <p>Der Term heißt nach seinem <b>letzten</b> Rechenschritt: <span class="f">2x − 3</span> ist eine Differenz, <span class="f">2 · (x − 3)</span> ein Produkt.</p>
+      <figure class="m80">[[FIG2]]</figure>
+      <p><b>Termwert:</b> Zahl einsetzen — negative Zahlen <b>in Klammern</b>: für x = −3 ist <span class="f">x² = (−3)² = 9</span>, aber <span class="f">−x² = −9</span>.</p>
+    </div>
+
+    <div class="box merk">
+      <h2>Gleichwertige Terme</h2>
+      <p>Zwei Terme sind <b>gleichwertig</b>, wenn sie für <b>jede</b> Zahl denselben Wert haben.</p>
+      <ul>
+        <li><b>Widerlegen:</b> ein einziges Gegenbeispiel genügt — <span class="f">x² und 2x</span>: bei x = 3 ist 9 ≠ 6.</li>
+        <li><b>Begründen:</b> mit den Rechengesetzen umformen. Eine Wertetabelle ist nur ein Hinweis, kein Beweis.</li>
+      </ul>
+      <table>
+        <tr><th>Gesetz</th><th>Addition</th><th>Multiplikation</th></tr>
+        <tr><td class="l b">Kommutativ</td><td class="f">a + b = b + a</td><td class="f">a · b = b · a</td></tr>
+        <tr><td class="l b">Assoziativ</td><td class="f">(a + b) + c = a + (b + c)</td><td class="f">(a · b) · c = a · (b · c)</td></tr>
+        <tr><td class="l b">Distributiv</td><td class="f" colspan="2">a · (b + c) = a · b + a · c</td></tr>
+      </table>
+    </div>
+
+    <div class="box wide">
+      <h2>Terme vereinfachen (Thema 2)</h2>
+      <div class="zwei">
+        <div>
+          <p><b>Gleichartige Glieder</b> haben dieselben Variablen mit denselben Hochzahlen. Man fasst sie zusammen, indem man die Zahlen addiert: <span class="f">3x + 5x = 8x</span>. Nicht gleichartig sind x und x², x und y, x und 1.</p>
+          <figure>[[FIG3]]</figure>
+        </div>
+        <div>
+          <p><b>Produkte:</b> Zahlen mal Zahlen, Variablen mal Variablen — <span class="f">3x · 4y = 12xy</span>, <span class="f">2a · 5a = 10a²</span>.</p>
+          <p><b>Plusklammer:</b> <span class="f">a + (b − c) = a + b − c</span> — die Klammer fällt weg.<br><b>Minusklammer:</b> <span class="f">a − (b − c) = a − b + c</span> — <b>jedes</b> Vorzeichen in ihr dreht sich um.</p>
+          <div class="rechnung">
+            <div class="schritt"><b>1.</b><span>Produkte vereinfachen</span></div>
+            <div class="schritt"><b>2.</b><span>Klammern auflösen</span></div>
+            <div class="schritt"><b>3.</b><span>Ordnen — jedes Glied mit seinem Vorzeichen</span></div>
+            <div class="schritt"><b>4.</b><span>Zusammenfassen</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Ausmultiplizieren (Thema 3)</h2>
+      <p>Der Faktor vor der Klammer wird mit <b>jedem</b> Glied multipliziert — jedes mit seinem Vorzeichen:</p>
+      <figure>[[FIG4]]</figure>
+      <p class="zentral f">−3 · (2x − 5) = −6x + 15 &nbsp;&nbsp; x · (x + 4) = x² + 4x</p>
+    </div>
+
+    <div class="box merk">
+      <h2>Ausklammern — das Gesetz rückwärts</h2>
+      <p class="zentral f gross">a · b + a · c = a · (b + c)</p>
+      <p>In die Klammer kommt, was übrig bleibt, wenn man jedes Glied durch den Faktor teilt: <span class="f">6x + 9 = 3 · (2x + 3)</span>; <span class="f">4x + 4 = 4 · (x + 1)</span> — die 1 bleibt stehen.</p>
+      <p><b>Vollständig:</b> der ggT der Zahlen und jede Variable, die in allen Gliedern steckt: <span class="f">12x² − 8x = 4x · (3x − 2)</span>.</p>
+      <p><b>Probe:</b> ausmultiplizieren ergibt wieder den Anfang.</p>
+    </div>
+
+    <div class="box warn wide">
+      <h2>Typische Fehler</h2>
+      <table>
+        <tr><th>falsch</th><th>richtig</th><th>warum</th></tr>
+        <tr><td class="f">2 · x − 3 für „das Doppelte der um 3 verminderten Zahl“</td><td class="f">2 · (x − 3)</td><td class="l">erst vermindern, dann verdoppeln — die Differenz braucht eine Klammer</td></tr>
+        <tr><td class="f">x + x = x² &nbsp;·&nbsp; 3x + 2 = 5x</td><td class="f">x + x = 2x &nbsp;·&nbsp; 3x + 2 bleibt</td><td class="l">nur gleichartige Glieder lassen sich zusammenfassen</td></tr>
+        <tr><td class="f">5x − (2x − 3) = 3x − 3</td><td class="f">5x − 2x + 3 = 3x + 3</td><td class="l">die Minusklammer dreht <b>jedes</b> Vorzeichen um</td></tr>
+        <tr><td class="f">3 · (2x + 3) = 6x + 3</td><td class="f">6x + 9</td><td class="l">der Faktor gilt für jedes Glied der Klammer</td></tr>
+        <tr><td class="f">(x + 3) · (x + 2) = x² + 6</td><td class="f">x² + 5x + 6</td><td class="l">die gemischten Produkte fehlen</td></tr>
+        <tr><td class="f">(a + b)² = a² + b² &nbsp;·&nbsp; (x − 4)² = x² − 8x − 16</td><td class="f">a² + 2ab + b² &nbsp;·&nbsp; x² − 8x + 16</td><td class="l">das doppelte Produkt gehört dazu; b² ist immer positiv</td></tr>
+      </table>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik Klasse 8 · Terme · Seite 1 von 2</p>
+</div>
+
+<!-- ===================== Seite 2 ===================== -->
+<div class="page">
+  <h1>Summen multiplizieren und binomische Formeln<span class="klein">Klasse 8 · Terme, Themen 4 und 5</span></h1>
+  <div class="grid">
+
+    <div class="box wide">
+      <h2>Summe mal Summe (Thema 4)</h2>
+      <p>Jedes Glied der ersten Klammer mal jedes Glied der zweiten: <span class="f">(a + b) · (c + d) = ac + ad + bc + bd</span>. Zwei mal zwei Glieder geben vier Produkte — die vier Teilrechtecke.</p>
+      <figure class="m70">[[FIG5]]</figure>
+      <p>Mehr Faktoren: schrittweise, das Zwischenergebnis in Klammern — <span class="f">2 · (x + 1) · (x − 3) = 2 · (x² − 2x − 3) = 2x² − 4x − 6</span>.</p>
+    </div>
+
+    <div class="box">
+      <h2>Anwenden: Flächenänderung</h2>
+      <p>Ein Quadrat mit der Seite x wird zum Rechteck: eine Seite 3 länger, die andere 2 kürzer.</p>
+      <p class="zentral f">A = (x + 3) · (x − 2) = x² + x − 6</p>
+      <p>Gegenüber x² ändert sich der Flächeninhalt um <span class="f">x − 6</span>: größer für x &gt; 6, kleiner für x &lt; 6, gleich bei x = 6.</p>
+      <p>Bei „2 länger, 2 kürzer“: <span class="f">(x + 2) · (x − 2) = x² − 4</span> — immer um 4 kleiner.</p>
+    </div>
+
+    <div class="box full merk">
+      <h2>Die drei binomischen Formeln (Thema 5)</h2>
+      <div class="grid" style="gap:2mm">
+        <div>
+          <p class="zentral f gross">(a + b)² = a² + 2ab + b²</p>
+          <figure class="m62">[[FIG6]]</figure>
+          <p class="bu">zwei gleiche Rechtecke ab — daher 2ab</p>
+        </div>
+        <div>
+          <p class="zentral f gross">(a − b)² = a² − 2ab + b²</p>
+          <figure class="m62">[[FIG7]]</figure>
+          <p class="bu">zwei Streifen ab weg, das Eckquadrat b² dabei zweimal — einmal zurück</p>
+        </div>
+        <div>
+          <p class="zentral f gross">(a + b) · (a − b) = a² − b²</p>
+          <figure class="m80">[[FIG8]]</figure>
+          <p class="bu">a² ohne b², der Streifen umgelegt: ein Rechteck</p>
+        </div>
+      </div>
+      <p style="margin-top:0.8mm"><b>Rückwärts:</b> <span class="f">x² + 6x + 9 = (x + 3)²</span>, <span class="f">9x² − 4 = (3x + 2) · (3x − 2)</span>. <b>Im Kopf:</b> <span class="f">51² = 2500 + 100 + 1 = 2601</span>, <span class="f">48 · 52 = 2500 − 4 = 2496</span>.</p>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik Klasse 8 · Terme · Seite 2 von 2</p>
+</div>
+
+</body>
+</html>

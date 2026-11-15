@@ -39,6 +39,11 @@ das vorinstallierte Chromium unter `/opt/pw-browsers/chromium`
 * `seite.js` — Browser, Störungsmelder, Reglerbedienung
 * `notation.js` — verbotene Schreibweisen (`−−`, `+ −`, `NaN`, `−0`, …)
 * `kontrast.js` — Leuchtdichteabstand von Text zu seinem wirklichen Untergrund
+  (`pruefeKontrast()`); dazu `pruefeStrichKontrast()` für farbige Linien und Ränder einer
+  Zeichnung (Hölzchen, Kacheln) und `pruefeTextAufFlaeche()` für Beschriftungen, die auf einer
+  farbigen Fläche stehen — gemessen gegen die Fläche darunter, halb durchsichtige mit dem Grund
+  gemischt. Beide fanden Farben, die im Dunkelmodus verschwanden, obwohl jeder Text gegen den
+  Bildhintergrund bestand.
 * `themen.js` — findet alle Themen im Dateisystem, damit kein neues Thema
   stillschweigend ungeprüft bleibt
 * `terme.js` — für die Termaufgaben aus `mathematik/terme.js`: ein **eigener**
@@ -52,6 +57,16 @@ das vorinstallierte Chromium unter `/opt/pw-browsers/chromium`
   keiner Musterlösung vorkommen, prüft feste Fälle der Fehlerdiagnose und
   rechnet für jede Gliedform einmal fest die Musterlösung nach — die
   gewürfelten Aufgaben treffen seltene Formen nicht in jedem Lauf.
+* `polynom.js` — für die Termseiten der Klasse 8: ein eigener Termauswerter (`gleichwertig()` an
+  zwölf krummen Stellen, `wert()`), dazu die Formprüfungen `istVereinfacht()` und `istProdukt()`.
+  Die Seiten rechnen exakt mit `termwerk.js`; die Prüfung bewusst anders.
+
+Die Prüfungen der Termseiten (`klasse-8/test-terme-*.js`, `test-ausmultiplizieren-ausklammern.js`,
+`test-klammern-multiplizieren.js`, `test-binomische-formeln.js`) halten außerdem fest, **welche
+Fassungen** einer Aufgabe gezogen wurden, wo zwei gleich häufig sind: Fällt der Sollwert einer
+Fassung mit einem ihrer Fehlerwerte zusammen, siebt `ohneKollision()` sie jedes Mal aus — und die
+übrigen Fassungen bestehen weiter. Jeder Prüfteil läuft in `teil()`: Bricht er ab, weil die Seite
+eine Aufgabe nicht erzeugen konnte, wird das gemeldet, und die übrigen Teile laufen weiter.
 
 ## Eine fachliche Prüfung schreiben
 

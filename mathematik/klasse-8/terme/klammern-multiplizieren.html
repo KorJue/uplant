@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terme mit Klammern multiplizieren</title>
+<script src="../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../assets/site.css">
+<link rel="stylesheet" href="../../aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../index.html">Klasse 8</a><span class="sep">/</span>
+  <a href="index.html">Terme</a><span class="sep">/</span>
+  4 Terme mit Klammern multiplizieren
+</nav>
+<header class="page-header">
+  <h1>Terme mit Klammern multiplizieren</h1>
+  <p>Ein Selbstlernpfad: Summe mal Summe — am Rechteck aus vier Teilen, jedes Glied mit jedem, mit Kontrollfragen und acht Übungsaufgaben.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Vor der Klammer steht jetzt selbst eine Summe: (x + 3) · (x + 5). Das Distributivgesetz reicht dafür aus — man muss es nur zweimal anwenden. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>ein Produkt aus zwei Summen am <span class="term">Rechteck aus vier Teilen</span> erklären</li>
+      <li>zwei Summen ausmultiplizieren — <span class="term">jedes Glied mit jedem</span>, auch mit negativen Zahlen</li>
+      <li>Produkte aus <span class="term">mehr als zwei Faktoren</span> und mit einem Minus davor ausmultiplizieren</li>
+      <li>mit solchen Produkten <span class="term">Flächenänderungen</span> beschreiben</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst das <a href="ausmultiplizieren-ausklammern.html#sec-distributiv">Distributivgesetz</a> und das <a href="ausmultiplizieren-ausklammern.html#sec-ausmultiplizieren">Ausmultiplizieren mit Vorzeichen</a> aus Thema 3 und das <a href="terme-vereinfachen.html#sec-gleichartig">Zusammenfassen</a> aus Thema 2.</p>
+  </section>
+
+  <!-- 1. Rechteck aus vier Teilen -->
+  <!-- Reihenfolge: erst das Rechteck (nur positive Zahlen, dort ist jedes der vier Produkte eine
+       sichtbare Fläche), dann die Regel „jedes Glied mit jedem“ für alle Vorzeichen, dann Produkte mit
+       mehr Faktoren, zuletzt die Anwendung auf Flächenänderungen. Die binomischen Formeln sind Thema 5:
+       Hier wird jedes Produkt ausgerechnet, keine Formel benutzt. -->
+  <section class="card" id="sec-rechteck">
+    <h2>1. Summe mal Summe am Rechteck</h2>
+    <p>(x + 3) · (x + 2) ist ein Rechteck, das x + 3 breit und x + 2 hoch ist. Zieh es an den Fugen auseinander: Es besteht aus <strong>vier</strong> Rechtecken — ein x²-Quadrat, zwei Streifenblöcke und ein Block aus Einern. Stelle die Seiten ein.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>x-Streifen in der Breite: <input type="range" id="re-m" min="1" max="2" step="1" value="1" style="vertical-align:middle;width:4rem"> <span id="re-m-anzeige" class="th-name-r"></span></label>
+        <label>Einer in der Breite: <input type="range" id="re-a" min="1" max="4" step="1" value="3" style="vertical-align:middle;width:6rem"> <span id="re-a-anzeige" class="th-name-a"></span></label>
+        <label>Einer in der Höhe: <input type="range" id="re-b" min="1" max="4" step="1" value="2" style="vertical-align:middle;width:6rem"> <span id="re-b-anzeige" class="th-name-a"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>auseinanderziehen: <input type="range" id="re-t" min="0" max="100" step="5" value="0" style="vertical-align:middle;width:10rem"> <span id="re-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="re-mount"></div>
+      <div class="th-bilanz" id="re-bilanz"></div>
+      <div id="re-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Summe mal Summe</span>
+      <strong>(a + b) · (c + d) = ac + ad + bc + bd</strong> — jedes Glied der ersten Klammer wird mit jedem Glied der zweiten multipliziert. Bei zwei Gliedern in jeder Klammer entstehen 2 · 2 = 4 Produkte, die vier Teilrechtecke.<br>
+      (x + 3) · (x + 2) = x · x + x · 2 + 3 · x + 3 · 2 = x² + 2x + 3x + 6 = x² + 5x + 6
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die gemischten Produkte</span>
+      (x + 3) · (x + 2) ist nicht x² + 6. Dabei fehlen die beiden Streifenblöcke 2x und 3x — im Rechteck sieht man sofort, dass sie zur Fläche gehören.
+    </div>
+    <div class="quiz" id="quiz-rechteck"></div>
+  </section>
+
+  <!-- 2. Jedes Glied mit jedem -->
+  <section class="card" id="sec-jeder">
+    <h2>2. Jedes Glied mit jedem</h2>
+    <p>Mit negativen Zahlen gibt es kein Rechteck mehr — die Regel gilt trotzdem, denn sie ist nur zweimal das Distributivgesetz. Wichtig ist, keines der Produkte zu vergessen und jedes mit dem richtigen Vorzeichen zu rechnen. Wähle ein Produkt und geh die Schritte durch.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Produkt:
+          <select id="jj-term" class="eingabe" style="padding:0.4rem">
+            <option value="0">(x + 3) · (x + 5)</option>
+            <option value="1">(x − 3) · (x + 5)</option>
+            <option value="2">(2a + b) · (a − 3b)</option>
+            <option value="3">(3 − y) · (2y − 1)</option>
+            <option value="4">(x + 2) · (x² − x + 4)</option>
+          </select>
+        </label>
+        <label>Schritt: <input type="range" id="jj-schritt" min="0" max="3" step="1" value="0" style="vertical-align:middle;width:7rem"> <span id="jj-schritt-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="tm-schritte" id="jj-mount"></div>
+      <div id="jj-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">So geht man vor</span>
+      1. Das <strong>erste</strong> Glied der ersten Klammer mal jedes Glied der zweiten, dann das <strong>zweite</strong> Glied mal jedes Glied der zweiten — jedes mit seinem Vorzeichen.<br>
+      2. Jedes Produkt ausrechnen. &nbsp; 3. Gleichartige Glieder zusammenfassen.<br>
+      (x − 3) · (x + 5) = x² + 5x − 3x − 15 = x² + 2x − 15
+    </div>
+    <p class="hinweis-box">💡 Zähl die Produkte: Hat die erste Klammer 2 Glieder und die zweite 3, entstehen 2 · 3 = 6 Produkte. Stehen weniger da, fehlt eines.</p>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — das Vorzeichen gehört zum Glied</span>
+      In (x − 3) · (x + 5) ist das zweite Glied −3, nicht 3: (−3) · 5 = −15 und (−3) · x = −3x.
+    </div>
+    <div class="quiz" id="quiz-jeder"></div>
+  </section>
+
+  <!-- 3. Mehr Faktoren -->
+  <section class="card" id="sec-mehrere">
+    <h2>3. Mehr als zwei Faktoren</h2>
+    <p>Steht vor einem Produkt aus zwei Klammern noch eine Zahl, ein Minus oder eine dritte Klammer, multipliziert man <strong>schrittweise</strong>: erst zwei Klammern, das Ergebnis in Klammern stehen lassen, dann den nächsten Faktor. Wähle einen Term.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Term:
+          <select id="mf-term" class="eingabe" style="padding:0.4rem;max-width:100%">
+            <option value="0">2 · (x + 1) · (x − 3)</option>
+            <option value="1">−(x − 2) · (x + 4)</option>
+            <option value="2">(x + 1) · (x + 2) · (x + 3)</option>
+            <option value="3">(x + 4) · (x − 1) − (x + 2) · (x − 3)</option>
+          </select>
+        </label>
+        <label>Schritt: <input type="range" id="mf-schritt" min="0" max="3" step="1" value="0" style="vertical-align:middle;width:7rem"> <span id="mf-schritt-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="tm-schritte" id="mf-mount"></div>
+      <div id="mf-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Schritt für Schritt</span>
+      Erst zwei Klammern ausmultiplizieren und das Ergebnis <strong>in Klammern stehen lassen</strong>, dann mit dem nächsten Faktor multiplizieren:<br>
+      2 · (x + 1) · (x − 3) = 2 · (x² − 2x − 3) = 2x² − 4x − 6
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der Faktor gilt nur einmal</span>
+      2 · (x + 1) · (x − 3) ist nicht (2x + 2) · (2x − 6): Die 2 ist <em>ein</em> Faktor des Produkts und wird nur in eine Klammer hineinmultipliziert. Und ein Minus vor einem Produkt erst auflösen, wenn das Produkt ausgerechnet in Klammern steht.
+    </div>
+    <div class="quiz" id="quiz-mehrere"></div>
+  </section>
+
+  <!-- 4. Flächenänderungen -->
+  <section class="card" id="sec-anwenden">
+    <h2>4. Anwenden: Wie ändert sich ein Flächeninhalt?</h2>
+    <p>Ein Quadrat hat die Seitenlänge x. Eine Seite wird verlängert, die andere verkürzt. Wird das neue Rechteck größer oder kleiner? Das Produkt der neuen Seiten sagt es für <em>jedes</em> x. Wähle eine Änderung und verändere x.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Änderung:
+          <select id="fa-art" class="eingabe" style="padding:0.4rem">
+            <option value="0">3 länger, 2 kürzer</option>
+            <option value="1">4 länger, 4 kürzer</option>
+            <option value="2">6 länger, 2 kürzer</option>
+          </select>
+        </label>
+        <label>x = <input type="range" id="fa-x" min="3" max="12" step="1" value="5" style="vertical-align:middle;width:9rem"> <span id="fa-x-anzeige" class="th-name-r"></span></label>
+      </div>
+      <div class="th-wrap" id="fa-mount"></div>
+      <div class="th-bilanz" id="fa-bilanz"></div>
+      <div id="fa-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Flächenänderung als Term</span>
+      3 länger, 2 kürzer: A = (x + 3) · (x − 2) = x² + x − 6. Gegenüber dem Quadrat x² ändert sich der Flächeninhalt um <strong>x − 6</strong>: Für x &gt; 6 wird das Rechteck größer, für x &lt; 6 kleiner, bei x = 6 bleibt es gleich.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel</span>
+      Für x = 10: Das Quadrat hat 100, das Rechteck 13 · 8 = 104 — um 10 − 6 = 4 mehr. Der Term x² + x − 6 liefert dasselbe: 100 + 10 − 6 = 104.
+    </div>
+    <div class="quiz" id="quiz-anwenden"></div>
+  </section>
+
+  <!-- 5. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>5. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Dem <a href="ausmultiplizieren-ausklammern.html#sec-distributiv">Distributivgesetz</a> aus Thema 3 — Summe mal Summe ist das Gesetz, zweimal angewendet.</li>
+      <li><strong>Baut auf:</strong> Dem <a href="terme-vereinfachen.html#sec-gleichartig">Zusammenfassen gleichartiger Glieder</a> aus Thema 2 — nach dem Ausmultiplizieren fallen meist zwei Glieder zusammen.</li>
+      <li><strong>Zum Nachschlagen:</strong> <a href="../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/04-terme/index.html#sec-ausmultiplizieren">Ausmultiplizieren</a> im Grundwissen.</li>
+      <li><strong>Führt weiter zu:</strong> <a href="binomische-formeln.html">Binomische Formeln (Thema 5)</a> — drei Produkte, die so oft vorkommen, dass man ihr Ergebnis als Formel kennt.</li>
+      <li><strong>Gleiche Struktur:</strong> Die <a href="../geometrie/flaecheninhalte.html">Flächeninhalte</a> — ein Rechteck, das man waagerecht und senkrecht zerschneidet, zerfällt in vier Rechtecke.</li>
+    </ul>
+  </section>
+
+  <!-- 6. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>6. Formelsammlung</h2>
+    <p>Die Formelsammlung gilt für alle fünf Termseiten: Variable und Term, Rechenbaum, gleichwertige Terme, die Rechengesetze, Ausmultiplizieren und Ausklammern, Summen multiplizieren und die drei binomischen Formeln — mit Flächenbildern und den typischen Fehlern, auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 7. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>7. Übungsaufgaben</h2>
+    <p>Acht Aufgaben, zwei auf jeder Schwierigkeitsstufe. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu.</p>
+    <p class="progress-note">Gefragt ist der fertig ausmultiplizierte und zusammengefasste Term. Die Reihenfolge der Glieder ist frei.</p>
+    <div id="exercises-mount"></div>
+  </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-rechteck">Ich kann ein Produkt aus zwei Summen am Rechteck aus vier Teilen erklären.</li>
+      <li data-abschnitt="sec-jeder">Ich kann zwei Summen ausmultiplizieren — jedes Glied mit jedem, auch mit negativen Zahlen.</li>
+      <li data-abschnitt="sec-mehrere">Ich kann Produkte aus mehr als zwei Faktoren und mit einem Minus davor ausmultiplizieren.</li>
+      <li data-abschnitt="sec-anwenden">Ich kann mit solchen Produkten Flächenänderungen beschreiben.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
+  </section>
+
+  <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
+  <section class="card" data-lehrkraft="klammern-multiplizieren-lehrkraefte.html" hidden></section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="index.html">Zurück zu Terme</a></p>
+  <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script src="../../../assets/lehrkraft.js"></script>
+<script src="../../../assets/selbsteinschaetzung.js"></script>
+<script type="module" src="klammern-multiplizieren.js?v=1"></script>
+</body>
+</html>

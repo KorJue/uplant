@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ausmultiplizieren und Ausklammern</title>
+<script src="../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../assets/site.css">
+<link rel="stylesheet" href="../../aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../index.html">Klasse 8</a><span class="sep">/</span>
+  <a href="index.html">Terme</a><span class="sep">/</span>
+  3 Ausmultiplizieren und Ausklammern
+</nav>
+<header class="page-header">
+  <h1>Ausmultiplizieren und Ausklammern</h1>
+  <p>Ein Selbstlernpfad: Das Distributivgesetz am Rechteck aus Kacheln — vorwärts als Ausmultiplizieren, rückwärts als Ausklammern, mit Kontrollfragen und acht Übungsaufgaben.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Bisher stand vor einer Klammer nur ein Plus oder ein Minus. Jetzt steht dort eine Zahl oder eine Variable: 3 · (2x + 3). Ein Gesetz regelt beides — das Ausmultiplizieren und, rückwärts gelesen, das Ausklammern. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>das <span class="term">Distributivgesetz</span> an einem Rechteck erklären</li>
+      <li>einen Term <span class="term">ausmultiplizieren</span>, auch mit negativen Zahlen und Variablen vor der Klammer</li>
+      <li>einen gemeinsamen Faktor <span class="term">ausklammern</span></li>
+      <li><span class="term">vollständig</span> ausklammern — die größte Zahl und alle gemeinsamen Variablen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst <a href="terme-vereinfachen.html#sec-produkte">Produkte vereinfachen</a> und <a href="terme-vereinfachen.html#sec-klammern">Minusklammern</a> aus Thema 2 und den <a href="../../grundwissen-5-10/01-groessen-und-rechnen/03-brueche-und-dezimalzahlen/index.html#sec-erweitern">größten gemeinsamen Teiler</a> vom Kürzen.</p>
+  </section>
+
+  <!-- 1. Distributivgesetz -->
+  <!-- Reihenfolge: erst das Gesetz am Rechteck (nur positive Zahlen, dort ist ein Flächeninhalt
+       sichtbar), dann die Vorzeichenregeln beim Ausmultiplizieren, dann rückwärts das Ausklammern mit
+       einer Zahl (Kacheln in Zeilen legen), zuletzt vollständig mit Variablen. Summen mal Summen kommen
+       erst in Thema 4. -->
+  <section class="card" id="sec-distributiv">
+    <h2>1. Das Distributivgesetz am Rechteck</h2>
+    <p>3 · (2x + 3) ist ein Rechteck aus Kacheln: 3 Zeilen, in jeder Zeile 2 x-Streifen und 3 Einerkacheln. Zieh den Teil mit den Einern ab — dann siehst du zwei Rechtecke: 3 · 2x und 3 · 3. Stelle den Faktor und die Klammer ein.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>vor der Klammer:
+          <select id="dg-art" class="eingabe" style="padding:0.4rem">
+            <option value="zahl">eine Zahl</option>
+            <option value="x">die Variable x</option>
+          </select>
+        </label>
+        <label>Zahl: <input type="range" id="dg-k" min="1" max="4" step="1" value="3" style="vertical-align:middle;width:5rem"> <span id="dg-k-anzeige" class="th-name-c"></span></label>
+        <label>x-Streifen: <input type="range" id="dg-m" min="1" max="3" step="1" value="2" style="vertical-align:middle;width:5rem"> <span id="dg-m-anzeige" class="th-name-r"></span></label>
+        <label>Einer: <input type="range" id="dg-c" min="1" max="5" step="1" value="3" style="vertical-align:middle;width:5rem"> <span id="dg-c-anzeige" class="th-name-a"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>aufteilen: <input type="range" id="dg-t" min="0" max="100" step="5" value="0" style="vertical-align:middle;width:10rem"> <span id="dg-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="dg-mount"></div>
+      <div class="th-bilanz" id="dg-bilanz"></div>
+      <div id="dg-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Distributivgesetz</span>
+      <strong>a · (b + c) = a · b + a · c</strong> — der Faktor vor der Klammer wird mit <strong>jedem</strong> Glied in der Klammer multipliziert.<br>
+      3 · (2x + 3) = 3 · 2x + 3 · 3 = 6x + 9 &nbsp; x · (x + 4) = x · x + x · 4 = x² + 4x
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — jedes Glied</span>
+      3 · (2x + 3) ist nicht 6x + 3: Das Rechteck hat auch rechts 3 Zeilen. Der Faktor gilt für die ganze Klammer.
+    </div>
+    <div class="quiz" id="quiz-distributiv"></div>
+  </section>
+
+  <!-- 2. Ausmultiplizieren mit Vorzeichen -->
+  <section class="card" id="sec-ausmultiplizieren">
+    <h2>2. Ausmultiplizieren mit Vorzeichen</h2>
+    <p>Das Distributivgesetz gilt für alle Zahlen, auch für negative. Dann entscheidet bei jedem Produkt die Vorzeichenregel: Plus mal Minus gibt Minus, Minus mal Minus gibt Plus. Wähle einen Term und geh die Schritte durch.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Term:
+          <select id="am-term" class="eingabe" style="padding:0.4rem">
+            <option value="0">3 · (2x − 5)</option>
+            <option value="1">−3 · (2x − 5)</option>
+            <option value="2">2a · (a − 3b)</option>
+            <option value="3">−x · (x + 4)</option>
+            <option value="4">−2x · (3x − y + 1)</option>
+          </select>
+        </label>
+        <label>Schritt: <input type="range" id="am-schritt" min="0" max="2" step="1" value="0" style="vertical-align:middle;width:6rem"> <span id="am-schritt-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="tm-schritte" id="am-mount"></div>
+      <div id="am-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Vorzeichen beim Ausmultiplizieren</span>
+      Jedes Glied der Klammer wird <strong>mit seinem Vorzeichen</strong> mit dem Faktor multipliziert:<br>
+      −3 · (2x − 5) = (−3) · 2x + (−3) · (−5) = −6x + 15
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Die Minusklammer ist ein Sonderfall</span>
+      −(2x − 5) ist dasselbe wie (−1) · (2x − 5) = −2x + 5. Die Regel aus Thema 2 — jedes Vorzeichen dreht sich um — ist also das Distributivgesetz mit dem Faktor −1.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Minus mal Minus</span>
+      (−3) · (−5) = <strong>+15</strong>. Wer nur die Zahlen multipliziert und das Minus von außen übernimmt, schreibt −15 — dann stimmt das Vorzeichen des letzten Glieds nicht.
+    </div>
+    <div class="quiz" id="quiz-ausmultiplizieren"></div>
+  </section>
+
+  <!-- 3. Ausklammern -->
+  <section class="card" id="sec-ausklammern">
+    <h2>3. Ausklammern — das Gesetz rückwärts</h2>
+    <p>6x + 9 sind 6 x-Streifen und 9 Einerkacheln. Lassen sie sich zu einem Rechteck mit gleich vielen Zeilen legen? Dann steht die Zahl der Zeilen vor der Klammer und eine Zeile in der Klammer: 6x + 9 = 3 · (2x + 3). Wähle einen Term und probiere verschiedene Zeilenzahlen.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Term:
+          <select id="ak-term" class="eingabe" style="padding:0.4rem">
+            <option value="0">6x + 9</option>
+            <option value="1">4x + 8</option>
+            <option value="2">8x + 12</option>
+            <option value="3">6x + 4</option>
+            <option value="4">10x + 15</option>
+          </select>
+        </label>
+        <label>Zeilen: <input type="range" id="ak-k" min="1" max="6" step="1" value="1" style="vertical-align:middle;width:8rem"> <span id="ak-k-anzeige" class="th-name-c"></span></label>
+      </div>
+      <div class="th-wrap" id="ak-mount"></div>
+      <div class="th-bilanz" id="ak-bilanz"></div>
+      <div id="ak-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Ausklammern</span>
+      Haben alle Glieder einer Summe einen gemeinsamen Faktor, kann man ihn vor eine Klammer schreiben: <strong>a · b + a · c = a · (b + c)</strong>. In der Klammer steht, was übrig bleibt, wenn man jedes Glied durch den Faktor teilt: 6x + 9 = 3 · (2x + 3).<br>
+      <strong>Probe:</strong> Ausmultiplizieren muss wieder den Anfang ergeben.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die 1 bleibt stehen</span>
+      4x + 4 = 4 · (x + 1), nicht 4 · x: Wird ein ganzes Glied ausgeklammert, bleibt in der Klammer eine 1 stehen. Die Probe zeigt es — 4 · x ist nur 4x.
+    </div>
+    <div class="quiz" id="quiz-ausklammern"></div>
+  </section>
+
+  <!-- 4. Vollständig ausklammern -->
+  <section class="card" id="sec-vollstaendig">
+    <h2>4. Vollständig ausklammern</h2>
+    <p>Bei 12x² − 8x passen viele Faktoren: 2, 4, x, 2x, 4x. <span class="term">Vollständig ausgeklammert</span> ist der Term erst, wenn in der Klammer kein gemeinsamer Faktor mehr übrig ist — weder eine Zahl noch eine Variable. Wähle einen Term und einen Faktor.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Term:
+          <select id="va-term" class="eingabe" style="padding:0.4rem">
+            <option value="0">12x² − 8x</option>
+            <option value="1">6x² + 9x</option>
+            <option value="2">4a²b − 6ab²</option>
+            <option value="3">5xy + 10x</option>
+          </select>
+        </label>
+        <label>ausklammern: <select id="va-faktor" class="eingabe" style="padding:0.4rem"></select></label>
+      </div>
+      <div class="th-bilanz" id="va-bilanz"></div>
+      <div id="va-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Vollständig ausklammern</span>
+      1. Die <strong>Zahl</strong>: der größte gemeinsame Teiler der Zahlen (ggT).<br>
+      2. Die <strong>Variablen</strong>: jede, die in allen Gliedern vorkommt, so oft, wie sie im Glied mit den wenigsten vorkommt.<br>
+      12x² − 8x = <strong>4x · (3x − 2)</strong>: ggT(12, 8) = 4, und x steckt in beiden Gliedern einmal.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — halb fertig</span>
+      12x² − 8x = 4 · (3x² − 2x) ist richtig, aber nicht vollständig: In der Klammer steckt noch x. Und 12x² − 8x = 2x · (6x − 4) ist auch nicht fertig — 6 und 4 haben noch den Teiler 2.
+    </div>
+    <div class="quiz" id="quiz-vollstaendig"></div>
+  </section>
+
+  <!-- 5. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>5. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="terme-vereinfachen.html#sec-produkte">Produkte vereinfachen</a> und <a href="terme-vereinfachen.html#sec-klammern">Minusklammern</a> aus Thema 2 — die Minusklammer ist das Distributivgesetz mit dem Faktor −1.</li>
+      <li><strong>Baut auf:</strong> Dem <a href="../../grundwissen-5-10/01-groessen-und-rechnen/03-brueche-und-dezimalzahlen/index.html#sec-erweitern">größten gemeinsamen Teiler</a> vom Kürzen — er ist die Zahl, die man vollständig ausklammert.</li>
+      <li><strong>Zum Nachschlagen:</strong> <a href="../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/04-terme/index.html#sec-ausmultiplizieren">Ausmultiplizieren und Ausklammern</a> im Grundwissen.</li>
+      <li><strong>Führt weiter zu:</strong> <a href="klammern-multiplizieren.html">Terme mit Klammern multiplizieren (Thema 4)</a> — dort steht vor der Klammer selbst eine Summe: (a + b) · (c + d).</li>
+      <li><strong>Gleiche Struktur:</strong> Die <a href="../geometrie/flaecheninhalte.html">Flächeninhalte</a> — ein Rechteck, das man in zwei Rechtecke teilt, ist das Distributivgesetz als Bild.</li>
+    </ul>
+  </section>
+
+  <!-- 6. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>6. Formelsammlung</h2>
+    <p>Die Formelsammlung gilt für alle fünf Termseiten: Variable und Term, Rechenbaum, gleichwertige Terme, die Rechengesetze, Ausmultiplizieren und Ausklammern, Summen multiplizieren und die drei binomischen Formeln — mit Flächenbildern und den typischen Fehlern, auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 7. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>7. Übungsaufgaben</h2>
+    <p>Acht Aufgaben, zwei auf jeder Schwierigkeitsstufe. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu.</p>
+    <p class="progress-note">Beim Ausmultiplizieren ist der fertig vereinfachte Term gefragt, beim Ausklammern die Produktform mit Klammer. Die Reihenfolge der Glieder ist frei.</p>
+    <div id="exercises-mount"></div>
+  </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-distributiv">Ich kann das Distributivgesetz an einem Rechteck erklären.</li>
+      <li data-abschnitt="sec-ausmultiplizieren">Ich kann einen Term ausmultiplizieren, auch mit negativen Zahlen und Variablen vor der Klammer.</li>
+      <li data-abschnitt="sec-ausklammern">Ich kann einen gemeinsamen Faktor ausklammern.</li>
+      <li data-abschnitt="sec-vollstaendig">Ich kann vollständig ausklammern — die größte Zahl und alle gemeinsamen Variablen.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
+  </section>
+
+  <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
+  <section class="card" data-lehrkraft="ausmultiplizieren-ausklammern-lehrkraefte.html" hidden></section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="index.html">Zurück zu Terme</a></p>
+  <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script src="../../../assets/lehrkraft.js"></script>
+<script src="../../../assets/selbsteinschaetzung.js"></script>
+<script type="module" src="ausmultiplizieren-ausklammern.js?v=1"></script>
+</body>
+</html>
