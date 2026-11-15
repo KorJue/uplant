@@ -31,7 +31,7 @@ const { pruefe } = bericht;
 const WURZEL = path.resolve(__dirname, "..");
 
 // Die Klasse-8-Lernpfade. Rätsel und Faktencheck haben ihre eigene Selbsteinschätzung je Fall.
-const KLASSE_8 = ["flaecheninhalte", "grundkonstruktionen", "satz-des-thales", "kreis"].map((n) => `/mathematik/klasse-8/geometrie/${n}.html`);
+const KLASSE_8 = ["flaecheninhalte", "grundkonstruktionen", "satz-des-thales", "kreis", "zusammengesetzte-figuren"].map((n) => `/mathematik/klasse-8/geometrie/${n}.html`);
 // Die MSS-Lernpfade: jede Seite unter mss11/mss13 mit Übungsaufgaben. Ihre Sätze stehen je Abschnitt,
 // nicht je Ziel aus „Worum geht es hier?“ — die Anzahl wird dort nicht verglichen.
 const MSS = [];

@@ -848,3 +848,120 @@
 .optional-teil { border-left: 4px dashed var(--border); padding-left: 1rem; margin-top: 1.4rem; }
 .optional-marke { display: inline-block; vertical-align: middle; margin-left: 0.4rem; padding: 0.1rem 0.55rem; border: 1px solid var(--border); border-radius: 999px; background: var(--bg); color: var(--muted); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
 .optional-hinweis { color: var(--muted); font-size: 0.93rem; }
+
+
+/* ================= Zusammengesetzte Figuren ================= */
+
+/* Farben wie auf den übrigen Geometrieseiten: Flächen grün, das herausgenommene Stück orange,
+   Längen blau, Höhe und Winkel violett, der abgeschrittene Rand orange (wie Umfang und Bogen beim
+   Kreis), Schnittkanten gestrichelt — und rot, wo der Umfang das Thema ist: Sie zählen nicht.
+   Alles steht als Klasse hier und nicht im Skript, damit der Dunkelmodus die Farben aufhellen kann. */
+
+/* Ein Teil lässt sich anfassen und verschieben. touch-action: none, damit der Finger das Teil
+   bewegt und nicht die Seite rollt. */
+.zf-teil { fill: #157347; fill-opacity: 0.2; stroke: #157347; stroke-width: 1.2; stroke-linejoin: round; cursor: grab; touch-action: none; }
+.zf-teil.zf-teil-b { fill: #b3650a; stroke: #b3650a; fill-opacity: 0.3; }
+.zf-teil.zf-aktiv { fill-opacity: 0.45; stroke-width: 2.2; }
+.zf-teil.zf-zieht { cursor: grabbing; }
+.zf-teil:focus { outline: none; }
+.zf-teil:focus-visible { stroke-width: 3.2; stroke-dasharray: 2 3; }
+/* Alles, was auf einem Teil liegt, lässt den Zeiger durch — sonst griffe man die Beschriftung
+   statt des Teils. */
+.zf-rand, .zf-schnitt, .zf-spur, .zf-laeufer, .zf-start, .zf-winkel, .zf-mass-linie,
+.th-flaeche text.zf-nr, .th-flaeche text.zf-wert, .th-flaeche text.zf-mass-text,
+.th-flaeche text.zf-winkel-text, .th-flaeche text.zf-start-text { pointer-events: none; }
+
+.zf-rand { fill: none; stroke: #1f2328; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.zf-rand.zf-rand-aktiv { stroke: #b3650a; stroke-width: 5; }
+.zf-spur { fill: none; stroke: #b3650a; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+.zf-laeufer { fill: #b3650a; stroke: var(--card-bg); stroke-width: 2; }
+.zf-start { fill: #1f2328; }
+.zf-start-text { font-size: 12px; font-weight: 700; fill: #1f2328; }
+.zf-schnitt { fill: none; stroke: #6b7280; stroke-width: 1.6; stroke-dasharray: 6 4; }
+.zf-schnitt.zf-schnitt-rot { stroke: #b3261e; stroke-width: 2.4; }
+.zf-winkel { fill: #6d28d9; fill-opacity: 0.2; stroke: #6d28d9; stroke-width: 1.3; stroke-linejoin: round; }
+.zf-winkel-text { font-size: 13px; font-weight: 700; fill: #6d28d9; }
+.zf-mass-linie { stroke-width: 1.3; }
+.zf-mass-linie.zf-laenge { stroke: #1d4ed8; }
+.zf-mass-linie.zf-hoehe { stroke: #6d28d9; }
+.zf-mass-text { font-size: 13px; font-weight: 700; }
+.zf-mass-text.zf-laenge-text { fill: #1d4ed8; }
+.zf-mass-text.zf-hoehe-text { fill: #6d28d9; }
+/* Hof in der Farbe der Zeichenfläche: Nummern und Werte liegen auf gefärbten Teilen und auf Kanten. */
+.zf-nr { font-size: 16px; font-weight: 700; fill: #0f5132; paint-order: stroke fill; stroke: var(--card-bg); stroke-width: 3px; stroke-linejoin: round; }
+.zf-nr.zf-nr-b { fill: #8a4b06; }
+.zf-nr.zf-nr-rand { fill: #8a4b06; }
+.zf-wert { font-size: 12px; font-weight: 700; fill: #0f5132; paint-order: stroke fill; stroke: var(--card-bg); stroke-width: 3px; stroke-linejoin: round; }
+.zf-wert.zf-nr-b { fill: #8a4b06; }
+
+:root[data-theme="dark"] .zf-teil { fill: #6fd68f; stroke: #6fd68f; }
+:root[data-theme="dark"] .zf-teil.zf-teil-b { fill: #ffbf6e; stroke: #ffbf6e; }
+:root[data-theme="dark"] .zf-rand { stroke: #e6e8eb; }
+:root[data-theme="dark"] .zf-rand.zf-rand-aktiv,
+:root[data-theme="dark"] .zf-spur { stroke: #ffbf6e; }
+:root[data-theme="dark"] .zf-laeufer { fill: #ffbf6e; }
+:root[data-theme="dark"] .zf-start { fill: #e6e8eb; }
+:root[data-theme="dark"] .zf-start-text { fill: #e6e8eb; }
+:root[data-theme="dark"] .zf-schnitt { stroke: #9aa4b1; }
+:root[data-theme="dark"] .zf-schnitt.zf-schnitt-rot { stroke: #ff8a8a; }
+:root[data-theme="dark"] .zf-winkel { fill: #c4a7ff; stroke: #c4a7ff; }
+:root[data-theme="dark"] .zf-winkel-text { fill: #c4a7ff; }
+:root[data-theme="dark"] .zf-mass-linie.zf-laenge { stroke: #8ab4ff; }
+:root[data-theme="dark"] .zf-mass-linie.zf-hoehe { stroke: #c4a7ff; }
+:root[data-theme="dark"] .zf-mass-text.zf-laenge-text { fill: #8ab4ff; }
+:root[data-theme="dark"] .zf-mass-text.zf-hoehe-text { fill: #c4a7ff; }
+:root[data-theme="dark"] .zf-nr,
+:root[data-theme="dark"] .zf-wert { fill: #a8ecbd; }
+:root[data-theme="dark"] .zf-nr.zf-nr-b,
+:root[data-theme="dark"] .zf-nr.zf-nr-rand,
+:root[data-theme="dark"] .zf-wert.zf-nr-b { fill: #ffd296; }
+
+/* Die Rechnung in Schritten unter der Zeichnung: je Schritt eine Zeile aus Name, Eingabe (oder
+   der fertigen Rechnung) und Rückmeldung. Erledigte Schritte stehen ruhig da, der laufende ist
+   abgesetzt, die kommenden sind blass. */
+.zf-rechnung { padding: 0.4rem 0.8rem 0.6rem; }
+.zf-gruppe { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); margin: 0.7rem 0 0.15rem; }
+.zf-schritt { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.7rem; padding: 0.35rem 0.4rem; border-top: 1px solid var(--border); }
+.zf-gruppe + .zf-schritt { border-top: none; }
+.zf-schritt-name { min-width: 13.5rem; font-weight: 600; }
+.zf-schritt-nr { display: inline-block; min-width: 1.4em; color: #157347; font-weight: 700; }
+.zf-schritt.aktiv { background: var(--bg); border-radius: 6px; border-top-color: transparent; }
+.zf-schritt.aktiv + .zf-schritt { border-top-color: transparent; }
+.zf-schritt.wartet { opacity: 0.55; }
+.zf-eingabe { display: inline-flex; align-items: center; gap: 0.4rem; }
+.zf-eingabe input { width: 6.5rem; padding: 0.35rem 0.5rem; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; font-family: inherit; background: var(--card-bg); color: var(--text); }
+.zf-einheit { color: var(--muted); }
+.zf-knoepfe { display: inline-flex; flex-wrap: wrap; gap: 0.4rem; }
+.zf-knoepfe .btn { padding: 0.3rem 0.7rem; font-size: 0.88rem; }
+.zf-weg { flex: 1 1 18rem; }
+.zf-haken { font-weight: 700; color: #157347; }
+.zf-haken.gezeigt { font-weight: 400; font-size: 0.82rem; color: var(--muted); }
+.zf-rueck { flex-basis: 100%; font-size: 0.92rem; }
+.zf-rueck:empty { display: none; }
+.zf-rueck.err { color: #b3261e; }
+.zf-rueck.tipp { color: #6d28d9; }
+.zf-klein { font-size: 0.85rem; color: var(--muted); }
+.zf-fuss { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin-top: 0.5rem; }
+.zf-fuss:empty { display: none; }
+.zf-fuss .btn { padding: 0.3rem 0.7rem; font-size: 0.88rem; }
+.zf-fertig { font-weight: 700; color: #157347; }
+:root[data-theme="dark"] .zf-schritt-nr,
+:root[data-theme="dark"] .zf-haken,
+:root[data-theme="dark"] .zf-fertig { color: #6fd68f; }
+:root[data-theme="dark"] .zf-haken.gezeigt { color: var(--muted); }
+:root[data-theme="dark"] .zf-rueck.err { color: #ff8a8a; }
+:root[data-theme="dark"] .zf-rueck.tipp { color: #c4a7ff; }
+@media (max-width: 560px) {
+  .zf-schritt-name { min-width: 0; flex-basis: 100%; }
+}
+
+/* Die Figuren in den Aufgabentexten: Kanten, Flächen und Maße wie auf den Flächeninhalten
+   (.fl-fig-…), dazu Maßlinien mit Endstrichen und gestrichelte Schnittkanten. */
+.zf-fig-mass { stroke: #1d4ed8; stroke-width: 1.2; }
+.zf-fig-mass-hoehe { stroke: #6d28d9; stroke-width: 1.2; }
+.zf-fig-schnitt { stroke: #6b7280; stroke-width: 1.2; stroke-dasharray: 5 4; fill: none; }
+.zf-fig-rand { stroke: #b3650a; stroke-width: 3.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+:root[data-theme="dark"] .zf-fig-mass { stroke: #8ab4ff; }
+:root[data-theme="dark"] .zf-fig-mass-hoehe { stroke: #c4a7ff; }
+:root[data-theme="dark"] .zf-fig-schnitt { stroke: #9aa4b1; }
+:root[data-theme="dark"] .zf-fig-rand { stroke: #ffbf6e; }
