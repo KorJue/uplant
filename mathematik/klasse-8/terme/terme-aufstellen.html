@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terme aufstellen und Termwerte berechnen</title>
+<script src="../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../assets/site.css">
+<link rel="stylesheet" href="../../aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../index.html">Klasse 8</a><span class="sep">/</span>
+  <a href="index.html">Terme</a><span class="sep">/</span>
+  1 Terme aufstellen
+</nav>
+<header class="page-header">
+  <h1>Terme aufstellen und Termwerte berechnen</h1>
+  <p>Ein Selbstlernpfad: Mit Variablen beschreibt man, was für alle Zahlen gilt — an wachsenden Mustern, Rechenbäumen und Wertetabellen, mit Kontrollfragen und acht Übungsaufgaben.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Wie viele Hölzchen braucht eine Reihe aus 100 Quadraten? Zählen dauert — ein Term sagt es für jede Länge auf einmal. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>ein wachsendes Muster mit einer <span class="term">Variablen</span> beschreiben und dazu einen <span class="term">Term</span> aufstellen — auf mehreren Wegen</li>
+      <li>Worte in einen Term übersetzen und am <span class="term">Rechenbaum</span> erkennen, wo eine Klammer nötig ist</li>
+      <li><span class="term">Termwerte</span> berechnen, auch für negative Zahlen, und eine <span class="term">Wertetabelle</span> anlegen</li>
+      <li>entscheiden, ob zwei Terme <span class="term">gleichwertig</span> sind — und mit einem Gegenbeispiel zeigen, wenn sie es nicht sind</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst die <a href="../../grundwissen-5-10/01-groessen-und-rechnen/02-rechnen-mit-natuerlichen-zahlen/index.html#sec-rangfolge">Reihenfolge der Rechenarten</a> (Klammer vor Potenz vor Punkt vor Strich) und die <a href="../../grundwissen-5-10/01-groessen-und-rechnen/06-erweiterung-des-zahlenbereichs/index.html#sec-vorzeichen">Vorzeichenregeln</a> für negative Zahlen.</p>
+  </section>
+
+  <!-- 1. Muster -->
+  <!-- Reihenfolge: erst das Muster (eine Variable zählt mit), dann das Übersetzen mit dem Rechenbaum,
+       dann das Einsetzen, zuletzt die Frage, wann zwei Terme gleichwertig sind. Umformen kommt erst
+       auf der nächsten Seite — hier wird Gleichwertigkeit nur durch Einsetzen geprüft. -->
+  <section class="card" id="sec-muster">
+    <h2>1. Ein Muster beschreiben: Variable und Term</h2>
+    <p>Aus Streichhölzern wird eine Reihe von Quadraten gelegt. Für 1 Quadrat braucht man 4 Hölzchen, für 2 Quadrate 7, für 3 Quadrate 10. Und für n Quadrate? Die Zahl n heißt <span class="term">Variable</span>: Sie steht für jede mögliche Anzahl. Zieh am Regler <strong>Quadrate</strong> und wähle eine <strong>Zählweise</strong> — jede führt auf einen anderen Term.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Quadrate n: <input type="range" id="sm-n" min="1" max="10" step="1" value="4" style="vertical-align:middle;width:10rem"> <span id="sm-n-anzeige" class="th-name-r"></span></label>
+        <label>Zählweise:
+          <select id="sm-art" class="eingabe" style="padding:0.4rem">
+            <option value="a">erst ein Hölzchen, dann je Quadrat drei</option>
+            <option value="b">erst ein ganzes Quadrat, dann je weiteres drei</option>
+            <option value="c">waagerechte und senkrechte getrennt</option>
+          </select>
+        </label>
+      </div>
+      <div class="btn-row">
+        <label>Gruppen auseinanderziehen: <input type="range" id="sm-t" min="0" max="100" step="5" value="0" style="vertical-align:middle;width:10rem"> <span id="sm-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="sm-mount"></div>
+      <div class="th-bilanz" id="sm-bilanz"></div>
+      <div id="sm-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Variable und Term</span>
+      Eine <strong>Variable</strong> ist ein Platzhalter für eine Zahl — hier für die Anzahl n der Quadrate. Ein <strong>Term</strong> ist ein Rechenausdruck aus Zahlen, Variablen und Rechenzeichen, zum Beispiel <strong>1 + 3 · n</strong>. Er gilt für jede Anzahl zugleich.<br>
+      Verschiedene Zählweisen führen auf verschiedene Terme — <strong>1 + 3 · n</strong>, <strong>4 + 3 · (n − 1)</strong>, <strong>2 · n + (n + 1)</strong> —, die für jedes n dasselbe Ergebnis liefern. Solche Terme heißen <strong>gleichwertig</strong>.
+    </div>
+    <p class="hinweis-box">💡 Den Malpunkt zwischen Zahl und Variable darf man weglassen: 3 · n schreibt man kurz <strong>3n</strong>. Zwischen zwei Zahlen bleibt er stehen — 3 · 4 ist nicht 34.</p>
+    <div class="quiz" id="quiz-muster"></div>
+  </section>
+
+  <!-- 2. Rechenbaum -->
+  <section class="card" id="sec-rechenbaum">
+    <h2>2. Von Worten zum Term: der Rechenbaum</h2>
+    <p>„Das Doppelte einer Zahl, vermindert um 3“ und „das Doppelte der um 3 verminderten Zahl“ klingen fast gleich — und rechnen verschieden. Was zuerst gerechnet wird, zeigt ein <span class="term">Rechenbaum</span>: Unten stehen Zahlen und Variable, jede Verzweigung ist ein Rechenschritt, und ganz oben steht der <strong>letzte</strong>. Wähle einen Satz und setze verschiedene Zahlen ein.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Satz:
+          <select id="rb-satz" class="eingabe" style="padding:0.4rem;max-width:100%">
+            <option value="0">das Doppelte einer Zahl, vermindert um 3</option>
+            <option value="1">das Doppelte der um 3 verminderten Zahl</option>
+            <option value="2">das Dreifache einer Zahl, vermehrt um 5</option>
+            <option value="3">die Summe aus einer Zahl und 5, verdreifacht</option>
+            <option value="4">das Quadrat einer Zahl, vermehrt um 1</option>
+            <option value="5">das Quadrat der um 1 vermehrten Zahl</option>
+          </select>
+        </label>
+        <label>x = <input type="range" id="rb-x" min="-5" max="8" step="1" value="4" style="vertical-align:middle;width:9rem"> <span id="rb-x-anzeige" class="th-name-r"></span></label>
+      </div>
+      <div class="th-wrap" id="rb-mount"></div>
+      <div class="th-bilanz" id="rb-bilanz"></div>
+      <div id="rb-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Worte und Rechenzeichen</span>
+      <strong>Summe</strong>, vermehren, addieren → +<br>
+      <strong>Differenz</strong>, vermindern, subtrahieren → −<br>
+      <strong>Produkt</strong>, das Doppelte, das Dreifache, vervielfachen → ·<br>
+      <strong>Quotient</strong>, halbieren, teilen → :<br>
+      <strong>Quadrat</strong> → ²<br>
+      Der Term heißt nach seinem <strong>letzten</strong> Rechenschritt: 2x − 3 ist eine Differenz, 2 · (x − 3) ein Produkt.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Klammer</span>
+      „Das Doppelte der um 3 verminderten Zahl“ heißt: erst vermindern, dann verdoppeln. Ohne Klammer würde 2 · x − 3 zuerst verdoppelt — Punkt vor Strich. Richtig ist <strong>2 · (x − 3)</strong>. Für x = 4 ergibt das 2, der Term ohne Klammer aber 5.
+    </div>
+    <div class="quiz" id="quiz-rechenbaum"></div>
+  </section>
+
+  <!-- 3. Termwerte -->
+  <section class="card" id="sec-termwert">
+    <h2>3. Termwerte und Wertetabellen</h2>
+    <p>Setzt man für die Variable eine Zahl ein und rechnet aus, erhält man den <span class="term">Termwert</span>. Viele Termwerte auf einmal stehen in einer <span class="term">Wertetabelle</span>. Wähle einen Term, den Startwert und die Schrittweite.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Term:
+          <select id="wt-term" class="eingabe" style="padding:0.4rem">
+            <option value="0">3x − 4</option>
+            <option value="1">2 · (x + 5)</option>
+            <option value="2">x² − 2x</option>
+            <option value="3">−x² + 9</option>
+            <option value="4">(x − 1)²</option>
+          </select>
+        </label>
+        <label>Start: <input type="range" id="wt-start" min="-4" max="2" step="1" value="-2" style="vertical-align:middle;width:7rem"> <span id="wt-start-anzeige" class="th-name-r"></span></label>
+        <label>Schrittweite: <input type="range" id="wt-schritt" min="0.5" max="2" step="0.5" value="1" style="vertical-align:middle;width:7rem"> <span id="wt-schritt-anzeige" class="th-name-r"></span></label>
+      </div>
+      <div class="tm-tabelle-wrap" id="wt-mount"></div>
+      <div id="wt-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Einsetzen</span>
+      Für die Variable wird die Zahl eingesetzt — eine negative Zahl <strong>in Klammern</strong>. Dann wird gerechnet wie immer: Klammer vor Potenz vor Punkt vor Strich.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — x² für negative Zahlen</span>
+      Für x = −3 ist x² = (−3)² = (−3) · (−3) = <strong>9</strong>, nicht −9. Und −x² heißt −(x²): Für x = −3 ist −x² = −9. Ohne Klammer beim Einsetzen sieht man den Unterschied nicht mehr.
+    </div>
+    <div class="quiz" id="quiz-termwert"></div>
+  </section>
+
+  <!-- 4. Gleichwertige Terme -->
+  <section class="card" id="sec-gleichwertig">
+    <h2>4. Gleichwertige Terme</h2>
+    <p>Zwei Terme heißen <span class="term">gleichwertig</span>, wenn sie für <strong>jede</strong> Zahl, die man einsetzt, denselben Wert haben. Eine Tabelle hilft beim Vergleichen — aber sie hat nur endlich viele Zeilen. Wähle ein Paar und verschiebe den Ausschnitt der Tabelle.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Paar:
+          <select id="gw-paar" class="eingabe" style="padding:0.4rem">
+            <option value="0">2 · (x + 3) und 2x + 6</option>
+            <option value="1">2x + 3 und 2 · (x + 3)</option>
+            <option value="2">x + x + x und 3x</option>
+            <option value="3">x² und 2x</option>
+            <option value="4">(x + 1)² und x² + 1</option>
+            <option value="5">4x − 2 und 2 · (2x − 1)</option>
+          </select>
+        </label>
+        <label>Tabelle ab x = <input type="range" id="gw-start" min="-6" max="4" step="1" value="-2" style="vertical-align:middle;width:8rem"> <span id="gw-start-anzeige" class="th-name-r"></span></label>
+      </div>
+      <div class="tm-tabelle-wrap" id="gw-mount"></div>
+      <div id="gw-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Gleichwertig oder nicht?</span>
+      <strong>Nicht gleichwertig:</strong> Dafür genügt <em>eine</em> Zahl, bei der die Werte verschieden sind — ein <strong>Gegenbeispiel</strong>.<br>
+      <strong>Gleichwertig:</strong> Dafür genügt keine Tabelle, so lang sie auch ist. Man begründet es mit den Rechengesetzen — wie das geht, zeigt die nächste Seite. Eine Tabelle, in der alle Werte übereinstimmen, ist nur ein Hinweis.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — zufällig gleich</span>
+      x² und 2x haben für x = 0 und für x = 2 denselben Wert. Wer nur dort nachsieht, hält sie für gleichwertig. Schon x = 3 widerlegt es: 9 ist nicht 6.
+    </div>
+    <div class="quiz" id="quiz-gleichwertig"></div>
+  </section>
+
+  <!-- 5. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>5. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Der <a href="../../grundwissen-5-10/01-groessen-und-rechnen/02-rechnen-mit-natuerlichen-zahlen/index.html#sec-rangfolge">Reihenfolge der Rechenarten</a> — sie bestimmt den Rechenbaum und damit, wo eine Klammer nötig ist.</li>
+      <li><strong>Baut auf:</strong> Den <a href="../../grundwissen-5-10/01-groessen-und-rechnen/06-erweiterung-des-zahlenbereichs/index.html#sec-vorzeichen">Vorzeichenregeln</a> — beim Einsetzen negativer Zahlen entscheidet sich an ihnen jeder Termwert.</li>
+      <li><strong>Zum Nachschlagen:</strong> Die <a href="../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/04-terme/index.html#sec-term">Terme im Grundwissen</a> fassen Term, Variable und Termwert kurz zusammen.</li>
+      <li><strong>Führt weiter zu:</strong> <a href="terme-vereinfachen.html">Terme vereinfachen (Thema 2)</a> — dort wird mit den Rechengesetzen <em>begründet</em>, warum zwei Terme gleichwertig sind, statt es nur in einer Tabelle zu vermuten.</li>
+      <li><strong>Führt weiter zu:</strong> Den <a href="../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/05-lineare-funktionen/index.html#sec-funktion">linearen Funktionen</a> — eine Wertetabelle zu 3x − 4 ist schon eine Funktion, und ihr Graph zeigt alle Termwerte auf einen Blick.</li>
+      <li><strong>Gleiche Struktur:</strong> Die <a href="../geometrie/flaecheninhalte.html">Flächenformeln</a> aus der Geometrie sind Terme mit mehreren Variablen: A = ½ · g · h gilt für jedes Dreieck.</li>
+    </ul>
+  </section>
+
+  <!-- 6. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>6. Formelsammlung</h2>
+    <p>Die Formelsammlung gilt für alle fünf Termseiten: Variable und Term, Rechenbaum, gleichwertige Terme, die Rechengesetze, Ausmultiplizieren und Ausklammern, Summen multiplizieren und die drei binomischen Formeln — mit Flächenbildern und den typischen Fehlern, auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 7. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>7. Übungsaufgaben</h2>
+    <p>Acht Aufgaben, zwei auf jeder Schwierigkeitsstufe. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu.</p>
+    <p class="progress-note">Zahlen mit Komma als Dezimaltrennzeichen, negative Zahlen mit Minuszeichen davor. Wo ein Term gefragt ist, darfst du ihn in jeder gleichwertigen Form schreiben.</p>
+    <div id="exercises-mount"></div>
+  </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-muster">Ich kann ein wachsendes Muster mit einer Variablen beschreiben und dazu einen Term aufstellen.</li>
+      <li data-abschnitt="sec-rechenbaum">Ich kann Worte in einen Term übersetzen und am Rechenbaum erkennen, wo eine Klammer nötig ist.</li>
+      <li data-abschnitt="sec-termwert">Ich kann Termwerte berechnen, auch für negative Zahlen, und eine Wertetabelle anlegen.</li>
+      <li data-abschnitt="sec-gleichwertig">Ich kann entscheiden, ob zwei Terme gleichwertig sind, und ein Gegenbeispiel angeben, wenn sie es nicht sind.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
+  </section>
+
+  <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
+  <section class="card" data-lehrkraft="terme-aufstellen-lehrkraefte.html" hidden></section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="index.html">Zurück zu Terme</a></p>
+  <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script src="../../../assets/lehrkraft.js"></script>
+<script src="../../../assets/selbsteinschaetzung.js"></script>
+<script type="module" src="terme-aufstellen.js?v=1"></script>
+</body>
+</html>

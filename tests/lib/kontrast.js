@@ -62,4 +62,30 @@ async function pruefeKontrast(page, bericht, wo) {
   bericht.pruefe(geprueft > 10, `${wo}: nur ${geprueft} Textproben für die Kontrastprüfung gefunden`);
 }
 
-module.exports = { pruefeKontrast, leuchtdichte, SCHRANKE };
+// Farbige Linien einer Zeichnung (Hölzchen, Kanten): gleiche Schranke, gemessen wird die Strichfarbe
+// gegen den Untergrund der Zeichnung. Text allein reicht nicht — eine Zählweise, die nur aus
+// farbigen Strichen besteht, verschwände sonst unbemerkt im dunklen Grund.
+async function pruefeStrichKontrast(page, bericht, wo, selektor) {
+  const proben = await page.evaluate(([quelle, sel]) => {
+    const grundVon = eval(quelle);
+    return [...document.querySelectorAll(sel)].map((e) => ({
+      farbe: getComputedStyle(e).stroke,
+      grund: grundVon(e.closest("svg") || e),
+      name: e.getAttribute("class") || e.tagName,
+    }));
+  }, [GRUND_IM_BROWSER, selektor]);
+  const schon = new Set();
+  for (const p of proben) {
+    const lv = leuchtdichte(p.farbe), lg = leuchtdichte(p.grund);
+    if (lv === null || lg === null) continue;
+    const abstand = Math.abs(lv - lg) * 255;
+    const schluessel = `${p.name}|${p.farbe}|${p.grund}`;
+    if (schon.has(schluessel)) continue;
+    schon.add(schluessel);
+    bericht.pruefe(abstand > SCHRANKE,
+      `${wo}: Linie „${p.name}“ (${p.farbe}) hat nur Δ${abstand.toFixed(0)} Leuchtdichte zum Untergrund (nötig > ${SCHRANKE})`);
+  }
+  bericht.pruefe(proben.length > 0, `${wo}: keine Linien für „${selektor}“ gefunden`);
+}
+
+module.exports = { pruefeKontrast, pruefeStrichKontrast, leuchtdichte, SCHRANKE };

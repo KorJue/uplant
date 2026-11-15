@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terme vereinfachen</title>
+<script src="../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../assets/site.css">
+<link rel="stylesheet" href="../../aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../index.html">Klasse 8</a><span class="sep">/</span>
+  <a href="index.html">Terme</a><span class="sep">/</span>
+  2 Terme vereinfachen
+</nav>
+<header class="page-header">
+  <h1>Terme vereinfachen</h1>
+  <p>Ein Selbstlernpfad: Gleichartiges zusammenfassen, Produkte und Klammern auflösen — mit Kacheln, die man sortieren und umdrehen kann, mit Kontrollfragen und acht Übungsaufgaben.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>4x + 5 − x − 2 und 3x + 3 sind gleichwertig — auf der vorigen Seite konnte das nur eine Tabelle vermuten. Hier wird es mit den Rechengesetzen <em>begründet</em>. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li><span class="term">gleichartige Glieder</span> erkennen und zusammenfassen</li>
+      <li><span class="term">Produkte</span> wie 3x · 4y oder 2a · 5a vereinfachen</li>
+      <li><span class="term">Plus- und Minusklammern</span> auflösen</li>
+      <li>einen längeren Term <span class="term">Schritt für Schritt</span> vereinfachen und jeden Schritt mit einem Rechengesetz begründen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst <a href="terme-aufstellen.html#sec-gleichwertig">gleichwertige Terme</a> aus Thema 1 und die <a href="../../grundwissen-5-10/01-groessen-und-rechnen/02-rechnen-mit-natuerlichen-zahlen/index.html#sec-rechengesetze">Rechengesetze</a> (Kommutativ- und Assoziativgesetz).</p>
+  </section>
+
+  <!-- 1. Gleichartige Glieder -->
+  <!-- Reihenfolge: erst Summen (Kacheln sortieren — nur das Kommutativgesetz der Addition), dann
+       Produkte (Rechteck aus Kacheln), dann Klammern (Kacheln umdrehen), zuletzt der ganze Rechenweg.
+       Das Distributivgesetz mit einer Zahl oder Variablen vor der Klammer kommt erst auf der nächsten
+       Seite; hier steht vor einer Klammer nur ein Plus oder ein Minus. -->
+  <section class="card" id="sec-gleichartig">
+    <h2>1. Gleichartige Glieder zusammenfassen</h2>
+    <p>Stell dir jedes Glied eines Terms als Kacheln vor: einen langen Streifen für x, einen kürzeren für y, ein großes Quadrat für x², ein kleines Quadrat für 1. Eine Kachel mit gestricheltem Rand steht für ein Minus. Wähle einen Term und schiebe den Regler <strong>Sortieren</strong> — die Kacheln wandern zu ihresgleichen.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Term:
+          <select id="ka-term" class="eingabe" style="padding:0.4rem">
+            <option value="0">2x + 3 + x + 1</option>
+            <option value="1">x² + 2x + 2x² + 3 + x</option>
+            <option value="2">3x + 2y + x + y + 2</option>
+            <option value="3">4x + 5 − x − 2</option>
+            <option value="4">2x² − x + 3x − x² − 1</option>
+          </select>
+        </label>
+        <label>Sortieren: <input type="range" id="ka-t" min="0" max="100" step="5" value="0" style="vertical-align:middle;width:10rem"> <span id="ka-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="ka-mount"></div>
+      <div class="th-bilanz" id="ka-bilanz"></div>
+      <div id="ka-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Gleichartige Glieder</span>
+      Glieder mit denselben Variablen in denselben Hochzahlen heißen <strong>gleichartig</strong>: 3x und −5x, 2x² und x², 4xy und yx. Gleichartige Glieder fasst man zusammen, indem man ihre Zahlen addiert: <strong>3x + 5x = 8x</strong>, 2x² − x² = x².<br>
+      <strong>Nicht gleichartig</strong> sind x und x², x und y, x und 1 — sie bleiben nebeneinander stehen: 3x + 2 ist schon fertig.
+    </div>
+    <p class="hinweis-box">💡 Beim Umsortieren nimmt jedes Glied sein Vorzeichen mit: 4x + 5 − x − 2 = 4x − x + 5 − 2. Das erlaubt das <strong>Kommutativgesetz</strong> der Addition — die Reihenfolge der Summanden ändert den Wert nicht. Eine Minus-Kachel neben einer Plus-Kachel derselben Sorte ergibt zusammen 0: x − x = 0, ein <strong>Nullpaar</strong>.</p>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel</span>
+      3a + 4b − a + 2b − 5: Die a-Glieder ergeben 3a − a = 2a, die b-Glieder 4b + 2b = 6b, die Zahl −5 bleibt. Also <strong>3a + 4b − a + 2b − 5 = 2a + 6b − 5</strong>.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Summe ist nicht Quadrat</span>
+      x + x = <strong>2x</strong>, nicht x². Und 3x + 2 wird nicht zu 5x: Ein x-Streifen und zwei kleine Quadrate lassen sich nicht zu einer Sorte zusammenlegen.
+    </div>
+    <div class="quiz" id="quiz-gleichartig"></div>
+  </section>
+
+  <!-- 2. Produkte -->
+  <section class="card" id="sec-produkte">
+    <h2>2. Produkte vereinfachen</h2>
+    <p>3x · 4y ist der Flächeninhalt eines Rechtecks, das 3 x-Längen breit und 4 y-Längen hoch ist. Es besteht aus 3 · 4 = 12 Kacheln, jede x breit und y hoch, also mit dem Flächeninhalt xy. Stelle die Faktoren ein und zieh das Rechteck mit dem Regler in seine Kacheln auseinander.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Produkt:
+          <select id="pr-art" class="eingabe" style="padding:0.4rem">
+            <option value="xy">Zahl · x mal Zahl · y</option>
+            <option value="xx">Zahl · x mal Zahl · x</option>
+            <option value="x1">Zahl · x mal Zahl</option>
+          </select>
+        </label>
+        <label>erster Faktor: <input type="range" id="pr-a" min="1" max="4" step="1" value="3" style="vertical-align:middle;width:6rem"> <span id="pr-a-anzeige" class="th-name-c"></span></label>
+        <label>zweiter Faktor: <input type="range" id="pr-b" min="1" max="4" step="1" value="4" style="vertical-align:middle;width:6rem"> <span id="pr-b-anzeige" class="th-name-r"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>auseinanderziehen: <input type="range" id="pr-t" min="0" max="100" step="5" value="0" style="vertical-align:middle;width:10rem"> <span id="pr-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="pr-mount"></div>
+      <div class="th-bilanz" id="pr-bilanz"></div>
+      <div id="pr-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Produkte vereinfachen</span>
+      In einem Produkt darf man die Faktoren vertauschen (<strong>Kommutativgesetz</strong>) und beliebig zusammenfassen (<strong>Assoziativgesetz</strong>). Also multipliziert man die Zahlen miteinander und die Variablen miteinander:<br>
+      <strong>3x · 4y = 3 · 4 · x · y = 12xy</strong> &nbsp; 2a · 5a = 2 · 5 · a · a = 10a² &nbsp; 3x · 4 = 12x
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — malnehmen, nicht addieren</span>
+      Die Zahlen eines Produkts werden multipliziert: 3x · 4y = <strong>12xy</strong>, nicht 7xy. Und x · x = <strong>x²</strong>, nicht 2x — das Rechteck aus zwei x-Seiten ist ein Quadrat.
+    </div>
+    <p class="hinweis-box">💡 Vergleiche Summe und Produkt: 3x + 4x = 7x (gleichartige Glieder zusammengefasst), aber 3x · 4x = 12x² (ein Rechteck aus 12 Quadraten).</p>
+    <div class="quiz" id="quiz-produkte"></div>
+  </section>
+
+  <!-- 3. Klammern -->
+  <section class="card" id="sec-klammern">
+    <h2>3. Plus- und Minusklammern</h2>
+    <p>Steht vor einer Klammer ein Plus, kann man sie einfach weglassen. Steht ein Minus davor, wird <em>alles</em> abgezogen, was in der Klammer steht — jede Kachel darin wird umgedreht: aus x wird −x, aus −3 wird +3. Wähle einen Term und dreh die Kacheln mit dem Regler um.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Term:
+          <select id="kl-term" class="eingabe" style="padding:0.4rem">
+            <option value="0">5x + (2x − 3)</option>
+            <option value="1">5x − (2x − 3)</option>
+            <option value="2">8 − (x + 3)</option>
+            <option value="3">4x − (−x + 2)</option>
+            <option value="4">6 + 2x − (4x − 5)</option>
+          </select>
+        </label>
+        <label>Klammer auflösen: <input type="range" id="kl-t" min="0" max="100" step="5" value="0" style="vertical-align:middle;width:10rem"> <span id="kl-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="kl-mount"></div>
+      <div class="th-bilanz" id="kl-bilanz"></div>
+      <div id="kl-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Klammern auflösen</span>
+      <strong>Plusklammer:</strong> a + (b − c) = a + b − c — die Klammer fällt weg, die Vorzeichen bleiben.<br>
+      <strong>Minusklammer:</strong> a − (b − c) = a − b + c — die Klammer fällt weg, <strong>jedes</strong> Vorzeichen in ihr dreht sich um.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Warum sich die Vorzeichen umdrehen</span>
+      Von 8 € gibst du erst x € und dann 3 € aus: Übrig sind 8 − x − 3. Genauso gut kannst du beide Beträge zusammen abziehen: 8 − (x + 3). Also ist <strong>8 − (x + 3) = 8 − x − 3 = 5 − x</strong>.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — nicht nur das erste Vorzeichen</span>
+      Bei einer Minusklammer dreht sich jedes Vorzeichen um: 5x − (2x − 3) = 5x − 2x <strong>+ 3</strong>, nicht 5x − 2x − 3.
+    </div>
+    <div class="quiz" id="quiz-klammern"></div>
+  </section>
+
+  <!-- 4. Schritt für Schritt -->
+  <section class="card" id="sec-schritte">
+    <h2>4. Schritt für Schritt vereinfachen</h2>
+    <p>Längere Terme vereinfacht man in einer festen Reihenfolge. Jeder Schritt beruht auf einem Rechengesetz — deshalb ist das Ergebnis mit dem Anfang gleichwertig, für <strong>jede</strong> Zahl. Das ist die Begründung, die eine <a href="terme-aufstellen.html#sec-gleichwertig">Wertetabelle</a> nicht liefern kann. Wähle einen Term und geh mit dem Regler Schritt für Schritt weiter.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Term:
+          <select id="sw-term" class="eingabe" style="padding:0.4rem;max-width:100%">
+            <option value="0">4x + 3y − (2x − y) + x · 3</option>
+            <option value="1">2a · 3b + 5ab − (ab − 4) − 6</option>
+            <option value="2">x · x + 3x − (x² − 2x) + (4 − x)</option>
+          </select>
+        </label>
+        <label>Schritt: <input type="range" id="sw-schritt" min="0" max="4" step="1" value="0" style="vertical-align:middle;width:8rem"> <span id="sw-schritt-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="tm-schritte" id="sw-mount"></div>
+      <div id="sw-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Der Rechenweg</span>
+      1. <strong>Produkte</strong> vereinfachen: x · 3 = 3x, 2a · 3b = 6ab.<br>
+      2. <strong>Klammern</strong> auflösen: Plusklammer weglassen, bei einer Minusklammer jedes Vorzeichen umdrehen.<br>
+      3. <strong>Ordnen:</strong> gleichartige Glieder nebeneinander, jedes mit seinem Vorzeichen.<br>
+      4. <strong>Zusammenfassen</strong> — fertig ist der Term, wenn keine zwei Glieder mehr gleichartig sind.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Punkt vor Strich</span>
+      In 3x + 2 · x wird zuerst 2 · x = 2x gerechnet, dann 3x + 2x = 5x. Wer zuerst 3x + 2 = 5x „rechnet“, fasst Ungleichartiges zusammen und bekommt 5x · x = 5x² — falsch.
+    </div>
+    <p class="hinweis-box">💡 Probe: Setz am Ende eine Zahl in den Anfang und in das Ergebnis ein. Kommt etwas Verschiedenes heraus, steckt ein Fehler im Rechenweg.</p>
+    <div class="quiz" id="quiz-schritte"></div>
+  </section>
+
+  <!-- 5. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>5. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Den <a href="terme-aufstellen.html#sec-gleichwertig">gleichwertigen Termen</a> aus Thema 1 — dort wurde Gleichwertigkeit nur vermutet, hier wird sie begründet.</li>
+      <li><strong>Baut auf:</strong> Den <a href="../../grundwissen-5-10/01-groessen-und-rechnen/02-rechnen-mit-natuerlichen-zahlen/index.html#sec-rechengesetze">Rechengesetzen</a> — Kommutativ- und Assoziativgesetz erlauben das Ordnen und Zusammenfassen.</li>
+      <li><strong>Zum Nachschlagen:</strong> <a href="../../grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/04-terme/index.html#sec-zusammenfassen">Gleichartige Terme zusammenfassen</a> im Grundwissen.</li>
+      <li><strong>Führt weiter zu:</strong> <a href="ausmultiplizieren-ausklammern.html">Ausmultiplizieren und Ausklammern (Thema 3)</a> — dort steht vor der Klammer eine Zahl oder Variable: 3 · (x + 2).</li>
+      <li><strong>Gleiche Struktur:</strong> Die <a href="../geometrie/flaecheninhalte.html">Flächeninhalte</a> — das Rechteck aus Abschnitt 2 ist A = a · b, nur mit Termen als Seiten.</li>
+    </ul>
+  </section>
+
+  <!-- 6. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>6. Formelsammlung</h2>
+    <p>Die Formelsammlung gilt für alle fünf Termseiten: Variable und Term, Rechenbaum, gleichwertige Terme, die Rechengesetze, Ausmultiplizieren und Ausklammern, Summen multiplizieren und die drei binomischen Formeln — mit Flächenbildern und den typischen Fehlern, auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 7. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>7. Übungsaufgaben</h2>
+    <p>Acht Aufgaben, zwei auf jeder Schwierigkeitsstufe. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu.</p>
+    <p class="progress-note">Gefragt ist jeweils der fertig vereinfachte Term. Die Reihenfolge der Glieder ist frei: 3 + 2x gilt genauso wie 2x + 3.</p>
+    <div id="exercises-mount"></div>
+  </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-gleichartig">Ich kann gleichartige Glieder erkennen und zusammenfassen.</li>
+      <li data-abschnitt="sec-produkte">Ich kann Produkte wie 3x · 4y oder 2a · 5a vereinfachen.</li>
+      <li data-abschnitt="sec-klammern">Ich kann Plus- und Minusklammern auflösen.</li>
+      <li data-abschnitt="sec-schritte">Ich kann einen längeren Term Schritt für Schritt vereinfachen und jeden Schritt begründen.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
+  </section>
+
+  <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
+  <section class="card" data-lehrkraft="terme-vereinfachen-lehrkraefte.html" hidden></section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="index.html">Zurück zu Terme</a></p>
+  <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script src="../../../assets/lehrkraft.js"></script>
+<script src="../../../assets/selbsteinschaetzung.js"></script>
+<script type="module" src="terme-vereinfachen.js?v=1"></script>
+</body>
+</html>
