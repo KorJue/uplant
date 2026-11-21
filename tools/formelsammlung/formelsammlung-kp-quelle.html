@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Formelsammlung — Körper</title>
+<style>
+  @page { size: A4 landscape; margin: 5.5mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    color: #1f2328;
+    font-size: 8.1px;
+    line-height: 1.33;
+  }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  h1 {
+    font-size: 12.4px; margin: 0 0 1.4mm; padding-bottom: 0.8mm;
+    border-bottom: 1.6px solid #1d4ed8; color: #1d4ed8; letter-spacing: 0.01em;
+  }
+  h1 .klein { font-size: 8.4px; font-weight: 400; color: #5b6570; float: right; margin-top: 2px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2.1mm; align-items: start; }
+  .box {
+    border: 0.9px solid #c9d0d8; border-radius: 2mm; padding: 1.5mm 1.8mm;
+    background: #ffffff; break-inside: avoid;
+  }
+  .box.wide { grid-column: span 2; }
+  .box.full { grid-column: span 3; }
+  .box h2 {
+    font-size: 8.6px; margin: 0 0 1.1mm; color: #1d4ed8;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .box.warn { border-color: #e3b341; background: #fffaf0; }
+  .box.warn h2 { color: #8a5b0a; }
+  .box.merk { border-color: #7ec699; background: #f4fbf6; }
+  .box.merk h2 { color: #0f5132; }
+  p { margin: 0 0 0.9mm; }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 0.9mm; padding-left: 3.4mm; }
+  li { margin-bottom: 0.4mm; }
+  .f { font-family: "Cambria Math", Cambria, Georgia, serif; font-size: 9.2px; }
+  .zentral { text-align: center; }
+  .gross { font-size: 10.4px; font-weight: 700; }
+  .al { color: #157347; font-weight: 700; }
+  .be { color: #b3650a; font-weight: 700; }
+  .ga { color: #b3261e; font-weight: 700; }
+  .kr { color: #1d4ed8; font-weight: 700; }
+  .ra { color: #6d28d9; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { border: 0.7px solid #c9d0d8; padding: 0.5mm 0.6mm; text-align: center; }
+  th { background: #eef2f6; font-weight: 700; font-size: 7.4px; }
+  td { font-size: 7.6px; }
+  td.b { font-weight: 700; }
+  td.l { text-align: left; }
+  figure { margin: 0.8mm 0 0; }
+  figure svg { display: block; width: 100%; height: auto; }
+  .m70 { max-width: 70%; margin: 0.8mm auto 0; }
+  .m80 { max-width: 80%; margin: 0.8mm auto 0; }
+  .m88 { max-width: 88%; margin: 0.8mm auto 0; }
+  .m62 { max-width: 62%; margin: 0.8mm auto 0; }
+  .m72 { max-width: 72%; margin: 0.8mm auto 0; }
+  .m55 { max-width: 55%; margin: 0.8mm auto 0; }
+  .bu { font-size: 7.1px; color: #5b6570; text-align: center; margin-top: 0.5mm; }
+  .rechnung { background: #f4f6f8; border-radius: 1.2mm; padding: 1mm 1.2mm; margin: 0.8mm 0 0; }
+  .schritt { display: flex; gap: 1.2mm; margin-bottom: 0.5mm; }
+  .schritt b { flex: 0 0 3.6mm; color: #1d4ed8; }
+  .schritt:last-child { margin-bottom: 0; }
+  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm; align-items: start; }
+  .bruch { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; margin: 0 0.3mm; }
+  .bruch .z { border-bottom: 0.8px solid currentColor; padding: 0 0.6mm; }
+  .gh { color: #6d28d9; font-weight: 700; }
+  .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ===================== Seite 1 ===================== -->
+<div class="page">
+  <h1>Prismen — Netz, Schrägbild, Oberflächeninhalt und Volumen<span class="klein">Klasse 8 · Körper, Themen 1 bis 3</span></h1>
+  <div class="grid">
+
+    <div class="box merk">
+      <h2>Das Prisma (Thema 1)</h2>
+      <p>Ein <b>Prisma</b> hat zwei deckungsgleiche, parallele Vielecke als <span class="kr">Grund- und Deckfläche G</span>; die Seitenflächen sind Rechtecke und bilden zusammen den <span class="be">Mantel M</span>. Die <span class="ra">Höhe h</span> ist der Abstand von Grund- und Deckfläche.</p>
+      <figure>[[FIG1]]</figure>
+      <p>Die Grundfläche muss nicht unten liegen: Bei einem liegenden Prisma sind die Grundflächen vorn und hinten — h ist dann die Länge von vorn nach hinten.</p>
+    </div>
+
+    <div class="box">
+      <h2>Schrägbild zeichnen</h2>
+      <figure>[[FIG2]]</figure>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>Vorderfläche in wahrer Größe zeichnen</span></div>
+        <div class="schritt"><b>2.</b><span>Kanten nach hinten unter 45°, halb so lang</span></div>
+        <div class="schritt"><b>3.</b><span>Rückfläche verbinden</span></div>
+        <div class="schritt"><b>4.</b><span>Verdeckte Kanten stricheln</span></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Netz</h2>
+      <p>Ein Netz enthält <b>jede Fläche genau einmal</b>: zwei Grundflächen und für jede Seite der Grundfläche ein Rechteck. Die Rechtecke lassen sich zum Mantel aneinanderlegen — so lang wie der Umfang u der Grundfläche, so breit wie die Höhe.</p>
+      <figure>[[FIG3]]</figure>
+    </div>
+
+    <div class="box merk">
+      <h2>Oberflächeninhalt (Thema 2)</h2>
+      <p class="zentral f gross"><span class="al">O</span> = 2 · <span class="kr">G</span> + <span class="be">M</span> &nbsp;&nbsp; <span class="be">M</span> = u · <span class="ra">h</span></p>
+      <p>Quader: <span class="f">O = 2 · (a · b + a · c + b · c)</span> &nbsp; Würfel: <span class="f">O = 6 · a²</span></p>
+      <p><b>Beispiel:</b> Dreieck mit den Seiten 3 cm, 4 cm, 5 cm (rechter Winkel zwischen 3 cm und 4 cm), h = 10 cm:<br>
+        <span class="f">G = ½ · 3 cm · 4 cm = 6 cm²; u = 12 cm; M = 12 cm · 10 cm = 120 cm²</span><br>
+        <span class="f">O = 2 · 6 cm² + 120 cm² = 132 cm²</span></p>
+      <p><b>Offene Körper</b> (Schachtel ohne Deckel, Zelt ohne Boden): nur die Flächen zählen, die es gibt.</p>
+    </div>
+
+    <div class="box merk">
+      <h2>Volumen (Thema 3)</h2>
+      <p class="zentral f gross"><span class="al">V</span> = <span class="kr">G</span> · <span class="ra">h</span></p>
+      <p>Quader: <span class="f">V = a · b · c</span> — a · b Einheitswürfel je Schicht, c Schichten. Würfel: <span class="f">V = a³</span>.</p>
+      <figure>[[FIG4]]</figure>
+      <p>Jede Grundfläche lässt sich in Rechtecke und Dreiecke zerlegen; das Prisma zerfällt dabei in Quader und Dreiecksprismen.</p>
+    </div>
+
+    <div class="box">
+      <h2>Grundflächen</h2>
+      <table>
+        <tr><th>Grundfläche</th><th>G</th></tr>
+        <tr><td class="l b">Rechteck</td><td class="f">a · b</td></tr>
+        <tr><td class="l b">Dreieck</td><td class="f">½ · g · h<sub>g</sub></td></tr>
+        <tr><td class="l b">Parallelogramm</td><td class="f">g · h<sub>g</sub></td></tr>
+        <tr><td class="l b">Trapez</td><td class="f"><span class="bruch"><span class="z">a + c</span><span class="n">2</span></span> · h<sub>T</sub></td></tr>
+        <tr><td class="l b">zusammengesetzt</td><td class="l">zerlegen oder ergänzen</td></tr>
+      </table>
+      <p style="margin-top:0.8mm"><b>Zwei Höhen:</b> h<sub>g</sub> bzw. h<sub>T</sub> gehört zur Grundfläche, h zum Prisma.</p>
+      <h2 style="margin-top:1.4mm">Rückwärts rechnen</h2>
+      <p class="zentral f">h = V : G &nbsp;&nbsp; G = V : h &nbsp;&nbsp; h = M : u</p>
+      <p><b>Beispiel:</b> G = 24 cm², V = 0,6 l = 600 cm³: <span class="f">h = 600 cm³ : 24 cm² = 25 cm</span>. <b>Probe:</b> <span class="f">24 cm² · 25 cm = 600 cm³</span>.</p>
+    </div>
+
+    <div class="box">
+      <h2>Raum- und Flächeneinheiten</h2>
+      <table>
+        <tr><th>Raumeinheiten — Faktor 1000</th><th>Hohlmaße</th></tr>
+        <tr><td class="f">1 cm³ = 1000 mm³</td><td class="f">1 ml = 1 cm³</td></tr>
+        <tr><td class="f">1 dm³ = 1000 cm³</td><td class="f">1 l = 1 dm³ = 1000 cm³</td></tr>
+        <tr><td class="f">1 m³ = 1000 dm³</td><td class="f">1 m³ = 1000 l</td></tr>
+      </table>
+      <p style="margin-top:0.8mm">1 dm = 10 cm, also 1 dm³ = 10 · 10 · 10 cm³ = 1000 cm³. <b>Flächen:</b> Faktor 100 — 1 dm² = 100 cm², 1 m² = 100 dm² = 10.000 cm².</p>
+    </div>
+
+    <div class="box warn wide">
+      <h2>Typische Fehler</h2>
+      <table>
+        <tr><th>falsch</th><th>richtig</th><th>warum</th></tr>
+        <tr><td class="l">Tiefenkanten in voller Länge oder waagerecht</td><td class="l">unter 45°, halb so lang</td><td class="l">nur so entsteht der räumliche Eindruck</td></tr>
+        <tr><td class="l">Oberfläche in cm³, Volumen in cm²</td><td class="l">O in cm², V in cm³</td><td class="l">O misst Flächen, V füllt den Raum mit Würfeln</td></tr>
+        <tr><td class="f">G = g · h<sub>g</sub> beim Dreieck</td><td class="f">G = ½ · g · h<sub>g</sub></td><td class="l">das Dreieck ist ein halbes Rechteck</td></tr>
+        <tr><td class="f">V = 2 · G · h</td><td class="f">V = G · h</td><td class="l">das 2 · G gehört zur Oberfläche</td></tr>
+        <tr><td class="l">schräge Seite oder h<sub>g</sub> statt h</td><td class="l">Höhe des Prismas</td><td class="l">h steht senkrecht auf der Grundfläche</td></tr>
+        <tr><td class="f">1 dm³ = 10 cm³ oder 100 cm³</td><td class="f">1 dm³ = 1000 cm³</td><td class="l">drei Richtungen: 10 · 10 · 10</td></tr>
+      </table>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik Klasse 8 · Körper · Seite 1 von 2</p>
+</div>
+
+<!-- ===================== Seite 2 ===================== -->
+<div class="page">
+  <h1>Zylinder — Oberflächeninhalt und Volumen<span class="klein">Klasse 8 · Körper, Themen 4 und 5</span></h1>
+  <div class="grid">
+
+    <div class="box merk">
+      <h2>Der Zylinder (Thema 4)</h2>
+      <p>Ein Zylinder ist wie ein Prisma mit sehr vielen Ecken: Die Grundfläche ist ein Kreis, der Mantel ist gebogen. <b>O = 2 · G + M</b> und <b>V = G · h</b> gelten weiter.</p>
+      <figure>[[FIG5]]</figure>
+      <p>Oft ist der <b>Durchmesser</b> gegeben: erst <span class="f">r = d : 2</span>. Umfang <span class="f">u = 2 · π · r = π · d</span>, Kreisfläche <span class="f">G = π · r²</span>.</p>
+    </div>
+
+    <div class="box">
+      <h2>Netz und Mantel</h2>
+      <figure>[[FIG6]]</figure>
+      <p class="zentral f gross"><span class="be">M</span> = u · <span class="ra">h</span> = 2 · π · r · <span class="ra">h</span></p>
+      <p><b>Beispiel:</b> r = 2 cm, h = 4 cm: <span class="f">M = 2 · π · 2 cm · 4 cm = 16 · π cm² ≈ 50,27 cm²</span>.</p>
+      <p><b>Rückwärts:</b> <span class="f">h = M : (2 · π · r)</span>.</p>
+    </div>
+
+    <div class="box merk">
+      <h2>Oberflächeninhalt</h2>
+      <p class="zentral f gross"><span class="al">O</span> = 2 · π · r² + 2 · π · r · h = 2 · π · r · (r + h)</p>
+      <figure>[[FIG7]]</figure>
+      <p class="bu">die Kreise in Sektoren zerschnitten und abwechselnd gelegt: fast ein Rechteck 2 · π · r × r</p>
+      <p><b>Beispiel:</b> r = 3 cm, h = 7 cm: <span class="f">O = 2 · π · 3 cm · 10 cm = 60 · π cm² ≈ 188,50 cm²</span>.</p>
+    </div>
+
+    <div class="box merk">
+      <h2>Volumen (Thema 5)</h2>
+      <p class="zentral f gross"><span class="al">V</span> = <span class="kr">G</span> · <span class="ra">h</span> = π · r² · <span class="ra">h</span></p>
+      <p>Die Prismen im Zylinder haben das Volumen G<sub>n</sub> · h; mit wachsender Eckenzahl wird G<sub>n</sub> zur Kreisfläche π · r². Als Schichtung: h Scheiben von je π · r² · 1 cm.</p>
+      <p><b>Beispiel:</b> r = 3 cm, h = 10 cm: <span class="f">V = π · 9 cm² · 10 cm = 90 · π cm³ ≈ 282,74 cm³</span>.</p>
+      <p><b>Mit π rechnen:</b> π-Taste benutzen, erst das Ergebnis runden. Mit 3,14 weicht es ab.</p>
+    </div>
+
+    <div class="box">
+      <h2>Füllhöhe und Liter</h2>
+      <p class="zentral f gross"><span class="ra">h</span> = V : (π · r²)</p>
+      <p>Liter vorher umrechnen: <span class="f">1 l = 1000 cm³</span>, <span class="f">1 ml = 1 cm³</span>, <span class="f">1 m³ = 1000 l</span>.</p>
+      <p><b>Beispiel:</b> 250 ml in einem Messzylinder mit r = 4 cm: <span class="f">h = 250 cm³ : (π · 16 cm²) ≈ 4,97 cm</span>.<br><b>Probe:</b> <span class="f">π · 16 cm² · 4,97 cm ≈ 250 cm³</span>.</p>
+      <p>Rückwärts wird hier nur die Höhe gesucht — den Radius aus dem Volumen zu bestimmen, braucht die Quadratwurzel.</p>
+    </div>
+
+    <div class="box merk">
+      <h2>Hohlzylinder (Rohr)</h2>
+      <figure>[[FIG8]]</figure>
+      <p><b>Masse:</b> <span class="f">m = ρ · V</span> — mit der Dichte ρ in g/cm³ und V in cm³ kommt m in Gramm heraus; durch 1000 ergibt Kilogramm.</p>
+    </div>
+
+    <div class="box">
+      <h2>Offene Körper</h2>
+      <p>Erst entscheiden, welche Flächen es gibt, dann rechnen:</p>
+      <table>
+        <tr><th>Körper</th><th>Flächen</th></tr>
+        <tr><td class="l b">Dose (geschlossen)</td><td class="f">2 · π · r² + 2 · π · r · h</td></tr>
+        <tr><td class="l b">Becher (ohne Deckel)</td><td class="f">π · r² + 2 · π · r · h</td></tr>
+        <tr><td class="l b">Rohr, Etikett</td><td class="f">2 · π · r · h</td></tr>
+      </table>
+    </div>
+
+    <div class="box warn wide">
+      <h2>Typische Fehler</h2>
+      <table>
+        <tr><th>falsch</th><th>richtig</th><th>warum</th></tr>
+        <tr><td class="l">mit dem Durchmesser rechnen</td><td class="f">r = d : 2</td><td class="l">in den Formeln steht r; d² ist schon 4 · r²</td></tr>
+        <tr><td class="f">M = π · r² · h</td><td class="f">M = 2 · π · r · h</td><td class="l">im Mantel steht der Umfang, keine Kreisfläche</td></tr>
+        <tr><td class="f">O = π · r² + 2 · π · r · h</td><td class="f">O = 2 · π · r² + 2 · π · r · h</td><td class="l">zwei Kreise — außer der Körper ist offen</td></tr>
+        <tr><td class="f">V = 2 · π · r · h &nbsp;·&nbsp; V = π · r · h</td><td class="f">V = π · r² · h</td><td class="l">2 · π · r · h ist der Mantel; r wird quadriert</td></tr>
+        <tr><td class="f">V = π · (R − r)² · h</td><td class="f">V = π · (R² − r²) · h</td><td class="l">erst quadrieren, dann abziehen</td></tr>
+        <tr><td class="f">0,5 l : (π · 16 cm²)</td><td class="f">500 cm³ : (π · 16 cm²)</td><td class="l">Liter und cm passen nicht zusammen</td></tr>
+      </table>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Mathematik Klasse 8 · Körper · Seite 2 von 2</p>
+</div>
+
+</body>
+</html>

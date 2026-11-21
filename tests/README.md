@@ -60,6 +60,16 @@ das vorinstallierte Chromium unter `/opt/pw-browsers/chromium`
 * `polynom.js` — für die Termseiten der Klasse 8: ein eigener Termauswerter (`gleichwertig()` an
   zwölf krummen Stellen, `wert()`), dazu die Formprüfungen `istVereinfacht()` und `istProdukt()`.
   Die Seiten rechnen exakt mit `termwerk.js`; die Prüfung bewusst anders.
+* `koerper.js` — für die Körperseiten der Klasse 8 (Prismen, Zylinder). Jede Fläche und Linie
+  der Zeichnungen trägt neben ihren Bildpunkten die Raumpunkte (`data-p3`); `lies()` holt beides.
+  Daraus rechnet die Prüfung mit eigenen Mitteln nach: `kavalierBild()` und `ansichtBild()` passen
+  Maßstab und Ursprung an und verlangen dann, dass **jeder** Bildpunkt die Abbildung seines
+  Raumpunkts ist (Schrägbild 45° mit halber Tiefe bzw. Ansicht schräg von oben); `pruefeVerdeckt()`
+  bestimmt Sichtbarkeit über Sehstrahlen zum Betrachter, nicht über Normalen wie die Seite;
+  `starrGleich()` vergleicht paarweise Abstände (eine Bewegung ist starr, wenn kein Abstand sich
+  ändert); Volumen über Tetraeder vom Schwerpunkt, Flächen über `inhalt3()`, Überlappung im Netz
+  über getrennte Achsen. Weil `data-p3` auf vier Stellen gerundet ist, brauchen Vergleiche von
+  Raumpunkten eine Toleranz um 10⁻⁴ — nicht 10⁻⁶.
 
 Die Prüfungen der Termseiten (`klasse-8/test-terme-*.js`, `test-ausmultiplizieren-ausklammern.js`,
 `test-klammern-multiplizieren.js`, `test-binomische-formeln.js`) halten außerdem fest, **welche

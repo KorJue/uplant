@@ -13,6 +13,7 @@ nach, bevor er etwas erfindet:
 | Satz des Thales (Klasse 8, freier Aufbau, Konstruktion) | `mathematik/klasse-8/geometrie/satz-des-thales.*` |
 | Flächeninhalte (Klasse 8, bewegliche Herleitungen) | `mathematik/klasse-8/geometrie/flaecheninhalte.*` |
 | Terme (Klasse 8, fünf Seiten, Kachelmodell, Termeingabe) | `mathematik/klasse-8/terme/` |
+| Körper (Klasse 8, fünf Seiten, Raumpunkte, Schrägbild, Netze, Zylinder) | `mathematik/klasse-8/koerper/` |
 
 ## Arbeitsablauf für eine neue Seite
 
@@ -353,6 +354,22 @@ aufeinander auf; jede Prüfung wacht darüber, dass ihre Seite nicht vorgreift (
 Faktor vor einer Klammer, vor Thema 4 kein Produkt zweier Summen, vor Thema 5 keine binomische
 Formel). Gemeinsam ist auch die Formelsammlung (`formelsammlung.pdf`, Präfix `tm`).
 
+Ebenso teilen die fünf **Körperseiten** der Klasse 8 (`mathematik/klasse-8/koerper/`: Prismen in
+Netz und Schrägbild, Oberfläche und Volumen von Prismen, Oberfläche und Volumen von Zylindern)
+eine `seite.js` (wie bei den Termen, dazu `parseZahl()` mit Einheiten und die π-Helfer `TOL_PI`,
+`mitDreiVierzehn()`, `HINWEIS_314`) und `raum.js`, das **Raummodell**: Gerechnet wird in cm mit
+Raumpunkten (x nach rechts, y nach oben, z nach hinten); abgebildet wird im Schrägbild (`kavalier()`,
+45°, Tiefe halbiert) oder schräg von oben (`ansicht()`, für Zylinder). Verdeckte Flächen und Kanten
+ergeben sich aus den Außennormalen (`zeichneKoerper()`, exakt für konvexe Körper), Netze klappen
+über Scharniere auf (`prismaNetz()`), der Zylindermantel wird aufgebogen, nicht gedehnt
+(`mantelStreifen()`), und `buehne()` spannt die Zeichenfläche über die ganze Bewegungsspur. Jede
+Fläche und Linie trägt ihre Raumpunkte als `data-p3` — so liest die Prüfung die Zeichnung zurück
+(`tests/lib/koerper.js`) und rechnet mit eigenen Verfahren nach. Eine Änderung an `raum.js` wirkt
+auf alle fünf Seiten; danach gehören alle fünf Prüfungen in den Lauf. Kein Vorgriff: Schräge Längen
+sind gegeben oder „gemessen“, Radien werden nie aus Flächen oder Volumen zurückgerechnet (das
+bräuchte die Quadratwurzel). Gemeinsam ist auch die Formelsammlung (`formelsammlung.pdf`, Präfix
+`kp`).
+
 Ebenfalls geteilt ist `mathematik/terme.js`: die **Termaufgaben** (Ableitung,
 f′ und f″, Stammfunktion als Term eintippen) mit beliebig vielen Funktionen.
 Eine Funktion wird aus Gliedern zusammengesetzt (`pot`, `trig`, `kette`,
@@ -500,7 +517,7 @@ Quelle stillschweigend ungeprüfter Neuerungen:
   (`tests/lib/themen.js`). Ein neues Grundwissen-Thema wird dadurch
   **automatisch** mitgeprüft — es muss die Zusagen also von Anfang an erfüllen.
   Ebenso `test-aufgaben-abschnitte.js` (jede Seite mit `#exercises-mount`) und
-  `test-selbsteinschaetzung.js` (Grundwissen, MSS, die Termseiten der Klasse 8; die
+  `test-selbsteinschaetzung.js` (Grundwissen, MSS, die Term- und Körperseiten der Klasse 8; die
   Geometrieseiten der Klasse 8 per Liste).
 * `test-vollbild.js` dagegen führt seine Seiten in einer **fest verdrahteten
   Liste** `SEITEN` samt Knopf- und SVG-Kennung. Eine neue Geometrieseite mit
