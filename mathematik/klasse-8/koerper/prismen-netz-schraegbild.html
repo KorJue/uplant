@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prismen: Netz und Schrägbild</title>
+<script src="../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../assets/site.css">
+<link rel="stylesheet" href="../../aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../index.html">Klasse 8</a><span class="sep">/</span>
+  <a href="index.html">Körper</a><span class="sep">/</span>
+  1 Prismen: Netz und Schrägbild
+</nav>
+<header class="page-header">
+  <h1>Prismen: Netz und Schrägbild</h1>
+  <p>Ein Selbstlernpfad: was ein Prisma ist, wie man es zum Netz aufklappt und wie man es im Schrägbild zeichnet — mit beweglichen Körpern, Kontrollfragen und acht Übungsaufgaben.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Schachteln, Dachbalken, Bleistifte und Zelte haben dieselbe Bauart: Oben und unten liegt dieselbe Fläche, dazwischen stehen Rechtecke. Solche Körper heißen <span class="term">Prismen</span>. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>erklären, was ein <span class="term">Prisma</span> ist, und seine Ecken, Kanten und Flächen zählen</li>
+      <li>ein <span class="term">Netz</span> eines Prismas zeichnen und beschreiben</li>
+      <li>ein <span class="term">Schrägbild</span> zeichnen: Vorderfläche in wahrer Größe, Tiefe unter 45° und halb so lang, verdeckte Kanten gestrichelt</li>
+      <li>Grundfläche und Höhe eines Prismas in <span class="term">jeder Lage</span> erkennen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst den <a href="../../grundwissen-5-10/02-geometrie/03-volumen-oberflaeche/index.html#sec-netz">Quader und sein Netz</a> aus dem Grundwissen — der Quader ist das einfachste Prisma.</p>
+  </section>
+
+  <!-- 1. Was ist ein Prisma? -->
+  <!-- Reihenfolge: erst der Begriff (ein Vieleck wird verschoben), dann das Netz (aufklappen), dann
+       das Schrägbild (zeichnen), zuletzt die Lage — sie setzt Grundfläche, Höhe und Schrägbild voraus. -->
+  <section class="card" id="sec-prisma">
+    <h2>1. Was ist ein Prisma?</h2>
+    <p>Nimm ein Vieleck und schiebe es senkrecht nach oben. Der Raum, den es dabei überstreicht, ist ein <span class="term">Prisma</span>. Das Vieleck unten ist die <span class="term">Grundfläche</span>, seine Kopie oben die <span class="term">Deckfläche</span>. Dazwischen entstehen Rechtecke, die <span class="term">Seitenflächen</span> — zusammen heißen sie <span class="term">Mantel</span>. Wähle eine Grundfläche und schiebe sie hoch.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Grundfläche:
+          <select id="pr-n" class="eingabe" style="padding:0.4rem">
+            <option value="3">Dreieck</option>
+            <option value="4">Viereck</option>
+            <option value="5" selected>Fünfeck</option>
+            <option value="6">Sechseck</option>
+            <option value="8">Achteck</option>
+          </select>
+        </label>
+        <label>Höhe h = <input type="range" id="pr-h" min="2" max="6" step="1" value="4" style="vertical-align:middle;width:7rem"> <span id="pr-h-anzeige" class="th-name-r"></span></label>
+        <label>hochschieben: <input type="range" id="pr-t" min="0" max="100" step="5" value="100" style="vertical-align:middle;width:9rem"> <span id="pr-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="pr-mount"></div>
+      <div class="th-bilanz" id="pr-bilanz"></div>
+      <div id="pr-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Prisma</span>
+      Ein (gerades) Prisma hat zwei <strong>deckungsgleiche</strong> und <strong>parallele</strong> Vielecke als Grund- und Deckfläche. Die Seitenflächen sind Rechtecke. Der Abstand von Grund- und Deckfläche ist die <strong>Höhe h</strong> des Prismas.<br>
+      Hat die Grundfläche n Ecken, so hat das Prisma <strong>2 · n Ecken</strong>, <strong>3 · n Kanten</strong> (n unten, n oben, n Seitenkanten) und <strong>n + 2 Flächen</strong> (zwei Grundflächen und n Seitenflächen).
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — nicht jeder eckige Körper ist ein Prisma</span>
+      Eine Pyramide hat nur <em>eine</em> Grundfläche und Dreiecke als Seitenflächen; sie ist kein Prisma. Auch ein Körper, dessen Deckfläche kleiner ist als die Grundfläche, ist keines: Grund- und Deckfläche müssen deckungsgleich sein.
+    </div>
+    <div class="quiz" id="quiz-prisma"></div>
+  </section>
+
+  <!-- 2. Netz -->
+  <section class="card" id="sec-netz">
+    <h2>2. Das Netz eines Prismas</h2>
+    <p>Schneidet man ein Prisma an einigen Kanten auf und klappt alle Flächen in eine Ebene, entsteht ein <span class="term">Netz</span>. Erst klappen Grund- und Deckfläche auf, dann wird der Mantel abgewickelt — jede Fläche dreht sich dabei nur um eine Kante und bleibt, wie sie ist.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Prisma:
+          <select id="nz-form" class="eingabe" style="padding:0.4rem">
+            <option value="quader">Quader</option>
+            <option value="dreieck-rw" selected>Dreiecksprisma (rechtwinklig)</option>
+            <option value="dreieck-gs">Dreiecksprisma (gleichschenklig)</option>
+            <option value="trapez">Trapezprisma</option>
+            <option value="haus">Fünfeckprisma</option>
+            <option value="sechseck">Sechseckprisma</option>
+          </select>
+        </label>
+        <label>Höhe h = <input type="range" id="nz-h" min="2" max="6" step="1" value="4" style="vertical-align:middle;width:7rem"> <span id="nz-h-anzeige" class="th-name-r"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>aufklappen: <input type="range" id="nz-t" min="0" max="100" step="5" value="0" style="vertical-align:middle;width:14rem"> <span id="nz-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="nz-mount"></div>
+      <div class="th-bilanz" id="nz-bilanz"></div>
+      <div id="nz-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Netz eines Prismas</span>
+      Ein Netz besteht aus den <strong>zwei Grundflächen</strong> und <strong>n Rechtecken</strong>. Die Rechtecke sind alle so hoch wie das Prisma; nebeneinander bilden sie einen Streifen, der so lang ist wie der <strong>Umfang u</strong> der Grundfläche. Grund- und Deckfläche hängen an zwei <strong>gegenüberliegenden</strong> Seiten dieses Streifens.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — nicht jede Anordnung ist ein Netz</span>
+      Hängen Grund- und Deckfläche auf <em>derselben</em> Seite des Streifens, liegen sie beim Falten aufeinander, und der Körper bleibt auf einer Seite offen. Und eine Kante des Körpers muss im Netz an zwei <em>gleich langen</em> Seiten zusammenkommen.
+    </div>
+    <p class="hinweis-box">💡 Ein Prisma hat viele verschiedene Netze — je nachdem, an welchen Kanten man aufschneidet. Allein ein Würfel hat elf.</p>
+    <div class="quiz" id="quiz-netz"></div>
+  </section>
+
+  <!-- 3. Schrägbild -->
+  <section class="card" id="sec-schraegbild">
+    <h2>3. Das Schrägbild</h2>
+    <p>Ein <span class="term">Schrägbild</span> zeigt einen Körper räumlich auf dem Papier. Das Prisma liegt dazu so, dass eine Grundfläche <em>vorn</em> steht; die Höhe des Prismas zeigt nach hinten. Geh die Schritte durch.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Prisma:
+          <select id="sb-form" class="eingabe" style="padding:0.4rem">
+            <option value="quader">Quader</option>
+            <option value="dreieck-rw">Dreiecksprisma (rechtwinklig)</option>
+            <option value="dreieck-gs">Dreiecksprisma (gleichschenklig)</option>
+            <option value="trapez" selected>Trapezprisma</option>
+            <option value="haus">Fünfeckprisma</option>
+            <option value="sechseck">Sechseckprisma</option>
+          </select>
+        </label>
+        <label>Tiefe h = <input type="range" id="sb-h" min="2" max="8" step="1" value="6" style="vertical-align:middle;width:7rem"> <span id="sb-h-anzeige" class="th-name-r"></span></label>
+        <label>Schritt: <input type="range" id="sb-schritt" min="1" max="4" step="1" value="1" style="vertical-align:middle;width:6rem"> <span id="sb-schritt-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="sb-mount"></div>
+      <ol class="kp-schritte-liste" id="sb-schritte"></ol>
+      <div id="sb-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Schrägbild zeichnen</span>
+      1. Die <strong>Vorderfläche</strong> in wahrer Größe zeichnen.<br>
+      2. Von jeder Ecke aus die nach hinten laufenden Kanten <strong>unter 45°</strong> nach rechts oben zeichnen — <strong>halb so lang</strong>, wie sie wirklich sind.<br>
+      3. Die Endpunkte verbinden: Die <strong>Rückfläche</strong> ist eine verschobene Kopie der Vorderfläche.<br>
+      4. <strong>Verdeckte Kanten</strong> gestrichelt zeichnen.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel</span>
+      Ein Quader ist 4 cm breit, 3 cm hoch und 6 cm tief. Im Schrägbild: Vorderfläche 4 cm × 3 cm, Tiefenkanten 6 cm : 2 = <strong>3 cm</strong> lang unter 45°. Verdeckt sind die drei Kanten, die sich in der Ecke hinten links unten treffen.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — nur die Tiefe wird verkürzt</span>
+      Breite und Höhe der Vorderfläche bleiben in wahrer Größe. Verkürzt wird nur, was nach hinten läuft. Deshalb sind im Schrägbild nicht alle Winkel richtig: Ein rechter Winkel zwischen Breite und Tiefe erscheint als 45° oder 135°.
+    </div>
+    <div class="quiz" id="quiz-schraegbild"></div>
+  </section>
+
+  <!-- 4. Lage -->
+  <section class="card" id="sec-lage">
+    <h2>4. Grundfläche und Höhe — in jeder Lage</h2>
+    <p>Die Grundfläche heißt so, weil das Prisma aus ihr entsteht — nicht, weil sie unten liegt. Kippe das Prisma um seine vordere Kante und achte auf die blauen Flächen und die violette Höhe.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Prisma:
+          <select id="lg-form" class="eingabe" style="padding:0.4rem">
+            <option value="dreieck-gs" selected>Dreiecksprisma</option>
+            <option value="trapez">Trapezprisma</option>
+            <option value="haus">Fünfeckprisma</option>
+          </select>
+        </label>
+        <label>Höhe h = <input type="range" id="lg-h" min="3" max="7" step="1" value="5" style="vertical-align:middle;width:7rem"> <span id="lg-h-anzeige" class="th-name-r"></span></label>
+        <label>kippen: <input type="range" id="lg-t" min="0" max="100" step="5" value="0" style="vertical-align:middle;width:9rem"> <span id="lg-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="lg-mount"></div>
+      <div class="th-bilanz" id="lg-bilanz"></div>
+      <div id="lg-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Grundfläche erkennen</span>
+      Die Grundflächen sind die <strong>zwei deckungsgleichen, parallelen</strong> Flächen — alle anderen Flächen sind Rechtecke. Die <strong>Höhe h</strong> ist ihr Abstand, also die Länge der Seitenkanten. Liegt ein Prisma auf einer Seitenfläche, zeigt seine Höhe waagerecht (im Schrägbild nach hinten).
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — „unten“ ist kein Merkmal</span>
+      Bei einem Zelt oder einem Dachbalken liegt eine Seitenfläche unten. Die Dreiecke vorn und hinten sind die Grundflächen, und die Höhe h des Prismas ist die Länge des Zelts — nicht, wie hoch es ist.
+    </div>
+    <div class="quiz" id="quiz-lage"></div>
+  </section>
+
+  <!-- 5. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>5. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../../grundwissen-5-10/02-geometrie/03-volumen-oberflaeche/index.html#sec-netz">Quader und Würfel</a> aus dem Grundwissen — der Quader ist ein Prisma mit einem Rechteck als Grundfläche.</li>
+      <li><strong>Baut auf:</strong> <a href="../geometrie/flaecheninhalte.html">Flächeninhalte</a> von Dreieck, Parallelogramm und Trapez — die Grundflächen der Prismen.</li>
+      <li><strong>Führt weiter zu:</strong> der <a href="oberflaeche-prisma.html">Oberfläche eines Prismas</a> — sie ist der Flächeninhalt seines Netzes.</li>
+      <li><strong>Führt weiter zu:</strong> dem <a href="volumen-prisma.html">Volumen eines Prismas</a> — Grundfläche mal Höhe.</li>
+      <li><strong>Zum Nachschlagen:</strong> <a href="../../grundwissen-5-10/02-geometrie/11-prismen-zylinder/index.html#sec-prisma">Prismen und Zylinder</a> im Grundwissen.</li>
+    </ul>
+  </section>
+
+  <!-- 6. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>6. Formelsammlung</h2>
+    <p>Die Formelsammlung gilt für alle fünf Körperseiten: Prisma und Zylinder, Netz und Schrägbild, Oberflächeninhalt und Volumen, Raumeinheiten — mit Bildern und den typischen Fehlern, auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 7. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>7. Übungsaufgaben</h2>
+    <p>Acht Aufgaben, zwei auf jeder Schwierigkeitsstufe. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu.</p>
+    <p class="progress-note">Längen gibst du ohne Einheit oder mit „cm“ ein, Anzahlen als ganze Zahl, Flächen eines Netzes mit ihrem Buchstaben.</p>
+    <div id="exercises-mount"></div>
+  </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-prisma">Ich kann erklären, was ein Prisma ist, und seine Ecken, Kanten und Flächen zählen.</li>
+      <li data-abschnitt="sec-netz">Ich kann ein Netz eines Prismas zeichnen und beschreiben.</li>
+      <li data-abschnitt="sec-schraegbild">Ich kann ein Schrägbild zeichnen: Vorderfläche in wahrer Größe, Tiefe unter 45° und halb so lang, verdeckte Kanten gestrichelt.</li>
+      <li data-abschnitt="sec-lage">Ich kann Grundfläche und Höhe eines Prismas in jeder Lage erkennen.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
+  </section>
+
+  <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
+  <section class="card" data-lehrkraft="prismen-netz-schraegbild-lehrkraefte.html" hidden></section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="index.html">Zurück zu Körper</a></p>
+  <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script src="../../../assets/lehrkraft.js"></script>
+<script src="../../../assets/selbsteinschaetzung.js"></script>
+<script type="module" src="prismen-netz-schraegbild.js?v=1"></script>
+</body>
+</html>

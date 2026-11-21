@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Volumen von Zylindern</title>
+<script src="../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../assets/site.css">
+<link rel="stylesheet" href="../../aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../index.html">Klasse 8</a><span class="sep">/</span>
+  <a href="index.html">Körper</a><span class="sep">/</span>
+  5 Volumen von Zylindern
+</nav>
+<header class="page-header">
+  <h1>Volumen von Zylindern</h1>
+  <p>Ein Selbstlernpfad: V = G · h auch für den Zylinder — angenähert durch Prismen, geschichtet aus Scheiben, rückwärts als Füllhöhe und beim Rohr mit Loch; mit Kontrollfragen und acht Übungsaufgaben.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Wie viel passt in eine Dose, wie hoch steht das Wasser im Messzylinder, wie schwer ist ein Rohr? Gefragt ist das <span class="term">Volumen</span> eines Zylinders. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>begründen, warum <span class="term">V = G · h</span> auch für den Zylinder gilt</li>
+      <li>das Volumen eines Zylinders mit <span class="term">V = π · r² · h</span> berechnen</li>
+      <li>aus dem Volumen die <span class="term">Füllhöhe</span> berechnen und Liter umrechnen</li>
+      <li>das Volumen eines <span class="term">Hohlzylinders</span> und daraus eine Masse berechnen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst <a href="volumen-prisma.html#sec-gh">V = G · h für Prismen</a> aus Thema 3 und den <a href="../geometrie/kreis.html#sec-flaeche">Flächeninhalt des Kreises</a>.</p>
+  </section>
+
+  <!-- 1. Annäherung -->
+  <!-- Reihenfolge: erst V = G · h über einbeschriebene Prismen (stützt sich nur auf Thema 3 und die
+       Kreisfläche), dann die Formel mit Scheiben, dann rückwärts (Füllhöhe, Liter), zuletzt der
+       Hohlzylinder als Differenz zweier Zylinder. -->
+  <section class="card" id="sec-annaeherung">
+    <h2>1. V = G · h — auch beim Zylinder</h2>
+    <p>Stell in den Zylinder ein Prisma mit einem regelmäßigen Vieleck als Grundfläche. Für das Prisma gilt V = G · h. Mit mehr Ecken füllt es den Zylinder immer besser aus — seine Grundfläche rückt an die Kreisfläche π · r² heran.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Ecken: <input type="range" id="na-k" min="0" max="7" step="1" value="2" style="vertical-align:middle;width:9rem"> <span id="na-k-anzeige" class="th-name-b"></span></label>
+        <label>Radius r = <input type="range" id="na-r" min="1" max="4" step="0.5" value="3" style="vertical-align:middle;width:6rem"> <span id="na-r-anzeige" class="th-name-c"></span></label>
+        <label>Höhe h = <input type="range" id="na-h" min="2" max="6" step="1" value="4" style="vertical-align:middle;width:6rem"> <span id="na-h-anzeige" class="th-name-r"></span></label>
+      </div>
+      <div class="th-wrap" id="na-mount"></div>
+      <div class="th-bilanz" id="na-bilanz"></div>
+      <div id="na-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Zylinder als Grenzfall</span>
+      Die Prismen im Zylinder haben das Volumen G<sub>n</sub> · h. Mit wachsender Eckenzahl wird G<sub>n</sub> zur Kreisfläche π · r² — also gilt für den Zylinder wie für jedes Prisma
+      <div class="formula-block">V = G · h</div>
+    </div>
+    <div class="quiz" id="quiz-annaeherung"></div>
+  </section>
+
+  <!-- 2. V = π r² h -->
+  <section class="card" id="sec-volumen">
+    <h2>2. Die Formel: V = π · r² · h</h2>
+    <p>Schichte den Zylinder aus Scheiben, jede 1 cm dick. Eine Scheibe hat das Volumen π · r² · 1 cm. Bei h Scheiben ist das h-mal so viel.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Radius r = <input type="range" id="sv-r" min="1" max="4" step="0.5" value="2.5" style="vertical-align:middle;width:6rem"> <span id="sv-r-anzeige" class="th-name-c"></span></label>
+        <label>Höhe h = <input type="range" id="sv-h" min="1" max="8" step="1" value="6" style="vertical-align:middle;width:7rem"> <span id="sv-h-anzeige" class="th-name-r"></span></label>
+        <label>Scheiben: <input type="range" id="sv-k" min="0" max="8" step="1" value="3" style="vertical-align:middle;width:7rem"> <span id="sv-k-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="sv-mount"></div>
+      <div class="th-bilanz" id="sv-bilanz"></div>
+      <div id="sv-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Volumen des Zylinders</span>
+      <div class="formula-block">V = G · h = π · r² · h</div>
+      Mit dem Durchmesser: erst r = d : 2 bestimmen.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel</span>
+      r = 3 cm, h = 10 cm: V = π · (3 cm)² · 10 cm = 90 · π cm³ ≈ <strong>282,74 cm³</strong> — gerechnet mit der π-Taste, gerundet erst am Ende.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — r², nicht 2 · r und nicht d²</span>
+      π · r² · h ist nicht 2 · π · r · h (das ist der Mantel). Und wer den Durchmesser statt des Radius quadriert, bekommt das Vierfache: d² = 4 · r².
+    </div>
+    <div class="quiz" id="quiz-volumen"></div>
+  </section>
+
+  <!-- 3. Umkehr -->
+  <section class="card" id="sec-umkehr">
+    <h2>3. Füllhöhe und Liter</h2>
+    <p>In einen Messzylinder wird Wasser gegossen. Wie hoch steht es? Das Volumen ist bekannt, gesucht ist die Höhe: h = V : (π · r²). Wähle Volumen und Radius und gieß ein.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Wasser: <input type="range" id="fu-v" min="100" max="500" step="50" value="250" style="vertical-align:middle;width:7rem"> <span id="fu-v-anzeige" class="th-name-b"></span></label>
+        <label>Radius r = <input type="range" id="fu-r" min="3" max="6" step="0.5" value="4" style="vertical-align:middle;width:6rem"> <span id="fu-r-anzeige" class="th-name-c"></span></label>
+        <label>eingießen: <input type="range" id="fu-t" min="0" max="100" step="5" value="100" style="vertical-align:middle;width:8rem"> <span id="fu-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="fu-mount"></div>
+      <div class="th-bilanz" id="fu-bilanz"></div>
+      <div id="fu-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Rückwärts rechnen</span>
+      Aus V = π · r² · h folgt <strong>h = V : (π · r²)</strong>. Liter vorher umrechnen: 1 l = 1 dm³ = 1000 cm³, 1 ml = 1 cm³.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel</span>
+      250 ml in einem Messzylinder mit r = 4 cm: h = 250 cm³ : (π · 16 cm²) ≈ <strong>4,97 cm</strong>. Probe: π · 16 cm² · 4,97 cm ≈ 250 cm³.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — erst in cm³</span>
+      Liter und cm passen nicht zusammen: 0,5 l : (π · 16 cm²) ergibt keine sinnvolle Höhe. Erst 0,5 l = 500 cm³, dann teilen.
+    </div>
+    <div class="quiz" id="quiz-umkehr"></div>
+  </section>
+
+  <!-- 4. Hohlzylinder -->
+  <section class="card" id="sec-hohl">
+    <h2>4. Der Hohlzylinder</h2>
+    <p>Ein Rohr ist ein Zylinder, aus dem ein schmalerer Zylinder herausgenommen ist. Zieh den Kern heraus: Was übrig bleibt, hat das Volumen „großer Zylinder minus kleiner Zylinder“.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Außenradius R = <input type="range" id="hz-gr" min="2" max="4" step="0.5" value="3" style="vertical-align:middle;width:6rem"> <span id="hz-gr-anzeige" class="th-name-c"></span></label>
+        <label>Innenradius r = <input type="range" id="hz-kr" min="1" max="3.5" step="0.5" value="2" style="vertical-align:middle;width:6rem"> <span id="hz-kr-anzeige" class="th-name-c"></span></label>
+        <label>Höhe h = <input type="range" id="hz-h" min="2" max="5" step="1" value="4" style="vertical-align:middle;width:6rem"> <span id="hz-h-anzeige" class="th-name-r"></span></label>
+        <label>Kern herausziehen: <input type="range" id="hz-t" min="0" max="100" step="5" value="60" style="vertical-align:middle;width:8rem"> <span id="hz-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="hz-mount"></div>
+      <div class="th-bilanz" id="hz-bilanz"></div>
+      <div id="hz-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Hohlzylinder</span>
+      <div class="formula-block">V = π · R² · h − π · r² · h = π · (R² − r²) · h</div>
+      Die Grundfläche ist ein <a href="../geometrie/kreis.html#sec-ring">Kreisring</a>. Aus dem Volumen wird mit der Dichte die Masse: <strong>m = ρ · V</strong> (zum Beispiel Eisen: ρ ≈ 7,9 g/cm³).
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — erst quadrieren, dann abziehen</span>
+      π · (R − r)² · h ist ein Zylinder mit der Wandstärke als Radius — viel zu klein. Richtig: π · (R² − r²) · h.
+    </div>
+    <div class="quiz" id="quiz-hohl"></div>
+  </section>
+
+  <!-- 5. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>5. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="volumen-prisma.html#sec-gh">V = G · h für Prismen</a> aus Thema 3 — der Zylinder ist ihr Grenzfall.</li>
+      <li><strong>Baut auf:</strong> <a href="../geometrie/kreis.html#sec-flaeche">Flächeninhalt des Kreises</a> und <a href="../geometrie/kreis.html#sec-ring">des Kreisrings</a> — sie liefern G.</li>
+      <li><strong>Baut auf:</strong> <a href="volumen-prisma.html#sec-einheiten">Raumeinheiten</a> — 1 l = 1 dm³ = 1000 cm³.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="oberflaeche-zylinder.html#sec-oberflaeche">Oberfläche des Zylinders</a> — dort Umfang mal Höhe, hier Fläche mal Höhe.</li>
+      <li><strong>Zum Nachschlagen:</strong> <a href="../../grundwissen-5-10/02-geometrie/11-prismen-zylinder/index.html#sec-zylinder">Der Zylinder</a> im Grundwissen.</li>
+    </ul>
+  </section>
+
+  <!-- 6. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>6. Formelsammlung</h2>
+    <p>Die Formelsammlung gilt für alle fünf Körperseiten: Prisma und Zylinder, Netz und Schrägbild, Oberflächeninhalt und Volumen, Raumeinheiten — mit Bildern und den typischen Fehlern, auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 7. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>7. Übungsaufgaben</h2>
+    <p>Acht Aufgaben, zwei auf jeder Schwierigkeitsstufe. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu.</p>
+    <p class="progress-note">Rechne mit der π-Taste und runde erst das Ergebnis auf zwei Nachkommastellen (etwa „282,74“ oder „282,74 cm³“).</p>
+    <div id="exercises-mount"></div>
+  </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-annaeherung">Ich kann begründen, warum V = G · h auch für den Zylinder gilt.</li>
+      <li data-abschnitt="sec-volumen">Ich kann das Volumen eines Zylinders mit V = π · r² · h berechnen.</li>
+      <li data-abschnitt="sec-umkehr">Ich kann aus dem Volumen die Füllhöhe berechnen und Liter umrechnen.</li>
+      <li data-abschnitt="sec-hohl">Ich kann das Volumen eines Hohlzylinders und daraus eine Masse berechnen.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
+  </section>
+
+  <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
+  <section class="card" data-lehrkraft="volumen-zylinder-lehrkraefte.html" hidden></section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="index.html">Zurück zu Körper</a></p>
+  <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script src="../../../assets/lehrkraft.js"></script>
+<script src="../../../assets/selbsteinschaetzung.js"></script>
+<script type="module" src="volumen-zylinder.js?v=1"></script>
+</body>
+</html>

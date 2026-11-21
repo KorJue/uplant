@@ -31,14 +31,18 @@ const { pruefe } = bericht;
 const WURZEL = path.resolve(__dirname, "..");
 
 // Die Klasse-8-Lernpfade. Rätsel und Faktencheck haben ihre eigene Selbsteinschätzung je Fall.
-// Die Termseiten finden sich selbst: jede Seite in klasse-8/terme mit Übungsaufgaben — eine neue
-// Termseite wird also mitgeprüft, ohne dass jemand an diese Liste denken muss.
-const TERME_DIR = path.join(WURZEL, "mathematik/klasse-8/terme");
+// Die Term- und Körperseiten finden sich selbst: jede Seite in klasse-8/terme bzw. klasse-8/koerper mit
+// Übungsaufgaben — eine neue Seite dort wird also mitgeprüft, ohne dass jemand an diese Liste denken muss.
+const selbstGefunden = (teil) => {
+  const dir = path.join(WURZEL, "mathematik/klasse-8", teil);
+  return (fs.existsSync(dir) ? fs.readdirSync(dir) : [])
+    .filter((n) => n.endsWith(".html") && fs.readFileSync(path.join(dir, n), "utf-8").includes('id="exercises-mount"'))
+    .sort().map((n) => `/mathematik/klasse-8/${teil}/${n}`);
+};
 const KLASSE_8 = [
   ...["flaecheninhalte", "grundkonstruktionen", "satz-des-thales", "kreis", "zusammengesetzte-figuren"].map((n) => `/mathematik/klasse-8/geometrie/${n}.html`),
-  ...(fs.existsSync(TERME_DIR) ? fs.readdirSync(TERME_DIR) : [])
-    .filter((n) => n.endsWith(".html") && fs.readFileSync(path.join(TERME_DIR, n), "utf-8").includes('id="exercises-mount"'))
-    .sort().map((n) => `/mathematik/klasse-8/terme/${n}`),
+  ...selbstGefunden("terme"),
+  ...selbstGefunden("koerper"),
 ];
 // Die MSS-Lernpfade: jede Seite unter mss11/mss13 mit Übungsaufgaben. Ihre Sätze stehen je Abschnitt,
 // nicht je Ziel aus „Worum geht es hier?“ — die Anzahl wird dort nicht verglichen.

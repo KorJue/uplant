@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oberflächeninhalt von Zylindern</title>
+<script src="../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../assets/site.css">
+<link rel="stylesheet" href="../../aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../index.html">Klasse 8</a><span class="sep">/</span>
+  <a href="index.html">Körper</a><span class="sep">/</span>
+  4 Oberflächeninhalt von Zylindern
+</nav>
+<header class="page-header">
+  <h1>Oberflächeninhalt von Zylindern</h1>
+  <p>Ein Selbstlernpfad: Der Zylinder als Prisma mit sehr vielen Ecken, sein Mantel wird aufgebogen, die Kreise werden umgelegt — mit Kontrollfragen und acht Übungsaufgaben.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Dosen, Rohre, Litfaßsäulen und Kerzen sind <span class="term">Zylinder</span>: Grund- und Deckfläche sind Kreise, dazwischen liegt ein gebogener Mantel. Wie viel Blech braucht eine Dose? Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>einen Zylinder als Prisma mit sehr vielen Ecken verstehen und seine Teile benennen</li>
+      <li>den <span class="term">Mantel</span> als Rechteck berechnen: M = 2 · π · r · h</li>
+      <li>die <span class="term">Oberfläche</span> berechnen: O = 2 · π · r² + 2 · π · r · h = 2 · π · r · (r + h)</li>
+      <li>die Oberfläche offener Zylinder bestimmen und die Höhe aus dem Mantel zurückrechnen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst <a href="../geometrie/kreis.html#sec-umfang">Umfang</a> und <a href="../geometrie/kreis.html#sec-flaeche">Flächeninhalt des Kreises</a> und die <a href="oberflaeche-prisma.html#sec-mantel">Oberfläche von Prismen</a> aus Thema 2.</p>
+  </section>
+
+  <!-- 1. Vom Prisma zum Zylinder -->
+  <!-- Reihenfolge: erst der Zylinder als Grenzfall des Prismas (der Mantel bleibt ein Rechteck u · h),
+       dann das Netz mit dem aufgebogenen Mantel, dann die ganze Oberfläche (mit dem Fast-Rechteck aus
+       der Kreis-Seite), zuletzt Anwendungen und Umkehrung. -->
+  <section class="card" id="sec-zylinder">
+    <h2>1. Vom Prisma zum Zylinder</h2>
+    <p>Ein Prisma mit einem regelmäßigen Vieleck als Grundfläche: Je mehr Ecken es hat, desto runder wird es. Mit sehr vielen Ecken sieht man keinen Unterschied mehr zum <span class="term">Zylinder</span> — Grund- und Deckfläche werden Kreise, der Mantel wird glatt.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Ecken: <input type="range" id="zy-k" min="0" max="8" step="1" value="2" style="vertical-align:middle;width:9rem"> <span id="zy-k-anzeige" class="th-name-b"></span></label>
+        <label>Radius r = <input type="range" id="zy-r" min="1" max="4" step="0.5" value="2.5" style="vertical-align:middle;width:6rem"> <span id="zy-r-anzeige" class="th-name-c"></span></label>
+        <label>Höhe h = <input type="range" id="zy-h" min="2" max="6" step="1" value="4" style="vertical-align:middle;width:6rem"> <span id="zy-h-anzeige" class="th-name-r"></span></label>
+      </div>
+      <div class="th-wrap" id="zy-mount"></div>
+      <div class="th-bilanz" id="zy-bilanz"></div>
+      <div id="zy-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Zylinder</span>
+      Ein Zylinder hat zwei deckungsgleiche, parallele <strong>Kreise</strong> als Grund- und Deckfläche und einen gebogenen <strong>Mantel</strong>. Sein Radius ist r, seine Höhe h — der Abstand der beiden Kreise. Wie beim Prisma ist der Mantel so lang wie der Umfang der Grundfläche: <strong>u = 2 · π · r</strong>.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Radius oder Durchmesser?</span>
+      Oft ist der Durchmesser d angegeben. In den Formeln steht der Radius: r = d : 2. Der Umfang ist u = π · d = 2 · π · r.
+    </div>
+    <div class="quiz" id="quiz-zylinder"></div>
+  </section>
+
+  <!-- 2. Netz -->
+  <section class="card" id="sec-netz">
+    <h2>2. Das Netz: Der Mantel ist ein Rechteck</h2>
+    <p>Erst klappen die beiden Kreise auf. Dann wird der Mantel hinten aufgeschnitten und <em>aufgebogen</em> — er wird dabei nicht gedehnt, nur gerade gebogen. Am Ende schaust du von vorn auf das Netz.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Radius r = <input type="range" id="nz-r" min="1" max="3" step="0.5" value="2" style="vertical-align:middle;width:6rem"> <span id="nz-r-anzeige" class="th-name-c"></span></label>
+        <label>Höhe h = <input type="range" id="nz-h" min="2" max="6" step="1" value="4" style="vertical-align:middle;width:6rem"> <span id="nz-h-anzeige" class="th-name-r"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>aufklappen: <input type="range" id="nz-t" min="0" max="100" step="5" value="0" style="vertical-align:middle;width:14rem"> <span id="nz-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="nz-mount"></div>
+      <div class="th-bilanz" id="nz-bilanz"></div>
+      <div id="nz-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Mantel des Zylinders</span>
+      Abgewickelt ist der Mantel ein Rechteck: so lang wie der Umfang des Kreises und so breit wie die Höhe.
+      <div class="formula-block">M = u · h = 2 · π · r · h</div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel</span>
+      r = 2 cm, h = 4 cm: M = 2 · π · 2 cm · 4 cm = 16 · π cm² ≈ <strong>50,27 cm²</strong>. Gerechnet wird mit der π-Taste; gerundet wird erst das Ergebnis.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — der Mantel ist kein Kreis</span>
+      π · r² ist der Flächeninhalt eines Kreises. Im Mantel steht der Umfang 2 · π · r — eine Länge, die mit der Höhe multipliziert wird.
+    </div>
+    <div class="quiz" id="quiz-netz"></div>
+  </section>
+
+  <!-- 3. Oberfläche -->
+  <section class="card" id="sec-oberflaeche">
+    <h2>3. Die Oberfläche: O = 2 · π · r · (r + h)</h2>
+    <p>Zur Oberfläche gehören der Mantel und zwei Kreise mit je π · r². Schneide die Kreise wie auf der <a href="../geometrie/kreis.html#sec-flaeche">Kreis-Seite</a> in Stücke und leg sie abwechselnd über den Mantel: Jeder Kreis wird zu einem Fast-Rechteck, π · r lang und r hoch.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Radius r = <input type="range" id="fr-r" min="1" max="2.5" step="0.5" value="1.5" style="vertical-align:middle;width:6rem"> <span id="fr-r-anzeige" class="th-name-c"></span></label>
+        <label>Höhe h = <input type="range" id="fr-h" min="2" max="5" step="1" value="3" style="vertical-align:middle;width:6rem"> <span id="fr-h-anzeige" class="th-name-r"></span></label>
+        <label>Stücke je Kreis: <input type="range" id="fr-n" min="8" max="24" step="4" value="12" style="vertical-align:middle;width:6rem"> <span id="fr-n-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>umlegen: <input type="range" id="fr-t" min="0" max="100" step="2" value="0" style="vertical-align:middle;width:14rem"> <span id="fr-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="fr-mount"></div>
+      <div class="th-bilanz" id="fr-bilanz"></div>
+      <div id="fr-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Oberfläche des Zylinders</span>
+      <div class="formula-block">O = 2 · π · r² + 2 · π · r · h = 2 · π · r · (r + h)</div>
+      Die zweite Form entsteht durch <a href="../terme/ausmultiplizieren-ausklammern.html#sec-ausklammern">Ausklammern</a> von 2 · π · r — und im Bild: Die Kreise füllen über dem Mantel einen Streifen der Höhe r; zusammen ist das fast ein Rechteck, 2 · π · r lang und r + h hoch.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel</span>
+      r = 3 cm, h = 7 cm: O = 2 · π · 3 cm · (3 cm + 7 cm) = 60 · π cm² ≈ <strong>188,50 cm²</strong>.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — zwei Kreise</span>
+      Grund- und Deckfläche: 2 · π · r², nicht π · r². Und (2 · π · r)² ist nicht 2 · π · r² — quadriert wird nur r.
+    </div>
+    <div class="quiz" id="quiz-oberflaeche"></div>
+  </section>
+
+  <!-- 4. Anwenden -->
+  <section class="card" id="sec-anwenden">
+    <h2>4. Offene Zylinder und rückwärts rechnen</h2>
+    <p>Ein Rohr hat weder Boden noch Deckel, eine Dose ohne Deckel nur einen Kreis. Wähle einen Körper und klappe ihn auf: Rot gestrichelt ist, was fehlt.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Körper:
+          <select id="an-ding" class="eingabe" style="padding:0.4rem">
+            <option value="dose">Dose (geschlossen)</option>
+            <option value="offen" selected>Dose ohne Deckel</option>
+            <option value="rohr">Rohr</option>
+          </select>
+        </label>
+        <label>Radius r = <input type="range" id="an-r" min="1" max="3" step="0.5" value="1.5" style="vertical-align:middle;width:6rem"> <span id="an-r-anzeige" class="th-name-c"></span></label>
+        <label>Höhe h = <input type="range" id="an-h" min="2" max="6" step="1" value="4" style="vertical-align:middle;width:6rem"> <span id="an-h-anzeige" class="th-name-r"></span></label>
+        <label>aufklappen: <input type="range" id="an-t" min="0" max="100" step="5" value="100" style="vertical-align:middle;width:8rem"> <span id="an-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="an-mount"></div>
+      <div class="th-bilanz" id="an-bilanz"></div>
+      <div id="an-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Rückwärts: Höhe aus dem Mantel</span>
+      Aus M = 2 · π · r · h folgt <strong>h = M : (2 · π · r)</strong>. Den Radius aus dem Mantel oder der Oberfläche zu bestimmen, braucht die Quadratwurzel — das kommt in Klasse 9.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel</span>
+      Ein Etikett von 188,50 cm² umschließt eine Dose mit r = 3 cm. Dann ist h = 188,50 cm² : (2 · π · 3 cm) ≈ <strong>10 cm</strong>. Probe: 2 · π · 3 cm · 10 cm ≈ 188,50 cm².
+    </div>
+    <div class="quiz" id="quiz-anwenden"></div>
+  </section>
+
+  <!-- 5. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>5. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../geometrie/kreis.html#sec-umfang">Umfang und Flächeninhalt des Kreises</a> — u = 2 · π · r und A = π · r², samt dem Fast-Rechteck aus Ausschnitten.</li>
+      <li><strong>Baut auf:</strong> <a href="oberflaeche-prisma.html#sec-mantel">Mantel eines Prismas</a> aus Thema 2 — M = u · h gilt beim Zylinder genauso.</li>
+      <li><strong>Baut auf:</strong> <a href="../terme/ausmultiplizieren-ausklammern.html#sec-ausklammern">Ausklammern</a> — 2 · π · r² + 2 · π · r · h = 2 · π · r · (r + h).</li>
+      <li><strong>Führt weiter zu:</strong> dem <a href="volumen-zylinder.html">Volumen eines Zylinders</a> in Thema 5.</li>
+      <li><strong>Zum Nachschlagen:</strong> <a href="../../grundwissen-5-10/02-geometrie/11-prismen-zylinder/index.html#sec-zylinder">Der Zylinder</a> im Grundwissen.</li>
+    </ul>
+  </section>
+
+  <!-- 6. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>6. Formelsammlung</h2>
+    <p>Die Formelsammlung gilt für alle fünf Körperseiten: Prisma und Zylinder, Netz und Schrägbild, Oberflächeninhalt und Volumen, Raumeinheiten — mit Bildern und den typischen Fehlern, auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 7. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>7. Übungsaufgaben</h2>
+    <p>Acht Aufgaben, zwei auf jeder Schwierigkeitsstufe. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu.</p>
+    <p class="progress-note">Rechne mit der π-Taste und runde erst das Ergebnis auf zwei Nachkommastellen (etwa „50,27“ oder „50,27 cm²“).</p>
+    <div id="exercises-mount"></div>
+  </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-zylinder">Ich kann einen Zylinder als Prisma mit sehr vielen Ecken verstehen und seine Teile benennen.</li>
+      <li data-abschnitt="sec-netz">Ich kann den Mantel eines Zylinders als Rechteck berechnen: M = 2 · π · r · h.</li>
+      <li data-abschnitt="sec-oberflaeche">Ich kann die Oberfläche eines Zylinders berechnen.</li>
+      <li data-abschnitt="sec-anwenden">Ich kann die Oberfläche offener Zylinder bestimmen und die Höhe aus dem Mantel zurückrechnen.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
+  </section>
+
+  <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
+  <section class="card" data-lehrkraft="oberflaeche-zylinder-lehrkraefte.html" hidden></section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="index.html">Zurück zu Körper</a></p>
+  <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script src="../../../assets/lehrkraft.js"></script>
+<script src="../../../assets/selbsteinschaetzung.js"></script>
+<script type="module" src="oberflaeche-zylinder.js?v=1"></script>
+</body>
+</html>

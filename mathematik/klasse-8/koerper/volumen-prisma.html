@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Volumen von Prismen</title>
+<script src="../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../assets/site.css">
+<link rel="stylesheet" href="../../aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../index.html">Klasse 8</a><span class="sep">/</span>
+  <a href="index.html">Körper</a><span class="sep">/</span>
+  3 Volumen von Prismen
+</nav>
+<header class="page-header">
+  <h1>Volumen von Prismen</h1>
+  <p>Ein Selbstlernpfad: Wie viel passt hinein? Vom Würfelzählen über den halben Quader zu V = G · h — mit Kontrollfragen und acht Übungsaufgaben.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Wie viel Wasser fasst ein Aquarium, wie viel Beton steckt in einer Treppenstufe, wie viel Luft in einem Zelt? Gefragt ist der <span class="term">Rauminhalt</span> — das <span class="term">Volumen</span>. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>das Volumen eines <span class="term">Quaders</span> durch Zählen von Einheitswürfeln begründen</li>
+      <li>erklären, warum ein <span class="term">Dreiecksprisma</span> ein halber Quader ist</li>
+      <li>das Volumen jedes Prismas mit <span class="term">V = G · h</span> berechnen, auch rückwärts</li>
+      <li><span class="term">Raumeinheiten</span> umrechnen: cm³, dm³, m³, Liter und Milliliter</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst den <a href="prismen-netz-schraegbild.html#sec-prisma">Begriff des Prismas</a> aus Thema 1 und die <a href="../geometrie/flaecheninhalte.html#sec-dreieck">Flächeninhalte von Dreieck und Trapez</a>.</p>
+  </section>
+
+  <!-- 1. Würfel zählen -->
+  <!-- Reihenfolge: erst der Quader (Würfel zählen, Schicht für Schicht), dann das Dreiecksprisma als
+       halber Quader (braucht nur Abschnitt 1), dann jedes Prisma durch Zerlegen der Grundfläche in
+       Dreiecke (braucht Abschnitt 2), zuletzt die Einheiten. -->
+  <section class="card" id="sec-wuerfel">
+    <h2>1. Rauminhalt: Würfel zählen</h2>
+    <p>Das Volumen misst man in <span class="term">Einheitswürfeln</span>: Ein Würfel mit 1 cm Kantenlänge hat das Volumen 1 cm³. Füll den Quader mit solchen Würfeln — erst eine Schicht am Boden, dann Schicht für Schicht darüber.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Länge a = <input type="range" id="wf-a" min="2" max="6" step="1" value="5" style="vertical-align:middle;width:6rem"> <span id="wf-a-anzeige" class="th-name-c"></span></label>
+        <label>Breite b = <input type="range" id="wf-b" min="1" max="4" step="1" value="3" style="vertical-align:middle;width:5rem"> <span id="wf-b-anzeige" class="th-name-c"></span></label>
+        <label>Höhe h = <input type="range" id="wf-h" min="1" max="5" step="1" value="4" style="vertical-align:middle;width:5rem"> <span id="wf-h-anzeige" class="th-name-r"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>füllen: <input type="range" id="wf-t" min="0" max="100" step="1" value="40" style="vertical-align:middle;width:14rem"> <span id="wf-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="wf-mount"></div>
+      <div class="th-bilanz" id="wf-bilanz"></div>
+      <div id="wf-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Volumen des Quaders</span>
+      In die unterste Schicht passen a · b Würfel — so viele, wie die Grundfläche cm² hat. Es gibt h Schichten:
+      <div class="formula-block">V = a · b · h = G · h</div>
+      Beim Würfel mit der Kante a: V = a³.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Volumen ist keine Fläche</span>
+      Das Volumen zählt Würfel (cm³), die Oberfläche zählt Quadrate (cm²). 2 · a · b + 2 · a · c + 2 · b · c ist die Oberfläche, nicht das Volumen.
+    </div>
+    <div class="quiz" id="quiz-wuerfel"></div>
+  </section>
+
+  <!-- 2. Dreiecksprisma -->
+  <section class="card" id="sec-dreieck">
+    <h2>2. Das Dreiecksprisma ist ein halber Quader</h2>
+    <p>Schneide einen Quader schräg durch: Die beiden Teile sind Dreiecksprismen. Zieh das orange Stück heraus und dreh es um — es ist genau so ein Prisma wie das blaue. Bei einem beliebigen Dreieck zerlegt die Höhe h<sub>g</sub> den Quader in zwei Teile, und mit jedem geschieht dasselbe.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Dreieck:
+          <select id="dr-art" class="eingabe" style="padding:0.4rem">
+            <option value="rw" selected>rechtwinklig</option>
+            <option value="bel">beliebig</option>
+          </select>
+        </label>
+        <label>Grundseite g = <input type="range" id="dr-g" min="3" max="6" step="1" value="4" style="vertical-align:middle;width:5rem"> <span id="dr-g-anzeige" class="th-name-c"></span></label>
+        <label>Höhe h<sub>g</sub> = <input type="range" id="dr-hg" min="2" max="4" step="1" value="3" style="vertical-align:middle;width:5rem"> <span id="dr-hg-anzeige" class="th-name-r"></span></label>
+        <label>Spitze: <input type="range" id="dr-p" min="20" max="80" step="5" value="40" style="vertical-align:middle;width:5rem"> <span id="dr-p-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>Prismenhöhe h = <input type="range" id="dr-h" min="1" max="4" step="1" value="2" style="vertical-align:middle;width:5rem"> <span id="dr-h-anzeige" class="th-name-r"></span></label>
+        <label>herausziehen und drehen: <input type="range" id="dr-t" min="0" max="100" step="5" value="0" style="vertical-align:middle;width:11rem"> <span id="dr-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="dr-mount"></div>
+      <div class="th-bilanz" id="dr-bilanz"></div>
+      <div id="dr-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Volumen des Dreiecksprismas</span>
+      Das Dreiecksprisma ist halb so groß wie der Quader g × h<sub>g</sub> × h:
+      <div class="formula-block">V = ½ · g · h<sub>g</sub> · h = G · h</div>
+      Das ½ gehört zum Dreieck: ½ · g · h<sub>g</sub> ist sein Flächeninhalt G. Also gilt auch hier V = G · h.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — zwei Höhen</span>
+      h<sub>g</sub> ist die Höhe des Dreiecks, h die Höhe des Prismas. Beide kommen in V vor, aber an verschiedenen Stellen.
+    </div>
+    <div class="quiz" id="quiz-dreieck"></div>
+  </section>
+
+  <!-- 3. V = G · h -->
+  <section class="card" id="sec-gh">
+    <h2>3. Jedes Prisma: V = G · h</h2>
+    <p>Jedes Vieleck lässt sich in Rechtecke und Dreiecke zerlegen — dann zerfällt das Prisma in Quader und Dreiecksprismen derselben Höhe. Jedes Teil hat das Volumen G<sub>i</sub> · h (Abschnitte 1 und 2), und zusammen ist das (G<sub>1</sub> + G<sub>2</sub> + …) · h = G · h. Zieh das Prisma auseinander.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Prisma:
+          <select id="gh-form" class="eingabe" style="padding:0.4rem">
+            <option value="trapez" selected>Trapezprisma</option>
+            <option value="haus">Fünfeckprisma</option>
+            <option value="sechseck">Sechseckprisma</option>
+          </select>
+        </label>
+        <label>Höhe h = <input type="range" id="gh-h" min="2" max="5" step="1" value="3" style="vertical-align:middle;width:6rem"> <span id="gh-h-anzeige" class="th-name-r"></span></label>
+        <label>zerlegen: <input type="range" id="gh-t" min="0" max="100" step="5" value="0" style="vertical-align:middle;width:9rem"> <span id="gh-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="gh-mount"></div>
+      <div class="th-bilanz" id="gh-bilanz"></div>
+      <div id="gh-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Volumen eines Prismas</span>
+      <div class="formula-block">V = G · h</div>
+      G ist der Flächeninhalt der Grundfläche, h die Höhe des Prismas. Man kann es sich auch als h Schichten vorstellen, jede 1 cm dick und mit dem Volumen G · 1 cm.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel — auch rückwärts</span>
+      Trapezprisma mit G = 20 cm² und h = 3 cm: V = 20 cm² · 3 cm = <strong>60 cm³</strong>.<br>
+      Rückwärts: Ein Prisma mit G = 20 cm² hat V = 90 cm³. Dann ist h = V : G = 90 cm³ : 20 cm² = <strong>4,5 cm</strong>.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — G · h, nicht 2 · G · h</span>
+      Bei der Oberfläche zählen Grund- und Deckfläche: 2 · G. Beim Volumen wird die Grundfläche nur „hochgeschoben“: einmal G, mal h.
+    </div>
+    <div class="quiz" id="quiz-gh"></div>
+  </section>
+
+  <!-- 4. Einheiten -->
+  <section class="card" id="sec-einheiten">
+    <h2>4. Raumeinheiten: cm³, dm³, Liter</h2>
+    <p>Ein Würfel mit 1 dm Kantenlänge hat das Volumen 1 dm³ — das ist genau <span class="term">1 Liter</span>. Wie viele cm³ sind das? Zerlege ihn: erst in Platten, dann eine Platte in Stangen, dann eine Stange in Würfel.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>zerlegen: <input type="range" id="ei-t" min="0" max="100" step="5" value="0" style="vertical-align:middle;width:14rem"> <span id="ei-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="ei-mount"></div>
+      <div class="th-bilanz" id="ei-bilanz"></div>
+      <div id="ei-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Raumeinheiten</span>
+      1 dm³ = 1000 cm³, 1 m³ = 1000 dm³, 1 cm³ = 1000 mm³ — die Umrechnungszahl ist <strong>1000</strong>, denn 10 · 10 · 10 = 1000.<br>
+      Hohlmaße: <strong>1 l = 1 dm³</strong>, 1 ml = 1 cm³, 1 hl = 100 l.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiele</span>
+      2,5 dm³ = 2500 cm³ = 2,5 l &nbsp; 750 cm³ = 0,75 dm³ = 0,75 l = 750 ml &nbsp; 3 m³ = 3000 dm³ = 3000 l
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — 1000, nicht 100 oder 10</span>
+      Längen rechnet man mit 10 um, Flächen mit 100, Volumen mit 1000. 1 dm³ sind nicht 10 cm³, sondern 10 · 10 · 10 cm³.
+    </div>
+    <div class="quiz" id="quiz-einheiten"></div>
+  </section>
+
+  <!-- 5. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>5. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="../../grundwissen-5-10/02-geometrie/03-volumen-oberflaeche/index.html#sec-quader">Volumen von Quader und Würfel</a> aus dem Grundwissen — dort werden ebenfalls Würfel gezählt.</li>
+      <li><strong>Baut auf:</strong> <a href="../geometrie/flaecheninhalte.html#sec-dreieck">Flächeninhalt des Dreiecks</a> — auch dort ist das Dreieck die Hälfte eines Rechtecks.</li>
+      <li><strong>Gleiche Struktur:</strong> <a href="oberflaeche-prisma.html#sec-formel">Oberfläche eines Prismas</a> — dort 2 · G + u · h, hier G · h.</li>
+      <li><strong>Führt weiter zu:</strong> dem <a href="volumen-zylinder.html">Volumen eines Zylinders</a> — auch dort gilt V = G · h.</li>
+      <li><strong>Zum Nachschlagen:</strong> <a href="../../grundwissen-5-10/02-geometrie/11-prismen-zylinder/index.html#sec-volumen">Volumen von Prismen</a> im Grundwissen.</li>
+    </ul>
+  </section>
+
+  <!-- 6. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>6. Formelsammlung</h2>
+    <p>Die Formelsammlung gilt für alle fünf Körperseiten: Prisma und Zylinder, Netz und Schrägbild, Oberflächeninhalt und Volumen, Raumeinheiten — mit Bildern und den typischen Fehlern, auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 7. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>7. Übungsaufgaben</h2>
+    <p>Acht Aufgaben, zwei auf jeder Schwierigkeitsstufe. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu.</p>
+    <p class="progress-note">Gib Zahlen ohne Einheit ein oder mit der Einheit, nach der gefragt ist (etwa „60 cm³“, „60 cm3“ oder „2,5 l“).</p>
+    <div id="exercises-mount"></div>
+  </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-wuerfel">Ich kann das Volumen eines Quaders durch Zählen von Einheitswürfeln begründen.</li>
+      <li data-abschnitt="sec-dreieck">Ich kann erklären, warum ein Dreiecksprisma ein halber Quader ist.</li>
+      <li data-abschnitt="sec-gh">Ich kann das Volumen jedes Prismas mit V = G · h berechnen, auch rückwärts.</li>
+      <li data-abschnitt="sec-einheiten">Ich kann Raumeinheiten umrechnen: cm³, dm³, m³, Liter und Milliliter.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
+  </section>
+
+  <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
+  <section class="card" data-lehrkraft="volumen-prisma-lehrkraefte.html" hidden></section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="index.html">Zurück zu Körper</a></p>
+  <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script src="../../../assets/lehrkraft.js"></script>
+<script src="../../../assets/selbsteinschaetzung.js"></script>
+<script type="module" src="volumen-prisma.js?v=1"></script>
+</body>
+</html>

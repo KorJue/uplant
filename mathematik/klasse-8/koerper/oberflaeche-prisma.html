@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oberflächeninhalt von Prismen</title>
+<script src="../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../assets/site.css">
+<link rel="stylesheet" href="../../aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../index.html">Klasse 8</a><span class="sep">/</span>
+  <a href="index.html">Körper</a><span class="sep">/</span>
+  2 Oberflächeninhalt von Prismen
+</nav>
+<header class="page-header">
+  <h1>Oberflächeninhalt von Prismen</h1>
+  <p>Ein Selbstlernpfad: Wie viel Fläche hat ein Prisma? Das Netz wird aufgeklappt und ausgemessen — mit Kontrollfragen und acht Übungsaufgaben.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Wie viel Pappe braucht eine Schachtel, wie viel Stoff ein Zelt, wie viel Farbe ein Holzklotz? Gefragt ist jedes Mal der <span class="term">Oberflächeninhalt</span> — die Summe aller Flächen. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>die Oberfläche eines <span class="term">Quaders</span> als Flächeninhalt seines Netzes berechnen</li>
+      <li>den <span class="term">Mantel</span> eines Prismas als ein Rechteck berechnen: M = u · h</li>
+      <li>die Oberfläche jedes Prismas mit <span class="term">O = 2 · G + M</span> berechnen</li>
+      <li>die Oberfläche <span class="term">offener Körper</span> bestimmen und Flächeneinheiten umrechnen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst <a href="prismen-netz-schraegbild.html#sec-netz">das Netz eines Prismas</a> aus Thema 1 und die <a href="../geometrie/flaecheninhalte.html#sec-dreieck">Flächeninhalte von Dreieck und Trapez</a>.</p>
+  </section>
+
+  <!-- 1. Oberfläche = Netz -->
+  <!-- Reihenfolge: erst der Quader (lauter Rechtecke, nichts Neues), dann der Mantel als ein Rechteck
+       (u · h), dann die allgemeine Formel O = 2 · G + M, zuletzt offene Körper und Einheiten. -->
+  <section class="card" id="sec-netzflaeche">
+    <h2>1. Die Oberfläche ist das Netz</h2>
+    <p>Die Oberfläche eines Körpers hat denselben Flächeninhalt wie sein Netz — beim Aufklappen kommt keine Fläche dazu, und keine geht verloren. Beim Quader sind alle Flächen Rechtecke. Stelle die Maße ein und klappe ihn auf.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Länge a = <input type="range" id="qd-a" min="2" max="7" step="1" value="5" style="vertical-align:middle;width:6rem"> <span id="qd-a-anzeige" class="th-name-c"></span></label>
+        <label>Breite b = <input type="range" id="qd-b" min="1" max="4" step="1" value="3" style="vertical-align:middle;width:5rem"> <span id="qd-b-anzeige" class="th-name-c"></span></label>
+        <label>Höhe c = <input type="range" id="qd-c" min="1" max="4" step="1" value="2" style="vertical-align:middle;width:5rem"> <span id="qd-c-anzeige" class="th-name-r"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>aufklappen: <input type="range" id="qd-t" min="0" max="100" step="5" value="100" style="vertical-align:middle;width:14rem"> <span id="qd-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="qd-mount"></div>
+      <div class="th-bilanz" id="qd-bilanz"></div>
+      <div id="qd-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Oberfläche des Quaders</span>
+      Ein Quader mit Länge a, Breite b und Höhe c hat drei Paare gleicher Rechtecke:
+      <div class="formula-block">O = 2 · a · b + 2 · a · c + 2 · b · c</div>
+      Beim Würfel mit der Kante a sind alle sechs Flächen gleich: O = 6 · a².
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel</span>
+      a = 5 cm, b = 3 cm, c = 2 cm: O = 2 · 15 cm² + 2 · 10 cm² + 2 · 6 cm² = 30 cm² + 20 cm² + 12 cm² = <strong>62 cm²</strong>.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — jede Fläche zweimal</span>
+      a · b + a · c + b · c ist nur die halbe Oberfläche: Zu jeder Fläche gibt es die gegenüberliegende, gleich große. Und a · b · c ist gar keine Fläche, sondern das Volumen.
+    </div>
+    <div class="quiz" id="quiz-netzflaeche"></div>
+  </section>
+
+  <!-- 2. Mantel -->
+  <section class="card" id="sec-mantel">
+    <h2>2. Der Mantel ist ein Rechteck: M = u · h</h2>
+    <p>Die Seitenflächen eines Prismas sind Rechtecke, alle so hoch wie das Prisma. Abgewickelt liegen sie nebeneinander und bilden <em>ein</em> großes Rechteck — den <span class="term">Mantel</span>. Seine Länge ist der Umfang u der Grundfläche.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Prisma:
+          <select id="mt-form" class="eingabe" style="padding:0.4rem">
+            <option value="dreieck-rw">Dreiecksprisma (rechtwinklig)</option>
+            <option value="dreieck-gs">Dreiecksprisma (gleichschenklig)</option>
+            <option value="trapez" selected>Trapezprisma</option>
+            <option value="haus">Fünfeckprisma</option>
+            <option value="sechseck">Sechseckprisma</option>
+          </select>
+        </label>
+        <label>Höhe h = <input type="range" id="mt-h" min="2" max="5" step="1" value="3" style="vertical-align:middle;width:6rem"> <span id="mt-h-anzeige" class="th-name-r"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>abwickeln: <input type="range" id="mt-t" min="0" max="100" step="5" value="0" style="vertical-align:middle;width:14rem"> <span id="mt-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="mt-mount"></div>
+      <div class="th-bilanz" id="mt-bilanz"></div>
+      <div id="mt-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Mantel</span>
+      Der Mantel eines Prismas ist ein Rechteck aus allen Seitenflächen. Es ist so lang wie der Umfang u der Grundfläche und so breit wie die Höhe h des Prismas:
+      <div class="formula-block">M = u · h</div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Umfang, nicht Grundfläche</span>
+      In M = u · h steht der <em>Umfang</em> der Grundfläche, eine Länge. G · h wäre etwas ganz anderes (das Volumen, Thema 3).
+    </div>
+    <div class="quiz" id="quiz-mantel"></div>
+  </section>
+
+  <!-- 3. O = 2G + M -->
+  <section class="card" id="sec-formel">
+    <h2>3. Die Oberfläche: O = 2 · G + M</h2>
+    <p>Zum Mantel kommen Grund- und Deckfläche. Sie sind deckungsgleich, also gleich groß — deshalb steht in der Formel 2 · G. Den Flächeninhalt G berechnest du mit den Formeln für Dreieck, Trapez oder durch Zerlegen.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Prisma:
+          <select id="fo-form" class="eingabe" style="padding:0.4rem">
+            <option value="dreieck-rw">Dreiecksprisma (rechtwinklig)</option>
+            <option value="dreieck-gs" selected>Dreiecksprisma (gleichschenklig)</option>
+            <option value="trapez">Trapezprisma</option>
+            <option value="haus">Fünfeckprisma</option>
+            <option value="sechseck">Sechseckprisma</option>
+          </select>
+        </label>
+        <label>Höhe h = <input type="range" id="fo-h" min="2" max="5" step="1" value="4" style="vertical-align:middle;width:6rem"> <span id="fo-h-anzeige" class="th-name-r"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>aufklappen: <input type="range" id="fo-t" min="0" max="100" step="5" value="100" style="vertical-align:middle;width:14rem"> <span id="fo-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="fo-mount"></div>
+      <div class="th-bilanz" id="fo-bilanz"></div>
+      <div id="fo-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Oberfläche eines Prismas</span>
+      <div class="formula-block">O = 2 · G + M = 2 · G + u · h</div>
+      G ist der Flächeninhalt der Grundfläche, u ihr Umfang, h die Höhe des Prismas.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Beispiel</span>
+      Dreiecksprisma, Grundfläche gleichschenklig mit g = 6 cm, h<sub>g</sub> = 4 cm und den Schenkeln 5 cm; Höhe des Prismas h = 4 cm.<br>
+      G = ½ · 6 cm · 4 cm = 12 cm²; u = 6 cm + 5 cm + 5 cm = 16 cm; M = 16 cm · 4 cm = 64 cm²; O = 2 · 12 cm² + 64 cm² = <strong>88 cm²</strong>.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — zwei Höhen</span>
+      Die Höhe h<sub>g</sub> des Dreiecks gehört zu G, die Höhe h des Prismas zum Mantel. Wer sie verwechselt, rechnet eine falsche Fläche aus. Im Beispiel sind sie zufällig gleich lang — das ist nicht immer so.
+    </div>
+    <div class="quiz" id="quiz-formel"></div>
+  </section>
+
+  <!-- 4. Offene Körper -->
+  <section class="card" id="sec-anwenden">
+    <h2>4. Offene Körper und Einheiten</h2>
+    <p>Eine Schachtel ohne Deckel, ein Zelt ohne Boden, ein Trog, der oben offen ist: Dort fehlt im Netz eine Fläche, und sie wird nicht mitgerechnet. Am Ende schaust du genau senkrecht auf das Netz.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Körper:
+          <select id="an-ding" class="eingabe" style="padding:0.4rem">
+            <option value="schachtel" selected>Schachtel ohne Deckel</option>
+            <option value="zelt">Zelt ohne Boden</option>
+            <option value="trog">Trog, oben offen</option>
+          </select>
+        </label>
+        <label>aufklappen: <input type="range" id="an-t" min="0" max="100" step="5" value="0" style="vertical-align:middle;width:12rem"> <span id="an-t-anzeige" class="th-name-b"></span></label>
+      </div>
+      <div class="th-wrap" id="an-mount"></div>
+      <div class="th-bilanz" id="an-bilanz"></div>
+      <div id="an-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Offene Körper</span>
+      Erst überlegen, <strong>welche Flächen es wirklich gibt</strong>, dann nur diese addieren. Beim Zelt fehlt eine Seitenfläche (der Boden), bei der Schachtel eine Grundfläche (der Deckel).
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Flächeneinheiten</span>
+      1 dm² = 100 cm², 1 m² = 100 dm² = 10.000 cm². Jede Einheit ist das 100-Fache der nächstkleineren: 1 dm = 10 cm, also 1 dm² = 10 cm · 10 cm.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — erst in eine Einheit umrechnen</span>
+      Steht eine Länge in m und eine in cm, wird vor dem Multiplizieren umgerechnet. Und Flächen werden mit 100 umgerechnet, nicht mit 10.
+    </div>
+    <div class="quiz" id="quiz-anwenden"></div>
+  </section>
+
+  <!-- 5. Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>5. Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> <a href="prismen-netz-schraegbild.html#sec-netz">Netz eines Prismas</a> aus Thema 1 — die Oberfläche ist der Flächeninhalt des Netzes.</li>
+      <li><strong>Baut auf:</strong> <a href="../geometrie/flaecheninhalte.html#sec-trapez">Flächeninhalte von Dreieck und Trapez</a> — sie liefern G.</li>
+      <li><strong>Baut auf:</strong> <a href="../geometrie/zusammengesetzte-figuren.html#sec-zerlegen">Zusammengesetzte Figuren</a> — eine Grundfläche wie ein Fünfeck wird in Rechteck und Dreieck zerlegt.</li>
+      <li><strong>Führt weiter zu:</strong> der <a href="oberflaeche-zylinder.html">Oberfläche eines Zylinders</a> — auch dort ist der Mantel ein Rechteck u · h.</li>
+      <li><strong>Zum Nachschlagen:</strong> <a href="../../grundwissen-5-10/02-geometrie/11-prismen-zylinder/index.html#sec-oberflaeche">Oberfläche von Prismen</a> im Grundwissen.</li>
+    </ul>
+  </section>
+
+  <!-- 6. Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>6. Formelsammlung</h2>
+    <p>Die Formelsammlung gilt für alle fünf Körperseiten: Prisma und Zylinder, Netz und Schrägbild, Oberflächeninhalt und Volumen, Raumeinheiten — mit Bildern und den typischen Fehlern, auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- 7. Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>7. Übungsaufgaben</h2>
+    <p>Acht Aufgaben, zwei auf jeder Schwierigkeitsstufe. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu.</p>
+    <p class="progress-note">Gib Zahlen ohne Einheit ein oder mit der Einheit, nach der gefragt ist (etwa „62 cm²“ oder „62 cm2“).</p>
+    <div id="exercises-mount"></div>
+  </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste">
+      <li data-abschnitt="sec-netzflaeche">Ich kann die Oberfläche eines Quaders als Flächeninhalt seines Netzes berechnen.</li>
+      <li data-abschnitt="sec-mantel">Ich kann den Mantel eines Prismas mit M = u · h berechnen.</li>
+      <li data-abschnitt="sec-formel">Ich kann die Oberfläche jedes Prismas mit O = 2 · G + M berechnen.</li>
+      <li data-abschnitt="sec-anwenden">Ich kann die Oberfläche offener Körper bestimmen und Flächeneinheiten umrechnen.</li>
+    </ul>
+    <div class="se-auswertung event-result" aria-live="polite"></div>
+  </section>
+
+  <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
+  <section class="card" data-lehrkraft="oberflaeche-prisma-lehrkraefte.html" hidden></section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="index.html">Zurück zu Körper</a></p>
+  <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script src="../../../assets/lehrkraft.js"></script>
+<script src="../../../assets/selbsteinschaetzung.js"></script>
+<script type="module" src="oberflaeche-prisma.js?v=1"></script>
+</body>
+</html>
