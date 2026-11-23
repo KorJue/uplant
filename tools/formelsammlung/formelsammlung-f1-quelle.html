@@ -74,6 +74,8 @@
   .ni { color: #b3650a; font-weight: 700; }
   .fu { color: #5b6570; font-size: 7.3px; }
   .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
+  /* Griechische Buchstaben in Überschriften nicht in Großbuchstaben setzen: aus ε würde Ε, aus π ein Π. */
+  .gr { text-transform: none; }
 </style>
 </head>
 <body>
@@ -124,7 +126,7 @@
     </div>
 
     <div class="box merk wide">
-      <h2>Grenzwert einer Folge — der ε-Streifen</h2>
+      <h2>Grenzwert einer Folge — der <span class="gr">ε</span>-Streifen</h2>
       <div class="zwei">
         <div>
           <p>g heißt <b>Grenzwert</b> von (aₙ), wenn es zu <b>jedem</b> ε &gt; 0 ein n₀ gibt mit</p>

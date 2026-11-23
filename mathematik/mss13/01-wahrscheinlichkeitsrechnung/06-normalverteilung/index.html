@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Normalverteilung</title>
+<script src="../../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../../assets/site.css">
+<link rel="stylesheet" href="../../../aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../../index.html">1 Mathematik</a><span class="sep">/</span>
+  <a href="../../index.html">MSS 13</a><span class="sep">/</span>
+  <a href="../index.html">01 Wahrscheinlichkeitsrechnung</a><span class="sep">/</span>
+  6 Normalverteilung
+</nav>
+<header class="page-header">
+  <h1>Normalverteilung</h1>
+  <p>Ein Selbstlernpfad: vom Histogramm der Binomialverteilung über das Standardisieren zur Gaußschen Glockenkurve, zu den Näherungsformeln von de Moivre und Laplace und zur Normalverteilung.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Bei 500 Würfen eine Wahrscheinlichkeit mit der Formel von Bernoulli auszurechnen, ist mühsam — und alle Histogramme großer Bernoulli-Ketten sehen gleich aus, wenn man sie richtig hinlegt. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>beschreiben, wie sich das Histogramm einer Binomialverteilung mit wachsendem n verändert</li>
+      <li>ein Histogramm in drei Schritten <span class="term">standardisieren</span> und zu jedem Wert k den Wert z = <span class="bruch"><span class="z">k − μ</span><span class="n">σ</span></span> angeben</li>
+      <li>die <span class="term">Gaußsche Glockenfunktion</span> φ beschreiben und die <span class="term">Laplace-Bedingung</span> σ &gt; 3 prüfen</li>
+      <li>B(n; p; k) mit der <span class="term">lokalen Näherungsformel</span> von de Moivre und Laplace näherungsweise berechnen</li>
+      <li>F(n; p; k) und P(a ≤ X ≤ b) mit der <span class="term">globalen Näherungsformel</span> und der <span class="term">Gaußschen Integralfunktion</span> Φ berechnen — mit Stetigkeitskorrektur</li>
+      <li>mit einer <span class="term">normalverteilten</span> Zufallsgröße rechnen und die <span class="term">σ-Regeln</span> anwenden</li>
+      <li>zu einer vorgegebenen Wahrscheinlichkeit eine Grenze, μ oder σ bestimmen</li>
+    </ul>
+    <div class="notation-box">
+      <span class="box-label">Schreibweise</span>
+      Für die Binomialverteilung gilt die Schreibweise aus Thema 5, in erster Linie nach <strong>Bigalke/Köhler</strong>: P(X = k) = B(n; p; k) und P(X ≤ k) = F(n; p; k) — in <strong>Fundamente der Mathematik</strong> B<sub>n;p</sub>(k) und F<sub>n;p</sub>(k). Neu kommen zwei Funktionen dazu: <strong>φ</strong> (klein Phi), die Glockenfunktion, und <strong>Φ</strong> (groß Phi), die Fläche unter ihr. μ ist immer der Erwartungswert, σ die Standardabweichung.
+    </div>
+    <p class="hinweis-box">💡 Du brauchst aus <a href="../05-bernoulli-ketten-binomialverteilung/index.html#sec-kenngroessen">Thema 5</a> die Binomialverteilung mit μ = n · p und σ = √(n · p · (1 − p)), aus der Analysis die <a href="../../../mss11/01-analysis/05-integralrechnung/index.html#sec-integralfunktion">Integralfunktion</a> und die <a href="../../../mss11/01-analysis/03b-weitere-funktionen-ableiten/index.html#sec-ex">e-Funktion</a>.</p>
+  </section>
+
+  <!-- 1. Histogramme für großes n -->
+  <section class="card" id="sec-wachsen">
+    <h2>1. Große Bernoulli-Ketten: Das Histogramm wandert, wird breiter und flacher</h2>
+    <p>Eine Münze wird n-mal geworfen, X ist die Anzahl der Wappen. Für n = 10 lässt sich jede Wahrscheinlichkeit noch bequem ausrechnen. Was passiert mit dem Histogramm, wenn n wächst? Der Rahmen unten bleibt fest — so siehst du, was sich bewegt.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>n: <input type="range" id="wa-n" min="10" max="100" step="5" value="10" style="vertical-align:middle;width:10rem"> <span id="wa-n-anzeige" class="wert farbe-blau"></span></label>
+        <label>p: <input type="range" id="wa-p" min="0.1" max="0.9" step="0.1" value="0.5" style="vertical-align:middle;width:8rem"> <span id="wa-p-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap" id="wa-mount"></div>
+      <div class="th-bilanz" id="wa-bilanz"></div>
+      <div id="wa-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Was mit wachsendem n geschieht</span>
+      <strong>Lage:</strong> Das Histogramm wandert nach rechts, denn μ = n · p wächst mit n.<br>
+      <strong>Breite:</strong> Es wird breiter, denn σ = √(n · p · (1 − p)) wächst — aber nur mit √n: Bei vierfachem n doppelt so breit.<br>
+      <strong>Höhe:</strong> Es wird flacher, denn alle Säulen zusammen haben immer den Flächeninhalt 1. Die höchste Säule ist etwa <span class="bruch"><span class="z">0,4</span><span class="n">σ</span></span> hoch — σ mal höchste Säule bleibt ungefähr gleich.
+    </div>
+    <p class="hinweis-box">💡 Verschieden große Histogramme lassen sich so nicht vergleichen: Jedes hat seinen eigenen Ort, seine eigene Breite, seine eigene Höhe. Die Idee von <strong>de Moivre</strong> (1733) und <strong>Laplace</strong> (1812): Man legt jedes Histogramm so hin, dass Ort, Breite und Höhe nicht mehr von n und p abhängen. Wie das geht, zeigt der nächste Abschnitt.</p>
+    <div class="quiz" id="quiz-wachsen"></div>
+  </section>
+
+  <!-- 2. Standardisieren -->
+  <section class="card" id="sec-standardisieren">
+    <h2>2. Standardisieren in drei Schritten</h2>
+    <p>Bigalke/Köhler legen ein Histogramm in drei Schritten so hin, dass der Erwartungswert bei 0 liegt und die Standardabweichung 1 ist. Jeder Schritt ist eine einfache Abbildung; keine Säule kommt dazu, keine verschwindet. Zieh am Regler „Fortschritt“ langsam von links nach rechts und beobachte die grüne Säule.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>n: <input type="range" id="st-n" min="10" max="100" step="5" value="40" style="vertical-align:middle;width:8rem"> <span id="st-n-anzeige" class="wert farbe-blau"></span></label>
+        <label>p: <input type="range" id="st-p" min="0.1" max="0.9" step="0.1" value="0.5" style="vertical-align:middle;width:7rem"> <span id="st-p-anzeige" class="wert farbe-orange"></span></label>
+        <label>beobachtete Säule k: <input type="range" id="st-k" min="0" max="100" step="1" value="23" style="vertical-align:middle;width:8rem"> <span id="st-k-anzeige" class="wert farbe-gruen"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>Fortschritt: <input type="range" id="st-t" min="0" max="400" step="5" value="0" style="vertical-align:middle;width:18rem"> <span id="st-t-anzeige" class="wert"></span></label>
+      </div>
+      <ol class="nv-schritte" id="st-schritte">
+        <li data-schritt="1">Verschieben um μ nach links</li>
+        <li data-schritt="2">Stauchen in x-Richtung mit dem Faktor <span class="bruch"><span class="z">1</span><span class="n">σ</span></span></li>
+        <li data-schritt="lupe">Lupe: nur die Ansicht vergrößern</li>
+        <li data-schritt="3">Strecken in y-Richtung mit dem Faktor σ</li>
+      </ol>
+      <div class="geo-wrap" id="st-mount"></div>
+      <div class="th-bilanz" id="st-bilanz"></div>
+      <div id="st-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Standardisieren</span>
+      X sei binomialverteilt mit μ = n · p und σ = √(n · p · (1 − p)). Jeder Wert k wird ersetzt durch
+      <div class="formula-block">z<sub>k</sub> = <span class="bruch gross"><span class="z">k − μ</span><span class="n">σ</span></span></div>
+      <strong>Schritt 1</strong> (verschieben um μ) macht aus k den Wert k − μ, <strong>Schritt 2</strong> (stauchen mit <span class="bruch"><span class="z">1</span><span class="n">σ</span></span>) daraus <span class="bruch"><span class="z">k − μ</span><span class="n">σ</span></span>; jede Säule ist danach nur noch <span class="bruch"><span class="z">1</span><span class="n">σ</span></span> breit. <strong>Schritt 3</strong> (strecken mit σ) macht jede Säule σ-mal so hoch:
+      <div class="formula-block">Säule über z<sub>k</sub>: &nbsp; Breite <span class="bruch"><span class="z">1</span><span class="n">σ</span></span>, &nbsp; Höhe σ · B(n; p; k), &nbsp; Flächeninhalt <span class="bruch"><span class="z">1</span><span class="n">σ</span></span> · σ · B(n; p; k) = B(n; p; k)</div>
+      Das Ergebnis heißt <strong>standardisiertes Histogramm</strong>. Es gehört zur standardisierten Zufallsgröße Z = <span class="bruch"><span class="z">X − μ</span><span class="n">σ</span></span> mit dem Erwartungswert 0 und der Standardabweichung 1.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Durchgerechnet — 100 Münzwürfe, Säule k = 55</span>
+      n = 100, p = 0,5: μ = 50, σ = √(100 · 0,5 · 0,5) = 5, B(100; 0,5; 55) ≈ 0,0485.<br>
+      Schritt 1: Die Säule rückt von 55 nach 55 − 50 = 5.<br>
+      Schritt 2: Sie rückt nach 5 : 5 = 1 und ist nur noch 1 : 5 = 0,2 breit; Fläche jetzt 0,2 · 0,0485 ≈ 0,0097.<br>
+      Schritt 3: Sie wird 5-mal so hoch: 5 · B(100; 0,5; 55) ≈ 0,2424; Fläche wieder 0,2 · 0,2424 ≈ 0,0485.<br>
+      Also: z = 1, Höhe ≈ 0,2424.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — warum Schritt 3 nötig ist</span>
+      Nach Schritt 2 sind alle Säulen nur noch <span class="bruch"><span class="z">1</span><span class="n">σ</span></span> breit, aber so hoch wie vorher: Zusammen haben sie nur noch den Flächeninhalt <span class="bruch"><span class="z">1</span><span class="n">σ</span></span>, nicht mehr 1. Erst das Strecken mit σ gibt jeder Säule ihre Wahrscheinlichkeit als Fläche zurück. Wer nur verschiebt und staucht, vergleicht Histogramme mit verschiedenen Gesamtflächen.
+    </div>
+    <div class="quiz" id="quiz-standardisieren"></div>
+  </section>
+
+  <!-- 3. Die Glockenkurve -->
+  <section class="card" id="sec-glockenkurve">
+    <h2>3. Alle standardisierten Histogramme — eine Kurve</h2>
+    <p>Standardisiert man die Histogramme verschiedener Bernoulli-Ketten, liegen sie fast genau übereinander — umso genauer, je größer σ ist. Die gemeinsame Grenzkurve hat Carl Friedrich Gauß genauer untersucht; sie heißt <span class="term">Gaußsche Glockenkurve</span>. Stell unten verschiedene n und p ein.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>n: <input type="range" id="gl-n" min="10" max="500" step="10" value="20" style="vertical-align:middle;width:10rem"> <span id="gl-n-anzeige" class="wert farbe-blau"></span></label>
+        <label>p: <input type="range" id="gl-p" min="0.1" max="0.9" step="0.1" value="0.3" style="vertical-align:middle;width:8rem"> <span id="gl-p-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="geo-wrap" id="gl-mount"></div>
+      <div class="th-bilanz" id="gl-bilanz"></div>
+      <div id="gl-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Die Gaußsche Glockenfunktion φ</span>
+      <div class="formula-block">φ(z) = <span class="bruch gross"><span class="z">1</span><span class="n">√(2π)</span></span> · e<sup>−<span class="bruch"><span class="z">z²</span><span class="n">2</span></span></sup></div>
+      φ ist symmetrisch zur y-Achse, hat bei z = 0 ihr Maximum φ(0) = <span class="bruch"><span class="z">1</span><span class="n">√(2π)</span></span> ≈ 0,3989 und bei z = −1 und z = 1 ihre Wendestellen. Für |z| &gt; 4 ist φ(z) kleiner als 0,0002. Der Flächeninhalt unter dem ganzen Graphen ist 1 — so wie die Gesamtfläche jedes standardisierten Histogramms.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Laplace-Bedingung</span>
+      Das standardisierte Histogramm liegt umso dichter an der Glockenkurve, je größer σ ist. Als Faustregel gilt die Näherung als brauchbar, wenn
+      <div class="formula-block">σ = √(n · p · (1 − p)) &gt; 3</div>
+      Bei p nahe 0 oder 1 ist dafür ein sehr großes n nötig — dort ist das Histogramm schief und braucht länger, bis es symmetrisch aussieht.
+    </div>
+    <p class="hinweis-box">💡 Dass die Wendestellen bei ±1 liegen, ergibt die zweite Ableitung — die <a href="../../../mss11/01-analysis/04b-weitere-funktionen-untersuchen/index.html#sec-glocke">Gaußsche Glockenkurve</a> aus der Analysis mit σ = 1. Der Faktor <span class="bruch"><span class="z">1</span><span class="n">√(2π)</span></span> sorgt dafür, dass die Fläche genau 1 ist; beweisen lässt sich das erst mit Mitteln aus dem Studium. Die Darstellung misst die Fläche zwischen −4 und 4 aus.</p>
+    <div class="quiz" id="quiz-glockenkurve"></div>
+  </section>
+
+  <!-- 4. Lokale Näherungsformel -->
+  <section class="card" id="sec-lokal">
+    <h2>4. Die lokale Näherungsformel von de Moivre und Laplace</h2>
+    <p>Im standardisierten Histogramm ist die Säule über z<sub>k</sub> genau σ · B(n; p; k) hoch, und sie reicht fast genau bis an die Glockenkurve: σ · B(n; p; k) ≈ φ(z<sub>k</sub>). Teilt man durch σ, macht man Schritt 3 rückgängig — und hat eine Näherung für die Wahrscheinlichkeit selbst. Unten liegt die zurückgerechnete Kurve <span class="bruch"><span class="z">1</span><span class="n">σ</span></span> · φ(<span class="bruch"><span class="z">x − μ</span><span class="n">σ</span></span>) über dem ursprünglichen Histogramm.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>n: <input type="range" id="lo-n" min="10" max="500" step="10" value="100" style="vertical-align:middle;width:9rem"> <span id="lo-n-anzeige" class="wert farbe-blau"></span></label>
+        <label>p: <input type="range" id="lo-p" min="0.1" max="0.9" step="0.1" value="0.5" style="vertical-align:middle;width:7rem"> <span id="lo-p-anzeige" class="wert farbe-orange"></span></label>
+        <label>k: <input type="range" id="lo-k" min="0" max="500" step="1" value="55" style="vertical-align:middle;width:9rem"> <span id="lo-k-anzeige" class="wert farbe-gruen"></span></label>
+      </div>
+      <div class="geo-wrap" id="lo-mount"></div>
+      <div class="th-bilanz" id="lo-bilanz"></div>
+      <div id="lo-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Satz: Lokale Näherungsformel von de Moivre und Laplace</span>
+      X sei binomialverteilt mit μ = n · p und σ = √(n · p · (1 − p)), und es gelte σ &gt; 3. Dann ist
+      <div class="formula-block">B(n; p; k) = P(X = k) ≈ <span class="bruch gross"><span class="z">1</span><span class="n">σ</span></span> · φ(<span class="bruch gross"><span class="z">k − μ</span><span class="n">σ</span></span>)</div>
+      <span class="progress-note">In Fundamente: B<sub>n;p</sub>(k) ≈ <span class="bruch"><span class="z">1</span><span class="n">σ</span></span> · φ(<span class="bruch"><span class="z">k − μ</span><span class="n">σ</span></span>).</span>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Durchgerechnet — 100 Münzwürfe, genau 55 Wappen</span>
+      μ = 50, σ = 5 &gt; 3 ✓. z = <span class="bruch"><span class="z">55 − 50</span><span class="n">5</span></span> = 1, φ(1) ≈ 0,2420.<br>
+      B(100; 0,5; 55) ≈ <span class="bruch"><span class="z">1</span><span class="n">5</span></span> · 0,2420 = 0,0484. Genau (Formel von Bernoulli): 0,0485.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — den Faktor <span class="bruch"><span class="z">1</span><span class="n">σ</span></span> nicht vergessen</span>
+      φ(z) ist die Höhe der Säule im <em>standardisierten</em> Histogramm — die ist σ-mal so hoch wie die Wahrscheinlichkeit. Wer φ(1) ≈ 0,2420 als Antwort nimmt, ist um den Faktor 5 daneben.
+    </div>
+    <div class="quiz" id="quiz-lokal"></div>
+  </section>
+
+  <!-- 5. Globale Näherungsformel -->
+  <section class="card" id="sec-global">
+    <h2>5. Die globale Näherungsformel: Fläche unter der Glockenkurve</h2>
+    <p>Meist ist nicht P(X = k) gesucht, sondern P(X ≤ k) oder P(a ≤ X ≤ b) — eine Summe vieler Säulen. Im standardisierten Histogramm ist das ein <strong>Flächeninhalt</strong>: Jede Säule hat die Fläche B(n; p; k). Diese Säulenfläche ist fast genau die Fläche unter der Glockenkurve — wenn man an der richtigen Stelle aufhört, nämlich am <strong>Rand</strong> der letzten Säule, bei k + 0,5.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>n: <input type="range" id="gb-n" min="10" max="500" step="10" value="100" style="vertical-align:middle;width:9rem"> <span id="gb-n-anzeige" class="wert farbe-blau"></span></label>
+        <label>p: <input type="range" id="gb-p" min="0.1" max="0.9" step="0.1" value="0.5" style="vertical-align:middle;width:7rem"> <span id="gb-p-anzeige" class="wert farbe-orange"></span></label>
+        <label>Ereignis:
+          <select id="gb-art" class="eingabe" style="padding:0.4rem">
+            <option value="le" selected>höchstens b</option>
+            <option value="ge">mindestens a</option>
+            <option value="zw">von a bis b</option>
+          </select>
+        </label>
+      </div>
+      <div class="btn-row">
+        <label>a: <input type="range" id="gb-a" min="0" max="500" step="1" value="45" style="vertical-align:middle;width:9rem"> <span id="gb-a-anzeige" class="wert farbe-gruen"></span></label>
+        <label>b: <input type="range" id="gb-b" min="0" max="500" step="1" value="55" style="vertical-align:middle;width:9rem"> <span id="gb-b-anzeige" class="wert farbe-gruen"></span></label>
+        <label><input type="checkbox" id="gb-korrektur" checked> mit Stetigkeitskorrektur ± 0,5</label>
+      </div>
+      <div class="bk-zwei">
+        <div class="geo-wrap" id="gb-mount"></div>
+        <div class="geo-wrap" id="gb-phi"></div>
+      </div>
+      <div class="th-bilanz" id="gb-bilanz"></div>
+      <div id="gb-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Die Gaußsche Integralfunktion Φ</span>
+      Φ(z) ist der Flächeninhalt unter der Glockenkurve links von z:
+      <div class="formula-block">Φ(z) = <span class="nw">∫<sub>−∞</sub><sup>z</sup> φ(t) dt</span></div>
+      Die untere Grenze −∞ bedeutet: die ganze Fläche links von z (ein <a href="../../../mss11/01-analysis/05b-weitere-funktionen-integrieren/index.html#sec-uneigentlich">uneigentliches Integral</a>). Eine Stammfunktion von φ lässt sich nicht mit bekannten Funktionen hinschreiben — Φ steht deshalb in Tabellen und im Rechner. Wegen der Symmetrie gilt <strong>Φ(−z) = 1 − Φ(z)</strong> und Φ(0) = 0,5.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Satz: Globale (integrale) Näherungsformel von de Moivre und Laplace</span>
+      X sei binomialverteilt mit μ = n · p und σ = √(n · p · (1 − p)) &gt; 3. Dann ist
+      <div class="formula-block">F(n; p; k) = P(X ≤ k) ≈ Φ(<span class="bruch gross"><span class="z">k + 0,5 − μ</span><span class="n">σ</span></span>)</div>
+      <div class="formula-block">P(a ≤ X ≤ b) ≈ Φ(<span class="bruch gross"><span class="z">b + 0,5 − μ</span><span class="n">σ</span></span>) − Φ(<span class="bruch gross"><span class="z">a − 0,5 − μ</span><span class="n">σ</span></span>)</div>
+      Die ± 0,5 heißen <strong>Stetigkeitskorrektur</strong>: Die Säule über k reicht von k − 0,5 bis k + 0,5. Wer bei k aufhört, schneidet die halbe letzte Säule ab.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — „mindestens“ mit der Korrektur nach links</span>
+      P(X ≥ a) = 1 − P(X ≤ a − 1) ≈ 1 − Φ(<span class="bruch"><span class="z">a − 1 + 0,5 − μ</span><span class="n">σ</span></span>) = 1 − Φ(<span class="bruch"><span class="z">a − 0,5 − μ</span><span class="n">σ</span></span>). Die Säule über a gehört dazu — also beginnt die Fläche an ihrem <em>linken</em> Rand a − 0,5.
+    </div>
+    <div class="quiz" id="quiz-global"></div>
+  </section>
+
+  <!-- 6. Die Normalverteilung -->
+  <section class="card" id="sec-normalverteilung">
+    <h2>6. Die Normalverteilung</h2>
+    <p>Körpergrößen, Messfehler, Abfüllmengen: Viele Größen können jeden Wert in einem Bereich annehmen, nicht nur ganze Zahlen. Ihre Wahrscheinlichkeiten sind Flächen unter einer Kurve, der <span class="term">Dichtefunktion</span>. Oft hat diese Kurve genau die Glockenform — verschoben um μ und gestreckt mit σ, also Schritt 3, 2 und 1 rückwärts. Beispiel: die Körpergröße X (in cm) zufällig ausgewählter Erwachsener, angenommen normalverteilt.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>μ: <input type="range" id="nv-mu" min="150" max="190" step="1" value="172" style="vertical-align:middle;width:8rem"> <span id="nv-mu-anzeige" class="wert farbe-violett"></span></label>
+        <label>σ: <input type="range" id="nv-sigma" min="4" max="12" step="0.5" value="8" style="vertical-align:middle;width:8rem"> <span id="nv-sigma-anzeige" class="wert farbe-rot"></span></label>
+        <label>Ereignis:
+          <select id="nv-art" class="eingabe" style="padding:0.4rem">
+            <option value="le">X ≤ b</option>
+            <option value="ge">X ≥ a</option>
+            <option value="zw" selected>a ≤ X ≤ b</option>
+          </select>
+        </label>
+      </div>
+      <div class="btn-row">
+        <label>a: <input type="range" id="nv-a" min="100" max="240" step="1" value="165" style="vertical-align:middle;width:9rem"> <span id="nv-a-anzeige" class="wert farbe-gruen"></span></label>
+        <label>b: <input type="range" id="nv-b" min="100" max="240" step="1" value="180" style="vertical-align:middle;width:9rem"> <span id="nv-b-anzeige" class="wert farbe-gruen"></span></label>
+        <label><input type="checkbox" id="nv-regeln"> σ-Umgebungen zeigen</label>
+      </div>
+      <div class="geo-wrap" id="nv-mount"></div>
+      <div class="th-bilanz" id="nv-bilanz"></div>
+      <div id="nv-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Normalverteilte Zufallsgröße</span>
+      Eine Zufallsgröße X heißt <strong>normalverteilt mit den Parametern μ und σ</strong>, wenn für alle a ≤ b gilt:
+      <div class="formula-block">P(a ≤ X ≤ b) = <span class="nw">∫<sub>a</sub><sup>b</sup> f(x) dx</span> &nbsp; mit &nbsp; f(x) = <span class="bruch gross"><span class="z">1</span><span class="n">σ</span></span> · φ(<span class="bruch gross"><span class="z">x − μ</span><span class="n">σ</span></span>) = <span class="bruch gross"><span class="z">1</span><span class="n">σ · √(2π)</span></span> · e<sup>−<span class="bruch"><span class="z">(x − μ)²</span><span class="n">2σ²</span></span></sup></div>
+      f heißt <strong>Dichtefunktion</strong>, ihr Graph ist eine Glockenkurve mit dem Hochpunkt bei μ und den Wendestellen bei μ − σ und μ + σ. Gerechnet wird über das Standardisieren:
+      <div class="formula-block">P(a ≤ X ≤ b) = Φ(<span class="bruch gross"><span class="z">b − μ</span><span class="n">σ</span></span>) − Φ(<span class="bruch gross"><span class="z">a − μ</span><span class="n">σ</span></span>)</div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Die σ-Regeln</span>
+      Für jede normalverteilte Zufallsgröße, gleich welche μ und σ sie hat:
+      <div class="formula-block">P(μ − σ ≤ X ≤ μ + σ) ≈ 68,3 % &nbsp;&nbsp; P(μ − 2σ ≤ X ≤ μ + 2σ) ≈ 95,4 % &nbsp;&nbsp; P(μ − 3σ ≤ X ≤ μ + 3σ) ≈ 99,7 %</div>
+      Das sind Φ(1) − Φ(−1), Φ(2) − Φ(−2) und Φ(3) − Φ(−3). Für binomialverteilte X mit σ &gt; 3 gelten sie näherungsweise.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — bei der Normalverteilung keine Stetigkeitskorrektur</span>
+      Die ± 0,5 aus Abschnitt 5 gehören zu den Säulen eines Histogramms. Eine normalverteilte Größe hat keine Säulen: P(X = 180) ist 0, und P(X ≤ 180) = P(X &lt; 180). Gerechnet wird mit <span class="bruch"><span class="z">180 − μ</span><span class="n">σ</span></span>, nicht mit <span class="bruch"><span class="z">180,5 − μ</span><span class="n">σ</span></span>.
+    </div>
+    <div class="quiz" id="quiz-normalverteilung"></div>
+  </section>
+
+  <!-- 7. Rückwärts -->
+  <section class="card" id="sec-umkehr">
+    <h2>7. Rückwärts: Gesucht ist eine Grenze</h2>
+    <p>Eine Abfüllanlage füllt Packungen, das Füllgewicht X (in g) sei normalverteilt. Welches Gewicht unterschreiten nur 5 % der Packungen? Hier ist die Wahrscheinlichkeit vorgegeben, und gesucht ist die Grenze. Dazu liest man Φ <strong>rückwärts</strong>: Zu welchem z ist Φ(z) = γ?</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>μ: <input type="range" id="uk-mu" min="480" max="520" step="1" value="500" style="vertical-align:middle;width:8rem"> <span id="uk-mu-anzeige" class="wert farbe-violett"></span></label>
+        <label>σ: <input type="range" id="uk-sigma" min="2" max="10" step="0.5" value="5" style="vertical-align:middle;width:8rem"> <span id="uk-sigma-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>Gesucht:
+          <select id="uk-art" class="eingabe" style="padding:0.4rem">
+            <option value="links" selected>c mit P(X ≤ c) = γ</option>
+            <option value="rechts">c mit P(X ≥ c) = γ</option>
+            <option value="symm">d mit P(μ − d ≤ X ≤ μ + d) = γ</option>
+          </select>
+        </label>
+        <label>γ: <input type="range" id="uk-gamma" min="0.01" max="0.99" step="0.01" value="0.95" style="vertical-align:middle;width:9rem"> <span id="uk-gamma-anzeige" class="wert farbe-gruen"></span></label>
+      </div>
+      <div class="geo-wrap" id="uk-mount"></div>
+      <div class="th-bilanz" id="uk-bilanz"></div>
+      <div id="uk-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Grenze, μ oder σ gesucht</span>
+      Aus P(X ≤ c) = Φ(<span class="bruch"><span class="z">c − μ</span><span class="n">σ</span></span>) = γ liest man das z mit Φ(z) = γ ab — in der Tabelle innen statt außen, im Rechner mit der Umkehrfunktion. Dann ist
+      <div class="formula-block">c = μ + z · σ &nbsp;&nbsp;&nbsp; μ = c − z · σ &nbsp;&nbsp;&nbsp; σ = <span class="bruch gross"><span class="z">c − μ</span><span class="n">z</span></span></div>
+      Häufig gebrauchte Werte: Φ(1,28) ≈ 0,90, Φ(1,64) ≈ 0,95, Φ(1,96) ≈ 0,975, Φ(2,33) ≈ 0,99. Symmetrisch um μ: 90 % liegen in μ ± 1,64σ, 95 % in μ ± 1,96σ, 99 % in μ ± 2,58σ.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — z ist negativ, wenn γ unter 0,5 liegt</span>
+      „Nur 5 % unterschreiten c“ heißt Φ(z) = 0,05 — z liegt links von 0: z = −1,64, also c = μ − 1,64σ. Tabellen enthalten meist nur Φ(z) ≥ 0,5; dann gilt Φ(−1,64) = 1 − Φ(1,64) = 0,05.
+    </div>
+    <div class="quiz" id="quiz-umkehr"></div>
+  </section>
+
+  <!-- Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>Innermathematische Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Der <a href="../05-bernoulli-ketten-binomialverteilung/index.html#sec-kenngroessen">Binomialverteilung mit μ und σ</a> — standardisiert wird mit genau diesen beiden Kenngrößen, und die Näherungen ersetzen B(n; p; k) und F(n; p; k).</li>
+      <li><strong>Baut auf:</strong> Der <a href="../../../mss11/01-analysis/05-integralrechnung/index.html#sec-integralfunktion">Integralfunktion</a> — Φ ist die Integralfunktion von φ, und P(a ≤ X ≤ b) ist ein Flächeninhalt zwischen zwei Grenzen.</li>
+      <li><strong>Baut auf:</strong> Der <a href="../../../mss11/01-analysis/04b-weitere-funktionen-untersuchen/index.html#sec-glocke">Untersuchung der Glockenkurve</a> — Hochpunkt bei 0, Wendestellen bei ±σ, Asymptote y = 0.</li>
+      <li><strong>Gleiche Struktur:</strong> Das Standardisieren ist eine Verkettung von <em>Verschiebung</em> und <em>Streckungen</em> — dieselben Abbildungen wie beim Verschieben und Strecken von Funktionsgraphen, hier auf ein Histogramm angewandt.</li>
+      <li><strong>Führt weiter zu:</strong> Dem <em>Testen von Hypothesen</em> — der Annahmebereich eines Tests großer Stichproben ist eine σ-Umgebung um μ, berechnet mit Φ.</li>
+      <li><strong>Führt weiter zu:</strong> <em>Vertrauensintervallen</em> — aus einer beobachteten Trefferzahl schließt man mit μ ± 1,96σ auf die unbekannte Trefferwahrscheinlichkeit zurück.</li>
+    </ul>
+  </section>
+
+  <!-- Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>Formelsammlung</h2>
+    <p>Standardisieren in drei Schritten, die Glockenfunktion φ, Laplace-Bedingung, lokale und globale Näherungsformel mit Stetigkeitskorrektur, Normalverteilung, σ-Regeln und Rückwärtsrechnen — mit gerechneten Bildern auf der ersten Seite und einer Tabelle von Φ auf der zweiten. Zum Ausdrucken oder Nachschlagen während der Übungsaufgaben.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>Übungsaufgaben</h2>
+    <p>Sechzehn Aufgaben auf vier Stufen, je vier auf jeder. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu. Tipps gibt es auf Knopfdruck, nach dem Prüfen steht die Musterlösung darunter.</p>
+    <p class="progress-note">Wahrscheinlichkeiten gibst du als Dezimalzahl mit vier Nachkommastellen ein, zum Beispiel 0,8413 — mit Komma. Φ darfst du aus der Tabelle der Formelsammlung oder aus dem Rechner nehmen; beides wird anerkannt.</p>
+    <div id="exercises-mount"></div>
+  </section>
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste" id="se-liste">
+      <li data-abschnitt="sec-wachsen">Ich kann beschreiben, wie Lage, Breite und Höhe des Histogramms mit n wachsen und warum es flacher wird.</li>
+      <li data-abschnitt="sec-standardisieren">Ich kann die drei Schritte des Standardisierens erklären und z = (k − μ) : σ sowie die Säulenhöhe σ · B(n; p; k) angeben.</li>
+      <li data-abschnitt="sec-glockenkurve">Ich kann φ(z) berechnen, Eigenschaften der Glockenkurve nennen und die Laplace-Bedingung prüfen.</li>
+      <li data-abschnitt="sec-lokal">Ich kann B(n; p; k) mit der lokalen Näherungsformel näherungsweise berechnen.</li>
+      <li data-abschnitt="sec-global">Ich kann „höchstens“, „mindestens“ und „zwischen“ mit Φ und der Stetigkeitskorrektur näherungsweise berechnen.</li>
+      <li data-abschnitt="sec-normalverteilung">Ich kann Wahrscheinlichkeiten einer normalverteilten Größe berechnen und die σ-Regeln anwenden.</li>
+      <li data-abschnitt="sec-umkehr">Ich kann zu einer vorgegebenen Wahrscheinlichkeit eine Grenze, μ oder σ bestimmen.</li>
+    </ul>
+    <div class="se-auswertung event-result" id="se-auswertung" aria-live="polite"></div>
+  </section>
+
+  <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
+  <section class="card" data-lehrkraft="lehrkraefte.html" hidden></section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="../index.html">Zurück zu 01 Wahrscheinlichkeitsrechnung</a></p>
+  <p><a href="../../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script src="../../../../assets/lehrkraft.js"></script>
+<script src="../../../../assets/selbsteinschaetzung.js"></script>
+<script type="module" src="lernpfad.js?v=1"></script>
+</body>
+</html>
