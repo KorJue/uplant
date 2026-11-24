@@ -14,6 +14,7 @@ nach, bevor er etwas erfindet:
 | Flächeninhalte (Klasse 8, bewegliche Herleitungen) | `mathematik/klasse-8/geometrie/flaecheninhalte.*` |
 | Terme (Klasse 8, fünf Seiten, Kachelmodell, Termeingabe) | `mathematik/klasse-8/terme/` |
 | Körper (Klasse 8, fünf Seiten, Raumpunkte, Schrägbild, Netze, Zylinder) | `mathematik/klasse-8/koerper/` |
+| Normalverteilung (MSS 13, nach Bigalke/Köhler, Standardisieren als durchgehende Bewegung, Φ-Tabelle) | `mathematik/mss13/01-wahrscheinlichkeitsrechnung/06-normalverteilung/` |
 
 ## Arbeitsablauf für eine neue Seite
 
@@ -35,6 +36,40 @@ sonst teuer macht:
    zurücksetzen (§ 6).
 8. **Gesamtlauf** — und währenddessen nichts anfassen.
 9. **Commit und Push** (§ 8).
+
+### Pflichtenheft: Was jede neue Lernseite mitbringt
+
+Diese Liste fasst zusammen, was der Projektinhaber für die bisherigen Seiten verlangt hat — „wie bei
+den letzten Seiten“ heißt: alles davon. Fehlt ein Punkt, ist die Seite nicht fertig.
+
+* **Inhalt wie im Lehrbuch**, in einer Reihenfolge ohne Vorgriff (§ 1) und ohne Stoff aus späteren
+  Jahrgängen. Für MSS 13 (Stochastik) gilt die Darstellung und Schreibweise von **Bigalke/Köhler**
+  in erster Linie, die von **Fundamente der Mathematik** daneben, wo sie abweicht (Kasten
+  `notation-box`, z. B. B(n; p; k) neben B<sub>n;p</sub>(k)).
+* **Jede Herleitung beweglich** und kleinschrittig (§ 2): Regler, die eine Bewegung Schritt für
+  Schritt durchfahren, eine Bilanz, die jede Zwischenstellung nachrechnet, und ein Text, der sagt,
+  was gerade geschieht. Zahlen in Bilanzen und Beschriftungen tragen **die Stellenzahl, mit der
+  gerechnet wird** — „φ(−1,49) ≈ 0,1313“ war falsch, gerechnet war φ(−1,4907).
+* **Je Abschnitt eine Kontrollfrage** (§ 4), Kästen für Merksatz, Beispiel und typischen Fehler.
+* **Seitenende in fester Reihenfolge:** Vernetzung, Formelsammlung, Übungsaufgaben,
+  Selbsteinschätzung (§ 4).
+* **Übungsaufgaben auf vier Stufen**, gleich viele je Stufe (Grundwissen und Klasse 8: zwei,
+  MSS: vier), jede einem Abschnitt zugeordnet, mit Tipps, Fehlerhinweisen und Musterlösung, bei
+  Umkehraufgaben mit Probe (§ 5). Wo Tabellenwerte im Spiel sind (Φ, Binomialverteilung), sind die
+  Zahlen so gewählt, dass Tabelle und Rechner dasselbe liefern, und beide werden anerkannt.
+* **Formelsammlung als zweiseitiges PDF** (A4 quer), deren Figuren und Tabellen ein Skript rechnet
+  und dabei selbst prüft (`tools/formelsammlung/README.md`). Griechische Buchstaben in Überschriften
+  stehen in `<span class="gr">`: Die Überschriften sind in Großbuchstaben gesetzt, und aus φ würde
+  Φ, aus μ ein Μ, aus π ein Π.
+* **Hinweise für Lehrkräfte** in einer eigenen Datei nach dem festen Bauplan (§ 4).
+* **Menükarte** mit Titel (und Symbol), `hidden` und `data-section` (§ 4).
+* **Eigene fachliche Prüfung**, die unabhängig nachrechnet und die Zeichnungen aus dem SVG
+  zurückliest (§ 6); Streuungsschranken gemessen; **Gegenproben über alle Prüfteile** (Zeichnung,
+  Bilanz, Reglergrenzen, Kontrollfragen, Aufgaben, Gerüst, Dunkelmodus), und jede, die nicht
+  anschlägt, führt zu einer neuen Prüfung.
+* **Screenshots** hell und dunkel an mehreren Reglerstellungen angesehen (§ 2).
+* **CLAUDE.md und `tests/README.md` nachgezogen**, wenn neue gemeinsame Bausteine entstehen.
+* **Gesamtlauf grün auf genau dem gepushten Stand, dann Pull Request und Merge** (§ 8).
 
 ---
 

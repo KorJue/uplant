@@ -74,6 +74,8 @@
      stehen und nicht als eigene Spalte gelesen werden. */
   td.op { border: none; color: #6d28d9; font-weight: 700; font-size: 7px; white-space: nowrap; padding: 0.5mm 1.6mm; }
   .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
+  /* Griechische Buchstaben in Überschriften nicht in Großbuchstaben setzen: aus ε würde Ε, aus π ein Π. */
+  .gr { text-transform: none; }
 </style>
 </head>
 <body>
@@ -84,7 +86,7 @@
   <div class="grid">
 
     <div class="box merk">
-      <h2>Umfang und die Zahl π</h2>
+      <h2>Umfang und die Zahl <span class="gr">π</span></h2>
       <p>Ein Rad mit dem <span class="kr">Durchmesser d</span> rollt eine Umdrehung ab: Die Strecke ist so lang wie sein <span class="be">Umfang U</span>. Jeder Kreis ist eine Vergrößerung jedes anderen — <b>U und d sind proportional</b>, der Faktor heißt <b>π</b>.</p>
       <p class="zentral f gross">U : d = π &nbsp;⟺&nbsp; U = π · d = 2 · π · r</p>
       <figure class="m88">[[FIG1]]</figure>
@@ -92,7 +94,7 @@
     </div>
 
     <div class="box">
-      <h2>π einschachteln</h2>
+      <h2><span class="gr">π</span> einschachteln</h2>
       <p>Das <span class="al">Sechseck im Kreis</span> besteht aus sechs gleichseitigen Dreiecken (Winkel 360° : 6 = 60°, zwei Seiten sind Radien): Sein Umfang ist 6 · r = 3 · d. Das <span class="be">Quadrat um den Kreis</span> hat die Seite d, also den Umfang 4 · d.</p>
       <figure class="m88">[[FIG2]]</figure>
       <p class="zentral f gross">3 · d &lt; U &lt; 4 · d &nbsp;⟹&nbsp; 3 &lt; π &lt; 4</p>
