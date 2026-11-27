@@ -58,7 +58,8 @@ den letzten Seiten“ heißt: alles davon. Fehlt ein Punkt, ist die Seite nicht 
   Umkehraufgaben mit Probe (§ 5). Wo Tabellenwerte im Spiel sind (Φ, Binomialverteilung), sind die
   Zahlen so gewählt, dass Tabelle und Rechner dasselbe liefern, und beide werden anerkannt.
 * **Formelsammlung als zweiseitiges PDF** (A4 quer), deren Figuren und Tabellen ein Skript rechnet
-  und dabei selbst prüft (`tools/formelsammlung/README.md`). Griechische Buchstaben in Überschriften
+  und dabei selbst prüft (`tools/formelsammlung/README.md`); Gleichungen im Text rechnet es ebenfalls
+  nach (Vorbild `tm-svgs.py`). Griechische Buchstaben in Überschriften
   stehen in `<span class="gr">`: Die Überschriften sind in Großbuchstaben gesetzt, und aus φ würde
   Φ, aus μ ein Μ, aus π ein Π.
 * **Hinweise für Lehrkräfte** in einer eigenen Datei nach dem festen Bauplan (§ 4).
