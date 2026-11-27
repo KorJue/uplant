@@ -28,7 +28,7 @@ das vorinstallierte Chromium unter `/opt/pw-browsers/chromium`
 | --- | --- |
 | `test-seiten-gesamt.js` | Jede Seite des Bereichs lädt in hellem und dunklem Modus ohne Skript- oder Konsolenfehler; jeder interne Verweis und jede Sprungmarke lösen auf. |
 | `test-lehrkraft.js` | Hinweise für Lehrkräfte stehen in keinem Seitenquelltext, sondern in eigenen Dateien hinter einem leeren, versteckten Platzhalter (`data-lehrkraft`); sie werden nur nach Eingabe des Codes für alle Bereiche (15) geladen und angezeigt — sonst nicht einmal angefragt. Jede Lernseite hat sie; jedes Bruchstück folgt dem Bauplan, und was es über die Seite sagt („Achtung-Kasten in Abschnitt 3“), zeigt die Seite auch. Auf dem Telefon ragt nichts heraus. |
-| `test-selbsteinschaetzung.js` | Jede Grundwissen- und Klasse-8-Lernseite hat vor der Vernetzung eine Selbsteinschätzung mit genau so vielen Ich-kann-Sätzen, wie „Worum geht es hier?“ Ziele nennt; 🤔, 😐 und 😀 führen zur passenden Rückmeldung mit Verweis auf den Abschnitt, die Auswahl übersteht das Neuladen und gilt nur für die eigene Seite. |
+| `test-selbsteinschaetzung.js` | Jede Grundwissen-, Klasse-8-, MSS- und Physik-Lernseite hat vor der Vernetzung eine Selbsteinschätzung mit genau so vielen Ich-kann-Sätzen, wie „Worum geht es hier?“ Ziele nennt; 🤔, 😐 und 😀 führen zur passenden Rückmeldung mit Verweis auf den Abschnitt, die Auswahl übersteht das Neuladen und gilt nur für die eigene Seite. |
 | `test-alle-themen.js` | Die Zusagen, die für **jedes** Thema gelten: Regler lügen nicht, keine verbotene Schreibweise an keiner Reglerstellung, Quizze mit genau einer richtigen Antwort, vier gestaffelte Aufgaben mit ausreichender Streuung und Musterlösung, gefüllte Zeichenflächen, vorhandene Formelsammlung. |
 | `themen/test-*.js` | Der Fachinhalt eines einzelnen Grundwissen-Themas — für jedes der 34 Themen eine Datei, benannt nach seinem Verzeichnis. |
 | `klasse-8/test-*.js` | Der Fachinhalt einer Klasse-8-Seite. Diese Seiten haben keinen gemeinsamen Bauplan, deshalb bringt jede Datei ihr eigenes Gerüst mit — bis hin zur Konstruktion mit echten Mausklicks auf die Zeichenfläche. |
@@ -77,6 +77,11 @@ Fassungen** einer Aufgabe gezogen wurden, wo zwei gleich häufig sind: Fällt de
 Fassung mit einem ihrer Fehlerwerte zusammen, siebt `ohneKollision()` sie jedes Mal aus — und die
 übrigen Fassungen bestehen weiter. Jeder Prüfteil läuft in `teil()`: Bricht er ab, weil die Seite
 eine Aufgabe nicht erzeugen konnte, wird das gemeldet, und die übrigen Teile laufen weiter.
+
+Die Physikseiten haben ihre fachlichen Prüfungen in `physik/` (bisher `test-thermische-ausdehnung.js`).
+Sie lesen die Diagramme wie die Mathematikseiten über `data-wert`/`data-wert-x` zurück und rechnen die
+Physik mit eigenen Konstanten nach (Boltzmann-Konstante, Molekülmasse, eigene Energiebilanz, Umkehrpunkte
+der Energiemulde durch Bisektion).
 
 ## Eine fachliche Prüfung schreiben
 

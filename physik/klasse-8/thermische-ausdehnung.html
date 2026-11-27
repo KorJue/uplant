@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thermische Ausdehnung</title>
+<script src="../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../assets/site.css">
+<link rel="stylesheet" href="../../mathematik/aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../index.html">Start</a><span class="sep">/</span>
+  <a href="../index.html">2 Physik</a><span class="sep">/</span>
+  <a href="index.html">Klasse 8</a><span class="sep">/</span>
+  1. Thermische Ausdehnung
+</nav>
+<header class="page-header">
+  <h1>Thermische Ausdehnung</h1>
+  <p>Ein Selbstlernpfad: vom Teilchenmodell über die Aggregatzustände und die Bindungsenergie zur Ausdehnung von festen Körpern, Flüssigkeiten und Gasen — bis zur allgemeinen Gasgleichung; mit Kontrollfragen und acht Übungsaufgaben.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Brücken haben Fugen, Stromleitungen hängen im Sommer tiefer durch, ein Thermometer zeigt die Temperatur mit einer Flüssigkeitssäule, und ein Autoreifen hat im Winter weniger Druck. Hinter allem steckt dasselbe: Wird ein Stoff wärmer, bewegen sich seine Teilchen heftiger und brauchen mehr Platz. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>die drei <span class="term">Aggregatzustände</span> im Teilchenmodell beschreiben — und was sich ändert, wenn es wärmer wird</li>
+      <li>die <span class="term">Übergänge</span> zwischen den Aggregatzuständen benennen und die Erwärmungskurve von Wasser lesen</li>
+      <li>mit der <span class="term">Bindungsenergie</span> erklären, warum die Temperatur beim Schmelzen und Sieden stehen bleibt und warum sich Stoffe ausdehnen</li>
+      <li>die <span class="term">Längenänderung</span> fester Körper mit ΔL = α · L<sub>0</sub> · ΔT berechnen</li>
+      <li>die <span class="term">Volumenänderung</span> von Flüssigkeiten mit ΔV = γ · V<sub>0</sub> · ΔT berechnen und ein Flüssigkeitsthermometer erklären</li>
+      <li>das Gesetz von <span class="term">Gay-Lussac</span> anwenden und Temperaturen in <span class="term">Kelvin</span> umrechnen</li>
+      <li>das Gesetz von <span class="term">Boyle-Mariotte</span> anwenden</li>
+      <li>das Gesetz von <span class="term">Amontons</span> anwenden</li>
+      <li>die <span class="term">allgemeine Gasgleichung</span> aus den drei Gasgesetzen herleiten und anwenden</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst <a href="../../mathematik/grundwissen-5-10/01-groessen-und-rechnen/01-natuerliche-zahlen-und-groessen/index.html#sec-groessen">Größen und ihre Einheiten</a> (1 l = 1 dm³ = 1000 cm³, 1 ml = 1 cm³ = 1000 mm³), <a href="../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-proportional">proportionale</a> und <a href="../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-antiproportional">antiproportionale Zuordnungen</a> und die Temperatur in Grad Celsius.</p>
+  </section>
+
+  <!-- 1. Teilchenmodell -->
+  <section class="card" id="sec-teilchen">
+    <h2>1. Fest, flüssig, gasförmig — im Teilchenmodell</h2>
+    <p>Jeder Stoff besteht aus winzigen Teilchen, die sich ständig bewegen. Unten siehst du Wasser in allen drei Aggregatzuständen, jeweils bei zwei Temperaturen: links kälter, rechts wärmer. Drück auf ▶ oder zieh am Regler „Zeit“ und vergleiche die Bewegung.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <button type="button" class="btn" id="tc-play">▶ Abspielen</button>
+        <label>Zeit: <input type="range" id="tc-t" min="0" max="600" step="1" value="0" style="vertical-align:middle;width:14rem"> <span id="tc-t-anzeige" class="wert"></span></label>
+      </div>
+      <div class="th-wrap" id="tc-mount"></div>
+      <div class="th-bilanz" id="tc-bilanz"></div>
+      <div id="tc-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Die drei Aggregatzustände im Teilchenmodell</span>
+      <strong>Fest:</strong> Die Teilchen sitzen auf festen Plätzen in einem regelmäßigen Gitter und schwingen um diese Plätze hin und her. Der Körper behält seine Form.<br>
+      <strong>Flüssig:</strong> Die Teilchen liegen dicht beieinander, aber ungeordnet, und gleiten aneinander vorbei. Die Flüssigkeit nimmt die Form des Gefäßes an, ihr Volumen bleibt.<br>
+      <strong>Gasförmig:</strong> Die Teilchen sind weit voneinander entfernt und fliegen frei durch den Raum, bis sie an eine Wand oder ein anderes Teilchen stoßen. Das Gas füllt jeden Raum aus.<br>
+      <strong>Wärmer heißt schneller:</strong> In jedem Aggregatzustand bewegen sich die Teilchen umso heftiger, je höher die Temperatur ist.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Teilchen selbst werden nicht größer</span>
+      Wenn sich ein Körper beim Erwärmen ausdehnt, wachsen nicht die Teilchen. Sie bewegen sich heftiger und brauchen dadurch mehr Platz — ihr <em>Abstand</em> wird größer. Warum das so ist, zeigt Abschnitt 3.
+    </div>
+    <div class="quiz" id="quiz-teilchen"></div>
+  </section>
+
+  <!-- 2. Übergänge -->
+  <section class="card" id="sec-uebergaenge">
+    <h2>2. Übergänge zwischen den Aggregatzuständen</h2>
+    <p>Ein Kilogramm Eis von −20 °C wird gleichmäßig erwärmt, bis Wasserdampf von 120 °C entsteht. Mit dem Regler führst du Energie zu. Beobachte, wann die Temperatur steigt — und wann nicht.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>zugeführte Energie Q: <input type="range" id="ue-q" min="0" max="3091" step="1" value="0" style="vertical-align:middle;width:16rem"> <span id="ue-q-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="th-wrap" id="ue-mount"></div>
+      <div class="th-bilanz" id="ue-bilanz"></div>
+      <div id="ue-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Die Übergänge</span>
+      <table class="ta-tabelle">
+        <tr><th>von</th><th>nach</th><th>Energie zuführen</th><th>Energie abgeben</th></tr>
+        <tr><td>fest</td><td>flüssig</td><td><strong>Schmelzen</strong></td><td><strong>Erstarren</strong> (flüssig → fest)</td></tr>
+        <tr><td>flüssig</td><td>gasförmig</td><td><strong>Verdampfen</strong> (Sieden, Verdunsten)</td><td><strong>Kondensieren</strong> (gasförmig → flüssig)</td></tr>
+        <tr><td>fest</td><td>gasförmig</td><td><strong>Sublimieren</strong></td><td><strong>Resublimieren</strong> (gasförmig → fest)</td></tr>
+      </table>
+      Bei Wasser liegt die <strong>Schmelztemperatur</strong> bei 0 °C und die <strong>Siedetemperatur</strong> bei 100 °C (bei normalem Luftdruck). Während ein Stoff schmilzt oder siedet, bleibt seine Temperatur gleich, obwohl weiter Energie zugeführt wird.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Abgelesen — wie viel Energie wofür?</span>
+      Für 1 kg: Eis von −20 °C auf 0 °C: 42 kJ. Schmelzen: 334 kJ. Wasser von 0 °C auf 100 °C: 419 kJ. Verdampfen: 2256 kJ. Dampf von 100 °C auf 120 °C: 40 kJ.<br>
+      Das Verdampfen braucht mehr als fünfmal so viel Energie wie das Erwärmen von 0 °C auf 100 °C.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Energie zuführen heißt nicht immer wärmer werden</span>
+      Auf den waagerechten Stücken der Kurve steigt die Temperatur nicht. Die Energie geht trotzdem nicht verloren: Sie wird gebraucht, um die Teilchen voneinander zu lösen. Beim Erstarren und Kondensieren wird genau diese Energie wieder frei.
+    </div>
+    <div class="quiz" id="quiz-uebergaenge"></div>
+  </section>
+
+  <!-- 3. Bindungsenergie -->
+  <section class="card" id="sec-bindung">
+    <h2>3. Bindungsenergie — warum Stoffe sich ausdehnen</h2>
+    <p>Benachbarte Teilchen ziehen sich an, kommen sie sich zu nahe, stoßen sie sich ab. Das Bild zeigt die Energie zweier Teilchen in Abhängigkeit von ihrem Abstand r — eine <span class="term">Energiemulde</span>. In Ruhe liegt Teilchen B im tiefsten Punkt, beim Abstand r<sub>0</sub>. Führst du Energie zu, schwingt es zwischen zwei Umkehrpunkten hin und her.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>zugeführte Energie: <input type="range" id="bi-w" min="0" max="1.3" step="0.01" value="0.2" style="vertical-align:middle;width:14rem"> <span id="bi-w-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="th-wrap" id="bi-mount"></div>
+      <div class="th-bilanz" id="bi-bilanz"></div>
+      <div id="bi-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Bindungsenergie</span>
+      Die <strong>Bindungsenergie</strong> E<sub>B</sub> ist die Energie, die man zwei gebundenen Teilchen mindestens zuführen muss, um sie voneinander zu trennen — die Tiefe der Energiemulde. Je größer sie ist, desto mehr Energie braucht ein Stoff zum Schmelzen und Verdampfen und desto höher liegen Schmelz- und Siedetemperatur.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Warum sich Stoffe beim Erwärmen ausdehnen</span>
+      Die Mulde ist nicht symmetrisch: Links steigt sie steil an (die Teilchen stoßen sich ab), rechts flach (die Anziehung lässt langsam nach). Je mehr Energie die Teilchen haben, desto weiter schwingen sie — nach außen aber weiter als nach innen. Die Mitte zwischen den Umkehrpunkten wandert nach außen: <strong>Der mittlere Abstand wächst, der Stoff dehnt sich aus.</strong>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — im Bild übertrieben</span>
+      Die Energiemulde ist ein Modell. In Wirklichkeit wächst der Abstand der Teilchen in Stahl bei 100 K Erwärmung nur um etwa 1,2 Tausendstel — im Bild sieht man stattdessen, <em>dass</em> und <em>warum</em> er wächst.
+    </div>
+    <div class="quiz" id="quiz-bindung"></div>
+  </section>
+
+  <!-- 4. Feste Körper -->
+  <section class="card" id="sec-fest">
+    <h2>4. Feste Körper dehnen sich aus</h2>
+    <p>Eine Eisenbahnschiene, eine Brücke, eine Stromleitung: Wird ein Stab wärmer, wird er länger. Wie viel, hängt vom Stoff, von der Ausgangslänge L<sub>0</sub> und von der Temperaturänderung ΔT ab. Temperaturänderungen gibt man in <strong>Kelvin</strong> (K) an: 1 K ist ein Unterschied von 1 °C.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Stoff:
+          <select id="fe-stoff" class="eingabe" style="padding:0.4rem">
+            <option value="aluminium">Aluminium</option>
+            <option value="kupfer">Kupfer</option>
+            <option value="stahl" selected>Stahl</option>
+            <option value="beton">Beton</option>
+            <option value="glas">Glas</option>
+          </select>
+        </label>
+        <label>L<sub>0</sub>: <input type="range" id="fe-l" min="1" max="200" step="1" value="30" style="vertical-align:middle;width:10rem"> <span id="fe-l-anzeige" class="wert farbe-blau"></span></label>
+        <label>ΔT: <input type="range" id="fe-dt" min="0" max="80" step="1" value="40" style="vertical-align:middle;width:9rem"> <span id="fe-dt-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="th-wrap" id="fe-mount"></div>
+      <div class="th-bilanz" id="fe-bilanz"></div>
+      <div id="fe-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Längenänderung</span>
+      <div class="formula-block">ΔL = α · L<sub>0</sub> · ΔT</div>
+      Die Längenänderung ΔL ist proportional zur Ausgangslänge L<sub>0</sub> und zur Temperaturänderung ΔT. Der <strong>Längenausdehnungskoeffizient</strong> α gibt an, um wie viele Millimeter sich ein 1 m langer Stab bei Erwärmung um 1 K verlängert:
+      <table class="ta-tabelle">
+        <tr><th>Stoff</th><th>Aluminium</th><th>Kupfer</th><th>Stahl</th><th>Beton</th><th>Glas</th></tr>
+        <tr><td>α in <span class="bruch"><span class="z">mm</span><span class="n">m · K</span></span></td><td>0,023</td><td>0,017</td><td>0,012</td><td>0,012</td><td>0,009</td></tr>
+      </table>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Durchgerechnet — eine Stahlschiene</span>
+      Eine Stahlschiene ist bei 0 °C genau 30 m lang. Im Sommer erwärmt sie sich auf 40 °C, also ΔT = 40 K:<br>
+      ΔL = 0,012 <span class="bruch"><span class="z">mm</span><span class="n">m · K</span></span> · 30 m · 40 K = 14,4 mm. Die Schiene ist dann 30,0144 m lang.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Einheiten</span>
+      Mit α in <span class="bruch"><span class="z">mm</span><span class="n">m · K</span></span> wird L<sub>0</sub> in Metern eingesetzt, ΔL kommt in Millimetern heraus. Wer L<sub>0</sub> in Millimetern einsetzt, bekommt einen tausendfach zu großen Wert.
+    </div>
+    <p class="hinweis-box">💡 Stahl und Beton haben fast denselben Längenausdehnungskoeffizienten. Deshalb kann man Stahlstäbe in Beton eingießen (Stahlbeton): Beide dehnen sich gleich stark aus, und nichts reißt.</p>
+    <div class="quiz" id="quiz-fest"></div>
+  </section>
+
+  <!-- 5. Flüssigkeiten -->
+  <section class="card" id="sec-fluessig">
+    <h2>5. Flüssigkeiten dehnen sich aus — das Thermometer</h2>
+    <p>Flüssigkeiten dehnen sich in alle Richtungen aus; man betrachtet deshalb ihr Volumen. Im Flüssigkeitsthermometer steckt eine kleine Menge Flüssigkeit in einer Kugel, darüber ein sehr dünnes Röhrchen, die Kapillare. Das zusätzliche Volumen muss in die Kapillare ausweichen.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Flüssigkeit:
+          <select id="fl-stoff" class="eingabe" style="padding:0.4rem">
+            <option value="ethanol" selected>Ethanol (Alkohol)</option>
+            <option value="benzin">Benzin</option>
+            <option value="glycerin">Glycerin</option>
+            <option value="wasser">Wasser (bei 20 °C)</option>
+            <option value="quecksilber">Quecksilber</option>
+          </select>
+        </label>
+        <label>V<sub>0</sub>: <input type="range" id="fl-v" min="0.1" max="1" step="0.1" value="0.5" style="vertical-align:middle;width:8rem"> <span id="fl-v-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>Querschnitt A der Kapillare: <input type="range" id="fl-a" min="0.1" max="0.5" step="0.05" value="0.2" style="vertical-align:middle;width:8rem"> <span id="fl-a-anzeige" class="wert farbe-violett"></span></label>
+        <label>ΔT: <input type="range" id="fl-dt" min="0" max="20" step="1" value="10" style="vertical-align:middle;width:8rem"> <span id="fl-dt-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="th-wrap" id="fl-mount"></div>
+      <div class="th-bilanz" id="fl-bilanz"></div>
+      <div id="fl-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Volumenänderung</span>
+      <div class="formula-block">ΔV = γ · V<sub>0</sub> · ΔT</div>
+      Der <strong>Volumenausdehnungskoeffizient</strong> γ gibt an, um wie viele Milliliter sich 1 Liter der Flüssigkeit bei Erwärmung um 1 K ausdehnt:
+      <table class="ta-tabelle">
+        <tr><th>Stoff</th><th>Ethanol</th><th>Benzin</th><th>Glycerin</th><th>Wasser (20 °C)</th><th>Quecksilber</th></tr>
+        <tr><td>γ in <span class="bruch"><span class="z">ml</span><span class="n">l · K</span></span></td><td>1,1</td><td>1,0</td><td>0,5</td><td>0,21</td><td>0,18</td></tr>
+      </table>
+      Mit V<sub>0</sub> in Millilitern kommt ΔV in Kubikmillimetern heraus (1 ml = 1000 mm³). In der Kapillare mit dem Querschnitt A steigt die Säule um h = <span class="bruch"><span class="z">ΔV</span><span class="n">A</span></span>.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Durchgerechnet — ein Alkoholthermometer</span>
+      0,5 ml Ethanol, Erwärmung um 10 K: ΔV = 1,1 <span class="bruch"><span class="z">ml</span><span class="n">l · K</span></span> · 0,5 ml · 10 K = 5,5 mm³.<br>
+      Kapillare mit A = 0,2 mm²: h = 5,5 mm³ : 0,2 mm² = 27,5 mm. Die Säule steigt also um 2,75 mm je Kelvin.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — je dünner die Kapillare, desto genauer</span>
+      Das zusätzliche Volumen ΔV hängt nicht von der Kapillare ab. Ist sie halb so dick (halber Querschnitt), steigt die Säule doppelt so hoch — das Thermometer lässt sich feiner ablesen.
+    </div>
+    <p class="hinweis-box">💡 Wasser ist eine Ausnahme: Zwischen 0 °C und 4 °C zieht es sich beim Erwärmen zusammen und hat bei 4 °C sein kleinstes Volumen (Anomalie des Wassers). Deshalb ist das Wasser am Grund eines zugefrorenen Sees 4 °C warm, und Seen frieren von oben zu. Für Thermometer ist Wasser deshalb ungeeignet.</p>
+    <div class="quiz" id="quiz-fluessig"></div>
+  </section>
+
+  <!-- 6. Gay-Lussac -->
+  <section class="card" id="sec-gay-lussac">
+    <h2>6. Gase bei gleichem Druck: Gesetz von Gay-Lussac und Kelvin-Skala</h2>
+    <p>Ein Gas ist in einem Zylinder mit einem leicht beweglichen Kolben eingeschlossen. Der Kolben drückt immer gleich stark, der Druck bleibt also gleich. Bei 0 °C nimmt das Gas 1 Liter ein. Ändere die Temperatur und beobachte das Volumen.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Temperatur ϑ: <input type="range" id="gl-theta" min="-100" max="200" step="5" value="100" style="vertical-align:middle;width:14rem"> <span id="gl-theta-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="th-wrap" id="gl-mount"></div>
+      <div class="th-bilanz" id="gl-bilanz"></div>
+      <div id="gl-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Gesetz von Gay-Lussac</span>
+      Bei gleichem Druck ändert sich das Volumen eines Gases je Kelvin um <span class="bruch"><span class="z">1</span><span class="n">273,15</span></span> seines Volumens bei 0 °C — bei <em>allen</em> Gasen gleich. Verlängert man die Gerade nach links, wäre das Volumen bei <strong>−273,15 °C</strong> null. Kälter geht es nicht: Das ist der <strong>absolute Nullpunkt</strong>.
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Die Kelvin-Skala</span>
+      Die absolute Temperatur T beginnt am absoluten Nullpunkt und hat dieselben Schritte wie die Celsius-Skala:
+      <div class="formula-block">T = ϑ + 273,15 K &nbsp;&nbsp;&nbsp; 0 °C = 273,15 K &nbsp;&nbsp;&nbsp; 20 °C = 293,15 K &nbsp;&nbsp;&nbsp; 0 K = −273,15 °C</div>
+      Mit T in Kelvin wird das Gesetz von Gay-Lussac einfach: Bei gleichem Druck ist das Volumen proportional zur absoluten Temperatur,
+      <div class="formula-block"><span class="bruch gross"><span class="z">V</span><span class="n">T</span></span> = konstant, &nbsp; also &nbsp; <span class="bruch gross"><span class="z">V<sub>1</sub></span><span class="n">T<sub>1</sub></span></span> = <span class="bruch gross"><span class="z">V<sub>2</sub></span><span class="n">T<sub>2</sub></span></span> &nbsp;&nbsp; (p konstant)</div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Durchgerechnet — ein Luftballon in der Sonne</span>
+      Ein Ballon enthält bei 20 °C 3,0 l Luft und wird in der Sonne 50 °C warm; der Druck bleibt gleich. T<sub>1</sub> = 293,15 K, T<sub>2</sub> = 323,15 K:<br>
+      V<sub>2</sub> = V<sub>1</sub> · <span class="bruch"><span class="z">T<sub>2</sub></span><span class="n">T<sub>1</sub></span></span> = 3,0 l · <span class="bruch"><span class="z">323,15 K</span><span class="n">293,15 K</span></span> ≈ 3,31 l.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — in Gasgesetzen immer Kelvin</span>
+      Mit Grad Celsius ginge die Rechnung schief: Von 20 °C auf 40 °C verdoppelt sich die Celsius-Zahl, das Volumen aber wächst nur um den Faktor 313,15 : 293,15 ≈ 1,07. Bei Temperaturdifferenzen (ΔT) ist es dagegen gleich, ob man in °C oder K rechnet.
+    </div>
+    <div class="quiz" id="quiz-gay-lussac"></div>
+  </section>
+
+  <!-- 7. Boyle-Mariotte -->
+  <section class="card" id="sec-boyle">
+    <h2>7. Gase bei gleicher Temperatur: Gesetz von Boyle-Mariotte</h2>
+    <p>Jetzt bleibt die Temperatur gleich, und der Kolben wird hineingedrückt oder herausgezogen — wie bei einer Luftpumpe mit zugehaltener Öffnung. Am Anfang sind 2,0 l Luft bei 1,0 bar eingeschlossen. Das Rechteck im Diagramm hat den Flächeninhalt p · V.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Volumen V: <input type="range" id="bm-v" min="0.5" max="4" step="0.1" value="1" style="vertical-align:middle;width:14rem"> <span id="bm-v-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="th-wrap" id="bm-mount"></div>
+      <div class="th-bilanz" id="bm-bilanz"></div>
+      <div id="bm-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Gesetz von Boyle-Mariotte</span>
+      Bei gleicher Temperatur ist der Druck eines Gases umgekehrt proportional zu seinem Volumen: halbes Volumen, doppelter Druck.
+      <div class="formula-block">p · V = konstant, &nbsp; also &nbsp; p<sub>1</sub> · V<sub>1</sub> = p<sub>2</sub> · V<sub>2</sub> &nbsp;&nbsp; (T konstant)</div>
+      Im p-V-Diagramm liegen alle Zustände auf einer Hyperbel; die Rechtecke unter ihr haben alle denselben Flächeninhalt.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Durchgerechnet — die zugehaltene Luftpumpe</span>
+      2,0 l Luft bei 1,0 bar werden auf 0,5 l zusammengedrückt:<br>
+      p<sub>2</sub> = <span class="bruch"><span class="z">p<sub>1</sub> · V<sub>1</sub></span><span class="n">V<sub>2</sub></span></span> = <span class="bruch"><span class="z">1,0 bar · 2,0 l</span><span class="n">0,5 l</span></span> = 4,0 bar. Ein Viertel des Volumens, viermal der Druck.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — umgekehrt, nicht gleich</span>
+      Wird das Volumen kleiner, steigt der Druck. Wer p<sub>2</sub> = p<sub>1</sub> · <span class="bruch"><span class="z">V<sub>2</sub></span><span class="n">V<sub>1</sub></span></span> rechnet, bekommt beim Zusammendrücken einen kleineren Druck heraus — das kann nicht stimmen.
+    </div>
+    <div class="quiz" id="quiz-boyle"></div>
+  </section>
+
+  <!-- 8. Amontons -->
+  <section class="card" id="sec-amontons">
+    <h2>8. Gase bei gleichem Volumen: Gesetz von Amontons</h2>
+    <p>Eine fest verschlossene Dose kann sich nicht ausdehnen, das Volumen bleibt gleich. Bei 20 °C herrscht in ihr ein Druck von 1,0 bar. Was geschieht mit dem Druck, wenn die Dose erwärmt oder abgekühlt wird?</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Temperatur ϑ: <input type="range" id="am-theta" min="-50" max="250" step="5" value="100" style="vertical-align:middle;width:14rem"> <span id="am-theta-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="th-wrap" id="am-mount"></div>
+      <div class="th-bilanz" id="am-bilanz"></div>
+      <div id="am-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Gesetz von Amontons</span>
+      Bei gleichem Volumen ist der Druck eines Gases proportional zur absoluten Temperatur:
+      <div class="formula-block"><span class="bruch gross"><span class="z">p</span><span class="n">T</span></span> = konstant, &nbsp; also &nbsp; <span class="bruch gross"><span class="z">p<sub>1</sub></span><span class="n">T<sub>1</sub></span></span> = <span class="bruch gross"><span class="z">p<sub>2</sub></span><span class="n">T<sub>2</sub></span></span> &nbsp;&nbsp; (V konstant)</div>
+      Im Teilchenbild: Schnellere Teilchen prallen häufiger und heftiger gegen die Wände. Manche Bücher nennen dieses Gesetz auch das zweite Gesetz von Gay-Lussac.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Durchgerechnet — eine Spraydose im Auto</span>
+      Eine Spraydose hat bei 20 °C einen Druck von 3,0 bar. Im Auto wird sie im Sommer 60 °C heiß:<br>
+      p<sub>2</sub> = p<sub>1</sub> · <span class="bruch"><span class="z">T<sub>2</sub></span><span class="n">T<sub>1</sub></span></span> = 3,0 bar · <span class="bruch"><span class="z">333,15 K</span><span class="n">293,15 K</span></span> ≈ 3,41 bar. Deshalb steht auf Spraydosen: vor Erwärmung über 50 °C schützen.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Celsius führt in die Irre</span>
+      Bei 0 °C ist der Druck nicht null, und von 20 °C auf 40 °C verdoppelt er sich nicht. Proportional ist der Druck zur Temperatur in Kelvin: Die Gerade im Diagramm geht durch den absoluten Nullpunkt.
+    </div>
+    <div class="quiz" id="quiz-amontons"></div>
+  </section>
+
+  <!-- 9. Allgemeine Gasgleichung -->
+  <section class="card" id="sec-gasgleichung">
+    <h2>9. Die allgemeine Gasgleichung</h2>
+    <p>Meist ändern sich Druck, Volumen und Temperatur gleichzeitig — beim Wetterballon, der aufsteigt, oder bei der Luft im Motor. Dann hilft ein Trick: Man geht vom Anfangszustand 1 zum Endzustand 2 in zwei Schritten, bei denen jeweils eine Größe gleich bleibt. Stell den Endzustand ein und zieh dann am Regler „Weg“.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>V<sub>2</sub>: <input type="range" id="gg-v2" min="1" max="3" step="0.1" value="1.5" style="vertical-align:middle;width:9rem"> <span id="gg-v2-anzeige" class="wert farbe-blau"></span></label>
+        <label>ϑ<sub>2</sub>: <input type="range" id="gg-theta2" min="-20" max="120" step="5" value="80" style="vertical-align:middle;width:9rem"> <span id="gg-theta2-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>Weg: <input type="range" id="gg-s" min="0" max="200" step="5" value="0" style="vertical-align:middle;width:16rem"> <span id="gg-s-anzeige" class="wert"></span></label>
+      </div>
+      <ol class="ta-schritte" id="gg-schritte">
+        <li data-schritt="1">Schritt 1: Temperatur bleibt T<sub>1</sub>, Volumen von V<sub>1</sub> auf V<sub>2</sub> (Boyle-Mariotte)</li>
+        <li data-schritt="2">Schritt 2: Volumen bleibt V<sub>2</sub>, Temperatur von T<sub>1</sub> auf T<sub>2</sub> (Amontons)</li>
+      </ol>
+      <div class="th-wrap" id="gg-mount"></div>
+      <div class="th-bilanz" id="gg-bilanz"></div>
+      <div id="gg-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Herleitung in zwei Schritten</span>
+      Anfang: p<sub>1</sub>, V<sub>1</sub>, T<sub>1</sub>. Ende: p<sub>2</sub>, V<sub>2</sub>, T<sub>2</sub>. Dazwischen ein Zwischenzustand mit dem Druck p*.<br>
+      <strong>Schritt 1</strong> (T bleibt T<sub>1</sub>, Boyle-Mariotte): p<sub>1</sub> · V<sub>1</sub> = p* · V<sub>2</sub>, also p* = <span class="bruch"><span class="z">p<sub>1</sub> · V<sub>1</sub></span><span class="n">V<sub>2</sub></span></span>.<br>
+      <strong>Schritt 2</strong> (V bleibt V<sub>2</sub>, Amontons): <span class="bruch"><span class="z">p*</span><span class="n">T<sub>1</sub></span></span> = <span class="bruch"><span class="z">p<sub>2</sub></span><span class="n">T<sub>2</sub></span></span>, also p<sub>2</sub> = p* · <span class="bruch"><span class="z">T<sub>2</sub></span><span class="n">T<sub>1</sub></span></span> = <span class="bruch"><span class="z">p<sub>1</sub> · V<sub>1</sub></span><span class="n">V<sub>2</sub></span></span> · <span class="bruch"><span class="z">T<sub>2</sub></span><span class="n">T<sub>1</sub></span></span>.<br>
+      Beide Seiten mit <span class="bruch"><span class="z">V<sub>2</sub></span><span class="n">T<sub>2</sub></span></span> malnehmen:
+      <div class="formula-block"><span class="bruch gross"><span class="z">p<sub>1</sub> · V<sub>1</sub></span><span class="n">T<sub>1</sub></span></span> = <span class="bruch gross"><span class="z">p<sub>2</sub> · V<sub>2</sub></span><span class="n">T<sub>2</sub></span></span> &nbsp;&nbsp; oder &nbsp;&nbsp; <span class="bruch gross"><span class="z">p · V</span><span class="n">T</span></span> = konstant</div>
+      Das ist die <strong>allgemeine Gasgleichung</strong> für eine abgeschlossene Gasmenge. Bleibt T gleich, wird daraus Boyle-Mariotte; bleibt p gleich, Gay-Lussac; bleibt V gleich, Amontons.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Durchgerechnet — der Wetterballon</span>
+      Am Boden: 4,0 m³ Helium bei 1,0 bar und 15 °C. In 10 km Höhe: 0,26 bar und −50 °C. T<sub>1</sub> = 288,15 K, T<sub>2</sub> = 223,15 K:<br>
+      V<sub>2</sub> = V<sub>1</sub> · <span class="bruch"><span class="z">p<sub>1</sub></span><span class="n">p<sub>2</sub></span></span> · <span class="bruch"><span class="z">T<sub>2</sub></span><span class="n">T<sub>1</sub></span></span> = 4,0 m³ · <span class="bruch"><span class="z">1,0 bar</span><span class="n">0,26 bar</span></span> · <span class="bruch"><span class="z">223,15 K</span><span class="n">288,15 K</span></span> ≈ 11,91 m³. Trotz der Kälte ist der Ballon fast dreimal so groß.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Reihenfolge der Schritte ist beliebig</span>
+      Man könnte auch erst die Temperatur bei gleichem Volumen ändern und dann das Volumen bei gleicher Temperatur — der Zwischenzustand wäre ein anderer, das Ergebnis dasselbe. Die Gleichung gilt nur, solange kein Gas entweicht oder dazukommt und es nicht flüssig wird.
+    </div>
+    <div class="quiz" id="quiz-gasgleichung"></div>
+  </section>
+
+  <!-- Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>10. Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Dem Teilchenmodell und den Aggregatzuständen — hier um die Temperatur als Maß für die Teilchenbewegung und die Bindungsenergie erweitert.</li>
+      <li><strong>Baut auf:</strong> <a href="../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-proportional">Proportionalen</a> und <a href="../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-antiproportional">antiproportionalen Zuordnungen</a> — ΔL wächst proportional zu L<sub>0</sub> und zu ΔT, V und p proportional zu T; p und V sind bei gleicher Temperatur antiproportional.</li>
+      <li><strong>Gleiche Struktur:</strong> Die Herleitung der allgemeinen Gasgleichung zerlegt eine schwierige Änderung in zwei einfache, bei denen jeweils nur zwei Größen wechseln — so, wie man eine Gleichung Schritt für Schritt umformt.</li>
+      <li><strong>Führt weiter zu:</strong> Der inneren Energie und dem ersten Hauptsatz der Wärmelehre — warum ein Gas beim schnellen Zusammendrücken warm wird.</li>
+      <li><strong>Führt weiter zu:</strong> Wärmekraftmaschinen wie dem Verbrennungsmotor, in denen ein Gas Druck, Volumen und Temperatur in einem Kreislauf ändert.</li>
+    </ul>
+  </section>
+
+  <!-- Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>11. Formelsammlung</h2>
+    <p>Teilchenmodell, Übergänge und Erwärmungskurve, Bindungsenergie, Längen- und Volumenänderung mit Tabellen, Kelvin-Skala, die drei Gasgesetze und die allgemeine Gasgleichung — mit gerechneten Bildern, auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="thermische-ausdehnung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>12. Übungsaufgaben</h2>
+    <p>Acht Aufgaben auf vier Stufen, je zwei auf jeder. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu. Tipps gibt es auf Knopfdruck, nach dem Prüfen steht die Musterlösung darunter.</p>
+    <p class="progress-note">Gib Zahlen mit Komma ein, zum Beispiel 3,41. Eine Einheit dahinter darf stehen; gerechnet wird in der Einheit, die neben dem Feld steht.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste" id="se-liste">
+      <li data-abschnitt="sec-teilchen">Ich kann die drei Aggregatzustände im Teilchenmodell beschreiben und sagen, was sich beim Erwärmen ändert.</li>
+      <li data-abschnitt="sec-uebergaenge">Ich kann die Übergänge zwischen den Aggregatzuständen benennen und die Erwärmungskurve von Wasser lesen.</li>
+      <li data-abschnitt="sec-bindung">Ich kann mit der Bindungsenergie erklären, warum die Temperatur beim Schmelzen und Sieden stehen bleibt und warum sich Stoffe ausdehnen.</li>
+      <li data-abschnitt="sec-fest">Ich kann die Längenänderung fester Körper mit ΔL = α · L₀ · ΔT berechnen.</li>
+      <li data-abschnitt="sec-fluessig">Ich kann die Volumenänderung von Flüssigkeiten berechnen und ein Flüssigkeitsthermometer erklären.</li>
+      <li data-abschnitt="sec-gay-lussac">Ich kann Temperaturen in Kelvin umrechnen und das Gesetz von Gay-Lussac anwenden.</li>
+      <li data-abschnitt="sec-boyle">Ich kann das Gesetz von Boyle-Mariotte anwenden.</li>
+      <li data-abschnitt="sec-amontons">Ich kann das Gesetz von Amontons anwenden.</li>
+      <li data-abschnitt="sec-gasgleichung">Ich kann die allgemeine Gasgleichung aus den drei Gasgesetzen herleiten und anwenden.</li>
+    </ul>
+    <div class="se-auswertung event-result" id="se-auswertung" aria-live="polite"></div>
+  </section>
+
+  <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
+  <section class="card" data-lehrkraft="thermische-ausdehnung-lehrkraefte.html" hidden></section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="index.html">Zurück zu Physik — Klasse 8</a></p>
+  <p><a href="../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script src="../../assets/lehrkraft.js"></script>
+<script src="../../assets/selbsteinschaetzung.js"></script>
+<script type="module" src="thermische-ausdehnung.js?v=1"></script>
+</body>
+</html>

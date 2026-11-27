@@ -32,11 +32,15 @@ const WURZEL = path.resolve(__dirname, "..");
 const MINDESTENS = 51;
 const KEIN_THEMA = ["sec-vernetzung", "sec-formelsammlung", "sec-uebungen", "sec-selbsteinschaetzung"];
 
-function seiten(dir = path.join(WURZEL, "mathematik"), out = []) {
-  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
-    const voll = path.join(dir, e.name);
-    if (e.isDirectory()) seiten(voll, out);
-    else if (e.name.endsWith(".html") && fs.readFileSync(voll, "utf-8").includes('id="exercises-mount"')) out.push("/" + path.relative(WURZEL, voll));
+// Alle Seiten mit Übungsaufgaben unter mathematik/ und physik/.
+function seiten(dirs = [path.join(WURZEL, "mathematik"), path.join(WURZEL, "physik")], out = []) {
+  for (const dir of [].concat(dirs)) {
+    if (!fs.existsSync(dir)) continue;
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      const voll = path.join(dir, e.name);
+      if (e.isDirectory()) seiten(voll, out);
+      else if (e.name.endsWith(".html") && fs.readFileSync(voll, "utf-8").includes('id="exercises-mount"')) out.push("/" + path.relative(WURZEL, voll));
+    }
   }
   return out.sort();
 }
