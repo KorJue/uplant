@@ -9,6 +9,7 @@ nicht, bricht es ab. tf_kopf.pruefe_im_bild schlägt an, sobald etwas aus der Fl
     python3 tm-svgs.py      schreibt tm-figuren.txt (eine Zeichnung je Zeile)
 """
 import pathlib
+import re
 
 from tf_kopf import (BLAU, GRUEN, ORANGE, ROT, VIOLETT, GRAU, SCHWARZ,
                      f, lin, rect, kreis, pruefe_im_bild, setze_flaeche, svg, txt)
@@ -18,12 +19,48 @@ def gleich(x, soll, was):
     assert abs(x - soll) < 1e-9, f"{was}: {x} statt {soll}"
 
 
+# ---------- Terme nachrechnen ----------
+# Jede Gleichung der Formelsammlung wird hier an mehreren krummen Stellen ausgewertet — mit Pythons
+# eigener Klammer- und Vorzeichenrechnung, nicht mit den Regeln, die die Formelsammlung lehrt.
+
+STELLEN = [{"a": 1.7, "b": -2.3, "c": 0.9, "d": -0.6, "n": 3.1, "x": 2.6, "y": -1.4},
+           {"a": -0.8, "b": 3.9, "c": -2.2, "d": 1.45, "n": -1.3, "x": -3.7, "y": 0.6},
+           {"a": 5.3, "b": 0.4, "c": 4.1, "d": 2.35, "n": 0.7, "x": 1.15, "y": 2.9}]
+
+
+def wert(term, belegung):
+    """Wertet einen Term in der Schreibweise der Formelsammlung aus (−, ·, ², 3x, xy, Klammern)."""
+    s = term.replace("−", "-").replace("·", "*").replace("²", "**2").replace("³", "**3")
+    s = re.sub(r"(?<=[0-9a-z)])(?=[a-z(])", "*", s)          # 3x → 3*x, xy → x*y, 2(… → 2*(…
+    assert re.fullmatch(r"[0-9a-z+\-*/(). ]+", s), f"Term nicht lesbar: {term!r}"
+    return eval(s, {"__builtins__": {}}, dict(belegung))
+
+
+def kette(text, soll_gleich=True):
+    """„A = B = C“: Alle Seiten haben an jeder Stelle denselben Wert — oder, bei einem absichtlich
+    falschen Beispiel (soll_gleich=False), A und B an mindestens einer Stelle nicht."""
+    seiten = text.split(" = ")
+    assert len(seiten) >= 2, f"keine Gleichung: {text!r}"
+    if soll_gleich:
+        for st in STELLEN:
+            w = [wert(x, st) for x in seiten]
+            assert all(abs(v - w[0]) < 1e-9 * max(1.0, abs(w[0])) for v in w), f"falsch: {text} — Werte {w} bei {st}"
+    else:
+        assert len(seiten) == 2, text
+        assert any(abs(wert(seiten[0], st) - wert(seiten[1], st)) > 1e-6 for st in STELLEN), \
+            f"als Fehler gezeigt, stimmt aber: {text}"
+
+
 def kachel(x, y, b, h, farbe, negativ=False):
     """Eine Kachel wie auf den Lernseiten: hell gefüllt, farbiger Rand; Minus rot gestrichelt."""
     if negativ:
         t = rect(x, y, b, h, ROT, ROT, 0.9, 0.12)
-        t = t.replace("/>", ' stroke-dasharray="2 1.4"/>')
-        return t + lin((x + b / 2 - min(2.2, b / 3), y + h / 2), (x + b / 2 + min(2.2, b / 3), y + h / 2), ROT, 0.9)
+        # Eine Einerkachel ist nur 6 Punkte groß: Mit den langen Strichen der x-Kachel verschwämmen drei
+        # davon nebeneinander zu einem Streifen, und ein langes Minus füllte sie ganz aus.
+        klein = h <= U + 0.5
+        t = t.replace("/>", f' stroke-dasharray="{"1.2 0.9" if klein else "2 1.4"}"/>')
+        m = b / 4 if klein else min(2.2, b / 3)
+        return t + lin((x + b / 2 - m, y + h / 2), (x + b / 2 + m, y + h / 2), ROT, 0.9)
     return rect(x, y, b, h, farbe, farbe, 0.9, 0.16)
 
 
@@ -110,6 +147,117 @@ def fig_kacheln():
     gleich(plus_1 - minus_1, 3, "Kacheln, Einer")
     t.append(txt((x + xi) / 2, y + LX + 9, "4x + 5 − x − 2 = 3x + 3", SCHWARZ, 6.6, 700))
     return svg(B, H, t)
+
+
+# ---------- Figur 4: Plus- und Minusklammer — die Kacheln einer Minusklammer werden umgedreht ----------
+# Ein Glied ist (Sorte, Zahl); Sorte "x" oder "1". Aus denselben Gliedern entstehen die Kacheln und die
+# Texte daneben — und wert() rechnet den Text mit der Klammer unabhängig davon nach.
+
+def glied_text(sorte, k, erstes):
+    kern = (str(abs(k)) if abs(k) != 1 or sorte == "1" else "") + ("" if sorte == "1" else sorte)
+    if erstes:
+        return ("−" if k < 0 else "") + kern
+    return (" − " if k < 0 else " + ") + kern
+
+
+def term_text(glieder):
+    return "".join(glied_text(s, k, i == 0) for i, (s, k) in enumerate(glieder)) or "0"
+
+
+def zusammengefasst(glieder):
+    summe = {}
+    for s, k in glieder:
+        summe[s] = summe.get(s, 0) + k
+    return [(s, summe[s]) for s in ("x", "1") if summe.get(s)]
+
+
+KLAMMER_BEISPIELE = [
+    # (vor der Klammer, Vorzeichen der Klammer, in der Klammer)
+    ([("x", 5)], 1, [("x", 2), ("1", -3)]),
+    ([("x", 5)], -1, [("x", 2), ("1", -3)]),
+]
+
+
+def fig_klammern():
+    B, H = 250.0, 106.0
+    setze_flaeche(B, H)
+    t = []
+    PAD, LUECKE, ABSTAND = 3.0, 2.0, 5.0
+
+    def reihe(x, glieder):
+        """Legt die Kacheln der Glieder nebeneinander; liefert (Kacheln, rechter Rand)."""
+        kacheln = []
+        for gi, (s, k) in enumerate(glieder):
+            if gi > 0:
+                x += ABSTAND
+            for j in range(abs(k)):
+                if j > 0:
+                    x += LUECKE
+                kacheln.append((s, 1 if k > 0 else -1, x))
+                x += U
+        return kacheln, x
+
+    for nr, (vorne, vz, innen) in enumerate(KLAMMER_BEISPIELE):
+        y0 = 9.0 + nr * 52.0
+        yk = y0 + 6.0                                    # Oberkante der x-Kacheln
+        ohne = vorne + [(s, k * vz) for s, k in innen]   # Minusklammer: jedes Vorzeichen umgedreht
+        mit_text = term_text(vorne) + (" − (" if vz < 0 else " + (") + term_text(innen) + ")"
+        ohne_text = term_text(ohne)
+        erg_text = term_text(zusammengefasst(ohne))
+        kette(f"{mit_text} = {ohne_text} = {erg_text}")
+        t.append(txt(8, y0, "Plusklammer — die Kacheln bleiben, wie sie sind" if vz > 0
+                     else "Minusklammer — jede Kachel wird umgedreht", ROT if vz < 0 else GRUEN, 6.2, 700, "start"))
+        # vorher: Glieder vor der Klammer, Zeichen, Rahmen um die Kacheln der Klammer
+        k_vorne, x = reihe(8.0, vorne)
+        zx = x + 5.0
+        t.append(txt(zx + 4.0, yk + LX / 2 + 3.2, "−" if vz < 0 else "+", SCHWARZ, 9.0, 700))
+        k_innen, x2 = reihe(zx + 8.0 + 3.0 + PAD, innen)
+        t.append(rect(zx + 11.0, yk - PAD, x2 + PAD - (zx + 11.0), LX + 2 * PAD, GRAU, "none", 0.8, 1.0, 3)
+                 .replace("/>", ' stroke-dasharray="3 1.6"/>'))
+        # nachher: dieselben Kacheln ohne Rahmen; die der Minusklammer zeigen ihre andere Seite
+        xp = x2 + PAD + 11.0
+        t.append(txt(xp + 11.0, yk + LX / 2 - 3.0, "umdrehen" if vz < 0 else "weglassen", GRAU, 5.4, 400))
+        t.append(txt(xp + 11.0, yk + LX / 2 + 4.0, "→", SCHWARZ, 9.0, 700))
+        n_vorne, x3 = reihe(xp + 26.0, vorne)
+        n_innen, _ = reihe(x3 + ABSTAND, [(s, k * vz) for s, k in innen])
+        vorher, nachher = k_vorne + k_innen, n_vorne + n_innen
+        gleich(len(nachher), len(vorher), "Klammer: keine Kachel kommt dazu, keine fällt weg")
+        for s, v, xx in vorher + nachher:
+            hoehe = LX if s == "x" else U
+            t.append(kachel(xx, yk + LX - hoehe, U, hoehe, VIOLETT if s == "x" else GRUEN, negativ=v < 0))
+        # Die umgedrehten Kacheln zählen, was der Term mit Klammer ausrechnet — an mehreren Stellen.
+        for xw in (-3.0, 0.5, 2.0, 7.0):
+            gezaehlt = sum(v * (xw if s == "x" else 1.0) for s, v, _ in nachher)
+            gleich(gezaehlt, wert(mit_text, {"x": xw}), f"Klammer, Kacheln bei x = {xw}")
+        t.append(txt(8, y0 + 39.0, f"{mit_text} = {ohne_text} = {erg_text}", SCHWARZ, 6.6, 700, "start"))
+    return svg(B, H, t)
+
+
+# ---------- Tabelle: die Klammerregeln, aus den Vorzeichen gebaut und nachgerechnet ----------
+
+def tabelle_klammerregeln():
+    faelle = [(1, [(1, "b"), (1, "c")]), (1, [(1, "b"), (-1, "c")]),
+              (-1, [(1, "b"), (1, "c")]), (-1, [(1, "b"), (-1, "c")]), (-1, [(-1, "b"), (1, "c")])]
+    zeilen = ['<tr><th></th><th>mit Klammer</th><th>ohne Klammer</th></tr>']
+    for i, (vz, innen) in enumerate(faelle):
+        drinnen = "".join(("−" if v < 0 else "") + n if j == 0 else (" − " if v < 0 else " + ") + n
+                          for j, (v, n) in enumerate(innen))
+        mit = "a " + ("−" if vz < 0 else "+") + " (" + drinnen + ")"
+        # Ohne Klammer: jedes Glied mit Vorzeichen · Vorzeichen der Klammer; umgedrehte Zeichen rot.
+        ohne, ohne_html = "a", "a"
+        for v, n in innen:
+            z = "−" if v * vz < 0 else "+"
+            ohne += f" {z} {n}"
+            ohne_html += f' <span class="ga">{z}</span> {n}' if vz < 0 else f" {z} {n}"
+        kette(f"{mit} = {ohne}")
+        kopf = ""
+        if i == 0:
+            kopf = '<td class="l" rowspan="2"><b>Plusklammer:</b> Klammer weglassen, die Vorzeichen bleiben</td>'
+        elif i == 2:
+            kopf = ('<td class="l" rowspan="3"><b>Minusklammer:</b> Klammer weglassen, '
+                    '<b>jedes</b> Vorzeichen in ihr umdrehen</td>')
+        zeilen.append(f'<tr>{kopf}<td class="f">{mit}</td><td class="f">{ohne_html}</td></tr>')
+    return '<table class="regeln">' + "".join(zeilen) + "</table>"
 
 
 # ---------- Figur 4: Distributivgesetz 3 · (2x + 3) ----------
@@ -233,9 +381,68 @@ def fig_bin3():
     return svg(B, H, t)
 
 
-FIGUREN = [fig_muster, fig_baum, fig_kacheln, fig_distributiv, fig_summe, fig_bin1, fig_bin2, fig_bin3]
+# ---------- Die Gleichungen im Text der Formelsammlung ----------
+# Jede steht wörtlich in der Quelle — sonst wurde sie dort geändert, ohne hier nachgerechnet zu werden —
+# und wird an den STELLEN ausgewertet. FALSCH sind die absichtlich falschen Beispiele der Fehlertabelle.
+
+GLEICHUNGEN = [
+    "3 · n = 3n",
+    "3x + 5x = 8x", "3x · 4y = 12xy", "2a · 5a = 10a²",
+    "8 − (x + 3) = 8 − x − 3 = 5 − x",
+    "(4x + 3y) − (2x − y) + (x − 5y) = 4x + 3y − 2x + y + x − 5y = 3x − y",
+    "5x − (2x − 3) = 3x + 3",
+    "−3 · (2x − 5) = −6x + 15", "x · (x + 4) = x² + 4x",
+    "−(2x − 5) = (−1) · (2x − 5) = −2x + 5",
+    "a · b + a · c = a · (b + c)", "a · (b + c) = a · b + a · c",
+    "6x + 9 = 3 · (2x + 3)", "4x + 4 = 4 · (x + 1)", "12x² − 8x = 4x · (3x − 2)",
+    "x + x = 2x",
+    "5x − (2x − 3) = 5x − 2x + 3 = 3x + 3", "5x + (2x − 3) = 5x + 2x − 3 = 7x − 3",
+    "x² − (x² − x − 6) = x + 6",
+    "(a + b) · (c + d) = ac + ad + bc + bd",
+    "2 · (x + 1) · (x − 3) = 2 · (x² − 2x − 3) = 2x² − 4x − 6",
+    "(x + 4) · (x − 1) − (x + 2) · (x − 3) = (x² + 3x − 4) − (x² − x − 6) = x² + 3x − 4 − x² + x + 6 = 4x + 2",
+    "(x + 3) · (x − 2) = x² + x − 6", "(x + 2) · (x − 2) = x² − 4",
+    "(a + b)² = a² + 2ab + b²", "(a − b)² = a² − 2ab + b²", "(a + b) · (a − b) = a² − b²",
+    "x² + 6x + 9 = (x + 3)²", "9x² − 4 = (3x + 2) · (3x − 2)",
+    "51² = 2500 + 100 + 1 = 2601", "48 · 52 = 2500 − 4 = 2496",
+    "(x + 3)² − (x − 3)² = (x² + 6x + 9) − (x² − 6x + 9) = 12x",
+]
+FALSCH = [
+    "x + x = x²", "3x + 2 = 5x", "5x − (2x − 3) = 3x − 3", "5x + (2x − 3) = 5x + 2x + 3",
+    "3 · (2x + 3) = 6x + 3", "(x + 3) · (x + 2) = x² + 6", "x² − (x + 2) · (x − 3) = x² − x² − x − 6",
+    "(a + b)² = a² + b²", "(x − 4)² = x² − 8x − 16",
+]
+# Rechenwege, deren Schritte auf mehrere Zeilen verteilt sind: jeder Schritt wörtlich da, alle gleichwertig.
+RECHENWEGE = [
+    ["4x + 3y − (2x − y) + x · 3", "4x + 3y − (2x − y) + 3x", "4x + 3y − 2x + y + 3x", "4x − 2x + 3x + 3y + y", "5x + 4y"],
+]
+# Proben: (Term, eingesetzte Zahl, die Rechnung mit der Zahl, wie sie dasteht).
+PROBEN = [("5x − (2x − 3)", 2, "5 · 2 − (2 · 2 − 3) = 9"), ("3x + 3", 2, "3 · 2 + 3 = 9")]
+
+
+def pruefe_quelle():
+    quelle = (pathlib.Path(__file__).parent / "formelsammlung-tm-quelle.html").read_text(encoding="utf-8")
+    fehlt = [g for g in GLEICHUNGEN + FALSCH + [s for w in RECHENWEGE for s in w] + [p[2] for p in PROBEN]
+             if g not in quelle]
+    assert not fehlt, f"nicht (mehr) wörtlich in der Quelle: {fehlt}"
+    for g in GLEICHUNGEN:
+        kette(g)
+    for g in FALSCH:
+        kette(g, soll_gleich=False)
+    for w in RECHENWEGE:
+        kette(" = ".join(w))
+    for term, zahl, rechnung in PROBEN:
+        kette(rechnung)
+        gleich(wert(term, {"x": zahl}), wert(rechnung.split(" = ")[-1], {}), f"Probe {term} mit x = {zahl}")
+        gleich(wert(term, {"x": zahl}), wert(rechnung.split(" = ")[0], {}), f"Probe {term}: eingesetzt")
+    return len(GLEICHUNGEN) + len(FALSCH) + len(RECHENWEGE) + len(PROBEN)
+
+
+FIGUREN = [fig_muster, fig_baum, fig_kacheln, fig_klammern, tabelle_klammerregeln, fig_distributiv, fig_summe,
+           fig_bin1, fig_bin2, fig_bin3]
 
 if __name__ == "__main__":
+    print(f"{pruefe_quelle()} Gleichungen der Quelle nachgerechnet")
     zeilen = [fn() for fn in FIGUREN]
     pfad = pathlib.Path(__file__).parent / "tm-figuren.txt"
     pfad.write_text("\n".join(zeilen) + "\n", encoding="utf-8")

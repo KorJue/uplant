@@ -53,6 +53,14 @@ Quadrat nicht füllen; ein absichtlich falscher Baum (Stolperstelle) muss dagege
 Knoten haben, der nicht 1 ergibt. `<praefix>-figuren.txt` und
 `formelsammlung-<praefix>.html` entstehen bei jedem Lauf neu.
 
+`tm-svgs.py` rechnet außerdem jede Gleichung im **Text** der Quelle nach: Sie steht in `GLEICHUNGEN`
+(absichtlich falsche Beispiele der Fehlertabelle in `FALSCH`, über mehrere Zeilen verteilte Rechenwege
+in `RECHENWEGE`, Proben mit eingesetzter Zahl in `PROBEN`), muss wörtlich in der Quelle stehen und wird
+an mehreren krummen Stellen mit Pythons eigener Klammer- und Vorzeichenrechnung ausgewertet — nicht mit
+den Regeln, die die Formelsammlung lehrt. Wer dort eine Gleichung ändert, muss die Liste mitziehen —
+sonst bricht das Skript ab. Eine **neue** Gleichung dagegen bemerkt es nicht von selbst: Sie gehört in
+die Liste. Vorbild für neue Formelsammlungen mit vielen Rechnungen im Text.
+
 ## Eine neue Formelsammlung anlegen
 
 1. **Figuren.** `<praefix>-svgs.py` schreiben, Vorbild `th-svgs.py`. Aus

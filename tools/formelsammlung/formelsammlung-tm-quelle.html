@@ -71,6 +71,7 @@
   .bruch .z { border-bottom: 0.8px solid currentColor; padding: 0 0.6mm; }
   .gh { color: #6d28d9; font-weight: 700; }
   .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
+  table.regeln td.f { white-space: nowrap; width: 27%; }
 </style>
 </head>
 <body>
@@ -109,31 +110,48 @@
       </table>
     </div>
 
-    <div class="box wide">
+    <div class="box">
       <h2>Terme vereinfachen (Thema 2)</h2>
+      <p><b>Gleichartige Glieder</b> haben dieselben Variablen mit denselben Hochzahlen. Man fasst sie zusammen, indem man die Zahlen addiert: <span class="f">3x + 5x = 8x</span>. Nicht gleichartig sind x und x², x und y, x und 1.</p>
+      <figure>[[FIG3]]</figure>
+      <p><b>Produkte:</b> Zahlen mal Zahlen, Variablen mal Variablen — <span class="f">3x · 4y = 12xy</span>, <span class="f">2a · 5a = 10a²</span>.</p>
+    </div>
+
+    <div class="box wide merk">
+      <h2>Plus- und Minusklammern (Thema 2)</h2>
       <div class="zwei">
         <div>
-          <p><b>Gleichartige Glieder</b> haben dieselben Variablen mit denselben Hochzahlen. Man fasst sie zusammen, indem man die Zahlen addiert: <span class="f">3x + 5x = 8x</span>. Nicht gleichartig sind x und x², x und y, x und 1.</p>
-          <figure>[[FIG3]]</figure>
+          <p>Vor der Klammer steht nur ein Plus oder ein Minus. Eine <b>Minusklammer</b> zieht <b>alles</b> ab, was in ihr steht: Jede Kachel darin wird umgedreht, aus x wird −x, aus −3 wird +3.</p>
+          <figure>[[FIG4]]</figure>
         </div>
         <div>
-          <p><b>Produkte:</b> Zahlen mal Zahlen, Variablen mal Variablen — <span class="f">3x · 4y = 12xy</span>, <span class="f">2a · 5a = 10a²</span>.</p>
-          <p><b>Plusklammer:</b> <span class="f">a + (b − c) = a + b − c</span> — die Klammer fällt weg.<br><b>Minusklammer:</b> <span class="f">a − (b − c) = a − b + c</span> — <b>jedes</b> Vorzeichen in ihr dreht sich um.</p>
-          <div class="rechnung">
-            <div class="schritt"><b>1.</b><span>Produkte vereinfachen</span></div>
-            <div class="schritt"><b>2.</b><span>Klammern auflösen</span></div>
-            <div class="schritt"><b>3.</b><span>Ordnen — jedes Glied mit seinem Vorzeichen</span></div>
-            <div class="schritt"><b>4.</b><span>Zusammenfassen</span></div>
-          </div>
+          [[FIG5]]
+          <p style="margin-top:0.9mm"><b>Warum?</b> Von 8 € erst x € und dann 3 € ausgeben oder beides auf einmal — übrig bleibt dasselbe: <span class="f">8 − (x + 3) = 8 − x − 3 = 5 − x</span>.</p>
+          <p><b>Mehrere Klammern</b> — jede für sich: <span class="f">(4x + 3y) − (2x − y) + (x − 5y) = 4x + 3y − 2x + y + x − 5y = 3x − y</span></p>
+          <p><b>Probe</b> zu <span class="f">5x − (2x − 3) = 3x + 3</span>, eingesetzt x = 2 — links <span class="f">5 · 2 − (2 · 2 − 3) = 9</span>, rechts <span class="f">3 · 2 + 3 = 9</span>.</p>
         </div>
       </div>
     </div>
 
     <div class="box">
+      <h2>Schritt für Schritt vereinfachen</h2>
+      <p>Jeder Schritt beruht auf einem Rechengesetz — das Ergebnis ist mit dem Anfang gleichwertig, für <b>jede</b> Zahl.</p>
+      <p class="zentral f">4x + 3y − (2x − y) + x · 3</p>
+      <div class="rechnung">
+        <div class="schritt"><b>1.</b><span>Produkte: <span class="f">= 4x + 3y − (2x − y) + 3x</span></span></div>
+        <div class="schritt"><b>2.</b><span>Klammern auflösen: <span class="f">= 4x + 3y − 2x + y + 3x</span></span></div>
+        <div class="schritt"><b>3.</b><span>Ordnen, jedes Glied mit seinem Vorzeichen: <span class="f">= 4x − 2x + 3x + 3y + y</span></span></div>
+        <div class="schritt"><b>4.</b><span>Zusammenfassen: <span class="f">= 5x + 4y</span></span></div>
+      </div>
+      <p style="margin-top:0.8mm">Fertig ist der Term, wenn keine zwei Glieder mehr gleichartig sind. <b>Probe:</b> eine Zahl in Anfang und Ergebnis einsetzen.</p>
+    </div>
+
+    <div class="box">
       <h2>Ausmultiplizieren (Thema 3)</h2>
       <p>Der Faktor vor der Klammer wird mit <b>jedem</b> Glied multipliziert — jedes mit seinem Vorzeichen:</p>
-      <figure>[[FIG4]]</figure>
+      <figure>[[FIG6]]</figure>
       <p class="zentral f">−3 · (2x − 5) = −6x + 15 &nbsp;&nbsp; x · (x + 4) = x² + 4x</p>
+      <p><b>Die Minusklammer</b> ist der Sonderfall mit dem Faktor −1: <span class="f">−(2x − 5) = (−1) · (2x − 5) = −2x + 5</span>.</p>
     </div>
 
     <div class="box merk">
@@ -144,33 +162,21 @@
       <p><b>Probe:</b> ausmultiplizieren ergibt wieder den Anfang.</p>
     </div>
 
-    <div class="box warn wide">
-      <h2>Typische Fehler</h2>
-      <table>
-        <tr><th>falsch</th><th>richtig</th><th>warum</th></tr>
-        <tr><td class="f">2 · x − 3 für „das Doppelte der um 3 verminderten Zahl“</td><td class="f">2 · (x − 3)</td><td class="l">erst vermindern, dann verdoppeln — die Differenz braucht eine Klammer</td></tr>
-        <tr><td class="f">x + x = x² &nbsp;·&nbsp; 3x + 2 = 5x</td><td class="f">x + x = 2x &nbsp;·&nbsp; 3x + 2 bleibt</td><td class="l">nur gleichartige Glieder lassen sich zusammenfassen</td></tr>
-        <tr><td class="f">5x − (2x − 3) = 3x − 3</td><td class="f">5x − 2x + 3 = 3x + 3</td><td class="l">die Minusklammer dreht <b>jedes</b> Vorzeichen um</td></tr>
-        <tr><td class="f">3 · (2x + 3) = 6x + 3</td><td class="f">6x + 9</td><td class="l">der Faktor gilt für jedes Glied der Klammer</td></tr>
-        <tr><td class="f">(x + 3) · (x + 2) = x² + 6</td><td class="f">x² + 5x + 6</td><td class="l">die gemischten Produkte fehlen</td></tr>
-        <tr><td class="f">(a + b)² = a² + b² &nbsp;·&nbsp; (x − 4)² = x² − 8x − 16</td><td class="f">a² + 2ab + b² &nbsp;·&nbsp; x² − 8x + 16</td><td class="l">das doppelte Produkt gehört dazu; b² ist immer positiv</td></tr>
-      </table>
-    </div>
-
   </div>
   <p class="fuss">uplant · Mathematik Klasse 8 · Terme · Seite 1 von 2</p>
 </div>
 
 <!-- ===================== Seite 2 ===================== -->
 <div class="page">
-  <h1>Summen multiplizieren und binomische Formeln<span class="klein">Klasse 8 · Terme, Themen 4 und 5</span></h1>
+  <h1>Summen multiplizieren, binomische Formeln, typische Fehler<span class="klein">Klasse 8 · Terme, Themen 4 und 5 · Fehler aus allen Themen</span></h1>
   <div class="grid">
 
     <div class="box wide">
       <h2>Summe mal Summe (Thema 4)</h2>
       <p>Jedes Glied der ersten Klammer mal jedes Glied der zweiten: <span class="f">(a + b) · (c + d) = ac + ad + bc + bd</span>. Zwei mal zwei Glieder geben vier Produkte — die vier Teilrechtecke.</p>
-      <figure class="m70">[[FIG5]]</figure>
+      <figure class="m55">[[FIG7]]</figure>
       <p>Mehr Faktoren: schrittweise, das Zwischenergebnis in Klammern — <span class="f">2 · (x + 1) · (x − 3) = 2 · (x² − 2x − 3) = 2x² − 4x − 6</span>.</p>
+      <p><b>Ein Minus davor</b> wartet, bis das Produkt ausgerechnet in Klammern steht — dann dreht es jedes Vorzeichen um: <span class="f">(x + 4) · (x − 1) − (x + 2) · (x − 3) = (x² + 3x − 4) − (x² − x − 6) = x² + 3x − 4 − x² + x + 6 = 4x + 2</span>.</p>
     </div>
 
     <div class="box">
@@ -186,21 +192,36 @@
       <div class="grid" style="gap:2mm">
         <div>
           <p class="zentral f gross">(a + b)² = a² + 2ab + b²</p>
-          <figure class="m62">[[FIG6]]</figure>
+          <figure class="m62">[[FIG8]]</figure>
           <p class="bu">zwei gleiche Rechtecke ab — daher 2ab</p>
         </div>
         <div>
           <p class="zentral f gross">(a − b)² = a² − 2ab + b²</p>
-          <figure class="m62">[[FIG7]]</figure>
+          <figure class="m62">[[FIG9]]</figure>
           <p class="bu">zwei Streifen ab weg, das Eckquadrat b² dabei zweimal — einmal zurück</p>
         </div>
         <div>
           <p class="zentral f gross">(a + b) · (a − b) = a² − b²</p>
-          <figure class="m80">[[FIG8]]</figure>
+          <figure class="m80">[[FIG10]]</figure>
           <p class="bu">a² ohne b², der Streifen umgelegt: ein Rechteck</p>
         </div>
       </div>
-      <p style="margin-top:0.8mm"><b>Rückwärts:</b> <span class="f">x² + 6x + 9 = (x + 3)²</span>, <span class="f">9x² − 4 = (3x + 2) · (3x − 2)</span>. <b>Im Kopf:</b> <span class="f">51² = 2500 + 100 + 1 = 2601</span>, <span class="f">48 · 52 = 2500 − 4 = 2496</span>.</p>
+      <p style="margin-top:0.8mm"><b>Rückwärts:</b> <span class="f">x² + 6x + 9 = (x + 3)²</span>, <span class="f">9x² − 4 = (3x + 2) · (3x − 2)</span>. <b>Im Kopf:</b> <span class="f">51² = 2500 + 100 + 1 = 2601</span>, <span class="f">48 · 52 = 2500 − 4 = 2496</span>. <b>Mit Minus dazwischen</b> erst in Klammern: <span class="f">(x + 3)² − (x − 3)² = (x² + 6x + 9) − (x² − 6x + 9) = 12x</span>.</p>
+    </div>
+
+    <div class="box warn full">
+      <h2>Typische Fehler</h2>
+      <table>
+        <tr><th>falsch</th><th>richtig</th><th>warum</th></tr>
+        <tr><td class="f">2 · x − 3 für „das Doppelte der um 3 verminderten Zahl“</td><td class="f">2 · (x − 3)</td><td class="l">erst vermindern, dann verdoppeln — die Differenz braucht eine Klammer</td></tr>
+        <tr><td class="f">x + x = x² &nbsp;·&nbsp; 3x + 2 = 5x</td><td class="f">x + x = 2x &nbsp;·&nbsp; 3x + 2 bleibt</td><td class="l">nur gleichartige Glieder lassen sich zusammenfassen</td></tr>
+        <tr><td class="f">5x − (2x − 3) = 3x − 3</td><td class="f">5x − (2x − 3) = 5x − 2x + 3 = 3x + 3</td><td class="l">die Minusklammer dreht <b>jedes</b> Vorzeichen um, nicht nur das erste</td></tr>
+        <tr><td class="f">5x + (2x − 3) = 5x + 2x + 3</td><td class="f">5x + (2x − 3) = 5x + 2x − 3 = 7x − 3</td><td class="l">vor der Klammer steht ein Plus — die Vorzeichen bleiben, wie sie sind</td></tr>
+        <tr><td class="f">3 · (2x + 3) = 6x + 3</td><td class="f">6x + 9</td><td class="l">der Faktor gilt für jedes Glied der Klammer</td></tr>
+        <tr><td class="f">(x + 3) · (x + 2) = x² + 6</td><td class="f">x² + 5x + 6</td><td class="l">die gemischten Produkte fehlen</td></tr>
+        <tr><td class="f">x² − (x + 2) · (x − 3) = x² − x² − x − 6</td><td class="f">x² − (x² − x − 6) = x + 6</td><td class="l">erst das Produkt ausrechnen und in Klammern stehen lassen, dann jedes Vorzeichen umdrehen</td></tr>
+        <tr><td class="f">(a + b)² = a² + b² &nbsp;·&nbsp; (x − 4)² = x² − 8x − 16</td><td class="f">a² + 2ab + b² &nbsp;·&nbsp; x² − 8x + 16</td><td class="l">das doppelte Produkt gehört dazu; b² ist immer positiv</td></tr>
+      </table>
     </div>
 
   </div>
