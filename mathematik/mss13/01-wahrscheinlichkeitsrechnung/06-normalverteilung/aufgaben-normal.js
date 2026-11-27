@@ -622,7 +622,7 @@ function generateK4() {
 
 export const AUFGABEN = [
   { schwierigkeit: "einfach", titel: "Einen Wert standardisieren", abschnitt: "sec-standardisieren", generate: generateE1 },
-  { schwierigkeit: "einfach", titel: "Laplace-Bedingung", abschnitt: "sec-glockenkurve", generate: generateE2 },
+  { schwierigkeit: "einfach", titel: "Laplace-Bedingung", abschnitt: "sec-laplace", generate: generateE2 },
   { schwierigkeit: "einfach", titel: "Ein Wert der Glockenfunktion", abschnitt: "sec-glockenkurve", generate: generateE3 },
   { schwierigkeit: "einfach", titel: "Φ und die Symmetrie", abschnitt: "sec-global", generate: generateE4 },
   { schwierigkeit: "mittel", titel: "Lokale Näherung", abschnitt: "sec-lokal", generate: generateM1 },

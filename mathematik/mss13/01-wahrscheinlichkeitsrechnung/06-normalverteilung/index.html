@@ -30,7 +30,8 @@
     <ul class="lern-intro-list">
       <li>beschreiben, wie sich das Histogramm einer Binomialverteilung mit wachsendem n verändert</li>
       <li>ein Histogramm in drei Schritten <span class="term">standardisieren</span> und zu jedem Wert k den Wert z = <span class="bruch"><span class="z">k − μ</span><span class="n">σ</span></span> angeben</li>
-      <li>die <span class="term">Gaußsche Glockenfunktion</span> φ beschreiben und die <span class="term">Laplace-Bedingung</span> σ &gt; 3 prüfen</li>
+      <li>die <span class="term">Gaußsche Glockenfunktion</span> φ beschreiben</li>
+      <li>begründen, warum die Näherung die <span class="term">Laplace-Bedingung</span> σ &gt; 3 braucht, und sie prüfen</li>
       <li>B(n; p; k) mit der <span class="term">lokalen Näherungsformel</span> von de Moivre und Laplace näherungsweise berechnen</li>
       <li>F(n; p; k) und P(a ≤ X ≤ b) mit der <span class="term">globalen Näherungsformel</span> und der <span class="term">Gaußschen Integralfunktion</span> Φ berechnen — mit Stetigkeitskorrektur</li>
       <li>mit einer <span class="term">normalverteilten</span> Zufallsgröße rechnen und die <span class="term">σ-Regeln</span> anwenden</li>
@@ -38,7 +39,7 @@
     </ul>
     <div class="notation-box">
       <span class="box-label">Schreibweise</span>
-      Für die Binomialverteilung gilt die Schreibweise aus Thema 5, in erster Linie nach <strong>Bigalke/Köhler</strong>: P(X = k) = B(n; p; k) und P(X ≤ k) = F(n; p; k) — in <strong>Fundamente der Mathematik</strong> B<sub>n;p</sub>(k) und F<sub>n;p</sub>(k). Neu kommen zwei Funktionen dazu: <strong>φ</strong> (klein Phi), die Glockenfunktion, und <strong>Φ</strong> (groß Phi), die Fläche unter ihr. μ ist immer der Erwartungswert, σ die Standardabweichung.
+      Für die Binomialverteilung gilt die Schreibweise aus Thema 5: P(X = k) = B(n; p; k) und P(X ≤ k) = F(n; p; k) — in <strong>Fundamente der Mathematik</strong> B<sub>n;p</sub>(k) und F<sub>n;p</sub>(k). Neu kommen zwei Funktionen dazu: <strong>φ</strong> (klein Phi), die Glockenfunktion, und <strong>Φ</strong> (groß Phi), die Fläche unter ihr. μ ist immer der Erwartungswert, σ die Standardabweichung.
     </div>
     <p class="hinweis-box">💡 Du brauchst aus <a href="../05-bernoulli-ketten-binomialverteilung/index.html#sec-kenngroessen">Thema 5</a> die Binomialverteilung mit μ = n · p und σ = √(n · p · (1 − p)), aus der Analysis die <a href="../../../mss11/01-analysis/05-integralrechnung/index.html#sec-integralfunktion">Integralfunktion</a> und die <a href="../../../mss11/01-analysis/03b-weitere-funktionen-ableiten/index.html#sec-ex">e-Funktion</a>.</p>
   </section>
@@ -69,7 +70,7 @@
   <!-- 2. Standardisieren -->
   <section class="card" id="sec-standardisieren">
     <h2>2. Standardisieren in drei Schritten</h2>
-    <p>Bigalke/Köhler legen ein Histogramm in drei Schritten so hin, dass der Erwartungswert bei 0 liegt und die Standardabweichung 1 ist. Jeder Schritt ist eine einfache Abbildung; keine Säule kommt dazu, keine verschwindet. Zieh am Regler „Fortschritt“ langsam von links nach rechts und beobachte die grüne Säule.</p>
+    <p>Ein Histogramm lässt sich in drei Schritten so hinlegen, dass der Erwartungswert bei 0 liegt und die Standardabweichung 1 ist. Jeder Schritt ist eine einfache Abbildung; keine Säule kommt dazu, keine verschwindet. Zieh am Regler „Fortschritt“ langsam von links nach rechts und beobachte die grüne Säule.</p>
     <div class="widget">
       <div class="btn-row">
         <label>n: <input type="range" id="st-n" min="10" max="100" step="5" value="40" style="vertical-align:middle;width:8rem"> <span id="st-n-anzeige" class="wert farbe-blau"></span></label>
@@ -115,7 +116,7 @@
   <!-- 3. Die Glockenkurve -->
   <section class="card" id="sec-glockenkurve">
     <h2>3. Alle standardisierten Histogramme — eine Kurve</h2>
-    <p>Standardisiert man die Histogramme verschiedener Bernoulli-Ketten, liegen sie fast genau übereinander — umso genauer, je größer σ ist. Die gemeinsame Grenzkurve hat Carl Friedrich Gauß genauer untersucht; sie heißt <span class="term">Gaußsche Glockenkurve</span>. Stell unten verschiedene n und p ein.</p>
+    <p>Standardisiert man die Histogramme verschiedener Bernoulli-Ketten, liegen sie fast genau übereinander — umso genauer, je größer σ ist (wie groß es sein muss, klärt Abschnitt 4). Die gemeinsame Grenzkurve hat Carl Friedrich Gauß genauer untersucht; sie heißt <span class="term">Gaußsche Glockenkurve</span>. Stell unten verschiedene n und p ein.</p>
     <div class="widget">
       <div class="btn-row">
         <label>n: <input type="range" id="gl-n" min="10" max="500" step="10" value="20" style="vertical-align:middle;width:10rem"> <span id="gl-n-anzeige" class="wert farbe-blau"></span></label>
@@ -130,19 +131,58 @@
       <div class="formula-block">φ(z) = <span class="bruch gross"><span class="z">1</span><span class="n">√(2π)</span></span> · e<sup>−<span class="bruch"><span class="z">z²</span><span class="n">2</span></span></sup></div>
       φ ist symmetrisch zur y-Achse, hat bei z = 0 ihr Maximum φ(0) = <span class="bruch"><span class="z">1</span><span class="n">√(2π)</span></span> ≈ 0,3989 und bei z = −1 und z = 1 ihre Wendestellen. Für |z| &gt; 4 ist φ(z) kleiner als 0,0002. Der Flächeninhalt unter dem ganzen Graphen ist 1 — so wie die Gesamtfläche jedes standardisierten Histogramms.
     </div>
-    <div class="wissen-box">
-      <span class="box-label">Laplace-Bedingung</span>
-      Das standardisierte Histogramm liegt umso dichter an der Glockenkurve, je größer σ ist. Als Faustregel gilt die Näherung als brauchbar, wenn
-      <div class="formula-block">σ = √(n · p · (1 − p)) &gt; 3</div>
-      Bei p nahe 0 oder 1 ist dafür ein sehr großes n nötig — dort ist das Histogramm schief und braucht länger, bis es symmetrisch aussieht.
-    </div>
     <p class="hinweis-box">💡 Dass die Wendestellen bei ±1 liegen, ergibt die zweite Ableitung — die <a href="../../../mss11/01-analysis/04b-weitere-funktionen-untersuchen/index.html#sec-glocke">Gaußsche Glockenkurve</a> aus der Analysis mit σ = 1. Der Faktor <span class="bruch"><span class="z">1</span><span class="n">√(2π)</span></span> sorgt dafür, dass die Fläche genau 1 ist; beweisen lässt sich das erst mit Mitteln aus dem Studium. Die Darstellung misst die Fläche zwischen −4 und 4 aus.</p>
     <div class="quiz" id="quiz-glockenkurve"></div>
   </section>
 
-  <!-- 4. Lokale Näherungsformel -->
+  <!-- 4. Die Laplace-Bedingung -->
+  <section class="card" id="sec-laplace">
+    <h2>4. Wann passt die Glocke? Die Laplace-Bedingung</h2>
+    <p>In Abschnitt 3 lagen manche Histogramme gut an der Kurve, andere nicht — vor allem bei kleinem n und bei p nahe 0 oder 1. Woran liegt das, und wie groß muss σ sein? Achte unten auf die beiden Marken k = 0 und k = n: Dort hört das standardisierte Histogramm auf. Rechts siehst du für dasselbe p, wie weit die Säulen bei jedem n des Reglers höchstens von der Glocke abweichen.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>n: <input type="range" id="la-n" min="10" max="500" step="10" value="50" style="vertical-align:middle;width:10rem"> <span id="la-n-anzeige" class="wert farbe-blau"></span></label>
+        <label>p: <input type="range" id="la-p" min="0.05" max="0.95" step="0.05" value="0.1" style="vertical-align:middle;width:8rem"> <span id="la-p-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="bk-zwei">
+        <div class="geo-wrap" id="la-mount"></div>
+        <div class="geo-wrap" id="la-abw"></div>
+      </div>
+      <div class="th-bilanz" id="la-bilanz"></div>
+      <div id="la-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Erster Grund: Die Glocke braucht Platz</span>
+      Die Glockenkurve liegt nur zwischen z = −3 und z = 3 deutlich über der Achse: φ(3) ≈ 0,0044 ist gut 1 % von φ(0) ≈ 0,3989. Das standardisierte Histogramm hat aber nur Säulen von k = 0 bis k = n, also von z = <span class="bruch"><span class="z">0 − μ</span><span class="n">σ</span></span> bis z = <span class="bruch"><span class="z">n − μ</span><span class="n">σ</span></span>. Unter der ganzen Glocke stehen nur dann Säulen, wenn
+      <div class="formula-block"><span class="bruch gross"><span class="z">0 − μ</span><span class="n">σ</span></span> ≤ −3 &nbsp; und &nbsp; <span class="bruch gross"><span class="z">n − μ</span><span class="n">σ</span></span> ≥ 3, &nbsp; also &nbsp; μ − 3σ ≥ 0 &nbsp; und &nbsp; μ + 3σ ≤ n.</div>
+      Der Bereich von μ − 3σ bis μ + 3σ muss zwischen 0 und n passen. Sonst ist das Histogramm auf einer Seite abgeschnitten und schief.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Umgeformt — was das für σ heißt</span>
+      μ − 3σ ≥ 0 heißt n · p ≥ 3σ. Beide Seiten sind positiv, also darf man quadrieren: n² · p² ≥ 9 · n · p · (1 − p). Geteilt durch n · p: n · p ≥ 9 · (1 − p). Mal (1 − p): n · p · (1 − p) ≥ 9 · (1 − p)², also σ² ≥ 9 · (1 − p)² und <strong>σ ≥ 3 · (1 − p)</strong>.<br>
+      Genauso wird aus μ + 3σ ≤ n die Bedingung <strong>σ ≥ 3 · p</strong>.<br>
+      p und 1 − p sind beide kleiner als 1. Wer σ &gt; 3 hat, erfüllt deshalb beide Bedingungen — für jedes p.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Zweiter Grund: Die Säulen müssen schmal sein</span>
+      Im standardisierten Histogramm ist jede Säule <span class="bruch"><span class="z">1</span><span class="n">σ</span></span> breit. Bei σ &gt; 3 ist sie schmaler als <span class="bruch"><span class="z">1</span><span class="n">3</span></span>, und die Treppe der Säulen folgt der Kurve fein. Das rechte Bild zeigt es: Mit wachsendem σ wird die größte Abweichung kleiner — bei p nahe 0,5 schon früh, bei p nahe 0 oder 1 erst spät. Für alle Ketten, die die Regler hier einstellen lassen, bleibt sie bei σ &gt; 3 unter 0,03, also unter 8 % der Glockenhöhe φ(0).
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Laplace-Bedingung</span>
+      Die Näherung durch die Glockenkurve gilt als brauchbar, wenn
+      <div class="formula-block">σ = √(n · p · (1 − p)) &gt; 3</div>
+      Dann passt μ ± 3σ sicher zwischen 0 und n, und die Säulen sind schmaler als <span class="bruch"><span class="z">1</span><span class="n">3</span></span>. Die Bedingung ist eine Faustregel: Bei p = 0,5 ist die Näherung auch mit etwas kleinerem σ schon gut, und auch bei σ &gt; 3 bleibt sie eine Näherung.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — nicht n entscheidet, sondern σ</span>
+      Bei n = 100 und p = 0,5 ist σ = 5, die Glocke passt. Bei n = 100 und p = 0,05 ist σ = √4,75 ≈ 2,18 und μ − 3σ ≈ 5 − 6,54 = −1,54 &lt; 0: Links fehlt Platz. Ein großes n hilft erst, wenn es σ über 3 bringt.
+    </div>
+    <div class="quiz" id="quiz-laplace"></div>
+  </section>
+
+  <!-- 5. Lokale Näherungsformel -->
   <section class="card" id="sec-lokal">
-    <h2>4. Die lokale Näherungsformel von de Moivre und Laplace</h2>
+    <h2>5. Die lokale Näherungsformel von de Moivre und Laplace</h2>
     <p>Im standardisierten Histogramm ist die Säule über z<sub>k</sub> genau σ · B(n; p; k) hoch, und sie reicht fast genau bis an die Glockenkurve: σ · B(n; p; k) ≈ φ(z<sub>k</sub>). Teilt man durch σ, macht man Schritt 3 rückgängig — und hat eine Näherung für die Wahrscheinlichkeit selbst. Unten liegt die zurückgerechnete Kurve <span class="bruch"><span class="z">1</span><span class="n">σ</span></span> · φ(<span class="bruch"><span class="z">x − μ</span><span class="n">σ</span></span>) über dem ursprünglichen Histogramm.</p>
     <div class="widget">
       <div class="btn-row">
@@ -172,9 +212,9 @@
     <div class="quiz" id="quiz-lokal"></div>
   </section>
 
-  <!-- 5. Globale Näherungsformel -->
+  <!-- 6. Globale Näherungsformel -->
   <section class="card" id="sec-global">
-    <h2>5. Die globale Näherungsformel: Fläche unter der Glockenkurve</h2>
+    <h2>6. Die globale Näherungsformel: Fläche unter der Glockenkurve</h2>
     <p>Meist ist nicht P(X = k) gesucht, sondern P(X ≤ k) oder P(a ≤ X ≤ b) — eine Summe vieler Säulen. Im standardisierten Histogramm ist das ein <strong>Flächeninhalt</strong>: Jede Säule hat die Fläche B(n; p; k). Diese Säulenfläche ist fast genau die Fläche unter der Glockenkurve — wenn man an der richtigen Stelle aufhört, nämlich am <strong>Rand</strong> der letzten Säule, bei k + 0,5.</p>
     <div class="widget">
       <div class="btn-row">
@@ -220,9 +260,9 @@
     <div class="quiz" id="quiz-global"></div>
   </section>
 
-  <!-- 6. Die Normalverteilung -->
+  <!-- 7. Die Normalverteilung -->
   <section class="card" id="sec-normalverteilung">
-    <h2>6. Die Normalverteilung</h2>
+    <h2>7. Die Normalverteilung</h2>
     <p>Körpergrößen, Messfehler, Abfüllmengen: Viele Größen können jeden Wert in einem Bereich annehmen, nicht nur ganze Zahlen. Ihre Wahrscheinlichkeiten sind Flächen unter einer Kurve, der <span class="term">Dichtefunktion</span>. Oft hat diese Kurve genau die Glockenform — verschoben um μ und gestreckt mit σ, also Schritt 3, 2 und 1 rückwärts. Beispiel: die Körpergröße X (in cm) zufällig ausgewählter Erwachsener, angenommen normalverteilt.</p>
     <div class="widget">
       <div class="btn-row">
@@ -260,14 +300,14 @@
     </div>
     <div class="achtung-box">
       <span class="box-label">Achtung — bei der Normalverteilung keine Stetigkeitskorrektur</span>
-      Die ± 0,5 aus Abschnitt 5 gehören zu den Säulen eines Histogramms. Eine normalverteilte Größe hat keine Säulen: P(X = 180) ist 0, und P(X ≤ 180) = P(X &lt; 180). Gerechnet wird mit <span class="bruch"><span class="z">180 − μ</span><span class="n">σ</span></span>, nicht mit <span class="bruch"><span class="z">180,5 − μ</span><span class="n">σ</span></span>.
+      Die ± 0,5 aus Abschnitt 6 gehören zu den Säulen eines Histogramms. Eine normalverteilte Größe hat keine Säulen: P(X = 180) ist 0, und P(X ≤ 180) = P(X &lt; 180). Gerechnet wird mit <span class="bruch"><span class="z">180 − μ</span><span class="n">σ</span></span>, nicht mit <span class="bruch"><span class="z">180,5 − μ</span><span class="n">σ</span></span>.
     </div>
     <div class="quiz" id="quiz-normalverteilung"></div>
   </section>
 
-  <!-- 7. Rückwärts -->
+  <!-- 8. Rückwärts -->
   <section class="card" id="sec-umkehr">
-    <h2>7. Rückwärts: Gesucht ist eine Grenze</h2>
+    <h2>8. Rückwärts: Gesucht ist eine Grenze</h2>
     <p>Eine Abfüllanlage füllt Packungen, das Füllgewicht X (in g) sei normalverteilt. Welches Gewicht unterschreiten nur 5 % der Packungen? Hier ist die Wahrscheinlichkeit vorgegeben, und gesucht ist die Grenze. Dazu liest man Φ <strong>rückwärts</strong>: Zu welchem z ist Φ(z) = γ?</p>
     <div class="widget">
       <div class="btn-row">
@@ -337,7 +377,8 @@
     <ul class="se-liste" id="se-liste">
       <li data-abschnitt="sec-wachsen">Ich kann beschreiben, wie Lage, Breite und Höhe des Histogramms mit n wachsen und warum es flacher wird.</li>
       <li data-abschnitt="sec-standardisieren">Ich kann die drei Schritte des Standardisierens erklären und z = (k − μ) : σ sowie die Säulenhöhe σ · B(n; p; k) angeben.</li>
-      <li data-abschnitt="sec-glockenkurve">Ich kann φ(z) berechnen, Eigenschaften der Glockenkurve nennen und die Laplace-Bedingung prüfen.</li>
+      <li data-abschnitt="sec-glockenkurve">Ich kann φ(z) berechnen und Eigenschaften der Glockenkurve nennen.</li>
+      <li data-abschnitt="sec-laplace">Ich kann begründen, warum die Näherung σ &gt; 3 braucht, und die Laplace-Bedingung prüfen.</li>
       <li data-abschnitt="sec-lokal">Ich kann B(n; p; k) mit der lokalen Näherungsformel näherungsweise berechnen.</li>
       <li data-abschnitt="sec-global">Ich kann „höchstens“, „mindestens“ und „zwischen“ mit Φ und der Stetigkeitskorrektur näherungsweise berechnen.</li>
       <li data-abschnitt="sec-normalverteilung">Ich kann Wahrscheinlichkeiten einer normalverteilten Größe berechnen und die σ-Regeln anwenden.</li>
@@ -357,6 +398,6 @@
 
 <script src="../../../../assets/lehrkraft.js"></script>
 <script src="../../../../assets/selbsteinschaetzung.js"></script>
-<script type="module" src="lernpfad.js?v=1"></script>
+<script type="module" src="lernpfad.js?v=2"></script>
 </body>
 </html>

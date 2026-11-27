@@ -87,7 +87,7 @@
   <div class="grid">
 
     <div class="box full merk">
-      <h2>Standardisieren in drei Schritten (nach Bigalke/Köhler)</h2>
+      <h2>Standardisieren in drei Schritten</h2>
       <figure>[[FIG1]]</figure>
       <p>X binomialverteilt mit <span class="f">μ = n · p</span>, <span class="f">σ = √(n · p · (1 − p))</span>. Jeder Wert k wird zu <span class="f">z = <span class="bruch"><span class="z">k − μ</span><span class="n">σ</span></span></span>; die Säule darüber ist <span class="f"><span class="bruch"><span class="z">1</span><span class="n">σ</span></span></span> breit und <span class="f">σ · B(n; p; k)</span> hoch, ihre Fläche bleibt <span class="f">B(n; p; k)</span>. <b>Ohne Schritt 3</b> hätten alle Säulen zusammen nur die Fläche <span class="f"><span class="bruch"><span class="z">1</span><span class="n">σ</span></span></span>. Beispiel n = 40, p = 0,5: μ = 20, σ ≈ 3,16; grün die Säule k = 23.</p>
     </div>
@@ -97,7 +97,7 @@
       <p class="zentral f gross">φ(z) = <span class="bruch"><span class="z">1</span><span class="n">√(2π)</span></span> · e<sup>−z²/2</sup></p>
       <figure class="m88">[[FIG2]]</figure>
       <p>Symmetrisch zu 0, Maximum φ(0) ≈ 0,3989, Wendestellen ±1, Fläche unter dem ganzen Graphen 1.</p>
-      <p><b>Laplace-Bedingung:</b> Die Näherungen sind brauchbar, wenn <span class="f">σ &gt; 3</span>.</p>
+      <p><b>Laplace-Bedingung:</b> Die Näherungen sind brauchbar, wenn <span class="f">σ &gt; 3</span> — warum, steht auf Seite 2.</p>
     </div>
 
     <div class="box merk">
@@ -177,6 +177,18 @@
       <p><b>Vorwärts:</b> z auf zwei Stellen runden, Zeile und Spalte suchen.</p>
       <p><b>Rückwärts:</b> im Inneren der Tabelle den Wert suchen, der γ am nächsten kommt; Zeile und Spalte ergeben z.</p>
       <p><b>γ &lt; 0,5:</b> erst 1 − γ suchen, dann das Vorzeichen umdrehen.</p>
+    </div>
+
+    <div class="box full">
+      <h2>Warum <span class="gr">σ</span> &gt; 3? Die Laplace-Bedingung</h2>
+      <div class="zwei" style="grid-template-columns: 31% 1fr">
+        <figure>[[FIG8]]</figure>
+        <div>
+          <p><b>Platz:</b> φ ist außerhalb von −3 … 3 fast 0 (φ(3) ≈ 0,0044, gut 1 % von φ(0)). Das standardisierte Histogramm reicht nur von der Säule k = 0 bei <span class="f">z = −<span class="bruch"><span class="z">μ</span><span class="n">σ</span></span></span> bis zur Säule k = n bei <span class="f">z = <span class="bruch"><span class="z">n − μ</span><span class="n">σ</span></span></span>. Unter der ganzen Glocke stehen nur dann Säulen, wenn <span class="f">μ − 3σ ≥ 0</span> und <span class="f">μ + 3σ ≤ n</span>.</p>
+          <p><b>Umgeformt:</b> <span class="f">μ − 3σ ≥ 0 ⇔ σ ≥ 3 · (1 − p)</span> und <span class="f">μ + 3σ ≤ n ⇔ σ ≥ 3 · p</span>. Weil p und 1 − p kleiner als 1 sind, genügt <b>σ &gt; 3</b> für jedes p.</p>
+          <p><b>Feinheit:</b> Die Säulen sind dann schmaler als 1/3. Die Bedingung ist eine Faustregel — bei p = 0,5 passt die Glocke schon früher.</p>
+        </div>
+      </div>
     </div>
 
   </div>

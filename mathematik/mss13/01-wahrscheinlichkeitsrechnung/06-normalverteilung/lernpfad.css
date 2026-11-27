@@ -518,3 +518,21 @@
 :root[data-theme="dark"] .nv-text.violett { fill: #c4a7ff; }
 :root[data-theme="dark"] .nv-text.blau { fill: #8ab4ff; }
 .nv-xmarke { stroke: var(--text); stroke-width: 1.2; }
+
+/* Abschnitt 4: der Bereich −3 … 3, die Enden des Histogramms, die Schwelle der Abweichung */
+.nv-laplace-band { fill: #1d4ed8; fill-opacity: 0.07; stroke: #1d4ed8; stroke-width: 1; stroke-dasharray: 4 3; }
+.nv-ende { stroke-width: 2.2; stroke-dasharray: 6 3; }
+.nv-ende.ok { stroke: #157347; }
+.nv-ende.eng { stroke: #b3261e; }
+.nv-ende-text { font-size: 12px; font-weight: 800; }
+.nv-ende-text.ok { fill: #157347; }
+.nv-ende-text.eng { fill: #b3261e; }
+.nv-abw-kurve { stroke: #b3650a; }
+.nv-schwelle { stroke: #59636e; stroke-width: 1.2; stroke-dasharray: 3 3; }
+:root[data-theme="dark"] .nv-laplace-band { fill: #8ab4ff; stroke: #8ab4ff; }
+:root[data-theme="dark"] .nv-ende.ok { stroke: #6fd68f; }
+:root[data-theme="dark"] .nv-ende.eng { stroke: #ff8a8a; }
+:root[data-theme="dark"] .nv-ende-text.ok { fill: #6fd68f; }
+:root[data-theme="dark"] .nv-ende-text.eng { fill: #ff8a8a; }
+:root[data-theme="dark"] .nv-abw-kurve { stroke: #ffbf6e; }
+:root[data-theme="dark"] .nv-schwelle { stroke: #9aa4b1; }

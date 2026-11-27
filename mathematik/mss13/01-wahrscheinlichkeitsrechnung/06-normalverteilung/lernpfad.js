@@ -1,16 +1,20 @@
 // Selbstlernpfad „Normalverteilung“ (MSS 13, Wahrscheinlichkeitsrechnung, Thema 6).
 // Rein clientseitiges Vanilla-JS, ohne Build-Schritt.
 //
-// Didaktische Reihenfolge nach Bigalke/Köhler — jede Stufe benutzt nur, was davor steht:
+// Didaktische Reihenfolge — jede Stufe benutzt nur, was davor steht:
 //   1. Histogramme großer Ketten: wandern, breiter, flacher   (Binomialverteilung aus Thema 5)
 //   2. Standardisieren in drei Schritten                     (braucht nur μ und σ aus 1)
 //   3. Die Glockenkurve φ als gemeinsame Grenzkurve           (vergleicht die Ergebnisse von 2)
-//   4. Lokale Näherungsformel                                 (macht Schritt 3 aus 2 rückgängig)
-//   5. Globale Näherungsformel mit Φ                          (Säulenflächen aus 2 als Integral)
-//   6. Normalverteilung, σ-Regeln                             (2 rückwärts auf eine stetige Größe)
-//   7. Φ rückwärts: Grenze, μ oder σ gesucht                  (Umkehrung von 6)
+//   4. Laplace-Bedingung: Platz für μ ± 3σ, schmale Säulen    (Enden k = 0, k = n aus 2; φ aus 3)
+//   5. Lokale Näherungsformel                                 (macht Schritt 3 aus 2 rückgängig)
+//   6. Globale Näherungsformel mit Φ                          (Säulenflächen aus 2 als Integral)
+//   7. Normalverteilung, σ-Regeln                             (2 rückwärts auf eine stetige Größe)
+//   8. Φ rückwärts: Grenze, μ oder σ gesucht                  (Umkehrung von 7)
 //
-// Schreibweise: B(n; p; k) und F(n; p; k) wie in Thema 5 (Bigalke/Köhler), φ und Φ für die
+// Abschnitt 4 begründet σ > 3 ohne die σ-Regeln (die kommen erst in 7): Er braucht nur, dass φ
+// außerhalb von −3 … 3 fast 0 ist — ein Funktionswert, keine Fläche.
+//
+// Schreibweise: B(n; p; k) und F(n; p; k) wie in Thema 5, φ und Φ für die
 // Glockenfunktion und ihre Integralfunktion. Die Übungsaufgaben stehen in aufgaben-normal.js.
 //
 // Gerechnet wird mit den Reglerwerten, nie mit Bildschirmkoordinaten. Die Zeichnungen sind Anzeige:
@@ -21,7 +25,7 @@
 // μ violett, σ und Grenzen rot, Ausgangslage grau gestrichelt.
 
 import { mountUebungsaufgaben } from "../../../aufgaben.js?v=2";
-import { AUFGABEN, parseZahl } from "./aufgaben-normal.js?v=1";
+import { AUFGABEN, parseZahl } from "./aufgaben-normal.js?v=2";
 
 // ---------- Helfer ----------
 
@@ -368,7 +372,7 @@ function renderGlocke() {
   const N = 800;
   for (let i = 0; i < N; i++) { const a = -4 + (8 * i) / N, b = -4 + (8 * (i + 1)) / N; flaecheGl += ((phi(a) + phi(b)) / 2) * (b - a); }
   setzeHtml("gl-bilanz",
-    `${text} — ${laplace(s)}<br>` +
+    `${text}<br>` +
     `Größter Abstand zwischen Säule und Kurve: <strong data-rolle="abw">${num(abw)}</strong><br>` +
     `<span class="wc">Glockenkurve: φ(0) = ${bruch(1, "√(2π)")} ≈ <strong data-rolle="phi0">${num(phi(0))}</strong>, Wendestellen bei −1 und 1 (violett) mit φ(±1) ≈ ${num(phi(1))}</span><br>` +
     `Fläche unter φ von −4 bis 4 (gemessen mit 800 Trapezen): <strong data-rolle="flaeche-phi">${num(flaecheGl)}</strong> — der Rest der Fläche 1 liegt in den beiden Ausläufern.`);
@@ -377,7 +381,90 @@ function renderGlocke() {
     : `Bei σ ${zeichen(s)} ${num(s, 2)} sind die Säulen noch breit und das Histogramm ${Math.abs(p - 0.5) > 0.15 ? "schief" : "kantig"} — der größte Abstand zur Kurve ist ${num(abw, 3)}. Vergrößere n.`);
 }
 
-// ================= 4. Lokale Näherungsformel =================
+// ================= 4. Die Laplace-Bedingung =================
+// Links das standardisierte Histogramm im festen Rahmen −4,5 … 4,5: der Bereich −3 … 3, in dem die
+// Glocke deutlich über der Achse liegt, und die Stellen der Säulen k = 0 und k = n. Rechts die größte
+// Abweichung einer Säule von der Glocke für jedes n des Reglers beim eingestellten p — gerechnet.
+
+const LA_N = Array.from({ length: 50 }, (_, i) => 10 + 10 * i);   // die Rasterwerte des Reglers la-n
+const LA_SCHWELLE = 0.03;   // bei σ > 3 für alle Reglerwerte darunter (die Prüfung rechnet es nach)
+function abweichung(n, p) {
+  const mu = n * p, s = Math.sqrt(n * p * (1 - p));
+  let d = 0, kd = 0;
+  for (let k = 0; k <= n; k++) {
+    const a = Math.abs(s * B(n, p, k) - phi((k - mu) / s));
+    if (a > d) { d = a; kd = k; }
+  }
+  return { d, kd };
+}
+function endMarke(r, z, k, ok, links) {
+  const klasse = `nv-ende ${ok ? "ok" : "eng"}`;
+  if (z >= r.xmin && z <= r.xmax) {
+    senkrechte(r, z, klasse, { "data-rolle": "ende", "data-k": String(k) });
+    // Beschriftung zur Mitte hin versetzt, damit sie nicht über den Rand hinausragt.
+    r.svg.appendChild(svgText(r.X(z) + (links ? 5 : -5), r.Y(r.ymax) + 12, `k = ${k}`, { class: `nv-ende-text ${ok ? "ok" : "eng"}`, "text-anchor": links ? "start" : "end" }));
+  } else {
+    // Außerhalb des Rahmens: ein Pfeil an den Rand, der sagt, wo die Säule steht.
+    const x = links ? r.X(r.xmin) + 4 : r.X(r.xmax) - 4;
+    r.svg.appendChild(svgText(x, r.Y(r.ymax) + 12, links ? `← k = ${k} bei z ≈ ${num(z, 2)}` : `k = ${k} bei z ≈ ${num(z, 2)} →`,
+      { class: `nv-ende-text ${ok ? "ok" : "eng"}`, "text-anchor": links ? "start" : "end", "data-rolle": "ende-aussen", "data-k": String(k) }));
+  }
+}
+function renderLaplace() {
+  const n = reglerZahl("la-n"), p = reglerP("la-p");
+  setzeAnzeige("la-n-anzeige", num(n));
+  setzeAnzeige("la-p-anzeige", num(p, 2));
+  const { mu, s, text } = kenn(n, p);
+  const z0 = (0 - mu) / s, zn = (n - mu) / s;
+  const links = mu - 3 * s, rechts = mu + 3 * s;
+  const okL = links >= 0, okR = rechts <= n;
+  const r = rahmen({ xmin: -4.5, xmax: 4.5, ymax: 0.5, ySchritt: 0.1, xSchritt: 1, nullachse: true, breite: 460, hoehe: 270, xName: "z", yName: "σ · P(X = k), φ(z)" });
+  sigmaBand(r, -3, 3, { class: "nv-laplace-band", "data-rolle": "band" });
+  for (let k = 0; k <= n; k++) {
+    const z = (k - mu) / s;
+    saeule(r, z - 1 / (2 * s), z + 1 / (2 * s), s * B(n, p, k), { class: "bk-saeule", "data-k": String(k) });
+  }
+  kurve(r, phi, -4.5, 4.5, { "data-rolle": "phi" });
+  endMarke(r, z0, 0, okL, true);
+  endMarke(r, zn, n, okR, false);
+  zeige("la-mount", r.svg);
+
+  // Rechts: größte Abweichung über σ, für alle n des Reglers.
+  const q = rahmen({ xmin: 0, xmax: 12, ymax: 0.12, ySchritt: 0.02, xSchritt: 2, breite: 300, hoehe: 270, xName: "σ", yName: "größte Abweichung" });
+  const reihe = LA_N.map((m) => ({ m, s: Math.sqrt(m * p * (1 - p)), ...abweichung(m, p) }));
+  const d = reihe.map((e, i) => `${i ? "L" : "M"} ${q.X(e.s).toFixed(2)} ${q.Y(e.d).toFixed(2)}`).join(" ");
+  q.svg.appendChild(svgEl("path", { d, class: "bk-kurve nv-abw-kurve", "data-rolle": "abw-kurve" }));
+  senkrechte(q, 3, "nv-grenze", { "data-rolle": "sigma-3" });
+  q.svg.appendChild(svgText(q.X(3) + 4, q.Y(q.ymax) + 12, "σ = 3", { class: "nv-text", "text-anchor": "start" }));
+  q.svg.appendChild(svgEl("line", { x1: q.X(0).toFixed(2), x2: q.X(q.xmax).toFixed(2), y1: q.Y(LA_SCHWELLE).toFixed(2), y2: q.Y(LA_SCHWELLE).toFixed(2), class: "nv-schwelle", "data-rolle": "schwelle", "data-wert": String(LA_SCHWELLE) }));
+  q.svg.appendChild(svgText(q.X(q.xmax) - 2, q.Y(LA_SCHWELLE) - 5, num(LA_SCHWELLE, 2), { class: "nv-text", "text-anchor": "end" }));
+  const jetzt = reihe.find((e) => e.m === n);
+  punkt(q, jetzt.s, jetzt.d, "nv-punkt", { "data-rolle": "jetzt" });
+  zeige("la-abw", q.svg);
+
+  const breite = 1 / s, noetig = 3 * Math.max(p, 1 - p);
+  const ja = '<span class="wa">✓</span>', nein = '<span class="wb">✗</span>';
+  setzeHtml("la-bilanz",
+    `${text}<br>` +
+    `Säule k = 0 bei z = ${bruch("0 − " + num(mu), num(s))} ${zeichen(z0)} <strong data-rolle="z0">${num(z0)}</strong>, &nbsp; Säule k = ${n} bei z = ${bruch(n + " − " + num(mu), num(s))} ${zeichen(zn)} <strong data-rolle="zn">${num(zn)}</strong><br>` +
+    `Platz links: μ − 3σ ${zeichen(links)} <strong data-rolle="links">${num(links)}</strong> ${okL ? "≥ 0 " + ja : "&lt; 0 " + nein} &nbsp; Platz rechts: μ + 3σ ${zeichen(rechts)} <strong data-rolle="rechts">${num(rechts)}</strong> ${okR ? `≤ ${n} ` + ja : `&gt; ${n} ` + nein}<br>` +
+    `Für den Platz nötig: σ ≥ 3 · ${num(Math.max(p, 1 - p), 2)} = <strong data-rolle="noetig">${num(noetig)}</strong> &nbsp; Säulenbreite ${bruch(1, "σ")} ${zeichen(breite)} <strong data-rolle="breite">${num(breite)}</strong><br>` +
+    `Größte Abweichung einer Säule von der Glocke: <strong data-rolle="abw">${num(jetzt.d)}</strong> (bei k = <span data-rolle="kabw">${jetzt.kd}</span>) — ${laplace(s)}`);
+  let t;
+  if (!okL || !okR) {
+    const seite = !okL ? "links" : "rechts", zz = !okL ? z0 : zn, kk = !okL ? 0 : n;
+    t = `Zu wenig Platz ${seite}: Die Säule k = ${kk} steht schon bei z ≈ ${num(zz, 2)}, die Glocke reicht aber bis ${!okL ? "−3" : "3"}. Dort fehlen Säulen — das Histogramm ist abgeschnitten und schief. Für den Platz bräuchte es σ ≥ ${num(noetig, 2)}.`;
+  } else if (s <= 3) {
+    t = `Platz ist genug, denn σ ≈ ${num(s, 2)} ≥ ${num(noetig, 2)}. Die Säulen sind aber noch ${num(breite, 2)} breit, die größte Abweichung ist ${num(jetzt.d, 3)}` +
+      (jetzt.d < LA_SCHWELLE ? ` — trotzdem schon klein: Bei p nahe 0,5 passt die Glocke früh.` : ` — noch deutlich.`) +
+      ` Die Laplace-Bedingung σ > 3 ist nicht erfüllt; sie ist eine Faustregel, die für jedes p genügt.`;
+  } else {
+    t = `σ ≈ ${num(s, 2)} > 3: Beide Enden liegen außerhalb von −3 … 3, und die Säulen sind schmaler als 1 : 3. Die größte Abweichung ist nur noch ${num(jetzt.d, 3)}.`;
+  }
+  setzeAnzeige("la-text", t);
+}
+
+// ================= 5. Lokale Näherungsformel =================
 
 function renderLokal() {
   const n = reglerZahl("lo-n"), p = reglerP("lo-p");
@@ -410,7 +497,7 @@ function renderLokal() {
     : `Bei σ ≤ 3 trifft die Kurve die Säulen noch schlecht — vor allem bei p nahe 0 oder 1. Vergrößere n.`);
 }
 
-// ================= 5. Globale Näherungsformel =================
+// ================= 6. Globale Näherungsformel =================
 
 function renderGlobal() {
   const n = reglerZahl("gb-n"), p = reglerP("gb-p"), art = document.getElementById("gb-art").value;
@@ -470,7 +557,7 @@ function renderGlobal() {
     : `Ohne Korrektur endet die Fläche in der Mitte der Randsäulen — je eine halbe Säule fehlt oder ist zu viel. Schalte die Korrektur wieder ein und vergleiche.`);
 }
 
-// ================= 6. Die Normalverteilung =================
+// ================= 7. Die Normalverteilung =================
 
 const NV_RAHMEN = { xmin: 100, xmax: 240, ymax: 0.1, ySchritt: 0.02, xSchritt: 10 };
 function dichte(mu, s) {
@@ -510,7 +597,7 @@ function renderNormal() {
   setzeAnzeige("nv-text", `Zieh an μ: Die Glocke wandert, ohne sich zu verformen. Zieh an σ: Sie wird breiter und dafür flacher — die ganze Fläche bleibt 1. Der Hochpunkt liegt bei ${num(f(mu), 4)} = 1 : (σ · √(2π)).`);
 }
 
-// ================= 7. Rückwärts =================
+// ================= 8. Rückwärts =================
 
 const UK_RAHMEN = { xmin: 440, xmax: 560, ymax: 0.2, ySchritt: 0.05, xSchritt: 10 };
 function renderUmkehr() {
@@ -598,10 +685,16 @@ const QUIZZE = {
     explain: "μ = 50, σ = √(100 · 0,5 · 0,5) = 5. Schritt 1 schiebt 60 nach 60 − 50 = 10, Schritt 2 staucht mit 1/5: z = 10 : 5 = 2. Wer bei 10 stehen bleibt, hat nur verschoben; 0,4 entsteht beim Teilen durch σ² = 25.",
   },
   "quiz-glockenkurve": {
-    q: "Für welche Bernoulli-Kette ist die Laplace-Bedingung σ > 3 erfüllt?",
-    options: ["n = 100, p = 0,05", "n = 30, p = 0,5", "n = 40, p = 0,1", "n = 50, p = 0,5"],
+    q: "In einem standardisierten Histogramm mit großem σ steht eine Säule über z = 1. Wie hoch ist sie ungefähr?",
+    options: ["≈ 0,3989", "≈ 0,8413", "≈ 0,0540", "≈ 0,2420"],
     correct: 3,
-    explain: "σ = √(50 · 0,5 · 0,5) = √12,5 ≈ 3,54 > 3. Bei n = 100 und p = 0,05 ist σ = √4,75 ≈ 2,18 — trotz des großen n, weil p so klein ist. Bei n = 30, p = 0,5 ist σ ≈ 2,74, bei n = 40, p = 0,1 nur σ ≈ 1,90.",
+    explain: "Die Säulen reichen bis an die Glockenkurve, also ist die Höhe φ(1) = 1 : √(2π) · e^(−0,5) ≈ 0,2420. 0,3989 ist φ(0), die Höhe in der Mitte; 0,0540 ist φ(2). 0,8413 ist Φ(1) — eine Fläche, keine Höhe.",
+  },
+  "quiz-laplace": {
+    q: "n = 400, p = 0,02, also μ = 8 und σ = 2,8. Was zeigt das standardisierte Histogramm?",
+    options: ["Links fehlt Platz: Die Säule k = 0 steht schon bei z ≈ −2,86", "Es passt zur Glocke, denn n = 400 ist groß", "Rechts fehlt Platz: Die Säule k = 400 steht bei z ≈ 2,86", "Es passt zur Glocke, denn μ = 8 ist größer als 3"],
+    correct: 0,
+    explain: "μ − 3σ = 8 − 8,4 = −0,4 < 0: Zwischen k = 0 und μ ist weniger als 3σ Platz. Standardisiert steht die Säule k = 0 bei z = −8 : 2,8 ≈ −2,86, links davon liegt die Glocke noch über der Achse, aber es gibt keine Säulen mehr. Rechts ist Platz genug: k = 400 steht bei z = 392 : 2,8 = 140. Nicht n oder μ entscheiden, sondern σ — und σ = 2,8 ≤ 3.",
   },
   "quiz-lokal": {
     q: "n = 400, p = 0,5, also μ = 200 und σ = 10. Welcher Wert nähert B(400; 0,5; 210) an?",
@@ -635,6 +728,7 @@ const REGLER = [
   [["wa-n", "wa-p"], renderWachsen],
   [["st-n", "st-p", "st-k", "st-t"], renderStandardisieren],
   [["gl-n", "gl-p"], renderGlocke],
+  [["la-n", "la-p"], renderLaplace],
   [["lo-n", "lo-p", "lo-k"], renderLokal],
   [["gb-n", "gb-p", "gb-art", "gb-a", "gb-b", "gb-korrektur"], renderGlobal],
   [["nv-mu", "nv-sigma", "nv-art", "nv-a", "nv-b", "nv-regeln"], renderNormal],

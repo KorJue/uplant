@@ -259,9 +259,107 @@ async function glocke(page) {
     for (let k = 0; k <= n; k++) abw = Math.max(abw, Math.abs(s * Bb(n, p, k) - phi((k - mu) / s)));
     pruefe(trifft(await rolle(page, "#gl-bilanz", "abw"), abw) && trifft(await rolle(page, "#gl-bilanz", "phi0"), phi(0))
       && trifft(await rolle(page, "#gl-bilanz", "flaeche-phi"), Phi(4) - Phi(-4)) && trifft(await rolle(page, "#gl-bilanz", "sigma"), s), `${wo}: die Bilanz stimmt nicht`);
-    const laplaceText = await page.evaluate(() => document.getElementById("gl-bilanz").innerText);
-    pruefe(s > 3 ? /σ > 3 ✓/.test(laplaceText) : /nicht erfüllt/.test(laplaceText), `${wo}: die Laplace-Bedingung ist falsch beurteilt (σ = ${s.toFixed(3)})`);
+    const glText = await page.evaluate(() => document.getElementById("sec-glockenkurve").innerText);
+    pruefe(!/Laplace-Bedingung/.test(glText), `${wo}: Abschnitt 3 nennt die Laplace-Bedingung, die erst Abschnitt 4 begründet`);
   }
+}
+
+// ════════════════ 4. Laplace-Bedingung ════════════════
+
+// Größte Abweichung einer standardisierten Säule von φ — mit der eigenen Binomialverteilung.
+function abweichung(n, p) {
+  const mu = n * p, s = Math.sqrt(n * p * (1 - p));
+  let d = 0, kd = 0;
+  for (let k = 0; k <= n; k++) { const a = Math.abs(s * Bb(n, p, k) - phi((k - mu) / s)); if (a > d) { d = a; kd = k; } }
+  return { d, kd };
+}
+async function laplaceTeil(page) {
+  const LA_N = Array.from({ length: 50 }, (_, i) => 10 + 10 * i);
+  // Die Reglergrenzen: genau die Ketten, über die der Text „für alle Ketten der Regler“ spricht.
+  const grenzen = await page.evaluate(() => ["la-n", "la-p"].map((id) => { const e = document.getElementById(id); return [Number(e.min), Number(e.max), Number(e.step)]; }));
+  pruefe(JSON.stringify(grenzen) === "[[10,500,10],[0.05,0.95,0.05]]", `Laplace: die Regler reichen anders als die nachgerechneten Ketten — ${JSON.stringify(grenzen)}`);
+  // Die Behauptungen des Abschnitts, für alle Reglerwerte nachgerechnet:
+  //   σ > 3 ⇒ μ − 3σ ≥ 0 und μ + 3σ ≤ n;  Platz ⇔ σ ≥ 3 · max(p; 1 − p);  σ > 3 ⇒ Abweichung < 0,03.
+  let platzFehler = 0, aequiFehler = 0, schwelleFehler = 0, dMax = 0, hMax = 0;
+  for (let i = 1; i <= 19; i++) {
+    const p = i / 20;
+    for (const n of LA_N) {
+      const mu = n * p, s = Math.sqrt(n * p * (1 - p));
+      const platz = mu - 3 * s >= -1e-12 && mu + 3 * s <= n + 1e-12;
+      if (s > 3 && !platz) platzFehler++;
+      if (platz !== (s >= 3 * Math.max(p, 1 - p) - 1e-12)) aequiFehler++;
+      const { d } = abweichung(n, p);
+      dMax = Math.max(dMax, d);
+      for (let k = 0; k <= n; k++) hMax = Math.max(hMax, s * Bb(n, p, k));
+      if (s > 3 && d >= 0.03) schwelleFehler++;
+    }
+  }
+  pruefe(platzFehler === 0, `Laplace: bei ${platzFehler} Ketten mit σ > 3 passt μ ± 3σ nicht zwischen 0 und n`);
+  pruefe(aequiFehler === 0, `Laplace: bei ${aequiFehler} Ketten stimmt „Platz ⇔ σ ≥ 3 · max(p; 1 − p)“ nicht`);
+  pruefe(schwelleFehler === 0, `Laplace: bei ${schwelleFehler} Ketten mit σ > 3 ist die Abweichung nicht unter 0,03`);
+  pruefe(0.03 / phi(0) < 0.08, "Laplace: 0,03 ist nicht unter 8 % von φ(0)");
+  pruefe(dMax < 0.12 && hMax < 0.5, `Laplace: die Rahmen sind zu klein (Abweichung bis ${dMax.toFixed(4)}, Säulen bis ${hMax.toFixed(4)})`);
+
+  // n = 80, p = 0,1 und 0,9 liegen knapp an der Grenze (μ − 3σ ≈ −0,05, μ + 3σ ≈ n + 0,05): Nur dort
+  // fällt auf, wenn der Platz zu großzügig oder zu streng beurteilt wird.
+  for (const [n, p] of [[50, 0.1], [10, 0.05], [500, 0.05], [20, 0.5], [200, 0.1], [10, 0.95], [500, 0.5], [100, 0.1], [60, 0.85], [80, 0.1], [80, 0.9]]) {
+    await setzeRegler(page, "la-n", n);
+    await setzeRegler(page, "la-p", p);
+    const wo = `Laplace n = ${n}, p = ${p}`;
+    const mu = n * p, s = Math.sqrt(n * p * (1 - p));
+    const z0 = -mu / s, zn = (n - mu) / s, links = mu - 3 * s, rechts = mu + 3 * s;
+    const okL = links >= 0, okR = rechts <= n;
+    // Links: das standardisierte Histogramm, φ, der Bereich −3 … 3 und die Enden.
+    const sv = await liesSvg(page, "la-mount"), w = welt(sv);
+    const sl = saeulen(sv, w, (r) => r.k !== undefined);
+    const schief = sl.filter((r) => { const k = Number(r.k), z = (k - mu) / s; return !nahe(r.x0, z - 0.5 / s, 2e-3) || !nahe(r.x1, z + 0.5 / s, 2e-3) || !nahe(r.hoehe, s * Bb(n, p, k), 3e-4); });
+    pruefe(sl.length > 0 && schief.length === 0, `${wo}: ${schief.length} standardisierte Säulen stimmen nicht`);
+    const imRahmen = [];
+    for (let k = 0; k <= n; k++) { const z = (k - mu) / s; if (z - 0.5 / s >= -4.5 - 1e-9 && z + 0.5 / s <= 4.5 + 1e-9) imRahmen.push(k); }
+    pruefe(sl.length === imRahmen.length, `${wo}: ${sl.length} Säulen gezeichnet, ${imRahmen.length} liegen im Rahmen`);
+    pruefeKurve(pfadPunkte(sv.pfade.find((x) => x.rolle === "phi"), w), phi, wo, "φ");
+    const band = saeulen(sv, w, (r) => r.rolle === "band");
+    pruefe(band.length === 1 && nahe(band[0].x0, -3, 2e-3) && nahe(band[0].x1, 3, 2e-3), `${wo}: der Bereich −3 … 3 ist falsch eingezeichnet`);
+    const enden = await page.evaluate(() => [...document.querySelectorAll('#la-mount [data-rolle="ende"]')].map((l) => ({ k: Number(l.dataset.k), x: Number(l.getAttribute("x1")), klasse: l.getAttribute("class") })));
+    const aussen = await page.evaluate(() => [...document.querySelectorAll('#la-mount [data-rolle="ende-aussen"]')].map((t) => ({ k: Number(t.dataset.k), text: t.textContent, klasse: t.getAttribute("class") })));
+    for (const [k, z, ok] of [[0, z0, okL], [n, zn, okR]]) {
+      const im = Math.abs(z) <= 4.5;
+      const l = enden.find((e) => e.k === k), a = aussen.find((e) => e.k === k);
+      if (im) pruefe(!!l && nahe(w.X(l.x), z, 2e-3) && l.klasse.includes(ok ? "ok" : "eng"), `${wo}: die Marke k = ${k} steht nicht bei z = ${z.toFixed(3)} oder ist falsch gefärbt`);
+      else pruefe(!!a && a.text.includes(de(z, 2)) && a.klasse.includes(ok ? "ok" : "eng"), `${wo}: der Hinweis auf k = ${k} außerhalb (z ≈ ${de(z, 2)}) fehlt oder stimmt nicht — „${a && a.text}“`);
+    }
+    // Rechts: größte Abweichung für jedes n des Reglers, über σ aufgetragen.
+    const q = await liesSvg(page, "la-abw"), wq = welt(q);
+    const pts = pfadPunkte(q.pfade.find((x) => x.rolle === "abw-kurve"), wq);
+    const falsch = pts.filter(([x, y], i) => { const m = LA_N[i]; return !nahe(x, Math.sqrt(m * p * (1 - p)), 0.01) || !nahe(y, abweichung(m, p).d, 3e-4); });
+    pruefe(pts.length === LA_N.length && falsch.length === 0, `${wo}: ${falsch.length} von ${pts.length} Punkten der Abweichungskurve stimmen nicht`);
+    const jetzt = q.punkte.find((x) => x.rolle === "jetzt"), dJ = abweichung(n, p);
+    pruefe(!!jetzt && nahe(wq.X(jetzt.x), s, 0.01) && nahe(wq.Y(jetzt.y), dJ.d, 3e-4), `${wo}: der Punkt für das eingestellte n steht falsch`);
+    const s3 = q.linien.find((x) => x.rolle === "sigma-3");
+    pruefe(!!s3 && nahe(wq.X(s3.x), 3, 0.01), `${wo}: die Linie σ = 3 steht falsch`);
+    const schwelle = await page.evaluate(() => { const l = document.querySelector('#la-abw [data-rolle="schwelle"]'); return l && Number(l.getAttribute("y1")); });
+    pruefe(schwelle !== null && nahe(wq.Y(schwelle), 0.03, 3e-4), `${wo}: die Linie 0,03 steht falsch`);
+    // Bilanz und Text.
+    const B_ = (r) => rolle(page, "#la-bilanz", r);
+    const soll = { mu, sigma: s, z0, zn, links, rechts, noetig: 3 * Math.max(p, 1 - p), breite: 1 / s, abw: dJ.d };
+    for (const [r, v] of Object.entries(soll)) pruefe(trifft(await B_(r), v), `${wo}: in der Bilanz ist ${r} = ${await B_(r)}, nachgerechnet ${v.toFixed(5)}`);
+    pruefe(Number(await B_("kabw")) === dJ.kd, `${wo}: die größte Abweichung liegt bei k = ${dJ.kd}, nicht bei ${await B_("kabw")}`);
+    const bil = await page.evaluate(() => document.getElementById("la-bilanz").innerText);
+    pruefe((okL ? /≥ 0 ✓/ : /< 0 ✗/).test(bil) && (okR ? new RegExp(`≤ ${n} ✓`) : new RegExp(`> ${n} ✗`)).test(bil), `${wo}: der Platz ist in der Bilanz falsch beurteilt`);
+    pruefe(s > 3 ? /σ > 3 ✓/.test(bil) : /nicht erfüllt/.test(bil), `${wo}: die Laplace-Bedingung ist falsch beurteilt (σ = ${s.toFixed(3)})`);
+    const t = await text(page, "#la-text");
+    const fall = !okL || !okR ? /^Zu wenig Platz (links|rechts)/ : s <= 3 ? /^Platz ist genug/ : /^σ ≈ .* > 3: Beide Enden/;
+    pruefe(fall.test(t), `${wo}: der Text beschreibt den falschen Fall — „${t.slice(0, 80)}“`);
+    if (!okL || !okR) pruefe(t.includes(!okL ? "links" : "rechts") && t.includes(de(!okL ? z0 : zn, 2)), `${wo}: der Text nennt die falsche Seite oder Stelle`);
+    if (okL && okR && s <= 3) pruefe(/trotzdem schon klein/.test(t) === (dJ.d < 0.03), `${wo}: der Text beurteilt die Abweichung ${dJ.d.toFixed(4)} falsch`);
+  }
+  // Die Zahlen im Text des Abschnitts.
+  const tl = await page.evaluate(() => document.getElementById("sec-laplace").innerText);
+  pruefe(tl.includes(`φ(3) ≈ ${de(phi(3))}`) && tl.includes(`φ(0) ≈ ${de(phi(0))}`) && phi(3) / phi(0) > 0.01 && phi(3) / phi(0) < 0.0125, "Laplace: φ(3), φ(0) oder „gut 1 %“ stimmen nicht");
+  // Die Schwelle im Text ist dieselbe, die oben für alle Reglerwerte nachgerechnet wurde.
+  pruefe(tl.includes("bleibt sie bei σ > 3 unter 0,03, also unter 8 % der Glockenhöhe φ(0)"), "Laplace: die Aussage über die Schwelle 0,03 fehlt oder ist verändert");
+  const s05 = Math.sqrt(100 * 0.05 * 0.95);
+  pruefe(tl.includes(`σ = √${de(100 * 0.05 * 0.95)} ≈ ${de(s05, 2)}`) && tl.includes(`μ − 3σ ≈ 5 − ${de(3 * s05, 2)} = ${de(5 - Number((3 * s05).toFixed(2)), 2)}`) && tl.includes("n = 100 und p = 0,5 ist σ = " + de(Math.sqrt(25))), "Laplace: das Achtung-Beispiel rechnet falsch");
 }
 
 // ════════════════ 4. Lokale Näherung ════════════════
@@ -427,15 +525,16 @@ async function umkehr(page) {
 
 async function quizze(page) {
   const ids = await page.evaluate(() => [...document.querySelectorAll(".quiz[id]")].map((q) => q.id));
-  pruefe(ids.length === 7, `Kontrollfragen: ${ids.length} statt 7`);
+  pruefe(ids.length === 8, `Kontrollfragen: ${ids.length} statt 8`);
   const ohne = await page.evaluate(() => [...document.querySelectorAll("main section.card[id]")].filter((s) => s.querySelector(".widget") && !s.querySelector(".quiz")).map((s) => s.id));
   pruefe(ohne.length === 0, `Kontrollfragen: Abschnitte ohne Kontrollfrage — ${ohne.join(", ")}`);
   // Was richtig ist, wird hier nachgerechnet — nicht aus der Seite übernommen.
-  const sigmaAus = (o) => { const m = o.match(/n = (\d+), p = (\S+)/); return m ? Math.sqrt(+m[1] * zahl(m[2]) * (1 - zahl(m[2]))) : NaN; };
   const RICHTIG = {
     "quiz-wachsen": (o) => /verdoppelt/.test(o),
     "quiz-standardisieren": (o) => o === "z = " + de((60 - 50) / 5),
-    "quiz-glockenkurve": (o) => sigmaAus(o) > 3,
+    "quiz-glockenkurve": (o) => nahe(zahl(o.replace(/[^\d,]/g, "")), phi(1), 5e-5),
+    // n = 400, p = 0,02: σ = 2,8, μ − 3σ < 0 — links fehlt Platz, k = 0 steht bei −μ/σ.
+    "quiz-laplace": (o) => Math.sqrt(400 * 0.02 * 0.98) <= 3 && 8 - 3 * 2.8 < 0 && o.startsWith("Links") && o.includes(de(-8 / Math.sqrt(400 * 0.02 * 0.98), 2)),
     "quiz-lokal": (o) => nahe(zahl(o), phi(1) / 10, 5e-5),
     "quiz-global": (o) => o === `Φ(${de((55.5 - 50) / 5)})`,
     "quiz-normalverteilung": (o) => nahe(zahl(o.replace(/[^\d,]/g, "")) / 100, Phi(1) - Phi(-1), 6e-4),
@@ -463,8 +562,8 @@ async function selbsteinschaetzung(page) {
   await page.evaluate(() => { for (const k of Object.keys(localStorage)) if (/^uplant-(selbsteinschaetzung|lernstand):/.test(k)) localStorage.removeItem(k); });
   await page.reload({ waitUntil: "networkidle" });
   const zeilen = await page.locator("#se-liste .se-zeile").count();
-  pruefe(zeilen === 7, `Selbsteinschätzung: ${zeilen} Punkte statt 7 (einer je Abschnitt)`);
-  await page.locator("#se-liste .se-zeile").nth(4).locator("button").nth(2).click();
+  pruefe(zeilen === 8, `Selbsteinschätzung: ${zeilen} Punkte statt 8 (einer je Abschnitt)`);
+  await page.locator("#se-liste .se-zeile").nth(5).locator("button").nth(2).click();
   const ziel = await page.evaluate(() => { const a = document.querySelector("#se-auswertung a"); return a && a.getAttribute("href"); });
   pruefe(ziel === "#sec-global", `Selbsteinschätzung: der Verweis führt nach ${ziel} statt #sec-global`);
   await page.evaluate(() => { for (const k of Object.keys(localStorage)) if (/^uplant-(selbsteinschaetzung|lernstand):/.test(k)) localStorage.removeItem(k); });
@@ -682,15 +781,17 @@ async function aufgaben(page) {
 
 async function geruest(page) {
   const folge = await page.evaluate(() => [...document.querySelectorAll("main section[id]")].map((s) => s.id));
-  const soll = ["sec-wachsen", "sec-standardisieren", "sec-glockenkurve", "sec-lokal", "sec-global", "sec-normalverteilung", "sec-umkehr",
+  const soll = ["sec-wachsen", "sec-standardisieren", "sec-glockenkurve", "sec-laplace", "sec-lokal", "sec-global", "sec-normalverteilung", "sec-umkehr",
     "sec-vernetzung", "sec-formelsammlung", "sec-uebungen", "sec-selbsteinschaetzung"];
   pruefe(JSON.stringify(folge) === JSON.stringify(soll), `Gerüst: die Abschnitte stehen in der Reihenfolge ${folge.join(", ")}`);
-  // Nummern der Überschriften 1 bis 7, in der Reihenfolge der Seite.
+  // Nummern der Überschriften 1 bis 8, in der Reihenfolge der Seite.
   const nummern = await page.evaluate(() => [...document.querySelectorAll("main section[id] > h2")].map((h) => (h.textContent.match(/^(\d+)\./) || [])[1]).filter(Boolean).map(Number));
-  pruefe(JSON.stringify(nummern) === "[1,2,3,4,5,6,7]", `Gerüst: die Abschnitte sind ${nummern.join(", ")} nummeriert`);
+  pruefe(JSON.stringify(nummern) === "[1,2,3,4,5,6,7,8]", `Gerüst: die Abschnitte sind ${nummern.join(", ")} nummeriert`);
   const haupt = await page.evaluate(() => document.querySelector("main").innerText);
-  for (const s of ["B(n; p; k)", "F(n; p; k)", "Bn;p(k)", "Bigalke/Köhler", "Fundamente", "Laplace-Bedingung", "Stetigkeitskorrektur", "de Moivre"]) pruefe(haupt.includes(s), `Gerüst: „${s}“ fehlt`);
-  // Das Beispiel in Abschnitt 2 und 4 rechnet richtig: B(100; 0,5; 55), σ · B, φ(1) : 5.
+  for (const s of ["B(n; p; k)", "F(n; p; k)", "Bn;p(k)", "Fundamente", "Laplace-Bedingung", "Stetigkeitskorrektur", "de Moivre"]) pruefe(haupt.includes(s), `Gerüst: „${s}“ fehlt`);
+  // Vorgabe des Projektinhabers: Die Seite nennt Bigalke/Köhler nicht im Text.
+  pruefe(!/Bigalke|Köhler/.test(haupt), "Gerüst: die Seite nennt Bigalke/Köhler im Text");
+  // Das Beispiel in Abschnitt 2 und 5 rechnet richtig: B(100; 0,5; 55), σ · B, φ(1) : 5.
   const b2 = await page.evaluate(() => document.querySelector("#sec-standardisieren .beispiel-box").innerText);
   const B55 = Bb(100, 0.5, 55);
   // Jede Aussage einzeln: Eine Zahl, die irgendwo im Kasten vorkommt, belegt nichts.
@@ -702,7 +803,7 @@ async function geruest(page) {
   pruefe(aussage(/Fläche wieder 0,2 · (\d,\d+)/) === de(H) && aussage(/Fläche wieder 0,2 · \d,\d+ ≈ (\d,\d+)/) === de(0.2 * zahl(de(H))), "Gerüst: Beispiel Abschnitt 2 — Fläche nach Schritt 3 falsch");
   pruefe(aussage(/Also: z = (\d+), Höhe/) === "1" && aussage(/Höhe ≈ (\d,\d+)/) === de(H), "Gerüst: Beispiel Abschnitt 2 — Ergebnis falsch");
   const b4 = await page.evaluate(() => document.querySelector("#sec-lokal .beispiel-box").innerText);
-  pruefe(b4.includes(de(phi(1))) && b4.includes(de(Math.round(phi(1) * 1e4) / 1e4 / 5)) && b4.includes(de(B55)), "Gerüst: das Beispiel in Abschnitt 4 rechnet falsch");
+  pruefe(b4.includes(de(phi(1))) && b4.includes(de(Math.round(phi(1) * 1e4) / 1e4 / 5)) && b4.includes(de(B55)), "Gerüst: das Beispiel in Abschnitt 5 rechnet falsch");
   // Die σ-Regeln und Φ-Werte im Text.
   const t6 = await page.evaluate(() => document.getElementById("sec-normalverteilung").innerText);
   for (const m of [1, 2, 3]) pruefe(t6.includes(de((Phi(m) - Phi(-m)) * 100, 1) + " %"), `Gerüst: die σ-Regel für ${m}σ ist falsch angegeben`);
@@ -737,9 +838,11 @@ async function geruest(page) {
     pruefe(!!box && Number(box[1]) > Number(box[2]), "Formelsammlung: nicht im Querformat");
   }
   const quelle = fs.readFileSync(path.join(WURZEL, "tools/formelsammlung/formelsammlung-nv-quelle.html"), "utf8").replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/\s+/g, " ");
-  for (const f of ["Φ((k + 0,5 − μ) : σ)", "1 − Φ((k − 0,5 − μ) : σ)", "Φ((b + 0,5 − μ) : σ) − Φ((a − 0,5 − μ) : σ)", "Φ(−z) = 1 − Φ(z)", "σ > 3", "c = μ + z · σ", "Keine Stetigkeitskorrektur"]) {
+  for (const f of ["Φ((k + 0,5 − μ) : σ)", "1 − Φ((k − 0,5 − μ) : σ)", "Φ((b + 0,5 − μ) : σ) − Φ((a − 0,5 − μ) : σ)", "Φ(−z) = 1 − Φ(z)", "σ > 3", "c = μ + z · σ", "Keine Stetigkeitskorrektur",
+    "μ − 3σ ≥ 0 ⇔ σ ≥ 3 · (1 − p)", "μ + 3σ ≤ n ⇔ σ ≥ 3 · p", "φ(3) ≈ " + de(phi(3))]) {
     pruefe(quelle.includes(f), `Formelsammlung: „${f}“ fehlt in der Quelle des PDFs`);
   }
+  pruefe(!/Bigalke|Köhler/.test(quelle), "Formelsammlung: die Quelle nennt Bigalke/Köhler");
 }
 
 // ════════════════ Ablauf ════════════════
@@ -760,6 +863,7 @@ async function teil(name, fn, page) {
       await teil("wachsen", wachsen, page);
       await teil("standardisieren", standardisieren, page);
       await teil("glocke", glocke, page);
+      await teil("laplace", laplaceTeil, page);
       await teil("lokal", lokal, page);
       await teil("global", global, page);
       await teil("normal", normal, page);

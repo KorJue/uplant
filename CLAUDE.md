@@ -45,7 +45,13 @@ den letzten Seiten“ heißt: alles davon. Fehlt ein Punkt, ist die Seite nicht 
 * **Inhalt wie im Lehrbuch**, in einer Reihenfolge ohne Vorgriff (§ 1) und ohne Stoff aus späteren
   Jahrgängen. Für MSS 13 (Stochastik) gilt die Darstellung und Schreibweise von **Bigalke/Köhler**
   in erster Linie, die von **Fundamente der Mathematik** daneben, wo sie abweicht (Kasten
-  `notation-box`, z. B. B(n; p; k) neben B<sub>n;p</sub>(k)).
+  `notation-box`, z. B. B(n; p; k) neben B<sub>n;p</sub>(k)). Die Seite **nennt Bigalke/Köhler
+  nicht** im Text — kein „Bigalke/Köhler legen … hin“, auch nicht in der Formelsammlung (Vorgabe
+  des Projektinhabers; in den Hinweisen für Lehrkräfte steht das Buch unter „Literatur“).
+* **Regeln werden begründet, nicht gesetzt.** Eine Bedingung wie die Laplace-Bedingung σ > 3 bekommt
+  ihren eigenen beweglichen Abschnitt, der zeigt, *warum* sie gilt (Normalverteilung, Abschnitt 4:
+  μ ± 3σ muss zwischen 0 und n passen, umgeformt σ ≥ 3 · p und σ ≥ 3 · (1 − p)) — und die Prüfung
+  rechnet die Begründung für alle Reglerwerte nach.
 * **Jede Herleitung beweglich** und kleinschrittig (§ 2): Regler, die eine Bewegung Schritt für
   Schritt durchfahren, eine Bilanz, die jede Zwischenstellung nachrechnet, und ein Text, der sagt,
   was gerade geschieht. Zahlen in Bilanzen und Beschriftungen tragen **die Stellenzahl, mit der
