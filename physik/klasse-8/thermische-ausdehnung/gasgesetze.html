@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gasgesetze</title>
+<script src="../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../assets/site.css">
+<link rel="stylesheet" href="../../../mathematik/aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../index.html">2 Physik</a><span class="sep">/</span>
+  <a href="../index.html">Klasse 8</a><span class="sep">/</span>
+  <a href="index.html">Thermische Ausdehnung</a><span class="sep">/</span>
+  3. Gasgesetze
+</nav>
+<header class="page-header">
+  <h1>Gasgesetze</h1>
+  <p>Ein Selbstlernpfad: Gase bei gleichem Druck, gleicher Temperatur und gleichem Volumen, die Kelvin-Skala und die allgemeine Gasgleichung — mit Kontrollfragen und acht Übungsaufgaben.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Ein Ballon in der Sonne wird größer, eine zugehaltene Luftpumpe lässt sich kaum zusammendrücken, ein Reifen hat nach der Fahrt mehr Druck. Gase dehnen sich viel stärker aus als feste Körper und Flüssigkeiten — und ihr Verhalten folgt erstaunlich einfachen Gesetzen. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>das Gesetz von <span class="term">Gay-Lussac</span> anwenden und Temperaturen in <span class="term">Kelvin</span> umrechnen</li>
+      <li>das Gesetz von <span class="term">Boyle-Mariotte</span> anwenden</li>
+      <li>das Gesetz von <span class="term">Amontons</span> anwenden</li>
+      <li>die <span class="term">allgemeine Gasgleichung</span> aus den drei Gasgesetzen herleiten und anwenden</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst das <a href="aggregatzustaende.html#sec-teilchen">Teilchenmodell</a> aus Thema 1, Kelvin als Einheit einer Temperaturdifferenz aus <a href="laengenausdehnung.html#sec-messung">Thema 2</a> und <a href="../../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-proportional">proportionale</a> und <a href="../../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-antiproportional">antiproportionale Zuordnungen</a>.</p>
+  </section>
+
+  <!-- 1. Gay-Lussac -->
+  <section class="card" id="sec-gay-lussac">
+    <h2>1. Gase bei gleichem Druck: Gesetz von Gay-Lussac und Kelvin-Skala</h2>
+    <p>Ein Gas ist in einem Zylinder mit einem leicht beweglichen Kolben eingeschlossen. Der Kolben drückt immer gleich stark, der Druck bleibt also gleich. Bei 0 °C nimmt das Gas 1 Liter ein. Ändere die Temperatur und beobachte das Volumen.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Temperatur ϑ: <input type="range" id="gl-theta" min="-100" max="200" step="5" value="100" style="vertical-align:middle;width:14rem"> <span id="gl-theta-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="th-wrap" id="gl-mount"></div>
+      <div class="th-bilanz" id="gl-bilanz"></div>
+      <div id="gl-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Gesetz von Gay-Lussac</span>
+      Bei gleichem Druck ändert sich das Volumen eines Gases je Kelvin um <span class="bruch"><span class="z">1</span><span class="n">273,15</span></span> seines Volumens bei 0 °C — bei <em>allen</em> Gasen gleich. Verlängert man die Gerade nach links, wäre das Volumen bei <strong>−273,15 °C</strong> null. Kälter geht es nicht: Das ist der <strong>absolute Nullpunkt</strong>.
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Die Kelvin-Skala</span>
+      Die absolute Temperatur T beginnt am absoluten Nullpunkt und hat dieselben Schritte wie die Celsius-Skala:
+      <div class="formula-block">T = ϑ + 273,15 K &nbsp;&nbsp;&nbsp; 0 °C = 273,15 K &nbsp;&nbsp;&nbsp; 20 °C = 293,15 K &nbsp;&nbsp;&nbsp; 0 K = −273,15 °C</div>
+      Mit T in Kelvin wird das Gesetz von Gay-Lussac einfach: Bei gleichem Druck ist das Volumen proportional zur absoluten Temperatur,
+      <div class="formula-block"><span class="bruch gross"><span class="z">V</span><span class="n">T</span></span> = konstant, &nbsp; also &nbsp; <span class="bruch gross"><span class="z">V<sub>1</sub></span><span class="n">T<sub>1</sub></span></span> = <span class="bruch gross"><span class="z">V<sub>2</sub></span><span class="n">T<sub>2</sub></span></span> &nbsp;&nbsp; (p konstant)</div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Durchgerechnet — ein Luftballon in der Sonne</span>
+      Ein Ballon enthält bei 20 °C 3,0 l Luft und wird in der Sonne 50 °C warm; der Druck bleibt gleich. T<sub>1</sub> = 293,15 K, T<sub>2</sub> = 323,15 K:<br>
+      V<sub>2</sub> = V<sub>1</sub> · <span class="bruch"><span class="z">T<sub>2</sub></span><span class="n">T<sub>1</sub></span></span> = 3,0 l · <span class="bruch"><span class="z">323,15 K</span><span class="n">293,15 K</span></span> ≈ 3,31 l.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — in Gasgesetzen immer Kelvin</span>
+      Mit Grad Celsius ginge die Rechnung schief: Von 20 °C auf 40 °C verdoppelt sich die Celsius-Zahl, das Volumen aber wächst nur um den Faktor 313,15 : 293,15 ≈ 1,07. Bei Temperaturdifferenzen (ΔT) ist es dagegen gleich, ob man in °C oder K rechnet.
+    </div>
+    <div class="quiz" id="quiz-gay-lussac"></div>
+  </section>
+
+  <!-- 2. Boyle-Mariotte -->
+  <section class="card" id="sec-boyle">
+    <h2>2. Gase bei gleicher Temperatur: Gesetz von Boyle-Mariotte</h2>
+    <p>Jetzt bleibt die Temperatur gleich, und der Kolben wird hineingedrückt oder herausgezogen — wie bei einer Luftpumpe mit zugehaltener Öffnung. Am Anfang sind 2,0 l Luft bei 1,0 bar eingeschlossen. Das Rechteck im Diagramm hat den Flächeninhalt p · V.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Volumen V: <input type="range" id="bm-v" min="0.5" max="4" step="0.1" value="1" style="vertical-align:middle;width:14rem"> <span id="bm-v-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="th-wrap" id="bm-mount"></div>
+      <div class="th-bilanz" id="bm-bilanz"></div>
+      <div id="bm-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Gesetz von Boyle-Mariotte</span>
+      Bei gleicher Temperatur ist der Druck eines Gases umgekehrt proportional zu seinem Volumen: halbes Volumen, doppelter Druck.
+      <div class="formula-block">p · V = konstant, &nbsp; also &nbsp; p<sub>1</sub> · V<sub>1</sub> = p<sub>2</sub> · V<sub>2</sub> &nbsp;&nbsp; (T konstant)</div>
+      Im p-V-Diagramm liegen alle Zustände auf einer Hyperbel; die Rechtecke unter ihr haben alle denselben Flächeninhalt.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Durchgerechnet — die zugehaltene Luftpumpe</span>
+      2,0 l Luft bei 1,0 bar werden auf 0,5 l zusammengedrückt:<br>
+      p<sub>2</sub> = <span class="bruch"><span class="z">p<sub>1</sub> · V<sub>1</sub></span><span class="n">V<sub>2</sub></span></span> = <span class="bruch"><span class="z">1,0 bar · 2,0 l</span><span class="n">0,5 l</span></span> = 4,0 bar. Ein Viertel des Volumens, viermal der Druck.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — umgekehrt, nicht gleich</span>
+      Wird das Volumen kleiner, steigt der Druck. Wer p<sub>2</sub> = p<sub>1</sub> · <span class="bruch"><span class="z">V<sub>2</sub></span><span class="n">V<sub>1</sub></span></span> rechnet, bekommt beim Zusammendrücken einen kleineren Druck heraus — das kann nicht stimmen.
+    </div>
+    <div class="quiz" id="quiz-boyle"></div>
+  </section>
+
+  <!-- 3. Amontons -->
+  <section class="card" id="sec-amontons">
+    <h2>3. Gase bei gleichem Volumen: Gesetz von Amontons</h2>
+    <p>Eine fest verschlossene Dose kann sich nicht ausdehnen, das Volumen bleibt gleich. Bei 20 °C herrscht in ihr ein Druck von 1,0 bar. Was geschieht mit dem Druck, wenn die Dose erwärmt oder abgekühlt wird?</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Temperatur ϑ: <input type="range" id="am-theta" min="-50" max="250" step="5" value="100" style="vertical-align:middle;width:14rem"> <span id="am-theta-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="th-wrap" id="am-mount"></div>
+      <div class="th-bilanz" id="am-bilanz"></div>
+      <div id="am-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Gesetz von Amontons</span>
+      Bei gleichem Volumen ist der Druck eines Gases proportional zur absoluten Temperatur:
+      <div class="formula-block"><span class="bruch gross"><span class="z">p</span><span class="n">T</span></span> = konstant, &nbsp; also &nbsp; <span class="bruch gross"><span class="z">p<sub>1</sub></span><span class="n">T<sub>1</sub></span></span> = <span class="bruch gross"><span class="z">p<sub>2</sub></span><span class="n">T<sub>2</sub></span></span> &nbsp;&nbsp; (V konstant)</div>
+      Im Teilchenbild: Schnellere Teilchen prallen häufiger und heftiger gegen die Wände. Manche Bücher nennen dieses Gesetz auch das zweite Gesetz von Gay-Lussac.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Durchgerechnet — eine Spraydose im Auto</span>
+      Eine Spraydose hat bei 20 °C einen Druck von 3,0 bar. Im Auto wird sie im Sommer 60 °C heiß:<br>
+      p<sub>2</sub> = p<sub>1</sub> · <span class="bruch"><span class="z">T<sub>2</sub></span><span class="n">T<sub>1</sub></span></span> = 3,0 bar · <span class="bruch"><span class="z">333,15 K</span><span class="n">293,15 K</span></span> ≈ 3,41 bar. Deshalb steht auf Spraydosen: vor Erwärmung über 50 °C schützen.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Celsius führt in die Irre</span>
+      Bei 0 °C ist der Druck nicht null, und von 20 °C auf 40 °C verdoppelt er sich nicht. Proportional ist der Druck zur Temperatur in Kelvin: Die Gerade im Diagramm geht durch den absoluten Nullpunkt.
+    </div>
+    <div class="quiz" id="quiz-amontons"></div>
+  </section>
+
+  <!-- 4. Allgemeine Gasgleichung -->
+  <section class="card" id="sec-gasgleichung">
+    <h2>4. Die allgemeine Gasgleichung</h2>
+    <p>Meist ändern sich Druck, Volumen und Temperatur gleichzeitig — beim Wetterballon, der aufsteigt, oder bei der Luft im Motor. Dann hilft ein Trick: Man geht vom Anfangszustand 1 zum Endzustand 2 in zwei Schritten, bei denen jeweils eine Größe gleich bleibt. Stell den Endzustand ein und zieh dann am Regler „Weg“.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>V<sub>2</sub>: <input type="range" id="gg-v2" min="1" max="3" step="0.1" value="1.5" style="vertical-align:middle;width:9rem"> <span id="gg-v2-anzeige" class="wert farbe-blau"></span></label>
+        <label>ϑ<sub>2</sub>: <input type="range" id="gg-theta2" min="-20" max="120" step="5" value="80" style="vertical-align:middle;width:9rem"> <span id="gg-theta2-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>Weg: <input type="range" id="gg-s" min="0" max="200" step="5" value="0" style="vertical-align:middle;width:16rem"> <span id="gg-s-anzeige" class="wert"></span></label>
+      </div>
+      <ol class="ta-schritte" id="gg-schritte">
+        <li data-schritt="1">Schritt 1: Temperatur bleibt T<sub>1</sub>, Volumen von V<sub>1</sub> auf V<sub>2</sub> (Boyle-Mariotte)</li>
+        <li data-schritt="2">Schritt 2: Volumen bleibt V<sub>2</sub>, Temperatur von T<sub>1</sub> auf T<sub>2</sub> (Amontons)</li>
+      </ol>
+      <div class="th-wrap" id="gg-mount"></div>
+      <div class="th-bilanz" id="gg-bilanz"></div>
+      <div id="gg-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Herleitung in zwei Schritten</span>
+      Anfang: p<sub>1</sub>, V<sub>1</sub>, T<sub>1</sub>. Ende: p<sub>2</sub>, V<sub>2</sub>, T<sub>2</sub>. Dazwischen ein Zwischenzustand mit dem Druck p*.<br>
+      <strong>Schritt 1</strong> (T bleibt T<sub>1</sub>, Boyle-Mariotte): p<sub>1</sub> · V<sub>1</sub> = p* · V<sub>2</sub>, also p* = <span class="bruch"><span class="z">p<sub>1</sub> · V<sub>1</sub></span><span class="n">V<sub>2</sub></span></span>.<br>
+      <strong>Schritt 2</strong> (V bleibt V<sub>2</sub>, Amontons): <span class="bruch"><span class="z">p*</span><span class="n">T<sub>1</sub></span></span> = <span class="bruch"><span class="z">p<sub>2</sub></span><span class="n">T<sub>2</sub></span></span>, also p<sub>2</sub> = p* · <span class="bruch"><span class="z">T<sub>2</sub></span><span class="n">T<sub>1</sub></span></span> = <span class="bruch"><span class="z">p<sub>1</sub> · V<sub>1</sub></span><span class="n">V<sub>2</sub></span></span> · <span class="bruch"><span class="z">T<sub>2</sub></span><span class="n">T<sub>1</sub></span></span>.<br>
+      Beide Seiten mit <span class="bruch"><span class="z">V<sub>2</sub></span><span class="n">T<sub>2</sub></span></span> malnehmen:
+      <div class="formula-block"><span class="bruch gross"><span class="z">p<sub>1</sub> · V<sub>1</sub></span><span class="n">T<sub>1</sub></span></span> = <span class="bruch gross"><span class="z">p<sub>2</sub> · V<sub>2</sub></span><span class="n">T<sub>2</sub></span></span> &nbsp;&nbsp; oder &nbsp;&nbsp; <span class="bruch gross"><span class="z">p · V</span><span class="n">T</span></span> = konstant</div>
+      Das ist die <strong>allgemeine Gasgleichung</strong> für eine abgeschlossene Gasmenge. Bleibt T gleich, wird daraus Boyle-Mariotte; bleibt p gleich, Gay-Lussac; bleibt V gleich, Amontons.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Durchgerechnet — der Wetterballon</span>
+      Am Boden: 4,0 m³ Helium bei 1,0 bar und 15 °C. In 10 km Höhe: 0,26 bar und −50 °C. T<sub>1</sub> = 288,15 K, T<sub>2</sub> = 223,15 K:<br>
+      V<sub>2</sub> = V<sub>1</sub> · <span class="bruch"><span class="z">p<sub>1</sub></span><span class="n">p<sub>2</sub></span></span> · <span class="bruch"><span class="z">T<sub>2</sub></span><span class="n">T<sub>1</sub></span></span> = 4,0 m³ · <span class="bruch"><span class="z">1,0 bar</span><span class="n">0,26 bar</span></span> · <span class="bruch"><span class="z">223,15 K</span><span class="n">288,15 K</span></span> ≈ 11,91 m³. Trotz der Kälte ist der Ballon fast dreimal so groß.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Reihenfolge der Schritte ist beliebig</span>
+      Man könnte auch erst die Temperatur bei gleichem Volumen ändern und dann das Volumen bei gleicher Temperatur — der Zwischenzustand wäre ein anderer, das Ergebnis dasselbe. Die Gleichung gilt nur, solange kein Gas entweicht oder dazukommt und es nicht flüssig wird.
+    </div>
+    <div class="quiz" id="quiz-gasgleichung"></div>
+  </section>
+
+  <!-- Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>5. Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Dem <a href="aggregatzustaende.html#sec-teilchen">Teilchenmodell</a> aus Thema 1 — schnellere Teilchen treffen häufiger und heftiger auf die Wände.</li>
+      <li><strong>Baut auf:</strong> <a href="laengenausdehnung.html#sec-volumen">Der Volumenausdehnung</a> aus Thema 2 — Gase dehnen sich je Kelvin um 1 : 273,15 aus, rund 3,7 ml je Liter, also mehr als dreimal so stark wie Ethanol und hundertmal so stark wie Stahl.</li>
+      <li><strong>Baut auf:</strong> <a href="../../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-proportional">Proportionalen</a> und <a href="../../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-antiproportional">antiproportionalen Zuordnungen</a> — V und p wachsen proportional zu T; p und V sind bei gleicher Temperatur antiproportional.</li>
+      <li><strong>Gleiche Struktur:</strong> Die Herleitung der allgemeinen Gasgleichung zerlegt eine schwierige Änderung in zwei einfache, bei denen jeweils nur zwei Größen wechseln — so, wie man eine Gleichung Schritt für Schritt umformt.</li>
+      <li><strong>Führt weiter zu:</strong> Der inneren Energie und Wärmekraftmaschinen wie dem Verbrennungsmotor, in denen ein Gas Druck, Volumen und Temperatur in einem Kreislauf ändert.</li>
+    </ul>
+  </section>
+
+  <!-- Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>6. Formelsammlung</h2>
+    <p>Die Formelsammlung gilt für alle drei Seiten der Einheit: Teilchenmodell, Übergänge und Erwärmungskurve, Bindungsenergie, Längen- und Volumenänderung mit Tabellen, Bimetall, Kelvin-Skala, die drei Gasgesetze und die allgemeine Gasgleichung — mit gerechneten Bildern, auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>7. Übungsaufgaben</h2>
+    <p>Acht Aufgaben auf vier Stufen, je zwei auf jeder. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu. Tipps gibt es auf Knopfdruck, nach dem Prüfen steht die Musterlösung darunter.</p>
+    <p class="progress-note">Gib Zahlen mit Komma ein, zum Beispiel 3,41. Eine Einheit dahinter darf stehen; gerechnet wird in der Einheit, die in der Aufgabe genannt ist.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste" id="se-liste">
+      <li data-abschnitt="sec-gay-lussac">Ich kann Temperaturen in Kelvin umrechnen und das Gesetz von Gay-Lussac anwenden.</li>
+      <li data-abschnitt="sec-boyle">Ich kann das Gesetz von Boyle-Mariotte anwenden.</li>
+      <li data-abschnitt="sec-amontons">Ich kann das Gesetz von Amontons anwenden.</li>
+      <li data-abschnitt="sec-gasgleichung">Ich kann die allgemeine Gasgleichung aus den drei Gasgesetzen herleiten und anwenden.</li>
+    </ul>
+    <div class="se-auswertung event-result" id="se-auswertung" aria-live="polite"></div>
+  </section>
+
+  <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
+  <section class="card" data-lehrkraft="gasgesetze-lehrkraefte.html" hidden></section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="index.html">Zurück zu Thermische Ausdehnung</a></p>
+  <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script src="../../../assets/lehrkraft.js"></script>
+<script src="../../../assets/selbsteinschaetzung.js"></script>
+<script type="module" src="gasgesetze.js?v=1"></script>
+</body>
+</html>

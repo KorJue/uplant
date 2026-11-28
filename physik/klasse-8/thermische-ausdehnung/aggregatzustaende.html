@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aggregatzustände</title>
+<script src="../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../assets/site.css">
+<link rel="stylesheet" href="../../../mathematik/aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../index.html">2 Physik</a><span class="sep">/</span>
+  <a href="../index.html">Klasse 8</a><span class="sep">/</span>
+  <a href="index.html">Thermische Ausdehnung</a><span class="sep">/</span>
+  1. Aggregatzustände
+</nav>
+<header class="page-header">
+  <h1>Aggregatzustände</h1>
+  <p>Ein Selbstlernpfad: fest, flüssig und gasförmig im Teilchenmodell, die Übergänge zwischen ihnen, die Erwärmungskurve von Wasser und die Bindungsenergie — mit Kontrollfragen und acht Übungsaufgaben.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Eis schmilzt, Wasser kocht, Dampf kondensiert an der kalten Scheibe. Was dabei mit den Teilchen geschieht und wohin die Energie geht, die man zuführt, ist der Anfang der ganzen Wärmelehre — und der Schlüssel dazu, warum sich Stoffe beim Erwärmen ausdehnen. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>die drei <span class="term">Aggregatzustände</span> im Teilchenmodell beschreiben — und was sich ändert, wenn es wärmer wird</li>
+      <li>die <span class="term">Übergänge</span> zwischen den Aggregatzuständen benennen, die Erwärmungskurve von Wasser lesen und mit der Energie je Kilogramm rechnen</li>
+      <li>mit der <span class="term">Bindungsenergie</span> erklären, warum die Temperatur beim Schmelzen und Sieden stehen bleibt und warum sich Stoffe ausdehnen</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst <a href="../../../mathematik/grundwissen-5-10/01-groessen-und-rechnen/01-natuerliche-zahlen-und-groessen/index.html#sec-groessen">Größen und ihre Einheiten</a>, <a href="../../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-proportional">proportionale Zuordnungen</a> und die Temperatur in Grad Celsius.</p>
+  </section>
+
+  <!-- 1. Teilchenmodell -->
+  <section class="card" id="sec-teilchen">
+    <h2>1. Fest, flüssig, gasförmig — im Teilchenmodell</h2>
+    <p>Jeder Stoff besteht aus winzigen Teilchen, die sich ständig bewegen. Unten siehst du Wasser in allen drei Aggregatzuständen, jeweils bei zwei Temperaturen: links kälter, rechts wärmer. Drück auf ▶ oder zieh am Regler „Zeit“ und vergleiche die Bewegung.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <button type="button" class="btn" id="tc-play">▶ Abspielen</button>
+        <label>Zeit: <input type="range" id="tc-t" min="0" max="600" step="1" value="0" style="vertical-align:middle;width:14rem"> <span id="tc-t-anzeige" class="wert"></span></label>
+      </div>
+      <div class="th-wrap" id="tc-mount"></div>
+      <div class="th-bilanz" id="tc-bilanz"></div>
+      <div id="tc-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Die drei Aggregatzustände im Teilchenmodell</span>
+      <strong>Fest:</strong> Die Teilchen sitzen auf festen Plätzen in einem regelmäßigen Gitter und schwingen um diese Plätze hin und her. Der Körper behält seine Form.<br>
+      <strong>Flüssig:</strong> Die Teilchen liegen dicht beieinander, aber ungeordnet, und gleiten aneinander vorbei. Die Flüssigkeit nimmt die Form des Gefäßes an, ihr Volumen bleibt.<br>
+      <strong>Gasförmig:</strong> Die Teilchen sind weit voneinander entfernt und fliegen frei durch den Raum, bis sie an eine Wand oder ein anderes Teilchen stoßen. Das Gas füllt jeden Raum aus.<br>
+      <strong>Wärmer heißt schneller:</strong> In jedem Aggregatzustand bewegen sich die Teilchen umso heftiger, je höher die Temperatur ist.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — die Teilchen selbst werden nicht größer</span>
+      Wenn sich ein Körper beim Erwärmen ausdehnt, wachsen nicht die Teilchen. Sie bewegen sich heftiger und brauchen dadurch mehr Platz — ihr <em>Abstand</em> wird größer. Warum das so ist, zeigt Abschnitt 3; wie man es berechnet, Thema 2 „Längenausdehnung“.
+    </div>
+    <div class="quiz" id="quiz-teilchen"></div>
+  </section>
+
+  <!-- 2. Übergänge -->
+  <section class="card" id="sec-uebergaenge">
+    <h2>2. Übergänge zwischen den Aggregatzuständen</h2>
+    <p>Ein Kilogramm Eis von −20 °C wird gleichmäßig erwärmt, bis Wasserdampf von 120 °C entsteht. Mit dem Regler führst du Energie zu. Beobachte, wann die Temperatur steigt — und wann nicht.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>zugeführte Energie Q: <input type="range" id="ue-q" min="0" max="3091" step="1" value="0" style="vertical-align:middle;width:16rem"> <span id="ue-q-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="th-wrap" id="ue-mount"></div>
+      <div class="th-bilanz" id="ue-bilanz"></div>
+      <div id="ue-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Die Übergänge</span>
+      <table class="ta-tabelle">
+        <tr><th>von</th><th>nach</th><th>Energie zuführen</th><th>Energie abgeben</th></tr>
+        <tr><td>fest</td><td>flüssig</td><td><strong>Schmelzen</strong></td><td><strong>Erstarren</strong> (flüssig → fest)</td></tr>
+        <tr><td>flüssig</td><td>gasförmig</td><td><strong>Verdampfen</strong> (Sieden, Verdunsten)</td><td><strong>Kondensieren</strong> (gasförmig → flüssig)</td></tr>
+        <tr><td>fest</td><td>gasförmig</td><td><strong>Sublimieren</strong></td><td><strong>Resublimieren</strong> (gasförmig → fest)</td></tr>
+      </table>
+      Bei Wasser liegt die <strong>Schmelztemperatur</strong> bei 0 °C und die <strong>Siedetemperatur</strong> bei 100 °C (bei normalem Luftdruck). Während ein Stoff schmilzt oder siedet, bleibt seine Temperatur gleich, obwohl weiter Energie zugeführt wird.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Energie je Kilogramm</span>
+      <table class="ta-tabelle">
+        <tr><th>für 1 kg</th><th>Eis erwärmen</th><th>schmelzen</th><th>Wasser erwärmen</th><th>verdampfen</th><th>Dampf erwärmen</th></tr>
+        <tr><td>Energie</td><td>2,1 kJ je K</td><td>334 kJ</td><td>4,19 kJ je K</td><td>2256 kJ</td><td>2,0 kJ je K</td></tr>
+      </table>
+      Die Energie ist proportional zur Masse: Für 3 kg braucht man dreimal so viel. Beim Erstarren und Kondensieren wird genauso viel Energie wieder frei, wie das Schmelzen und Verdampfen gebraucht hat.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Abgelesen — wie viel Energie wofür?</span>
+      Für 1 kg: Eis von −20 °C auf 0 °C: 42 kJ. Schmelzen: 334 kJ. Wasser von 0 °C auf 100 °C: 419 kJ. Verdampfen: 2256 kJ. Dampf von 100 °C auf 120 °C: 40 kJ.<br>
+      Das Verdampfen braucht mehr als fünfmal so viel Energie wie das Erwärmen von 0 °C auf 100 °C.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Energie zuführen heißt nicht immer wärmer werden</span>
+      Auf den waagerechten Stücken der Kurve steigt die Temperatur nicht. Die Energie geht trotzdem nicht verloren: Sie wird gebraucht, um die Teilchen voneinander zu lösen. Beim Erstarren und Kondensieren wird genau diese Energie wieder frei.
+    </div>
+    <div class="quiz" id="quiz-uebergaenge"></div>
+  </section>
+
+  <!-- 3. Bindungsenergie -->
+  <section class="card" id="sec-bindung">
+    <h2>3. Bindungsenergie — warum Stoffe sich ausdehnen</h2>
+    <p>Benachbarte Teilchen ziehen sich an, kommen sie sich zu nahe, stoßen sie sich ab. Das Bild zeigt die Energie zweier Teilchen in Abhängigkeit von ihrem Abstand r — eine <span class="term">Energiemulde</span>. In Ruhe liegt Teilchen B im tiefsten Punkt, beim Abstand r<sub>0</sub>. Führst du Energie zu, schwingt es zwischen zwei Umkehrpunkten hin und her.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>zugeführte Energie: <input type="range" id="bi-w" min="0" max="1.3" step="0.01" value="0.2" style="vertical-align:middle;width:14rem"> <span id="bi-w-anzeige" class="wert farbe-orange"></span></label>
+      </div>
+      <div class="th-wrap" id="bi-mount"></div>
+      <div class="th-bilanz" id="bi-bilanz"></div>
+      <div id="bi-text" class="event-result"></div>
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Bindungsenergie</span>
+      Die <strong>Bindungsenergie</strong> E<sub>B</sub> ist die Energie, die man zwei gebundenen Teilchen mindestens zuführen muss, um sie voneinander zu trennen — die Tiefe der Energiemulde. Je größer sie ist, desto mehr Energie braucht ein Stoff zum Schmelzen und Verdampfen und desto höher liegen Schmelz- und Siedetemperatur.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Warum sich Stoffe beim Erwärmen ausdehnen</span>
+      Die Mulde ist nicht symmetrisch: Links steigt sie steil an (die Teilchen stoßen sich ab), rechts flach (die Anziehung lässt langsam nach). Je mehr Energie die Teilchen haben, desto weiter schwingen sie — nach außen aber weiter als nach innen. Die Mitte zwischen den Umkehrpunkten wandert nach außen: <strong>Der mittlere Abstand wächst, der Stoff dehnt sich aus.</strong>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — im Bild übertrieben</span>
+      Die Energiemulde ist ein Modell. In Wirklichkeit wächst der Abstand der Teilchen in Stahl bei 100 K Erwärmung nur um etwa 1,2 Tausendstel (Thema 2) — im Bild sieht man stattdessen, <em>dass</em> und <em>warum</em> er wächst.
+    </div>
+    <div class="quiz" id="quiz-bindung"></div>
+  </section>
+
+  <!-- Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>4. Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Dem Teilchenmodell aus dem naturwissenschaftlichen Unterricht — hier um die Temperatur als Maß für die Teilchenbewegung und die Bindungsenergie erweitert.</li>
+      <li><strong>Baut auf:</strong> <a href="../../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-proportional">Proportionalen Zuordnungen</a> — doppelte Masse, doppelte Energie zum Schmelzen.</li>
+      <li><strong>Führt weiter zu:</strong> <a href="laengenausdehnung.html">Thema 2 „Längenausdehnung“</a> — wie stark sich ein Stab beim Erwärmen verlängert, und warum der mittlere Teilchenabstand dabei wächst.</li>
+      <li><strong>Führt weiter zu:</strong> <a href="gasgesetze.html">Thema 3 „Gasgesetze“</a> — im gasförmigen Zustand hängen Druck, Volumen und Temperatur besonders einfach zusammen.</li>
+    </ul>
+  </section>
+
+  <!-- Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>5. Formelsammlung</h2>
+    <p>Die Formelsammlung gilt für alle drei Seiten der Einheit: Teilchenmodell, Übergänge und Erwärmungskurve, Bindungsenergie, Längen- und Volumenänderung mit Tabellen, Bimetall, Kelvin-Skala, die drei Gasgesetze und die allgemeine Gasgleichung — mit gerechneten Bildern, auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>6. Übungsaufgaben</h2>
+    <p>Acht Aufgaben auf vier Stufen, je zwei auf jeder. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu. Tipps gibt es auf Knopfdruck, nach dem Prüfen steht die Musterlösung darunter.</p>
+    <p class="progress-note">Gib Zahlen mit Komma ein, zum Beispiel 3,41. Eine Einheit dahinter darf stehen; gerechnet wird in der Einheit, die in der Aufgabe genannt ist.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste" id="se-liste">
+      <li data-abschnitt="sec-teilchen">Ich kann die drei Aggregatzustände im Teilchenmodell beschreiben und sagen, was sich beim Erwärmen ändert.</li>
+      <li data-abschnitt="sec-uebergaenge">Ich kann die Übergänge benennen, die Erwärmungskurve von Wasser lesen und mit der Energie je Kilogramm rechnen.</li>
+      <li data-abschnitt="sec-bindung">Ich kann mit der Bindungsenergie erklären, warum die Temperatur beim Schmelzen und Sieden stehen bleibt und warum sich Stoffe ausdehnen.</li>
+    </ul>
+    <div class="se-auswertung event-result" id="se-auswertung" aria-live="polite"></div>
+  </section>
+
+  <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
+  <section class="card" data-lehrkraft="aggregatzustaende-lehrkraefte.html" hidden></section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="index.html">Zurück zu Thermische Ausdehnung</a></p>
+  <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script src="../../../assets/lehrkraft.js"></script>
+<script src="../../../assets/selbsteinschaetzung.js"></script>
+<script type="module" src="aggregatzustaende.js?v=2"></script>
+</body>
+</html>

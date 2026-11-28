@@ -15,6 +15,7 @@ nach, bevor er etwas erfindet:
 | Terme (Klasse 8, fünf Seiten, Kachelmodell, Termeingabe) | `mathematik/klasse-8/terme/` |
 | Körper (Klasse 8, fünf Seiten, Raumpunkte, Schrägbild, Netze, Zylinder) | `mathematik/klasse-8/koerper/` |
 | Normalverteilung (MSS 13, nach Bigalke/Köhler, Standardisieren als durchgehende Bewegung, Φ-Tabelle) | `mathematik/mss13/01-wahrscheinlichkeitsrechnung/06-normalverteilung/` |
+| Thermische Ausdehnung (Physik, Klasse 8, drei Seiten: Aggregatzustände mit Teilchenmodell und Energiemulde, Längenausdehnung aus der Messreihe mit Fuge und Bimetall, Gasgesetze bis zur allgemeinen Gasgleichung in zwei Schritten) | `physik/klasse-8/thermische-ausdehnung/` |
 
 ## Arbeitsablauf für eine neue Seite
 
@@ -45,7 +46,13 @@ den letzten Seiten“ heißt: alles davon. Fehlt ein Punkt, ist die Seite nicht 
 * **Inhalt wie im Lehrbuch**, in einer Reihenfolge ohne Vorgriff (§ 1) und ohne Stoff aus späteren
   Jahrgängen. Für MSS 13 (Stochastik) gilt die Darstellung und Schreibweise von **Bigalke/Köhler**
   in erster Linie, die von **Fundamente der Mathematik** daneben, wo sie abweicht (Kasten
-  `notation-box`, z. B. B(n; p; k) neben B<sub>n;p</sub>(k)).
+  `notation-box`, z. B. B(n; p; k) neben B<sub>n;p</sub>(k)). Die Seite **nennt Bigalke/Köhler
+  nicht** im Text — kein „Bigalke/Köhler legen … hin“, auch nicht in der Formelsammlung (Vorgabe
+  des Projektinhabers; in den Hinweisen für Lehrkräfte steht das Buch unter „Literatur“).
+* **Regeln werden begründet, nicht gesetzt.** Eine Bedingung wie die Laplace-Bedingung σ > 3 bekommt
+  ihren eigenen beweglichen Abschnitt, der zeigt, *warum* sie gilt (Normalverteilung, Abschnitt 4:
+  μ ± 3σ muss zwischen 0 und n passen, umgeformt σ ≥ 3 · p und σ ≥ 3 · (1 − p)) — und die Prüfung
+  rechnet die Begründung für alle Reglerwerte nach.
 * **Jede Herleitung beweglich** und kleinschrittig (§ 2): Regler, die eine Bewegung Schritt für
   Schritt durchfahren, eine Bilanz, die jede Zwischenstellung nachrechnet, und ein Text, der sagt,
   was gerade geschieht. Zahlen in Bilanzen und Beschriftungen tragen **die Stellenzahl, mit der
@@ -406,6 +413,27 @@ sind gegeben oder „gemessen“, Radien werden nie aus Flächen oder Volumen zu
 bräuchte die Quadratwurzel). Gemeinsam ist auch die Formelsammlung (`formelsammlung.pdf`, Präfix
 `kp`).
 
+Die **Physikseiten** (`physik/`, bisher Klasse 8: die Einheit Thermische Ausdehnung mit drei Seiten) sind Lernpfade nach demselben
+Bauplan und derselben Arbeitsanweisung wie die Mathematikseiten: Kontrollfrage je Abschnitt, Vernetzung,
+Formelsammlung als gerechnetes PDF, acht Übungsaufgaben über `mountUebungsaufgaben()`, Selbsteinschätzung,
+Hinweise für Lehrkräfte (dort mit dem Lehrplan Physik und den Bildungsstandards Physik), Menükarten mit
+`data-section="physik"`. Eine Einheit steht in einem eigenen Ordner mit Menü (`thermische-ausdehnung/index.html`)
+und teilt sich `seite.js` (eine Kopie von `koerper/seite.js` mit Einheiten der Wärmelehre in `parseZahl()`:
+°C, K, bar, l, mm³, kg, min, mm/(m·K) …), `gemeinsam.js` (Konstanten, Diagramme mit `data-wert`/`data-wert-x`,
+Zylinder), `lernpfad.css` und die Formelsammlung (`formelsammlung.pdf`, Präfix `ta`). Die Seiten bauen der
+Reihe nach aufeinander auf: 1 Aggregatzustände (Teilchenmodell, Übergänge, Energiemulde), 2 Längenausdehnung
+(Messreihe → ΔL ~ ΔT, Meterstücke → ΔL ~ L₀, α, rückwärts, Dehnungsfuge, Bimetall, Thermometer),
+3 Gasgesetze. `test-lehrkraft.js`, `test-aufgaben-abschnitte.js` und `test-selbsteinschaetzung.js` finden die
+Physikseiten selbst; die fachlichen Prüfungen stehen in `tests/physik/` (eine je Seite) und teilen
+`tests/lib/physik.js` (eigene Tabellenwerte, SVG lesen, Messuhr, Kontrollfragen, Gerüst, Ablauf). Dort gilt
+besonders § 1: Modelle (Teilchenbewegung, Energiemulde) dürfen vereinfachen, aber was sie zeigen, muss stimmen
+— die Teilchen bewegen sich im Verhältnis der wirklichen mittleren Geschwindigkeiten, und was übertrieben
+gezeichnet ist (Verlängerung 100-fach, Bimetallkrümmung 5-fach), sagt die Zeichnung dazu; der Ausschnitt der
+Dehnungsfuge ist maßstäblich. Der Bimetallkontakt sitzt auf einer Feder und folgt der Spitze bis zum
+Anschlag — so zeigt das Bild „geschlossen“ nie mit einer Lücke. Die Kelvin-Skala entsteht erst aus dem Gesetz
+von Gay-Lussac (Thema 3); vorher ist Kelvin nur die Einheit einer Temperaturdifferenz, und die Prüfungen der
+Themen 1 und 2 verlangen, dass dort weder „273“ noch „absolute“ steht.
+
 Ebenfalls geteilt ist `mathematik/terme.js`: die **Termaufgaben** (Ableitung,
 f′ und f″, Stammfunktion als Term eintippen) mit beliebig vielen Funktionen.
 Eine Funktion wird aus Gliedern zusammengesetzt (`pot`, `trig`, `kette`,
@@ -552,8 +580,8 @@ Quelle stillschweigend ungeprüfter Neuerungen:
 * `test-seiten-gesamt.js` und `test-alle-themen.js` lesen das Dateisystem
   (`tests/lib/themen.js`). Ein neues Grundwissen-Thema wird dadurch
   **automatisch** mitgeprüft — es muss die Zusagen also von Anfang an erfüllen.
-  Ebenso `test-aufgaben-abschnitte.js` (jede Seite mit `#exercises-mount`) und
-  `test-selbsteinschaetzung.js` (Grundwissen, MSS, die Term- und Körperseiten der Klasse 8; die
+  Ebenso `test-aufgaben-abschnitte.js` (jede Seite mit `#exercises-mount` unter `mathematik/` und `physik/`) und
+  `test-selbsteinschaetzung.js` (Grundwissen, MSS, die Term- und Körperseiten der Klasse 8, die Physikseiten der Klasse 8; die
   Geometrieseiten der Klasse 8 per Liste).
 * `test-vollbild.js` dagegen führt seine Seiten in einer **fest verdrahteten
   Liste** `SEITEN` samt Knopf- und SVG-Kennung. Eine neue Geometrieseite mit

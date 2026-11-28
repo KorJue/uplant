@@ -263,7 +263,49 @@ def tabelle_quantile():
     return '<table class="quantile">' + kopf + zeile + symm + "</table>"
 
 
-FIGUREN = [fig_standardisieren, fig_phi, fig_lokal, fig_global, fig_sigma, tabelle_phi, tabelle_quantile]
+# ---------- Figur 8: Warum σ > 3? Platz für μ ± 3σ zwischen 0 und n ----------
+
+def fig_laplace():
+    B_, H_ = 300.0, 92.0
+    setze_flaeche(B_, H_)
+    t = []
+    # Für alle Ketten bis n = 500 und p in Zwanzigstelschritten: Platz ⇔ σ ≥ 3 · max(p; 1 − p),
+    # und σ > 3 sichert den Platz — die Behauptungen des Kastens, nachgerechnet.
+    for i in range(1, 20):
+        q = i / 20
+        for m in range(10, 501, 10):
+            mu_, s_ = m * q, math.sqrt(m * q * (1 - q))
+            platz = mu_ - 3 * s_ >= -1e-12 and mu_ + 3 * s_ <= m + 1e-12
+            assert platz == (s_ >= 3 * max(q, 1 - q) - 1e-12), f"Laplace: Äquivalenz falsch bei n = {m}, p = {q}"
+            assert not (s_ > 3 and not platz), f"Laplace: σ > 3 ohne Platz bei n = {m}, p = {q}"
+    assert 0.01 < phi(3) / phi(0) < 0.0125, "φ(3) ist nicht „gut 1 %“ von φ(0)"
+    for nr, (n, p) in enumerate([(50, 0.1), (200, 0.1)]):
+        mu, s = n * p, math.sqrt(n * p * (1 - p))
+        z0 = -mu / s
+        ok = mu - 3 * s >= 0
+        assert ok == (nr == 1), "Laplace: das linke Bild soll ohne, das rechte mit Platz sein"
+        r = Rahmen(14.0 + nr * 148.0, 16.0, 128.0, 56.0, -4.5, 4.5, 0.45)
+        t += r.achsen([-3, 0, 3], "z")
+        # Der Bereich −3 … 3, in dem die Glocke deutlich über der Achse liegt.
+        t.append(rect(r.X(-3), r.Y(0.45), r.X(3) - r.X(-3), r.Y(0) - r.Y(0.45), BLAU, BLAU, 0.5, 0.06)
+                 .replace("/>", ' stroke-dasharray="2 1.5"/>'))
+        flaeche = 0.0
+        for k in range(n + 1):
+            z = (k - mu) / s
+            h = s * B(n, p, k)
+            flaeche += h / s
+            t.append(r.saeule(z - 0.5 / s, z + 0.5 / s, h, GRAU, GRAU, 0.2))
+        gleich(flaeche, 1.0, "Laplace: Säulenfläche", 1e-9)
+        t.append(r.kurve(phi, -4.5, 4.5, BLAU, 1.2))
+        farbe = GRUEN if ok else ROT
+        t.append(lin((r.X(z0), r.Y(0.45)), (r.X(z0), r.Y(0)), farbe, 1.1, "2.5 1.5"))
+        t.append(txt(r.X(z0) + 2, r.Y(0.45) + 6, "k = 0", farbe, 5.6, 700, "start"))
+        t.append(txt(r.X(0), 7.0, f"n = {n}, p = {de(p, 1)}: σ ≈ {de(s, 2)}", SCHWARZ, 6.0, 700))
+        t.append(txt(r.X(0), 89.0, f"k = 0 bei z ≈ {de(z0, 2)}: " + ("Platz" if ok else "links fehlt Platz"), farbe, 5.8, 700))
+    return svg(B_, H_, t)
+
+
+FIGUREN = [fig_standardisieren, fig_phi, fig_lokal, fig_global, fig_sigma, tabelle_phi, tabelle_quantile, fig_laplace]
 
 if __name__ == "__main__":
     zeilen = [fn() for fn in FIGUREN]

@@ -5,7 +5,7 @@
 //     Kommentaren), sondern höchstens einen leeren, versteckten Platzhalter mit data-lehrkraft;
 //     der Platzhalter nennt eine vorhandene Datei, die Seite bindet lehrkraft.js ein, die Datei ist
 //     ein Bruchstück (keine eigene Seite) und ihre Verweise lösen auf;
-//   * Vollständigkeit: Jede Lernseite unter mathematik/ hat einen Platzhalter, und jedes Bruchstück
+//   * Vollständigkeit: Jede Lernseite unter mathematik/ und physik/ hat einen Platzhalter, und jedes Bruchstück
 //     folgt demselben Bauplan (Einordnung mit Lehrplan und Bildungsstandards, didaktischer Kern,
 //     Fehlvorstellungen, Unterrichtsvorschlag, Literatur);
 //   * Verweise in die Seite: Was ein Bruchstück über die Seite behauptet („Achtung-Kasten in
@@ -40,7 +40,8 @@ const PFLICHT = [
 // Lernseiten nicht mehr — dann prüfte sie stillschweigend weniger.
 const MINDESTENS_LERNSEITEN = 55;   // 54, als jede Lernseite ihre Hinweise bekam; seither der Kreis
 // Eine Lernseite hat einen Seitenkopf und ist kein Menü.
-const istLernseite = (d, roh) => webpfad(d).startsWith("/mathematik/") && /class="page-header"/.test(roh) && !/class="menu-card/.test(roh);
+// Unter mathematik/ und physik/: Auch die Physikseiten sind Lernpfade nach demselben Bauplan.
+const istLernseite = (d, roh) => /^\/(mathematik|physik)\//.test(webpfad(d)) && /class="page-header"/.test(roh) && !/class="menu-card/.test(roh);
 // Der Bauplan der Bruchstücke (lk-hinweise). Die beiden älteren Konzepte (Rätsel, Faktencheck) sind
 // anders gegliedert und brauchen nur die Einordnung.
 const BAUPLAN = ["Einordnung", "Didaktischer Kern der Seite", "Grundvorstellungen", "Typische Fehlvorstellungen — und wo die Seite ansetzt",

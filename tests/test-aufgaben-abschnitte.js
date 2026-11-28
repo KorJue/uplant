@@ -32,11 +32,15 @@ const WURZEL = path.resolve(__dirname, "..");
 const MINDESTENS = 51;
 const KEIN_THEMA = ["sec-vernetzung", "sec-formelsammlung", "sec-uebungen", "sec-selbsteinschaetzung"];
 
-function seiten(dir = path.join(WURZEL, "mathematik"), out = []) {
-  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
-    const voll = path.join(dir, e.name);
-    if (e.isDirectory()) seiten(voll, out);
-    else if (e.name.endsWith(".html") && fs.readFileSync(voll, "utf-8").includes('id="exercises-mount"')) out.push("/" + path.relative(WURZEL, voll));
+// Alle Seiten mit Übungsaufgaben unter mathematik/ und physik/.
+function seiten(dirs = [path.join(WURZEL, "mathematik"), path.join(WURZEL, "physik")], out = []) {
+  for (const dir of [].concat(dirs)) {
+    if (!fs.existsSync(dir)) continue;
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      const voll = path.join(dir, e.name);
+      if (e.isDirectory()) seiten(voll, out);
+      else if (e.name.endsWith(".html") && fs.readFileSync(voll, "utf-8").includes('id="exercises-mount"')) out.push("/" + path.relative(WURZEL, voll));
+    }
   }
   return out.sort();
 }
@@ -101,6 +105,10 @@ const FILTER = (process.env.UPLANT_SEITEN || "").split(",").filter(Boolean);
 
       // ---- Themenleiste ----
       const sollThemen = bestand.folge.filter((id) => bestand.aufgaben.some((a) => thema(a) === id));
+      // Jede Seite verteilt ihre Aufgaben auf mindestens zwei Abschnitte — sonst gibt es keine Themenleiste,
+      // und die Aufgaben lassen sich nicht nach Thema wählen. Ohne Leiste lässt sich der Rest nicht prüfen.
+      pruefe(sollThemen.length >= 2 && bestand.themen.length >= 3, `${wo}: keine Themenleiste — alle Aufgaben stehen beim Abschnitt ${sollThemen.join(", ")}`);
+      if (bestand.themen.length === 0) continue;
       const istThemen = bestand.themen.filter((t) => t.id).map((t) => t.id);
       if (sollThemen.length > 1) {
         pruefe(bestand.themen[0] && bestand.themen[0].id === null && /Alle Themen/.test(bestand.themen[0].text), `${wo}: die Themenleiste beginnt nicht mit „Alle Themen“`);

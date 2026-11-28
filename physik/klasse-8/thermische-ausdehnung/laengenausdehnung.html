@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Längenausdehnung</title>
+<script src="../../../assets/theme.js"></script>
+<link rel="stylesheet" href="../../../assets/site.css">
+<link rel="stylesheet" href="../../../mathematik/aufgaben.css">
+<link rel="stylesheet" href="lernpfad.css">
+</head>
+<body>
+<nav class="breadcrumb">
+  <a href="../../../index.html">Start</a><span class="sep">/</span>
+  <a href="../../index.html">2 Physik</a><span class="sep">/</span>
+  <a href="../index.html">Klasse 8</a><span class="sep">/</span>
+  <a href="index.html">Thermische Ausdehnung</a><span class="sep">/</span>
+  2. Längenausdehnung
+</nav>
+<header class="page-header">
+  <h1>Längenausdehnung</h1>
+  <p>Ein Selbstlernpfad: von der Messreihe zur Formel ΔL = α · L₀ · ΔT, rückwärts gerechnet, Dehnungsfugen, Bimetall und das Flüssigkeitsthermometer — mit Kontrollfragen und acht Übungsaufgaben.</p>
+</header>
+
+<main class="menu-main">
+
+  <section class="card">
+    <h2>Worum geht es hier?</h2>
+    <p>Brücken haben Fugen, Schienen kleine Lücken, Stromleitungen hängen im Sommer tiefer durch, und ein Thermometer zeigt die Temperatur mit einer Flüssigkeitssäule. Wie viel länger ein Körper beim Erwärmen wird, lässt sich messen — und mit einer einfachen Formel ausrechnen. Am Ende kannst du:</p>
+    <ul class="lern-intro-list">
+      <li>an einer <span class="term">Messreihe</span> zeigen, dass die Längenänderung proportional zur Temperaturänderung ist</li>
+      <li>begründen, warum die Längenänderung proportional zur <span class="term">Ausgangslänge</span> ist</li>
+      <li>die Längenänderung mit ΔL = α · L<sub>0</sub> · ΔT und dem <span class="term">Längenausdehnungskoeffizienten</span> berechnen</li>
+      <li>die Formel umstellen: ΔT, α oder L<sub>0</sub> bestimmen — und den Stoff eines Stabes erkennen</li>
+      <li>die Breite einer <span class="term">Dehnungsfuge</span> berechnen</li>
+      <li>erklären, wie sich ein <span class="term">Bimetallstreifen</span> krümmt</li>
+      <li>die Volumenänderung von Flüssigkeiten mit ΔV = γ · V<sub>0</sub> · ΔT berechnen und ein <span class="term">Thermometer</span> erklären</li>
+    </ul>
+    <p class="hinweis-box">💡 Du brauchst die <a href="aggregatzustaende.html#sec-bindung">Bindungsenergie</a> aus Thema 1, <a href="../../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-proportional">proportionale Zuordnungen</a> und <a href="../../../mathematik/grundwissen-5-10/01-groessen-und-rechnen/01-natuerliche-zahlen-und-groessen/index.html#sec-groessen">Größen und ihre Einheiten</a> (1 m = 1000 mm, 1 l = 1000 ml, 1 ml = 1000 mm³).</p>
+  </section>
+
+  <!-- 1. Messreihe -->
+  <section class="card" id="sec-messung">
+    <h2>1. Ein Rohr wird warm — die Messreihe</h2>
+    <p>Ein 1 m langes Kupferrohr ist links fest eingespannt, rechts drückt es auf den Taster einer <span class="term">Messuhr</span>. Durch das Rohr strömt warmes Wasser. Erhöhe die Temperatur Schritt für Schritt: Die Messuhr zeigt, um wie viel das Rohr länger wird, und die Messreihe wächst. Temperaturänderungen gibt man in <strong>Kelvin</strong> (K) an: 1 K ist ein Unterschied von 1 °C.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Erwärmung ΔT: <input type="range" id="mr-dt" min="0" max="80" step="10" value="30" style="vertical-align:middle;width:14rem"> <span id="mr-dt-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="th-wrap" id="mr-mount"></div>
+      <div class="th-bilanz" id="mr-bilanz"></div>
+      <div id="mr-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Die Längenänderung ist proportional zur Temperaturänderung</span>
+      Doppelte Erwärmung, doppelte Verlängerung: Der Quotient <span class="bruch"><span class="z">ΔL</span><span class="n">ΔT</span></span> ist in der ganzen Messreihe gleich, und die Messpunkte liegen auf einer Geraden durch den Ursprung.
+      <div class="formula-block">ΔL ~ ΔT</div>
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — ΔT ist ein Unterschied</span>
+      Wird das Rohr von 20 °C auf 70 °C erwärmt, ist ΔT = 50 K — nicht 70 K. Es zählt nur, um wie viel die Temperatur steigt.
+    </div>
+    <div class="quiz" id="quiz-messung"></div>
+  </section>
+
+  <!-- 2. Ausgangslänge -->
+  <section class="card" id="sec-laenge">
+    <h2>2. Doppelte Länge — doppelte Verlängerung</h2>
+    <p>Ein Stab aus L<sub>0</sub> Metern besteht aus L<sub>0</sub> Stücken von je 1 m. Jedes Stück wird beim Erwärmen um gleich viel länger — so viel wie das Rohr aus Abschnitt 1. Wähle die Länge und die Erwärmung.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>L<sub>0</sub>: <input type="range" id="la-l" min="1" max="6" step="1" value="3" style="vertical-align:middle;width:10rem"> <span id="la-l-anzeige" class="wert farbe-blau"></span></label>
+        <label>ΔT: <input type="range" id="la-dt" min="0" max="80" step="10" value="50" style="vertical-align:middle;width:10rem"> <span id="la-dt-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="th-wrap" id="la-mount"></div>
+      <div class="th-bilanz" id="la-bilanz"></div>
+      <div id="la-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Die Längenänderung ist proportional zur Ausgangslänge</span>
+      Jeder Meter verlängert sich um gleich viel; ein Stab aus L<sub>0</sub> Metern also um L<sub>0</sub>-mal so viel.
+      <div class="formula-block">ΔL ~ L<sub>0</sub></div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Durchgerechnet — drei Meter Kupfer</span>
+      1 m Kupfer wird bei 50 K Erwärmung um 0,85 mm länger. Ein 3 m langes Kupferrohr besteht aus drei solchen Metern: ΔL = 3 · 0,85 mm = 2,55 mm.
+    </div>
+    <div class="quiz" id="quiz-laenge"></div>
+  </section>
+
+  <!-- 3. Der Stoff -->
+  <section class="card" id="sec-alpha">
+    <h2>3. Der Stoff entscheidet: ΔL = α · L<sub>0</sub> · ΔT</h2>
+    <p>Gleich lange Stäbe aus verschiedenen Stoffen werden gleich stark erwärmt. Sie werden unterschiedlich viel länger — Aluminium etwa doppelt so viel wie Stahl. Das Balkendiagramm zeigt die Verlängerung aller fünf Stäbe.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>L<sub>0</sub>: <input type="range" id="al-l" min="1" max="100" step="1" value="10" style="vertical-align:middle;width:10rem"> <span id="al-l-anzeige" class="wert farbe-blau"></span></label>
+        <label>ΔT: <input type="range" id="al-dt" min="0" max="80" step="1" value="50" style="vertical-align:middle;width:10rem"> <span id="al-dt-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="th-wrap" id="al-mount"></div>
+      <div class="th-bilanz" id="al-bilanz"></div>
+      <div id="al-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Längenänderung</span>
+      ΔL ist proportional zu L<sub>0</sub> und zu ΔT. Der Faktor dazwischen hängt nur vom Stoff ab: der <strong>Längenausdehnungskoeffizient</strong> α. Er gibt an, um wie viele Millimeter sich ein 1 m langer Stab bei Erwärmung um 1 K verlängert.
+      <div class="formula-block">ΔL = α · L<sub>0</sub> · ΔT</div>
+      <table class="ta-tabelle">
+        <tr><th>Stoff</th><th>Aluminium</th><th>Kupfer</th><th>Stahl</th><th>Beton</th><th>Glas</th></tr>
+        <tr><td>α in <span class="bruch"><span class="z">mm</span><span class="n">m · K</span></span></td><td>0,023</td><td>0,017</td><td>0,012</td><td>0,012</td><td>0,009</td></tr>
+      </table>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Durchgerechnet — eine Stahlschiene</span>
+      Eine Stahlschiene ist bei 0 °C genau 30 m lang. Im Sommer erwärmt sie sich auf 40 °C, also ΔT = 40 K:<br>
+      ΔL = 0,012 <span class="bruch"><span class="z">mm</span><span class="n">m · K</span></span> · 30 m · 40 K = 14,4 mm. Die Schiene ist dann 30,0144 m lang.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Einheiten</span>
+      Mit α in <span class="bruch"><span class="z">mm</span><span class="n">m · K</span></span> wird L<sub>0</sub> in Metern eingesetzt, ΔL kommt in Millimetern heraus. Wer L<sub>0</sub> in Millimetern einsetzt, bekommt einen tausendfach zu großen Wert.
+    </div>
+    <p class="hinweis-box">💡 Stahl und Beton haben fast denselben Längenausdehnungskoeffizienten. Deshalb kann man Stahlstäbe in Beton eingießen (Stahlbeton): Beide dehnen sich gleich stark aus, und nichts reißt.</p>
+    <div class="quiz" id="quiz-alpha"></div>
+  </section>
+
+  <!-- 4. Rückwärts -->
+  <section class="card" id="sec-rueckwaerts">
+    <h2>4. Rückwärts: Woraus ist der Stab?</h2>
+    <p>Drei Stäbe von je 2 m Länge sehen gleich aus. Erwärme einen davon und lies an der Messuhr ab, um wie viel er länger wird. Aus ΔL, L<sub>0</sub> und ΔT lässt sich α ausrechnen — und in der Tabelle nachsehen, welcher Stoff es ist.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Stab:
+          <select id="rw-stab" class="eingabe" style="padding:0.4rem">
+            <option value="A" selected>Stab A</option>
+            <option value="B">Stab B</option>
+            <option value="C">Stab C</option>
+          </select>
+        </label>
+        <label>ΔT: <input type="range" id="rw-dt" min="0" max="80" step="5" value="40" style="vertical-align:middle;width:12rem"> <span id="rw-dt-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="th-wrap" id="rw-mount"></div>
+      <div class="th-bilanz" id="rw-bilanz"></div>
+      <div id="rw-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Die Formel umgestellt</span>
+      Aus ΔL = α · L<sub>0</sub> · ΔT wird durch Teilen:
+      <div class="formula-block">α = <span class="bruch gross"><span class="z">ΔL</span><span class="n">L<sub>0</sub> · ΔT</span></span> &nbsp;&nbsp;&nbsp; ΔT = <span class="bruch gross"><span class="z">ΔL</span><span class="n">α · L<sub>0</sub></span></span> &nbsp;&nbsp;&nbsp; L<sub>0</sub> = <span class="bruch gross"><span class="z">ΔL</span><span class="n">α · ΔT</span></span></div>
+      Zur <strong>Probe</strong> setzt man das Ergebnis wieder in ΔL = α · L<sub>0</sub> · ΔT ein.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Durchgerechnet — um wie viel wärmer?</span>
+      Ein 20 m langer Stahlträger ist 9,6 mm länger geworden. ΔT = 9,6 mm : (0,012 <span class="bruch"><span class="z">mm</span><span class="n">m · K</span></span> · 20 m) = 9,6 : 0,24 K = 40 K.<br>
+      <em>Probe:</em> 0,012 · 20 · 40 = 9,6 mm ✓
+    </div>
+    <div class="quiz" id="quiz-rueckwaerts"></div>
+  </section>
+
+  <!-- 5. Dehnungsfugen -->
+  <section class="card" id="sec-fuge">
+    <h2>5. Dehnungsfugen: Platz für den Sommer</h2>
+    <p>Eine Brücke wird bei 10 °C gebaut. Im Sommer erwärmt sie sich bis 40 °C, im Winter kühlt sie bis −20 °C ab. Am Ende der Brücke bleibt eine <span class="term">Dehnungsfuge</span> frei, gerade so breit, dass sie sich im Sommer schließt, aber nicht mehr. Verändere die Temperatur.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Brücke aus:
+          <select id="fu-stoff" class="eingabe" style="padding:0.4rem">
+            <option value="stahl" selected>Stahl</option>
+            <option value="beton">Beton</option>
+            <option value="aluminium">Aluminium</option>
+          </select>
+        </label>
+        <label>L<sub>0</sub>: <input type="range" id="fu-l" min="20" max="200" step="10" value="100" style="vertical-align:middle;width:10rem"> <span id="fu-l-anzeige" class="wert farbe-blau"></span></label>
+        <label>ϑ: <input type="range" id="fu-theta" min="-20" max="40" step="5" value="10" style="vertical-align:middle;width:10rem"> <span id="fu-theta-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="th-wrap" id="fu-mount"></div>
+      <div class="th-bilanz" id="fu-bilanz"></div>
+      <div id="fu-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Wie breit muss die Fuge sein?</span>
+      Beim Bau (ϑ<sub>Bau</sub>) muss die Fuge mindestens so breit sein, wie sich die Brücke bis zur höchsten Temperatur verlängert: s<sub>0</sub> = α · L<sub>0</sub> · (ϑ<sub>max</sub> − ϑ<sub>Bau</sub>). Bei jeder anderen Temperatur ist sie
+      <div class="formula-block">s = s<sub>0</sub> − α · L<sub>0</sub> · (ϑ − ϑ<sub>Bau</sub>)</div>
+      — im Winter also breiter als beim Bau. Schienen, Rohrleitungen und Fliesenböden brauchen aus demselben Grund Fugen oder Bögen.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Durchgerechnet — eine Stahlbrücke von 100 m</span>
+      s<sub>0</sub> = 0,012 <span class="bruch"><span class="z">mm</span><span class="n">m · K</span></span> · 100 m · 30 K = 36 mm. Im Winter bei −20 °C: s = 36 mm − 0,012 · 100 · (−30) mm = 36 mm + 36 mm = 72 mm.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — ohne Fuge entstehen riesige Kräfte</span>
+      Kann sich ein Körper nicht ausdehnen, drückt er mit großer Kraft gegen seine Nachbarn: Schienen verbiegen sich in der Sommerhitze, Straßen platzen auf. Die Fuge verhindert das.
+    </div>
+    <div class="quiz" id="quiz-fuge"></div>
+  </section>
+
+  <!-- 6. Bimetall -->
+  <section class="card" id="sec-bimetall">
+    <h2>6. Bimetall: zwei Metalle, eine Krümmung</h2>
+    <p>Ein Streifen aus Kupfer und ein Streifen aus Stahl sind fest aufeinandergewalzt — ein <span class="term">Bimetallstreifen</span>. Beim Erwärmen will das Kupfer länger werden als der Stahl. Weil beide verbunden sind, krümmt sich der Streifen. Als Schalter in einem Bügeleisen öffnet er dabei einen Kontakt: Der Gegenkontakt sitzt auf einer Feder und folgt dem Streifen, bis er an einem Anschlag hängen bleibt — dann ist der Strom unterbrochen.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Temperatur ϑ: <input type="range" id="bm-theta" min="20" max="220" step="10" value="20" style="vertical-align:middle;width:14rem"> <span id="bm-theta-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="th-wrap" id="bm-mount"></div>
+      <div class="th-bilanz" id="bm-bilanz"></div>
+      <div id="bm-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Bimetall</span>
+      Ein Bimetallstreifen krümmt sich beim Erwärmen zur Seite des Metalls mit dem <strong>kleineren</strong> Längenausdehnungskoeffizienten: Das Metall mit dem größeren α liegt außen, auf dem längeren Bogen. Beim Abkühlen biegt er sich zurück. Je größer die Erwärmung, desto stärker die Krümmung.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Im Modell gerechnet</span>
+      Jeder Streifen hat die Länge, die er auch allein hätte, und die beiden Mittellinien liegen 0,5 mm auseinander. Dann gehören beide Längen zu Kreisbögen mit demselben Winkel. Bei 100 K Erwärmung ist ein 60 mm langer Kupferstreifen um 0,102 mm länger geworden, der Stahlstreifen um 0,072 mm: Der Unterschied von 0,03 mm verteilt auf 0,5 mm Abstand ergibt einen Winkel von 0,06 im Bogenmaß, etwa 3,4°.
+    </div>
+    <p class="hinweis-box">💡 Echte Bimetallstreifen verwenden oft eine Eisen-Nickel-Legierung (Invar) mit fast keiner Ausdehnung als zweites Metall — dann ist der Unterschied der Längen und damit die Krümmung besonders groß.</p>
+    <div class="quiz" id="quiz-bimetall"></div>
+  </section>
+
+  <!-- 7. Volumen -->
+  <section class="card" id="sec-volumen">
+    <h2>7. Vom Stab zum Würfel — und die Flüssigkeiten</h2>
+    <p>Ein Würfel dehnt sich in alle drei Richtungen aus: Jede seiner Kanten wird länger wie ein Stab aus Abschnitt 3, und das Volumen wächst in Länge, Breite und Höhe zugleich. Bei Flüssigkeiten betrachtet man von vornherein das Volumen — sie dehnen sich viel stärker aus als feste Körper. Im Flüssigkeitsthermometer muss das zusätzliche Volumen in ein sehr dünnes Röhrchen ausweichen, die Kapillare.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Flüssigkeit:
+          <select id="fl-stoff" class="eingabe" style="padding:0.4rem">
+            <option value="ethanol" selected>Ethanol (Alkohol)</option>
+            <option value="benzin">Benzin</option>
+            <option value="glycerin">Glycerin</option>
+            <option value="wasser">Wasser (bei 20 °C)</option>
+            <option value="quecksilber">Quecksilber</option>
+          </select>
+        </label>
+        <label>V<sub>0</sub>: <input type="range" id="fl-v" min="0.1" max="1" step="0.1" value="0.5" style="vertical-align:middle;width:8rem"> <span id="fl-v-anzeige" class="wert farbe-blau"></span></label>
+      </div>
+      <div class="btn-row">
+        <label>Querschnitt A der Kapillare: <input type="range" id="fl-a" min="0.1" max="0.5" step="0.05" value="0.2" style="vertical-align:middle;width:8rem"> <span id="fl-a-anzeige" class="wert farbe-violett"></span></label>
+        <label>ΔT: <input type="range" id="fl-dt" min="0" max="20" step="1" value="10" style="vertical-align:middle;width:8rem"> <span id="fl-dt-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="th-wrap" id="fl-mount"></div>
+      <div class="th-bilanz" id="fl-bilanz"></div>
+      <div id="fl-text" class="event-result"></div>
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Vom Stab zum Würfel — ein Stahlwürfel von 1 m³</span>
+      Bei 100 K Erwärmung wird jede Kante um 0,012 · 1 · 100 = 1,2 mm länger, also 1,0012 m. Das Volumen: 1,0012³ ≈ 1,0036 m³. Das sind 3,6 Liter mehr — fast genau dreimal so viel wie die 1,2 Liter, die eine einzige längere Kante brächte (1 m · 1 m · 1,2 mm = 1,2 dm³). Bei festen Körpern ist die Volumenausdehnung deshalb etwa <strong>dreimal</strong> die Längenausdehnung.
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Volumenänderung</span>
+      <div class="formula-block">ΔV = γ · V<sub>0</sub> · ΔT</div>
+      Der <strong>Volumenausdehnungskoeffizient</strong> γ gibt an, um wie viele Milliliter sich 1 Liter bei Erwärmung um 1 K ausdehnt. Für Stahl ist γ ≈ 3 · 0,012 = 0,036; Flüssigkeiten dehnen sich viel stärker aus:
+      <table class="ta-tabelle">
+        <tr><th>Stoff</th><th>Ethanol</th><th>Benzin</th><th>Glycerin</th><th>Wasser (20 °C)</th><th>Quecksilber</th></tr>
+        <tr><td>γ in <span class="bruch"><span class="z">ml</span><span class="n">l · K</span></span></td><td>1,1</td><td>1,0</td><td>0,5</td><td>0,21</td><td>0,18</td></tr>
+      </table>
+      Mit V<sub>0</sub> in Millilitern kommt ΔV in Kubikmillimetern heraus (1 ml = 1000 mm³). In der Kapillare mit dem Querschnitt A steigt die Säule um h = <span class="bruch"><span class="z">ΔV</span><span class="n">A</span></span>.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Durchgerechnet — ein Alkoholthermometer</span>
+      0,5 ml Ethanol, Erwärmung um 10 K: ΔV = 1,1 <span class="bruch"><span class="z">ml</span><span class="n">l · K</span></span> · 0,5 ml · 10 K = 5,5 mm³.<br>
+      Kapillare mit A = 0,2 mm²: h = 5,5 mm³ : 0,2 mm² = 27,5 mm. Die Säule steigt also um 2,75 mm je Kelvin.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — je dünner die Kapillare, desto genauer</span>
+      Das zusätzliche Volumen ΔV hängt nicht von der Kapillare ab. Ist sie halb so dick (halber Querschnitt), steigt die Säule doppelt so hoch — das Thermometer lässt sich feiner ablesen.
+    </div>
+    <p class="hinweis-box">💡 Wasser ist eine Ausnahme: Zwischen 0 °C und 4 °C zieht es sich beim Erwärmen zusammen und hat bei 4 °C sein kleinstes Volumen (Anomalie des Wassers). Deshalb ist das Wasser am Grund eines zugefrorenen Sees 4 °C warm, und Seen frieren von oben zu. Für Thermometer ist Wasser deshalb ungeeignet.</p>
+    <div class="quiz" id="quiz-volumen"></div>
+  </section>
+
+  <!-- Vernetzung -->
+  <section class="card" id="sec-vernetzung">
+    <h2>8. Zusammenhänge</h2>
+    <ul class="vernetzung-liste">
+      <li><strong>Baut auf:</strong> Der <a href="aggregatzustaende.html#sec-bindung">Energiemulde</a> aus Thema 1 — sie erklärt, warum der mittlere Abstand der Teilchen und damit die Länge beim Erwärmen wächst.</li>
+      <li><strong>Baut auf:</strong> <a href="../../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-proportional">Proportionalen Zuordnungen</a> — ΔL ~ ΔT und ΔL ~ L<sub>0</sub>, nachgewiesen über gleiche Quotienten.</li>
+      <li><strong>Baut auf:</strong> <a href="../../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/03-gleichungen/index.html">Dem Umstellen von Gleichungen</a> — für ΔT, α und L<sub>0</sub> in Abschnitt 4.</li>
+      <li><strong>Führt weiter zu:</strong> <a href="gasgesetze.html">Thema 3 „Gasgesetze“</a> — Gase dehnen sich noch viel stärker aus als Flüssigkeiten, und dort entsteht aus der Ausdehnung die Kelvin-Skala.</li>
+    </ul>
+  </section>
+
+  <!-- Formelsammlung -->
+  <section class="card" id="sec-formelsammlung">
+    <h2>9. Formelsammlung</h2>
+    <p>Die Formelsammlung gilt für alle drei Seiten der Einheit: Teilchenmodell, Übergänge und Erwärmungskurve, Bindungsenergie, Längen- und Volumenänderung mit Tabellen, Bimetall, Kelvin-Skala, die drei Gasgesetze und die allgemeine Gasgleichung — mit gerechneten Bildern, auf zwei Seiten zum Ausdrucken.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
+    </div>
+  </section>
+
+  <!-- Übungsaufgaben -->
+  <section class="card" id="sec-uebungen">
+    <h2>10. Übungsaufgaben</h2>
+    <p>Acht Aufgaben auf vier Stufen, je zwei auf jeder. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu. Tipps gibt es auf Knopfdruck, nach dem Prüfen steht die Musterlösung darunter.</p>
+    <p class="progress-note">Gib Zahlen mit Komma ein, zum Beispiel 3,41. Eine Einheit dahinter darf stehen; gerechnet wird in der Einheit, die in der Aufgabe genannt ist.</p>
+    <div id="exercises-mount"></div>
+  </section>
+
+  <!-- Selbsteinschätzung: nach den Übungsaufgaben, damit sie Kontrollfragen und Aufgaben mit auswerten kann -->
+  <section class="card" id="sec-selbsteinschaetzung">
+    <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
+    <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
+    <ul class="se-liste" id="se-liste">
+      <li data-abschnitt="sec-messung">Ich kann an einer Messreihe zeigen, dass ΔL proportional zu ΔT ist.</li>
+      <li data-abschnitt="sec-laenge">Ich kann begründen, warum ΔL proportional zur Ausgangslänge ist.</li>
+      <li data-abschnitt="sec-alpha">Ich kann die Längenänderung mit ΔL = α · L₀ · ΔT berechnen.</li>
+      <li data-abschnitt="sec-rueckwaerts">Ich kann die Formel umstellen und den Stoff eines Stabes erkennen.</li>
+      <li data-abschnitt="sec-fuge">Ich kann die Breite einer Dehnungsfuge berechnen.</li>
+      <li data-abschnitt="sec-bimetall">Ich kann erklären, wie sich ein Bimetallstreifen krümmt.</li>
+      <li data-abschnitt="sec-volumen">Ich kann die Volumenänderung von Flüssigkeiten berechnen und ein Thermometer erklären.</li>
+    </ul>
+    <div class="se-auswertung event-result" id="se-auswertung" aria-live="polite"></div>
+  </section>
+
+  <!-- Nur mit dem Code für alle Bereiche: wird von assets/lehrkraft.js nachgeladen. -->
+  <section class="card" data-lehrkraft="laengenausdehnung-lehrkraefte.html" hidden></section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="index.html">Zurück zu Thermische Ausdehnung</a></p>
+  <p><a href="../../../haftungsausschluss.html">Haftungsausschluss</a></p>
+</footer>
+
+<script src="../../../assets/lehrkraft.js"></script>
+<script src="../../../assets/selbsteinschaetzung.js"></script>
+<script type="module" src="laengenausdehnung.js?v=1"></script>
+</body>
+</html>

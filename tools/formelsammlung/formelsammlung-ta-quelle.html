@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Formelsammlung — Thermische Ausdehnung</title>
+<style>
+  @page { size: A4 landscape; margin: 5.5mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    color: #1f2328;
+    font-size: 8.1px;
+    line-height: 1.33;
+  }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  h1 {
+    font-size: 12.4px; margin: 0 0 1.4mm; padding-bottom: 0.8mm;
+    border-bottom: 1.6px solid #1d4ed8; color: #1d4ed8; letter-spacing: 0.01em;
+  }
+  h1 .klein { font-size: 8.4px; font-weight: 400; color: #5b6570; float: right; margin-top: 2px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2.1mm; align-items: start; }
+  .box {
+    border: 0.9px solid #c9d0d8; border-radius: 2mm; padding: 1.5mm 1.8mm;
+    background: #ffffff; break-inside: avoid;
+  }
+  .box.wide { grid-column: span 2; }
+  .box.full { grid-column: span 3; }
+  .box h2 {
+    font-size: 8.6px; margin: 0 0 1.1mm; color: #1d4ed8;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .box.warn { border-color: #e3b341; background: #fffaf0; }
+  .box.warn h2 { color: #8a5b0a; }
+  .box.merk { border-color: #7ec699; background: #f4fbf6; }
+  .box.merk h2 { color: #0f5132; }
+  p { margin: 0 0 0.9mm; }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 0.9mm; padding-left: 3.4mm; }
+  li { margin-bottom: 0.4mm; }
+  .f { font-family: "Cambria Math", Cambria, Georgia, serif; font-size: 9.2px; }
+  .zentral { text-align: center; }
+  .gross { font-size: 10.4px; font-weight: 700; }
+  .al { color: #157347; font-weight: 700; }
+  .be { color: #b3650a; font-weight: 700; }
+  .ga { color: #b3261e; font-weight: 700; }
+  .kr { color: #1d4ed8; font-weight: 700; }
+  .ra { color: #6d28d9; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { border: 0.7px solid #c9d0d8; padding: 0.5mm 0.6mm; text-align: center; }
+  th { background: #eef2f6; font-weight: 700; font-size: 7.4px; }
+  td { font-size: 7.6px; }
+  td.b { font-weight: 700; }
+  td.l { text-align: left; }
+  figure { margin: 0.8mm 0 0; }
+  figure svg { display: block; width: 100%; height: auto; }
+  .m70 { max-width: 70%; margin: 0.8mm auto 0; }
+  .m80 { max-width: 80%; margin: 0.8mm auto 0; }
+  .m88 { max-width: 88%; margin: 0.8mm auto 0; }
+  .m62 { max-width: 62%; margin: 0.8mm auto 0; }
+  .m72 { max-width: 72%; margin: 0.8mm auto 0; }
+  .m55 { max-width: 55%; margin: 0.8mm auto 0; }
+  .bu { font-size: 7.1px; color: #5b6570; text-align: center; margin-top: 0.5mm; }
+  .rechnung { background: #f4f6f8; border-radius: 1.2mm; padding: 1mm 1.2mm; margin: 0.8mm 0 0; }
+  .schritt { display: flex; gap: 1.2mm; margin-bottom: 0.5mm; }
+  .schritt b { flex: 0 0 3.6mm; color: #1d4ed8; }
+  .schritt:last-child { margin-bottom: 0; }
+  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm; align-items: start; }
+  .bruch { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; margin: 0 0.3mm; }
+  .bruch .z { border-bottom: 0.8px solid currentColor; padding: 0 0.6mm; }
+  .gh { color: #6d28d9; font-weight: 700; }
+  .fuss { margin-top: 1.4mm; font-size: 7.1px; color: #5b6570; text-align: center; }
+  table.regeln td.f { white-space: nowrap; width: 27%; }
+  .gr { text-transform: none; }
+  sub { font-size: 75%; }
+</style>
+</head>
+<body>
+
+<!-- ===================== Seite 1 ===================== -->
+<div class="page">
+  <h1>Thermische Ausdehnung — Aggregatzustände und Längenausdehnung<span class="klein">Physik · Klasse 8 · Thema 1 und 2</span></h1>
+  <div class="grid">
+
+    <div class="box merk">
+      <h2>Aggregatzustände im Teilchenmodell</h2>
+      <figure>[[FIG1]]</figure>
+      <p class="bu">Kreise (fest): Schwingungsweite; Pfeile: Geschwindigkeit — beide proportional zur mittleren Geschwindigkeit der Wassermoleküle.</p>
+      <p><b>Fest:</b> Teilchen auf Gitterplätzen, schwingen. <b>Flüssig:</b> dicht, ungeordnet, gleiten aneinander vorbei. <b>Gasförmig:</b> weit voneinander, fliegen frei. <b>Wärmer heißt schneller</b> — die Teilchen selbst werden nicht größer.</p>
+    </div>
+
+    <div class="box">
+      <h2>Übergänge und Erwärmungskurve</h2>
+      <table>
+        <tr><th></th><th>Energie zuführen</th><th>Energie abgeben</th></tr>
+        <tr><td class="l b">fest ↔ flüssig</td><td>Schmelzen</td><td>Erstarren</td></tr>
+        <tr><td class="l b">flüssig ↔ gasförmig</td><td>Verdampfen</td><td>Kondensieren</td></tr>
+        <tr><td class="l b">fest ↔ gasförmig</td><td>Sublimieren</td><td>Resublimieren</td></tr>
+      </table>
+      <figure>[[FIG2]]</figure>
+      <p>1 kg Eis von −20 °C bis Dampf von 120 °C. Beim Schmelzen (0 °C) und Sieden (100 °C) bleibt die Temperatur gleich, obwohl Energie zugeführt wird.</p>
+      [[FIG3]]
+      <p style="margin-top:0.8mm">Die Energie ist proportional zur Masse. <b>Beispiel:</b> 2 kg Eis von 0 °C schmelzen und auf 20 °C erwärmen: Q = 2 · (334 + 4,19 · 20) = 835,6 kJ. Beim Erstarren und Kondensieren wird dieselbe Energie wieder frei.</p>
+    </div>
+
+    <div class="box">
+      <h2>Bindungsenergie</h2>
+      <figure>[[FIG4]]</figure>
+      <p>Energie zweier Teilchen über ihrem Abstand. Die <b>Bindungsenergie</b> E<sub>B</sub> ist die Tiefe der Mulde: so viel Energie braucht man mindestens, um zwei Teilchen zu trennen.</p>
+      <p><b>Ausdehnung:</b> Links steil, rechts flach — mit mehr Energie schwingen die Teilchen nach außen weiter als nach innen, die Mitte wandert nach außen.</p>
+    </div>
+
+    <div class="box wide">
+      <h2>Längenänderung fester Körper</h2>
+      <div class="zwei">
+        <div>
+          <figure>[[FIG5]]</figure>
+          <p class="bu">Messreihe: gleiche Quotienten ΔL : ΔT, Punkte auf einer Ursprungsgeraden.</p>
+        </div>
+        <div>
+          <p><b>ΔL ~ ΔT:</b> doppelte Erwärmung, doppelte Verlängerung. <b>ΔL ~ L<sub>0</sub>:</b> Jeder Meter verlängert sich gleich viel. Zusammen:</p>
+          <p class="zentral f gross">ΔL = α · L<sub>0</sub> · ΔT</p>
+          <p>α: um wie viele mm sich 1 m bei 1 K verlängert. L<sub>0</sub> in m, ΔT in K (1 K = 1 °C Unterschied), ΔL in mm.</p>
+          <p class="zentral f">α = <span class="bruch"><span class="z">ΔL</span><span class="n">L<sub>0</sub> · ΔT</span></span> &nbsp;&nbsp; ΔT = <span class="bruch"><span class="z">ΔL</span><span class="n">α · L<sub>0</sub></span></span> &nbsp;&nbsp; L<sub>0</sub> = <span class="bruch"><span class="z">ΔL</span><span class="n">α · ΔT</span></span></p>
+        </div>
+      </div>
+      [[FIG6]]
+      <p style="margin-top:0.8mm"><b>Beispiel:</b> Stahlschiene, 30 m, um 40 K erwärmt: ΔL = 0,012 · 30 · 40 = 14,4 mm. <b>Rückwärts:</b> Ein 20 m langer Stahlträger ist 9,6 mm länger: ΔT = 9,6 : (0,012 · 20) = 40 K. Stahl und Beton dehnen sich gleich stark aus — deshalb hält Stahlbeton.</p>
+    </div>
+
+    <div class="box merk">
+      <h2>Dehnungsfuge</h2>
+      <p>Beim Bau muss die Fuge so breit sein, wie sich die Brücke bis zur höchsten Temperatur verlängert:</p>
+      <p class="zentral f gross">s<sub>0</sub> = α · L<sub>0</sub> · (ϑ<sub>max</sub> − ϑ<sub>Bau</sub>)</p>
+      <p><b>Stahlbrücke,</b> 100 m, gebaut bei 10 °C, bis 40 °C warm: s<sub>0</sub> = 0,012 · 100 · 30 = 36 mm. Bei −20 °C ist sie 30 K kälter als beim Bau, die Fuge breiter: s = 36 + 0,012 · 100 · 30 = 72 mm.</p>
+      <p>Aus demselben Grund: Lücken zwischen Schienen, Dehnungsbögen in Rohrleitungen, durchhängende Stromleitungen. Hindert man einen Körper am Ausdehnen, entstehen große Kräfte.</p>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Physik Klasse 8 · Thermische Ausdehnung · Seite 1 von 2</p>
+</div>
+
+<!-- ===================== Seite 2 ===================== -->
+<div class="page">
+  <h1>Bimetall, Flüssigkeiten und Gase — Kelvin-Skala, Gasgesetze, allgemeine Gasgleichung<span class="klein">Physik · Klasse 8 · Thema 2 und 3</span></h1>
+  <div class="grid">
+
+    <div class="box">
+      <h2>Bimetall</h2>
+      <figure>[[FIG7]]</figure>
+      <p>Zwei verbundene Metallstreifen. Beim Erwärmen krümmt sich der Streifen zur Seite des <b>kleineren</b> α: Das Metall mit dem größeren α liegt außen, auf dem längeren Bogen. <b>Modell:</b> 60 mm Kupfer und Stahl, 100 K: Unterschied 0,06 · (0,017 − 0,012) · 100 = 0,03 mm; bei 0,5 mm Abstand der Mittellinien ein Winkel von 0,03 : 0,5 = 0,06 (Bogenmaß). Anwendung: Bimetallschalter im Bügeleisen.</p>
+    </div>
+
+    <div class="box wide">
+      <h2>Flüssigkeiten: Volumenänderung und Thermometer</h2>
+      <div class="zwei">
+        <div>
+          <p class="zentral f gross">ΔV = γ · V<sub>0</sub> · ΔT &nbsp;&nbsp;&nbsp; h = <span class="bruch"><span class="z">ΔV</span><span class="n">A</span></span></p>
+          [[FIG8]]
+        </div>
+        <div>
+          <p>γ: um wie viele ml sich 1 l bei 1 K ausdehnt. Mit V<sub>0</sub> in ml kommt ΔV in mm³ heraus (1 ml = 1000 mm³). In der Kapillare mit dem Querschnitt A steigt die Säule um h = ΔV : A — je dünner die Kapillare, desto höher.</p>
+          <p><b>Beispiel:</b> 0,5 ml Ethanol, 10 K: ΔV = 1,1 · 0,5 · 10 = 5,5 mm³; Kapillare 0,2 mm²: h = 5,5 : 0,2 = 27,5 mm.</p>
+          <p><b>Feste Körper:</b> Ein Würfel dehnt sich in drei Richtungen aus, γ ≈ 3 · α. <b>Anomalie des Wassers:</b> Zwischen 0 °C und 4 °C zieht sich Wasser beim Erwärmen zusammen; bei 4 °C hat es das kleinste Volumen.</p>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="box">
+      <h2>Gay-Lussac (p konstant) und Kelvin</h2>
+      <figure>[[FIG9]]</figure>
+      <p class="zentral f gross"><span class="bruch"><span class="z">V<sub>1</sub></span><span class="n">T<sub>1</sub></span></span> = <span class="bruch"><span class="z">V<sub>2</sub></span><span class="n">T<sub>2</sub></span></span></p>
+      <p><b>Kelvin:</b> T = ϑ + 273,15 K; 0 K = −273,15 °C ist der absolute Nullpunkt. 37 °C: 37 + 273,15 = 310,15 K.</p>
+      <p><b>Ballon:</b> 3,0 l bei 20 °C, auf 50 °C erwärmt: V<sub>2</sub> = 3,0 · 323,15 : 293,15 ≈ 3,31 l.</p>
+    </div>
+
+    <div class="box">
+      <h2>Boyle-Mariotte (T konstant)</h2>
+      <figure>[[FIG10]]</figure>
+      <p class="zentral f gross">p<sub>1</sub> · V<sub>1</sub> = p<sub>2</sub> · V<sub>2</sub></p>
+      <p>Halbes Volumen, doppelter Druck. Die Rechtecke unter der Hyperbel sind gleich groß. <b>Luftpumpe:</b> 2,0 l bei 1,0 bar auf 0,5 l: p<sub>2</sub> = 1,0 · 2,0 : 0,5 = 4,0 bar.</p>
+    </div>
+
+    <div class="box">
+      <h2>Amontons (V konstant)</h2>
+      <figure>[[FIG11]]</figure>
+      <p class="zentral f gross"><span class="bruch"><span class="z">p<sub>1</sub></span><span class="n">T<sub>1</sub></span></span> = <span class="bruch"><span class="z">p<sub>2</sub></span><span class="n">T<sub>2</sub></span></span></p>
+      <p><b>Spraydose:</b> 3,0 bar bei 20 °C, auf 60 °C erwärmt: p<sub>2</sub> = 3,0 · 333,15 : 293,15 ≈ 3,41 bar.</p>
+    </div>
+
+    <div class="box wide merk">
+      <h2>Allgemeine Gasgleichung</h2>
+      <div class="zwei">
+        <figure>[[FIG12]]</figure>
+        <div>
+          <p class="zentral f gross"><span class="bruch"><span class="z">p<sub>1</sub> · V<sub>1</sub></span><span class="n">T<sub>1</sub></span></span> = <span class="bruch"><span class="z">p<sub>2</sub> · V<sub>2</sub></span><span class="n">T<sub>2</sub></span></span></p>
+          <p><b>Herleitung:</b> 1 → *: T bleibt, Boyle-Mariotte: p* = p<sub>1</sub> · V<sub>1</sub> : V<sub>2</sub>. * → 2: V bleibt, Amontons: p<sub>2</sub> = p* · T<sub>2</sub> : T<sub>1</sub>. Zusammen: p<sub>2</sub> · V<sub>2</sub> : T<sub>2</sub> = p<sub>1</sub> · V<sub>1</sub> : T<sub>1</sub>.</p>
+          <p><b>Wetterballon:</b> 4,0 m³ bei 1,0 bar und 15 °C; oben 0,26 bar und −50 °C: V<sub>2</sub> = 4,0 · 1,0 : 0,26 · 223,15 : 288,15 ≈ 11,91 m³.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box warn">
+      <h2>Typische Fehler</h2>
+      <table>
+        <tr><th>falsch</th><th>richtig</th></tr>
+        <tr><td class="l">Teilchen werden größer</td><td class="l">Abstand wird größer</td></tr>
+        <tr><td class="l">ΔT = Endtemperatur</td><td class="l">ΔT = ϑ<sub>2</sub> − ϑ<sub>1</sub></td></tr>
+        <tr><td class="l">L<sub>0</sub> in mm einsetzen</td><td class="l">L<sub>0</sub> in m, ΔL in mm</td></tr>
+        <tr><td class="l">Bimetall krümmt sich zum größeren α</td><td class="l">größeres α liegt außen</td></tr>
+        <tr><td class="l">Gasgesetze mit °C</td><td class="l">immer T in K</td></tr>
+        <tr><td class="l">p<sub>2</sub> = p<sub>1</sub> · V<sub>2</sub> : V<sub>1</sub></td><td class="l">p<sub>2</sub> = p<sub>1</sub> · V<sub>1</sub> : V<sub>2</sub></td></tr>
+      </table>
+    </div>
+
+  </div>
+  <p class="fuss">uplant · Physik Klasse 8 · Thermische Ausdehnung · Seite 2 von 2</p>
+</div>
+
+</body>
+</html>
