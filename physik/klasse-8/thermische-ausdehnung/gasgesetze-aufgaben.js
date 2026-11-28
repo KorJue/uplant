@@ -1,8 +1,8 @@
-// Die acht Übungsaufgaben zu „Thermische Ausdehnung“ — zwei je Stufe:
-//   einfach   — Längenänderung einer Schiene; Celsius und Kelvin
-//   mittel    — Boyle-Mariotte (Luftpumpe); Gay-Lussac (Ballon, Temperaturen in °C gegeben)
-//   schwierig — Amontons (Spraydose, Reifen); Temperaturänderung aus der Längenänderung (mit Probe)
-//   komplex   — allgemeine Gasgleichung (Luftblase im See); Thermometer: Steighöhe der Säule
+// Die acht Übungsaufgaben zu „Gasgesetze“ — zwei je Stufe:
+//   einfach   — Celsius und Kelvin (1); Gay-Lussac mit Kelvin-Temperaturen (1)
+//   mittel    — Boyle-Mariotte (Luftpumpe, 2); Gay-Lussac mit Grad Celsius (Ballon, 1)
+//   schwierig — Amontons (Spraydose, Reifen, 3); Boyle-Mariotte rückwärts: welches Volumen? (2, mit Probe)
+//   komplex   — allgemeine Gasgleichung: die Luftblase (4); der Druck im warmen Zylinder (4)
 //
 // Ergebnisse auf zwei Nachkommastellen; eine Eingabe gilt als getroffen, wenn sie so nah liegt wie ein
 // gerundeter Wert. Jeder vorgesehene Fehler hat einen eigenen Wert; fallen zwei zusammen, steht an
@@ -20,48 +20,10 @@ const bruch = (z, n) => `<span class="bruch"><span class="z">${z}</span><span cl
 const RUNDEN = `<br><span class="progress-note">Runde auf zwei Nachkommastellen.</span>`;
 // Der erste vorgesehene Fehler, den die Eingabe trifft — sein Hinweis.
 const hinweisAus = (liste, tol = TOL) => (roh, w) => (liste.find(([x]) => Number.isFinite(x) && trifft(w, x, tol + 1e-9)) || [0, ""])[1];
-const ALPHA = [["Stahl", 0.012], ["Aluminium", 0.023], ["Kupfer", 0.017], ["Beton", 0.012], ["Glas", 0.009]];
-const MMK = bruch("mm", "m · K");
-const MLK = bruch("ml", "l · K");
 
-// ---------- E1: Wie viel länger? ----------
+// ---------- E1: Celsius und Kelvin ----------
 
-function e1Fehler({ a, L0, t1, t2 }) {
-  const dT = t2 - t1;
-  return [
-    [a * L0 * t2, `ΔT ist der Temperaturunterschied: ${num(t2)} °C − ${num(t1)} °C = ${num(dT)} K — nicht die Endtemperatur.`],
-    [a * L0, "Das ist die Verlängerung bei nur 1 K. Die Temperatur ändert sich aber um ΔT — malnehmen mit ΔT."],
-    [a * dT, "L₀ fehlt: Ein langer Stab dehnt sich mehr aus als ein kurzer. ΔL = α · L₀ · ΔT."],
-    [(a * L0 * dT) / 1000, "Gefragt ist die Verlängerung in Millimetern. Mit α in mm/(m · K) und L₀ in Metern kommt ΔL schon in mm heraus."],
-  ];
-}
-const E1_KANDIDATEN = spaeter(() => {
-  const l = [];
-  for (const [stoff, a] of ALPHA) for (const L0 of [10, 15, 20, 25, 30, 40, 50, 60, 80, 120]) for (const t1 of [-10, -5, 0, 5, 10]) for (const t2 of [25, 30, 35, 40, 45, 50]) {
-    if (glatt(a * L0 * (t2 - t1), 2)) l.push({ stoff, a, L0, t1, t2 });
-  }
-  return l;
-});
 const E1 = {
-  schwierigkeit: "einfach",
-  titel: "Wie viel länger?",
-  abschnitt: "sec-fest",
-  generate() {
-    const v = ohneKollision(E1_KANDIDATEN(), (v) => [v.a * v.L0 * (v.t2 - v.t1), ...e1Fehler(v).map((x) => x[0])], 0.02);
-    const { stoff, a, L0, t1, t2 } = v, dT = t2 - t1, dL = a * L0 * dT;
-    return {
-      promptHtml: `Ein Stab aus ${stoff} ist bei ${num(t1)} °C genau ${num(L0)} m lang. Um wie viele Millimeter wird er länger, wenn er sich auf ${num(t2)} °C erwärmt? (α = ${num(a, 3)} ${MMK})`,
-      correct: r2(dL), tolerance: TOL,
-      hinweis: hinweisAus(e1Fehler(v)),
-      tipps: [`Erst die Temperaturänderung: ΔT = ${num(t2)} °C − ${num(t1)} °C.`, "ΔL = α · L₀ · ΔT, mit L₀ in Metern — dann kommt ΔL in Millimetern heraus."],
-      musterloesungHtml: `ΔT = ${num(t2)} °C − ${num(t1)} °C = ${num(dT)} K<br>ΔL = α · L₀ · ΔT = ${num(a, 3)} ${MMK} · ${num(L0)} m · ${num(dT)} K = <strong>${zwei(dL)} mm</strong>`,
-    };
-  },
-};
-
-// ---------- E2: Celsius und Kelvin ----------
-
-const E2 = {
   schwierigkeit: "einfach",
   titel: "Celsius und Kelvin",
   abschnitt: "sec-gay-lussac",
@@ -89,6 +51,39 @@ const E2 = {
       hinweis: hinweisAus(fehler, 0.001),
       tipps: ["0 K ist −273,15 °C; ein Kelvin-Schritt ist so groß wie ein Grad Celsius.", "ϑ = T − 273,15 °C"],
       musterloesungHtml: `ϑ = ${num(T, 2)} − 273,15 = <strong>${num(theta, 2)} °C</strong>`,
+    };
+  },
+};
+
+// ---------- E2: Gay-Lussac mit Kelvin-Temperaturen ----------
+
+function e2Fehler({ V1, T1, T2 }) {
+  return [
+    [(V1 * T1) / T2, "Bruch umgedreht: Wird das Gas wärmer, wird es größer. V₂ = V₁ · T₂ : T₁."],
+    [V1, "Das Volumen bleibt nicht gleich — bei gleichem Druck ist V : T konstant."],
+    [(V1 * (T2 - T1)) / T1, "Das ist nur die Zunahme des Volumens. Gefragt ist das ganze Volumen V₂ = V₁ · T₂ : T₁."],
+  ];
+}
+const E2_KANDIDATEN = spaeter(() => {
+  const l = [];
+  for (const V1 of [1, 1.5, 2, 2.4, 3, 4, 5, 6]) for (const T1 of [250, 280, 300, 320, 350, 400]) for (const T2 of [300, 350, 360, 400, 420, 450, 480, 500, 600]) {
+    if (T2 > T1 && glatt((V1 * T2) / T1, 2)) l.push({ V1, T1, T2 });
+  }
+  return l;
+});
+const E2 = {
+  schwierigkeit: "einfach",
+  titel: "Gay-Lussac in Kelvin",
+  abschnitt: "sec-gay-lussac",
+  generate() {
+    const v = ohneKollision(E2_KANDIDATEN(), (v) => [(v.V1 * v.T2) / v.T1, ...e2Fehler(v).map((x) => x[0])], 0.02);
+    const { V1, T1, T2 } = v, V2 = (V1 * T2) / T1;
+    return {
+      promptHtml: `Ein Gas nimmt bei ${num(T1)} K ein Volumen von ${num(V1, 1)} l ein. Bei gleichem Druck wird es auf ${num(T2)} K erwärmt. Wie groß ist sein Volumen jetzt (in l)?`,
+      correct: r2(V2), tolerance: TOL,
+      hinweis: hinweisAus(e2Fehler(v)),
+      tipps: ["Gleicher Druck: Das Volumen ist proportional zur Temperatur in Kelvin.", `V₂ = V₁ · ${bruch("T₂", "T₁")}`],
+      musterloesungHtml: `V₂ = V₁ · ${bruch("T₂", "T₁")} = ${num(V1, 1)} l · ${bruch(num(T2) + " K", num(T1) + " K")} = <strong>${zwei(V2)} l</strong>`,
     };
   },
 };
@@ -198,37 +193,37 @@ const S1 = {
   },
 };
 
-// ---------- S2: Um wie viel wärmer? (Umkehraufgabe mit Probe) ----------
+// ---------- S2: Boyle-Mariotte rückwärts (mit Probe) ----------
 
-function s2Fehler({ a, L0, dL }) {
+function s2Fehler({ p1, V1, p2 }) {
   return [
-    [dL * a * L0, "Rückwärts wird geteilt, nicht malgenommen: ΔT = ΔL : (α · L₀)."],
-    [dL / a, "L₀ fehlt: ΔT = ΔL : (α · L₀)."],
-    [(dL * 1000) / (a * L0), "ΔL steht schon in Millimetern — nicht noch einmal mit 1000 malnehmen."],
+    [(p2 * V1) / p1, "Umgekehrt: Steigt der Druck, wird das Volumen kleiner. V₂ = p₁ · V₁ : p₂."],
+    [V1, "Das Volumen bleibt nicht gleich — bei gleicher Temperatur ist p · V konstant."],
+    [p1 === 1 ? NaN : V1 / p2, "p₁ fehlt: V₂ = p₁ · V₁ : p₂."],
+    [(p1 * V1) / (p2 - p1), "p₂ ist der neue Druck selbst, nicht der Unterschied: V₂ = p₁ · V₁ : p₂."],
   ];
 }
 const S2_KANDIDATEN = spaeter(() => {
   const l = [];
-  for (const [stoff, a] of ALPHA) for (const L0 of [5, 10, 20, 25, 40, 50, 100]) for (const dT of [15, 20, 25, 30, 35, 40, 45, 50, 60]) {
-    const dL = a * L0 * dT;
-    if (glatt(dL, 2)) l.push({ stoff, a, L0, dT, dL: r2(dL) });
+  for (const p1 of [1, 1.2, 1.5, 2]) for (const V1 of [2, 3, 4, 5, 6, 8, 10, 12]) for (const p2 of [2.5, 3, 4, 5, 6, 8, 10]) {
+    if (p2 > p1 + 0.5 && glatt((p1 * V1) / p2, 2)) l.push({ p1, V1, p2 });
   }
   return l;
 });
 const S2 = {
   schwierigkeit: "schwierig",
-  titel: "Um wie viel wärmer?",
-  abschnitt: "sec-fest",
+  titel: "Wie weit zusammendrücken?",
+  abschnitt: "sec-boyle",
   generate() {
-    const v = ohneKollision(S2_KANDIDATEN(), (v) => [v.dT, ...s2Fehler(v).map((x) => x[0])], 0.02);
-    const { stoff, a, L0, dT, dL } = v;
+    const v = ohneKollision(S2_KANDIDATEN(), (v) => [(v.p1 * v.V1) / v.p2, ...s2Fehler(v).map((x) => x[0])], 0.02);
+    const { p1, V1, p2 } = v, V2 = (p1 * V1) / p2;
     return {
-      promptHtml: `Ein ${num(L0)} m langer Stab aus ${stoff} ist nach dem Erwärmen ${num(dL, 2)} mm länger. Um wie viel Kelvin wurde er erwärmt? (α = ${num(a, 3)} ${MMK})`,
-      correct: dT, tolerance: TOL,
+      promptHtml: `In einem Zylinder sind ${num(V1)} l Luft bei ${num(p1, 1)} bar eingeschlossen. Auf welches Volumen (in l) muss man sie bei gleicher Temperatur zusammendrücken, damit der Druck ${num(p2, 1)} bar beträgt?`,
+      correct: r2(V2), tolerance: TOL,
       hinweis: hinweisAus(s2Fehler(v)),
-      tipps: ["ΔL = α · L₀ · ΔT — gesucht ist diesmal ΔT.", `ΔT = ${bruch("ΔL", "α · L₀")}`],
-      musterloesungHtml: `ΔT = ${bruch("ΔL", "α · L₀")} = ${bruch(`${num(dL, 2)} mm`, `${num(a, 3)} ${MMK} · ${num(L0)} m`)} = ${bruch(`${num(dL, 2)} mm`, `${num(a * L0, 3)} ${bruch("mm", "K")}`)} = <strong>${num(dT)} K</strong><br>` +
-        `<em>Probe:</em> ${num(a, 3)} · ${num(L0)} · ${num(dT)} = ${num(a * L0 * dT, 2)} mm ✓`,
+      tipps: ["Gleiche Temperatur: p₁ · V₁ = p₂ · V₂ — gesucht ist diesmal V₂.", `V₂ = ${bruch("p₁ · V₁", "p₂")}`],
+      musterloesungHtml: `V₂ = ${bruch("p₁ · V₁", "p₂")} = ${bruch(`${num(p1, 1)} bar · ${num(V1)} l`, `${num(p2, 1)} bar`)} = <strong>${zwei(V2)} l</strong><br>` +
+        `<em>Probe:</em> p₂ · V₂ = ${num(p2, 1)} · ${zwei(V2)} = ${num(p2 * r2(V2), 2)} bar · l und p₁ · V₁ = ${num(p1, 1)} · ${num(V1)} = ${num(p1 * V1, 2)} bar · l ✓`,
     };
   },
 };
@@ -268,40 +263,37 @@ const K1 = {
   },
 };
 
-// ---------- K2: Das Thermometer ----------
+// ---------- K2: Der Druck im warmen Zylinder (allgemeine Gasgleichung) ----------
 
-const GAMMA = [["Ethanol", 1.1], ["Benzin", 1.0], ["Glycerin", 0.5], ["Quecksilber", 0.18]];
-function k2Fehler({ g, V0, A, t1, t2 }) {
-  const dT = t2 - t1, dV = g * V0 * dT;
+function k2Fehler({ p1, V1, t1, V2, t2 }) {
   return [
-    [dV, "Das ist das zusätzliche Volumen ΔV in mm³. Es verteilt sich auf die Kapillare: h = ΔV : A."],
-    [dV * A, "Geteilt, nicht malgenommen: Je dünner die Kapillare, desto höher steigt die Säule. h = ΔV : A."],
-    [(g * V0 * t2) / A, `ΔT ist der Temperaturunterschied: ${num(t2)} °C − ${num(t1)} °C = ${num(dT)} K.`],
-    [(g * V0 * dT) / (1000 * A), "Mit γ in ml/(l · K) und V₀ in ml kommt ΔV schon in mm³ heraus — nicht noch durch 1000 teilen."],
+    [(p1 * V1) / V2, "Die Temperatur fehlt: Auch sie steigt. p₂ = p₁ · (V₁ : V₂) · (T₂ : T₁)."],
+    [(p1 * K(t2)) / K(t1), "Das Volumen fehlt: Der Kolben drückt das Gas zusammen. p₂ = p₁ · (V₁ : V₂) · (T₂ : T₁)."],
+    [p1 * (V2 / V1) * (K(t2) / K(t1)), "Volumenverhältnis umgedreht: Kleineres Volumen heißt höherer Druck — V₁ : V₂."],
+    [p1 * (V1 / V2) * (t2 / t1), "Mit Grad Celsius geht es schief: Die Temperaturen gehören in Kelvin in die Gleichung."],
   ];
 }
 const K2_KANDIDATEN = spaeter(() => {
   const l = [];
-  for (const [stoff, g] of GAMMA) for (const V0 of [0.2, 0.4, 0.5, 0.8, 1]) for (const A of [0.1, 0.2, 0.25, 0.4, 0.5]) for (const [t1, t2] of [[15, 25], [18, 30], [20, 35], [10, 30], [20, 40]]) {
-    const h = (g * V0 * (t2 - t1)) / A;
-    if (glatt(h, 2) && h >= 2) l.push({ stoff, g, V0, A, t1, t2 });
+  for (const p1 of [1, 1.2, 1.5, 2]) for (const V1 of [1, 1.5, 2, 2.5, 3]) for (const V2 of [0.5, 0.75, 1, 1.25, 1.5, 2]) for (const t1 of [10, 15, 20, 25]) for (const t2 of [40, 60, 80, 100, 150]) {
+    if (V2 < V1) l.push({ p1, V1, t1, V2, t2 });
   }
   return l;
 });
 const K2 = {
   schwierigkeit: "komplex",
-  titel: "Das Thermometer",
-  abschnitt: "sec-fluessig",
+  titel: "Zusammengedrückt und warm",
+  abschnitt: "sec-gasgleichung",
   generate() {
-    const v = ohneKollision(K2_KANDIDATEN(), (v) => [(v.g * v.V0 * (v.t2 - v.t1)) / v.A, ...k2Fehler(v).map((x) => x[0])], 0.02);
-    const { stoff, g, V0, A, t1, t2 } = v, dT = t2 - t1, dV = g * V0 * dT, h = dV / A;
+    const v = ohneKollision(K2_KANDIDATEN(), (v) => [v.p1 * (v.V1 / v.V2) * (K(v.t2) / K(v.t1)), ...k2Fehler(v).map((x) => x[0])], 0.02);
+    const { p1, V1, t1, V2, t2 } = v, p2 = p1 * (V1 / V2) * (K(t2) / K(t1));
     return {
-      promptHtml: `Ein Thermometer enthält ${num(V0, 1)} ml ${stoff} (γ = ${num(g, 2)} ${MLK}). Die Kapillare hat den Querschnitt ${num(A, 2)} mm². Um wie viele Millimeter steigt die Säule, wenn die Temperatur von ${num(t1)} °C auf ${num(t2)} °C steigt?` + RUNDEN,
-      correct: r2(h), tolerance: TOL,
+      promptHtml: `In einem Zylinder sind ${num(V1, 2)} l Luft bei ${num(p1, 1)} bar und ${num(t1)} °C eingeschlossen. Der Kolben drückt die Luft auf ${num(V2, 2)} l zusammen; dabei erwärmt sie sich auf ${num(t2)} °C. Wie groß ist jetzt der Druck (in bar)?` + RUNDEN,
+      correct: r2(p2), tolerance: TOL,
       hinweis: hinweisAus(k2Fehler(v)),
-      tipps: [`Erst das zusätzliche Volumen: ΔV = γ · V₀ · ΔT mit ΔT = ${num(dT)} K — in mm³.`, "Es verteilt sich auf die Kapillare: h = ΔV : A."],
-      musterloesungHtml: `ΔT = ${num(t2)} °C − ${num(t1)} °C = ${num(dT)} K<br>ΔV = γ · V₀ · ΔT = ${num(g, 2)} · ${num(V0, 1)} · ${num(dT)} = ${num(dV, 3)} mm³<br>` +
-        `h = ${bruch("ΔV", "A")} = ${bruch(`${num(dV, 3)} mm³`, `${num(A, 2)} mm²`)} = <strong>${zwei(h)} mm</strong>`,
+      tipps: ["Volumen und Temperatur ändern sich beide: p₁ · V₁ : T₁ = p₂ · V₂ : T₂.", `p₂ = p₁ · ${bruch("V₁", "V₂")} · ${bruch("T₂", "T₁")} — T in Kelvin.`, `T₁ = ${num(K(t1), 2)} K, T₂ = ${num(K(t2), 2)} K`],
+      musterloesungHtml: `T₁ = ${num(K(t1), 2)} K, T₂ = ${num(K(t2), 2)} K<br>` +
+        `p₂ = p₁ · ${bruch("V₁", "V₂")} · ${bruch("T₂", "T₁")} = ${num(p1, 1)} bar · ${bruch(num(V1, 2) + " l", num(V2, 2) + " l")} · ${bruch(num(K(t2), 2) + " K", num(K(t1), 2) + " K")} ≈ <strong>${zwei(p2)} bar</strong>`,
     };
   },
 };

@@ -3,7 +3,7 @@
 // wer dort einen Helfer verbessert, sollte wissen, dass diese Kopie davon nichts mitbekommt. Geteilt
 // wird nur mountUebungsaufgaben() aus mathematik/aufgaben.js.
 
-import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../mathematik/aufgaben.js?v=2";
+import { mountUebungsaufgaben as mountUebungsaufgabenBasis } from "../../../mathematik/aufgaben.js?v=2";
 
 // ---------- DOM und SVG ----------
 
@@ -134,7 +134,9 @@ export function mountQuizze(quizze) {
 // aus „3x“ die 3 und aus „2 · 4“ die 2 und erkennte damit eine halbe Antwort als Zahl. Eine Einheit
 // dahinter darf stehen (auch „cm3“ statt „cm³“, „Grad C“ statt „°C“) — sie wird nicht umgerechnet:
 // Gefragt ist immer in der Einheit, die neben dem Feld oder in der Aufgabe steht.
-const EINHEIT = /^(?:mm|cm|dm|m|km)(?:²|³|2|3)?$|^(?:ml|l|L|Liter|bar|mbar|hPa|Pa|kJ|J|K|°C|°|GradC|Grad)$/i;
+// Einheiten, die hinter einer Zahl stehen dürfen — auch die Koeffizienten (mm/(m·K), ml/(l·K)), Massen und
+// Minuten der Übungsaufgaben.
+const EINHEIT = /^(?:mm|cm|dm|m|km)(?:²|³|2|3)?$|^(?:ml|l|L|Liter|bar|mbar|hPa|Pa|kJ|J|K|°C|°|GradC|Grad|kg|g|min|Minuten)$|^(?:mm\/\(m[·*]?K\)|ml\/\(l[·*]?K\))$/i;
 export function parseZahl(raw) {
   if (raw == null) return NaN;
   const s = String(raw).trim().replace(/\s/g, "").replace(/−/g, "-").replace(/\.(?=\d{3}(\D|$))/g, "").replace(",", ".");

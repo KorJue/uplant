@@ -78,10 +78,15 @@ Fassung mit einem ihrer Fehlerwerte zusammen, siebt `ohneKollision()` sie jedes 
 übrigen Fassungen bestehen weiter. Jeder Prüfteil läuft in `teil()`: Bricht er ab, weil die Seite
 eine Aufgabe nicht erzeugen konnte, wird das gemeldet, und die übrigen Teile laufen weiter.
 
-Die Physikseiten haben ihre fachlichen Prüfungen in `physik/` (bisher `test-thermische-ausdehnung.js`).
-Sie lesen die Diagramme wie die Mathematikseiten über `data-wert`/`data-wert-x` zurück und rechnen die
-Physik mit eigenen Konstanten nach (Boltzmann-Konstante, Molekülmasse, eigene Energiebilanz, Umkehrpunkte
-der Energiemulde durch Bisektion).
+Die Physikseiten haben ihre fachlichen Prüfungen in `physik/`, eine je Seite (`test-aggregatzustaende.js`,
+`test-laengenausdehnung.js`, `test-gasgesetze.js`). Gemeinsam ist `lib/physik.js`: eigene Konstanten und
+Tabellenwerte (α, γ), `lies()` für Linien, Pfade, Punkte, Rechtecke und Texte mit `data-rolle`, `welt()` und
+`weltY()` für den Maßstab, `messuhr()` (Zähler plus Zeigerwinkel), `pruefeQuizze()`, `pruefeGeruest()`
+(Abschnitte, Nummern, Ziele, Rahmen, Verweise, Menükarten bis zur Einheit, Formelsammlung) und `fuehreAus()`
+(hell alle Teile, dunkel der Kontrast; `UPLANT_NUR=teil1,teil2` für Gegenproben). Sie lesen die Diagramme wie
+die Mathematikseiten über `data-wert`/`data-wert-x` zurück und rechnen die Physik mit eigenen Verfahren nach
+(Boltzmann-Konstante, Molekülmasse, eigene Energiebilanz, Umkehrpunkte der Energiemulde durch Bisektion, Hub
+der Bimetallspitze durch numerische Integration).
 
 ## Eine fachliche Prüfung schreiben
 

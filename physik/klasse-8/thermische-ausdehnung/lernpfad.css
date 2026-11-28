@@ -418,6 +418,14 @@
 .ta-anteil.fest { fill: #8ab4ff; }
 .ta-anteil.fluessig { fill: #5eead4; }
 .ta-anteil.gas { fill: #ffbf6e; }
+/* Längenausdehnung: Bimetall (Stahl blau, Kupfer orange), Federkontakt grün, offen rot */
+.ta-streifen { fill: none; stroke-linecap: butt; }
+.ta-streifen.stahl { stroke: #1d4ed8; }
+.ta-streifen.kupfer { stroke: #b3650a; }
+.ta-feder { fill: none; stroke: #59636e; stroke-width: 1.4; }
+.ta-kontakt { fill: #157347; stroke: #1f2328; stroke-width: 1; }
+.ta-kontakt.offen { fill: #b3261e; }
+.ta-warn { fill: #b3261e; }
 
 :root[data-theme="dark"] .ta-feld { fill: #161b22; stroke: #3a424d; }
 :root[data-theme="dark"] .ta-titel, :root[data-theme="dark"] .ta-text { fill: #e6e8eb; }
@@ -451,3 +459,9 @@
 :root[data-theme="dark"] .ta-anteil.fest { fill: #3b5ba9; }
 :root[data-theme="dark"] .ta-anteil.fluessig { fill: #1b6b63; }
 :root[data-theme="dark"] .ta-anteil.gas { fill: #8a5a17; }
+:root[data-theme="dark"] .ta-streifen.stahl { stroke: #8ab4ff; }
+:root[data-theme="dark"] .ta-streifen.kupfer { stroke: #ffbf6e; }
+:root[data-theme="dark"] .ta-feder { stroke: #9aa4b1; }
+:root[data-theme="dark"] .ta-kontakt { fill: #6fd68f; stroke: #e6e8eb; }
+:root[data-theme="dark"] .ta-kontakt.offen { fill: #ff8a8a; }
+:root[data-theme="dark"] .ta-warn { fill: #ff8a8a; }

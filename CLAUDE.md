@@ -15,7 +15,7 @@ nach, bevor er etwas erfindet:
 | Terme (Klasse 8, fünf Seiten, Kachelmodell, Termeingabe) | `mathematik/klasse-8/terme/` |
 | Körper (Klasse 8, fünf Seiten, Raumpunkte, Schrägbild, Netze, Zylinder) | `mathematik/klasse-8/koerper/` |
 | Normalverteilung (MSS 13, nach Bigalke/Köhler, Standardisieren als durchgehende Bewegung, Φ-Tabelle) | `mathematik/mss13/01-wahrscheinlichkeitsrechnung/06-normalverteilung/` |
-| Thermische Ausdehnung (Physik, Klasse 8, Teilchenmodell, Energiemulde, Gasgesetze, allgemeine Gasgleichung in zwei Schritten) | `physik/klasse-8/thermische-ausdehnung.*` |
+| Thermische Ausdehnung (Physik, Klasse 8, drei Seiten: Aggregatzustände mit Teilchenmodell und Energiemulde, Längenausdehnung aus der Messreihe mit Fuge und Bimetall, Gasgesetze bis zur allgemeinen Gasgleichung in zwei Schritten) | `physik/klasse-8/thermische-ausdehnung/` |
 
 ## Arbeitsablauf für eine neue Seite
 
@@ -413,18 +413,26 @@ sind gegeben oder „gemessen“, Radien werden nie aus Flächen oder Volumen zu
 bräuchte die Quadratwurzel). Gemeinsam ist auch die Formelsammlung (`formelsammlung.pdf`, Präfix
 `kp`).
 
-Die **Physikseiten** (`physik/`, bisher Klasse 8: Thermische Ausdehnung) sind Lernpfade nach demselben
+Die **Physikseiten** (`physik/`, bisher Klasse 8: die Einheit Thermische Ausdehnung mit drei Seiten) sind Lernpfade nach demselben
 Bauplan und derselben Arbeitsanweisung wie die Mathematikseiten: Kontrollfrage je Abschnitt, Vernetzung,
 Formelsammlung als gerechnetes PDF, acht Übungsaufgaben über `mountUebungsaufgaben()`, Selbsteinschätzung,
 Hinweise für Lehrkräfte (dort mit dem Lehrplan Physik und den Bildungsstandards Physik), Menükarten mit
-`data-section="physik"`. `physik/klasse-8/seite.js` ist eine Kopie von `koerper/seite.js` mit
-Einheiten der Wärmelehre in `parseZahl()` (°C, K, bar, l, mm³ …). `test-lehrkraft.js`,
-`test-aufgaben-abschnitte.js` und `test-selbsteinschaetzung.js` finden die Physikseiten selbst; die
-fachlichen Prüfungen stehen in `tests/physik/`. Dort gilt besonders § 1: Modelle (Teilchenbewegung,
-Energiemulde) dürfen vereinfachen, aber was sie zeigen, muss stimmen — die Teilchen bewegen sich im
-Verhältnis der wirklichen mittleren Geschwindigkeiten, und was übertrieben gezeichnet ist (Längenänderung
-100-fach), sagt die Zeichnung dazu. Die Kelvin-Skala entsteht erst aus dem Gesetz von Gay-Lussac; vorher
-ist Kelvin nur die Einheit einer Temperaturdifferenz.
+`data-section="physik"`. Eine Einheit steht in einem eigenen Ordner mit Menü (`thermische-ausdehnung/index.html`)
+und teilt sich `seite.js` (eine Kopie von `koerper/seite.js` mit Einheiten der Wärmelehre in `parseZahl()`:
+°C, K, bar, l, mm³, kg, min, mm/(m·K) …), `gemeinsam.js` (Konstanten, Diagramme mit `data-wert`/`data-wert-x`,
+Zylinder), `lernpfad.css` und die Formelsammlung (`formelsammlung.pdf`, Präfix `ta`). Die Seiten bauen der
+Reihe nach aufeinander auf: 1 Aggregatzustände (Teilchenmodell, Übergänge, Energiemulde), 2 Längenausdehnung
+(Messreihe → ΔL ~ ΔT, Meterstücke → ΔL ~ L₀, α, rückwärts, Dehnungsfuge, Bimetall, Thermometer),
+3 Gasgesetze. `test-lehrkraft.js`, `test-aufgaben-abschnitte.js` und `test-selbsteinschaetzung.js` finden die
+Physikseiten selbst; die fachlichen Prüfungen stehen in `tests/physik/` (eine je Seite) und teilen
+`tests/lib/physik.js` (eigene Tabellenwerte, SVG lesen, Messuhr, Kontrollfragen, Gerüst, Ablauf). Dort gilt
+besonders § 1: Modelle (Teilchenbewegung, Energiemulde) dürfen vereinfachen, aber was sie zeigen, muss stimmen
+— die Teilchen bewegen sich im Verhältnis der wirklichen mittleren Geschwindigkeiten, und was übertrieben
+gezeichnet ist (Verlängerung 100-fach, Bimetallkrümmung 5-fach), sagt die Zeichnung dazu; der Ausschnitt der
+Dehnungsfuge ist maßstäblich. Der Bimetallkontakt sitzt auf einer Feder und folgt der Spitze bis zum
+Anschlag — so zeigt das Bild „geschlossen“ nie mit einer Lücke. Die Kelvin-Skala entsteht erst aus dem Gesetz
+von Gay-Lussac (Thema 3); vorher ist Kelvin nur die Einheit einer Temperaturdifferenz, und die Prüfungen der
+Themen 1 und 2 verlangen, dass dort weder „273“ noch „absolute“ steht.
 
 Ebenfalls geteilt ist `mathematik/terme.js`: die **Termaufgaben** (Ableitung,
 f′ und f″, Stammfunktion als Term eintippen) mit beliebig vielen Funktionen.

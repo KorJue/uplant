@@ -138,6 +138,18 @@ def fig_erwaermung():
     return svg(B_, H_, t)
 
 
+def tabelle_energie():
+    """Energie je Kilogramm — dieselben Werte wie die Erwärmungskurve; die Summe ist das Ende der Kurve."""
+    schritte = [("Eis erwärmen", f"{de(C_EIS, 1)} kJ je K", C_EIS * 20), ("schmelzen", f"{de(Q_S, 0)} kJ", Q_S),
+                ("Wasser erwärmen", f"{de(C_WASSER, 2)} kJ je K", C_WASSER * 100), ("verdampfen", f"{de(Q_V, 0)} kJ", Q_V),
+                ("Dampf erwärmen", f"{de(C_DAMPF, 1)} kJ je K", C_DAMPF * 20)]
+    gleich(sum(q for *_, q in schritte), 3091, "Summe der Erwärmungskurve")
+    kopf = "<tr><th>für 1 kg</th>" + "".join(f"<th>{n}</th>" for n, _, _ in schritte) + "</tr>"
+    z1 = "<tr><td class='l b'>Energie</td>" + "".join(f"<td>{w}</td>" for _, w, _ in schritte) + "</tr>"
+    z2 = "<tr><td class='l b'>in der Kurve</td>" + "".join(f"<td>{de(q, 0)} kJ</td>" for *_, q in schritte) + "</tr>"
+    return "<table>" + kopf + z1 + z2 + "</table>"
+
+
 # ---------- Figur 3: Energiemulde ----------
 
 A_M = 3.0
@@ -180,6 +192,69 @@ def fig_mulde():
 
 ALPHA = [("Aluminium", 0.023), ("Kupfer", 0.017), ("Stahl", 0.012), ("Beton", 0.012), ("Glas", 0.009)]
 GAMMA = [("Ethanol", 1.1), ("Benzin", 1.0), ("Glycerin", 0.5), ("Wasser (20 °C)", 0.21), ("Quecksilber", 0.18)]
+
+
+# ---------- Messreihe: ΔL über ΔT für 1 m Kupfer ----------
+
+def fig_messreihe():
+    a = 0.017
+    punkte = [(t, a * t) for t in range(0, 81, 10)]
+    for t, dl in punkte[1:]:
+        gleich(round(dl, 2) / t, a, f"Quotient bei {t} K", 1e-12)
+    B_, H_ = 300.0, 96.0
+    setze_flaeche(B_, H_)
+    r = Rahmen(24, 8, 266, 68, 0, 85, 0, 1.5)
+    t = r.achsen([0, 10, 20, 30, 40, 50, 60, 70, 80], [0, 0.5, 1, 1.5], "ΔT in K", "ΔL in mm", 0, 1)
+    t.append(r.zug([(0, 0), (80, a * 80)], BLAU, 1.0, "3 2"))
+    for x, y in punkte:
+        t.append(kreis((r.X(x), r.Y(y)), 1.7, GRUEN, GRUEN, 0.6))
+    # Steigungsdreieck: 40 K mehr, 0,68 mm mehr — derselbe Quotient wie jede einzelne Messung.
+    gleich(a * 60 - a * 20, 0.68, "Steigungsdreieck")
+    t.append(r.zug([(20, a * 20), (60, a * 20), (60, a * 60)], ORANGE, 0.9))
+    t.append(txt(r.X(40), r.Y(a * 20) + 7, "ΔT = 40 K", ORANGE, 5.2, 700))
+    t.append(txt(r.X(60) + 3, r.Y(a * 40) + 2, "ΔL = 0,68 mm", ORANGE, 5.2, 700, "start"))
+    t.append(txt(r.X(4), r.Y(1.3), "Kupferrohr, L₀ = 1 m: je Kelvin 0,017 mm", SCHWARZ, 5.4, 700, "start"))
+    return svg(B_, H_, t)
+
+
+# ---------- Bimetall: zwei Bögen mit demselben Winkel ----------
+
+def fig_bimetall():
+    L, d, dT = 60.0, 0.5, 100
+    l_cu, l_st = L * (1 + 0.017 * dT / 1000), L * (1 + 0.012 * dT / 1000)
+    theta = (l_cu - l_st) / d
+    gleich(l_cu - l_st, 0.03, "Längenunterschied bei 100 K", 1e-12)
+    gleich(theta, 0.06, "Winkel bei 100 K", 1e-12)
+    # Gleicher Winkel heißt: Die Radien unterscheiden sich genau um den Abstand der Mittellinien.
+    gleich(l_cu / theta - l_st / theta, d, "Radien der Bögen", 1e-9)
+    UEBER = 8
+    B_, H_ = 300.0, 96.0
+    setze_flaeche(B_, H_)
+    x0, y0, lang, dicke = 34, 78, 210, 3.2
+    w = UEBER * theta
+    R = lang / w
+
+    def bogen(v, gebogen=True):
+        pts = []
+        for i in range(61):
+            u = i / 60
+            if gebogen:
+                pts.append((x0 + (R - v) * math.sin(w * u), y0 - (R - (R - v) * math.cos(w * u))))
+            else:
+                pts.append((x0 + lang * u, y0 - v))
+        return pts
+    t = [rect(x0 - 14, y0 - 14, 14, 24, SCHWARZ, "#9aa4b1", 0.6)]
+    t.append(polyline(bogen(0, False), GRAU, 0.9, "2.5 1.5"))   # kalt: nur die Mittellinie, damit der warme Streifen vorn bleibt
+    t.append(polyline(bogen(dicke / 2), BLAU, dicke))
+    t.append(polyline(bogen(-dicke / 2), ORANGE, dicke))
+    xs, ys = bogen(0)[-1]
+    t.append(txt(x0 + lang + 4, y0 + 2, "kalt: gerade", GRAU, 5.4, 400, "start"))
+    t.append(txt(xs + 4, ys + 2, "warm", SCHWARZ, 5.6, 700, "start"))
+    xm, ym = bogen(0)[38]
+    t.append(txt(xm - 4, ym - 6, "Stahl (innen)", BLAU, 5.4, 700, "end"))
+    t.append(txt(xm + 6, ym + 9, "Kupfer (außen)", ORANGE, 5.4, 700, "start"))
+    t.append(txt(4, 8, f"Krümmung {UEBER}-fach vergrößert", GRAU, 5.2, 400, "start"))
+    return svg(B_, H_, t)
 
 
 def tabelle_alpha():
@@ -291,6 +366,12 @@ def wert(ausdruck):
 RECHNUNGEN = [
     # (Rechnung wie in der Quelle, Ergebnis, Toleranz der angegebenen Stellen)
     ("0,012 · 30 · 40", "14,4", 1e-9),
+    ("9,6 : (0,012 · 20)", "40", 1e-9),
+    ("0,012 · 100 · 30", "36", 1e-9),
+    ("36 + 0,012 · 100 · 30", "72", 1e-9),
+    ("0,06 · (0,017 − 0,012) · 100", "0,03", 1e-9),
+    ("0,03 : 0,5", "0,06", 1e-9),
+    ("2 · (334 + 4,19 · 20)", "835,6", 1e-9),
     ("1,1 · 0,5 · 10", "5,5", 1e-9),
     ("5,5 : 0,2", "27,5", 1e-9),
     ("1,0 · 2,0 : 0,5", "4,0", 1e-9),
@@ -310,7 +391,8 @@ def pruefe_quelle():
     return len(RECHNUNGEN)
 
 
-FIGUREN = [fig_teilchen, fig_erwaermung, fig_mulde, tabelle_alpha, tabelle_gamma, fig_gay_lussac, fig_boyle, fig_amontons, fig_gasgleichung]
+FIGUREN = [fig_teilchen, fig_erwaermung, tabelle_energie, fig_mulde, fig_messreihe, tabelle_alpha, fig_bimetall, tabelle_gamma,
+           fig_gay_lussac, fig_boyle, fig_amontons, fig_gasgleichung]
 
 if __name__ == "__main__":
     print(f"{pruefe_quelle()} Rechnungen der Quelle nachgerechnet")

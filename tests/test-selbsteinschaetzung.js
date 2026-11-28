@@ -39,12 +39,21 @@ const selbstGefunden = (teil, basis = "mathematik/klasse-8") => {
     .filter((n) => n.endsWith(".html") && fs.readFileSync(path.join(dir, n), "utf-8").includes('id="exercises-mount"'))
     .sort().map((n) => `/${path.posix.join(basis, teil, n)}`);
 };
-// Die Physikseiten der Klasse 8 sind gebaut wie die Mathematikseiten der Klasse 8 (ein Satz je Ziel).
+// Die Physikseiten der Klasse 8 sind gebaut wie die Mathematikseiten der Klasse 8 (ein Satz je Ziel). Sie stehen
+// in Ordnern je Einheit (thermische-ausdehnung/ …) — deshalb wird rekursiv gesucht.
+function physikSeiten(dir, out = []) {
+  for (const e of (fs.existsSync(dir) ? fs.readdirSync(dir, { withFileTypes: true }) : [])) {
+    const voll = path.join(dir, e.name);
+    if (e.isDirectory()) physikSeiten(voll, out);
+    else if (e.name.endsWith(".html") && fs.readFileSync(voll, "utf-8").includes('id="exercises-mount"')) out.push("/" + path.relative(WURZEL, voll).split(path.sep).join("/"));
+  }
+  return out.sort();
+}
 const KLASSE_8 = [
   ...["flaecheninhalte", "grundkonstruktionen", "satz-des-thales", "kreis", "zusammengesetzte-figuren"].map((n) => `/mathematik/klasse-8/geometrie/${n}.html`),
   ...selbstGefunden("terme"),
   ...selbstGefunden("koerper"),
-  ...selbstGefunden("klasse-8", "physik"),
+  ...physikSeiten(path.join(WURZEL, "physik", "klasse-8")),
 ];
 // Die MSS-Lernpfade: jede Seite unter mss11/mss13 mit Übungsaufgaben. Ihre Sätze stehen je Abschnitt,
 // nicht je Ziel aus „Worum geht es hier?“ — die Anzahl wird dort nicht verglichen.
@@ -67,7 +76,10 @@ const SEITEN = FILTER.length ? ALLE_SEITEN.filter((p) => FILTER.some((f) => p.in
 const MINDESTENS = 51;
 
 const lies = (p) => fs.readFileSync(path.join(WURZEL, p.slice(1)), "utf-8");
-const ohneTags = (s) => s.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+// Wie der Browser den Satz zeigt: ohne Tags, Zeichenreferenzen aufgelöst („σ &gt; 3“ ist „σ > 3“ — ohne das
+// meldete die Prüfung einen veränderten Satz, wo nur die Schreibweise im Quelltext anders war).
+const ENTITAETEN = { "&gt;": ">", "&lt;": "<", "&amp;": "&", "&nbsp;": " ", "&quot;": "\"" };
+const ohneTags = (s) => s.replace(/<[^>]+>/g, "").replace(/&(gt|lt|amp|nbsp|quot);/g, (e) => ENTITAETEN[e]).replace(/\s+/g, " ").trim();
 
 (async () => {
   pruefe(ALLE_SEITEN.length >= MINDESTENS, `nur ${ALLE_SEITEN.length} Seiten — erwartet mindestens ${MINDESTENS}`);
