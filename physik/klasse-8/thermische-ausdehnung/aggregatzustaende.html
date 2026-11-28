@@ -19,7 +19,7 @@
 </nav>
 <header class="page-header">
   <h1>Aggregatzustände</h1>
-  <p>Ein Selbstlernpfad: fest, flüssig und gasförmig im Teilchenmodell, die Übergänge zwischen ihnen, die Erwärmungskurve von Wasser und die Bindungsenergie — mit Kontrollfragen und acht Übungsaufgaben.</p>
+  <p>Ein Selbstlernpfad: fest, flüssig und gasförmig im Teilchenmodell, der absolute Nullpunkt und die Kelvin-Skala, die Übergänge zwischen den Aggregatzuständen, die Erwärmungskurve von Wasser und die Bindungsenergie — mit Kontrollfragen und acht Übungsaufgaben.</p>
 </header>
 
 <main class="menu-main">
@@ -29,6 +29,7 @@
     <p>Eis schmilzt, Wasser kocht, Dampf kondensiert an der kalten Scheibe. Was dabei mit den Teilchen geschieht und wohin die Energie geht, die man zuführt, ist der Anfang der ganzen Wärmelehre — und der Schlüssel dazu, warum sich Stoffe beim Erwärmen ausdehnen. Am Ende kannst du:</p>
     <ul class="lern-intro-list">
       <li>die drei <span class="term">Aggregatzustände</span> im Teilchenmodell beschreiben — und was sich ändert, wenn es wärmer wird</li>
+      <li>den <span class="term">absoluten Nullpunkt</span> mit dem Teilchenmodell erklären und Temperaturen zwischen Grad Celsius und <span class="term">Kelvin</span> umrechnen</li>
       <li>die <span class="term">Übergänge</span> zwischen den Aggregatzuständen benennen, die Erwärmungskurve von Wasser lesen und mit der Energie je Kilogramm rechnen</li>
       <li>mit der <span class="term">Bindungsenergie</span> erklären, warum die Temperatur beim Schmelzen und Sieden stehen bleibt und warum sich Stoffe ausdehnen</li>
     </ul>
@@ -57,14 +58,49 @@
     </div>
     <div class="achtung-box">
       <span class="box-label">Achtung — die Teilchen selbst werden nicht größer</span>
-      Wenn sich ein Körper beim Erwärmen ausdehnt, wachsen nicht die Teilchen. Sie bewegen sich heftiger und brauchen dadurch mehr Platz — ihr <em>Abstand</em> wird größer. Warum das so ist, zeigt Abschnitt 3; wie man es berechnet, Thema 2 „Längenausdehnung“.
+      Wenn sich ein Körper beim Erwärmen ausdehnt, wachsen nicht die Teilchen. Sie bewegen sich heftiger und brauchen dadurch mehr Platz — ihr <em>Abstand</em> wird größer. Warum das so ist, zeigt Abschnitt 4; wie man es berechnet, Thema 2 „Längenausdehnung“.
     </div>
     <div class="quiz" id="quiz-teilchen"></div>
   </section>
 
-  <!-- 2. Übergänge -->
+  <!-- 2. Absoluter Nullpunkt und Kelvin-Skala -->
+  <section class="card" id="sec-kelvin">
+    <h2>2. Wie kalt kann es werden? Der absolute Nullpunkt und die Kelvin-Skala</h2>
+    <p>Wärmer heißt schneller — also heißt kälter langsamer. Je weiter ein Stoff abkühlt, desto weniger Bewegungsenergie haben seine Teilchen. Wie weit geht das? Kühle mit dem Regler ab und beobachte die Pfeile: Sie zeigen, wie schnell sich die Teilchen im Mittel bewegen. Rechts steht ihre Bewegungsenergie, verglichen mit der bei 0 °C.</p>
+    <div class="widget">
+      <div class="btn-row">
+        <label>Temperatur ϑ: <input type="range" id="kv-stufe" min="0" max="68" step="1" value="30" style="vertical-align:middle;width:16rem"> <span id="kv-stufe-anzeige" class="wert farbe-rot"></span></label>
+      </div>
+      <div class="th-wrap" id="kv-mount"></div>
+      <div class="th-bilanz" id="kv-bilanz"></div>
+      <div id="kv-text" class="event-result"></div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Der absolute Nullpunkt</span>
+      Kühlt man um 1 °C ab, nimmt die Bewegungsenergie der Teilchen immer um denselben Betrag ab: um <span class="bruch"><span class="z">1</span><span class="n">273,15</span></span> ihres Wertes bei 0 °C. Nach 273,15 solchen Schritten ist sie aufgebraucht — die Teilchen stehen still. Kälter als <strong>−273,15 °C</strong> kann es deshalb nicht werden: Das ist der <strong>absolute Nullpunkt</strong>.
+    </div>
+    <div class="definition-box">
+      <span class="box-label">Die Kelvin-Skala</span>
+      Die Kelvin-Skala beginnt am absoluten Nullpunkt und hat dieselben Schritte wie die Celsius-Skala. Die Temperatur in Kelvin heißt <strong>absolute Temperatur</strong> T:
+      <div class="formula-block">T = ϑ + 273,15 K &nbsp;&nbsp;&nbsp; 0 K = −273,15 °C &nbsp;&nbsp;&nbsp; 0 °C = 273,15 K</div>
+      Ein Temperaturunterschied von 1 K ist so groß wie einer von 1 °C. Die Bewegungsenergie der Teilchen ist proportional zur absoluten Temperatur: Bei doppelt so vielen Kelvin haben die Teilchen doppelt so viel Bewegungsenergie.
+    </div>
+    <div class="beispiel-box">
+      <span class="box-label">Durchgerechnet — umrechnen</span>
+      Zimmertemperatur 20 °C: T = 20 + 273,15 = 293,15 K. Siedendes Wasser: 100 °C = 373,15 K. Flüssiger Stickstoff siedet bei 77 K: ϑ = 77 − 273,15 = −196,15 °C.<br>
+      Bei 100 °C haben die Teilchen 373,15 : 273,15 ≈ 1,37-mal so viel Bewegungsenergie wie bei 0 °C.
+    </div>
+    <div class="achtung-box">
+      <span class="box-label">Achtung — Kelvin ohne „Grad“, und nie negativ</span>
+      Man schreibt 293,15 K, nicht „293,15 °K“, und sagt „Kelvin“, nicht „Grad Kelvin“. Negative Kelvin-Temperaturen gibt es nicht. Und 40 °C ist nicht „doppelt so warm“ wie 20 °C: In Kelvin sind es 313,15 K und 293,15 K — die Teilchen haben nur rund 7 % mehr Bewegungsenergie.
+    </div>
+    <p class="hinweis-box">💡 Die Skala ist nach Lord Kelvin (William Thomson, 1824–1907) benannt. Ganz erreichen lässt sich der absolute Nullpunkt nicht; in Laboren kommt man ihm bis auf Milliardstel Kelvin nahe. Ganz genau genommen bleibt nach der Quantenphysik eine winzige Restbewegung — Wärmebewegung haben die Teilchen dort aber keine mehr.</p>
+    <div class="quiz" id="quiz-kelvin"></div>
+  </section>
+
+  <!-- 3. Übergänge -->
   <section class="card" id="sec-uebergaenge">
-    <h2>2. Übergänge zwischen den Aggregatzuständen</h2>
+    <h2>3. Übergänge zwischen den Aggregatzuständen</h2>
     <p>Ein Kilogramm Eis von −20 °C wird gleichmäßig erwärmt, bis Wasserdampf von 120 °C entsteht. Mit dem Regler führst du Energie zu. Beobachte, wann die Temperatur steigt — und wann nicht.</p>
     <div class="widget">
       <div class="btn-row">
@@ -104,9 +140,9 @@
     <div class="quiz" id="quiz-uebergaenge"></div>
   </section>
 
-  <!-- 3. Bindungsenergie -->
+  <!-- 4. Bindungsenergie -->
   <section class="card" id="sec-bindung">
-    <h2>3. Bindungsenergie — warum Stoffe sich ausdehnen</h2>
+    <h2>4. Bindungsenergie — warum Stoffe sich ausdehnen</h2>
     <p>Benachbarte Teilchen ziehen sich an, kommen sie sich zu nahe, stoßen sie sich ab. Das Bild zeigt die Energie zweier Teilchen in Abhängigkeit von ihrem Abstand r — eine <span class="term">Energiemulde</span>. In Ruhe liegt Teilchen B im tiefsten Punkt, beim Abstand r<sub>0</sub>. Führst du Energie zu, schwingt es zwischen zwei Umkehrpunkten hin und her.</p>
     <div class="widget">
       <div class="btn-row">
@@ -133,19 +169,19 @@
 
   <!-- Vernetzung -->
   <section class="card" id="sec-vernetzung">
-    <h2>4. Zusammenhänge</h2>
+    <h2>5. Zusammenhänge</h2>
     <ul class="vernetzung-liste">
       <li><strong>Baut auf:</strong> Dem Teilchenmodell aus dem naturwissenschaftlichen Unterricht — hier um die Temperatur als Maß für die Teilchenbewegung und die Bindungsenergie erweitert.</li>
       <li><strong>Baut auf:</strong> <a href="../../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-proportional">Proportionalen Zuordnungen</a> — doppelte Masse, doppelte Energie zum Schmelzen.</li>
-      <li><strong>Führt weiter zu:</strong> <a href="laengenausdehnung.html">Thema 2 „Längenausdehnung“</a> — wie stark sich ein Stab beim Erwärmen verlängert, und warum der mittlere Teilchenabstand dabei wächst.</li>
-      <li><strong>Führt weiter zu:</strong> <a href="gasgesetze.html">Thema 3 „Gasgesetze“</a> — im gasförmigen Zustand hängen Druck, Volumen und Temperatur besonders einfach zusammen.</li>
+      <li><strong>Führt weiter zu:</strong> <a href="laengenausdehnung.html">Thema 2 „Längenausdehnung“</a> — wie stark sich ein Stab beim Erwärmen verlängert, und warum der mittlere Teilchenabstand dabei wächst. Temperaturunterschiede stehen dort in Kelvin.</li>
+      <li><strong>Führt weiter zu:</strong> <a href="gasgesetze.html">Thema 3 „Gasgesetze“</a> — im gasförmigen Zustand hängen Druck, Volumen und Temperatur besonders einfach zusammen, und zwar mit der absoluten Temperatur. Das Gesetz von Gay-Lussac führt dort noch einmal auf denselben absoluten Nullpunkt.</li>
     </ul>
   </section>
 
   <!-- Formelsammlung -->
   <section class="card" id="sec-formelsammlung">
-    <h2>5. Formelsammlung</h2>
-    <p>Die Formelsammlung gilt für alle drei Seiten der Einheit: Teilchenmodell, Übergänge und Erwärmungskurve, Bindungsenergie, Längen- und Volumenänderung mit Tabellen, Bimetall, Kelvin-Skala, die drei Gasgesetze und die allgemeine Gasgleichung — mit gerechneten Bildern, auf zwei Seiten zum Ausdrucken.</p>
+    <h2>6. Formelsammlung</h2>
+    <p>Die Formelsammlung gilt für alle drei Seiten der Einheit: Teilchenmodell, absoluter Nullpunkt und Kelvin-Skala, Übergänge und Erwärmungskurve, Bindungsenergie, Längen- und Volumenänderung mit Tabellen, Bimetall, die drei Gasgesetze und die allgemeine Gasgleichung — mit gerechneten Bildern, auf zwei Seiten zum Ausdrucken.</p>
     <div class="btn-row">
       <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
     </div>
@@ -153,7 +189,7 @@
 
   <!-- Übungsaufgaben -->
   <section class="card" id="sec-uebungen">
-    <h2>6. Übungsaufgaben</h2>
+    <h2>7. Übungsaufgaben</h2>
     <p>Acht Aufgaben auf vier Stufen, je zwei auf jeder. Alle löst du <strong>hier auf der Seite</strong>; mit dem Würfel-Knopf stellst du dieselbe Aufgabe jederzeit mit neuen Zahlen neu. Tipps gibt es auf Knopfdruck, nach dem Prüfen steht die Musterlösung darunter.</p>
     <p class="progress-note">Gib Zahlen mit Komma ein, zum Beispiel 3,41. Eine Einheit dahinter darf stehen; gerechnet wird in der Einheit, die in der Aufgabe genannt ist.</p>
     <div id="exercises-mount"></div>
@@ -165,6 +201,7 @@
     <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
     <ul class="se-liste" id="se-liste">
       <li data-abschnitt="sec-teilchen">Ich kann die drei Aggregatzustände im Teilchenmodell beschreiben und sagen, was sich beim Erwärmen ändert.</li>
+      <li data-abschnitt="sec-kelvin">Ich kann den absoluten Nullpunkt mit dem Teilchenmodell erklären und Temperaturen zwischen Grad Celsius und Kelvin umrechnen.</li>
       <li data-abschnitt="sec-uebergaenge">Ich kann die Übergänge benennen, die Erwärmungskurve von Wasser lesen und mit der Energie je Kilogramm rechnen.</li>
       <li data-abschnitt="sec-bindung">Ich kann mit der Bindungsenergie erklären, warum die Temperatur beim Schmelzen und Sieden stehen bleibt und warum sich Stoffe ausdehnen.</li>
     </ul>
@@ -182,6 +219,6 @@
 
 <script src="../../../assets/lehrkraft.js"></script>
 <script src="../../../assets/selbsteinschaetzung.js"></script>
-<script type="module" src="aggregatzustaende.js?v=2"></script>
+<script type="module" src="aggregatzustaende.js?v=3"></script>
 </body>
 </html>

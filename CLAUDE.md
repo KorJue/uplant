@@ -15,7 +15,7 @@ nach, bevor er etwas erfindet:
 | Terme (Klasse 8, fünf Seiten, Kachelmodell, Termeingabe) | `mathematik/klasse-8/terme/` |
 | Körper (Klasse 8, fünf Seiten, Raumpunkte, Schrägbild, Netze, Zylinder) | `mathematik/klasse-8/koerper/` |
 | Normalverteilung (MSS 13, nach Bigalke/Köhler, Standardisieren als durchgehende Bewegung, Φ-Tabelle) | `mathematik/mss13/01-wahrscheinlichkeitsrechnung/06-normalverteilung/` |
-| Thermische Ausdehnung (Physik, Klasse 8, drei Seiten: Aggregatzustände mit Teilchenmodell und Energiemulde, Längenausdehnung aus der Messreihe mit Fuge und Bimetall, Gasgesetze bis zur allgemeinen Gasgleichung in zwei Schritten) | `physik/klasse-8/thermische-ausdehnung/` |
+| Thermische Ausdehnung (Physik, Klasse 8, drei Seiten: Aggregatzustände mit Teilchenmodell, absolutem Nullpunkt und Kelvin-Skala und Energiemulde, Längenausdehnung aus der Messreihe mit Fuge und Bimetall, Gasgesetze bis zur allgemeinen Gasgleichung in zwei Schritten) | `physik/klasse-8/thermische-ausdehnung/` |
 
 ## Arbeitsablauf für eine neue Seite
 
@@ -421,7 +421,7 @@ Hinweise für Lehrkräfte (dort mit dem Lehrplan Physik und den Bildungsstandard
 und teilt sich `seite.js` (eine Kopie von `koerper/seite.js` mit Einheiten der Wärmelehre in `parseZahl()`:
 °C, K, bar, l, mm³, kg, min, mm/(m·K) …), `gemeinsam.js` (Konstanten, Diagramme mit `data-wert`/`data-wert-x`,
 Zylinder), `lernpfad.css` und die Formelsammlung (`formelsammlung.pdf`, Präfix `ta`). Die Seiten bauen der
-Reihe nach aufeinander auf: 1 Aggregatzustände (Teilchenmodell, Übergänge, Energiemulde), 2 Längenausdehnung
+Reihe nach aufeinander auf: 1 Aggregatzustände (Teilchenmodell, absoluter Nullpunkt und Kelvin-Skala, Übergänge, Energiemulde), 2 Längenausdehnung
 (Messreihe → ΔL ~ ΔT, Meterstücke → ΔL ~ L₀, α, rückwärts, Dehnungsfuge, Bimetall, Thermometer),
 3 Gasgesetze. `test-lehrkraft.js`, `test-aufgaben-abschnitte.js` und `test-selbsteinschaetzung.js` finden die
 Physikseiten selbst; die fachlichen Prüfungen stehen in `tests/physik/` (eine je Seite) und teilen
@@ -430,9 +430,13 @@ besonders § 1: Modelle (Teilchenbewegung, Energiemulde) dürfen vereinfachen, a
 — die Teilchen bewegen sich im Verhältnis der wirklichen mittleren Geschwindigkeiten, und was übertrieben
 gezeichnet ist (Verlängerung 100-fach, Bimetallkrümmung 5-fach), sagt die Zeichnung dazu; der Ausschnitt der
 Dehnungsfuge ist maßstäblich. Der Bimetallkontakt sitzt auf einer Feder und folgt der Spitze bis zum
-Anschlag — so zeigt das Bild „geschlossen“ nie mit einer Lücke. Die Kelvin-Skala entsteht erst aus dem Gesetz
-von Gay-Lussac (Thema 3); vorher ist Kelvin nur die Einheit einer Temperaturdifferenz, und die Prüfungen der
-Themen 1 und 2 verlangen, dass dort weder „273“ noch „absolute“ steht.
+Anschlag — so zeigt das Bild „geschlossen“ nie mit einer Lücke. Die Kelvin-Skala entsteht in Thema 1, Abschnitt 2,
+aus dem Teilchenmodell (Vorgabe des Projektinhabers): Kälter heißt langsamer, bei −273,15 °C stehen die Teilchen
+still, und die Bewegungsenergie ist proportional zu T — ohne die Formel der Bewegungsenergie, die kommt später. Der
+Regler erreicht den Nullpunkt genau (Stufen statt Zahlenwerte) und nie darunter. Thema 2 und 3 verweisen auf
+`aggregatzustaende.html#sec-kelvin`, statt die Skala neu einzuführen; Thema 3 erkennt mit Gay-Lussac denselben
+Nullpunkt wieder. Die Prüfungen wachen darüber: vor Abschnitt 2 weder „273“ noch „absolute“, in Thema 2 und 3 der
+Verweis, in Thema 3 keine zweite Definition der Skala.
 
 Ebenfalls geteilt ist `mathematik/terme.js`: die **Termaufgaben** (Ableitung,
 f′ und f″, Stammfunktion als Term eintippen) mit beliebig vielen Funktionen.

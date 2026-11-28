@@ -12,7 +12,8 @@
 //   6. BIMETALL: zwei parallele Bögen, Kupfer außen, gezeichneter Winkel = Faktor · θ; Hub der Spitze durch
 //      numerische Integration; Kontakt folgt der Spitze bis zum Anschlag.
 //   7. VOLUMEN: ΔV = γ · V0 · ΔT, Säule an der Skala; Tabelle = Lehrbuch; der Würfel im Beispiel.
-//   Dazu die Kontrollfragen, alle Aufgaben mit ihren Fehlern, das Gerüst und der Dunkelmodus.
+//   Dazu die Kontrollfragen, alle Aufgaben mit ihren Fehlern, das Gerüst (mit dem Verweis auf die Kelvin-Skala aus
+//   Thema 1) und der Dunkelmodus.
 
 "use strict";
 
@@ -323,14 +324,16 @@ async function geruest(page) {
   await pruefeGeruest(page, pruefe, {
     seite: SEITE, abschnitte: ABSCHNITTE, ziele: 7, brot: "2. Längenausdehnung",
     karten: [["physik/klasse-8/thermische-ausdehnung/index.html", "laengenausdehnung.html", "2. Längenausdehnung"]],
-    // Kein Vorgriff: Kelvin ist hier nur die Einheit einer Temperaturdifferenz; die absolute Temperatur
-    // entsteht erst in Thema 3 aus dem Gesetz von Gay-Lussac.
-    ohneAbsolut: ABSCHNITTE,
     formeln: ["ΔL = α · L0 · ΔT", "ΔV = γ · V0 · ΔT", "s0 = α · L0 · (ϑmax − ϑBau)", "Bimetall", "Messreihe"],
   });
-  // Kelvin wird in Abschnitt 1 als Einheit einer Temperaturdifferenz eingeführt — als Unterschied, nicht als Skala.
-  const s1 = await page.evaluate(() => document.getElementById("sec-messung").innerText);
-  pruefe(/1 K ist ein Unterschied von 1 °C/.test(s1), "Gerüst: Abschnitt 1 führt Kelvin nicht als Einheit einer Temperaturdifferenz ein");
+  // Kelvin kommt aus Thema 1: Abschnitt 1 verweist auf die Kelvin-Skala und braucht hier nur Unterschiede — und
+  // rechnet vor, dass ein Unterschied in °C und in K dieselbe Zahl hat.
+  const s1 = await page.evaluate(() => ({ text: document.getElementById("sec-messung").innerText, links: [...document.querySelectorAll("#sec-messung a")].map((a) => a.getAttribute("href")) }));
+  pruefe(/1 K ist ein Unterschied von 1 °C/.test(s1.text) && s1.links.includes("aggregatzustaende.html#sec-kelvin"), "Gerüst: Abschnitt 1 verweist nicht auf die Kelvin-Skala aus Thema 1");
+  const ach = await kasten(page, "sec-messung", "achtung-box");
+  pruefe(ach.includes(`${String(70 + 273.15).replace(".", ",")} K − ${String(20 + 273.15).replace(".", ",")} K = ${70 - 20} K`), "Gerüst: der Achtung-Kasten rechnet den Unterschied in Kelvin nicht vor");
+  const vernetzung = await page.evaluate(() => [...document.querySelectorAll("#sec-vernetzung a")].map((a) => a.getAttribute("href")));
+  pruefe(vernetzung.includes("aggregatzustaende.html#sec-kelvin"), "Gerüst: die Vernetzung nennt die Kelvin-Skala aus Thema 1 nicht");
 }
 
 fuehreAus(bericht, SEITE, [

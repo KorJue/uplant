@@ -111,6 +111,38 @@ def fig_teilchen():
     return svg(B_, H_, t)
 
 
+# ---------- Absoluter Nullpunkt: Bewegungsenergie über ϑ, darunter die Kelvin-Skala ----------
+
+def fig_kelvin():
+    E = lambda th: (th + T0) / T0          # Bewegungsenergie, verglichen mit 0 °C
+    gleich(E(-T0), 0, "Bewegungsenergie am absoluten Nullpunkt")
+    gleich(E(0), 1, "Bewegungsenergie bei 0 °C")
+    # Proportional zu T: doppelte Kelvin-Zahl, doppelte Energie.
+    gleich(E(2 * T0 - T0) / E(T0 - T0), 2, "doppelte absolute Temperatur")
+    gleich(v_mittel(-T0), 0, "Stillstand am absoluten Nullpunkt")
+    B_, H_ = 300.0, 112.0
+    setze_flaeche(B_, H_)
+    r = Rahmen(24, 8, 256, 68, -280, 400, 0, 2.5)
+    t = r.achsen([-200, -100, 0, 100, 200, 300, 400], [0, 1, 2], "", "Bewegungsenergie, verglichen mit 0 °C", 0, 0)
+    t.append(txt(r.X(400) + 14, r.Y(0) + 8, "°C", GRAU, 5.4, 400, "end"))
+    t.append(r.zug([(-T0, 0), (400, E(400))], BLAU, 1.5))
+    t.append(kreis((r.X(-T0), r.Y(0)), 1.8, ROT, ROT, 0.8))
+    # Beschriftung über der Geraden (sonst kreuzt die Linie den Text), mit einem Zeiger hinunter zum Punkt.
+    t.append(txt(r.X(-T0) + 2, r.Y(1.55), "absoluter Nullpunkt: Stillstand", ROT, 5.2, 700, "start"))
+    t.append(lin((r.X(-T0), r.Y(1.45)), (r.X(-T0), r.Y(0.08)), ROT, 0.6, "1.5 1"))
+    # Die Kelvin-Skala: gleiche Schritte, jede Marke bei ϑ = T − 273,15.
+    yk = r.Y(0) + 20
+    t.append(lin((r.X(-T0), yk), (r.X(400), yk), SCHWARZ, 0.8))
+    for K in range(0, 601, 100):
+        x = r.X(K - T0)
+        gleich((K - T0) + T0, K, f"Kelvin-Marke {K}")
+        t.append(lin((x, yk), (x, yk + 2), SCHWARZ, 0.6))
+        t.append(txt(x, yk + 8, de(K, 0), GRAU, 5.4))
+    t.append(txt(r.X(400) + 14, yk + 8, "K", GRAU, 5.4, 400, "end"))
+    gleich(r.X(273.15 - T0), r.X(0), "0 °C = 273,15 K")
+    return svg(B_, H_, t)
+
+
 # ---------- Figur 2: Erwärmungskurve von 1 kg Wasser ----------
 
 C_EIS, C_WASSER, C_DAMPF, Q_S, Q_V = 2.1, 4.19, 2.0, 334, 2256
@@ -379,6 +411,7 @@ RECHNUNGEN = [
     ("3,0 · 333,15 : 293,15", "3,41", 0.005),
     ("4,0 · 1,0 : 0,26 · 223,15 : 288,15", "11,91", 0.005),
     ("37 + 273,15", "310,15", 1e-9),
+    ("77 − 273,15", "−196,15", 1e-9),
 ]
 
 
@@ -391,7 +424,7 @@ def pruefe_quelle():
     return len(RECHNUNGEN)
 
 
-FIGUREN = [fig_teilchen, fig_erwaermung, tabelle_energie, fig_mulde, fig_messreihe, tabelle_alpha, fig_bimetall, tabelle_gamma,
+FIGUREN = [fig_teilchen, fig_kelvin, fig_erwaermung, tabelle_energie, fig_mulde, fig_messreihe, tabelle_alpha, fig_bimetall, tabelle_gamma,
            fig_gay_lussac, fig_boyle, fig_amontons, fig_gasgleichung]
 
 if __name__ == "__main__":

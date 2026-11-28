@@ -1,5 +1,5 @@
 // Die acht Übungsaufgaben zu „Gasgesetze“ — zwei je Stufe:
-//   einfach   — Celsius und Kelvin (1); Gay-Lussac mit Kelvin-Temperaturen (1)
+//   einfach   — Gay-Lussac mit Kelvin-Temperaturen (1); Amontons mit Kelvin-Temperaturen (3)
 //   mittel    — Boyle-Mariotte (Luftpumpe, 2); Gay-Lussac mit Grad Celsius (Ballon, 1)
 //   schwierig — Amontons (Spraydose, Reifen, 3); Boyle-Mariotte rückwärts: welches Volumen? (2, mit Probe)
 //   komplex   — allgemeine Gasgleichung: die Luftblase (4); der Druck im warmen Zylinder (4)
@@ -9,7 +9,7 @@
 // der Stelle NaN (siehe CLAUDE.md, „Die Kollisionsprüfung“). Gewürfelt wird aus VORHER gefilterten
 // Listen — nie durch Verwerfen.
 
-import { num, pick, trifft, ohneKollision, glatt, spaeter } from "./seite.js?v=1";
+import { num, trifft, ohneKollision, glatt, spaeter } from "./seite.js?v=1";
 
 const T0 = 273.15;
 const K = (theta) => theta + T0;
@@ -21,67 +21,67 @@ const RUNDEN = `<br><span class="progress-note">Runde auf zwei Nachkommastellen.
 // Der erste vorgesehene Fehler, den die Eingabe trifft — sein Hinweis.
 const hinweisAus = (liste, tol = TOL) => (roh, w) => (liste.find(([x]) => Number.isFinite(x) && trifft(w, x, tol + 1e-9)) || [0, ""])[1];
 
-// ---------- E1: Celsius und Kelvin ----------
+// ---------- E2: Amontons mit Kelvin-Temperaturen ----------
+// Die Kelvin-Skala kommt aus Thema 1 (Aggregatzustände, Abschnitt 2); hier wird nur noch mit ihr gerechnet.
 
-const E1 = {
+function e2Fehler({ p1, T1, T2 }) {
+  return [
+    [(p1 * T1) / T2, "Bruch umgedreht: Wird das Gas wärmer, steigt der Druck. p₂ = p₁ · T₂ : T₁."],
+    [p1, "Der Druck bleibt nicht gleich — bei gleichem Volumen ist p : T konstant."],
+    [(p1 * (T2 - T1)) / T1, "Das ist nur die Zunahme des Drucks. Gefragt ist der ganze Druck p₂ = p₁ · T₂ : T₁."],
+  ];
+}
+const E2_KANDIDATEN = spaeter(() => {
+  const l = [];
+  for (const p1 of [1, 1.2, 1.5, 2, 2.5, 3]) for (const T1 of [250, 280, 300, 320, 350, 400]) for (const T2 of [300, 350, 360, 400, 420, 450, 480, 500, 600]) {
+    if (T2 > T1 && glatt((p1 * T2) / T1, 2)) l.push({ p1, T1, T2 });
+  }
+  return l;
+});
+const E2 = {
   schwierigkeit: "einfach",
-  titel: "Celsius und Kelvin",
-  abschnitt: "sec-gay-lussac",
+  titel: "Amontons in Kelvin",
+  abschnitt: "sec-amontons",
   generate() {
-    const nachKelvin = Math.random() < 0.5;
-    if (nachKelvin) {
-      // Nicht 0 °C: Dort fiele ϑ − 273,15 mit −273,15 zusammen, und nichts wäre zu rechnen.
-      const theta = pick([-196, -78, -40, -18, -5, 15, 20, 37, 60, 100, 180, 250]);
-      const T = K(theta);
-      const fehler = [[theta - T0, "Falsche Richtung: Kelvin-Werte sind größer als Celsius-Werte. T = ϑ + 273,15 K."], [theta + 273, "Fast — genau gilt T = ϑ + 273,15 K. Mit 273 rechnet man nur überschlagsweise."]];
-      return {
-        promptHtml: `Rechne ${num(theta)} °C in Kelvin um.`,
-        correct: T, tolerance: 0.001,
-        hinweis: hinweisAus(fehler, 0.001),
-        tipps: ["Der absolute Nullpunkt liegt bei −273,15 °C = 0 K.", "T = ϑ + 273,15 K"],
-        musterloesungHtml: `T = ${num(theta)} + 273,15 = <strong>${num(T, 2)} K</strong>`,
-      };
-    }
-    const T = pick([4.15, 77.15, 195.15, 253.15, 288.15, 300, 310.15, 373.15, 400, 500]);
-    const theta = T - T0;
-    const fehler = [[T + T0, "Falsche Richtung: Celsius-Werte sind kleiner als Kelvin-Werte. ϑ = T − 273,15 °C."], [T - 273, "Fast — genau gilt ϑ = T − 273,15 °C."]];
+    const v = ohneKollision(E2_KANDIDATEN(), (v) => [(v.p1 * v.T2) / v.T1, ...e2Fehler(v).map((x) => x[0])], 0.02);
+    const { p1, T1, T2 } = v, p2 = (p1 * T2) / T1;
     return {
-      promptHtml: `Rechne ${num(T, 2)} K in Grad Celsius um.`,
-      correct: r2(theta), tolerance: 0.001,
-      hinweis: hinweisAus(fehler, 0.001),
-      tipps: ["0 K ist −273,15 °C; ein Kelvin-Schritt ist so groß wie ein Grad Celsius.", "ϑ = T − 273,15 °C"],
-      musterloesungHtml: `ϑ = ${num(T, 2)} − 273,15 = <strong>${num(theta, 2)} °C</strong>`,
+      promptHtml: `In einer verschlossenen Stahlflasche hat ein Gas bei ${num(T1)} K den Druck ${num(p1, 1)} bar. Es wird auf ${num(T2)} K erwärmt; das Volumen bleibt gleich. Wie groß ist der Druck jetzt (in bar)?`,
+      correct: r2(p2), tolerance: TOL,
+      hinweis: hinweisAus(e2Fehler(v)),
+      tipps: ["Gleiches Volumen: Der Druck ist proportional zur Temperatur in Kelvin.", `p₂ = p₁ · ${bruch("T₂", "T₁")}`],
+      musterloesungHtml: `p₂ = p₁ · ${bruch("T₂", "T₁")} = ${num(p1, 1)} bar · ${bruch(num(T2) + " K", num(T1) + " K")} = <strong>${zwei(p2)} bar</strong>`,
     };
   },
 };
 
-// ---------- E2: Gay-Lussac mit Kelvin-Temperaturen ----------
+// ---------- E1: Gay-Lussac mit Kelvin-Temperaturen ----------
 
-function e2Fehler({ V1, T1, T2 }) {
+function e1Fehler({ V1, T1, T2 }) {
   return [
     [(V1 * T1) / T2, "Bruch umgedreht: Wird das Gas wärmer, wird es größer. V₂ = V₁ · T₂ : T₁."],
     [V1, "Das Volumen bleibt nicht gleich — bei gleichem Druck ist V : T konstant."],
     [(V1 * (T2 - T1)) / T1, "Das ist nur die Zunahme des Volumens. Gefragt ist das ganze Volumen V₂ = V₁ · T₂ : T₁."],
   ];
 }
-const E2_KANDIDATEN = spaeter(() => {
+const E1_KANDIDATEN = spaeter(() => {
   const l = [];
   for (const V1 of [1, 1.5, 2, 2.4, 3, 4, 5, 6]) for (const T1 of [250, 280, 300, 320, 350, 400]) for (const T2 of [300, 350, 360, 400, 420, 450, 480, 500, 600]) {
     if (T2 > T1 && glatt((V1 * T2) / T1, 2)) l.push({ V1, T1, T2 });
   }
   return l;
 });
-const E2 = {
+const E1 = {
   schwierigkeit: "einfach",
   titel: "Gay-Lussac in Kelvin",
   abschnitt: "sec-gay-lussac",
   generate() {
-    const v = ohneKollision(E2_KANDIDATEN(), (v) => [(v.V1 * v.T2) / v.T1, ...e2Fehler(v).map((x) => x[0])], 0.02);
+    const v = ohneKollision(E1_KANDIDATEN(), (v) => [(v.V1 * v.T2) / v.T1, ...e1Fehler(v).map((x) => x[0])], 0.02);
     const { V1, T1, T2 } = v, V2 = (V1 * T2) / T1;
     return {
       promptHtml: `Ein Gas nimmt bei ${num(T1)} K ein Volumen von ${num(V1, 1)} l ein. Bei gleichem Druck wird es auf ${num(T2)} K erwärmt. Wie groß ist sein Volumen jetzt (in l)?`,
       correct: r2(V2), tolerance: TOL,
-      hinweis: hinweisAus(e2Fehler(v)),
+      hinweis: hinweisAus(e1Fehler(v)),
       tipps: ["Gleicher Druck: Das Volumen ist proportional zur Temperatur in Kelvin.", `V₂ = V₁ · ${bruch("T₂", "T₁")}`],
       musterloesungHtml: `V₂ = V₁ · ${bruch("T₂", "T₁")} = ${num(V1, 1)} l · ${bruch(num(T2) + " K", num(T1) + " K")} = <strong>${zwei(V2)} l</strong>`,
     };
