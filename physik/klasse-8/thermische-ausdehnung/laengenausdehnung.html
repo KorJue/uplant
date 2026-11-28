@@ -36,13 +36,13 @@
       <li>erklären, wie sich ein <span class="term">Bimetallstreifen</span> krümmt</li>
       <li>die Volumenänderung von Flüssigkeiten mit ΔV = γ · V<sub>0</sub> · ΔT berechnen und ein <span class="term">Thermometer</span> erklären</li>
     </ul>
-    <p class="hinweis-box">💡 Du brauchst die <a href="aggregatzustaende.html#sec-bindung">Bindungsenergie</a> aus Thema 1, <a href="../../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-proportional">proportionale Zuordnungen</a> und <a href="../../../mathematik/grundwissen-5-10/01-groessen-und-rechnen/01-natuerliche-zahlen-und-groessen/index.html#sec-groessen">Größen und ihre Einheiten</a> (1 m = 1000 mm, 1 l = 1000 ml, 1 ml = 1000 mm³).</p>
+    <p class="hinweis-box">💡 Du brauchst die <a href="aggregatzustaende.html#sec-bindung">Bindungsenergie</a> und die <a href="aggregatzustaende.html#sec-kelvin">Kelvin-Skala</a> aus Thema 1, <a href="../../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-proportional">proportionale Zuordnungen</a> und <a href="../../../mathematik/grundwissen-5-10/01-groessen-und-rechnen/01-natuerliche-zahlen-und-groessen/index.html#sec-groessen">Größen und ihre Einheiten</a> (1 m = 1000 mm, 1 l = 1000 ml, 1 ml = 1000 mm³).</p>
   </section>
 
   <!-- 1. Messreihe -->
   <section class="card" id="sec-messung">
     <h2>1. Ein Rohr wird warm — die Messreihe</h2>
-    <p>Ein 1 m langes Kupferrohr ist links fest eingespannt, rechts drückt es auf den Taster einer <span class="term">Messuhr</span>. Durch das Rohr strömt warmes Wasser. Erhöhe die Temperatur Schritt für Schritt: Die Messuhr zeigt, um wie viel das Rohr länger wird, und die Messreihe wächst. Temperaturänderungen gibt man in <strong>Kelvin</strong> (K) an: 1 K ist ein Unterschied von 1 °C.</p>
+    <p>Ein 1 m langes Kupferrohr ist links fest eingespannt, rechts drückt es auf den Taster einer <span class="term">Messuhr</span>. Durch das Rohr strömt warmes Wasser. Erhöhe die Temperatur Schritt für Schritt: Die Messuhr zeigt, um wie viel das Rohr länger wird, und die Messreihe wächst. Temperaturänderungen gibt man in <strong>Kelvin</strong> (K) an, der Einheit der <a href="aggregatzustaende.html#sec-kelvin">Kelvin-Skala</a> aus Thema 1: 1 K ist ein Unterschied von 1 °C.</p>
     <div class="widget">
       <div class="btn-row">
         <label>Erwärmung ΔT: <input type="range" id="mr-dt" min="0" max="80" step="10" value="30" style="vertical-align:middle;width:14rem"> <span id="mr-dt-anzeige" class="wert farbe-rot"></span></label>
@@ -58,7 +58,7 @@
     </div>
     <div class="achtung-box">
       <span class="box-label">Achtung — ΔT ist ein Unterschied</span>
-      Wird das Rohr von 20 °C auf 70 °C erwärmt, ist ΔT = 50 K — nicht 70 K. Es zählt nur, um wie viel die Temperatur steigt.
+      Wird das Rohr von 20 °C auf 70 °C erwärmt, ist ΔT = 50 K — nicht 70 K. Es zählt nur, um wie viel die Temperatur steigt. In Kelvin gerechnet kommt dasselbe heraus: 343,15 K − 293,15 K = 50 K.
     </div>
     <div class="quiz" id="quiz-messung"></div>
   </section>
@@ -274,16 +274,17 @@
     <h2>8. Zusammenhänge</h2>
     <ul class="vernetzung-liste">
       <li><strong>Baut auf:</strong> Der <a href="aggregatzustaende.html#sec-bindung">Energiemulde</a> aus Thema 1 — sie erklärt, warum der mittlere Abstand der Teilchen und damit die Länge beim Erwärmen wächst.</li>
+      <li><strong>Baut auf:</strong> Der <a href="aggregatzustaende.html#sec-kelvin">Kelvin-Skala</a> aus Thema 1 — Temperaturunterschiede stehen in Kelvin, und 1 K Unterschied ist 1 °C Unterschied.</li>
       <li><strong>Baut auf:</strong> <a href="../../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-proportional">Proportionalen Zuordnungen</a> — ΔL ~ ΔT und ΔL ~ L<sub>0</sub>, nachgewiesen über gleiche Quotienten.</li>
       <li><strong>Baut auf:</strong> <a href="../../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/03-gleichungen/index.html">Dem Umstellen von Gleichungen</a> — für ΔT, α und L<sub>0</sub> in Abschnitt 4.</li>
-      <li><strong>Führt weiter zu:</strong> <a href="gasgesetze.html">Thema 3 „Gasgesetze“</a> — Gase dehnen sich noch viel stärker aus als Flüssigkeiten, und dort entsteht aus der Ausdehnung die Kelvin-Skala.</li>
+      <li><strong>Führt weiter zu:</strong> <a href="gasgesetze.html">Thema 3 „Gasgesetze“</a> — Gase dehnen sich noch viel stärker aus als Flüssigkeiten, und ihre Ausdehnung führt auf denselben absoluten Nullpunkt wie die Teilchenbewegung in Thema 1.</li>
     </ul>
   </section>
 
   <!-- Formelsammlung -->
   <section class="card" id="sec-formelsammlung">
     <h2>9. Formelsammlung</h2>
-    <p>Die Formelsammlung gilt für alle drei Seiten der Einheit: Teilchenmodell, Übergänge und Erwärmungskurve, Bindungsenergie, Längen- und Volumenänderung mit Tabellen, Bimetall, Kelvin-Skala, die drei Gasgesetze und die allgemeine Gasgleichung — mit gerechneten Bildern, auf zwei Seiten zum Ausdrucken.</p>
+    <p>Die Formelsammlung gilt für alle drei Seiten der Einheit: Teilchenmodell, absoluter Nullpunkt und Kelvin-Skala, Übergänge und Erwärmungskurve, Bindungsenergie, Längen- und Volumenänderung mit Tabellen, Bimetall, die drei Gasgesetze und die allgemeine Gasgleichung — mit gerechneten Bildern, auf zwei Seiten zum Ausdrucken.</p>
     <div class="btn-row">
       <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
     </div>

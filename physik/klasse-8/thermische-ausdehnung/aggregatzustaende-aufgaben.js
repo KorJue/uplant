@@ -1,19 +1,21 @@
-// Die acht Übungsaufgaben zu „Aggregatzustände“ — zwei je Stufe, alle zur Energie je Kilogramm
-// aus Abschnitt 2 (die Teilchenbewegung und die Energiemulde sind Modelle zum Verstehen, nicht zum
-// Rechnen; K1 verbindet beides):
-//   einfach   — Eis schmelzen; Wasser erwärmen
+// Die acht Übungsaufgaben zu „Aggregatzustände“ — zwei je Stufe: die Kelvin-Skala aus Abschnitt 2 und die
+// Energie je Kilogramm aus Abschnitt 3 (die Teilchenbewegung und die Energiemulde sind Modelle zum Verstehen,
+// nicht zum Rechnen; K1 verbindet Energie und Bindung):
+//   einfach   — Celsius und Kelvin (Abschnitt 2); Wasser erwärmen
 //   mittel    — Eis erwärmen und schmelzen; Wasser erwärmen und verdampfen
 //   schwierig — wie viel Eis? (Umkehr, mit Probe); welche Endtemperatur? (Umkehr, mit Probe)
-//   komplex   — Dampf kondensiert und schmilzt Eis (mit der Bindungsenergie, Abschnitt 3); Schmelzdauer auf der Herdplatte
+//   komplex   — Dampf kondensiert und schmilzt Eis (mit der Bindungsenergie, Abschnitt 4); Schmelzdauer auf der Herdplatte
 //
 // Jeder vorgesehene Fehler hat einen eigenen Wert; fallen zwei zusammen oder trifft einer die Lösung,
 // steht an der Stelle NaN (siehe CLAUDE.md, „Die Kollisionsprüfung“). Gewürfelt wird aus VORHER
 // gefilterten Listen — nie durch Verwerfen.
 
-import { num, trifft, ohneKollision, glatt, spaeter } from "./seite.js?v=1";
+import { num, pick, trifft, ohneKollision, glatt, spaeter } from "./seite.js?v=1";
 
 // Energie je Kilogramm (kJ) und je Kilogramm und Kelvin (kJ/K) — wie in der Tabelle der Seite.
 const C_EIS = 2.1, Q_S = 334, C_W = 4.19, Q_V = 2256;
+const T0 = 273.15;
+const K = (theta) => theta + T0;
 const TOL = 0.0051;                          // ein auf zwei Stellen gerundeter Wert
 const r2 = (x) => Math.round(x * 100) / 100;
 const zwei = (x) => num(r2(x), 2);
@@ -21,29 +23,36 @@ const RUNDEN = `<br><span class="progress-note">Runde auf zwei Nachkommastellen.
 const hinweisAus = (liste, tol = TOL) => (roh, w) => (liste.find(([x]) => Number.isFinite(x) && trifft(w, x, tol + 1e-9)) || [0, ""])[1];
 const TABELLE = "Eis erwärmen 2,1 kJ je kg und K, schmelzen 334 kJ je kg, Wasser erwärmen 4,19 kJ je kg und K, verdampfen 2256 kJ je kg";
 
-// ---------- E1: Eis schmelzen ----------
+// ---------- E1: Celsius und Kelvin ----------
 
-function e1Fehler({ m }) {
-  return [
-    [Q_S, "Das ist die Energie für 1 kg. Die Energie ist proportional zur Masse: mit der Masse malnehmen."],
-    [Q_S / m, "Geteilt statt malgenommen: Doppelte Masse braucht doppelte Energie, Q = m · 334 kJ je kg."],
-    [m * Q_V, "2256 kJ je kg braucht das Verdampfen. Zum Schmelzen sind es 334 kJ je kg."],
-  ];
-}
-const E1_KANDIDATEN = spaeter(() => [0.2, 0.25, 0.4, 0.5, 0.75, 1.5, 2, 2.5, 3, 4, 5, 8].map((m) => ({ m })));
 const E1 = {
   schwierigkeit: "einfach",
-  titel: "Eis schmelzen",
-  abschnitt: "sec-uebergaenge",
+  titel: "Celsius und Kelvin",
+  abschnitt: "sec-kelvin",
   generate() {
-    const v = ohneKollision(E1_KANDIDATEN(), (v) => [v.m * Q_S, ...e1Fehler(v).map((x) => x[0])], 0.02);
-    const { m } = v, Q = m * Q_S;
+    const nachKelvin = Math.random() < 0.5;
+    if (nachKelvin) {
+      // Nicht 0 °C: Dort fiele ϑ − 273,15 mit −273,15 zusammen, und nichts wäre zu rechnen.
+      const theta = pick([-196, -78, -40, -18, -5, 15, 20, 37, 60, 100, 180, 250]);
+      const T = K(theta);
+      const fehler = [[theta - T0, "Falsche Richtung: Kelvin-Werte sind größer als Celsius-Werte. T = ϑ + 273,15 K."], [theta + 273, "Fast — genau gilt T = ϑ + 273,15 K. Mit 273 rechnet man nur überschlagsweise."]];
+      return {
+        promptHtml: `Rechne ${num(theta)} °C in Kelvin um.`,
+        correct: T, tolerance: 0.001,
+        hinweis: hinweisAus(fehler, 0.001),
+        tipps: ["Der absolute Nullpunkt liegt bei −273,15 °C = 0 K.", "T = ϑ + 273,15 K"],
+        musterloesungHtml: `T = ${num(theta)} + 273,15 = <strong>${num(T, 2)} K</strong>`,
+      };
+    }
+    const T = pick([4.15, 77.15, 195.15, 253.15, 288.15, 300, 310.15, 373.15, 400, 500]);
+    const theta = T - T0;
+    const fehler = [[T + T0, "Falsche Richtung: Celsius-Werte sind kleiner als Kelvin-Werte. ϑ = T − 273,15 °C."], [T - 273, "Fast — genau gilt ϑ = T − 273,15 °C."]];
     return {
-      promptHtml: `${num(m, 2)} kg Eis von 0 °C sollen vollständig schmelzen. Wie viel Energie (in kJ) ist dafür nötig? Zum Schmelzen von 1 kg Eis braucht man 334 kJ.`,
-      correct: r2(Q), tolerance: TOL,
-      hinweis: hinweisAus(e1Fehler(v)),
-      tipps: ["Die Energie ist proportional zur Masse.", "Q = m · 334 kJ je kg"],
-      musterloesungHtml: `Q = ${num(m, 2)} kg · 334 kJ je kg = <strong>${zwei(Q)} kJ</strong>`,
+      promptHtml: `Rechne ${num(T, 2)} K in Grad Celsius um.`,
+      correct: r2(theta), tolerance: 0.001,
+      hinweis: hinweisAus(fehler, 0.001),
+      tipps: ["0 K ist −273,15 °C; ein Kelvin-Schritt ist so groß wie ein Grad Celsius.", "ϑ = T − 273,15 °C"],
+      musterloesungHtml: `ϑ = ${num(T, 2)} − 273,15 = <strong>${num(theta, 2)} °C</strong>`,
     };
   },
 };
@@ -241,7 +250,7 @@ const K1_KANDIDATEN = spaeter(() => [0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.75, 0
 const K1 = {
   schwierigkeit: "komplex",
   titel: "Dampf schmilzt Eis",
-  // Verbindet die Energie je Kilogramm (2) mit der Bindungsenergie (3): Verdampfen trennt die Teilchen ganz.
+  // Verbindet die Energie je Kilogramm (3) mit der Bindungsenergie (4): Verdampfen trennt die Teilchen ganz.
   abschnitt: ["sec-uebergaenge", "sec-bindung"],
   generate() {
     const v = ohneKollision(K1_KANDIDATEN(), (v) => [(v.mD * Q_V) / Q_S, ...k1Fehler(v).map((x) => x[0])], 0.02);

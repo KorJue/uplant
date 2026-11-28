@@ -2,13 +2,16 @@
 //
 // Didaktische Reihenfolge — jeder Abschnitt benutzt nur, was davor steht:
 //   1. Teilchenmodell: fest, flüssig, gasförmig, je zwei Temperaturen  (Temperatur in °C)
-//   2. Übergänge und Erwärmungskurve von Wasser                         (Energie in kJ, abgelesen)
-//   3. Bindungsenergie: Energiemulde, Umkehrpunkte, Mitte wandert       (erklärt 2 und die Ausdehnung)
+//   2. Absoluter Nullpunkt und Kelvin-Skala                             (aus 1: kälter heißt langsamer)
+//   3. Übergänge und Erwärmungskurve von Wasser                         (Energie in kJ, abgelesen)
+//   4. Bindungsenergie: Energiemulde, Umkehrpunkte, Mitte wandert       (erklärt 3 und die Ausdehnung)
+// Die Kelvin-Skala entsteht hier aus dem Teilchenmodell; Thema 2 nimmt Kelvin für Temperaturunterschiede,
+// Thema 3 findet denselben absoluten Nullpunkt noch einmal mit dem Gesetz von Gay-Lussac.
 // Die Übungsaufgaben stehen in aggregatzustaende-aufgaben.js.
 
 import { svgEl, svgText, flaeche, zeige, num, zeichen, reglerZahl, setzeText, setzeHtml, wahl, mountQuizze, mountUebungsaufgaben } from "./seite.js?v=1";
 import { T0, vMittel, kelvin, runde, bruch, diagramm, linienzug, kurvePunkte, punkt, zylinder } from "./gemeinsam.js?v=1";
-import { AUFGABEN } from "./aggregatzustaende-aufgaben.js?v=2";
+import { AUFGABEN } from "./aggregatzustaende-aufgaben.js?v=3";
 
 // ================= 1. Teilchenmodell =================
 
@@ -113,7 +116,76 @@ function abspielenUmschalten() {
   }, 40);
 }
 
-// ================= 2. Übergänge: Erwärmungskurve =================
+// ================= 2. Absoluter Nullpunkt und Kelvin-Skala =================
+
+// Die Stufen des Reglers: der absolute Nullpunkt selbst, dann −270 °C bis 400 °C in Zehnerschritten. Der Regler
+// trägt keine Zahl — er wählt eine Stufe, und die Anzeige nennt genau die Temperatur, mit der gerechnet wird.
+const KV_STUFEN = [-T0, ...Array.from({ length: 68 }, (_, i) => -270 + 10 * i)];
+const KV_PFEIL = 14;   // Pfeillänge in Bildpunkten bei 0 °C; sonst im Verhältnis der mittleren Geschwindigkeit
+const KV_RICHTUNG = (() => { const z = zufall(4711); return Array.from({ length: 24 }, () => 6.2832 * z()); })();
+function kvZustand(theta) {
+  if (theta <= 0) return { key: "fest", name: "fest", stoff: "Eis" };
+  if (theta < 100) return { key: "fluessig", name: "flüssig", stoff: "Wasser" };
+  return { key: "gas", name: "gasförmig", stoff: "Wasserdampf" };
+}
+function renderKelvin() {
+  const theta = KV_STUFEN[reglerZahl("kv-stufe")];
+  const T = kelvin(theta);
+  setzeText("kv-stufe-anzeige", `${num(theta, 2)} °C`);
+  const v = vMittel(theta), v0 = vMittel(0), e = T / T0;
+  const svg = flaeche(600, 300, "Teilchenbewegung und Bewegungsenergie bis zum absoluten Nullpunkt");
+  // Links: Teilchen mit Pfeilen für die mittlere Geschwindigkeit.
+  const z = kvZustand(theta), x0 = 10, y0 = 40;
+  const g = svgEl("g", { "data-zustand": z.key, transform: `translate(${x0} ${y0})` });
+  g.appendChild(svgEl("rect", { x: 0, y: 0, width: PB, height: PH, rx: 6, class: "ta-feld" }));
+  const f = v / V_BEZUG;
+  lagen(z.key, f, 0).forEach((q, i) => {
+    if (z.key === "fest") g.appendChild(svgEl("circle", { cx: q.gx, cy: q.gy, r: RADIUS + 1, class: "ta-gitterplatz" }));
+    g.appendChild(svgEl("circle", { cx: q.x.toFixed(3), cy: q.y.toFixed(3), r: RADIUS, class: `ta-teilchen ${z.key}` }));
+    const l = (KV_PFEIL * v) / v0;
+    if (l > 1e-9 && i % 2 === 0) {
+      // Bliebe die Pfeilspitze nicht im Feld, zeigt der Pfeil in die Gegenrichtung — sonst ragte er aus dem Bild.
+      let w = KV_RICHTUNG[i % KV_RICHTUNG.length];
+      const drin = (ww) => { const x = q.x + (RADIUS + l) * Math.cos(ww), y = q.y - (RADIUS + l) * Math.sin(ww); return x > 3 && x < PB - 3 && y > 3 && y < PH - 3; };
+      if (!drin(w)) w += Math.PI;
+      const ex = q.x + (RADIUS + l) * Math.cos(w), ey = q.y - (RADIUS + l) * Math.sin(w);
+      const ax = q.x + RADIUS * Math.cos(w), ay = q.y - RADIUS * Math.sin(w);
+      g.appendChild(svgEl("line", { x1: ax.toFixed(3), y1: ay.toFixed(3), x2: ex.toFixed(3), y2: ey.toFixed(3), class: "ta-pfeil", "data-rolle": "pfeil" }));
+      for (const dw of [0.5, -0.5]) g.appendChild(svgEl("line", { x1: ex.toFixed(3), y1: ey.toFixed(3), x2: (ex - 4 * Math.cos(w + dw)).toFixed(3), y2: (ey + 4 * Math.sin(w + dw)).toFixed(3), class: "ta-pfeil" }));
+    }
+  });
+  if (T < 1e-9) g.appendChild(svgText(PB / 2, PH / 2 + 4, "Stillstand", { class: "ta-titel", "data-rolle": "stillstand" }));
+  svg.appendChild(g);
+  svg.appendChild(svgText(x0 + PB / 2, y0 - 10, `${z.name} (${z.stoff}) bei ${num(theta, 2)} °C`, { class: "ta-text" }));
+  svg.appendChild(svgText(x0 + PB / 2, y0 + PH + 18, "Pfeile: mittlere Geschwindigkeit", { class: "ta-klein" }));
+  // Rechts: Bewegungsenergie verglichen mit 0 °C, darunter die Celsius- und die Kelvin-Skala.
+  const d = diagramm(svg, { name: "kelvin", x0: 270, y0: 30, b: 290, h: 190, xmin: -280, xmax: 400, ymin: 0, ymax: 2.5, xSchritt: 100, ySchritt: 0.5, xStellen: 0, yStellen: 1, xName: "", yName: "Bewegungsenergie, verglichen mit 0 °C" });
+  linienzug(d, [[-T0, 0], [400, kelvin(400) / T0]], { class: "ta-kurve", "data-rolle": "energie" });
+  d.g.appendChild(svgEl("circle", { cx: d.X(-T0).toFixed(2), cy: d.Y(0).toFixed(2), r: 4, class: "ta-umkehr", "data-rolle": "nullpunkt" }));
+  d.g.appendChild(svgText(d.X(-T0) + 6, d.Y(0) - 10, "absoluter Nullpunkt", { class: "ta-klein", "text-anchor": "start" }));
+  punkt(d, theta, e, "ta-punkt", { "data-rolle": "jetzt" });
+  d.g.appendChild(svgText(596, 238, "°C", { class: "ta-achsentext", "text-anchor": "end" }));
+  // Die Kelvin-Skala: dieselben Schritte, um 273,15 verschoben — jede Marke steht bei ϑ = T − 273,15.
+  const yK = 254;
+  d.g.appendChild(svgEl("line", { x1: d.X(-T0).toFixed(2), x2: 560, y1: yK, y2: yK, class: "ta-achse" }));
+  for (let K = 0; K <= 600; K += 100) {
+    const x = d.X(K - T0);
+    d.g.appendChild(svgEl("line", { x1: x.toFixed(2), x2: x.toFixed(2), y1: yK, y2: yK + 5, class: "ta-achse", "data-wert-k": String(K) }));
+    d.g.appendChild(svgText(x, yK + 18, num(K), { class: "ta-achsentext" }));
+  }
+  d.g.appendChild(svgText(596, yK + 18, "K", { class: "ta-achsentext", "text-anchor": "end" }));
+  d.g.appendChild(svgEl("line", { x1: d.X(theta).toFixed(2), x2: d.X(theta).toFixed(2), y1: d.Y(0).toFixed(2), y2: yK, class: "ta-ruhe", "data-rolle": "senkrechte" }));
+  zeige("kv-mount", svg);
+  setzeHtml("kv-bilanz",
+    `ϑ = ${num(theta, 2)} °C &nbsp;→&nbsp; T = ϑ + 273,15 K = <strong data-rolle="t">${num(T, 2)}</strong> K<br>` +
+    `Mittlere Geschwindigkeit eines Wassermoleküls: <span data-rolle="v">${num(v, 0)}</span> m/s (bei 0 °C: <span data-rolle="v0">${num(v0, 0)}</span> m/s)<br>` +
+    `Bewegungsenergie: T : 273,15 K = ${num(T, 2)} : 273,15 ${zeichen(e, 4)} <strong data-rolle="e">${num(e, 4)}</strong>-mal so viel wie bei 0 °C`);
+  setzeText("kv-text", T < 1e-9
+    ? "Am absoluten Nullpunkt stehen die Teilchen still: Ihre Bewegungsenergie ist aufgebraucht. Kälter geht es nicht — weniger Bewegung als keine gibt es nicht."
+    : `Bei ${num(theta, 2)} °C = ${num(T, 2)} K haben die Teilchen ${num(e, 2)}-mal so viel Bewegungsenergie wie bei 0 °C. Bis zum absoluten Nullpunkt fehlen noch ${num(T, 2)} K.`);
+}
+
+// ================= 3. Übergänge: Erwärmungskurve =================
 
 // Für 1 kg Wasser, Werte in kJ: spezifische Wärmekapazitäten je Kelvin, Schmelz- und Verdampfungswärme.
 const C_EIS = 2.1, C_WASSER = 4.19, C_DAMPF = 2.0, Q_SCHMELZ = 334, Q_VERDAMPF = 2256;
@@ -163,7 +235,7 @@ function renderUebergaenge() {
     : `${z.phase}: Die zugeführte Energie macht die Teilchen schneller, die Temperatur steigt.`);
 }
 
-// ================= 3. Bindungsenergie: die Energiemulde =================
+// ================= 4. Bindungsenergie: die Energiemulde =================
 
 // Energie zweier Teilchen beim Abstand r (in Vielfachen von r0), in Vielfachen der Bindungsenergie:
 // tiefster Punkt −1 bei r = 1, für großes r gegen 0. Links steil (Abstoßung), rechts flach (Anziehung).
@@ -240,6 +312,12 @@ const QUIZZE = {
     correct: 2,
     explain: "Das Eis bleibt fest, die Teilchen bleiben auf ihren Gitterplätzen — aber sie schwingen heftiger, weil sie mehr Energie haben. Größer werden die Teilchen nie; ihre Plätze verlassen sie erst beim Schmelzen.",
   },
+  "quiz-kelvin": {
+    q: "Warum kann es nicht kälter werden als −273,15 °C?",
+    options: ["Weil dort jeder Stoff gefroren ist", "Weil sich die Teilchen dort nicht mehr bewegen — weniger Bewegung als keine gibt es nicht", "Weil Thermometer nicht tiefer messen können", "Weil die Teilchen dort verschwinden"],
+    correct: 1,
+    explain: "Die Temperatur ist ein Maß für die Bewegung der Teilchen. Am absoluten Nullpunkt ist ihre Bewegungsenergie aufgebraucht, sie stehen still. Gefroren sind die meisten Stoffe schon lange vorher, und die Teilchen bleiben erhalten — sie bewegen sich nur nicht mehr. Deshalb beginnt die Kelvin-Skala dort bei 0 K.",
+  },
   "quiz-uebergaenge": {
     q: "Wasser siedet und wird weiter erhitzt. Was geschieht mit seiner Temperatur, solange noch Wasser im Topf ist?",
     options: ["Sie bleibt bei 100 °C", "Sie steigt langsam weiter", "Sie sinkt, weil Dampf entweicht", "Sie springt auf 120 °C"],
@@ -258,6 +336,7 @@ const QUIZZE = {
 
 const REGLER = [
   [["tc-t"], renderTeilchen],
+  [["kv-stufe"], renderKelvin],
   [["ue-q"], renderUebergaenge],
   [["bi-w"], renderBindung],
 ];

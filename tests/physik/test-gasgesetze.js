@@ -122,27 +122,26 @@ async function quizze(page) {
 // ════════════════ Übungsaufgaben ════════════════
 
 // Gemessen mit werkzeug-streuung.js (UPLANT_ZUEGE=20): verschieden in 200 Würfen und geschätzte Größe des
-// Vorrats — E1 22/200 (n ≈ 22), E2 124/200 (n ≈ 190), M1 116/200 (n ≈ 165), M2 118/200 (n ≈ 171),
-// S1 99/200 (n ≈ 123), S2 117/200 (n ≈ 168), K1 150/200 (n ≈ 329), K2 189/200 (n ≈ 1742).
+// Vorrats — E1 119/200 (n ≈ 174), E2 105/200 (n ≈ 136), M1 110/200 (n ≈ 148), M2 118/200 (n ≈ 171),
+// S1 99/200 (n ≈ 123), S2 114/200 (n ≈ 159), K1 140/200 (n ≈ 262), K2 189/200 (n ≈ 1742). Bei Aufgaben,
+// die zweimal gemessen wurden, steht die kleinere Schranke.
 const RUNDEN = 20;
-const SCHRANKE = [7, 14, 14, 14, 13, 14, 15, 17];
+const SCHRANKE = [14, 13, 13, 14, 13, 14, 15, 17];
 const TOL = 0.0051;
 const FASSUNGEN = new Set();
 async function aufgaben(page) {
   const auf = [
-    ["E1 Celsius und Kelvin", (f) => {
-      let m = f.match(/Rechne (−?\d+) °C in Kelvin um/);
-      if (m) { const th = z(m[1]); return { richtig: th + NULL_K, toleranz: 0.001, falsch: [[th - NULL_K, "Falsche Richtung"], [th + 273, "Fast"]] }; }
-      m = f.match(/Rechne ([\d,]+) K in Grad Celsius um/);
-      if (!m) return null;
-      const T = z(m[1]);
-      return { richtig: r2(T - NULL_K), toleranz: 0.001, falsch: [[T + NULL_K, "Falsche Richtung"], [T - 273, "Fast"]] };
-    }],
-    ["E2 Gay-Lussac in Kelvin", (f) => {
+    ["E1 Gay-Lussac in Kelvin", (f) => {
       const m = f.match(/nimmt bei (\d+) K ein Volumen von ([\d,]+) l ein\. Bei gleichem Druck wird es auf (\d+) K erwärmt\./);
       if (!m) return null;
       const T1 = Number(m[1]), V1 = z(m[2]), T2 = Number(m[3]);
       return { richtig: r2((V1 * T2) / T1), toleranz: TOL, falsch: [[(V1 * T1) / T2, "Bruch umgedreht"], [V1, "Das Volumen bleibt nicht gleich"], [(V1 * (T2 - T1)) / T1, "nur die Zunahme"]] };
+    }],
+    ["E2 Amontons in Kelvin", (f) => {
+      const m = f.match(/hat ein Gas bei (\d+) K den Druck ([\d,]+) bar\. Es wird auf (\d+) K erwärmt; das Volumen bleibt gleich\./);
+      if (!m) return null;
+      const T1 = Number(m[1]), p1 = z(m[2]), T2 = Number(m[3]);
+      return { richtig: r2((p1 * T2) / T1), toleranz: TOL, falsch: [[(p1 * T1) / T2, "Bruch umgedreht"], [p1, "Der Druck bleibt nicht gleich"], [(p1 * (T2 - T1)) / T1, "nur die Zunahme"]] };
     }],
     ["M1 Luftpumpe", (f) => {
       const m = f.match(/sind (\d+) cm³ Luft bei ([\d,]+) bar .* nur noch (\d+) cm³ einnimmt/);
@@ -208,9 +207,12 @@ async function geruest(page) {
     karten: [["physik/klasse-8/thermische-ausdehnung/index.html", "gasgesetze.html", "3. Gasgesetze"]],
     formeln: ["T = ϑ + 273,15 K", "p1 · V1 = p2 · V2", "Allgemeine Gasgleichung", "Boyle-Mariotte", "Amontons"],
   });
-  // Die Kelvin-Skala entsteht hier, in Abschnitt 1 — aus der verlängerten Geraden, nicht als gesetzte Definition.
-  const s1 = await page.evaluate(() => document.getElementById("sec-gay-lussac").innerText);
-  pruefe(/273,15/.test(s1) && /absolute/.test(s1), "Gerüst: Abschnitt 1 führt den absoluten Nullpunkt nicht ein");
+  // Die Kelvin-Skala kommt aus Thema 1: Abschnitt 1 verweist dorthin, rechnet mit T = ϑ + 273,15 K und erkennt den
+  // absoluten Nullpunkt wieder — eine zweite Definition der Skala steht hier nicht.
+  const s1 = await page.evaluate(() => ({ text: document.getElementById("sec-gay-lussac").innerText, links: [...document.querySelectorAll("#sec-gay-lussac a")].map((a) => a.getAttribute("href")), def: !!document.querySelector("#sec-gay-lussac .definition-box") }));
+  pruefe(/273,15/.test(s1.text) && /absoluten Nullpunkt/.test(s1.text) && s1.links.includes("aggregatzustaende.html#sec-kelvin") && !s1.def, "Gerüst: Abschnitt 1 verweist nicht auf die Kelvin-Skala aus Thema 1 oder definiert sie noch einmal");
+  const vernetzung = await page.evaluate(() => [...document.querySelectorAll("#sec-vernetzung a")].map((a) => a.getAttribute("href")));
+  pruefe(vernetzung.includes("aggregatzustaende.html#sec-kelvin"), "Gerüst: die Vernetzung nennt die Kelvin-Skala aus Thema 1 nicht");
 }
 
 fuehreAus(bericht, SEITE, [

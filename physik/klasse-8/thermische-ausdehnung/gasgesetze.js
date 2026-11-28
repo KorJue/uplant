@@ -1,15 +1,16 @@
 // Seite 3 „Gasgesetze“ der Einheit „Thermische Ausdehnung“ (Physik, Klasse 8).
 //
 // Didaktische Reihenfolge — jeder Abschnitt benutzt nur, was davor steht:
-//   1. Gase bei gleichem Druck: Gay-Lussac, absoluter Nullpunkt, Kelvin (die Kelvin-Skala entsteht hier)
+//   1. Gase bei gleichem Druck: Gay-Lussac                              (Kelvin-Skala aus Thema 1; die Gerade
+//                                                                        trifft denselben absoluten Nullpunkt)
 //   2. Gase bei gleicher Temperatur: Boyle-Mariotte                     (p · V = konstant)
-//   3. Gase bei gleichem Volumen: Amontons                              (braucht die Kelvin-Skala aus 1)
+//   3. Gase bei gleichem Volumen: Amontons                              (wieder mit T in Kelvin)
 //   4. Allgemeine Gasgleichung aus 2 und 3 in zwei Schritten
 // Die Übungsaufgaben stehen in gasgesetze-aufgaben.js.
 
 import { svgEl, svgText, flaeche, zeige, num, zeichen, reglerZahl, setzeText, setzeHtml, wahl, mountQuizze, mountUebungsaufgaben } from "./seite.js?v=1";
 import { T0, vMittel, kelvin, runde, bruch, diagramm, linienzug, kurvePunkte, punkt, zylinder } from "./gemeinsam.js?v=1";
-import { AUFGABEN } from "./gasgesetze-aufgaben.js?v=1";
+import { AUFGABEN } from "./gasgesetze-aufgaben.js?v=2";
 
 // ================= Gemeinsam für die Gasgesetze =================
 
@@ -17,7 +18,7 @@ const V0_GL = 1.0;   // Liter bei 0 °C (Gay-Lussac)
 const P1 = 1.0, V1 = 2.0, THETA1 = 20;    // Boyle-Mariotte und Gasgleichung: Anfangszustand
 const PA0 = 1.0, THETA_A0 = 20;            // Amontons: 1,0 bar bei 20 °C
 
-// ================= 6. Gay-Lussac und Kelvin =================
+// ================= 1. Gay-Lussac =================
 
 function renderGayLussac() {
   const theta = reglerZahl("gl-theta");
@@ -30,14 +31,17 @@ function renderGayLussac() {
   linienzug(d, [[-T0, 0], [-100, gerade(-100)]], { class: "ta-kurve extra", "data-rolle": "verlaengert" });
   linienzug(d, [[-100, gerade(-100)], [200, gerade(200)]], { class: "ta-kurve", "data-rolle": "gemessen" });
   punkt(d, -T0, 0, "ta-umkehr", { "data-rolle": "nullpunkt" });
-  d.g.appendChild(svgText(d.X(-T0) + 6, d.Y(0) - 10, "−273,15 °C", { class: "ta-klein", "text-anchor": "start" }));
+  // Beschriftung in zwei kurzen Zeilen oberhalb der verlängerten Geraden (eine lange Zeile kreuzte sie), Zeiger zum Punkt.
+  d.g.appendChild(svgText(d.X(-T0) + 4, d.Y(0.92), "absoluter Nullpunkt", { class: "ta-klein", "text-anchor": "start" }));
+  d.g.appendChild(svgText(d.X(-T0) + 4, d.Y(0.76), "0 K = −273,15 °C", { class: "ta-klein", "text-anchor": "start" }));
+  d.g.appendChild(svgEl("line", { x1: d.X(-T0).toFixed(2), x2: d.X(-T0).toFixed(2), y1: d.Y(0.95).toFixed(2), y2: d.Y(0.04).toFixed(2), class: "ta-ruhe" }));
   punkt(d, theta, V, "ta-punkt", { "data-rolle": "jetzt" });
   zeige("gl-mount", svg);
   setzeHtml("gl-bilanz",
     `T = ϑ + 273,15 K = <strong data-rolle="t">${num(T, 2)}</strong> K<br>` +
     `V = 1 l · ${bruch(num(T, 2) + " K", "273,15 K")} ${zeichen(V, 4)} <strong data-rolle="v">${num(V, 4)}</strong> l<br>` +
     `${bruch("V", "T")} = ${bruch(num(V, 4) + " l", num(T, 2) + " K")} ${zeichen(V / T, 6)} <strong data-rolle="v-durch-t">${num(V / T, 6)}</strong> ${bruch("l", "K")} — bei jeder Temperatur gleich`);
-  setzeText("gl-text", `Bei ${num(theta)} °C nimmt das Gas ${num(V, 2)} l ein. Je Kelvin ändert sich das Volumen um 1 : 273,15 des Volumens bei 0 °C — bei −273,15 °C wäre es null.`);
+  setzeText("gl-text", `Bei ${num(theta)} °C = ${num(T, 2)} K nimmt das Gas ${num(V, 2)} l ein. Je Kelvin ändert sich das Volumen um 1 : 273,15 des Volumens bei 0 °C — beim absoluten Nullpunkt aus Thema 1, bei −273,15 °C = 0 K, wäre es null.`);
 }
 
 // ================= 7. Boyle-Mariotte =================

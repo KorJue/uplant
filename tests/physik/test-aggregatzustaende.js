@@ -6,9 +6,12 @@
 //   1. TEILCHEN: Gitterplätze regelmäßig; Auslenkung warm : kalt = v̄(warm) : v̄(kalt) mit
 //      v̄ = √(8 k T / (π m)) aus Boltzmann-Konstante und Molekülmasse; Flüssigkeit und Gas bewegen sich
 //      im selben Verhältnis schneller; Gas weit, Flüssigkeit dicht; Abspielen bewegt die Zeit.
-//   2. ÜBERGÄNGE: Erwärmungskurve aus der eigenen Energiebilanz; Punkt, Anteile, Bilanz; Tabelle der
+//   2. KELVIN: Reglerstufen bis genau −273,15 °C und nie darunter; Energiegerade E : E(0 °C) = T : 273,15 K mit
+//      dem Ende beim absoluten Nullpunkt; Kelvin-Marken genau 273,15 neben den Celsius-Marken; Pfeillängen im
+//      Verhältnis der mittleren Geschwindigkeiten, am Nullpunkt keine Pfeile und alle Teilchen auf ihren Plätzen.
+//   3. ÜBERGÄNGE: Erwärmungskurve aus der eigenen Energiebilanz; Punkt, Anteile, Bilanz; Tabelle der
 //      Energie je Kilogramm.
-//   3. BINDUNG: Mulde, Umkehrpunkte durch Bisektion, Mitte wandert nach außen, Trennung bei W ≥ 1.
+//   4. BINDUNG: Mulde, Umkehrpunkte durch Bisektion, Mitte wandert nach außen, Trennung bei W ≥ 1.
 //   Dazu die Kontrollfragen, alle Aufgaben mit ihren Fehlern, das Gerüst und der Dunkelmodus.
 
 "use strict";
@@ -16,7 +19,7 @@
 const { neuerBericht } = require("../lib/pruefen");
 const { setzeRegler, text } = require("../lib/seite");
 const { pruefeAufgabe } = require("../lib/aufgaben");
-const { nahe, z, r2, trifft, vMittel, ALPHA, lies, welt, pfad, pkt, rolle, kasten, pruefeQuizze, pruefeGeruest, fuehreAus } = require("../lib/physik");
+const { nahe, z, r2, trifft, vMittel, NULL_K, ALPHA, lies, welt, pfad, pkt, rolle, kasten, pruefeQuizze, pruefeGeruest, fuehreAus } = require("../lib/physik");
 
 const bericht = neuerBericht();
 const { pruefe } = bericht;
@@ -119,7 +122,67 @@ async function teilchen(page) {
   pruefe(t1 > 0 && t1 === t2, `Teilchen: Abspielen und Anhalten wirken nicht (Zeit ${t1} → ${t2})`);
 }
 
-// ════════════════ 2. Übergänge ════════════════
+// ════════════════ 2. Absoluter Nullpunkt und Kelvin-Skala ════════════════
+
+async function kelvin(page) {
+  // Die Stufen des Reglers: Die Anzeige nennt die Temperatur, mit der gerechnet wird.
+  const max = Number(await page.getAttribute("#kv-stufe", "max"));
+  const stufen = [];
+  for (let i = 0; i <= max; i++) { await setzeRegler(page, "kv-stufe", i); stufen.push(z((await text(page, "#kv-stufe-anzeige")).replace(/\s*°C/, ""))); }
+  pruefe(nahe(stufen[0], -NULL_K, 1e-9) && stufen.every((t) => t >= -NULL_K - 1e-9), `Kelvin: der Regler beginnt nicht genau beim absoluten Nullpunkt oder geht darunter (${stufen[0]})`);
+  pruefe(stufen.every((t, i) => i === 0 || (t > stufen[i - 1] && t - stufen[i - 1] <= 10)) && [0, 20, 100, 400].every((t) => stufen.includes(t)), "Kelvin: die Reglerstufen steigen nicht gleichmäßig an oder 0, 20, 100, 400 °C fehlen");
+  const v0 = vMittel(0);
+  let pfeil0 = null;
+  for (const t of [0, -NULL_K, -270, -200, -10, 20, 50, 100, 400]) {
+    const i = stufen.findIndex((x) => nahe(x, t, 1e-9));
+    await setzeRegler(page, "kv-stufe", i);
+    const T = t + NULL_K, e = T / NULL_K, v = vMittel(t), wo = `Kelvin ${t} °C`;
+    const sv = await lies(page, '#kv-mount g[data-diagramm="kelvin"]'), w = welt(sv);
+    const gerade = pfad(sv, w, "energie");
+    pruefe(gerade.length >= 2 && nahe(gerade[0][0], -NULL_K, 0.3) && nahe(gerade[0][1], 0, 3e-3) && gerade.every(([x, y]) => nahe(y, (x + NULL_K) / NULL_K, 3e-3)), `${wo}: die Gerade ist nicht E : E(0 °C) = T : 273,15 K oder beginnt nicht beim absoluten Nullpunkt`);
+    const [jetzt] = pkt(sv, w, "jetzt"), [null0] = pkt(sv, w, "nullpunkt");
+    pruefe(!!jetzt && nahe(jetzt[0], t, 0.3) && nahe(jetzt[1], e, 3e-3), `${wo}: der Punkt steht nicht bei (${t} | ${e.toFixed(4)})`);
+    pruefe(!!null0 && nahe(null0[0], -NULL_K, 0.3) && nahe(null0[1], 0, 3e-3), `${wo}: der absolute Nullpunkt ist falsch markiert`);
+    // Die Kelvin-Skala: Marke K steht genau unter ϑ = K − 273,15 °C. Auf 0,05 K genau — die Zeichnung trägt
+    // Hundertstel Bildpunkte (≈ 0,02 K); eine um 0,15 verschobene Skala (273 statt 273,15) fiele sonst durch.
+    const marken = await page.evaluate(() => [...document.querySelectorAll("#kv-mount line[data-wert-k]")].map((l) => [Number(l.dataset.wertK), Number(l.getAttribute("x1"))]));
+    pruefe(marken.length >= 6 && marken.some(([K]) => K === 0) && marken.every(([K, x]) => nahe(w.X(x), K - NULL_K, 0.05)), `${wo}: die Kelvin-Marken stehen nicht 273,15 neben den Celsius-Marken`);
+    // Teilchen und Pfeile.
+    const feld = await page.evaluate(() => {
+      const g = document.querySelector("#kv-mount g[data-zustand]");
+      const r = g.querySelector("rect.ta-feld");
+      return {
+        zustand: g.dataset.zustand, b: Number(r.getAttribute("width")), h: Number(r.getAttribute("height")),
+        pfeile: [...g.querySelectorAll('line[data-rolle="pfeil"]')].map((l) => ["x1", "y1", "x2", "y2"].map((a) => Number(l.getAttribute(a)))),
+        teilchen: [...g.querySelectorAll("circle.ta-teilchen")].map((c) => [Number(c.getAttribute("cx")), Number(c.getAttribute("cy"))]),
+        plaetze: [...g.querySelectorAll("circle.ta-gitterplatz")].map((c) => [Number(c.getAttribute("cx")), Number(c.getAttribute("cy"))]),
+        still: !!g.querySelector('[data-rolle="stillstand"]'),
+      };
+    });
+    pruefe(feld.zustand === (t <= 0 ? "fest" : t < 100 ? "fluessig" : "gas"), `${wo}: Wasser ist als „${feld.zustand}“ gezeichnet`);
+    const laengen = feld.pfeile.map(([x1, y1, x2, y2]) => Math.hypot(x2 - x1, y2 - y1));
+    if (T < 1e-9) {
+      pruefe(laengen.length === 0 && feld.still && feld.teilchen.every(([x, y], k) => nahe(x, feld.plaetze[k][0], 1e-3) && nahe(y, feld.plaetze[k][1], 1e-3)), `${wo}: am absoluten Nullpunkt bewegen sich die Teilchen noch`);
+    } else {
+      if (t === 0) pfeil0 = laengen[0];
+      pruefe(laengen.length >= 3 && pfeil0 !== null && laengen.every((l) => nahe(l / pfeil0, v / v0, 2e-3)), `${wo}: die Pfeile sind nicht ${(v / v0).toFixed(4)}-mal so lang wie bei 0 °C`);
+      pruefe(feld.pfeile.every(([, , x2, y2]) => x2 > 0 && x2 < feld.b && y2 > 0 && y2 < feld.h), `${wo}: ein Pfeil ragt aus dem Feld`);
+    }
+    const B_ = (r) => rolle(page, "#kv-bilanz", r);
+    pruefe(trifft(await B_("t"), T, 2) && trifft(await B_("v"), v, 0) && trifft(await B_("v0"), v0, 0) && trifft(await B_("e"), e, 4), `${wo}: die Bilanz stimmt nicht`);
+    const tx = await text(page, "#kv-text");
+    pruefe(T < 1e-9 ? /stehen die Teilchen still/.test(tx) : tx.includes(`noch ${String(r2(T)).replace(".", ",")} K`), `${wo}: der Text nennt den Abstand zum absoluten Nullpunkt nicht`);
+  }
+  const b = await kasten(page, "sec-kelvin");
+  pruefe(b.includes(`T = 20 + 273,15 = ${String(20 + NULL_K).replace(".", ",")} K`) && b.includes(`100 °C = ${String(100 + NULL_K).replace(".", ",")} K`) && b.includes(`77 − 273,15 = −${String(r2(NULL_K - 77)).replace(".", ",")} °C`)
+    && b.includes(`373,15 : 273,15 ≈ ${(373.15 / NULL_K).toFixed(2).replace(".", ",")}`), "Kelvin: das Beispiel rechnet falsch");
+  const ach = await kasten(page, "sec-kelvin", "achtung-box");
+  pruefe(ach.includes("313,15 K und 293,15 K") && ach.includes("rund 7 %") && nahe(313.15 / 293.15 - 1, 0.07, 0.005), "Kelvin: der Achtung-Kasten rechnet falsch");
+  const def = await kasten(page, "sec-kelvin", "definition-box");
+  pruefe(def.includes("T = ϑ + 273,15 K") && def.includes("0 K = −273,15 °C"), "Kelvin: die Definition der Kelvin-Skala fehlt");
+}
+
+// ════════════════ 3. Übergänge ════════════════
 
 async function uebergaenge(page) {
   const knick = [[0, -20], [42, 0], [376, 0], [795, 100], [3051, 100], [3091, 120]];
@@ -159,7 +222,7 @@ async function uebergaenge(page) {
   pruefe(JSON.stringify(tab[1].slice(1)) === JSON.stringify(soll), `Übergänge: die Tabelle der Energie je Kilogramm nennt ${tab[1].slice(1).join(" | ")}`);
 }
 
-// ════════════════ 3. Bindungsenergie ════════════════
+// ════════════════ 4. Bindungsenergie ════════════════
 
 async function bindung(page) {
   let mitteVorher = 1;
@@ -198,8 +261,9 @@ async function bindung(page) {
 // ════════════════ Kontrollfragen ════════════════
 
 async function quizze(page) {
-  await pruefeQuizze(page, pruefe, 3, {
+  await pruefeQuizze(page, pruefe, 4, {
     "quiz-teilchen": (o) => /schwingen heftiger/.test(o),
+    "quiz-kelvin": (o) => /nicht mehr bewegen/.test(o),
     "quiz-uebergaenge": (o) => /bleibt bei 100 °C/.test(o),
     "quiz-bindung": (o) => /nach außen aber weiter/.test(o),
   });
@@ -208,10 +272,10 @@ async function quizze(page) {
 // ════════════════ Übungsaufgaben ════════════════
 
 // Gemessen mit werkzeug-streuung.js (UPLANT_ZUEGE=20): verschieden in 200 Würfen und geschätzte Größe des
-// Vorrats — E1 12/200 (n ≈ 12), E2 106/200 (n ≈ 139), M1 61/200 (n ≈ 64), M2 36/200 (n ≈ 36), S1 44/200 (n ≈ 44),
+// Vorrats — E1 22/200 (n ≈ 22), E2 106/200 (n ≈ 139), M1 61/200 (n ≈ 64), M2 36/200 (n ≈ 36), S1 44/200 (n ≈ 44),
 // S2 131/200 (n ≈ 218), K1 13/200 (n ≈ 13), K2 63/200 (n ≈ 66). Für 80 Züge (UPLANT_ZUEGE=80): E2 47, S2 53.
 const RUNDEN = 20;
-const SCHRANKE = [5, 13, 11, 9, 10, 14, 5, 11];
+const SCHRANKE = [7, 13, 11, 9, 10, 14, 5, 11];
 const SCHRANKE_1KG = { E2: 47, S2: 53 };   // für 80 Züge
 const TOL = 0.0051;
 // E2 und S2: Bei 1 kg fallen Fehlerwerte auf die Lösung (dort steht NaN). Ob 1 kg wirklich gezogen wird, prüfen
@@ -220,11 +284,13 @@ const RUNDEN_1KG = 80;
 const MIT_EINEM_KG = new Set();
 async function aufgaben(page) {
   const auf = [
-    ["E1 Eis schmelzen", (f) => {
-      const m = f.match(/([\d,]+) kg Eis von 0 °C sollen vollständig schmelzen\./);
+    ["E1 Celsius und Kelvin", (f) => {
+      let m = f.match(/Rechne (−?\d+) °C in Kelvin um/);
+      if (m) { const th = z(m[1]); return { richtig: th + NULL_K, toleranz: 0.001, falsch: [[th - NULL_K, "Kelvin-Werte sind größer als Celsius-Werte"], [th + 273, "genau gilt T = ϑ + 273,15 K"]] }; }
+      m = f.match(/Rechne ([\d,]+) K in Grad Celsius um/);
       if (!m) return null;
-      const kg = z(m[1]);
-      return { richtig: r2(kg * Q_S), toleranz: TOL, falsch: [[Q_S, "Energie für 1 kg"], [Q_S / kg, "Geteilt statt malgenommen"], [kg * Q_V, "braucht das Verdampfen"]] };
+      const T = z(m[1]);
+      return { richtig: r2(T - NULL_K), toleranz: 0.001, falsch: [[T + NULL_K, "Celsius-Werte sind kleiner als Kelvin-Werte"], [T - 273, "genau gilt ϑ = T − 273,15 °C"]] };
     }],
     ["E2 Wasser erwärmen", (f) => {
       const m = f.match(/([\d,]+) kg Wasser werden von (\d+) °C auf (\d+) °C erwärmt\./);
@@ -290,17 +356,17 @@ async function aufgaben(page) {
 
 // ════════════════ Gerüst ════════════════
 
-const ABSCHNITTE = ["sec-teilchen", "sec-uebergaenge", "sec-bindung"];
+const ABSCHNITTE = ["sec-teilchen", "sec-kelvin", "sec-uebergaenge", "sec-bindung"];
 async function geruest(page) {
   await pruefeGeruest(page, pruefe, {
-    seite: SEITE, abschnitte: ABSCHNITTE, ziele: 3, brot: "1. Aggregatzustände",
+    seite: SEITE, abschnitte: ABSCHNITTE, ziele: 4, brot: "1. Aggregatzustände",
     karten: [["physik/klasse-8/thermische-ausdehnung/index.html", "aggregatzustaende.html", "1. Aggregatzustände"]],
-    // Kein Vorgriff: Die absolute Temperatur entsteht erst in Thema 3 aus dem Gesetz von Gay-Lussac.
-    ohneAbsolut: ABSCHNITTE,
-    formeln: ["Bindungsenergie", "Schmelzen", "Resublimieren", "Die Energie ist proportional zur Masse", "Q = 2 · (334 + 4,19 · 20) = 835,6 kJ"],
+    // Kein Vorgriff: Die absolute Temperatur entsteht in Abschnitt 2 aus dem Teilchenmodell — davor kommt sie nicht vor.
+    ohneAbsolut: ["sec-teilchen"],
+    formeln: ["T = ϑ + 273,15 K", "Absoluter Nullpunkt und Kelvin-Skala", "Bindungsenergie", "Schmelzen", "Resublimieren", "Die Energie ist proportional zur Masse", "Q = 2 · (334 + 4,19 · 20) = 835,6 kJ"],
   });
 }
 
 fuehreAus(bericht, SEITE, [
-  ["geruest", geruest], ["teilchen", teilchen], ["uebergaenge", uebergaenge], ["bindung", bindung], ["quizze", quizze], ["aufgaben", aufgaben],
+  ["geruest", geruest], ["teilchen", teilchen], ["kelvin", kelvin], ["uebergaenge", uebergaenge], ["bindung", bindung], ["quizze", quizze], ["aufgaben", aufgaben],
 ], ".ta-kurve, .ta-energie, .ta-mitte, .ta-achse, .ta-pfeil");

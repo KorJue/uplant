@@ -19,7 +19,7 @@
 </nav>
 <header class="page-header">
   <h1>Gasgesetze</h1>
-  <p>Ein Selbstlernpfad: Gase bei gleichem Druck, gleicher Temperatur und gleichem Volumen, die Kelvin-Skala und die allgemeine Gasgleichung — mit Kontrollfragen und acht Übungsaufgaben.</p>
+  <p>Ein Selbstlernpfad: Gase bei gleichem Druck, gleicher Temperatur und gleichem Volumen, gerechnet mit der Kelvin-Skala aus Thema 1, und die allgemeine Gasgleichung — mit Kontrollfragen und acht Übungsaufgaben.</p>
 </header>
 
 <main class="menu-main">
@@ -28,18 +28,18 @@
     <h2>Worum geht es hier?</h2>
     <p>Ein Ballon in der Sonne wird größer, eine zugehaltene Luftpumpe lässt sich kaum zusammendrücken, ein Reifen hat nach der Fahrt mehr Druck. Gase dehnen sich viel stärker aus als feste Körper und Flüssigkeiten — und ihr Verhalten folgt erstaunlich einfachen Gesetzen. Am Ende kannst du:</p>
     <ul class="lern-intro-list">
-      <li>das Gesetz von <span class="term">Gay-Lussac</span> anwenden und Temperaturen in <span class="term">Kelvin</span> umrechnen</li>
+      <li>das Gesetz von <span class="term">Gay-Lussac</span> mit der absoluten Temperatur in <span class="term">Kelvin</span> anwenden und erklären, warum es auf den absoluten Nullpunkt führt</li>
       <li>das Gesetz von <span class="term">Boyle-Mariotte</span> anwenden</li>
       <li>das Gesetz von <span class="term">Amontons</span> anwenden</li>
       <li>die <span class="term">allgemeine Gasgleichung</span> aus den drei Gasgesetzen herleiten und anwenden</li>
     </ul>
-    <p class="hinweis-box">💡 Du brauchst das <a href="aggregatzustaende.html#sec-teilchen">Teilchenmodell</a> aus Thema 1, Kelvin als Einheit einer Temperaturdifferenz aus <a href="laengenausdehnung.html#sec-messung">Thema 2</a> und <a href="../../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-proportional">proportionale</a> und <a href="../../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-antiproportional">antiproportionale Zuordnungen</a>.</p>
+    <p class="hinweis-box">💡 Du brauchst das <a href="aggregatzustaende.html#sec-teilchen">Teilchenmodell</a> und die <a href="aggregatzustaende.html#sec-kelvin">Kelvin-Skala</a> mit dem absoluten Nullpunkt aus Thema 1, die <a href="laengenausdehnung.html#sec-volumen">Volumenausdehnung</a> aus Thema 2 und <a href="../../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-proportional">proportionale</a> und <a href="../../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-antiproportional">antiproportionale Zuordnungen</a>.</p>
   </section>
 
   <!-- 1. Gay-Lussac -->
   <section class="card" id="sec-gay-lussac">
-    <h2>1. Gase bei gleichem Druck: Gesetz von Gay-Lussac und Kelvin-Skala</h2>
-    <p>Ein Gas ist in einem Zylinder mit einem leicht beweglichen Kolben eingeschlossen. Der Kolben drückt immer gleich stark, der Druck bleibt also gleich. Bei 0 °C nimmt das Gas 1 Liter ein. Ändere die Temperatur und beobachte das Volumen.</p>
+    <h2>1. Gase bei gleichem Druck: Gesetz von Gay-Lussac</h2>
+    <p>Ein Gas ist in einem Zylinder mit einem leicht beweglichen Kolben eingeschlossen. Der Kolben drückt immer gleich stark, der Druck bleibt also gleich. Bei 0 °C nimmt das Gas 1 Liter ein. Ändere die Temperatur und beobachte das Volumen. Die Bilanz rechnet mit der absoluten Temperatur T = ϑ + 273,15 K — der <a href="aggregatzustaende.html#sec-kelvin">Kelvin-Skala</a> aus Thema 1.</p>
     <div class="widget">
       <div class="btn-row">
         <label>Temperatur ϑ: <input type="range" id="gl-theta" min="-100" max="200" step="5" value="100" style="vertical-align:middle;width:14rem"> <span id="gl-theta-anzeige" class="wert farbe-rot"></span></label>
@@ -50,14 +50,12 @@
     </div>
     <div class="wissen-box">
       <span class="box-label">Gesetz von Gay-Lussac</span>
-      Bei gleichem Druck ändert sich das Volumen eines Gases je Kelvin um <span class="bruch"><span class="z">1</span><span class="n">273,15</span></span> seines Volumens bei 0 °C — bei <em>allen</em> Gasen gleich. Verlängert man die Gerade nach links, wäre das Volumen bei <strong>−273,15 °C</strong> null. Kälter geht es nicht: Das ist der <strong>absolute Nullpunkt</strong>.
-    </div>
-    <div class="definition-box">
-      <span class="box-label">Die Kelvin-Skala</span>
-      Die absolute Temperatur T beginnt am absoluten Nullpunkt und hat dieselben Schritte wie die Celsius-Skala:
-      <div class="formula-block">T = ϑ + 273,15 K &nbsp;&nbsp;&nbsp; 0 °C = 273,15 K &nbsp;&nbsp;&nbsp; 20 °C = 293,15 K &nbsp;&nbsp;&nbsp; 0 K = −273,15 °C</div>
-      Mit T in Kelvin wird das Gesetz von Gay-Lussac einfach: Bei gleichem Druck ist das Volumen proportional zur absoluten Temperatur,
+      Bei gleichem Druck ändert sich das Volumen eines Gases je Kelvin um <span class="bruch"><span class="z">1</span><span class="n">273,15</span></span> seines Volumens bei 0 °C — bei <em>allen</em> Gasen gleich. Mit der absoluten Temperatur T aus Thema 1 heißt das: Bei gleichem Druck ist das Volumen proportional zur absoluten Temperatur,
       <div class="formula-block"><span class="bruch gross"><span class="z">V</span><span class="n">T</span></span> = konstant, &nbsp; also &nbsp; <span class="bruch gross"><span class="z">V<sub>1</sub></span><span class="n">T<sub>1</sub></span></span> = <span class="bruch gross"><span class="z">V<sub>2</sub></span><span class="n">T<sub>2</sub></span></span> &nbsp;&nbsp; (p konstant)</div>
+    </div>
+    <div class="wissen-box">
+      <span class="box-label">Derselbe absolute Nullpunkt wie in Thema 1</span>
+      Verlängert man die Gerade nach links, wäre das Volumen bei <strong>−273,15 °C</strong> null — genau beim <a href="aggregatzustaende.html#sec-kelvin">absoluten Nullpunkt</a>, an dem in Thema 1 die Teilchen stillstehen. Zwei ganz verschiedene Wege führen auf dieselbe Temperatur: die Bewegung der Teilchen und die Ausdehnung der Gase. Deshalb rechnet man in den Gasgesetzen mit T = ϑ + 273,15 K.
     </div>
     <div class="beispiel-box">
       <span class="box-label">Durchgerechnet — ein Luftballon in der Sonne</span>
@@ -177,6 +175,7 @@
     <h2>5. Zusammenhänge</h2>
     <ul class="vernetzung-liste">
       <li><strong>Baut auf:</strong> Dem <a href="aggregatzustaende.html#sec-teilchen">Teilchenmodell</a> aus Thema 1 — schnellere Teilchen treffen häufiger und heftiger auf die Wände.</li>
+      <li><strong>Baut auf:</strong> Der <a href="aggregatzustaende.html#sec-kelvin">Kelvin-Skala</a> aus Thema 1 — alle drei Gasgesetze rechnen mit der absoluten Temperatur, und das Gesetz von Gay-Lussac führt auf denselben absoluten Nullpunkt wie die Teilchenbewegung.</li>
       <li><strong>Baut auf:</strong> <a href="laengenausdehnung.html#sec-volumen">Der Volumenausdehnung</a> aus Thema 2 — Gase dehnen sich je Kelvin um 1 : 273,15 aus, rund 3,7 ml je Liter, also mehr als dreimal so stark wie Ethanol und hundertmal so stark wie Stahl.</li>
       <li><strong>Baut auf:</strong> <a href="../../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-proportional">Proportionalen</a> und <a href="../../../mathematik/grundwissen-5-10/04-gleichungen-zuordnungen-funktionen/01-zuordnungen/index.html#sec-antiproportional">antiproportionalen Zuordnungen</a> — V und p wachsen proportional zu T; p und V sind bei gleicher Temperatur antiproportional.</li>
       <li><strong>Gleiche Struktur:</strong> Die Herleitung der allgemeinen Gasgleichung zerlegt eine schwierige Änderung in zwei einfache, bei denen jeweils nur zwei Größen wechseln — so, wie man eine Gleichung Schritt für Schritt umformt.</li>
@@ -187,7 +186,7 @@
   <!-- Formelsammlung -->
   <section class="card" id="sec-formelsammlung">
     <h2>6. Formelsammlung</h2>
-    <p>Die Formelsammlung gilt für alle drei Seiten der Einheit: Teilchenmodell, Übergänge und Erwärmungskurve, Bindungsenergie, Längen- und Volumenänderung mit Tabellen, Bimetall, Kelvin-Skala, die drei Gasgesetze und die allgemeine Gasgleichung — mit gerechneten Bildern, auf zwei Seiten zum Ausdrucken.</p>
+    <p>Die Formelsammlung gilt für alle drei Seiten der Einheit: Teilchenmodell, absoluter Nullpunkt und Kelvin-Skala, Übergänge und Erwärmungskurve, Bindungsenergie, Längen- und Volumenänderung mit Tabellen, Bimetall, die drei Gasgesetze und die allgemeine Gasgleichung — mit gerechneten Bildern, auf zwei Seiten zum Ausdrucken.</p>
     <div class="btn-row">
       <a class="btn btn-primary" href="formelsammlung.pdf" download>📄 Formelsammlung als PDF herunterladen (DIN A4, Querformat)</a>
     </div>
@@ -206,7 +205,7 @@
     <h2>Wie sicher bist du? — Selbsteinschätzung</h2>
     <p>Das sind die Ziele dieser Seite. Kreuze ehrlich an, wie sicher du dich bei jedem Punkt fühlst. Daneben steht, wie deine Kontrollfragen und Übungsaufgaben dazu ausgefallen sind. Die Auswertung darunter nennt, was du wiederholen solltest — auch Grundlagen aus früheren Themen. Alles bleibt nur in diesem Browser gespeichert.</p>
     <ul class="se-liste" id="se-liste">
-      <li data-abschnitt="sec-gay-lussac">Ich kann Temperaturen in Kelvin umrechnen und das Gesetz von Gay-Lussac anwenden.</li>
+      <li data-abschnitt="sec-gay-lussac">Ich kann das Gesetz von Gay-Lussac mit Temperaturen in Kelvin anwenden und erklären, warum es auf den absoluten Nullpunkt führt.</li>
       <li data-abschnitt="sec-boyle">Ich kann das Gesetz von Boyle-Mariotte anwenden.</li>
       <li data-abschnitt="sec-amontons">Ich kann das Gesetz von Amontons anwenden.</li>
       <li data-abschnitt="sec-gasgleichung">Ich kann die allgemeine Gasgleichung aus den drei Gasgesetzen herleiten und anwenden.</li>
@@ -225,6 +224,6 @@
 
 <script src="../../../assets/lehrkraft.js"></script>
 <script src="../../../assets/selbsteinschaetzung.js"></script>
-<script type="module" src="gasgesetze.js?v=1"></script>
+<script type="module" src="gasgesetze.js?v=2"></script>
 </body>
 </html>
