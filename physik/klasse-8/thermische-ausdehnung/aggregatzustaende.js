@@ -8,7 +8,7 @@
 
 import { svgEl, svgText, flaeche, zeige, num, zeichen, reglerZahl, setzeText, setzeHtml, wahl, mountQuizze, mountUebungsaufgaben } from "./seite.js?v=1";
 import { T0, vMittel, kelvin, runde, bruch, diagramm, linienzug, kurvePunkte, punkt, zylinder } from "./gemeinsam.js?v=1";
-import { AUFGABEN } from "./aggregatzustaende-aufgaben.js?v=1";
+import { AUFGABEN } from "./aggregatzustaende-aufgaben.js?v=2";
 
 // ================= 1. Teilchenmodell =================
 

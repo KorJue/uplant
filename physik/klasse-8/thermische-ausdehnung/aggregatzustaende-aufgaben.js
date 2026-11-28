@@ -1,10 +1,10 @@
 // Die acht Übungsaufgaben zu „Aggregatzustände“ — zwei je Stufe, alle zur Energie je Kilogramm
 // aus Abschnitt 2 (die Teilchenbewegung und die Energiemulde sind Modelle zum Verstehen, nicht zum
-// Rechnen):
+// Rechnen; K1 verbindet beides):
 //   einfach   — Eis schmelzen; Wasser erwärmen
 //   mittel    — Eis erwärmen und schmelzen; Wasser erwärmen und verdampfen
 //   schwierig — wie viel Eis? (Umkehr, mit Probe); welche Endtemperatur? (Umkehr, mit Probe)
-//   komplex   — Dampf kondensiert und schmilzt Eis; Schmelzdauer auf der Herdplatte
+//   komplex   — Dampf kondensiert und schmilzt Eis (mit der Bindungsenergie, Abschnitt 3); Schmelzdauer auf der Herdplatte
 //
 // Jeder vorgesehene Fehler hat einen eigenen Wert; fallen zwei zusammen oder trifft einer die Lösung,
 // steht an der Stelle NaN (siehe CLAUDE.md, „Die Kollisionsprüfung“). Gewürfelt wird aus VORHER
@@ -241,7 +241,8 @@ const K1_KANDIDATEN = spaeter(() => [0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.75, 0
 const K1 = {
   schwierigkeit: "komplex",
   titel: "Dampf schmilzt Eis",
-  abschnitt: "sec-uebergaenge",
+  // Verbindet die Energie je Kilogramm (2) mit der Bindungsenergie (3): Verdampfen trennt die Teilchen ganz.
+  abschnitt: ["sec-uebergaenge", "sec-bindung"],
   generate() {
     const v = ohneKollision(K1_KANDIDATEN(), (v) => [(v.mD * Q_V) / Q_S, ...k1Fehler(v).map((x) => x[0])], 0.02);
     const { mD } = v, Q = mD * Q_V, mE = Q / Q_S;
@@ -250,7 +251,8 @@ const K1 = {
       correct: r2(mE), tolerance: TOL,
       hinweis: hinweisAus(k1Fehler(v)),
       tipps: ["Beim Kondensieren wird genauso viel Energie frei, wie das Verdampfen gebraucht hat: 2256 kJ je kg.", "Diese Energie durch 334 kJ je kg teilen — so viel Kilogramm Eis schmelzen."],
-      musterloesungHtml: `Frei beim Kondensieren: ${num(mD, 2)} · 2256 kJ = ${num(Q, 2)} kJ<br>Geschmolzenes Eis: ${num(Q, 2)} kJ : 334 kJ je kg ≈ <strong>${zwei(mE)} kg</strong>`,
+      musterloesungHtml: `Frei beim Kondensieren: ${num(mD, 2)} · 2256 kJ = ${num(Q, 2)} kJ<br>Geschmolzenes Eis: ${num(Q, 2)} kJ : 334 kJ je kg ≈ <strong>${zwei(mE)} kg</strong><br>` +
+        `Warum so viel? Beim Verdampfen werden die Teilchen ganz voneinander getrennt — sie müssen die ganze Energiemulde verlassen. Beim Schmelzen lösen sie sich nur aus dem Gitter und bleiben dicht beieinander. Deshalb setzt Kondensieren je Kilogramm fast siebenmal so viel Energie frei, wie Schmelzen braucht.`,
     };
   },
 };

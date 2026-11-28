@@ -105,6 +105,10 @@ const FILTER = (process.env.UPLANT_SEITEN || "").split(",").filter(Boolean);
 
       // ---- Themenleiste ----
       const sollThemen = bestand.folge.filter((id) => bestand.aufgaben.some((a) => thema(a) === id));
+      // Jede Seite verteilt ihre Aufgaben auf mindestens zwei Abschnitte — sonst gibt es keine Themenleiste,
+      // und die Aufgaben lassen sich nicht nach Thema wählen. Ohne Leiste lässt sich der Rest nicht prüfen.
+      pruefe(sollThemen.length >= 2 && bestand.themen.length >= 3, `${wo}: keine Themenleiste — alle Aufgaben stehen beim Abschnitt ${sollThemen.join(", ")}`);
+      if (bestand.themen.length === 0) continue;
       const istThemen = bestand.themen.filter((t) => t.id).map((t) => t.id);
       if (sollThemen.length > 1) {
         pruefe(bestand.themen[0] && bestand.themen[0].id === null && /Alle Themen/.test(bestand.themen[0].text), `${wo}: die Themenleiste beginnt nicht mit „Alle Themen“`);
